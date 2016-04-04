@@ -67,6 +67,11 @@
       "description": "Show billing info for specified period, or export the billing info to a file"
     }
   },
+  "completion": {
+    "cli": {
+      "summary": "Generate script for bash completion"
+    }
+  },
   "configure": {
     "cli": {
       "summary": "Show, create or update configurations.",
