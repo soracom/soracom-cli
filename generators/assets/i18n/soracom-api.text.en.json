@@ -1,0 +1,226 @@
+{
+  "auth": {
+    "post": {
+      "summary": "Performs authentication to access to the SORACOM API.",
+      "description": "Performs authentication to access to the SORACOM API. To perform authentication by a root account, specify `email` and `password`. To perform authentication by an AuthKey, specify `authKeyId` and `authKey`. To perform authentication by a SAM user, specify `operatorId`, `userName` and `password`. An API Key and an API Token will be included in the response if successful. Specify the API Key and the API Token to requests afterwards",
+      "parameters": {
+        "body": {
+          "description": "Authentication request"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "Authentication successful"
+        },
+        "status401": {
+          "description": "Unable to authenticate"
+        }
+      },
+      "cli": {
+        "summary": "Performs authentication and issue an API Key and an API Token if successful.",
+        "description": "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
+      }
+    },
+    "issue_password_reset_token": {
+      "post": {
+        "summary": "Issues a password reset token for the operator.",
+        "description": "Generates a password reset token and send it to the operator's mail address. After receiving the password reset token, call /v1/auth/password_reset_token/verify API with the token to update operator's password.",
+        "responses": {
+          "status200": {
+            "description": "OK"
+          },
+          "status400": {
+            "description": "Invalid email address."
+          }
+        },
+        "cli": {
+          "summary": "Issues a password reset token for the operator.",
+          "description": "Generates a password reset token and send it to the operator's mail address. After receiving the password reset token, run 'soracom auth verify-password-reset-token' with the token to update operator's password."
+        }
+      }
+    },
+    "verify_password_reset_token": {
+      "post": {
+        "summary": "Verifies the password reset token and updates password.",
+        "description": "Updates the operator's password if the password reset token is verified.",
+        "responses": {
+          "status200": {
+            "description": "OK"
+          },
+          "status400": {
+            "description": "Invalid token."
+          },
+          "status404": {
+            "description": "Token expired."
+          }
+        },
+        "cli": {
+          "summary": "Verifies the password reset token and updates password.",
+          "description": "Updates the operator's password if the password reset token is verified."
+        }
+      }
+    }
+  },
+  "bills": {
+    "cli": {
+      "summary": "Show or export billing info.",
+      "description": "Show billing info for specified period, or export the billing info to a file"
+    }
+  },
+  "configure": {
+    "cli": {
+      "summary": "Show, create or update configurations.",
+      "description": "Show, create or update configurations.",
+      "profile": {
+        "prompt": "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it.\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials(Operator Email and Password)\n3. Input SAM credentials(OperatorId, User name and Password)\n\n",
+        "select": "select (1-3) > ",
+        "overwrite": "Profile %s already exists. Overwrite it? (Y/n) "
+      }
+    },
+    "get": {
+      "cli": {
+        "summary": "Show specified profile configurations",
+        "description": "Show specified profile configurations"
+      }
+    }
+  },
+  "coupons": {
+    "cli": {
+      "summary": "List or register coupons.",
+      "description": "List or register coupons."
+    }
+  },
+  "credentials": {
+    "cli": {
+      "summary": "List, create, update or delete credentials sets.",
+      "description": "List, create, update or delete credentials sets."
+    }
+  },
+  "event_handlers": {
+    "cli": {
+      "summary": "List, create, update or delete event handlers.",
+      "description": "List, create, update or delete event handlers."
+    }
+  },
+  "groups": {
+    "cli": {
+      "summary": "List, create, update or delete groups.",
+      "description": "List, create, update or delete groups."
+    }
+  },
+  "operator": {
+    "cli": {
+      "summary": "Manage operators.",
+      "description": "Manage operators."
+    },
+    "auth_keys": {
+      "cli": {
+        "summary": "List, create or delete operator's AuthKeys.",
+        "description": "List, create or delete operator's AuthKeys."
+      }
+    }
+  },
+  "orders": {
+    "cli": {
+      "summary": "List, create or cancel orders.",
+      "description": "List, create or cancel orders."
+    }
+  },
+  "payment_history": {
+    "cli": {
+      "summary": "List payment history.",
+      "description": "List payment history."
+    }
+  },
+  "payment_methods": {
+    "cli": {
+      "summary": "Create or update payment methods.",
+      "description": "Create or update payment methods."
+    },
+    "webpay": {
+      "cli": {
+        "summary": "Create or update WebPay payment method.",
+        "description": "Create or update WebPay payment method."
+      }
+    }
+  },
+  "products": {
+    "cli": {
+      "summary": "List products.",
+      "description": "List products."
+    }
+  },
+  "roles": {
+    "cli": {
+      "summary": "List, create, update or delete roles.",
+      "description": "List, create, update or delete roles."
+    }
+  },
+  "shipping_addresses": {
+    "cli": {
+      "summary": "List, create, update or delete shipping addresses.",
+      "description": "List, create, update or delete shipping addresses."
+    }
+  },
+  "stats": {
+    "cli": {
+      "summary": "Show or export statistics.",
+      "description": "Show or export statistics."
+    },
+    "air": {
+      "cli": {
+        "summary": "Show or export Air statistics.",
+        "description": "Show or export Air statistics."
+      }
+    },
+    "beam": {
+      "cli": {
+        "summary": "Show or export Beam statistics.",
+        "description": "Show or export Beam statistics."
+      }
+    }
+  },
+  "subscribers": {
+    "cli": {
+      "summary": "Manage subscribers.",
+      "description": "Manage subscribers."
+    }
+  },
+  "users": {
+    "cli": {
+      "summary": "Manage SAM users.",
+      "description": ""
+    },
+    "auth_keys": {
+      "cli": {
+        "summary": "List, create or delete SAM user's AuthKeys.",
+        "description": "List, create or delete SAM user's AuthKeys."
+      }
+    },
+    "password": {
+      "cli": {
+        "summary": "Create, update or delete SAM user's password.",
+        "description": "Create, update or delete SAM user's password."
+      }
+    },
+    "permissions": {
+      "cli": {
+        "summary": "Show, create and update SAM user's permission.",
+        "description": "Show, create and update SAM user's permission."
+      }
+    }
+  },
+  "version": {
+    "cli": {
+      "summary": "Show version info.",
+      "description": "Show version info."
+    }
+  },
+  "cli": {
+    "common_params": {
+      "body": {
+        "short_help": "JSON string or @filename for API request body."
+      }
+    }
+  }
+}

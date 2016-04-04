@@ -1,0 +1,7 @@
+# wercker directories
+_builds/
+_projects/
+_steps/
+
+# artifacts
+bin/

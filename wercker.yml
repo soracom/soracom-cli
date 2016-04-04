@@ -1,0 +1,39 @@
+box: tcnksm/gox
+
+build:
+  steps:
+    - wercker/setup-go-workspace:
+        package-dir: github.com/soracom/soracom-cli
+
+    # Install dev-dependencies
+    - script:
+        name: install-dev-dependencies
+        code: |
+            apt-get update
+            apt-get install -y expect
+            curl -sLO https://github.com/jpmens/jo/releases/download/v1.0/jo-1.0.tar.gz
+            tar xvzf jo-1.0.tar.gz
+            cd jo-1.0
+            ./configure
+            make check
+            make install
+
+    # Build the project
+    - script:
+        name: build
+        code: |
+            ./scripts/build.sh
+
+    # Test the project
+    - script:
+        name: test
+        code: |
+            ./test/test.sh
+
+  after-steps:
+    - sherzberg/slack-notify:
+        subdomain: soracom
+        token: $SORACOM_CLI_WERCKER_SLACK_TOKEN
+        channel: "#soracom-cli"
+        username: wercker
+        icon_url: https://avatars3.githubusercontent.com/u/1695193?s=140

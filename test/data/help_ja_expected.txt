@@ -1,0 +1,30 @@
+A command line tool to invoke SORACOM API
+
+Usage:
+  soracom [command]
+
+Available Commands:
+  auth               API アクセスの認証を行い、API キーと API トークンを発行します。
+  bills              課金に関する情報を確認したりファイルへのエクスポートを行います。
+  completion         completion.cli.summary
+  configure          コマンド実行環境（プロファイル）の設定や表示を行います。
+  coupons            登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+  credentials        認証情報に関する操作を行います。
+  event-handlers     イベントハンドラーに関する操作を行います。
+  groups             グループに関する操作を行います。
+  operator           オペレーターに関する操作を行います。
+  orders             商品の注文に関する操作を行います。
+  payment-history    お支払い履歴を取得します。
+  payment-methods    お支払い方法に関する操作を行います
+  products           商品一覧を取得します。
+  roles              ロールに関する操作を行います。
+  shipping-addresses 出荷先情報に関する操作を行います。
+  stats              統計情報に関する操作を行います。
+  subscribers        サブスクライバー (SIM) に関する操作を行います。
+  users              SAM ユーザーに関する操作を行います。
+  version            バージョン情報を表示します。
+
+Flags:
+      --profile string   Specify profile name
+
+Use "soracom [command] --help" for more information about a command.

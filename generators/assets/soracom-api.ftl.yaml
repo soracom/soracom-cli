@@ -1,0 +1,3752 @@
+# Definition of the SORACOM API
+swagger: '2.0'
+info:
+  title: SORACOM API
+  description: SORACOM API v1
+  version: "20160127"
+# the domain of the service
+host: api.soracom.io
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: X-Soracom-API-Key
+    in: header
+  api_token:
+    type: apiKey
+    name: X-Soracom-Token
+    in: header
+
+paths:
+
+#Auth API
+  "/auth":
+    post:
+      tags: [Auth]
+      summary: ${auth.post.summary}
+      description: |
+        ${auth.post.description}
+      operationId: auth
+      x-soracom-cli:
+        - auth
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: auth
+        description: ${auth.post.parameters.body.description}
+        required: true
+        schema:
+         '$ref': '#/definitions/AuthRequest'
+      responses:
+        '200':
+          description: ${auth.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/AuthResponse'
+        '401':
+          description: ${auth.post.responses.status401.description}
+
+  '/auth/password_reset_token/issue':
+    post:
+      tags: [Auth]
+      summary: ${auth.issue_password_reset_token.post.summary}
+      description: ${auth.issue_password_reset_token.post.description}
+      operationId: issuePasswordResetToken
+      x-soracom-cli:
+        - auth issue-password-reset-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: 'Request'
+        required: true
+        schema:
+         '$ref': '#/definitions/IssuePasswordResetTokenRequest'
+      responses:
+        '200':
+          description: ${auth.issue_password_reset_token.post.responses.status200.description}
+        '400':
+          description: ${auth.issue_password_reset_token.post.responses.status400.description}
+
+  '/auth/password_reset_token/verify':
+    post:
+      tags: [Auth]
+      summary: ${auth.verify_password_reset_token.post.summary}
+      description: ${auth.verify_password_reset_token.post.description}
+      operationId: verifyPasswordResetToken
+      x-soracom-cli:
+        - auth verify-password-reset-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/VerifyPasswordResetTokenRequest'
+      responses:
+        '200':
+          description: ${auth.verify_password_reset_token.post.responses.status200.description}
+        '400':
+          description: ${auth.verify_password_reset_token.post.responses.status400.description}
+        '404':
+          description: ${auth.verify_password_reset_token.post.responses.status404.description}
+
+#Credential API
+  '/credentials':
+    get:
+      tags: [Credential]
+      summary: List Credentials
+      description: 認証情報の一覧を返す。
+      operationId: listCredentials
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - credentials list
+      consumes: [application/json]
+      produces: ['*/*']
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/CredentialsModel'}
+
+  '/credentials/{credentials_id}':
+    post:
+      tags: [Credential]
+      summary: Create Credential
+      description: 認証情報を新規作成する。
+      operationId: createCredential
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - credentials create
+      consumes: [application/json;charset=UTF-8]
+      produces: ['*/*']
+      parameters:
+      - {name: credentials_id, in: path, description: credentials_id, required: true,
+        type: string}
+      - in: body
+        name: credentials
+        description: credentials
+        required: true
+        schema: {'$ref': '#/definitions/CreateAndUpdateCredentialsModel'}
+      responses:
+        '201':
+          description: Created
+          schema: {'$ref': '#/definitions/CredentialsModel'}
+    put:
+      tags: [Credential]
+      summary: Update Credential
+      description: 認証情報を更新する。
+      operationId: updateCredential
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - credentials update
+      consumes: [application/json;charset=UTF-8]
+      produces: ['*/*']
+      parameters:
+      - {name: credentials_id, in: path, description: credentials_id, required: true,
+        type: string}
+      - in: body
+        name: credentials
+        description: credentials
+        required: true
+        schema: {'$ref': '#/definitions/CreateAndUpdateCredentialsModel'}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/CredentialsModel'}
+        '400':
+          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+    delete:
+      tags: [Credential]
+      summary: Delete Credential
+      description: 認証情報を削除する。
+      operationId: deleteCredential
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - credentials delete
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      responses:
+        '204': {description: Deleted}
+        '404': {description: Not Found}
+
+#Operator API
+  '/operators':
+    post:
+      tags: [Operator]
+      summary: Create Operator
+      description: |
+        Operator の新規登録をリクエストする。
+        パラメーターで指定されたメールアドレスに宛てて、Operator 登録確認用の
+        ワンタイムトークンを含んだメールが送信される。
+      operationId: createOperator
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator create
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/RegisterOperatorsRequest'
+      responses:
+        '201':
+          description: Operator が作成された
+        '400':
+          description: メールアドレスがすでに登録されているか、パスワードのフォーマットが不正
+
+  '/operators/email_change_token/issue':
+    post:
+      tags: [Operator]
+      summary: Issue Email Change Token
+      description: メールアドレス変更用のワンタイムトークンをメールで送付する。
+      operationId: issueEmailChangeToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator issue-email-change-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/IssueEmailChangeTokenRequest'}
+      responses:
+        '200': {description: OK}
+
+  '/operators/email_change_token/verify':
+    post:
+      tags: [Operator]
+      summary: Verify Email Change Token
+      description: メールアドレス変更用のトークンを確認して、メールアドレスを変更する。
+      operationId: verifyEmailChangeToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator verify-email-change-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/VerifyEmailChangeTokenRequest'}
+      responses:
+        '200': {description: OK}
+
+  '/operators/verify':
+    post:
+      tags: [Operator]
+      summary: Verify Operator
+      description: |
+        Operator 登録の確認を行う。
+        メールで送られてくる確認用ワンタイムトークンをパラメーターに含めて呼び出しを行う。
+      operationId: verifyOperator
+      x-soracom-cli:
+        - operator verify
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - name: token
+        in: body
+        description: token
+        required: true
+        schema:
+         '$ref': '#/definitions/VerifyOperatorsRequest'
+      responses:
+        '200':
+          description: 登録成功
+        '400':
+          description: ワンタイムトークンが不正
+        '404':
+          description: ワンタイムトークンが期限切れ
+
+  '/operators/{operator_id}':
+    get:
+      tags: [Operator]
+      summary: Get Operator
+      description: |
+        Operatorの情報を返す。
+      operationId: getOperator
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/GetOperatorResponse'
+        '400':
+          description: Invalid Operator Id
+
+  '/operators/{operator_id}/auth_keys':
+    get:
+      tags: [Operator]
+      summary: List Operator AuthKeys
+      description: OperatorのAuthKey一覧を返す。
+      operationId: listOperatorAuthKeys
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator auth-keys list
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/AuthKeyResponse'}
+    post:
+      tags: [Operator]
+      summary: Generate Operator AuthKey
+      description: OperatorのAuthKeyを生成する。
+      operationId: generateOperatorAuthKey
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator auth-keys generate
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GenerateOperatorsAuthKeyResponse'}
+  '/operators/{operator_id}/auth_keys/{auth_key_id}':
+    delete:
+      tags: [Operator]
+      summary: Delete Operator AuthKey
+      description: OperatorのAuthKeyを削除する。
+      operationId: deleteOperatorAuthKey
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator auth-keys delete
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: auth_key_id, in: path, description: auth_key_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+
+
+  '/operators/{operator_id}/password':
+    post:
+      tags: [Operator]
+      summary: Update Operator Password
+      description: |
+        Operator のパスワードを更新する。
+      operationId: updateOperatorPassword
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator update-password
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/UpdatePasswordRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid password.
+
+
+  '/operators/{operator_id}/support/token':
+    post:
+      tags: [Operator]
+      summary: Generate Token for Support Console
+      description: |
+        サポート画面アクセス用のトークンを返す。
+      operationId: generateSupportToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator get-support-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/SupportTokenResponse'
+        '400':
+          description: Invalid Operator Id
+        '403':
+          description: Invalid token
+
+  '/operators/{operator_id}/token':
+    post:
+      tags: [Operator]
+      summary: Generate Authentication Token
+      description: |
+        新しい API トークンを発行する。
+        現在の API トークンをヘッダーに入れてリクエストを行うと、新しい API トークンを含んだレスポンスを返す。
+        以降のリクエスト時にはこの新しい API トークンを用いることができる。
+      operationId: generateAuthToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - operator generate-api-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/GenerateTokenRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/GenerateTokenResponse'
+        '400':
+          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+          schema:
+           '$ref': '#/definitions/APICallError'
+
+# Role
+  '/operators/{operator_id}/roles':
+    get:
+      tags: [Role]
+      summary: List Roles
+      description: Roleの一覧を返す。
+      operationId: listRoles
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/ListRolesResponse'}
+  '/operators/{operator_id}/roles/{role_id}':
+    get:
+      tags: [Role]
+      summary: Get Role
+      description: Roleを取得する。
+      operationId: getRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/RoleResponse'}
+    post:
+      tags: [Role]
+      summary: Create Role
+      description: Roleを新しく追加する。
+      operationId: createRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles create
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/CreateOrUpdateRoleRequest'}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/CreateRoleResponse'}
+    put:
+      tags: [Role]
+      summary: Update Role
+      description: Roleを編集する。
+      operationId: updateRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles update
+      consumes: [application/json]
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/CreateOrUpdateRoleRequest'}
+      responses:
+        '200': {description: OK}
+
+    delete:
+      tags: [Role]
+      summary: Delete Role
+      description: Roleを削除する。
+      operationId: deleteRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles delete
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+
+  '/operators/{operator_id}/roles/{role_id}/users':
+    get:
+      tags: [Role]
+      summary: List Role Attached Users
+      description: Roleに紐づくユーザーの一覧を取得する。
+      operationId: listRoleAttachedUsers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - roles list-users
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/UserDetailResponse'}
+
+  '/operators/{operator_id}/users/{user_name}/roles':
+    get:
+      tags: [Role]
+      summary: List User Roles
+      description: ユーザーのロールの一覧を取得する。
+      operationId: listUserRoles
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users list-roles
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/RoleResponse'}
+    post:
+      tags: [Role]
+      summary: Attach Role to User
+      description: ユーザーにロールをアタッチする。
+      operationId: attachRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users attach-role
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/AttachRoleRequest'}
+      responses:
+        '200': {description: OK}
+
+  '/operators/{operator_id}/users/{user_name}/roles/{role_id}':
+    delete:
+      tags: [Role]
+      summary: Detach Role from User
+      description: ユーザーからロールをデタッチする。
+      operationId: detachRole
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users detach-role
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - {name: role_id, in: path, description: role_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+
+# Shipping Address
+  '/operators/{operator_id}/shipping_addresses':
+    get:
+      tags: [ShippingAddress]
+      summary: List shipping addresses
+      description: 商品発送先の一覧を返します。
+      operationId: listShippingAddresses
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - shipping-addresses list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+        - name: operator_id
+          in: path
+          description: Operator ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/ListShippingAddressResponse'}
+    post:
+      tags: [ShippingAddress]
+      summary: Create shipping address
+      description: 商品発送先を新規登録する。
+      operationId: createShippingAddress
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - shipping-addresses create
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+        - name: operator_id
+          in: path
+          description: Operator ID
+          required: true
+          type: string
+        - name: model
+          in: body
+          description: model
+          required: true
+          schema: {'$ref': '#/definitions/ShippingAddressModel'}
+      responses:
+        '200':
+          description: OK
+          schema: {type: string}
+        '201':
+          description: shippingAddreddId
+          schema: {type: string}
+
+  '/operators/{operator_id}/shipping_addresses/{shipping_address_id}':
+    get:
+      tags: [ShippingAddress]
+      summary: Get shipping address
+      description: 商品発送先を返す。
+      operationId: getShippingAddress
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - shipping-addresses get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+        - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+        - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetShippingAddressResponse'}
+    put:
+      tags: [ShippingAddress]
+      summary: Update shipping address
+      description: 商品発送先を更新する。
+      operationId: updateShippingAddress
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - shipping-addresses update
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+        - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+        - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
+        - in: body
+          name: model
+          description: model
+          required: true
+          schema: {'$ref': '#/definitions/ShippingAddressModel'}
+      responses:
+        '200': {description: OK}
+    delete:
+      tags: [ShippingAddress]
+      summary: Delete shipping address
+      description: 商品発送先を削除する。
+      operationId: deleteShippingAddress
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - shipping-addresses delete
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+        - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+        - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+
+# Users
+  '/operators/{operator_id}/users':
+    get:
+      tags: [User]
+      summary: List Users
+      description: SAMユーザー一覧を返す。
+      operationId: listUsers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/UserDetailResponse'}
+
+  '/operators/{operator_id}/users/{user_name}':
+    get:
+      tags: [User]
+      summary: Get User
+      description: SAMユーザーを返す。
+      operationId: getUser
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/UserDetailResponse'}
+    post:
+      tags: [User]
+      summary: Create User
+      description: SAMユーザーを新しく追加する。
+      operationId: createUser
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users create
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/CreateUserRequest'}
+      responses:
+        '200': {description: OK}
+        '201': {description: Created}
+    put:
+      tags: [User]
+      summary: Update User
+      description: SAMユーザーを更新する。
+      operationId: updateUser
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users update
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/UpdateUserRequest'}
+      responses:
+        '200': {description: OK}
+        '404':
+          description: SAM User not found.
+          schema: {'$ref': '#/definitions/APICallError'}
+    delete:
+      tags: [User]
+      summary: Delete User
+      description: SAMユーザーを削除する。
+      operationId: deleteUser
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users delete
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200': {description: OK}
+        '204': {description: OK}
+        '404':
+          description: SAM User not found.
+          schema: {'$ref': '#/definitions/APICallError'}
+
+  '/operators/{operator_id}/users/{user_name}/auth_keys':
+    get:
+      tags: [User]
+      summary: List User AuthKeys
+      description: SAMユーザーのAuthKey一覧を返す。
+      operationId: listUserAuthKeys
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users auth-keys list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items: {'$ref': '#/definitions/AuthKeyResponse'}
+    post:
+      tags: [User]
+      summary: Generate AuthKey
+      description: SAMユーザーのAuthKeyを生成する。
+      operationId: generateUserAuthKey
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users auth-keys generate
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GenerateUserAuthKeyResponse'}
+
+  '/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}':
+    get:
+      tags: [User]
+      summary: Get AuthKey
+      description: SAMユーザーのAuthKeyを返す。
+      operationId: getUserAuthKey
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users auth-keys get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - {name: auth_key_id, in: path, description: auth_key_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/AuthKeyResponse'}
+    delete:
+      tags: [User]
+      summary: Delete User AuthKey
+      description: SAMユーザーのAuthKeyを削除する。
+      operationId: deleteUserAuthKey
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users auth-keys delete
+      consumes: [application/json]
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - {name: auth_key_id, in: path, description: auth_key_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+        '204': {description: OK}
+        '404':
+          description: AuthKey not found.
+          schema: {'$ref': '#/definitions/APICallError'}
+
+  '/operators/{operator_id}/users/{user_name}/password':
+    get:
+      tags: [User]
+      summary: Has User Password
+      description: SAMユーザーのパスワードがセットされているかを取得する。
+      operationId: hasUserPassword
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users password configured
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetUserPasswordResponse'}
+    post:
+      tags: [User]
+      summary: Create Password
+      description: SAMユーザーのパスワードを作成する。
+      operationId: createUserPassword
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users password create
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/CreateUserPasswordRequest'}
+      responses:
+        '200': {description: OK}
+    put:
+      tags: [User]
+      summary: Update Password
+      description: SAMユーザーのパスワードを更新する。
+      operationId: updateUserPassword
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users password update
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/UpdatePasswordRequest'}
+      responses:
+        '200': {description: OK}
+    delete:
+      tags: [User]
+      summary: Delete Password
+      description: ユーザーのパスワードを削除する。
+      operationId: deleteUserPassword
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users password delete
+      consumes: [application/json]
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200': {description: OK}
+        '204': {description: OK}
+        '404':
+          description: Password registration is required.
+          schema: {'$ref': '#/definitions/APICallError'}
+
+  '/operators/{operator_id}/users/{user_name}/permission':
+    get:
+      tags: [User]
+      summary: Get User Permission
+      description: SAMユーザーの権限設定を取得する。
+      operationId: getUserPermission
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users permissions get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetUserPermissionResponse'}
+    put:
+      tags: [User]
+      summary: Update Permission to User
+      description: SAMユーザーの権限を更新する。
+      operationId: updateUserPermission
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - users permissions update
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - {name: user_name, in: path, description: user_name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/SetUserPermissionRequest'}
+      responses:
+        '200': {description: OK}
+
+
+
+
+
+# subscribers
+  '/subscribers':
+    get:
+      summary: List Subscribers
+      description: |
+        条件にマッチするSubscriberのリストを返す。Subscriberの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      operationId: listSubscribers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers list
+      parameters:
+        - name: tag_name
+          in: query
+          description: 検索対象にするタグの名前(完全一致)。
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: タグの検索条件。
+          required: false
+          type: string
+          enum: [exact, prefix]
+          default: exact
+        - name: status_filter
+          in: query
+          description: '検索対象にするstatus。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, `terminated`'
+          required: false
+          type: string
+        - name: speed_class_filter
+          in: query
+          description: '検索対象にする速度クラス。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`'
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: 取得するSubscriberの上限
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+          required: false
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: A list of subscibers
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/Subscriber'
+
+  '/subscribers/{imsi}/register':
+    post:
+      summary: Register Subscriber
+      description: Subscriberを登録
+      operationId: registerSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers register
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+        - name: subscriber
+          in: body
+          description: subscriber
+          required: true
+          schema:
+           '$ref': '#/definitions/RegisterSubscribersRequest'
+      tags:
+        - Subscriber
+      responses:
+        201:
+          description: Subscriber登録完了
+          schema:
+           '$ref': '#/definitions/Subscriber'
+
+  '/subscribers/{imsi}':
+    get:
+      summary: Get Subscriber
+      description: 指定されたSubscriberの情報を返す。
+      operationId: getSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers get
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 指定されたSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/update_speed_class':
+    post:
+      summary: Update Subscriber speed class
+      description: 指定されたSubscriberの速度クラスを変更します
+      operationId: updateSpeedClass
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers update-speed-class
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          type: string
+          description: 対象のSubscriberのIMSI
+          required: true
+        - name: speed_class
+          in: body
+          required: true
+          schema:
+           '$ref': '#/definitions/UpdateSpeedClassRequest'
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/activate':
+    post:
+      summary: Activate Subscriber
+      description: 指定されたSubscriberのステータスを有効化
+      operationId: activateSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers activate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/deactivate':
+    post:
+      summary: Deactivate Subscriber
+      description: 指定されたSubscriberを無効化
+      operationId: deactivateSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers deactivate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/terminate':
+    post:
+      summary: Terminate Subscriber
+      description: 指定されたSubscriberをTerminate
+      operationId: terminateSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers terminate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/enable_termination':
+    post:
+      summary: Enable Termination of Subscriber
+      description: 指定されたSubscriberをTerminate可能に設定する
+      operationId: enableTermination
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers enable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/disable_termination':
+    post:
+      summary: Disable Termination of Subscriber
+      description: 指定されたSubscriberをTerminate不可能に設定する
+      operationId: disableTermination
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers disable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/set_expiry_time':
+    post:
+      summary: Update Expiry Time of Subscriber
+      description: 指定されたSubscriberの有効期限を更新
+      operationId: setExpiryTime
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers set-expiry-time
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+          format: IMSI
+        - name: request
+          in: body
+          description: 更新後の有効期限(unixtime:ミリ秒単位)
+          schema:
+           '$ref': '#/definitions/ExpiryTime'
+          required: true
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/unset_expiry_time':
+    post:
+      summary: Delete Expiry Time of Subscriber
+      description: 指定されたSubscriberの有効期限を削除して無期限に変更
+      operationId: unsetExpiryTime
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers unset-expiry-time
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        204:
+          description: 当該Subscriberの有効期限を無期限に変更完了
+        404:
+          description: 指定されたSubscriberが存在しないか、Subscriberに有効期限がない
+
+  '/subscribers/{imsi}/set_group':
+    post:
+      summary: Set Group to Subscriber
+      description: 指定されたSubscriberの所属先Groupを指定あるいは上書き変更
+      operationId: setGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers set-group
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+        - name: group
+          in: body
+          description: Group（IDのみを含めばよい）
+          schema:
+           '$ref': '#/definitions/Group'
+          required: true
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/unset_group':
+    post:
+      summary: Unset Group to Subscriber
+      description: 指定されたSubscriberのGroup指定を解除
+      operationId: unsetGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers unset-group
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しないか、SubscriberはGroupに属していない
+
+  '/subscribers/{imsi}/tags':
+    put:
+      summary: Bulk Insert or Update Subscriber Tags
+      description: 指定されたSubscriberのタグを追加・更新
+      operationId: putSubscriberTags
+      x-sam-operationId: putTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers put-tags
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+        - name: tags
+          in: body
+          description: 追加・更新対象のタグの配列
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/TagUpdateRequest'
+
+          required: true
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/tags/{tag_name}':
+    delete:
+      summary: Delete Subscriber Tag
+      description: 指定されたSubscriberのタグを削除
+      operationId: deleteSubscriberTag
+      x-sam-operationId: deleteTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers delete-tag
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string
+        - name: tag_name
+          in: path
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          type: string
+          required: true
+      tags:
+        - Subscriber
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたSubscriberあるいはタグが存在しない
+
+  '/subscribers/transfer_token/issue':
+    post:
+      tags:
+        - Subscriber
+      summary: Issue Subscribers Transfer Token
+      description: Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。
+      operationId: issueSubscriberTransferToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers issue-transfer-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/IssueSubscriberTransferTokenRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/IssueSubscriberTransferTokenResponse'
+
+  '/subscribers/transfer_token/verify':
+    post:
+      tags:
+        - Subscriber
+      summary: Verify Subscriber Transfer Token
+      description: Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。
+      operationId: verifySubscriberTransferToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers verify-transfer-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/VerifySubscriberTransferTokenRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/VerifySubscriberTransferTokenResponse'
+
+  '/subscribers/transfer_token/{token}':
+    delete:
+      tags:
+        - Subscriber
+      summary: Delete Subscribers Transfer Token
+      description: Subscriberのオペレーター間移管トークンを削除し、移管をキャンセルする。
+      operationId: deleteSubscriberTransferToken
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers delete-transfer-token
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: token
+          in: path
+          description: token
+          required: true
+          type: string
+      responses:
+        204:
+          description: 削除を実行
+        404:
+          description: トークンが存在しない
+
+# Billing
+  '/bills':
+    get:
+      tags: [Billing]
+      summary: Get billing history
+      description: 過去の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      operationId: getBillingHistory
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills list
+      consumes: [application/json]
+      produces: [application/json]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetBillingHistoryResponse'}
+
+  '/bills/latest':
+    get:
+      tags: [Billing]
+      summary: Get latest bill
+      description: 無料利用枠などの割引適用後の、直近の利用額を返します。このAPIで取得した金額は請求確定前の金額になります。
+      operationId: getLatestBilling
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills get-latest
+      consumes: [application/json]
+      produces: [application/json]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetLatestBill'}
+
+  '/bills/latest/export':
+    post:
+      tags: [Billing]
+      summary: Output latest billing CSV file to S3
+      description: 直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。
+      operationId: exportLatestBilling
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills export-latest
+      consumes: [application/json]
+      produces: [application/json]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/FileOutputResult'}
+
+  '/bills/{yyyyMM}':
+    get:
+      tags: [Billing]
+      summary: Get bill
+      description: 指定した月の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      operationId: getBilling
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: yyyyMM
+          in: path
+          description: year and month
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/MonthlyBill'}
+
+  '/bills/{yyyyMM}/daily':
+    get:
+      tags: [Billing]
+      summary: Get bill per day
+      description: 指定した月の、日ごとの利用額明細を返します。このAPIは確定した利用額のみ返します。
+      operationId: getBillingPerDay
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills get-daily
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: yyyyMM
+          in: path
+          description: year and month
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/DailyBillResponse'}
+
+  '/bills/{yyyyMM}/export':
+    post:
+      tags: [Billing]
+      summary: Output billing CSV file to S3
+      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。
+      operationId: exportBilling
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - bills export
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: yyyyMM, in: path, description: yyyyMM, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/FileOutputResult'}
+
+#Payment
+  '/coupons':
+    get:
+      tags: [Payment]
+      summary: List coupons
+      description: 現在登録されているクーポン一覧を返します。
+      operationId: listCoupons
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - coupons list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/ListCouponResponse'}
+
+  '/coupons/{coupon_code}/register':
+    post:
+      tags: [Payment]
+      summary: Register Coupon
+      description: クーポンを登録します。
+      operationId: registerCoupon
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - coupons register
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: coupon_code, in: path, description: coupon_code, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/CouponResponse'}
+
+  '/payment_history/transactions/{payment_transaction_id}':
+    get:
+      tags: [Payment]
+      summary: Get payment transaction result
+      description: 課金処理の結果を返します
+      operationId: getPaymentTransaction
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-history get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: payment_transaction_id, in: path, description: payment_transaction_id,
+        required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetPaymentTransactionResult'}
+
+  '/payment_methods/current':
+    get:
+      tags: [Payment]
+      summary: Get payment method information
+      description: 現在の支払い方法を返します。propertiesに詳細情報が入っています
+      operationId: getPaymentMethod
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-methods get-current
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetPaymentMethodResult'}
+
+  '/payment_methods/current/activate':
+    post:
+      tags: [Payment]
+      summary: Activate payment method
+      description: エラーのある現在の支払い方法を有効化します。
+      operationId: activatePaymentMethod
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-methods reactivate-current
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema: {type: object}
+
+  '/payment_methods/webpay':
+    post:
+      tags: [Payment]
+      summary: Register credit card information for WebPay
+      description: WebPayでの支払い用のカード情報を登録します
+      operationId: registerWebPayPaymentMethod
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-methods webpay register
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: creditCard
+        description: creditCard
+        required: true
+        schema: {'$ref': '#/definitions/CreditCard'}
+      responses:
+        '200':
+          description: OK
+          schema: {type: object}
+
+
+# event handlers
+  '/event_handlers':
+    get:
+      tags: [EventHandler]
+      summary: List Event Handlers
+      description: |
+        イベントハンドラの一覧を返す。
+      operationId: listEventHandlers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - name: target
+        in: query
+        description: target
+        required: false
+        type: string
+        enum: [operator, imsi, tag, group]
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/EventHandlerModel'
+    post:
+      tags: [EventHandler]
+      summary: Create Event Handler
+      description: |
+        イベントハンドラを新規作成する。
+      operationId: createEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers create
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - in: body
+        name: req
+        description: req
+        required: true
+        schema:
+         '$ref': '#/definitions/CreateEventHandlerRequest'
+      responses:
+        201:
+          description: Created
+          schema:
+           '$ref': '#/definitions/EventHandlerModel'
+
+  '/event_handlers/subscribers/{imsi}':
+    get:
+      tags: [EventHandler]
+      summary: List Event Handlers related to Subscriber
+      description: |
+        対象IMSIにひもづくイベントハンドラのリストを返す。
+      operationId: listEventHandlersBySubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers list-for-subscriber
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - in: path
+        name: imsi
+        description: imsi
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/EventHandlerModel'
+
+  '/event_handlers/{handler_id}':
+    get:
+      tags: [EventHandler]
+      summary: Get Event Handler
+      description: |
+        指定されたイベントハンドラの情報を返す。
+      operationId: getEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - in: path
+        name: handler_id
+        description: handler ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/EventHandlerModel'
+        '404':
+          description: Handler not found.
+
+    put:
+      tags: [EventHandler]
+      summary: Update Event Handler
+      description: |
+        指定されたイベントハンドラを更新する。
+      operationId: updateEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers update
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+      - in: path
+        name: handler_id
+        description: handler ID
+        required: true
+        type: string
+      - in: body
+        name: eventHandlerModel
+        description: eventHandlerModel
+        required: true
+        schema:
+         '$ref': '#/definitions/UpdateEventHandlerRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid handlerId.
+
+    delete:
+      tags: [EventHandler]
+      summary: Delete Event Handler
+      description: |
+        指定されたイベントハンドラを削除する。
+      operationId: deleteEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers delete
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+      - in: path
+        name: handler_id
+        description: handler ID
+        required: true
+        type: string
+      responses:
+        '204':
+          description: OK
+        '404':
+          description: EventHandler not found.
+
+  '/event_handlers/{handler_id}/subscribers/{imsi}/ignore':
+    post:
+      tags: [EventHandler]
+      summary: Ignore Event Handler
+      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を追加
+      operationId: setIgnoreEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers ignore
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+      - {name: imsi, in: path, description: imsi, required: true, type: string}
+      - {name: handler_id, in: path, description: handler_id, required: true, type: string}
+      responses:
+        '200': {description: OK}
+    delete:
+      tags: [EventHandler]
+      summary: Delete Ignore Event Handler
+      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を削除
+      operationId: deleteIgnoreEventHandler
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - event-handlers unignore
+      consumes: [application/json]
+      produces: ['*/*']
+      parameters:
+      - {name: imsi, in: path, description: imsi, required: true, type: string}
+      - {name: handler_id, in: path, description: handler_id, required: true, type: string}
+      responses:
+        '204': {description: OK}
+        '404': {description: not found}
+
+#Order
+  '/orders':
+    get:
+      tags: [Order]
+      summary: List confirmed orders.
+      description: 発注確定済みの発注一覧を返します。
+      operationId: listOrders
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/ListOrderResponse'}
+    post:
+      tags: [Order]
+      summary: Create Quotation
+      description: 新規で発注見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。
+      operationId: createQuotation
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders create
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {'$ref': '#/definitions/CreateEstimatedOrderRequest'}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/EstimatedOrderModel'}
+        '201':
+          description: Created.
+          schema: {'$ref': '#/definitions/EstimatedOrderModel'}
+
+  '/orders/{order_id}':
+    get:
+      tags: [Order]
+      summary: Get confirmed order.
+      description: 発注確定済みの発注を返します。
+      operationId: getOrder
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: order_id, in: path, description: order_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/GetOrderResponse'}
+
+  '/orders/{order_id}/cancel':
+    put:
+      tags: [Order]
+      summary: Cancel order.
+      description: 発注をキャンセルします。既に発送済みの場合はエラーが返されます。
+      operationId: cancelOrder
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders cancel
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: order_id, in: path, description: order_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {type: string}
+
+  '/orders/{order_id}/confirm':
+    put:
+      tags: [Order]
+      summary: Confirm order.
+      description: 与信を実施し、問題ない場合に発注を確定します。
+      operationId: confirmOrder
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders confirm
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: order_id, in: path, description: order_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {type: string}
+
+  '/orders/{order_id}/subscribers/register':
+    post:
+      tags: [Order]
+      summary: Register subscribers for operator.
+      description: 発注したSIMをオペレーターに登録します。
+      operationId: registerOrderedSim
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders register-subscribers
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: order_id, in: path, description: order_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {type: string}
+
+  '/products':
+    get:
+      tags: [Order]
+      summary: List products
+      description: 商品一覧を返します。
+      operationId: listProducts
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - products list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema: {'$ref': '#/definitions/ListProductResponse'}
+
+
+# stats
+  '/stats/air/subscribers/{imsi}':
+    get:
+      tags: [Stats]
+      summary:  Get Air Usage Report of Subscriber
+      description: IMSI で指定した Subscriber の通信量履歴を取得する。
+      operationId: getAirStats
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - stats air get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: imsi
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: 集計対象時刻の始まりをunixtimeで与える
+          required: true
+          type: integer
+        - name: to
+          in: query
+          description: 集計対象時刻の終わりをunixtimeで与える
+          required: true
+          type: integer
+        - name: period
+          in: query
+          description: 集計単位。minutesは5分おき
+          required: true
+          type: string
+          enum: [month, day, minutes]
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/AirStatsResponse'
+
+  '/stats/beam/subscribers/{imsi}':
+    get:
+      tags: [Stats]
+      summary:  Get Beam Usage Report of Subscriber
+      description: IMSI で指定した Subscriber のSoracom Beam利用量履歴を取得する。
+      operationId: getBeamStats
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - stats beam get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: imsi
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: 集計対象時刻の始まりをunixtimeで与える
+          required: true
+          type: integer
+        - name: to
+          in: query
+          description: 集計対象時刻の終わりをunixtimeで与える
+          required: true
+          type: integer
+        - name: period
+          in: query
+          description: 集計単位。minutesは5分おき
+          required: true
+          type: string
+          enum: [month, day, minutes]
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/BeamStatsResponse'
+
+  '/stats/air/operators/{operator_id}/export':
+    post:
+      tags: [Stats]
+      summary: Export Air Usage Report of All Subscribers
+      description: |
+        Operator が保有する全 Subscriber の通信量をファイルで取得する。
+        取得対象の期間は from, to のunixtimeで指定する。
+        履歴の詳細度は月単位。
+        ファイルの出力先は AWS S3。
+        ファイルの出力形式は CSV。
+      operationId: exportAirStats
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - stats air export
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/ExportRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/FileOutputResult'
+
+  '/stats/beam/operators/{operator_id}/export':
+    post:
+      tags: [Stats]
+      summary: Export Beam Usage Report of All Subscribers
+      description: |
+        Operator が保有する全 Subscriber の通信量をファイルで取得する。
+        取得対象の期間は from, to のunixtimeで指定する。
+        履歴の詳細度は月単位。
+        ファイルの出力先は AWS S3。
+        ファイルの出力形式は CSV。
+      operationId: exportBeamStats
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - stats beam export
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: path
+        name: operator_id
+        description: operator ID
+        required: true
+        type: string
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+         '$ref': '#/definitions/ExportRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+           '$ref': '#/definitions/FileOutputResult'
+
+# groups
+  '/groups':
+    get:
+      summary: List Groups
+      description: |
+        Groupの一覧を返す
+      operationId: listGroups
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups list
+      parameters:
+        - name: tag_name
+          in: query
+          description: GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: GroupについたTagの値。
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: Tagの値のマッチングモードを指定。完全一致 (exact) あるいは前方一致 (prefix)。無指定の場合のデフォルトはexact。
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: レスポンス1ページあたりの最大数
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のGroupから始まるリストを取得できる。
+          required: false
+          type: string
+      tags:
+        - Group
+      responses:
+        200:
+          description: Groupの一覧
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/Group'
+    post:
+      summary: Create Group
+      description: |
+        Groupを新規作成する
+      operationId: createGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups create
+      parameters:
+        - name: Group
+          in: body
+          description: 作成対象のGroup
+          schema:
+           '$ref': '#/definitions/CreateGroupRequest'
+          required: true
+      tags:
+        - Group
+      responses:
+        201:
+          description: Created
+          schema:
+           '$ref': '#/definitions/Group'
+
+  '/groups/{group_id}':
+    get:
+      summary: Get Group
+      description: |
+        Group IDで指定されたGroupを返す
+      operationId: getGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups get
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroupのID
+          required: true
+          type: string
+      tags:
+        - Group
+      responses:
+        200:
+          description: 指定されたGroup
+          schema:
+           '$ref': '#/definitions/Group'
+        404:
+          description: 指定されたGroupは存在しない
+    delete:
+      summary: Delete Group
+      description: Group IDで指定されたGroupを削除する
+      operationId: deleteGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups delete
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroupのID
+          required: true
+          type: string
+      tags:
+        - Group
+      responses:
+        204:
+          description: 指定されたGroupを削除完了
+        404:
+          description: 指定されたGroupは存在しない
+
+  '/groups/{group_id}/subscribers':
+    get:
+      summary: List Subscribers in a group
+      description: |
+        Group IDで指定されたGroupに属するSubscriberの一覧を返す
+      operationId: listSubscribersInGroup
+      x-sam-operationId: listSubscribers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups list-subscribers
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroupのID
+          required: true
+          type: string
+        - name: limit
+          in: query
+          description: レスポンス1ページあたりの最大数
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+          required: false
+          type: string
+      tags:
+        - Group
+      responses:
+        200:
+          description: 指定されたGroup
+          schema:
+           '$ref': '#/definitions/Group'
+        404:
+          description: 指定されたGroupは存在しない
+
+  '/groups/{group_id}/configuration/{namespace}':
+    put:
+      summary: Update Group Configuration Parameters
+      description: |
+          指定されたGroupのパラメータを追加・更新
+      operationId: putConfigurationParameters
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups put-config
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroup
+          required: true
+          type: string
+        - name: namespace
+          in: path
+          description: 対象のConfiguration
+          required: true
+          type: string
+          enum:
+            - SoracomAir
+            - SoracomBeam
+        - name: parameters
+          in: body
+          description: 更新対象のオブジェクトの配列
+          required: true
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/GroupConfigurationUpdateRequest'
+      tags:
+        - Group
+      responses:
+        200:
+          description: 更新後のGroup
+          schema:
+           '$ref': '#/definitions/Group'
+        404:
+          description: 指定されたGroupが存在しない
+
+  '/groups/{group_id}/configuration/{namespace}/{name}':
+    delete:
+      summary: Delete Group Configuration Parameters
+      description: |
+          指定されたGroupのパラメータを削除
+      operationId: deleteConfigurationParameter
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups delete-config
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroup
+          required: true
+          type: string
+        - name: namespace
+          in: path
+          description: 対象のパラメータのネームスペース
+          required: true
+          type: string
+          enum:
+            - SoracomAir
+            - SoracomBeam
+        - name: name
+          in: path
+          description: 削除対象のパラメータ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          required: true
+          type: string
+      tags:
+        - Group
+      responses:
+        200:
+          description: 更新後のGroup
+          schema:
+           '$ref': '#/definitions/Group'
+        404:
+          description: 指定されたGroupが存在しない
+
+  '/groups/{group_id}/tags':
+    put:
+      summary: Update Group Tags
+      description: |
+          指定されたConfiguratio Groupのタグを追加・更新
+      operationId: putGroupTags
+      x-sam-operationId: putTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups put-tags
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroupのID
+          required: true
+          type: string
+        - name: tags
+          in: body
+          description: 更新対象のタグの配列
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/TagUpdateRequest'
+          required: true
+      tags:
+        - Group
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/groups/{group_id}/tags/{tag_name}':
+    delete:
+      summary: Delete Group Tag
+      description: |
+          指定されたGroupのタグを削除
+      operationId: deleteGroupTag
+      x-sam-operationId: deleteTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - groups delete-tag
+      parameters:
+        - name: group_id
+          in: path
+          description: 対象のGroupのID
+          required: true
+          type: string
+        - name: tag_name
+          in: path
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          type: string
+          required: true
+      tags:
+        - Group
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたSubscriberあるいはタグが存在しない
+
+
+definitions:
+
+  Subscriber:
+    properties:
+      imsi:
+        type: string
+      msisdn:
+        type: string
+      serialNumber:
+        type: string
+      ipAddress:
+        type: string
+      apn:
+        type: string
+      speedClass:
+        type: string
+      createdAt:
+        type: integer
+        format: int64
+      lastModifiedAt:
+        type: integer
+        format: int64
+      expiryTime:
+        type: integer
+        format: int64
+      status:
+        type: string
+      tags:
+       '$ref': '#/definitions/Map'
+      operatorId:
+        type: string
+
+  ExpiryTime:
+    properties:
+      expiryTime:
+        type: integer
+        format: int64
+      expiryAction:
+        type: string
+        enum:
+          - doNothing
+          - deleteSession
+          - deactivate
+          - terminate
+    required:
+      - expiryTime
+
+  Map:
+    type: object
+    additionalProperties:
+      type: string
+
+  Tag:
+    type: object
+    additionalProperties:
+      type: string
+    example:
+      location: tokyo
+
+  TagUpdateRequest:
+    type: object
+    properties:
+      tagName:
+        type: string
+      tagValue:
+        type: string
+    required:
+      - tagName
+      - tagValue
+
+  GroupConfigurationUpdateRequest:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    required:
+      - key
+      - value
+
+  Group:
+    properties:
+      configuration:
+       '$ref': '#/definitions/Map'
+      createdTime:
+        type: integer
+        format: int64
+      groupId:
+        type: string
+      lastModifiedTime:
+        type: integer
+        format: int64
+      operatorId:
+        type: string
+      tags:
+       '$ref': '#/definitions/Tag'
+
+  CreateGroupRequest:
+    properties:
+      tags:
+       '$ref': '#/definitions/Tag'
+
+  Error:
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+
+#Common API
+  APICallError:
+    properties:
+      errorMessage: {'$ref': '#/definitions/APICallErrorMessage'}
+      httpStatus: {type: integer, format: int32}
+
+  APICallErrorMessage:
+    required: [code, message]
+    properties:
+      code: {type: string, description: エラーコード}
+      message: {type: string, description: 'エラーメッセージ。リクエスト時にX-Soracom-Langヘッダーに言語(en,ja)を設定するとその言語のメッセージがセットされます。'}
+
+#Auth API
+  VerifyOperatorsRequest:
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  AuthRequest:
+    properties:
+      authKey: {type: string}
+      authKeyId: {type: string}
+      email: {type: string}
+      operatorId: {type: string}
+      password: {type: string}
+      tokenTimeoutSeconds: {type: integer, format: int64, default: 86400, maximum: 172800}
+      userName: {type: string}
+
+  AuthResponse:
+    properties:
+      apiKey: {type: string}
+      operatorId: {type: string}
+      token: {type: string}
+      userName: {type: string}
+
+  APIKeyResponse:
+    properties:
+      apiKey:
+        type: string
+
+  ListSubOperatorsResponse:
+    properties:
+      operatorId:
+        type: string
+
+#Operator API
+  IssueEmailChangeTokenRequest:
+    required: [email]
+    properties:
+      email: {type: string}
+
+  VerifyEmailChangeTokenRequest:
+    required: [token]
+    properties:
+      token: {type: string}
+
+  AuthKeyResponse:
+    properties:
+      authKeyId: {type: string}
+      createDateTime: {type: integer, format: int64}
+      lastUsedDateTime: {type: integer, format: int64}
+
+  GenerateOperatorsAuthKeyResponse:
+    properties:
+      authKey: {type: string}
+      authKeyId: {type: string}
+
+  GetOperatorResponse:
+    properties:
+      createDate:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      operatorId:
+        type: string
+      rootOperatorId:
+        type: string
+      updateDate:
+        type: string
+
+  AuthResponse:
+    properties:
+      apiKey:
+        type: string
+      token:
+        type: string
+      operatorId:
+        type: string
+
+  IssuePasswordResetTokenRequest:
+    properties:
+      email:
+        type: string
+    required:
+      - email
+
+  VerifyPasswordResetTokenRequest:
+    properties:
+      password:
+        type: string
+      token:
+        type: string
+    required:
+      - password
+      - token
+
+# Credential API
+  CredentialsModel:
+    properties:
+      createDateTime: {type: integer, format: int64}
+      credentials: {type: object}
+      credentialsId: {type: string}
+      description: {type: string}
+      lastUsedDateTime: {type: integer, format: int64}
+      type:
+        type: string
+        enum: [aws-credentials, azure-credentials]
+      updateDateTime: {type: integer, format: int64}
+
+  CreateAndUpdateCredentialsModel:
+    properties:
+      credentials: {type: object}
+      description: {type: string}
+      type:
+        type: string
+        enum: [aws-credentials, azure-credentials]
+
+
+# Operator API
+  GenerateTokenRequest:
+    properties:
+      tokenTimeoutSeconds:
+        type: integer
+        maximum: 172800
+        default: 86400
+        description: |
+          新しい API トークンの有効期限の長さ（秒単位）。
+          指定しなければデフォルトは 86400 [秒]（24時間）。
+          最大値は 172800 [秒]（48時間）。
+
+  GenerateTokenResponse:
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  UpdatePasswordRequest:
+    required: [currentPassword, newPassword]
+    properties:
+      currentPassword: {type: string}
+      newPassword: {type: string}
+
+  SupportTokenResponse:
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  RegisterOperatorsRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+        description: パスワードは以下の条件を満たしている必要があります：長さ 8 文字以上100 文字以内、アルファベット小文字 (a-z) を 1 文字以上使用、アルファベット大文字 (A-Z) を 1 文字以上使用、数字を 1 文字以上使用。記号なども使用できます。
+    required:
+      - email
+      - password
+
+  VerifyOperatorsRequest:
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  GetOperatorResponse:
+    properties:
+      createDate:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      operatorId:
+        type: string
+      rootOperatorId:
+        type: string
+      updateDate:
+        type: string
+    required:
+      - createDate
+      - description
+      - email
+      - operatorId
+      - rootOperatorId
+      - updateDate
+
+# Role API
+  ListRolesResponse:
+    properties:
+      createDateTime: {type: integer, format: int64}
+      description: {type: string}
+      roleId: {type: string}
+      updateDateTime: {type: integer, format: int64}
+
+  RoleResponse:
+    properties:
+      createDateTime: {type: integer, format: int64}
+      description: {type: string}
+      permission: {type: string, description: PermissionのJSON}
+      roleId: {type: string}
+      updateDateTime: {type: integer, format: int64}
+
+  CreateOrUpdateRoleRequest:
+    required: [permission]
+    properties:
+      description: {type: string}
+      permission: {type: string, description: PermissionのJSON}
+
+  CreateRoleResponse:
+    properties:
+      roleId: {type: string}
+
+  UserDetailResponse:
+    properties:
+      authKeyList:
+        type: array
+        items: {'$ref': '#/definitions/AuthKeyResponse'}
+      createDateTime: {type: integer, format: int64}
+      description: {type: string}
+      hasPassword: {type: boolean}
+      permission: {type: string}
+      roleList:
+        type: array
+        items: {'$ref': '#/definitions/ListRolesResponse'}
+      updateDateTime: {type: integer, format: int64}
+      userName: {type: string}
+
+  AttachRoleRequest:
+    properties:
+      roleId: {type: string}
+
+#Shipping Address API
+  ListShippingAddressResponse:
+    properties:
+      shippingAddresses:
+        type: array
+        items: {'$ref': '#/definitions/GetShippingAddressResponse'}
+
+  ShippingAddressModel:
+    required: [city, state, zipCode]
+    properties:
+      addressLine1: {type: string}
+      addressLine2: {type: string}
+      building: {type: string}
+      city: {type: string}
+      companyName: {type: string}
+      department: {type: string}
+      fullName: {type: string}
+      phoneNumber: {type: string}
+      state: {type: string}
+      zipCode: {type: string}
+
+  GetShippingAddressResponse:
+    required: [city, shippingAddressId, shippingArea, state, zipCode]
+    properties:
+      addressLine1: {type: string}
+      addressLine2: {type: string}
+      building: {type: string}
+      city: {type: string}
+      companyName: {type: string}
+      department: {type: string}
+      fullName: {type: string}
+      phoneNumber: {type: string}
+      shippingAddressId: {type: string, description: 配送先ID}
+      shippingArea: {type: string, description: 配送先エリア}
+      state: {type: string}
+      zipCode: {type: string}
+
+#Users API
+  UserDetailResponse:
+    properties:
+      authKeyList:
+        type: array
+        items: {'$ref': '#/definitions/AuthKeyResponse'}
+      createDateTime: {type: integer, format: int64}
+      description: {type: string}
+      hasPassword: {type: boolean}
+      permission: {type: string}
+      roleList:
+        type: array
+        items: {'$ref': '#/definitions/ListRolesResponse'}
+      updateDateTime: {type: integer, format: int64}
+      userName: {type: string}
+
+  CreateUserRequest:
+    properties:
+      description: {type: string}
+
+  UpdateUserRequest:
+    properties:
+      description: {type: string}
+
+  GenerateUserAuthKeyResponse:
+    properties:
+      authKey: {type: string}
+      authKeyId: {type: string}
+
+  GetUserPasswordResponse:
+    properties:
+      hasPassword: {type: boolean}
+
+  CreateUserPasswordRequest:
+    properties:
+      password: {type: string}
+
+  GetUserPermissionResponse:
+    required: [permission]
+    properties:
+      permission: {type: string, description: PermissionのJSON}
+
+  SetUserPermissionRequest:
+    required: [permission]
+    properties:
+      description: {type: string}
+      permission: {type: string, description: PermissionのJSON}
+
+
+#Subscribers API
+  RegisterSubscribersRequest:
+    properties:
+      registrationSecret:
+        type: string
+      groupId:
+        type: string
+      tags:
+        type: array
+        items:
+         '$ref': '#/definitions/TagUpdateRequest'
+    required:
+      - registrationSecret
+
+  UpdateSpeedClassRequest:
+    properties:
+      speedClass:
+        type: string
+        enum:
+          - s1.minimum
+          - s1.slow
+          - s1.standard
+          - s1.fast
+    required:
+      - speedClass
+
+#Billing API
+  GetBillingHistoryResponse:
+    properties:
+      billList:
+        type: array
+        description: 月ごとの利用料リスト
+        items: {'$ref': '#/definitions/MonthlyBill'}
+  MonthlyBill:
+    properties:
+      amount: {type: integer, format: int64, description: 金額}
+      paymentStatus:
+        type: string
+        description: 直近の課金ステータス
+        enum: [lessThanMinimumCharge, paying, paid, refunding, refunded, fail]
+      paymentTransactionId: {type: string, description: 課金詳細取得用のID}
+      yearMonth: {type: string, example: yyyyMM, description: 年月}
+  GetLatestBill:
+    properties:
+      amount: {type: integer, format: int64, description: 金額}
+      lastEvaluatedTime: {type: string, example: yyyyMMddHHmmss, description: 利用額計算を実施した時間}
+  FileOutputResult:
+    properties:
+      url: {type: string}
+  DailyBillResponse:
+    properties:
+      billList:
+        type: array
+        description: 日ごとの利用料リスト
+        items: {'$ref': '#/definitions/DailyBill'}
+  DailyBill:
+    properties:
+      amount: {type: integer, format: int64, description: 金額}
+      date: {type: string, example: yyyyMMdd, description: 年月日}
+
+#Payment API
+  CouponResponse:
+    properties:
+      amount: {type: number, format: double, description: クーポン額}
+      balance: {type: number, format: double, description: 残高}
+      billItemName: {type: string, description: 対象課金アイテム}
+      couponCode: {type: string, description: クーポンコード}
+      expiryYearMonth: {type: string, example: yyyyMM, description: 有効期限}
+
+  ListCouponResponse:
+    properties:
+      couponList:
+        type: array
+        description: クーポンリスト
+        items: {'$ref': '#/definitions/CouponResponse'}
+
+  PaymentAmount:
+    properties:
+      taxAmount: {type: number, format: double}
+      totalAmount: {type: number, format: double}
+
+  GetPaymentTransactionResult:
+    properties:
+      amount: {description: 課金額,'$ref': '#/definitions/PaymentAmount'}
+      description: {description: 課金内容詳細,'$ref': '#/definitions/PaymentDescription'}
+      message: {type: string, description: メッセージ}
+      messageCode:
+        type: string
+        description: メッセージコード
+        enum: [success, processing, invalid_request, invalid_number, incorrect_number,
+          invalid_name, invalid_expiry_month, invalid_expiry_year, invalid_expiry,
+          incorrect_expiry, invalid_cvc, incorrect_cvc, card_declined, missing, processing_error]
+      status:
+        type: string
+        description: ステータス
+        enum: [success, error]
+
+  PaymentDescription:
+    properties:
+      description: {type: string}
+      itemList:
+        type: array
+        items: {type: string}
+
+  GetPaymentMethodResult:
+    properties:
+      errorCode:
+        type: string
+        description: エラーコード（支払い情報が無効な場合のみ）
+        enum: [success, processing, invalid_request, invalid_number, incorrect_number,
+          invalid_name, invalid_expiry_month, invalid_expiry_year, invalid_expiry,
+          incorrect_expiry, invalid_cvc, incorrect_cvc, card_declined, missing, processing_error]
+      errorMessage: {type: string, description: エラーメッセージ（支払い情報が無効な場合のみ}
+      properties: {type: string, description: 支払い情報}
+      providerType:
+        type: string
+        description: 課金プロバイダ種別
+        enum: [WebPay]
+      updateDate: {type: string, example: yyyyMMddHHmmss, description: 登録日}
+
+  CreditCard:
+    properties:
+      cvc: {type: string}
+      expireMonth: {type: integer, format: int32}
+      expireYear: {type: integer, format: int32}
+      name: {type: string}
+      number: {type: string}
+
+#Order API
+  ListOrderResponse:
+    properties:
+      orderList:
+        type: array
+        description: 発注リスト
+        items: {'$ref': '#/definitions/GetOrderResponse'}
+
+  OrderItemModel:
+    properties:
+      productCode: {type: string, description: 商品コード}
+      quantity: {type: integer, format: int32, description: 購入数}
+
+  CreateEstimatedOrderRequest:
+    properties:
+      orderItemList:
+        type: array
+        description: 発注商品リスト
+        items: {'$ref': '#/definitions/OrderItemModel'}
+      shippingAddressId: {type: string, description: 商品発送先ID}
+
+  EstimatedOrderModel:
+    properties:
+      email: {type: string, description: メールアドレス}
+      orderId: {type: string, description: 発注ID}
+      orderItemList:
+        type: array
+        description: 発注商品リスト
+        items: {'$ref': '#/definitions/EstimatedOrderItemModel'}
+      shippingAddress: {description: 発送先,'$ref': '#/definitions/ShippingAddressModel'}
+      shippingAddressId: {type: string, description: 商品発送先ID}
+      shippingCost: {type: number, format: double, description: 配送料}
+      taxAmount: {type: number, format: double, description: 消費税}
+      totalAmount: {type: number, format: double, description: 合計金額}
+
+  GetOrderResponse:
+    properties:
+      email: {type: string, description: メールアドレス}
+      orderDateTime: {type: string, example: yyyyMMddHHmmss, description: 発注日時}
+      orderId: {type: string, description: 発注ID}
+      orderItemList:
+        type: array
+        description: 発注商品リスト
+        items: {'$ref': '#/definitions/EstimatedOrderItemModel'}
+      orderStatus:
+        type: string
+        description: 発注ステータス
+        enum: [ordering, ordered, kitting, shipped, received, cancelling, cancelled,
+          failed]
+      shippingAddress: {description: 発送先,'$ref': '#/definitions/ShippingAddressModel'}
+      shippingAddressId: {type: string, description: 商品発送先ID}
+      shippingCost: {type: number, format: double, description: 配送料}
+      shippingLabelNumber: {type: string, description: 宅配便送り状番号}
+      taxAmount: {type: number, format: double, description: 消費税}
+      totalAmount: {type: number, format: double, description: 合計金額}
+
+  EstimatedOrderItemModel:
+    properties:
+      product: {description: 商品,'$ref': '#/definitions/ProductModel'}
+      productAmount: {type: number, format: double, description: 商品金額}
+      quantity: {type: integer, format: int32, description: 購入数}
+
+  ListProductResponse:
+    properties:
+      productList:
+        type: array
+        items: {'$ref': '#/definitions/ProductModel'}
+      shippingCostList:
+        type: array
+        items: {'$ref': '#/definitions/ShippingCostModel'}
+
+  ShippingCostModel:
+    properties:
+      shippingArea:
+        type: string
+        description: 発送先エリア
+        enum: [hokkaido, kita_tohoku, minami_tohoku, kanto, shinetsu, chubu, hokuriku,
+          kansai, chugoku, shikoku, kyushu, okinawa]
+      shippingAreaName: {type: string, description: 発送先エリア名称}
+      shippingCost: {type: number, format: double, description: 送料}
+      size: {type: integer, format: int32, description: 発送サイズ}
+    description: 発送料
+
+  ProductModel:
+    properties:
+      count: {type: number, format: double, description: 商品販売個数}
+      maxQuantity: {type: integer, format: int32, description: 最大購入数量}
+      price: {type: number, format: double, description: 商品販売個数ごとの価格}
+      productCode: {type: string, description: 商品コード}
+      productInfoURL: {type: string, description: 商品説明ページURL}
+      productName: {type: string, description: 商品名}
+      productType:
+        type: string
+        description: 商品種別
+        enum: [sim, network_module]
+      properties:
+        type: object
+        description: 商品プロパティ
+        additionalProperties: {type: string}
+
+#Stats API
+  DataTrafficStats:
+    properties:
+      downloadByteSizeTotal:
+        type: integer
+        format: int64
+      downloadPacketSizeTotal:
+        type: integer
+        format: int64
+      uploadByteSizeTotal:
+        type: integer
+        format: int64
+      uploadPacketSizeTotal:
+        type: integer
+        format: int64
+
+  SoracomBeamStats:
+    properties:
+      count:
+        type: integer
+        format: int64
+
+  Map«string,string»:
+    type: object
+    additionalProperties:
+      type: string
+
+  AirStatsResponse:
+    properties:
+      dataTrafficStatsMap:
+        type: object
+        additionalProperties:
+         '$ref': '#/definitions/DataTrafficStats'
+      date:
+        type: string
+      unixtime:
+        type: integer
+        format: int64
+
+  BeamStatsResponse:
+    properties:
+      beamStatsMap:
+        type: object
+        additionalProperties:
+         '$ref': '#/definitions/SoracomBeamStats'
+      date:
+        type: string
+      unixtime:
+        type: integer
+        format: int64
+
+  ExportRequest:
+    properties:
+      from:
+        type: integer
+        format: int64
+      period:
+        type: string
+        enum: [month, day, minutes]
+      to:
+        type: integer
+        format: int64
+
+  Config:
+    properties:
+      properties:
+        type: object
+        additionalProperties:
+          type: string
+      type:
+        type: string
+
+  ActionConfig:
+    properties:
+      properties:
+       '$ref': '#/definitions/ActionConfigProperty'
+      type:
+        type: string
+        enum:
+          - ChangeSpeedClassAction
+          - InvokeAWSLambdaAction
+          - ExecuteWebRequestAction
+          - SendMailAction
+          - SendMailToOperatorAction
+    required:
+      - properties
+      - type
+
+  ActionConfigProperty:
+    properties:
+      executionDateTimeConst:
+        type: string
+        enum:
+          - IMMEDIATELY
+          - BEGINNING_OF_NEXT_MONTH
+          - BEGINNING_OF_NEXT_DAY
+          - AFTER_ONE_DAY
+          - NEVER
+      to:
+        type: string
+        description: SendMailAction の時のみ有効
+      title:
+        type: string
+        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+      message:
+        type: string
+        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+      speedClass:
+        type: string
+        description: ChangeSpeedClassAction の時のみ有効
+        enum:
+          - s1.minimum
+          - s1.slow
+          - s1.standard
+          - s1.fast
+      url:
+        type: string
+        description: 接続先URLとパラメーター ExecuteWebRequestAction の時のみ有効
+      httpMethod:
+        type: string
+        description: ExecuteWebRequestAction の時のみ有効
+        enum:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+      contentType:
+        type: string
+        description: ExecuteWebRequestAction の時のみ有効
+      headers:
+        type: object
+        description: ExecuteWebRequestAction の時のみ有効(任意)
+      body:
+        type: string
+        description: ExecuteWebRequestAction の時のみ有効(任意)
+      endpoint:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      functionName:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      accessKey:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      secretAccessKey:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter1:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter2:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter3:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter4:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter5:
+        type: string
+        description: InvokeAWSLambdaAction の時のみ有効
+    required:
+      - executionDateTimeConst
+
+  RuleConfig:
+    properties:
+      properties:
+       '$ref': '#/definitions/RuleConfigProperty'
+      type:
+        type: string
+        enum:
+          - DailyTrafficRule
+          - MonthlyTrafficRule
+          - CumulativeTrafficRule
+          - MonthlyTotalTrafficRule
+          - SubscriberStatusAttributeRule
+          - SubscriberSpeedClassAttributeRule
+    required:
+      - properties
+      - type
+
+  RuleConfigProperty:
+    properties:
+      limitTotalTrafficMegaByte:
+        type: integer
+      inactiveTimeoutDateConst:
+        type: string
+        enum:
+          - IMMEDIATELY
+          - BEGINNING_OF_NEXT_MONTH
+          - BEGINNING_OF_NEXT_DAY
+          - AFTER_ONE_DAY
+          - NEVER
+      targetStatus:
+        type: string
+        description: SubscriberStatusAttributeRule の時のみ有効
+        enum:
+          - ready
+          - active
+          - inactive
+          - suspended
+          - terminated
+      targetSpeedClass:
+        type: string
+        description: SubscriberSpeedClassAttributeRule の時のみ有効
+        enum:
+          - s1.minimum
+          - s1.slow
+          - s1.standard
+          - s1.fast
+    required:
+      - limitTotalTrafficMegaByte
+
+  Map«string,DataTrafficStats»:
+    type: object
+    additionalProperties:
+     '$ref': '#/definitions/DataTrafficStats'
+
+  CreateEventHandlerRequest:
+    properties:
+      actionConfigList:
+        type: array
+        items:
+         '$ref': '#/definitions/ActionConfig'
+      description:
+        type: string
+      name:
+        type: string
+      ruleConfig:
+       '$ref': '#/definitions/RuleConfig'
+      status:
+        type: string
+        enum: [inactive, active]
+      targetGroupId:
+        type: string
+      targetImsi:
+        type: string
+      targetOperatorId:
+        type: string
+      targetTag:
+       '$ref': '#/definitions/Tag'
+    required:
+      - actionConfigList
+      - ruleConfig
+      - status
+
+  UpdateEventHandlerRequest:
+   '$ref': '#/definitions/CreateEventHandlerRequest'
+
+  EventHandlerModel:
+    properties:
+      actionConfigList:
+        type: array
+        items:
+         '$ref': '#/definitions/ActionConfig'
+      description:
+        type: string
+      handlerId:
+        type: string
+      name:
+        type: string
+      ruleConfig:
+       '$ref': '#/definitions/RuleConfig'
+      status:
+        type: string
+        enum: [inactive, active]
+      targetGroupId:
+        type: string
+      targetImsi:
+        type: string
+      targetOperatorId:
+        type: string
+      targetTag:
+       '$ref': '#/definitions/Tag'
+    required:
+      - actionConfigList
+      - handlerId
+      - ruleConfig
+      - status
+      - name
+
+  IssueSubscriberTransferTokenRequest:
+    required:
+      - transferDestinationOperatorEmail
+      - transferDestinationOperatorId
+      - transferImsi
+    properties:
+      transferDestinationOperatorEmail:
+        type: string
+        description: 移管先オペレーターEmail
+      transferDestinationOperatorId:
+        type: string
+        description: 移管先オペレーターID
+      transferImsi:
+        type: array
+        description: 移管するIMSIリスト
+        items:
+          type: string
+
+  IssueSubscriberTransferTokenResponse:
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        description: トークン
+
+  VerifySubscriberTransferTokenRequest:
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        description: トークン
+
+  VerifySubscriberTransferTokenResponse:
+    required:
+      - transferredImsi
+    properties:
+      transferredImsi:
+        type: array
+        description: 移管されたIMSIリスト
+        items:
+          type: string

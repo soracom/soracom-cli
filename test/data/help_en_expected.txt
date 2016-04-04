@@ -1,0 +1,30 @@
+A command line tool to invoke SORACOM API
+
+Usage:
+  soracom [command]
+
+Available Commands:
+  auth               Performs authentication to access to the SORACOM API.
+  bills              Show or export billing info.
+  completion         completion.cli.summary
+  configure          Show, create or update configurations.
+  coupons            List or register coupons.
+  credentials        List, create, update or delete credentials sets.
+  event-handlers     List, create, update or delete event handlers.
+  groups             List, create, update or delete groups.
+  operator           Manage operators.
+  orders             List, create or cancel orders.
+  payment-history    List payment history.
+  payment-methods    Create or update payment methods.
+  products           List products.
+  roles              List, create, update or delete roles.
+  shipping-addresses List, create, update or delete shipping addresses.
+  stats              Show or export statistics.
+  subscribers        Manage subscribers.
+  users              Manage SAM users.
+  version            Show version info.
+
+Flags:
+      --profile string   Specify profile name
+
+Use "soracom [command] --help" for more information about a command.
