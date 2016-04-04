@@ -28,6 +28,7 @@ fi
 : "Installing dependencies" && {
     echo "Installing dependencies ..."
     go get -u golang.org/x/tools/cmd/goimports
+    go get -u github.com/laher/goxc
     go get -u github.com/jteeuwen/go-bindata/...
     go get -u github.com/inconshreveable/mousetrap # required by spf13/cobra (only for windows env)
 }
@@ -57,6 +58,7 @@ fi
     echo "Building artifacts ..."
     go generate
     go get ./...
-    gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
+    #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
+    goxc -bc="linux windows darwin" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
     popd > /dev/null
 }

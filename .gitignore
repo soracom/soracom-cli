@@ -5,3 +5,6 @@ _steps/
 
 # artifacts
 bin/
+
+# personal preferences
+.envrc
