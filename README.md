@@ -1,4 +1,4 @@
-[![wercker status](https://app.wercker.com/status/db7b168f83ba664fafe0a64b2e48e7ac/m/master "wercker status")](https://app.wercker.com/project/bykey/db7b168f83ba664fafe0a64b2e48e7ac)
+[![wercker status](https://app.wercker.com/status/52243183472f21dc72756d12a649ee19/m/master "wercker status")](https://app.wercker.com/project/bykey/52243183472f21dc72756d12a649ee19)
 
 # soracom-cli
 
