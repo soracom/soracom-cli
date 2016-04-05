@@ -2,6 +2,13 @@
 d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
 set -e
 
+VERSION=$1
+if [ -z "$1" ]; then
+  VERSION="0.0.0"
+  echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
+fi
+
+
 uname_s="$(uname -s)"
 if [ "$uname_s" == "Darwin" ]; then
     OS=darwin
@@ -57,9 +64,17 @@ tear_down() {
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
 SORACOM_ENDPOINT=https://api-sandbox.soracom.io
 SORACOM_ENVS=(SORACOM_ENDPOINT=$SORACOM_ENDPOINT SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR SORACOM_DEBUG=$SORACOM_DEBUG)
-SORACOM="$d/soracom/bin/$OS/$ARCH/soracom"
+SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}/soracom"
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
+
+: "Extract binary" && {
+    if [ "$OS" == "darwin" ]; then
+        unzip -d "$d/soracom/dist/$VERSION/" -o "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.zip"
+    elif [ "$OS" == "linux" ]; then
+        tar xvzf "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.tar.gz" -C "$d/soracom/dist/$VERSION"
+    fi
+}
 
 : "Create an account on the sandbox" && {
     go get -u github.com/soracom/soracom-sdk-go

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
 
 uname_s="$(uname -s)"
@@ -25,7 +25,7 @@ popd >/dev/null 2>&1
 
 pushd "$GOPATH/bin/soracom-xc/snapshot/" >/dev/null 2>&1
 if [ "$OS" == "darwin" ]; then
-    unzip -fo soracom_${OS}_${ARCH}.zip
+    unzip -o soracom_${OS}_${ARCH}.zip
 elif [ "$OS" == "linux" ]; then
     tar xvzf soracom_${OS}_${ARCH}.tar.gz
 fi

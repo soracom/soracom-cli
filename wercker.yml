@@ -23,6 +23,7 @@ build:
         name: build
         code: |
             ./scripts/build.sh
+            cp -r ./soracom/ $WERCKER_OUTPUT_DIR
 
     # Test the project
     - script:

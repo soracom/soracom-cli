@@ -4,8 +4,8 @@ d=$( cd "$(dirname "$0" )"; cd ..; pwd )
 : "Checking shell scripts" && {
     command -v shellcheck > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        shellcheck scripts/*.sh
-        shellcheck test/*.sh
+        shellcheck -e SC2164 scripts/*.sh
+        shellcheck -e SC2164 test/*.sh
     fi
 }
 
