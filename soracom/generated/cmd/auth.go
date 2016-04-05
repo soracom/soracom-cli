@@ -29,6 +29,8 @@ var AuthCmdPassword string
 var AuthCmdUserName string
 
 
+var AuthCmdTokenTimeoutSeconds int64
+
 
 
 var AuthCmdBody string
@@ -46,6 +48,8 @@ func init() {
   AuthCmd.Flags().StringVar(&AuthCmdPassword, "password", "", "")
 
   AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", "")
+
+  AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, "")
 
 
 
@@ -120,6 +124,8 @@ func buildPathForAuthCmd(path string) string {
   
   
   
+  
+  
   return path
 }
 
@@ -139,6 +145,8 @@ func buildQueryForAuthCmd() string {
   
   
 
+  
+  
   
 
   
@@ -192,6 +200,10 @@ func buildBodyForAuthCmd() (string, error) {
     result["userName"] = AuthCmdUserName
   }
   
+  
+  if AuthCmdTokenTimeoutSeconds != 0 {
+    result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
+  }
   
   
 

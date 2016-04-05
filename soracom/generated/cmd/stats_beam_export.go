@@ -21,6 +21,10 @@ var StatsBeamExportCmdOperatorId string
 var StatsBeamExportCmdPeriod string
 
 
+var StatsBeamExportCmdFrom int64
+
+var StatsBeamExportCmdTo int64
+
 
 
 var StatsBeamExportCmdBody string
@@ -30,6 +34,10 @@ func init() {
   StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", "operator ID")
 
   StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", "")
+
+  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, "")
+
+  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, "")
 
 
 
@@ -109,6 +117,10 @@ func buildPathForStatsBeamExportCmd(path string) string {
   
   
   
+  
+  
+  
+  
   return path
 }
 
@@ -120,6 +132,10 @@ func buildQueryForStatsBeamExportCmd() string {
   
   
 
+  
+  
+  
+  
   
 
   
@@ -157,6 +173,14 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
     result["period"] = StatsBeamExportCmdPeriod
   }
   
+  
+  if StatsBeamExportCmdFrom != 0 {
+    result["from"] = StatsBeamExportCmdFrom
+  }
+  
+  if StatsBeamExportCmdTo != 0 {
+    result["to"] = StatsBeamExportCmdTo
+  }
   
   
 

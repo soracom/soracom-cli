@@ -19,6 +19,8 @@ import (
 var OperatorGenerateApiTokenCmdOperatorId string
 
 
+var OperatorGenerateApiTokenCmdTokenTimeoutSeconds int64
+
 
 
 var OperatorGenerateApiTokenCmdBody string
@@ -26,6 +28,8 @@ var OperatorGenerateApiTokenCmdBody string
 
 func init() {
   OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", "operator ID")
+
+  OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, "")
 
 
 
@@ -101,6 +105,8 @@ func buildPathForOperatorGenerateApiTokenCmd(path string) string {
   
   
   
+  
+  
   return path
 }
 
@@ -110,6 +116,8 @@ func buildQueryForOperatorGenerateApiTokenCmd() string {
   
   
 
+  
+  
   
 
   
@@ -143,6 +151,10 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
     result["operator_id"] = OperatorGenerateApiTokenCmdOperatorId
   }
   
+  
+  if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 0 {
+    result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds
+  }
   
   
 

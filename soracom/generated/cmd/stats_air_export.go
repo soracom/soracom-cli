@@ -21,6 +21,10 @@ var StatsAirExportCmdOperatorId string
 var StatsAirExportCmdPeriod string
 
 
+var StatsAirExportCmdFrom int64
+
+var StatsAirExportCmdTo int64
+
 
 
 var StatsAirExportCmdBody string
@@ -30,6 +34,10 @@ func init() {
   StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", "operator ID")
 
   StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", "")
+
+  StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdFrom, "from", 0, "")
+
+  StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdTo, "to", 0, "")
 
 
 
@@ -109,6 +117,10 @@ func buildPathForStatsAirExportCmd(path string) string {
   
   
   
+  
+  
+  
+  
   return path
 }
 
@@ -120,6 +132,10 @@ func buildQueryForStatsAirExportCmd() string {
   
   
 
+  
+  
+  
+  
   
 
   
@@ -157,6 +173,14 @@ func buildBodyForStatsAirExportCmd() (string, error) {
     result["period"] = StatsAirExportCmdPeriod
   }
   
+  
+  if StatsAirExportCmdFrom != 0 {
+    result["from"] = StatsAirExportCmdFrom
+  }
+  
+  if StatsAirExportCmdTo != 0 {
+    result["to"] = StatsAirExportCmdTo
+  }
   
   
 

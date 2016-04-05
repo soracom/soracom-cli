@@ -23,6 +23,10 @@ var SubscribersSetGroupCmdImsi string
 var SubscribersSetGroupCmdOperatorId string
 
 
+var SubscribersSetGroupCmdCreatedTime int64
+
+var SubscribersSetGroupCmdLastModifiedTime int64
+
 
 
 var SubscribersSetGroupCmdBody string
@@ -34,6 +38,10 @@ func init() {
   SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
 
   SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdOperatorId, "operator-id", "", "")
+
+  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdCreatedTime, "created-time", 0, "")
+
+  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdLastModifiedTime, "last-modified-time", 0, "")
 
 
 
@@ -110,6 +118,10 @@ func buildPathForSubscribersSetGroupCmd(path string) string {
   
   
   
+  
+  
+  
+  
   return path
 }
 
@@ -123,6 +135,10 @@ func buildQueryForSubscribersSetGroupCmd() string {
   
   
 
+  
+  
+  
+  
   
 
   
@@ -164,6 +180,14 @@ func buildBodyForSubscribersSetGroupCmd() (string, error) {
     result["operatorId"] = SubscribersSetGroupCmdOperatorId
   }
   
+  
+  if SubscribersSetGroupCmdCreatedTime != 0 {
+    result["createdTime"] = SubscribersSetGroupCmdCreatedTime
+  }
+  
+  if SubscribersSetGroupCmdLastModifiedTime != 0 {
+    result["lastModifiedTime"] = SubscribersSetGroupCmdLastModifiedTime
+  }
   
   
 

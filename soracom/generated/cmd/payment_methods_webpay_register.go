@@ -23,6 +23,10 @@ var PaymentMethodsWebpayRegisterCmdName string
 var PaymentMethodsWebpayRegisterCmdNumber string
 
 
+var PaymentMethodsWebpayRegisterCmdExpireMonth int64
+
+var PaymentMethodsWebpayRegisterCmdExpireYear int64
+
 
 
 var PaymentMethodsWebpayRegisterCmdBody string
@@ -34,6 +38,10 @@ func init() {
   PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", "")
 
   PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", "")
+
+  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, "")
+
+  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, "")
 
 
 
@@ -108,6 +116,10 @@ func buildPathForPaymentMethodsWebpayRegisterCmd(path string) string {
   
   
   
+  
+  
+  
+  
   return path
 }
 
@@ -121,6 +133,10 @@ func buildQueryForPaymentMethodsWebpayRegisterCmd() string {
   
   
 
+  
+  
+  
+  
   
 
   
@@ -162,6 +178,14 @@ func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
     result["number"] = PaymentMethodsWebpayRegisterCmdNumber
   }
   
+  
+  if PaymentMethodsWebpayRegisterCmdExpireMonth != 0 {
+    result["expireMonth"] = PaymentMethodsWebpayRegisterCmdExpireMonth
+  }
+  
+  if PaymentMethodsWebpayRegisterCmdExpireYear != 0 {
+    result["expireYear"] = PaymentMethodsWebpayRegisterCmdExpireYear
+  }
   
   
 

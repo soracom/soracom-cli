@@ -21,6 +21,8 @@ var SubscribersSetExpiryTimeCmdExpiryAction string
 var SubscribersSetExpiryTimeCmdImsi string
 
 
+var SubscribersSetExpiryTimeCmdExpiryTime int64
+
 
 
 var SubscribersSetExpiryTimeCmdBody string
@@ -30,6 +32,8 @@ func init() {
   SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", "")
 
   SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+
+  SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, "")
 
 
 
@@ -104,6 +108,8 @@ func buildPathForSubscribersSetExpiryTimeCmd(path string) string {
   
   
   
+  
+  
   return path
 }
 
@@ -115,6 +121,8 @@ func buildQueryForSubscribersSetExpiryTimeCmd() string {
   
   
 
+  
+  
   
 
   
@@ -152,6 +160,10 @@ func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
     result["imsi"] = SubscribersSetExpiryTimeCmdImsi
   }
   
+  
+  if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
+    result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
+  }
   
   
 

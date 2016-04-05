@@ -148,10 +148,6 @@ func loadStructDefs(data map[interface{}]interface{}) map[string]StructDef {
 				continue
 			}
 			t := p["type"].(string)
-			if t != "string" {
-				//fmt.Println()
-				continue
-			}
 			sp.Type = t
 			//fmt.Printf("%s", sp.Type)
 
