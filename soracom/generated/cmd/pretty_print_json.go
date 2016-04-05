@@ -1,16 +1,18 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func prettyPrintJSON(rawJSON string) error {
 	var obj interface{}
 
-	err := json.Unmarshal(bytes.NewBufferString(rawJSON).Bytes(), &obj)
+	d := json.NewDecoder(strings.NewReader(rawJSON))
+	d.UseNumber()
+	err := d.Decode(&obj)
 	if err != nil {
 		return err
 	}
