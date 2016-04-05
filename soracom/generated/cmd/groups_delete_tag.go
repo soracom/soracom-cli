@@ -41,6 +41,7 @@ var GroupsDeleteTagCmd = &cobra.Command{
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),
       BasePath: "/v1",
+      Language: getSelectedLanguage(),
     }
 
     ac := newAPIClient(opt)

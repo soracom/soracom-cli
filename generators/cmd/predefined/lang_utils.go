@@ -23,6 +23,10 @@ func initIfRequired() {
 	}
 }
 
+func getSelectedLanguage() string {
+	return selectedLang
+}
+
 func loadLanguageResources() {
 	languageResources = make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {

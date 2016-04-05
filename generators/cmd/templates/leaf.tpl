@@ -56,6 +56,7 @@ var {{ $cmdvar }} = &cobra.Command{
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),
       BasePath: "{{.BasePath}}",
+      Language: getSelectedLanguage(),
     }
 
     ac := newAPIClient(opt)

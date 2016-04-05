@@ -18,6 +18,7 @@ type apiClient struct {
 	OperatorID string
 	endpoint   string
 	basePath   string
+	language   string
 	verbose    bool
 }
 
@@ -45,6 +46,7 @@ func (ae *apiError) Error() string {
 type apiClientOptions struct {
 	Endpoint string
 	BasePath string
+	Language string
 }
 
 // New creates an instance of APIClient
@@ -61,6 +63,11 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 		basePath = options.BasePath
 	}
 
+	var language = "en"
+	if options != nil && options.Language != "" {
+		language = options.Language
+	}
+
 	var verbose = false
 	v := os.Getenv("SORACOM_VERBOSE")
 	if v == "1" {
@@ -74,6 +81,7 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 		OperatorID: "",
 		endpoint:   endpoint,
 		basePath:   basePath,
+		language:   language,
 		verbose:    verbose,
 	}
 }
@@ -101,8 +109,17 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		req.Header.Set("Content-Type", params.contentType)
 	}
 
-	req.Header.Set("X-Soracom-API-Key", ac.APIKey)
-	req.Header.Set("X-Soracom-Token", ac.Token)
+	if ac.APIKey != "" {
+		req.Header.Set("X-Soracom-API-Key", ac.APIKey)
+	}
+
+	if ac.Token != "" {
+		req.Header.Set("X-Soracom-Token", ac.Token)
+	}
+
+	if ac.language != "" {
+		req.Header.Set("X-Soracom-Lang", ac.language)
+	}
 
 	if ac.verbose {
 		dumpHTTPRequest(req)
