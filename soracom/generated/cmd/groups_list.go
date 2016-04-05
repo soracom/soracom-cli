@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -80,8 +78,7 @@ var GroupsListCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -119,25 +116,25 @@ func buildQueryForGroupsListCmd() string {
   
   
   if GroupsListCmdLastEvaluatedKey != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "last_evaluated_key", GroupsListCmdLastEvaluatedKey))
+    result = append(result, sprintf("%s=%s", "last_evaluated_key", GroupsListCmdLastEvaluatedKey))
   }
   
   
   
   if GroupsListCmdTagName != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_name", GroupsListCmdTagName))
+    result = append(result, sprintf("%s=%s", "tag_name", GroupsListCmdTagName))
   }
   
   
   
   if GroupsListCmdTagValue != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_value", GroupsListCmdTagValue))
+    result = append(result, sprintf("%s=%s", "tag_value", GroupsListCmdTagValue))
   }
   
   
   
   if GroupsListCmdTagValueMatchMode != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_value_match_mode", GroupsListCmdTagValueMatchMode))
+    result = append(result, sprintf("%s=%s", "tag_value_match_mode", GroupsListCmdTagValueMatchMode))
   }
   
   
@@ -145,7 +142,7 @@ func buildQueryForGroupsListCmd() string {
   
   
   if GroupsListCmdLimit != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "limit", GroupsListCmdLimit))
+    result = append(result, sprintf("%s=%d", "limit", GroupsListCmdLimit))
   }
   
   

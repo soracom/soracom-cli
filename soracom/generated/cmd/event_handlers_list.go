@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -64,8 +62,7 @@ var EventHandlersListCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -95,7 +92,7 @@ func buildQueryForEventHandlersListCmd() string {
   
   
   if EventHandlersListCmdTarget != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "target", EventHandlersListCmdTarget))
+    result = append(result, sprintf("%s=%s", "target", EventHandlersListCmdTarget))
   }
   
   

@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -63,8 +61,7 @@ var UsersListCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 

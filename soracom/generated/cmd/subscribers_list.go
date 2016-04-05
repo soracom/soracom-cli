@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -88,8 +86,7 @@ var SubscribersListCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -131,37 +128,37 @@ func buildQueryForSubscribersListCmd() string {
   
   
   if SubscribersListCmdLastEvaluatedKey != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
+    result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
   }
   
   
   
   if SubscribersListCmdSpeedClassFilter != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "speed_class_filter", SubscribersListCmdSpeedClassFilter))
+    result = append(result, sprintf("%s=%s", "speed_class_filter", SubscribersListCmdSpeedClassFilter))
   }
   
   
   
   if SubscribersListCmdStatusFilter != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "status_filter", SubscribersListCmdStatusFilter))
+    result = append(result, sprintf("%s=%s", "status_filter", SubscribersListCmdStatusFilter))
   }
   
   
   
   if SubscribersListCmdTagName != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_name", SubscribersListCmdTagName))
+    result = append(result, sprintf("%s=%s", "tag_name", SubscribersListCmdTagName))
   }
   
   
   
   if SubscribersListCmdTagValue != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_value", SubscribersListCmdTagValue))
+    result = append(result, sprintf("%s=%s", "tag_value", SubscribersListCmdTagValue))
   }
   
   
   
   if SubscribersListCmdTagValueMatchMode != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "tag_value_match_mode", SubscribersListCmdTagValueMatchMode))
+    result = append(result, sprintf("%s=%s", "tag_value_match_mode", SubscribersListCmdTagValueMatchMode))
   }
   
   
@@ -169,7 +166,7 @@ func buildQueryForSubscribersListCmd() string {
   
   
   if SubscribersListCmdLimit != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "limit", SubscribersListCmdLimit))
+    result = append(result, sprintf("%s=%d", "limit", SubscribersListCmdLimit))
   }
   
   

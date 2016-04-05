@@ -4,8 +4,8 @@ d=$( cd "$(dirname "$0" )"; cd ..; pwd )
 : "Checking shell scripts" && {
     command -v shellcheck > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        shellcheck -e SC2164 scripts/*.sh
-        shellcheck -e SC2164 test/*.sh
+        shellcheck -e SC2164 "$d/scripts/"*.sh
+        shellcheck -e SC2164 "$d/test/"*.sh
     fi
 }
 
@@ -23,6 +23,11 @@ VERSION=$1
 if [ -z "$1" ]; then
   VERSION="0.0.0"
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
+fi
+
+TARGETS=$2
+if [ -z "$2" ]; then
+    TARGETS="linux windows darwin"
 fi
 
 : "Installing dependencies" && {
@@ -59,6 +64,6 @@ fi
     go generate
     go get ./...
     #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
-    goxc -bc="linux windows darwin" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
+    goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
     popd > /dev/null
 }

@@ -19,16 +19,21 @@ else
     exit 1
 fi
 
+VERSION=$1
+if [ -z "$1" ]; then
+  VERSION="0.0.0"
+  echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
+fi
+
 pushd "$d/soracom" >/dev/null 2>&1
-goxc -bc="$OS"
+"$d/scripts/build.sh" "$VERSION" "$OS"
 popd >/dev/null 2>&1
 
-pushd "$GOPATH/bin/soracom-xc/snapshot/" >/dev/null 2>&1
+pushd "$d/soracom/dist/$VERSION/" >/dev/null 2>&1
 if [ "$OS" == "darwin" ]; then
-    unzip -o soracom_${OS}_${ARCH}.zip
+    unzip -o soracom_${VERSION}_${OS}_${ARCH}.zip
 elif [ "$OS" == "linux" ]; then
-    tar xvzf soracom_${OS}_${ARCH}.tar.gz
+    tar xvzf soracom_${VERSION}_${OS}_${ARCH}.tar.gz
 fi
 
 popd >/dev/null 2>&1
-

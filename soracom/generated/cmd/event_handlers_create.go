@@ -3,9 +3,6 @@ package cmd
 import (
 
   "encoding/json"
-
-  "fmt"
-
   "io/ioutil"
 
   "os"
@@ -92,8 +89,7 @@ var EventHandlersCreateCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 

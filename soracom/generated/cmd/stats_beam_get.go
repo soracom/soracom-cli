@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -75,8 +73,7 @@ var StatsBeamGetCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -116,7 +113,7 @@ func buildQueryForStatsBeamGetCmd() string {
   
   
   if StatsBeamGetCmdPeriod != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "period", StatsBeamGetCmdPeriod))
+    result = append(result, sprintf("%s=%s", "period", StatsBeamGetCmdPeriod))
   }
   
   
@@ -124,13 +121,13 @@ func buildQueryForStatsBeamGetCmd() string {
   
   
   if StatsBeamGetCmdFrom != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "from", StatsBeamGetCmdFrom))
+    result = append(result, sprintf("%s=%d", "from", StatsBeamGetCmdFrom))
   }
   
   
   
   if StatsBeamGetCmdTo != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "to", StatsBeamGetCmdTo))
+    result = append(result, sprintf("%s=%d", "to", StatsBeamGetCmdTo))
   }
   
   

@@ -3,9 +3,6 @@ package cmd
 import (
 
   "encoding/json"
-
-  "fmt"
-
   "io/ioutil"
 
   "os"
@@ -71,8 +68,7 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 

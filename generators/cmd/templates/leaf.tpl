@@ -3,9 +3,6 @@ package cmd
 import (
 {{if .BodyExists }}
   "encoding/json"
-{{end}}
-  "fmt"
-{{if .BodyExists }}
   "io/ioutil"
 {{end}}
   "os"
@@ -84,8 +81,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -130,7 +126,7 @@ func buildQueryFor{{$suffix}}() string {
   {{range .StringFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != "{{.DefaultValue}}" {
-    result = append(result, fmt.Sprintf("%s=%s", "{{.Name}}", {{$prefix}}{{.VarName}}))
+    result = append(result, sprintf("%s=%s", "{{.Name}}", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}
@@ -138,7 +134,7 @@ func buildQueryFor{{$suffix}}() string {
   {{range .IntegerFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
-    result = append(result, fmt.Sprintf("%s=%d", "{{.Name}}", {{$prefix}}{{.VarName}}))
+    result = append(result, sprintf("%s=%d", "{{.Name}}", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}
@@ -146,7 +142,7 @@ func buildQueryFor{{$suffix}}() string {
   {{range .FloatFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
-    result = append(result, fmt.Sprintf("%s=%f", "{{.Name}}", {{$prefix}}{{.VarName}}))
+    result = append(result, sprintf("%s=%f", "{{.Name}}", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}

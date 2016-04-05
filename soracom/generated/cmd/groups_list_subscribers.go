@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -72,8 +70,7 @@ var GroupsListSubscribersCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -111,7 +108,7 @@ func buildQueryForGroupsListSubscribersCmd() string {
   
   
   if GroupsListSubscribersCmdLastEvaluatedKey != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "last_evaluated_key", GroupsListSubscribersCmdLastEvaluatedKey))
+    result = append(result, sprintf("%s=%s", "last_evaluated_key", GroupsListSubscribersCmdLastEvaluatedKey))
   }
   
   
@@ -119,7 +116,7 @@ func buildQueryForGroupsListSubscribersCmd() string {
   
   
   if GroupsListSubscribersCmdLimit != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "limit", GroupsListSubscribersCmdLimit))
+    result = append(result, sprintf("%s=%d", "limit", GroupsListSubscribersCmdLimit))
   }
   
   

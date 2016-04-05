@@ -2,8 +2,6 @@ package cmd
 
 import (
 
-  "fmt"
-
   "os"
   "strings"
 
@@ -75,8 +73,7 @@ var StatsAirGetCmd = &cobra.Command{
       return err
     }
 
-    fmt.Println(result)
-    return nil
+    return prettyPrintJSON(result)
   },
 }
 
@@ -116,7 +113,7 @@ func buildQueryForStatsAirGetCmd() string {
   
   
   if StatsAirGetCmdPeriod != "" {
-    result = append(result, fmt.Sprintf("%s=%s", "period", StatsAirGetCmdPeriod))
+    result = append(result, sprintf("%s=%s", "period", StatsAirGetCmdPeriod))
   }
   
   
@@ -124,13 +121,13 @@ func buildQueryForStatsAirGetCmd() string {
   
   
   if StatsAirGetCmdFrom != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "from", StatsAirGetCmdFrom))
+    result = append(result, sprintf("%s=%d", "from", StatsAirGetCmdFrom))
   }
   
   
   
   if StatsAirGetCmdTo != 0 {
-    result = append(result, fmt.Sprintf("%s=%d", "to", StatsAirGetCmdTo))
+    result = append(result, sprintf("%s=%d", "to", StatsAirGetCmdTo))
   }
   
   
