@@ -6,7 +6,7 @@ Usage:
 Available Commands:
   auth               Performs authentication to access to the SORACOM API.
   bills              Show or export billing info.
-  completion         completion.cli.summary
+  completion         Generate script for bash completion
   configure          Show, create or update configurations.
   coupons            List or register coupons.
   credentials        List, create, update or delete credentials sets.
