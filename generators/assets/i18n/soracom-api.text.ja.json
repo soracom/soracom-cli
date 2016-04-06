@@ -227,5 +227,11 @@
         "short_help": "リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。"
       }
     }
+  },
+  "vpg": {
+    "cli": {
+      "summary": "List, create, update or delete VPGs .",
+      "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
+    }
   }
 }

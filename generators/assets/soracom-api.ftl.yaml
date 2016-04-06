@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: "20160127"
+  version: "20160405"
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -1544,6 +1544,53 @@ paths:
         404:
           description: 指定されたSubscriberが存在しないか、SubscriberはGroupに属していない
 
+  '/subscribers/{imsi}/events/sessions':
+    get:
+      summary: List Session Events
+      description: |
+        指定されたSubscriberのセッション作成・変更・削除のイベント履歴を返す。イベントの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      operationId: listSessionEvents
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers session-events
+      parameters:
+        - name: imsi
+          in: path
+          description: 対象のSubscriberのIMSI
+          required: true
+          type: string        
+        - name: from
+          in: query
+          description: イベントの検索範囲時刻の始まり
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: イベントの検索範囲時刻の終わり
+          required: false
+          type: integer
+        - name: limit
+          in: query
+          description: 取得するイベント数の上限
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: 現ページで取得した最後のイベントのタイムスタンプ。このパラメータを指定することで次のイベント以降のリストを取得できる。
+          required: false
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: A list of session events
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/SessionEvent'
+
   '/subscribers/{imsi}/tags':
     put:
       summary: Bulk Insert or Update Subscriber Tags
@@ -2465,9 +2512,11 @@ paths:
           type: string
         - name: tag_value_match_mode
           in: query
-          description: Tagの値のマッチングモードを指定。完全一致 (exact) あるいは前方一致 (prefix)。無指定の場合のデフォルトはexact。
+          description: タグの検索条件。
           required: false
           type: string
+          enum: [exact, prefix]
+          default: exact
         - name: limit
           in: query
           description: レスポンス1ページあたりの最大数
@@ -2749,6 +2798,182 @@ paths:
         404:
           description: 指定されたSubscriberあるいはタグが存在しない
 
+# Virtual Private Gateway
+  '/virtual_private_gateways':
+    get:
+      summary: List Virtual Private Gateways
+      description: |
+        VPGの一覧を返す
+      x-soracom-cli:
+        - vpg list
+      operationId: listVirtualPrivateGateways
+      produces: [application/json]
+      parameters:
+        - name: tag_name
+          in: query
+          description: VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: VPGについたTagの値。
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: タグの検索条件。
+          required: false
+          type: string
+          enum: [exact, prefix]
+          default: exact
+        - name: limit
+          in: query
+          description: レスポンス1ページあたりの最大数
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のVPGから始まるリストを取得できる。
+          required: false
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: VPGの一覧
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/VirtualPrivateGateway'
+    post:
+      summary: Create Virtual Private Gateway
+      description: |
+        VPGを新規作成する
+      x-soracom-cli:
+        - vpg create
+      operationId: createVirtualPrivateGateway
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: CreateVirtualPrivateGatewayRequest
+          in: body
+          description: 作成対象のVPGの情報を含むリクエスト
+          schema:
+            $ref: '#/definitions/CreateVirtualPrivateGatewayRequest'
+          required: true
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/VirtualPrivateGateway'
+
+  '/virtual_private_gateways/{vpg_id}':
+    get:
+      summary: Get Virtual Private Gateway
+      description: 指定されたVPGの情報を取得する
+      x-soracom-cli:
+        - vpg get
+      operationId: getVirtualPrivateGateway
+      produces: [application/json]
+      parameters:
+        - name: vpg_id
+          in: path
+          description: 対象のVPGのID
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: 指定されたVPG
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/terminate':
+    post:
+      summary: Terminate Virtual Private Gateway
+      description: 指定されたVPGをTerminateする
+      x-soracom-cli:
+        - vpg terminate
+      operationId: terminateVirtualPrivateGateway
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: vpg_id
+          in: path
+          description: 対象のVPGのID
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: 指定されたVPGのTerminate作業を開始
+        400:
+          description: 指定されたVPGのTerminate出来ない理由が存在
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/vpc_peering_connections':
+    post:
+      summary: Create VPC Peering Connection
+      description: |
+        指定されたVPGにVPC Peering Connectionを作成
+      operationId: createVpcPeeringConnection
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - vpg create-vpc-peering-connection
+      parameters:
+        - name: vpg_id
+          in: path
+          description: 対象のVPGのID
+          required: true
+          type: string
+        - name: vpc_peering_connection
+          in: body
+          description: 作成対象のVPC Peering Connection
+          schema:
+            $ref: '#/definitions/CreateVpcPeeringConnectionRequest'
+          required: true
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        201:
+          description: 作成されたVPC Peering Connection
+          schema:
+            $ref: '#/definitions/CreateVpcPeeringConnectionRequest'
+        404:
+          description: 指定されたVPC Peering Connectionは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}':
+    delete:
+      summary: Delete VPC Peering Connection
+      description: |
+        指定されたVPC Peering Connectionを削除
+      operationId: deleteVpcPeeringConnection
+      x-soracom-cli:
+        - vpg delete-vpc-peering-connection
+      parameters:
+        - name: vpg_id
+          in: path
+          description: 対象のVPGのID
+          required: true
+          type: string
+        - name: pcx_id
+          in: path
+          description: 削除対象のVPC Peering ConnectionのID
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        204:
+          description: 指定されたVPC Peering Connectionの削除完了
+        404:
+          description: 指定されたVPC Peering Connectionは存在しない
 
 definitions:
 
@@ -2796,6 +3021,32 @@ definitions:
           - terminate
     required:
       - expiryTime
+
+  SessionEvent:
+    properties:
+      operatorId:
+        type: string
+      imsi:
+        type: string
+      time:
+        type: integer
+        format: int64
+      event:
+        type: string
+      imei:
+        type: string
+      ueIpAddress:
+        type: string
+      apn:
+        type: string
+      dns0:
+        type: string
+      dns1:
+        type: string
+      vpgId:
+        type: string
+      gatewayPrivateIpAddress:
+        type: string
 
   Map:
     type: object
@@ -3750,3 +4001,61 @@ definitions:
         description: 移管されたIMSIリスト
         items:
           type: string
+
+# VirtualPrivateGateways API
+  VirtualPrivateGateway:
+    properties:
+      operatorId:
+        type: string
+      id:
+        type: string
+      primaryServiceName:
+        type: string
+        enum: ["Canal"]
+      type:
+        type: integer
+      status:
+        type: string
+      useInternetGateway:
+        type: boolean
+      vpcPeeringConnections:
+        $ref: '#/definitions/Map'
+      virtualInterfaces:
+        $ref: '#/definitions/Map'
+      createdTime:
+        type: integer
+        format: int64
+      lastModifiedTime:
+        type: integer
+        format: int64
+      tags:
+        $ref: '#/definitions/Tag'
+
+  CreateVirtualPrivateGatewayRequest:
+    properties:
+      primaryServiceName:
+        type: string
+        enum: ["Canal"]
+        default: "Canal"
+      useInternetGateway:
+        type: boolean
+
+  VpcPeeringConnection:
+    properties:
+      id:
+        type: string
+      peerOwnerId:
+        type: string
+      peerVpcId:
+        type: string
+      destinationCidrBlock:
+        type: string
+
+  CreateVpcPeeringConnectionRequest:
+    properties:
+      peerOwnerId:
+        type: string
+      peerVpcId:
+        type: string
+      destinationCidrBlock:
+        type: string

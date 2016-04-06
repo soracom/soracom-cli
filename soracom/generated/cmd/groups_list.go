@@ -34,7 +34,7 @@ func init() {
 
   GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", "GroupについたTagの値。")
 
-  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", "Tagの値のマッチングモードを指定。完全一致 (exact) あるいは前方一致 (prefix)。無指定の場合のデフォルトはexact。")
+  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", "タグの検索条件。")
 
   GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, "レスポンス1ページあたりの最大数")
 
