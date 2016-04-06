@@ -23,6 +23,7 @@ Available Commands:
   subscribers        Manage subscribers.
   users              Manage SAM users.
   version            Show version info.
+  vpg                List, create, update or delete VPGs.
 
 Flags:
       --profile string   Specify profile name

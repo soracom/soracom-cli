@@ -23,6 +23,7 @@ Available Commands:
   subscribers        サブスクライバー (SIM) に関する操作を行います。
   users              SAM ユーザーに関する操作を行います。
   version            バージョン情報を表示します。
+  vpg                VPG に関する操作を行います。
 
 Flags:
       --profile string   Specify profile name
