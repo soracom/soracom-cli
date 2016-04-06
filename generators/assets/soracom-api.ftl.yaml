@@ -1560,7 +1560,7 @@ paths:
           in: path
           description: 対象のSubscriberのIMSI
           required: true
-          type: string        
+          type: string
         - name: from
           in: query
           description: イベントの検索範囲時刻の始まり
@@ -2808,6 +2808,9 @@ paths:
         - vpg list
       operationId: listVirtualPrivateGateways
       produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
       parameters:
         - name: tag_name
           in: query
@@ -2854,6 +2857,9 @@ paths:
       operationId: createVirtualPrivateGateway
       consumes: [application/json]
       produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
       parameters:
         - name: CreateVirtualPrivateGatewayRequest
           in: body
@@ -2877,6 +2883,9 @@ paths:
         - vpg get
       operationId: getVirtualPrivateGateway
       produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
       parameters:
         - name: vpg_id
           in: path
@@ -2900,6 +2909,9 @@ paths:
       operationId: terminateVirtualPrivateGateway
       consumes: [text/plain]
       produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
       parameters:
         - name: vpg_id
           in: path
@@ -2924,6 +2936,9 @@ paths:
       operationId: createVpcPeeringConnection
       consumes: [application/json]
       produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
       x-soracom-cli:
         - vpg create-vpc-peering-connection
       parameters:
@@ -2956,6 +2971,9 @@ paths:
       operationId: deleteVpcPeeringConnection
       x-soracom-cli:
         - vpg delete-vpc-peering-connection
+      security:
+        - api_key: []
+        - api_token: []
       parameters:
         - name: vpg_id
           in: path

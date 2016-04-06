@@ -65,6 +65,12 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
     }
 
     
+    err := authHelper(ac, cmd, args)
+    if err != nil {
+      cmd.SilenceUsage = true
+      return err
+    }
+    
     param, err := collectVpgCreateVpcPeeringConnectionCmdParams()
     if err != nil {
       return err

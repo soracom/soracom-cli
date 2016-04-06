@@ -221,17 +221,17 @@
       "description": "Show version info."
     }
   },
+  "vpg": {
+    "cli": {
+      "summary": "List, create, update or delete VPGs.",
+      "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
+    }
+  },
   "cli": {
     "common_params": {
       "body": {
         "short_help": "JSON string or @filename for API request body."
       }
-    }
-  },
-  "vpg": {
-    "cli": {
-      "summary": "List, create, update or delete VPGs .",
-      "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
     }
   }
 }

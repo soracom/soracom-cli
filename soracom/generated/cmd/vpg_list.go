@@ -62,6 +62,12 @@ var VpgListCmd = &cobra.Command{
     }
 
     
+    err := authHelper(ac, cmd, args)
+    if err != nil {
+      cmd.SilenceUsage = true
+      return err
+    }
+    
     param, err := collectVpgListCmdParams()
     if err != nil {
       return err

@@ -221,17 +221,17 @@
       "description": "バージョン情報を表示します。"
     }
   },
+  "vpg": {
+    "cli": {
+      "summary": "VPG に関する操作を行います。",
+      "description": "VPG (Virtual Private Gateways) に関する操作を行います。"
+    }
+  },
   "cli": {
     "common_params": {
       "body": {
         "short_help": "リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。"
       }
-    }
-  },
-  "vpg": {
-    "cli": {
-      "summary": "List, create, update or delete VPGs .",
-      "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
     }
   }
 }

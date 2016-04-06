@@ -45,6 +45,12 @@ var VpgTerminateCmd = &cobra.Command{
     }
 
     
+    err := authHelper(ac, cmd, args)
+    if err != nil {
+      cmd.SilenceUsage = true
+      return err
+    }
+    
     param, err := collectVpgTerminateCmdParams()
     if err != nil {
       return err
