@@ -79,7 +79,7 @@ func saveProfile(profileName string, prof *profile) error {
 	path := filepath.Join(dir, profileName+".json")
 
 	// check if profile dir exists
-	err = os.MkdirAll(dir, 0600)
+	err = os.MkdirAll(dir, 0700)
 	if err != nil {
 		return err
 	}
