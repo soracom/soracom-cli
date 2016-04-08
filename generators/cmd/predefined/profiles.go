@@ -56,6 +56,14 @@ func loadProfile(profileName string) (*profile, error) {
 	path := filepath.Join(dir, profileName+".json")
 
 	// check if permission is 0600
+	s, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if s.Mode()&077 != 0 {
+		return nil, fmt.Errorf("permission for %s is too open", path)
+	}
 
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -93,6 +101,8 @@ func saveProfile(profileName string, prof *profile) error {
 		if s != "" && strings.ToLower(s) != "y" {
 			return errors.New("abort")
 		}
+
+		os.Chmod(path, 0600)
 	}
 
 	b, err := json.Marshal(prof)
