@@ -145,15 +145,21 @@ func buildBodyForOperatorCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if OperatorCreateCmdEmail != "" {
     result["email"] = OperatorCreateCmdEmail
   }
+  
+  
   
   if OperatorCreateCmdPassword != "" {
     result["password"] = OperatorCreateCmdPassword
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -168,27 +168,35 @@ func buildBodyForSubscribersSetGroupCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if SubscribersSetGroupCmdGroupId != "" {
     result["groupId"] = SubscribersSetGroupCmdGroupId
   }
   
-  if SubscribersSetGroupCmdImsi != "" {
-    result["imsi"] = SubscribersSetGroupCmdImsi
-  }
+  
+  
+  
   
   if SubscribersSetGroupCmdOperatorId != "" {
     result["operatorId"] = SubscribersSetGroupCmdOperatorId
   }
   
   
+
+  
+  
   if SubscribersSetGroupCmdCreatedTime != 0 {
     result["createdTime"] = SubscribersSetGroupCmdCreatedTime
   }
+  
+  
   
   if SubscribersSetGroupCmdLastModifiedTime != 0 {
     result["lastModifiedTime"] = SubscribersSetGroupCmdLastModifiedTime
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

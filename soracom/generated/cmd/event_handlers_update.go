@@ -137,11 +137,11 @@ func buildBodyForEventHandlersUpdateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if EventHandlersUpdateCmdHandlerId != "" {
-    result["handler_id"] = EventHandlersUpdateCmdHandlerId
-  }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

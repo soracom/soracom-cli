@@ -161,23 +161,29 @@ func buildBodyForVpgCreateVpcPeeringConnectionCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock != "" {
     result["destinationCidrBlock"] = VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock
   }
+  
+  
   
   if VpgCreateVpcPeeringConnectionCmdPeerOwnerId != "" {
     result["peerOwnerId"] = VpgCreateVpcPeeringConnectionCmdPeerOwnerId
   }
   
+  
+  
   if VpgCreateVpcPeeringConnectionCmdPeerVpcId != "" {
     result["peerVpcId"] = VpgCreateVpcPeeringConnectionCmdPeerVpcId
   }
   
-  if VpgCreateVpcPeeringConnectionCmdVpgId != "" {
-    result["vpg_id"] = VpgCreateVpcPeeringConnectionCmdVpgId
-  }
   
   
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -134,11 +134,15 @@ func buildBodyForOrdersCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if OrdersCreateCmdShippingAddressId != "" {
     result["shippingAddressId"] = OrdersCreateCmdShippingAddressId
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

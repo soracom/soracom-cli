@@ -127,7 +127,9 @@ func buildBodyForGroupsCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+
   
+
   
 
   resultBytes, err := json.Marshal(result)

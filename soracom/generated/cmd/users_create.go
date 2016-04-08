@@ -154,19 +154,19 @@ func buildBodyForUsersCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if UsersCreateCmdDescription != "" {
     result["description"] = UsersCreateCmdDescription
   }
   
-  if UsersCreateCmdOperatorId != "" {
-    result["operator_id"] = UsersCreateCmdOperatorId
-  }
-  
-  if UsersCreateCmdUserName != "" {
-    result["user_name"] = UsersCreateCmdUserName
-  }
   
   
+  
+  
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

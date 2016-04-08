@@ -154,19 +154,19 @@ func buildBodyForUsersAttachRoleCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if UsersAttachRoleCmdOperatorId != "" {
-    result["operator_id"] = UsersAttachRoleCmdOperatorId
-  }
+  
+  
   
   if UsersAttachRoleCmdRoleId != "" {
     result["roleId"] = UsersAttachRoleCmdRoleId
   }
   
-  if UsersAttachRoleCmdUserName != "" {
-    result["user_name"] = UsersAttachRoleCmdUserName
-  }
   
   
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

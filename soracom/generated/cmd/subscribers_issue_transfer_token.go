@@ -142,15 +142,21 @@ func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail != "" {
     result["transferDestinationOperatorEmail"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail
   }
+  
+  
   
   if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId != "" {
     result["transferDestinationOperatorId"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorId
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -165,23 +165,29 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if StatsBeamExportCmdOperatorId != "" {
-    result["operator_id"] = StatsBeamExportCmdOperatorId
-  }
+  
+  
   
   if StatsBeamExportCmdPeriod != "" {
     result["period"] = StatsBeamExportCmdPeriod
   }
   
   
+
+  
+  
   if StatsBeamExportCmdFrom != 0 {
     result["from"] = StatsBeamExportCmdFrom
   }
+  
+  
   
   if StatsBeamExportCmdTo != 0 {
     result["to"] = StatsBeamExportCmdTo
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -134,11 +134,15 @@ func buildBodyForOperatorIssueEmailChangeTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if OperatorIssueEmailChangeTokenCmdEmail != "" {
     result["email"] = OperatorIssueEmailChangeTokenCmdEmail
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

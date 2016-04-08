@@ -176,35 +176,51 @@ func buildBodyForAuthCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if AuthCmdAuthKey != "" {
     result["authKey"] = AuthCmdAuthKey
   }
+  
+  
   
   if AuthCmdAuthKeyId != "" {
     result["authKeyId"] = AuthCmdAuthKeyId
   }
   
+  
+  
   if AuthCmdEmail != "" {
     result["email"] = AuthCmdEmail
   }
+  
+  
   
   if AuthCmdOperatorId != "" {
     result["operatorId"] = AuthCmdOperatorId
   }
   
+  
+  
   if AuthCmdPassword != "" {
     result["password"] = AuthCmdPassword
   }
+  
+  
   
   if AuthCmdUserName != "" {
     result["userName"] = AuthCmdUserName
   }
   
   
+
+  
+  
   if AuthCmdTokenTimeoutSeconds != 0 {
     result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

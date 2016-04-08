@@ -173,19 +173,27 @@ func buildBodyFor{{$suffix}}() (string, error) {
 
   result := map[string]interface{}{}
   {{range .StringFlags}}
+  {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != "{{.DefaultValue}}" {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
   {{end}}
+  {{end}}
+
   {{range .IntegerFlags}}
+  {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
   {{end}}
+  {{end}}
+
   {{range .FloatFlags}}
+  {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
+  {{end}}
   {{end}}
 
   resultBytes, err := json.Marshal(result)

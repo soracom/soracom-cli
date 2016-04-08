@@ -152,19 +152,23 @@ func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if SubscribersSetExpiryTimeCmdExpiryAction != "" {
     result["expiryAction"] = SubscribersSetExpiryTimeCmdExpiryAction
   }
   
-  if SubscribersSetExpiryTimeCmdImsi != "" {
-    result["imsi"] = SubscribersSetExpiryTimeCmdImsi
-  }
+  
+  
+  
+
   
   
   if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
     result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

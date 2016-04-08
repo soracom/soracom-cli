@@ -134,11 +134,15 @@ func buildBodyForOperatorVerifyEmailChangeTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if OperatorVerifyEmailChangeTokenCmdToken != "" {
     result["token"] = OperatorVerifyEmailChangeTokenCmdToken
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

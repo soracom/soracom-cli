@@ -162,23 +162,25 @@ func buildBodyForRolesCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if RolesCreateCmdDescription != "" {
     result["description"] = RolesCreateCmdDescription
   }
   
-  if RolesCreateCmdOperatorId != "" {
-    result["operator_id"] = RolesCreateCmdOperatorId
-  }
+  
+  
+  
   
   if RolesCreateCmdPermission != "" {
     result["permission"] = RolesCreateCmdPermission
   }
   
-  if RolesCreateCmdRoleId != "" {
-    result["role_id"] = RolesCreateCmdRoleId
-  }
   
   
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

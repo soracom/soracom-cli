@@ -165,23 +165,29 @@ func buildBodyForStatsAirExportCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if StatsAirExportCmdOperatorId != "" {
-    result["operator_id"] = StatsAirExportCmdOperatorId
-  }
+  
+  
   
   if StatsAirExportCmdPeriod != "" {
     result["period"] = StatsAirExportCmdPeriod
   }
   
   
+
+  
+  
   if StatsAirExportCmdFrom != 0 {
     result["from"] = StatsAirExportCmdFrom
   }
+  
+  
   
   if StatsAirExportCmdTo != 0 {
     result["to"] = StatsAirExportCmdTo
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -134,11 +134,15 @@ func buildBodyForSubscribersVerifyTransferTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if SubscribersVerifyTransferTokenCmdToken != "" {
     result["token"] = SubscribersVerifyTransferTokenCmdToken
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -144,15 +144,17 @@ func buildBodyForSubscribersUpdateSpeedClassCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if SubscribersUpdateSpeedClassCmdImsi != "" {
-    result["imsi"] = SubscribersUpdateSpeedClassCmdImsi
-  }
+  
+  
   
   if SubscribersUpdateSpeedClassCmdSpeedClass != "" {
     result["speedClass"] = SubscribersUpdateSpeedClassCmdSpeedClass
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

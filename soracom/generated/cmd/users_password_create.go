@@ -154,19 +154,19 @@ func buildBodyForUsersPasswordCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if UsersPasswordCreateCmdOperatorId != "" {
-    result["operator_id"] = UsersPasswordCreateCmdOperatorId
-  }
+  
+  
   
   if UsersPasswordCreateCmdPassword != "" {
     result["password"] = UsersPasswordCreateCmdPassword
   }
   
-  if UsersPasswordCreateCmdUserName != "" {
-    result["user_name"] = UsersPasswordCreateCmdUserName
-  }
   
   
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

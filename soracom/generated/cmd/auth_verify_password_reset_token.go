@@ -136,15 +136,21 @@ func buildBodyForAuthVerifyPasswordResetTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if AuthVerifyPasswordResetTokenCmdPassword != "" {
     result["password"] = AuthVerifyPasswordResetTokenCmdPassword
   }
+  
+  
   
   if AuthVerifyPasswordResetTokenCmdToken != "" {
     result["token"] = AuthVerifyPasswordResetTokenCmdToken
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

@@ -137,11 +137,11 @@ func buildBodyForGroupsPutTagsCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if GroupsPutTagsCmdGroupId != "" {
-    result["group_id"] = GroupsPutTagsCmdGroupId
-  }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

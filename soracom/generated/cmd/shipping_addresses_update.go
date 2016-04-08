@@ -226,55 +226,73 @@ func buildBodyForShippingAddressesUpdateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if ShippingAddressesUpdateCmdAddressLine1 != "" {
     result["addressLine1"] = ShippingAddressesUpdateCmdAddressLine1
   }
+  
+  
   
   if ShippingAddressesUpdateCmdAddressLine2 != "" {
     result["addressLine2"] = ShippingAddressesUpdateCmdAddressLine2
   }
   
+  
+  
   if ShippingAddressesUpdateCmdBuilding != "" {
     result["building"] = ShippingAddressesUpdateCmdBuilding
   }
+  
+  
   
   if ShippingAddressesUpdateCmdCity != "" {
     result["city"] = ShippingAddressesUpdateCmdCity
   }
   
+  
+  
   if ShippingAddressesUpdateCmdCompanyName != "" {
     result["companyName"] = ShippingAddressesUpdateCmdCompanyName
   }
+  
+  
   
   if ShippingAddressesUpdateCmdDepartment != "" {
     result["department"] = ShippingAddressesUpdateCmdDepartment
   }
   
+  
+  
   if ShippingAddressesUpdateCmdFullName != "" {
     result["fullName"] = ShippingAddressesUpdateCmdFullName
   }
   
-  if ShippingAddressesUpdateCmdOperatorId != "" {
-    result["operator_id"] = ShippingAddressesUpdateCmdOperatorId
-  }
+  
+  
+  
   
   if ShippingAddressesUpdateCmdPhoneNumber != "" {
     result["phoneNumber"] = ShippingAddressesUpdateCmdPhoneNumber
   }
   
-  if ShippingAddressesUpdateCmdShippingAddressId != "" {
-    result["shipping_address_id"] = ShippingAddressesUpdateCmdShippingAddressId
-  }
+  
+  
+  
   
   if ShippingAddressesUpdateCmdState != "" {
     result["state"] = ShippingAddressesUpdateCmdState
   }
+  
+  
   
   if ShippingAddressesUpdateCmdZipCode != "" {
     result["zipCode"] = ShippingAddressesUpdateCmdZipCode
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

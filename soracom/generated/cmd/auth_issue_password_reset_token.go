@@ -128,11 +128,15 @@ func buildBodyForAuthIssuePasswordResetTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if AuthIssuePasswordResetTokenCmdEmail != "" {
     result["email"] = AuthIssuePasswordResetTokenCmdEmail
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

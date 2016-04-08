@@ -147,15 +147,17 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if OperatorGenerateApiTokenCmdOperatorId != "" {
-    result["operator_id"] = OperatorGenerateApiTokenCmdOperatorId
-  }
+  
+  
+
   
   
   if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 0 {
     result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

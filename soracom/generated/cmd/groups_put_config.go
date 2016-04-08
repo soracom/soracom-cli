@@ -147,15 +147,13 @@ func buildBodyForGroupsPutConfigCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if GroupsPutConfigCmdGroupId != "" {
-    result["group_id"] = GroupsPutConfigCmdGroupId
-  }
-  
-  if GroupsPutConfigCmdNamespace != "" {
-    result["namespace"] = GroupsPutConfigCmdNamespace
-  }
   
   
+  
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

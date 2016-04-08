@@ -162,23 +162,25 @@ func buildBodyForUsersPermissionsUpdateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if UsersPermissionsUpdateCmdDescription != "" {
     result["description"] = UsersPermissionsUpdateCmdDescription
   }
   
-  if UsersPermissionsUpdateCmdOperatorId != "" {
-    result["operator_id"] = UsersPermissionsUpdateCmdOperatorId
-  }
+  
+  
+  
   
   if UsersPermissionsUpdateCmdPermission != "" {
     result["permission"] = UsersPermissionsUpdateCmdPermission
   }
   
-  if UsersPermissionsUpdateCmdUserName != "" {
-    result["user_name"] = UsersPermissionsUpdateCmdUserName
-  }
   
   
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

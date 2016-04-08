@@ -175,31 +175,45 @@ func buildBodyForEventHandlersCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if EventHandlersCreateCmdDescription != "" {
     result["description"] = EventHandlersCreateCmdDescription
   }
+  
+  
   
   if EventHandlersCreateCmdName != "" {
     result["name"] = EventHandlersCreateCmdName
   }
   
+  
+  
   if EventHandlersCreateCmdStatus != "" {
     result["status"] = EventHandlersCreateCmdStatus
   }
+  
+  
   
   if EventHandlersCreateCmdTargetGroupId != "" {
     result["targetGroupId"] = EventHandlersCreateCmdTargetGroupId
   }
   
+  
+  
   if EventHandlersCreateCmdTargetImsi != "" {
     result["targetImsi"] = EventHandlersCreateCmdTargetImsi
   }
+  
+  
   
   if EventHandlersCreateCmdTargetOperatorId != "" {
     result["targetOperatorId"] = EventHandlersCreateCmdTargetOperatorId
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

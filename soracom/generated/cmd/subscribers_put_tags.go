@@ -136,11 +136,11 @@ func buildBodyForSubscribersPutTagsCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if SubscribersPutTagsCmdImsi != "" {
-    result["imsi"] = SubscribersPutTagsCmdImsi
-  }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

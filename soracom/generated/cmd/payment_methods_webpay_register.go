@@ -166,27 +166,39 @@ func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if PaymentMethodsWebpayRegisterCmdCvc != "" {
     result["cvc"] = PaymentMethodsWebpayRegisterCmdCvc
   }
   
+  
+  
   if PaymentMethodsWebpayRegisterCmdName != "" {
     result["name"] = PaymentMethodsWebpayRegisterCmdName
   }
+  
+  
   
   if PaymentMethodsWebpayRegisterCmdNumber != "" {
     result["number"] = PaymentMethodsWebpayRegisterCmdNumber
   }
   
   
+
+  
+  
   if PaymentMethodsWebpayRegisterCmdExpireMonth != 0 {
     result["expireMonth"] = PaymentMethodsWebpayRegisterCmdExpireMonth
   }
+  
+  
   
   if PaymentMethodsWebpayRegisterCmdExpireYear != 0 {
     result["expireYear"] = PaymentMethodsWebpayRegisterCmdExpireYear
   }
   
+  
+
   
 
   resultBytes, err := json.Marshal(result)

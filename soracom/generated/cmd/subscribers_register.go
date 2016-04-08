@@ -152,19 +152,23 @@ func buildBodyForSubscribersRegisterCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if SubscribersRegisterCmdGroupId != "" {
     result["groupId"] = SubscribersRegisterCmdGroupId
   }
   
-  if SubscribersRegisterCmdImsi != "" {
-    result["imsi"] = SubscribersRegisterCmdImsi
-  }
+  
+  
+  
   
   if SubscribersRegisterCmdRegistrationSecret != "" {
     result["registrationSecret"] = SubscribersRegisterCmdRegistrationSecret
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

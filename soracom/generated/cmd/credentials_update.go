@@ -152,19 +152,23 @@ func buildBodyForCredentialsUpdateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
-  if CredentialsUpdateCmdCredentialsId != "" {
-    result["credentials_id"] = CredentialsUpdateCmdCredentialsId
-  }
+  
+  
   
   if CredentialsUpdateCmdDescription != "" {
     result["description"] = CredentialsUpdateCmdDescription
   }
+  
+  
   
   if CredentialsUpdateCmdType != "" {
     result["type"] = CredentialsUpdateCmdType
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

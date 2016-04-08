@@ -130,11 +130,15 @@ func buildBodyForOperatorVerifyCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if OperatorVerifyCmdToken != "" {
     result["token"] = OperatorVerifyCmdToken
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

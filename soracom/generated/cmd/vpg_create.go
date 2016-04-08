@@ -135,11 +135,15 @@ func buildBodyForVpgCreateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if VpgCreateCmdPrimaryServiceName != "" {
     result["primaryServiceName"] = VpgCreateCmdPrimaryServiceName
   }
   
   
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

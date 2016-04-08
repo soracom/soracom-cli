@@ -162,23 +162,25 @@ func buildBodyForUsersPasswordUpdateCmd() (string, error) {
 
   result := map[string]interface{}{}
   
+  
   if UsersPasswordUpdateCmdCurrentPassword != "" {
     result["currentPassword"] = UsersPasswordUpdateCmdCurrentPassword
   }
+  
+  
   
   if UsersPasswordUpdateCmdNewPassword != "" {
     result["newPassword"] = UsersPasswordUpdateCmdNewPassword
   }
   
-  if UsersPasswordUpdateCmdOperatorId != "" {
-    result["operator_id"] = UsersPasswordUpdateCmdOperatorId
-  }
-  
-  if UsersPasswordUpdateCmdUserName != "" {
-    result["user_name"] = UsersPasswordUpdateCmdUserName
-  }
   
   
+  
+  
+  
+
+  
+
   
 
   resultBytes, err := json.Marshal(result)

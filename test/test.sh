@@ -62,7 +62,7 @@ tear_down() {
 }
 
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
-SORACOM_ENDPOINT=https://api-sandbox.soracom.io
+: "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
 SORACOM_ENVS=(SORACOM_ENDPOINT=$SORACOM_ENDPOINT SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR SORACOM_DEBUG=$SORACOM_DEBUG)
 SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}/soracom"
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
@@ -78,7 +78,7 @@ PASSWORD=$(random_string)
 
 : "Create an account on the sandbox" && {
     go get -u github.com/soracom/soracom-sdk-go
-    env "${SORACOM_ENVS[@]}" go run "$d/test/setup.go" --email="$EMAIL" --password="$PASSWORD"
+    env SORACOM_ENDPOINT="$SORACOM_ENDPOINT" "${SORACOM_ENVS[@]}" go run "$d/test/setup.go" --email="$EMAIL" --password="$PASSWORD"
 }
 
 : "Checking english help text" && {
@@ -183,6 +183,10 @@ EOD
 
 : "Run soracom version" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" version
+}
+
+: "Run soracom vpg" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" vpg
 }
 
 test_result=0
