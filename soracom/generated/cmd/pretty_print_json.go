@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func prettyPrintJSON(rawJSON string) error {
+func prettyPrintStringAsJSON(rawJSON string) error {
 	var obj interface{}
 
 	d := json.NewDecoder(strings.NewReader(rawJSON))
@@ -16,7 +16,10 @@ func prettyPrintJSON(rawJSON string) error {
 	if err != nil {
 		return err
 	}
+	return prettyPrintObjectAsJSON(obj)
+}
 
+func prettyPrintObjectAsJSON(obj interface{}) error {
 	b, err := json.MarshalIndent(obj, "", "\t")
 	if err != nil {
 		return err

@@ -11,6 +11,17 @@ var ConfigureGetCmd = &cobra.Command{
 	Short: TR("configure.get.cli.summary"),
 	Long:  TR("configure.get.cli.description"),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		pn := getSpecifiedProfileName()
+		if pn == "" {
+			pn = "default"
+		}
+
+		p, err := loadProfile(pn)
+		if err != nil {
+			return err
+		}
+
+		prettyPrintObjectAsJSON(p)
 		return nil
 	},
 }

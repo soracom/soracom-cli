@@ -64,7 +64,11 @@ var AuthIssuePasswordResetTokenCmd = &cobra.Command{
       return err
     }
 
-    return prettyPrintJSON(result)
+    if result != "" {
+      return prettyPrintStringAsJSON(result)
+    } else {
+      return nil
+    }
   },
 }
 
