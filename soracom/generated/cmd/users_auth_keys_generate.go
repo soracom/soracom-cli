@@ -21,6 +21,7 @@ var UsersAuthKeysGenerateCmdUserName string
 
 
 
+
 func init() {
   UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersAuthKeysGenerateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersAuthKeysGenerateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

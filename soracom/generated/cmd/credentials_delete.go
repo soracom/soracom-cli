@@ -19,6 +19,7 @@ var CredentialsDeleteCmdOperatorId string
 
 
 
+
 func init() {
   CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdOperatorId, "operator-id", "", "Operator ID")
 
@@ -86,6 +87,7 @@ func buildPathForCredentialsDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForCredentialsDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

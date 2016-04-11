@@ -23,6 +23,7 @@ var OperatorGenerateApiTokenCmdTokenTimeoutSeconds int64
 
 
 
+
 var OperatorGenerateApiTokenCmdBody string
 
 
@@ -107,6 +108,7 @@ func buildPathForOperatorGenerateApiTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -121,6 +123,9 @@ func buildQueryForOperatorGenerateApiTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -156,6 +161,8 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
     result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds
   }
   
+  
+
   
 
   

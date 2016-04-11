@@ -21,6 +21,7 @@ var UsersPasswordConfiguredCmdUserName string
 
 
 
+
 func init() {
   UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersPasswordConfiguredCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersPasswordConfiguredCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

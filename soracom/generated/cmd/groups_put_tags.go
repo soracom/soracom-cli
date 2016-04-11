@@ -21,6 +21,7 @@ var GroupsPutTagsCmdGroupId string
 
 
 
+
 var GroupsPutTagsCmdBody string
 
 
@@ -99,6 +100,7 @@ func buildPathForGroupsPutTagsCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -111,6 +113,9 @@ func buildQueryForGroupsPutTagsCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -138,6 +143,8 @@ func buildBodyForGroupsPutTagsCmd() (string, error) {
   result := map[string]interface{}{}
   
   
+  
+
   
 
   

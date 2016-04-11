@@ -21,6 +21,7 @@ var SubscribersVerifyTransferTokenCmdToken string
 
 
 
+
 var SubscribersVerifyTransferTokenCmdBody string
 
 
@@ -96,6 +97,7 @@ func buildPathForSubscribersVerifyTransferTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForSubscribersVerifyTransferTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -139,6 +144,8 @@ func buildBodyForSubscribersVerifyTransferTokenCmd() (string, error) {
     result["token"] = SubscribersVerifyTransferTokenCmdToken
   }
   
+  
+
   
 
   

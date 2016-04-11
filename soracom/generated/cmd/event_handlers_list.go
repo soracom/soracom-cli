@@ -19,6 +19,7 @@ var EventHandlersListCmdTarget string
 
 
 
+
 func init() {
   EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", "target")
 
@@ -85,6 +86,7 @@ func buildPathForEventHandlersListCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -101,6 +103,9 @@ func buildQueryForEventHandlersListCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

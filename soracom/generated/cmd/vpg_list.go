@@ -27,6 +27,7 @@ var VpgListCmdLimit int64
 
 
 
+
 func init() {
   VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のGroupのID。このパラメータを指定することで次のVPGから始まるリストを取得できる。")
 
@@ -109,6 +110,7 @@ func buildPathForVpgListCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -149,6 +151,9 @@ func buildQueryForVpgListCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

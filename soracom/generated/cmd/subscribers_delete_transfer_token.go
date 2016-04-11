@@ -19,6 +19,7 @@ var SubscribersDeleteTransferTokenCmdToken string
 
 
 
+
 func init() {
   SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", "token")
 
@@ -86,6 +87,7 @@ func buildPathForSubscribersDeleteTransferTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForSubscribersDeleteTransferTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

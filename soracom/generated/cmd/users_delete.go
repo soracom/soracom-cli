@@ -21,6 +21,7 @@ var UsersDeleteCmdUserName string
 
 
 
+
 func init() {
   UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

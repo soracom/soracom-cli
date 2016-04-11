@@ -19,6 +19,7 @@ var SubscribersEnableTerminationCmdImsi string
 
 
 
+
 func init() {
   SubscribersEnableTerminationCmd.Flags().StringVar(&SubscribersEnableTerminationCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
 
@@ -86,6 +87,7 @@ func buildPathForSubscribersEnableTerminationCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForSubscribersEnableTerminationCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

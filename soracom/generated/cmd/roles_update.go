@@ -27,6 +27,7 @@ var RolesUpdateCmdRoleId string
 
 
 
+
 var RolesUpdateCmdBody string
 
 
@@ -118,6 +119,7 @@ func buildPathForRolesUpdateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -136,6 +138,9 @@ func buildQueryForRolesUpdateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -177,6 +182,8 @@ func buildBodyForRolesUpdateCmd() (string, error) {
   
   
   
+  
+
   
 
   

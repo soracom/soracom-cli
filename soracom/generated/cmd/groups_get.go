@@ -19,6 +19,7 @@ var GroupsGetCmdGroupId string
 
 
 
+
 func init() {
   GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", "対象のGroupのID")
 
@@ -87,6 +88,7 @@ func buildPathForGroupsGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForGroupsGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

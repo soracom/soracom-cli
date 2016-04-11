@@ -19,6 +19,7 @@ var BillsExportCmdYyyyMM string
 
 
 
+
 func init() {
   BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", "yyyyMM")
 
@@ -86,6 +87,7 @@ func buildPathForBillsExportCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForBillsExportCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

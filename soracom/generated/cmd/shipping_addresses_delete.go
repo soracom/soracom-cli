@@ -21,6 +21,7 @@ var ShippingAddressesDeleteCmdShippingAddressId string
 
 
 
+
 func init() {
   ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", "Operator ID")
 
@@ -94,6 +95,7 @@ func buildPathForShippingAddressesDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForShippingAddressesDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

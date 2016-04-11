@@ -21,6 +21,7 @@ var UsersPermissionsGetCmdUserName string
 
 
 
+
 func init() {
   UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersPermissionsGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersPermissionsGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

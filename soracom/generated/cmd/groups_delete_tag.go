@@ -21,6 +21,7 @@ var GroupsDeleteTagCmdTagName string
 
 
 
+
 func init() {
   GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", "対象のGroupのID")
 
@@ -95,6 +96,7 @@ func buildPathForGroupsDeleteTagCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -109,6 +111,9 @@ func buildQueryForGroupsDeleteTagCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

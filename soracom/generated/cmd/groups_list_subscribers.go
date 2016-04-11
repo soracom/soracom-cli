@@ -23,6 +23,7 @@ var GroupsListSubscribersCmdLimit int64
 
 
 
+
 func init() {
   GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", "対象のGroupのID")
 
@@ -99,6 +100,7 @@ func buildPathForGroupsListSubscribersCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -123,6 +125,9 @@ func buildQueryForGroupsListSubscribersCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

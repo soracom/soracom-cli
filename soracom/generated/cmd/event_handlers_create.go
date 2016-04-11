@@ -31,6 +31,7 @@ var EventHandlersCreateCmdTargetOperatorId string
 
 
 
+
 var EventHandlersCreateCmdBody string
 
 
@@ -127,6 +128,7 @@ func buildPathForEventHandlersCreateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -149,6 +151,9 @@ func buildQueryForEventHandlersCreateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -210,6 +215,8 @@ func buildBodyForEventHandlersCreateCmd() (string, error) {
     result["targetOperatorId"] = EventHandlersCreateCmdTargetOperatorId
   }
   
+  
+
   
 
   

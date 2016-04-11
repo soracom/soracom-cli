@@ -21,6 +21,7 @@ var EventHandlersIgnoreCmdImsi string
 
 
 
+
 func init() {
   EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", "handler_id")
 
@@ -94,6 +95,7 @@ func buildPathForEventHandlersIgnoreCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForEventHandlersIgnoreCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

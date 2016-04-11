@@ -27,6 +27,7 @@ var RolesCreateCmdRoleId string
 
 
 
+
 var RolesCreateCmdBody string
 
 
@@ -118,6 +119,7 @@ func buildPathForRolesCreateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -136,6 +138,9 @@ func buildQueryForRolesCreateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -177,6 +182,8 @@ func buildBodyForRolesCreateCmd() (string, error) {
   
   
   
+  
+
   
 
   

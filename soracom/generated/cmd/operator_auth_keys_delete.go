@@ -21,6 +21,7 @@ var OperatorAuthKeysDeleteCmdOperatorId string
 
 
 
+
 func init() {
   OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", "auth_key_id")
 
@@ -94,6 +95,7 @@ func buildPathForOperatorAuthKeysDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForOperatorAuthKeysDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -23,6 +23,7 @@ var UsersAuthKeysDeleteCmdUserName string
 
 
 
+
 func init() {
   UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", "auth_key_id")
 
@@ -102,6 +103,7 @@ func buildPathForUsersAuthKeysDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -118,6 +120,9 @@ func buildQueryForUsersAuthKeysDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

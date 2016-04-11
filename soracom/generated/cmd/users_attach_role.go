@@ -25,6 +25,7 @@ var UsersAttachRoleCmdUserName string
 
 
 
+
 var UsersAttachRoleCmdBody string
 
 
@@ -112,6 +113,7 @@ func buildPathForUsersAttachRoleCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -128,6 +130,9 @@ func buildQueryForUsersAttachRoleCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -163,6 +168,8 @@ func buildBodyForUsersAttachRoleCmd() (string, error) {
   
   
   
+  
+
   
 
   

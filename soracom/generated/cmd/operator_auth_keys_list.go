@@ -19,6 +19,7 @@ var OperatorAuthKeysListCmdOperatorId string
 
 
 
+
 func init() {
   OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -86,6 +87,7 @@ func buildPathForOperatorAuthKeysListCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForOperatorAuthKeysListCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

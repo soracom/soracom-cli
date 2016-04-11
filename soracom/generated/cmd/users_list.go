@@ -19,6 +19,7 @@ var UsersListCmdOperatorId string
 
 
 
+
 func init() {
   UsersListCmd.Flags().StringVar(&UsersListCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -86,6 +87,7 @@ func buildPathForUsersListCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForUsersListCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

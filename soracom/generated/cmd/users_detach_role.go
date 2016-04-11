@@ -23,6 +23,7 @@ var UsersDetachRoleCmdUserName string
 
 
 
+
 func init() {
   UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -102,6 +103,7 @@ func buildPathForUsersDetachRoleCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -118,6 +120,9 @@ func buildQueryForUsersDetachRoleCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

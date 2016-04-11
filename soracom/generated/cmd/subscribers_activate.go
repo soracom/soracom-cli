@@ -19,6 +19,7 @@ var SubscribersActivateCmdImsi string
 
 
 
+
 func init() {
   SubscribersActivateCmd.Flags().StringVar(&SubscribersActivateCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
 
@@ -86,6 +87,7 @@ func buildPathForSubscribersActivateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForSubscribersActivateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -25,6 +25,7 @@ var StatsAirGetCmdTo int64
 
 
 
+
 func init() {
   StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", "imsi")
 
@@ -104,6 +105,7 @@ func buildPathForStatsAirGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -134,6 +136,9 @@ func buildQueryForStatsAirGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -21,6 +21,7 @@ var ShippingAddressesGetCmdShippingAddressId string
 
 
 
+
 func init() {
   ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", "Operator ID")
 
@@ -94,6 +95,7 @@ func buildPathForShippingAddressesGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForShippingAddressesGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

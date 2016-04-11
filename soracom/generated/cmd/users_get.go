@@ -21,6 +21,7 @@ var UsersGetCmdUserName string
 
 
 
+
 func init() {
   UsersGetCmd.Flags().StringVar(&UsersGetCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

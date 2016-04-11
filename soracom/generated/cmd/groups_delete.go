@@ -19,6 +19,7 @@ var GroupsDeleteCmdGroupId string
 
 
 
+
 func init() {
   GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", "対象のGroupのID")
 
@@ -86,6 +87,7 @@ func buildPathForGroupsDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForGroupsDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

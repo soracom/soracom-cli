@@ -23,6 +23,7 @@ var GroupsDeleteConfigCmdNamespace string
 
 
 
+
 func init() {
   GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", "対象のGroup")
 
@@ -103,6 +104,7 @@ func buildPathForGroupsDeleteConfigCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -119,6 +121,9 @@ func buildQueryForGroupsDeleteConfigCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

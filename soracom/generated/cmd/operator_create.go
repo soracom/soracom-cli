@@ -23,6 +23,7 @@ var OperatorCreateCmdPassword string
 
 
 
+
 var OperatorCreateCmdBody string
 
 
@@ -105,6 +106,7 @@ func buildPathForOperatorCreateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -119,6 +121,9 @@ func buildQueryForOperatorCreateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -156,6 +161,8 @@ func buildBodyForOperatorCreateCmd() (string, error) {
     result["password"] = OperatorCreateCmdPassword
   }
   
+  
+
   
 
   

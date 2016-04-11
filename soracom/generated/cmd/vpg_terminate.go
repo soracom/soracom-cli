@@ -19,6 +19,7 @@ var VpgTerminateCmdVpgId string
 
 
 
+
 func init() {
   VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", "対象のVPGのID")
 
@@ -86,6 +87,7 @@ func buildPathForVpgTerminateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForVpgTerminateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -33,6 +33,7 @@ var AuthCmdTokenTimeoutSeconds int64
 
 
 
+
 var AuthCmdBody string
 
 
@@ -126,6 +127,7 @@ func buildPathForAuthCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -150,6 +152,9 @@ func buildQueryForAuthCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -219,6 +224,8 @@ func buildBodyForAuthCmd() (string, error) {
     result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
   }
   
+  
+
   
 
   

@@ -21,6 +21,7 @@ var AuthIssuePasswordResetTokenCmdEmail string
 
 
 
+
 var AuthIssuePasswordResetTokenCmdBody string
 
 
@@ -90,6 +91,7 @@ func buildPathForAuthIssuePasswordResetTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -102,6 +104,9 @@ func buildQueryForAuthIssuePasswordResetTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -133,6 +138,8 @@ func buildBodyForAuthIssuePasswordResetTokenCmd() (string, error) {
     result["email"] = AuthIssuePasswordResetTokenCmdEmail
   }
   
+  
+
   
 
   

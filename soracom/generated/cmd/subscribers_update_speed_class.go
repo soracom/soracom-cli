@@ -23,6 +23,7 @@ var SubscribersUpdateSpeedClassCmdSpeedClass string
 
 
 
+
 var SubscribersUpdateSpeedClassCmdBody string
 
 
@@ -104,6 +105,7 @@ func buildPathForSubscribersUpdateSpeedClassCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -118,6 +120,9 @@ func buildQueryForSubscribersUpdateSpeedClassCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -151,6 +156,8 @@ func buildBodyForSubscribersUpdateSpeedClassCmd() (string, error) {
     result["speedClass"] = SubscribersUpdateSpeedClassCmdSpeedClass
   }
   
+  
+
   
 
   

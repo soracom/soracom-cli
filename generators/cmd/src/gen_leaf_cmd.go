@@ -54,6 +54,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			StringFlags:               getStringFlags(m.Parameters, apiDef.StructDefs),
 			IntegerFlags:              getIntegerFlags(m.Parameters, apiDef.StructDefs),
 			FloatFlags:                getFloatFlags(m.Parameters, apiDef.StructDefs),
+			BoolFlags:                 getBoolFlags(m.Parameters, apiDef.StructDefs),
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
 			a.ContentType = "application/json"
@@ -282,6 +283,62 @@ func getFloatFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []flo
 		f.VarName = lib.TitleCase(prop.Name)
 		f.LongOption = lib.OptionCase(prop.Name)
 		f.DefaultValue = 0
+		f.Format = prop.Format
+		f.ShortHelp = prop.Description
+		f.In = "body"
+		f.Name = prop.Name
+		f.Required = prop.Required
+		result = append(result, f)
+	}
+	return result
+}
+
+func getBoolFlags(parameters []lib.APIParam, definitions map[string]lib.StructDef) []boolFlag {
+	result := []boolFlag{}
+	for _, param := range parameters {
+		switch param.In {
+		case "path", "query":
+			if param.Type != "boolean" {
+				continue
+			}
+			var f boolFlag
+			f.VarName = lib.TitleCase(param.Name)
+			f.LongOption = lib.OptionCase(param.Name)
+			f.DefaultValue = false
+			f.ShortHelp = param.Description
+			f.Name = param.Name
+			f.In = param.In
+			f.Required = param.Required
+			result = append(result, f)
+		case "body":
+			var s []boolFlag
+			if param.Schema.Ref != "" {
+				s = getBoolFlagsFromStruct(param, definitions[getStructNameFromReference(param.Schema.Ref)])
+			} else if param.Schema.Type == "array" {
+				//fmt.Println("[WARN] array is not supported yet.")
+			}
+			result = append(result, s...)
+		default:
+			fmt.Printf("[WARN] parameters in '%s' is not supported", param.In)
+		}
+	}
+
+	sort.Sort(boolFlagsByName(result))
+	return result
+}
+
+func getBoolFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []boolFlag {
+	//fmt.Println("        getting number flags")
+	result := []boolFlag{}
+	for _, prop := range definition.Properties {
+		if prop.Type != "boolean" {
+			continue
+		}
+		//fmt.Printf("          %s\n", prop.Name)
+		var f boolFlag
+		f.VarName = lib.TitleCase(prop.Name)
+		f.LongOption = lib.OptionCase(prop.Name)
+		f.DefaultValue = false
 		f.Format = prop.Format
 		f.ShortHelp = prop.Description
 		f.In = "body"

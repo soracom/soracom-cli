@@ -43,6 +43,7 @@ var ShippingAddressesUpdateCmdZipCode string
 
 
 
+
 var ShippingAddressesUpdateCmdBody string
 
 
@@ -166,6 +167,7 @@ func buildPathForShippingAddressesUpdateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -200,6 +202,9 @@ func buildQueryForShippingAddressesUpdateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -289,6 +294,8 @@ func buildBodyForShippingAddressesUpdateCmd() (string, error) {
     result["zipCode"] = ShippingAddressesUpdateCmdZipCode
   }
   
+  
+
   
 
   

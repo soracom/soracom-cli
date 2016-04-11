@@ -19,6 +19,7 @@ var VpgGetCmdVpgId string
 
 
 
+
 func init() {
   VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", "対象のVPGのID")
 
@@ -86,6 +87,7 @@ func buildPathForVpgGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForVpgGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

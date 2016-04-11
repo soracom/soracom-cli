@@ -19,6 +19,7 @@ var OrdersConfirmCmdOrderId string
 
 
 
+
 func init() {
   OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", "order_id")
 
@@ -86,6 +87,7 @@ func buildPathForOrdersConfirmCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForOrdersConfirmCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

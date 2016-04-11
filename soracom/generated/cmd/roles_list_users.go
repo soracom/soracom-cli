@@ -21,6 +21,7 @@ var RolesListUsersCmdRoleId string
 
 
 
+
 func init() {
   RolesListUsersCmd.Flags().StringVar(&RolesListUsersCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForRolesListUsersCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForRolesListUsersCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

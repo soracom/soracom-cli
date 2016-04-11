@@ -25,6 +25,7 @@ var SubscribersRegisterCmdRegistrationSecret string
 
 
 
+
 var SubscribersRegisterCmdBody string
 
 
@@ -110,6 +111,7 @@ func buildPathForSubscribersRegisterCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -126,6 +128,9 @@ func buildQueryForSubscribersRegisterCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -165,6 +170,8 @@ func buildBodyForSubscribersRegisterCmd() (string, error) {
     result["registrationSecret"] = SubscribersRegisterCmdRegistrationSecret
   }
   
+  
+
   
 
   

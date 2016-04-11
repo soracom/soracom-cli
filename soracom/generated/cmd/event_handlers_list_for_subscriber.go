@@ -19,6 +19,7 @@ var EventHandlersListForSubscriberCmdImsi string
 
 
 
+
 func init() {
   EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", "imsi")
 
@@ -87,6 +88,7 @@ func buildPathForEventHandlersListForSubscriberCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForEventHandlersListForSubscriberCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

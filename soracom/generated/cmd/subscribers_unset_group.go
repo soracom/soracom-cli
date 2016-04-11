@@ -19,6 +19,7 @@ var SubscribersUnsetGroupCmdImsi string
 
 
 
+
 func init() {
   SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
 
@@ -86,6 +87,7 @@ func buildPathForSubscribersUnsetGroupCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForSubscribersUnsetGroupCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

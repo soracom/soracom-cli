@@ -27,6 +27,7 @@ var GroupsListCmdLimit int64
 
 
 
+
 func init() {
   GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のGroupのID。このパラメータを指定することで次のGroupから始まるリストを取得できる。")
 
@@ -109,6 +110,7 @@ func buildPathForGroupsListCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -149,6 +151,9 @@ func buildQueryForGroupsListCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

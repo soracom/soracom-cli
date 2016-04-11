@@ -17,6 +17,7 @@ import (
 
 
 
+
 func init() {
 
 
@@ -78,6 +79,7 @@ func buildPathForBillsExportLatestCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -88,6 +90,9 @@ func buildQueryForBillsExportLatestCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

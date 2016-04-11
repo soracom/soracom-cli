@@ -29,6 +29,7 @@ var PaymentMethodsWebpayRegisterCmdExpireYear int64
 
 
 
+
 var PaymentMethodsWebpayRegisterCmdBody string
 
 
@@ -120,6 +121,7 @@ func buildPathForPaymentMethodsWebpayRegisterCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -140,6 +142,9 @@ func buildQueryForPaymentMethodsWebpayRegisterCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -197,6 +202,8 @@ func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
     result["expireYear"] = PaymentMethodsWebpayRegisterCmdExpireYear
   }
   
+  
+
   
 
   

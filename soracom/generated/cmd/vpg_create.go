@@ -21,11 +21,16 @@ var VpgCreateCmdPrimaryServiceName string
 
 
 
+var VpgCreateCmdUseInternetGateway bool
+
+
 var VpgCreateCmdBody string
 
 
 func init() {
   VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", "")
+
+  VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, "")
 
 
 
@@ -97,6 +102,9 @@ func buildPathForVpgCreateCmd(path string) string {
   
   
   
+  
+  
+  
   return path
 }
 
@@ -109,6 +117,11 @@ func buildQueryForVpgCreateCmd() string {
   
 
   
+
+  
+  
+  
+
   return strings.Join(result, "&")
 }
 
@@ -144,6 +157,14 @@ func buildBodyForVpgCreateCmd() (string, error) {
 
   
 
+  
+
+  
+  
+  if VpgCreateCmdUseInternetGateway != false {
+    result["useInternetGateway"] = VpgCreateCmdUseInternetGateway
+  }
+  
   
 
   resultBytes, err := json.Marshal(result)

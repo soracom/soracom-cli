@@ -19,6 +19,7 @@ var OperatorGetCmdOperatorId string
 
 
 
+
 func init() {
   OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", "operator ID")
 
@@ -87,6 +88,7 @@ func buildPathForOperatorGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForOperatorGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

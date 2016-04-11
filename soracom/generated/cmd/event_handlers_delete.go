@@ -19,6 +19,7 @@ var EventHandlersDeleteCmdHandlerId string
 
 
 
+
 func init() {
   EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", "handler ID")
 
@@ -87,6 +88,7 @@ func buildPathForEventHandlersDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForEventHandlersDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

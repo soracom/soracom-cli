@@ -23,6 +23,7 @@ var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 
 
 
+
 var SubscribersIssueTransferTokenCmdBody string
 
 
@@ -102,6 +103,7 @@ func buildPathForSubscribersIssueTransferTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -116,6 +118,9 @@ func buildQueryForSubscribersIssueTransferTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -153,6 +158,8 @@ func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
     result["transferDestinationOperatorId"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorId
   }
   
+  
+
   
 
   

@@ -19,6 +19,7 @@ var EventHandlersGetCmdHandlerId string
 
 
 
+
 func init() {
   EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", "handler ID")
 
@@ -87,6 +88,7 @@ func buildPathForEventHandlersGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForEventHandlersGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

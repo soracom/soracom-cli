@@ -21,6 +21,7 @@ var UsersPasswordDeleteCmdUserName string
 
 
 
+
 func init() {
   UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForUsersPasswordDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForUsersPasswordDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

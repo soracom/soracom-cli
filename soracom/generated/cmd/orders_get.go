@@ -19,6 +19,7 @@ var OrdersGetCmdOrderId string
 
 
 
+
 func init() {
   OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", "order_id")
 
@@ -86,6 +87,7 @@ func buildPathForOrdersGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForOrdersGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -21,6 +21,7 @@ var OperatorVerifyCmdToken string
 
 
 
+
 var OperatorVerifyCmdBody string
 
 
@@ -92,6 +93,7 @@ func buildPathForOperatorVerifyCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -104,6 +106,9 @@ func buildQueryForOperatorVerifyCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -135,6 +140,8 @@ func buildBodyForOperatorVerifyCmd() (string, error) {
     result["token"] = OperatorVerifyCmdToken
   }
   
+  
+
   
 
   

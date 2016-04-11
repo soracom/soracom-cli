@@ -21,6 +21,7 @@ var RolesDeleteCmdRoleId string
 
 
 
+
 func init() {
   RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", "operator_id")
 
@@ -94,6 +95,7 @@ func buildPathForRolesDeleteCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForRolesDeleteCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

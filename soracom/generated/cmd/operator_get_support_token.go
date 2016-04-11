@@ -19,6 +19,7 @@ var OperatorGetSupportTokenCmdOperatorId string
 
 
 
+
 func init() {
   OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", "operator ID")
 
@@ -87,6 +88,7 @@ func buildPathForOperatorGetSupportTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -99,6 +101,9 @@ func buildQueryForOperatorGetSupportTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

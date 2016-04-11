@@ -23,6 +23,7 @@ var AuthVerifyPasswordResetTokenCmdToken string
 
 
 
+
 var AuthVerifyPasswordResetTokenCmdBody string
 
 
@@ -96,6 +97,7 @@ func buildPathForAuthVerifyPasswordResetTokenCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -110,6 +112,9 @@ func buildQueryForAuthVerifyPasswordResetTokenCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -147,6 +152,8 @@ func buildBodyForAuthVerifyPasswordResetTokenCmd() (string, error) {
     result["token"] = AuthVerifyPasswordResetTokenCmdToken
   }
   
+  
+
   
 
   

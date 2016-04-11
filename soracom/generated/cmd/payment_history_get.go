@@ -19,6 +19,7 @@ var PaymentHistoryGetCmdPaymentTransactionId string
 
 
 
+
 func init() {
   PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", "payment_transaction_id")
 
@@ -86,6 +87,7 @@ func buildPathForPaymentHistoryGetCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForPaymentHistoryGetCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

@@ -25,6 +25,7 @@ var CredentialsUpdateCmdType string
 
 
 
+
 var CredentialsUpdateCmdBody string
 
 
@@ -110,6 +111,7 @@ func buildPathForCredentialsUpdateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -126,6 +128,9 @@ func buildQueryForCredentialsUpdateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -165,6 +170,8 @@ func buildBodyForCredentialsUpdateCmd() (string, error) {
     result["type"] = CredentialsUpdateCmdType
   }
   
+  
+
   
 
   

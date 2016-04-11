@@ -24,6 +24,9 @@ var {{$prefix}}{{.VarName}} int64
 {{range .FloatFlags}}
 var {{$prefix}}{{.VarName}} float64
 {{end}}
+{{range .BoolFlags}}
+var {{$prefix}}{{.VarName}} bool
+{{end}}
 {{if .BodyExists }}
 var {{$prefix}}Body string
 {{end}}
@@ -39,6 +42,10 @@ func init() {
 
 {{- range .FloatFlags}}
   {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, "{{.ShortHelp}}")
+{{end}}
+
+{{- range .BoolFlags}}
+  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, "{{.ShortHelp}}")
 {{end}}
 
 {{if .BodyExists }}
@@ -119,6 +126,11 @@ func buildPathFor{{$suffix}}(path string) string {
   path = strings.Replace(path, "{" + "{{.Name}}" + "}", {{$prefix}}{{.VarName}}, -1)
   {{end}}
   {{end}}
+  {{range .BoolFlags}}
+  {{if eq .In "path"}}
+  path = strings.Replace(path, "{" + "{{.Name}}" + "}", {{$prefix}}{{.VarName}}, -1)
+  {{end}}
+  {{end}}
   return path
 }
 
@@ -147,6 +159,15 @@ func buildQueryFor{{$suffix}}() string {
   }
   {{end}}
   {{end}}
+
+  {{range .BoolFlags}}
+  {{if eq .In "query"}}
+  if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+    result = append(result, sprintf("%s=%t", "{{.Name}}", {{$prefix}}{{.VarName}}))
+  }
+  {{end}}
+  {{end}}
+
   return strings.Join(result, "&")
 }
 
@@ -189,6 +210,14 @@ func buildBodyFor{{$suffix}}() (string, error) {
   {{end}}
 
   {{range .FloatFlags}}
+  {{if eq .In "body"}}
+  if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+    result["{{.Name}}"] = {{$prefix}}{{.VarName}}
+  }
+  {{end}}
+  {{end}}
+
+  {{range .BoolFlags}}
   {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}

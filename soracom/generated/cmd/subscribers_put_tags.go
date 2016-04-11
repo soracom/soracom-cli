@@ -21,6 +21,7 @@ var SubscribersPutTagsCmdImsi string
 
 
 
+
 var SubscribersPutTagsCmdBody string
 
 
@@ -98,6 +99,7 @@ func buildPathForSubscribersPutTagsCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -110,6 +112,9 @@ func buildQueryForSubscribersPutTagsCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -137,6 +142,8 @@ func buildBodyForSubscribersPutTagsCmd() (string, error) {
   result := map[string]interface{}{}
   
   
+  
+
   
 
   

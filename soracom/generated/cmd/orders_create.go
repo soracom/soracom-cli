@@ -21,6 +21,7 @@ var OrdersCreateCmdShippingAddressId string
 
 
 
+
 var OrdersCreateCmdBody string
 
 
@@ -96,6 +97,7 @@ func buildPathForOrdersCreateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -108,6 +110,9 @@ func buildQueryForOrdersCreateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -139,6 +144,8 @@ func buildBodyForOrdersCreateCmd() (string, error) {
     result["shippingAddressId"] = OrdersCreateCmdShippingAddressId
   }
   
+  
+
   
 
   

@@ -19,6 +19,7 @@ var CouponsRegisterCmdCouponCode string
 
 
 
+
 func init() {
   CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", "coupon_code")
 
@@ -86,6 +87,7 @@ func buildPathForCouponsRegisterCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForCouponsRegisterCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 

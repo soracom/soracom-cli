@@ -27,6 +27,7 @@ var VpgCreateVpcPeeringConnectionCmdVpgId string
 
 
 
+
 var VpgCreateVpcPeeringConnectionCmdBody string
 
 
@@ -117,6 +118,7 @@ func buildPathForVpgCreateVpcPeeringConnectionCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -135,6 +137,9 @@ func buildQueryForVpgCreateVpcPeeringConnectionCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
@@ -180,6 +185,8 @@ func buildBodyForVpgCreateVpcPeeringConnectionCmd() (string, error) {
   
   
   
+  
+
   
 
   

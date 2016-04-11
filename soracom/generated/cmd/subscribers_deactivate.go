@@ -19,6 +19,7 @@ var SubscribersDeactivateCmdImsi string
 
 
 
+
 func init() {
   SubscribersDeactivateCmd.Flags().StringVar(&SubscribersDeactivateCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
 
@@ -86,6 +87,7 @@ func buildPathForSubscribersDeactivateCmd(path string) string {
   
   
   
+  
   return path
 }
 
@@ -98,6 +100,9 @@ func buildQueryForSubscribersDeactivateCmd() string {
   
 
   
+
+  
+
   return strings.Join(result, "&")
 }
 
