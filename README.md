@@ -35,6 +35,84 @@ go get -u github.com/soracom/soracom-cli/soracom
 ```
 
 
+## 使用方法
+
+### 基本的な使い方
+
+まずはじめに、プロファイルの作成をします。
+
+```
+soracom configure
+```
+
+このコマンドを実行すると、どのタイプのプロファイルを作成するか聞かれます。
+
+```
+  :
+認証方法を選択してください。
+
+1. AuthKeyId と AuthKey を入力する（推奨）
+2. オペレーターのメールアドレスとパスワードを入力する
+3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）
+
+選択してください (1-3) >
+```
+
+SAM ユーザーもしくはルートアカウントに対し、AuthKey（認証キー）を発行している場合は 1 を選択してください。
+（SAM ユーザーに対し認証キーを発行する方法については [SORACOM Access Managementを使用して操作権限を管理する](https://dev.soracom.io/jp/start/sam/#sam01) を参照してください）
+
+以後、soracom コマンド実行時は、ここで入力した認証情報を使って API 呼び出しが行われます。
+
+
+
+### 高度な使い方
+
+#### 複数のプロファイルを使い分ける
+
+SORACOM アカウントを複数所有しているとか、複数の SAM ユーザーを使い分けたい場合は、configure に --profile オプションを指定し、プロファイル名を設定します。
+
+```
+soracom configure --profile user1
+  :
+  （user1 のための認証情報を入力）
+
+soracom configure --profile user2
+  :
+  （user2 のための認証情報を入力）
+```
+
+このようにすると user1 および user2 という名前のプロファイルが作成されます。
+プロファイルを利用する場合は通常のコマンドの後ろに --profile オプションを指定します。
+
+```
+soracom subscribers list --profile user1
+  :
+  （user1 に SIM の一覧を表示する権限があれば表示される）
+
+soracom groups list --profile user2
+  :
+  （user2 にグループの一覧を表示する権限があれば表示される）
+```
+
+
+#### Proxy 経由で API を呼び出したい場合
+
+HTTP_PROXY 環境変数に http://your-proxy-nme:prot を設定した状態で soracom コマンドを実行してください。
+
+例）Linux/Mac の場合：
+Proxy サーバーのアドレスを 10.0.1.2、ポート番号を 8080 だとすると
+```
+export HTTP_PROXY=http://10.0.1.2:8080
+soracom subscribers list
+```
+
+もしくは
+
+```
+HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
+```
+
+
 # ビルド/テスト方法
 
 ソースからビルドしたい開発者の方や、バグ修正/機能追加等の Pull Request をしたい場合は以下のいずれかの方法でビルドおよびテストを行ってください。
