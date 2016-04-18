@@ -58,15 +58,17 @@ func loadProfile(profileName string) (*profile, error) {
 	path := filepath.Join(dir, profileName+".json")
 
 	// check if permission is 0600
-	s, err := os.Stat(path)
-	if err != nil {
-		return nil, err
-	}
-
 	if runtime.GOOS != "windows" {
+		s, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+
 		if s.Mode()&077 != 0 {
 			return nil, fmt.Errorf("permission for %s is too open", path)
 		}
+	} else {
+		// TODO: handle ACL on windows env
 	}
 
 	b, err := ioutil.ReadFile(path)
@@ -107,6 +109,10 @@ func saveProfile(profileName string, prof *profile) error {
 		}
 
 		os.Chmod(path, 0600)
+
+		if runtime.GOOS == "windows" {
+			// TODO: handle ACL on windows
+		}
 	}
 
 	b, err := json.Marshal(prof)
@@ -117,6 +123,10 @@ func saveProfile(profileName string, prof *profile) error {
 	err = ioutil.WriteFile(path, b, 0600)
 	if err != nil {
 		return err
+	}
+
+	if runtime.GOOS == "windows" {
+		// TODO: handle ACL on windows
 	}
 
 	return nil
