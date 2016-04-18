@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"syscall"
 
 	"github.com/kennygrant/sanitize"
 	"github.com/mitchellh/go-homedir"
@@ -61,8 +63,10 @@ func loadProfile(profileName string) (*profile, error) {
 		return nil, err
 	}
 
-	if s.Mode()&077 != 0 {
-		return nil, fmt.Errorf("permission for %s is too open", path)
+	if runtime.GOOS != "windows" {
+		if s.Mode()&077 != 0 {
+			return nil, fmt.Errorf("permission for %s is too open", path)
+		}
 	}
 
 	b, err := ioutil.ReadFile(path)
@@ -97,7 +101,7 @@ func saveProfile(profileName string, prof *profile) error {
 		// prompt if overwrites or not when already exist
 		fmt.Printf(TR("configure.cli.profile.overwrite"), profileName)
 		var s string
-		fmt.Scanf("%s", &s)
+		fmt.Scanf("%s\n", &s)
 		if s != "" && strings.ToLower(s) != "y" {
 			return errors.New("abort")
 		}
@@ -129,7 +133,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	var i int
 	for {
 		fmt.Print(TR("configure.cli.profile.select"))
-		fmt.Scanf("%d", &i)
+		fmt.Scanf("%d\n", &i)
 		if i >= 1 && i <= 3 {
 			break
 		}
@@ -139,14 +143,14 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	case 1:
 		var authKeyID, authKey string
 		fmt.Print("authKeyId: ")
-		fmt.Scanf("%s", &authKeyID)
+		fmt.Scanf("%s\n", &authKeyID)
 		fmt.Print("authKey: ")
-		fmt.Scanf("%s", &authKey)
+		fmt.Scanf("%s\n", &authKey)
 		return &profile{AuthKeyID: &authKeyID, AuthKey: &authKey}, nil
 	case 2:
 		var email string
 		fmt.Print("email: ")
-		fmt.Scanf("%s", &email)
+		fmt.Scanf("%s\n", &email)
 		password, err := readPassword("password: ")
 		if err != nil {
 			return nil, err
@@ -156,9 +160,9 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	case 3:
 		var operatorID, username string
 		fmt.Print("Operator ID (OP00...): ")
-		fmt.Scanf("%s", &operatorID)
+		fmt.Scanf("%s\n", &operatorID)
 		fmt.Print("username: ")
-		fmt.Scanf("%s", &username)
+		fmt.Scanf("%s\n", &username)
 		password, err := readPassword("password: ")
 		if err != nil {
 			return nil, err
@@ -175,17 +179,11 @@ func collectProfileInfo(profileName string) (*profile, error) {
 }
 
 func readPassword(prompt string) (string, error) {
-	oldState, err := terminal.MakeRaw(0)
-	if err != nil {
-		return "", err
-	}
-	defer terminal.Restore(0, oldState)
-
-	term := terminal.NewTerminal(os.Stdout, "")
-	password, err := term.ReadPassword(prompt)
+	fmt.Print(prompt)
+	password, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return "", err
 	}
 
-	return password, nil
+	return string(password), nil
 }

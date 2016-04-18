@@ -18,11 +18,13 @@ var ConfigureCmd = &cobra.Command{
 
 		profile, err := collectProfileInfo(pn)
 		if err != nil {
+			cmd.SilenceUsage = true
 			return err
 		}
 
 		err = saveProfile(pn, profile)
 		if err != nil {
+			cmd.SilenceUsage = true
 			return err
 		}
 
