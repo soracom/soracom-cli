@@ -5,27 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/go-swagger/go-swagger/client"
-	"github.com/go-swagger/go-swagger/strfmt"
 	"github.com/spf13/cobra"
 )
-
-type soracomAuthInfoWriter struct {
-	apiKey   string
-	apiToken string
-}
-
-func (w *soracomAuthInfoWriter) AuthenticateRequest(req client.Request, _ strfmt.Registry) error {
-	err := req.SetHeaderParam("X-Soracom-API-Key", w.apiKey)
-	if err != nil {
-		return err
-	}
-	err = req.SetHeaderParam("X-Soracom-Token", w.apiToken)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 type authRequest struct {
 	Email      *string `json:"email,omitempty"`
