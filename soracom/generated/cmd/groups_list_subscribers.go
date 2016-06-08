@@ -25,11 +25,11 @@ var GroupsListSubscribersCmdLimit int64
 
 
 func init() {
-  GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", "対象のGroupのID")
+  GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TR("groups.list_subscribers_in_group.get.parameters.group_id.description"))
 
-  GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。")
+  GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TR("groups.list_subscribers_in_group.get.parameters.last_evaluated_key.description"))
 
-  GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, "レスポンス1ページあたりの最大数")
+  GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TR("groups.list_subscribers_in_group.get.parameters.limit.description"))
 
 
 
@@ -39,9 +39,8 @@ func init() {
 
 var GroupsListSubscribersCmd = &cobra.Command{
   Use: "list-subscribers",
-  Short: TR("List Subscribers in a group"),
-  Long: TR(`Group IDで指定されたGroupに属するSubscriberの一覧を返す
-`),
+  Short: TR("groups.list_subscribers_in_group.get.summary"),
+  Long: TR(`groups.list_subscribers_in_group.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

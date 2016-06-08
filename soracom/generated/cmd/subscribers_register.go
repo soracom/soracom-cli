@@ -30,11 +30,11 @@ var SubscribersRegisterCmdBody string
 
 
 func init() {
-  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdGroupId, "group-id", "", "")
+  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdGroupId, "group-id", "", TR(""))
 
-  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TR("subscribers.register_subscriber.post.parameters.imsi.description"))
 
-  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", "")
+  SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TR(""))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var SubscribersRegisterCmd = &cobra.Command{
   Use: "register",
-  Short: TR("Register Subscriber"),
-  Long: TR(`Subscriberを登録`),
+  Short: TR("subscribers.register_subscriber.post.summary"),
+  Long: TR(`subscribers.register_subscriber.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

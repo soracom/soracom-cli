@@ -30,11 +30,11 @@ var CredentialsCreateCmdBody string
 
 
 func init() {
-  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", "credentials_id")
+  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TR("credentials_id"))
 
-  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", "")
+  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", TR(""))
 
-  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdType, "type", "", "")
+  CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdType, "type", "", TR(""))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var CredentialsCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Credential"),
-  Long: TR(`認証情報を新規作成する。`),
+  Short: TR("credentials.create_credential.post.summary"),
+  Long: TR(`credentials.create_credential.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

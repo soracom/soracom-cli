@@ -27,13 +27,13 @@ var StatsBeamGetCmdTo int64
 
 
 func init() {
-  StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", "imsi")
+  StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TR("stats.get_beam_stats.get.parameters.imsi.description"))
 
-  StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", "集計単位。minutesは5分おき")
+  StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", TR("stats.get_beam_stats.get.parameters.period.description"))
 
-  StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, "集計対象時刻の始まりをunixtimeで与える")
+  StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TR("stats.get_beam_stats.get.parameters.from.description"))
 
-  StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, "集計対象時刻の終わりをunixtimeで与える")
+  StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TR("stats.get_beam_stats.get.parameters.to.description"))
 
 
 
@@ -43,8 +43,8 @@ func init() {
 
 var StatsBeamGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Beam Usage Report of Subscriber"),
-  Long: TR(`IMSI で指定した Subscriber のSoracom Beam利用量履歴を取得する。`),
+  Short: TR("stats.get_beam_stats.get.summary"),
+  Long: TR(`stats.get_beam_stats.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

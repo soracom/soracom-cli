@@ -30,11 +30,11 @@ var SubscribersSetExpiryTimeCmdBody string
 
 
 func init() {
-  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", "")
+  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TR(""))
 
-  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.set_expirytime.post.parameters.imsi.description"))
 
-  SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, "")
+  SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TR(""))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var SubscribersSetExpiryTimeCmd = &cobra.Command{
   Use: "set-expiry-time",
-  Short: TR("Update Expiry Time of Subscriber"),
-  Long: TR(`指定されたSubscriberの有効期限を更新`),
+  Short: TR("subscribers.set_expirytime.post.summary"),
+  Long: TR(`subscribers.set_expirytime.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

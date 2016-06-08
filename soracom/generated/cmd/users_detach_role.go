@@ -25,11 +25,11 @@ var UsersDetachRoleCmdUserName string
 
 
 func init() {
-  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", "operator_id")
+  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", "role_id")
+  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TR("role_id"))
 
-  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", "user_name")
+  UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -39,8 +39,8 @@ func init() {
 
 var UsersDetachRoleCmd = &cobra.Command{
   Use: "detach-role",
-  Short: TR("Detach Role from User"),
-  Long: TR(`ユーザーからロールをデタッチする。`),
+  Short: TR("roles.detach_role.delete.summary"),
+  Long: TR(`roles.detach_role.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

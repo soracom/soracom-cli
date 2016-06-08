@@ -27,8 +27,8 @@ func init() {
 
 var CouponsListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List coupons"),
-  Long: TR(`現在登録されているクーポン一覧を返します。`),
+  Short: TR("payment.list_coupons.get.summary"),
+  Long: TR(`payment.list_coupons.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

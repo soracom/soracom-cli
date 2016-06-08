@@ -28,9 +28,9 @@ var SubscribersUpdateSpeedClassCmdBody string
 
 
 func init() {
-  SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TR("subscribers.update_speedclass.post.parameters.imsi.description"))
 
-  SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", "")
+  SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TR(""))
 
 
 
@@ -42,8 +42,8 @@ func init() {
 
 var SubscribersUpdateSpeedClassCmd = &cobra.Command{
   Use: "update-speed-class",
-  Short: TR("Update Subscriber speed class"),
-  Long: TR(`指定されたSubscriberの速度クラスを変更します`),
+  Short: TR("subscribers.update_speedclass.post.summary"),
+  Long: TR(`subscribers.update_speedclass.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -30,11 +30,11 @@ var UsersPasswordCreateCmdBody string
 
 
 func init() {
-  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdPassword, "password", "", "")
+  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdPassword, "password", "", TR(""))
 
-  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdUserName, "user-name", "", "user_name")
+  UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var UsersPasswordCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Password"),
-  Long: TR(`SAMユーザーのパスワードを作成する。`),
+  Short: TR("users.create_user_password.post.summary"),
+  Long: TR(`users.create_user_password.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

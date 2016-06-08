@@ -21,7 +21,7 @@ var SubscribersGetCmdImsi string
 
 
 func init() {
-  SubscribersGetCmd.Flags().StringVar(&SubscribersGetCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersGetCmd.Flags().StringVar(&SubscribersGetCmdImsi, "imsi", "", TR("subscribers.get_subscriber.get.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Subscriber"),
-  Long: TR(`指定されたSubscriberの情報を返す。`),
+  Short: TR("subscribers.get_subscriber.get.summary"),
+  Long: TR(`subscribers.get_subscriber.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

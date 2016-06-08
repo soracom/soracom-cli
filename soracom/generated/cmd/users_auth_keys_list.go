@@ -23,9 +23,9 @@ var UsersAuthKeysListCmdUserName string
 
 
 func init() {
-  UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdOperatorId, "operator-id", "", "operator_id")
+  UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdUserName, "user-name", "", "user_name")
+  UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersAuthKeysListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List User AuthKeys"),
-  Long: TR(`SAMユーザーのAuthKey一覧を返す。`),
+  Short: TR("users.list_user_auth_keys.get.summary"),
+  Long: TR(`users.list_user_auth_keys.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

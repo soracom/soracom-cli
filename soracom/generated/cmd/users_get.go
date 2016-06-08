@@ -23,9 +23,9 @@ var UsersGetCmdUserName string
 
 
 func init() {
-  UsersGetCmd.Flags().StringVar(&UsersGetCmdOperatorId, "operator-id", "", "operator_id")
+  UsersGetCmd.Flags().StringVar(&UsersGetCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersGetCmd.Flags().StringVar(&UsersGetCmdUserName, "user-name", "", "user_name")
+  UsersGetCmd.Flags().StringVar(&UsersGetCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get User"),
-  Long: TR(`SAMユーザーを返す。`),
+  Short: TR("users.get_user.get.summary"),
+  Long: TR(`users.get_user.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

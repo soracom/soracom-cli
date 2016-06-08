@@ -21,7 +21,7 @@ var VpgTerminateCmdVpgId string
 
 
 func init() {
-  VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", "対象のVPGのID")
+  VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.terminate_virtual_private_gateway.post.parameters.vpg_id.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var VpgTerminateCmd = &cobra.Command{
   Use: "terminate",
-  Short: TR("Terminate Virtual Private Gateway"),
-  Long: TR(`指定されたVPGをTerminateする`),
+  Short: TR("virtual_private_gateway.terminate_virtual_private_gateway.post.summary"),
+  Long: TR(`virtual_private_gateway.terminate_virtual_private_gateway.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

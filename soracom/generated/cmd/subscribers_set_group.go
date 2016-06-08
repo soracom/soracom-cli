@@ -34,15 +34,15 @@ var SubscribersSetGroupCmdBody string
 
 
 func init() {
-  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", "")
+  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TR(""))
 
-  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TR("subscribers.set_group.post.parameters.imsi.description"))
 
-  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdOperatorId, "operator-id", "", "")
+  SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdOperatorId, "operator-id", "", TR(""))
 
-  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdCreatedTime, "created-time", 0, "")
+  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdCreatedTime, "created-time", 0, TR(""))
 
-  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdLastModifiedTime, "last-modified-time", 0, "")
+  SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdLastModifiedTime, "last-modified-time", 0, TR(""))
 
 
 
@@ -54,8 +54,8 @@ func init() {
 
 var SubscribersSetGroupCmd = &cobra.Command{
   Use: "set-group",
-  Short: TR("Set Group to Subscriber"),
-  Long: TR(`指定されたSubscriberの所属先Groupを指定あるいは上書き変更`),
+  Short: TR("subscribers.set_group.post.summary"),
+  Long: TR(`subscribers.set_group.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

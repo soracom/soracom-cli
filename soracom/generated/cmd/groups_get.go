@@ -21,7 +21,7 @@ var GroupsGetCmdGroupId string
 
 
 func init() {
-  GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", "対象のGroupのID")
+  GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TR("groups.get_group.get.parameters.group_id.description"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var GroupsGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Group"),
-  Long: TR(`Group IDで指定されたGroupを返す
-`),
+  Short: TR("groups.get_group.get.summary"),
+  Long: TR(`groups.get_group.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -28,9 +28,9 @@ var SubscribersIssueTransferTokenCmdBody string
 
 
 func init() {
-  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", "")
+  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TR(""))
 
-  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", "")
+  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TR(""))
 
 
 
@@ -42,8 +42,8 @@ func init() {
 
 var SubscribersIssueTransferTokenCmd = &cobra.Command{
   Use: "issue-transfer-token",
-  Short: TR("Issue Subscribers Transfer Token"),
-  Long: TR(`Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。`),
+  Short: TR("subscribers.issue_subscriber_transfer_token.post.summary"),
+  Long: TR(`subscribers.issue_subscriber_transfer_token.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

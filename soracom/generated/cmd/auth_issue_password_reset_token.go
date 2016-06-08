@@ -26,7 +26,7 @@ var AuthIssuePasswordResetTokenCmdBody string
 
 
 func init() {
-  AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", "")
+  AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TR(""))
 
 
 

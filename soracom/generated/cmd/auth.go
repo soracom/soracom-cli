@@ -38,19 +38,19 @@ var AuthCmdBody string
 
 
 func init() {
-  AuthCmd.Flags().StringVar(&AuthCmdAuthKey, "auth-key", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdAuthKey, "auth-key", "", TR(""))
 
-  AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", TR(""))
 
-  AuthCmd.Flags().StringVar(&AuthCmdEmail, "email", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdEmail, "email", "", TR(""))
 
-  AuthCmd.Flags().StringVar(&AuthCmdOperatorId, "operator-id", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdOperatorId, "operator-id", "", TR(""))
 
-  AuthCmd.Flags().StringVar(&AuthCmdPassword, "password", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdPassword, "password", "", TR(""))
 
-  AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", "")
+  AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", TR(""))
 
-  AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, "")
+  AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TR(""))
 
 
 
@@ -62,8 +62,8 @@ func init() {
 
 var AuthCmd = &cobra.Command{
   Use: "auth",
-  Short: TR("auth.post.summary"),
-  Long: TR(`auth.post.description`),
+  Short: TR("auth.auth.post.summary"),
+  Long: TR(`auth.auth.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

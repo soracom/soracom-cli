@@ -34,9 +34,8 @@ func init() {
 
 var GroupsCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Group"),
-  Long: TR(`Groupを新規作成する
-`),
+  Short: TR("groups.create_group.post.summary"),
+  Long: TR(`groups.create_group.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

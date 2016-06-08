@@ -21,7 +21,7 @@ var CredentialsDeleteCmdOperatorId string
 
 
 func init() {
-  CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdOperatorId, "operator-id", "", "Operator ID")
+  CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var CredentialsDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete Credential"),
-  Long: TR(`認証情報を削除する。`),
+  Short: TR("credentials.delete_credential.delete.summary"),
+  Long: TR(`credentials.delete_credential.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

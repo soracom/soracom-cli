@@ -21,7 +21,7 @@ var ShippingAddressesListCmdOperatorId string
 
 
 func init() {
-  ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", "Operator ID")
+  ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var ShippingAddressesListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List shipping addresses"),
-  Long: TR(`商品発送先の一覧を返します。`),
+  Short: TR("shipping_addresses.list_shipping_addresses.get.summary"),
+  Long: TR(`shipping_addresses.list_shipping_addresses.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

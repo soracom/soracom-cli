@@ -27,13 +27,13 @@ var StatsAirGetCmdTo int64
 
 
 func init() {
-  StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", "imsi")
+  StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TR("stats.get_air_stats.get.parameters.imsi.description"))
 
-  StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", "集計単位。minutesは5分おき")
+  StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TR("stats.get_air_stats.get.parameters.period.description"))
 
-  StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, "集計対象時刻の始まりをunixtimeで与える")
+  StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TR("stats.get_air_stats.get.parameters.from.description"))
 
-  StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, "集計対象時刻の終わりをunixtimeで与える")
+  StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TR("stats.get_air_stats.get.parameters.to.description"))
 
 
 
@@ -43,8 +43,8 @@ func init() {
 
 var StatsAirGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Air Usage Report of Subscriber"),
-  Long: TR(`IMSI で指定した Subscriber の通信量履歴を取得する。`),
+  Short: TR("stats.get_air_stats.get.summary"),
+  Long: TR(`stats.get_air_stats.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

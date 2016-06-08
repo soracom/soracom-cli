@@ -21,7 +21,7 @@ var GroupsDeleteCmdGroupId string
 
 
 func init() {
-  GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", "対象のGroupのID")
+  GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TR("groups.delete_group.delete.parameters.group_id.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var GroupsDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete Group"),
-  Long: TR(`Group IDで指定されたGroupを削除する`),
+  Short: TR("groups.delete_group.delete.summary"),
+  Long: TR(`groups.delete_group.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -33,19 +33,19 @@ var {{$prefix}}Body string
 
 func init() {
 {{- range .StringFlags}}
-  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", "{{.ShortHelp}}")
+  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TR("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .IntegerFlags}}
-  {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, "{{.ShortHelp}}")
+  {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .FloatFlags}}
-  {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, "{{.ShortHelp}}")
+  {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .BoolFlags}}
-  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, "{{.ShortHelp}}")
+  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
 {{end}}
 
 {{if .BodyExists }}

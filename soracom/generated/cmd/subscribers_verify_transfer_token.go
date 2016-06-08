@@ -26,7 +26,7 @@ var SubscribersVerifyTransferTokenCmdBody string
 
 
 func init() {
-  SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", "")
+  SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TR(""))
 
 
 
@@ -38,8 +38,8 @@ func init() {
 
 var SubscribersVerifyTransferTokenCmd = &cobra.Command{
   Use: "verify-transfer-token",
-  Short: TR("Verify Subscriber Transfer Token"),
-  Long: TR(`Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。`),
+  Short: TR("subscribers.verify_subscriber_transfer_token.post.summary"),
+  Long: TR(`subscribers.verify_subscriber_transfer_token.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

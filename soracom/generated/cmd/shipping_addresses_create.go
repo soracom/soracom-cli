@@ -46,27 +46,27 @@ var ShippingAddressesCreateCmdBody string
 
 
 func init() {
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdAddressLine1, "address-line1", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdAddressLine1, "address-line1", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdAddressLine2, "address-line2", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdAddressLine2, "address-line2", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdBuilding, "building", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdBuilding, "building", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCity, "city", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCity, "city", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCompanyName, "company-name", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCompanyName, "company-name", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdDepartment, "department", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdDepartment, "department", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdFullName, "full-name", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdFullName, "full-name", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdOperatorId, "operator-id", "", "Operator ID")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdPhoneNumber, "phone-number", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdPhoneNumber, "phone-number", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdState, "state", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdState, "state", "", TR(""))
 
-  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdZipCode, "zip-code", "", "")
+  ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdZipCode, "zip-code", "", TR(""))
 
 
 
@@ -78,8 +78,8 @@ func init() {
 
 var ShippingAddressesCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create shipping address"),
-  Long: TR(`商品発送先を新規登録する。`),
+  Short: TR("shipping_addresses.create_shipping_address.post.summary"),
+  Long: TR(`shipping_addresses.create_shipping_address.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

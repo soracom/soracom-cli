@@ -21,7 +21,7 @@ var BillsExportCmdYyyyMM string
 
 
 func init() {
-  BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", "yyyyMM")
+  BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TR("yyyyMM"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var BillsExportCmd = &cobra.Command{
   Use: "export",
-  Short: TR("Output billing CSV file to S3"),
-  Long: TR(`指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。`),
+  Short: TR("bills.export_billing.post.summary"),
+  Long: TR(`bills.export_billing.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

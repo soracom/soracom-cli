@@ -26,7 +26,7 @@ var OperatorIssueEmailChangeTokenCmdBody string
 
 
 func init() {
-  OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdEmail, "email", "", "")
+  OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdEmail, "email", "", TR(""))
 
 
 
@@ -38,8 +38,8 @@ func init() {
 
 var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
   Use: "issue-email-change-token",
-  Short: TR("Issue Email Change Token"),
-  Long: TR(`メールアドレス変更用のワンタイムトークンをメールで送付する。`),
+  Short: TR("operator.issue_email_change_token.post.summary"),
+  Long: TR(`operator.issue_email_change_token.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

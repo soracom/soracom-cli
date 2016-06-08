@@ -21,7 +21,7 @@ var RolesListCmdOperatorId string
 
 
 func init() {
-  RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", "operator_id")
+  RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var RolesListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Roles"),
-  Long: TR(`Roleの一覧を返す。`),
+  Short: TR("roles.list_roles.get.summary"),
+  Long: TR(`roles.list_roles.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

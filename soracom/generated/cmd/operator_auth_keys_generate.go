@@ -21,7 +21,7 @@ var OperatorAuthKeysGenerateCmdOperatorId string
 
 
 func init() {
-  OperatorAuthKeysGenerateCmd.Flags().StringVar(&OperatorAuthKeysGenerateCmdOperatorId, "operator-id", "", "operator_id")
+  OperatorAuthKeysGenerateCmd.Flags().StringVar(&OperatorAuthKeysGenerateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OperatorAuthKeysGenerateCmd = &cobra.Command{
   Use: "generate",
-  Short: TR("Generate Operator AuthKey"),
-  Long: TR(`OperatorのAuthKeyを生成する。`),
+  Short: TR("operator.generate_operator_auth_key.post.summary"),
+  Long: TR(`operator.generate_operator_auth_key.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

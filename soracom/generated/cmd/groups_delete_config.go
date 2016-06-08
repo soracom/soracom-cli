@@ -25,11 +25,11 @@ var GroupsDeleteConfigCmdNamespace string
 
 
 func init() {
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", "対象のGroup")
+  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TR("groups.delete_configuration_parameter.delete.parameters.group_id.description"))
 
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", "削除対象のパラメータ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）")
+  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TR("groups.delete_configuration_parameter.delete.parameters.name.description"))
 
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", "対象のパラメータのネームスペース")
+  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TR("groups.delete_configuration_parameter.delete.parameters.namespace.description"))
 
 
 
@@ -39,9 +39,8 @@ func init() {
 
 var GroupsDeleteConfigCmd = &cobra.Command{
   Use: "delete-config",
-  Short: TR("Delete Group Configuration Parameters"),
-  Long: TR(`指定されたGroupのパラメータを削除
-`),
+  Short: TR("groups.delete_configuration_parameter.delete.summary"),
+  Long: TR(`groups.delete_configuration_parameter.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

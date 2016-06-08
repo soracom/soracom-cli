@@ -32,13 +32,13 @@ var UsersPasswordUpdateCmdBody string
 
 
 func init() {
-  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", "")
+  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", TR(""))
 
-  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", "")
+  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", TR(""))
 
-  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", "user_name")
+  UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -50,8 +50,8 @@ func init() {
 
 var UsersPasswordUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update Password"),
-  Long: TR(`SAMユーザーのパスワードを更新する。`),
+  Short: TR("users.update_user_password.put.summary"),
+  Long: TR(`users.update_user_password.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

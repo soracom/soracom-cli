@@ -23,9 +23,9 @@ var UsersPasswordConfiguredCmdUserName string
 
 
 func init() {
-  UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", "user_name")
+  UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersPasswordConfiguredCmd = &cobra.Command{
   Use: "configured",
-  Short: TR("Has User Password"),
-  Long: TR(`SAMユーザーのパスワードがセットされているかを取得する。`),
+  Short: TR("users.has_user_password.get.summary"),
+  Long: TR(`users.has_user_password.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -23,9 +23,9 @@ var ShippingAddressesDeleteCmdShippingAddressId string
 
 
 func init() {
-  ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", "Operator ID")
+  ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
-  ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", "shipping_address_id")
+  ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var ShippingAddressesDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete shipping address"),
-  Long: TR(`商品発送先を削除する。`),
+  Short: TR("shipping_addresses.delete_shipping_address.delete.summary"),
+  Long: TR(`shipping_addresses.delete_shipping_address.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

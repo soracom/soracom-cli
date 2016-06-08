@@ -10,6 +10,6 @@ func init() {
 
 var VpgCmd = &cobra.Command{
   Use: "vpg",
-  Short: TR("vpg.cli.summary"),
-  Long: TR(`vpg.cli.description`),
+  Short: TR("virtual_private_gateway.cli.summary"),
+  Long: TR(`virtual_private_gateway.cli.description`),
 }

@@ -21,7 +21,7 @@ var UsersListCmdOperatorId string
 
 
 func init() {
-  UsersListCmd.Flags().StringVar(&UsersListCmdOperatorId, "operator-id", "", "operator_id")
+  UsersListCmd.Flags().StringVar(&UsersListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var UsersListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Users"),
-  Long: TR(`SAMユーザー一覧を返す。`),
+  Short: TR("users.list_users.get.summary"),
+  Long: TR(`users.list_users.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

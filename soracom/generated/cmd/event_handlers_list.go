@@ -21,7 +21,7 @@ var EventHandlersListCmdTarget string
 
 
 func init() {
-  EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", "target")
+  EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TR("event_handlers.list_event_handlers.get.parameters.target.description"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var EventHandlersListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Event Handlers"),
-  Long: TR(`イベントハンドラの一覧を返す。
-`),
+  Short: TR("event_handlers.list_event_handlers.get.summary"),
+  Long: TR(`event_handlers.list_event_handlers.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

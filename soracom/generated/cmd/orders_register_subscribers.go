@@ -21,7 +21,7 @@ var OrdersRegisterSubscribersCmdOrderId string
 
 
 func init() {
-  OrdersRegisterSubscribersCmd.Flags().StringVar(&OrdersRegisterSubscribersCmdOrderId, "order-id", "", "order_id")
+  OrdersRegisterSubscribersCmd.Flags().StringVar(&OrdersRegisterSubscribersCmdOrderId, "order-id", "", TR("order_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OrdersRegisterSubscribersCmd = &cobra.Command{
   Use: "register-subscribers",
-  Short: TR("Register subscribers for operator."),
-  Long: TR(`発注したSIMをオペレーターに登録します。`),
+  Short: TR("orders.register_ordered_sim.post.summary"),
+  Long: TR(`orders.register_ordered_sim.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

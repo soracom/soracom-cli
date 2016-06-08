@@ -21,7 +21,7 @@ var EventHandlersGetCmdHandlerId string
 
 
 func init() {
-  EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", "handler ID")
+  EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TR("event_handlers.get_event_handler.get.parameters.handler_id.description"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var EventHandlersGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Event Handler"),
-  Long: TR(`指定されたイベントハンドラの情報を返す。
-`),
+  Short: TR("event_handlers.get_event_handler.get.summary"),
+  Long: TR(`event_handlers.get_event_handler.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

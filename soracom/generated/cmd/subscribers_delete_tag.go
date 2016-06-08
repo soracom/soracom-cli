@@ -23,9 +23,9 @@ var SubscribersDeleteTagCmdTagName string
 
 
 func init() {
-  SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", TR("subscribers.delete_subscriber_tag.delete.parameters.imsi.description"))
 
-  SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", "削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）")
+  SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", TR("subscribers.delete_subscriber_tag.delete.parameters.tag_name.description"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var SubscribersDeleteTagCmd = &cobra.Command{
   Use: "delete-tag",
-  Short: TR("Delete Subscriber Tag"),
-  Long: TR(`指定されたSubscriberのタグを削除`),
+  Short: TR("subscribers.delete_subscriber_tag.delete.summary"),
+  Long: TR(`subscribers.delete_subscriber_tag.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

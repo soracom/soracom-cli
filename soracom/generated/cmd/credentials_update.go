@@ -30,11 +30,11 @@ var CredentialsUpdateCmdBody string
 
 
 func init() {
-  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", "credentials_id")
+  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TR("credentials_id"))
 
-  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", "")
+  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TR(""))
 
-  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", "")
+  CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", TR(""))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var CredentialsUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update Credential"),
-  Long: TR(`認証情報を更新する。`),
+  Short: TR("credentials.update_credential.put.summary"),
+  Long: TR(`credentials.update_credential.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

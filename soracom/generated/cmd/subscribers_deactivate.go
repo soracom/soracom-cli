@@ -21,7 +21,7 @@ var SubscribersDeactivateCmdImsi string
 
 
 func init() {
-  SubscribersDeactivateCmd.Flags().StringVar(&SubscribersDeactivateCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersDeactivateCmd.Flags().StringVar(&SubscribersDeactivateCmdImsi, "imsi", "", TR("subscribers.deactivate_subscriber.post.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersDeactivateCmd = &cobra.Command{
   Use: "deactivate",
-  Short: TR("Deactivate Subscriber"),
-  Long: TR(`指定されたSubscriberを無効化`),
+  Short: TR("subscribers.deactivate_subscriber.post.summary"),
+  Long: TR(`subscribers.deactivate_subscriber.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

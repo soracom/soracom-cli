@@ -21,7 +21,7 @@ var SubscribersDeleteTransferTokenCmdToken string
 
 
 func init() {
-  SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", "token")
+  SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TR("subscribers.delete_subscriber_transfer_token.delete.parameters.token.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersDeleteTransferTokenCmd = &cobra.Command{
   Use: "delete-transfer-token",
-  Short: TR("Delete Subscribers Transfer Token"),
-  Long: TR(`Subscriberのオペレーター間移管トークンを削除し、移管をキャンセルする。`),
+  Short: TR("subscribers.delete_subscriber_transfer_token.delete.summary"),
+  Long: TR(`subscribers.delete_subscriber_transfer_token.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

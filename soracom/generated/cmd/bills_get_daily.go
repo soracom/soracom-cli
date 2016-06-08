@@ -21,7 +21,7 @@ var BillsGetDailyCmdYyyyMM string
 
 
 func init() {
-  BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", "year and month")
+  BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", TR("bills.get_billing_per_day.get.parameters.yyyyMM.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var BillsGetDailyCmd = &cobra.Command{
   Use: "get-daily",
-  Short: TR("Get bill per day"),
-  Long: TR(`指定した月の、日ごとの利用額明細を返します。このAPIは確定した利用額のみ返します。`),
+  Short: TR("bills.get_billing_per_day.get.summary"),
+  Long: TR(`bills.get_billing_per_day.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

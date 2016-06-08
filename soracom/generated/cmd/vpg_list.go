@@ -29,15 +29,15 @@ var VpgListCmdLimit int64
 
 
 func init() {
-  VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のGroupのID。このパラメータを指定することで次のVPGから始まるリストを取得できる。")
+  VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.last_evaluated_key.description"))
 
-  VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", "VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。")
+  VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_name.description"))
 
-  VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", "VPGについたTagの値。")
+  VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value.description"))
 
-  VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", "タグの検索条件。")
+  VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value_match_mode.description"))
 
-  VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, "レスポンス1ページあたりの最大数")
+  VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.limit.description"))
 
 
 
@@ -47,9 +47,8 @@ func init() {
 
 var VpgListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Virtual Private Gateways"),
-  Long: TR(`VPGの一覧を返す
-`),
+  Short: TR("virtual_private_gateway.list_virtual_private_gateways.get.summary"),
+  Long: TR(`virtual_private_gateway.list_virtual_private_gateways.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

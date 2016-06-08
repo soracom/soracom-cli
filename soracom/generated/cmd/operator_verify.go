@@ -26,7 +26,7 @@ var OperatorVerifyCmdBody string
 
 
 func init() {
-  OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", "")
+  OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TR(""))
 
 
 
@@ -38,10 +38,8 @@ func init() {
 
 var OperatorVerifyCmd = &cobra.Command{
   Use: "verify",
-  Short: TR("Verify Operator"),
-  Long: TR(`Operator 登録の確認を行う。
-メールで送られてくる確認用ワンタイムトークンをパラメーターに含めて呼び出しを行う。
-`),
+  Short: TR("operator.verify_operator.post.summary"),
+  Long: TR(`operator.verify_operator.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

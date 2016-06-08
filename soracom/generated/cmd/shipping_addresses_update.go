@@ -48,29 +48,29 @@ var ShippingAddressesUpdateCmdBody string
 
 
 func init() {
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", "Operator ID")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", "shipping_address_id")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", "")
+  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TR(""))
 
 
 
@@ -82,8 +82,8 @@ func init() {
 
 var ShippingAddressesUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update shipping address"),
-  Long: TR(`商品発送先を更新する。`),
+  Short: TR("shipping_addresses.update_shipping_address.put.summary"),
+  Long: TR(`shipping_addresses.update_shipping_address.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

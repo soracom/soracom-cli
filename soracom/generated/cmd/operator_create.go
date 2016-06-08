@@ -28,9 +28,9 @@ var OperatorCreateCmdBody string
 
 
 func init() {
-  OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", "")
+  OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TR(""))
 
-  OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", "")
+  OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TR(""))
 
 
 
@@ -42,11 +42,8 @@ func init() {
 
 var OperatorCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Operator"),
-  Long: TR(`Operator の新規登録をリクエストする。
-パラメーターで指定されたメールアドレスに宛てて、Operator 登録確認用の
-ワンタイムトークンを含んだメールが送信される。
-`),
+  Short: TR("operator.create_operator.post.summary"),
+  Long: TR(`operator.create_operator.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -23,9 +23,9 @@ var UsersPermissionsGetCmdUserName string
 
 
 func init() {
-  UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdUserName, "user-name", "", "user_name")
+  UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersPermissionsGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get User Permission"),
-  Long: TR(`SAMユーザーの権限設定を取得する。`),
+  Short: TR("users.get_user_permission.get.summary"),
+  Long: TR(`users.get_user_permission.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

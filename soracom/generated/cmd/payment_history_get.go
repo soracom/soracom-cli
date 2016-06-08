@@ -21,7 +21,7 @@ var PaymentHistoryGetCmdPaymentTransactionId string
 
 
 func init() {
-  PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", "payment_transaction_id")
+  PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TR("payment_transaction_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var PaymentHistoryGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get payment transaction result"),
-  Long: TR(`課金処理の結果を返します`),
+  Short: TR("payment.get_payment_transaction.get.summary"),
+  Long: TR(`payment.get_payment_transaction.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

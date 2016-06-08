@@ -27,8 +27,8 @@ func init() {
 
 var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
   Use: "reactivate-current",
-  Short: TR("Activate payment method"),
-  Long: TR(`エラーのある現在の支払い方法を有効化します。`),
+  Short: TR("payment.activate_payment_method.post.summary"),
+  Long: TR(`payment.activate_payment_method.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

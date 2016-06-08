@@ -28,9 +28,9 @@ var OperatorGenerateApiTokenCmdBody string
 
 
 func init() {
-  OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", "operator ID")
+  OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TR("operator ID"))
 
-  OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, "")
+  OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TR(""))
 
 
 
@@ -42,11 +42,8 @@ func init() {
 
 var OperatorGenerateApiTokenCmd = &cobra.Command{
   Use: "generate-api-token",
-  Short: TR("Generate Authentication Token"),
-  Long: TR(`新しい API トークンを発行する。
-現在の API トークンをヘッダーに入れてリクエストを行うと、新しい API トークンを含んだレスポンスを返す。
-以降のリクエスト時にはこの新しい API トークンを用いることができる。
-`),
+  Short: TR("operator.generate_auth_token.post.summary"),
+  Long: TR(`operator.generate_auth_token.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

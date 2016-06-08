@@ -25,11 +25,11 @@ var UsersAuthKeysGetCmdUserName string
 
 
 func init() {
-  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", "auth_key_id")
+  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", TR("auth_key_id"))
 
-  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", "operator_id")
+  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", "user_name")
+  UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -39,8 +39,8 @@ func init() {
 
 var UsersAuthKeysGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get AuthKey"),
-  Long: TR(`SAMユーザーのAuthKeyを返す。`),
+  Short: TR("users.get_user_auth_key.get.summary"),
+  Long: TR(`users.get_user_auth_key.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

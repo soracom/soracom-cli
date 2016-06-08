@@ -34,15 +34,15 @@ var PaymentMethodsWebpayRegisterCmdBody string
 
 
 func init() {
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", "")
+  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", "")
+  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", "")
+  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, "")
+  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, "")
+  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, TR(""))
 
 
 
@@ -54,8 +54,8 @@ func init() {
 
 var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
   Use: "register",
-  Short: TR("Register credit card information for WebPay"),
-  Long: TR(`WebPayでの支払い用のカード情報を登録します`),
+  Short: TR("payment.register_webpay_payment_method.post.summary"),
+  Long: TR(`payment.register_webpay_payment_method.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

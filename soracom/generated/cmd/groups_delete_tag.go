@@ -23,9 +23,9 @@ var GroupsDeleteTagCmdTagName string
 
 
 func init() {
-  GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", "対象のGroupのID")
+  GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TR("groups.delete_group_tag.delete.parameters.group_id.description"))
 
-  GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", "削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）")
+  GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TR("groups.delete_group_tag.delete.parameters.tag_name.description"))
 
 
 
@@ -35,9 +35,8 @@ func init() {
 
 var GroupsDeleteTagCmd = &cobra.Command{
   Use: "delete-tag",
-  Short: TR("Delete Group Tag"),
-  Long: TR(`指定されたGroupのタグを削除
-`),
+  Short: TR("groups.delete_group_tag.delete.summary"),
+  Long: TR(`groups.delete_group_tag.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

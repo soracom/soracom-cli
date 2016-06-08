@@ -23,9 +23,9 @@ var RolesGetCmdRoleId string
 
 
 func init() {
-  RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", "operator_id")
+  RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", "role_id")
+  RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TR("role_id"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var RolesGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Role"),
-  Long: TR(`Roleを取得する。`),
+  Short: TR("roles.get_role.get.summary"),
+  Long: TR(`roles.get_role.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

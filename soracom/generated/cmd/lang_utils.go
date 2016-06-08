@@ -11,7 +11,7 @@ import (
 type languageResourceMap map[string]interface{}
 
 var defaultLang = "en"
-var supportedLanguages = map[string]bool{"en": true, "ja": true}
+var supportedLanguages = map[string]bool{"en": true, "ja": true, "zh": true}
 var selectedLang = ""
 var languageRegexp = regexp.MustCompile(".*:(..)_?")
 var languageResources map[string]languageResourceMap
@@ -126,7 +126,11 @@ func TR(resourceID string) string {
 	r := languageResources[selectedLang]
 	s := visit(r, resourceID)
 	if s == "" {
-		return resourceID
+		r = languageResources[defaultLang]
+		s = visit(r, resourceID)
+		if s == "" {
+			return resourceID
+		}
 	}
 	return s
 }

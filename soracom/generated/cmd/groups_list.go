@@ -29,15 +29,15 @@ var GroupsListCmdLimit int64
 
 
 func init() {
-  GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のGroupのID。このパラメータを指定することで次のGroupから始まるリストを取得できる。")
+  GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("groups.list_groups.get.parameters.last_evaluated_key.description"))
 
-  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagName, "tag-name", "", "GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。")
+  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagName, "tag-name", "", TR("groups.list_groups.get.parameters.tag_name.description"))
 
-  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", "GroupについたTagの値。")
+  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", TR("groups.list_groups.get.parameters.tag_value.description"))
 
-  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", "タグの検索条件。")
+  GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("groups.list_groups.get.parameters.tag_value_match_mode.description"))
 
-  GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, "レスポンス1ページあたりの最大数")
+  GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TR("groups.list_groups.get.parameters.limit.description"))
 
 
 
@@ -47,9 +47,8 @@ func init() {
 
 var GroupsListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Groups"),
-  Long: TR(`Groupの一覧を返す
-`),
+  Short: TR("groups.list_groups.get.summary"),
+  Long: TR(`groups.list_groups.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

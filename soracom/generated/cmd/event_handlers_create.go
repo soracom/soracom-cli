@@ -36,17 +36,17 @@ var EventHandlersCreateCmdBody string
 
 
 func init() {
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", TR(""))
 
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", TR(""))
 
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TR(""))
 
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TR(""))
 
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TR(""))
 
-  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", "")
+  EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TR(""))
 
 
 
@@ -58,9 +58,8 @@ func init() {
 
 var EventHandlersCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Event Handler"),
-  Long: TR(`イベントハンドラを新規作成する。
-`),
+  Short: TR("event_handlers.create_event_handler.post.summary"),
+  Long: TR(`event_handlers.create_event_handler.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

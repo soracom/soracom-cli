@@ -30,11 +30,11 @@ var UsersCreateCmdBody string
 
 
 func init() {
-  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdDescription, "description", "", "")
+  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdDescription, "description", "", TR(""))
 
-  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", "operator_id")
+  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", "user_name")
+  UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var UsersCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create User"),
-  Long: TR(`SAMユーザーを新しく追加する。`),
+  Short: TR("users.create_user.post.summary"),
+  Long: TR(`users.create_user.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

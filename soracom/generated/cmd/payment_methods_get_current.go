@@ -27,8 +27,8 @@ func init() {
 
 var PaymentMethodsGetCurrentCmd = &cobra.Command{
   Use: "get-current",
-  Short: TR("Get payment method information"),
-  Long: TR(`現在の支払い方法を返します。propertiesに詳細情報が入っています`),
+  Short: TR("payment.get_payment_method.get.summary"),
+  Long: TR(`payment.get_payment_method.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

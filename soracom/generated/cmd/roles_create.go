@@ -32,13 +32,13 @@ var RolesCreateCmdBody string
 
 
 func init() {
-  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdDescription, "description", "", "")
+  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdDescription, "description", "", TR(""))
 
-  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", "operator_id")
+  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", "")
+  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TR(""))
 
-  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", "role_id")
+  RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TR("role_id"))
 
 
 
@@ -50,8 +50,8 @@ func init() {
 
 var RolesCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Role"),
-  Long: TR(`Roleを新しく追加する。`),
+  Short: TR("roles.create_role.post.summary"),
+  Long: TR(`roles.create_role.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

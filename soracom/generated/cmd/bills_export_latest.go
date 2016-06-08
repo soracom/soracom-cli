@@ -27,8 +27,8 @@ func init() {
 
 var BillsExportLatestCmd = &cobra.Command{
   Use: "export-latest",
-  Short: TR("Output latest billing CSV file to S3"),
-  Long: TR(`直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。`),
+  Short: TR("bills.export_latest_billing.post.summary"),
+  Long: TR(`bills.export_latest_billing.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

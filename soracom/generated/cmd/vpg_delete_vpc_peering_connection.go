@@ -23,9 +23,9 @@ var VpgDeleteVpcPeeringConnectionCmdVpgId string
 
 
 func init() {
-  VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", "削除対象のVPC Peering ConnectionのID")
+  VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", TR("virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.pcx_id.description"))
 
-  VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", "対象のVPGのID")
+  VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.vpg_id.description"))
 
 
 
@@ -35,9 +35,8 @@ func init() {
 
 var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
   Use: "delete-vpc-peering-connection",
-  Short: TR("Delete VPC Peering Connection"),
-  Long: TR(`指定されたVPC Peering Connectionを削除
-`),
+  Short: TR("virtual_private_gateway.delete_vpc_peering_connection.delete.summary"),
+  Long: TR(`virtual_private_gateway.delete_vpc_peering_connection.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

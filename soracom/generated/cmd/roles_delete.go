@@ -23,9 +23,9 @@ var RolesDeleteCmdRoleId string
 
 
 func init() {
-  RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", "operator_id")
+  RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", "role_id")
+  RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TR("role_id"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var RolesDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete Role"),
-  Long: TR(`Roleを削除する。`),
+  Short: TR("roles.delete_role.delete.summary"),
+  Long: TR(`roles.delete_role.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

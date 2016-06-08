@@ -21,7 +21,7 @@ var EventHandlersDeleteCmdHandlerId string
 
 
 func init() {
-  EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", "handler ID")
+  EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TR("event_handlers.delete_event_handler.delete.parameters.handler_id.description"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var EventHandlersDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete Event Handler"),
-  Long: TR(`指定されたイベントハンドラを削除する。
-`),
+  Short: TR("event_handlers.delete_event_handler.delete.summary"),
+  Long: TR(`event_handlers.delete_event_handler.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

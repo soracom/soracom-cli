@@ -21,7 +21,7 @@ var SubscribersUnsetGroupCmdImsi string
 
 
 func init() {
-  SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TR("subscribers.unset_group.post.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersUnsetGroupCmd = &cobra.Command{
   Use: "unset-group",
-  Short: TR("Unset Group to Subscriber"),
-  Long: TR(`指定されたSubscriberのGroup指定を解除`),
+  Short: TR("subscribers.unset_group.post.summary"),
+  Long: TR(`subscribers.unset_group.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

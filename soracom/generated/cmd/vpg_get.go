@@ -21,7 +21,7 @@ var VpgGetCmdVpgId string
 
 
 func init() {
-  VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", "対象のVPGのID")
+  VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.get_virtual_private_gateway.get.parameters.vpg_id.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var VpgGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Virtual Private Gateway"),
-  Long: TR(`指定されたVPGの情報を取得する`),
+  Short: TR("virtual_private_gateway.get_virtual_private_gateway.get.summary"),
+  Long: TR(`virtual_private_gateway.get_virtual_private_gateway.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

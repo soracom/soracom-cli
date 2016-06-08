@@ -33,19 +33,19 @@ var SubscribersListCmdLimit int64
 
 
 func init() {
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_subscribers.get.parameters.last_evaluated_key.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", "検索対象にする速度クラス。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TR("subscribers.list_subscribers.get.parameters.speed_class_filter.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", "検索対象にするstatus。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, `terminated`")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TR("subscribers.list_subscribers.get.parameters.status_filter.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", "検索対象にするタグの名前(完全一致)。")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TR("subscribers.list_subscribers.get.parameters.tag_name.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", "検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TR("subscribers.list_subscribers.get.parameters.tag_value.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", "タグの検索条件。")
+  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("subscribers.list_subscribers.get.parameters.tag_value_match_mode.description"))
 
-  SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, "取得するSubscriberの上限")
+  SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TR("subscribers.list_subscribers.get.parameters.limit.description"))
 
 
 
@@ -55,9 +55,8 @@ func init() {
 
 var SubscribersListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Subscribers"),
-  Long: TR(`条件にマッチするSubscriberのリストを返す。Subscriberの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを'Link'ヘッダに含めて返す。
-`),
+  Short: TR("subscribers.list_subscribers.get.summary"),
+  Long: TR(`subscribers.list_subscribers.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -21,7 +21,7 @@ var OperatorGetCmdOperatorId string
 
 
 func init() {
-  OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", "operator ID")
+  OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", TR("operator ID"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var OperatorGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get Operator"),
-  Long: TR(`Operatorの情報を返す。
-`),
+  Short: TR("operator.get_operator.get.summary"),
+  Long: TR(`operator.get_operator.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

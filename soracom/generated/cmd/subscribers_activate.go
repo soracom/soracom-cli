@@ -21,7 +21,7 @@ var SubscribersActivateCmdImsi string
 
 
 func init() {
-  SubscribersActivateCmd.Flags().StringVar(&SubscribersActivateCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersActivateCmd.Flags().StringVar(&SubscribersActivateCmdImsi, "imsi", "", TR("subscribers.activate_subscriber.post.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersActivateCmd = &cobra.Command{
   Use: "activate",
-  Short: TR("Activate Subscriber"),
-  Long: TR(`指定されたSubscriberのステータスを有効化`),
+  Short: TR("subscribers.activate_subscriber.post.summary"),
+  Long: TR(`subscribers.activate_subscriber.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

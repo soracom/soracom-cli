@@ -26,7 +26,7 @@ var EventHandlersUpdateCmdBody string
 
 
 func init() {
-  EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", "handler ID")
+  EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TR("event_handlers.update_event_handler.put.parameters.handler_id.description"))
 
 
 
@@ -38,9 +38,8 @@ func init() {
 
 var EventHandlersUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update Event Handler"),
-  Long: TR(`指定されたイベントハンドラを更新する。
-`),
+  Short: TR("event_handlers.update_event_handler.put.summary"),
+  Long: TR(`event_handlers.update_event_handler.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

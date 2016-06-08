@@ -21,7 +21,7 @@ var CouponsRegisterCmdCouponCode string
 
 
 func init() {
-  CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", "coupon_code")
+  CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TR("coupon_code"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var CouponsRegisterCmd = &cobra.Command{
   Use: "register",
-  Short: TR("Register Coupon"),
-  Long: TR(`クーポンを登録します。`),
+  Short: TR("payment.register_coupon.post.summary"),
+  Long: TR(`payment.register_coupon.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

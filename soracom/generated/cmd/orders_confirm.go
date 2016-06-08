@@ -21,7 +21,7 @@ var OrdersConfirmCmdOrderId string
 
 
 func init() {
-  OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", "order_id")
+  OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TR("order_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OrdersConfirmCmd = &cobra.Command{
   Use: "confirm",
-  Short: TR("Confirm order."),
-  Long: TR(`与信を実施し、問題ない場合に発注を確定します。`),
+  Short: TR("orders.confirm_order.put.summary"),
+  Long: TR(`orders.confirm_order.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

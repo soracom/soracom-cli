@@ -21,7 +21,7 @@ var OrdersGetCmdOrderId string
 
 
 func init() {
-  OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", "order_id")
+  OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TR("order_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OrdersGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get confirmed order."),
-  Long: TR(`発注確定済みの発注を返します。`),
+  Short: TR("orders.get_order.get.summary"),
+  Long: TR(`orders.get_order.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

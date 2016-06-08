@@ -21,7 +21,7 @@ var SubscribersUnsetExpiryTimeCmdImsi string
 
 
 func init() {
-  SubscribersUnsetExpiryTimeCmd.Flags().StringVar(&SubscribersUnsetExpiryTimeCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersUnsetExpiryTimeCmd.Flags().StringVar(&SubscribersUnsetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.unset_expirytime.post.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersUnsetExpiryTimeCmd = &cobra.Command{
   Use: "unset-expiry-time",
-  Short: TR("Delete Expiry Time of Subscriber"),
-  Long: TR(`指定されたSubscriberの有効期限を削除して無期限に変更`),
+  Short: TR("subscribers.unset_expirytime.post.summary"),
+  Long: TR(`subscribers.unset_expirytime.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

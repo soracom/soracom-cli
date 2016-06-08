@@ -27,8 +27,8 @@ func init() {
 
 var OrdersListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List confirmed orders."),
-  Long: TR(`発注確定済みの発注一覧を返します。`),
+  Short: TR("orders.list_orders.get.summary"),
+  Long: TR(`orders.list_orders.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

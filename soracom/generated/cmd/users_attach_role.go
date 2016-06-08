@@ -30,11 +30,11 @@ var UsersAttachRoleCmdBody string
 
 
 func init() {
-  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", "operator_id")
+  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", "")
+  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TR(""))
 
-  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", "user_name")
+  UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var UsersAttachRoleCmd = &cobra.Command{
   Use: "attach-role",
-  Short: TR("Attach Role to User"),
-  Long: TR(`ユーザーにロールをアタッチする。`),
+  Short: TR("roles.attach_role.post.summary"),
+  Long: TR(`roles.attach_role.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

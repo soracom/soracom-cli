@@ -27,8 +27,8 @@ func init() {
 
 var BillsGetLatestCmd = &cobra.Command{
   Use: "get-latest",
-  Short: TR("Get latest bill"),
-  Long: TR(`無料利用枠などの割引適用後の、直近の利用額を返します。このAPIで取得した金額は請求確定前の金額になります。`),
+  Short: TR("bills.get_latest_billing.get.summary"),
+  Long: TR(`bills.get_latest_billing.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

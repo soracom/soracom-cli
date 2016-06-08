@@ -25,11 +25,11 @@ var UsersAuthKeysDeleteCmdUserName string
 
 
 func init() {
-  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", "auth_key_id")
+  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TR("auth_key_id"))
 
-  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", "operator_id")
+  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", "user_name")
+  UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -39,8 +39,8 @@ func init() {
 
 var UsersAuthKeysDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete User AuthKey"),
-  Long: TR(`SAMユーザーのAuthKeyを削除する。`),
+  Short: TR("users.delete_user_auth_key.delete.summary"),
+  Long: TR(`users.delete_user_auth_key.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

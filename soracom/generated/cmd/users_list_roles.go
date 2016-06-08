@@ -23,9 +23,9 @@ var UsersListRolesCmdUserName string
 
 
 func init() {
-  UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", "operator_id")
+  UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdUserName, "user-name", "", "user_name")
+  UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersListRolesCmd = &cobra.Command{
   Use: "list-roles",
-  Short: TR("List User Roles"),
-  Long: TR(`ユーザーのロールの一覧を取得する。`),
+  Short: TR("roles.list_user_roles.get.summary"),
+  Long: TR(`roles.list_user_roles.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

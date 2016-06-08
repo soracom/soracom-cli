@@ -32,13 +32,13 @@ var StatsBeamExportCmdBody string
 
 
 func init() {
-  StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", "operator ID")
+  StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TR("stats.export_beam_stats.post.parameters.operator_id.description"))
 
-  StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", "")
+  StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TR(""))
 
-  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, "")
+  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TR(""))
 
-  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, "")
+  StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TR(""))
 
 
 
@@ -50,13 +50,8 @@ func init() {
 
 var StatsBeamExportCmd = &cobra.Command{
   Use: "export",
-  Short: TR("Export Beam Usage Report of All Subscribers"),
-  Long: TR(`Operator が保有する全 Subscriber の通信量をファイルで取得する。
-取得対象の期間は from, to のunixtimeで指定する。
-履歴の詳細度は月単位。
-ファイルの出力先は AWS S3。
-ファイルの出力形式は CSV。
-`),
+  Short: TR("stats.export_beam_stats.post.summary"),
+  Long: TR(`stats.export_beam_stats.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

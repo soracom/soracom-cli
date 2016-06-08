@@ -21,7 +21,7 @@ var EventHandlersListForSubscriberCmdImsi string
 
 
 func init() {
-  EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", "imsi")
+  EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TR("event_handlers.list_event_handlers_by_subscriber.get.parameters.imsi.description"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var EventHandlersListForSubscriberCmd = &cobra.Command{
   Use: "list-for-subscriber",
-  Short: TR("List Event Handlers related to Subscriber"),
-  Long: TR(`対象IMSIにひもづくイベントハンドラのリストを返す。
-`),
+  Short: TR("event_handlers.list_event_handlers_by_subscriber.get.summary"),
+  Long: TR(`event_handlers.list_event_handlers_by_subscriber.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

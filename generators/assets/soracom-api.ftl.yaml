@@ -30,9 +30,8 @@ paths:
   "/auth":
     post:
       tags: [Auth]
-      summary: ${auth.post.summary}
-      description: |
-        ${auth.post.description}
+      summary: ${auth.auth.post.summary}
+      description: ${auth.auth.post.description}
       operationId: auth
       x-soracom-cli:
         - auth
@@ -41,17 +40,17 @@ paths:
       parameters:
       - in: body
         name: auth
-        description: ${auth.post.parameters.body.description}
+        description: ${auth.auth.post.parameters.auth.description}
         required: true
         schema:
          '$ref': '#/definitions/AuthRequest'
       responses:
         '200':
-          description: ${auth.post.responses.status200.description}
+          description: ${auth.auth.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/AuthResponse'
         '401':
-          description: ${auth.post.responses.status401.description}
+          description: ${auth.auth.post.responses.status401.description}
 
   '/auth/password_reset_token/issue':
     post:
@@ -105,8 +104,8 @@ paths:
   '/credentials':
     get:
       tags: [Credential]
-      summary: List Credentials
-      description: 認証情報の一覧を返す。
+      summary: ${credentials.list_credentials.get.summary}
+      description: ${credentials.list_credentials.get.description}
       operationId: listCredentials
       security:
         - api_key: []
@@ -117,7 +116,7 @@ paths:
       produces: ['*/*']
       responses:
         '200':
-          description: OK
+          description: ${credentials.list_credentials.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/CredentialsModel'}
@@ -125,8 +124,8 @@ paths:
   '/credentials/{credentials_id}':
     post:
       tags: [Credential]
-      summary: Create Credential
-      description: 認証情報を新規作成する。
+      summary: ${credentials.create_credential.post.summary}
+      description: ${credentials.create_credential.post.description}
       operationId: createCredential
       security:
         - api_key: []
@@ -145,12 +144,12 @@ paths:
         schema: {'$ref': '#/definitions/CreateAndUpdateCredentialsModel'}
       responses:
         '201':
-          description: Created
+          description: ${credentials.create_credential.post.responses.status201.description}
           schema: {'$ref': '#/definitions/CredentialsModel'}
     put:
       tags: [Credential]
-      summary: Update Credential
-      description: 認証情報を更新する。
+      summary: ${credentials.update_credential.put.summary}
+      description: ${credentials.update_credential.put.description}
       operationId: updateCredential
       security:
         - api_key: []
@@ -169,14 +168,14 @@ paths:
         schema: {'$ref': '#/definitions/CreateAndUpdateCredentialsModel'}
       responses:
         '200':
-          description: OK
+          description: ${credentials.update_credential.put.responses.status200.description}
           schema: {'$ref': '#/definitions/CredentialsModel'}
         '400':
-          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+          description: ${credentials.update_credential.put.responses.status400.description}
     delete:
       tags: [Credential]
-      summary: Delete Credential
-      description: 認証情報を削除する。
+      summary: ${credentials.delete_credential.delete.summary}
+      description: ${credentials.delete_credential.delete.description}
       operationId: deleteCredential
       security:
         - api_key: []
@@ -195,11 +194,8 @@ paths:
   '/operators':
     post:
       tags: [Operator]
-      summary: Create Operator
-      description: |
-        Operator の新規登録をリクエストする。
-        パラメーターで指定されたメールアドレスに宛てて、Operator 登録確認用の
-        ワンタイムトークンを含んだメールが送信される。
+      summary: ${operator.create_operator.post.summary}
+      description: ${operator.create_operator.post.description}
       operationId: createOperator
       security:
         - api_key: []
@@ -217,15 +213,15 @@ paths:
          '$ref': '#/definitions/RegisterOperatorsRequest'
       responses:
         '201':
-          description: Operator が作成された
+          description: ${operator.create_operator.post.responses.status200.description}
         '400':
-          description: メールアドレスがすでに登録されているか、パスワードのフォーマットが不正
+          description: ${operator.create_operator.post.responses.status400.description}
 
   '/operators/email_change_token/issue':
     post:
       tags: [Operator]
-      summary: Issue Email Change Token
-      description: メールアドレス変更用のワンタイムトークンをメールで送付する。
+      summary: ${operator.issue_email_change_token.post.summary}
+      description: ${operator.issue_email_change_token.post.description}
       operationId: issueEmailChangeToken
       security:
         - api_key: []
@@ -246,8 +242,8 @@ paths:
   '/operators/email_change_token/verify':
     post:
       tags: [Operator]
-      summary: Verify Email Change Token
-      description: メールアドレス変更用のトークンを確認して、メールアドレスを変更する。
+      summary: ${operator.verify_email_change_token.post.summary}
+      description: ${operator.verify_email_change_token.post.description}
       operationId: verifyEmailChangeToken
       security:
         - api_key: []
@@ -268,10 +264,8 @@ paths:
   '/operators/verify':
     post:
       tags: [Operator]
-      summary: Verify Operator
-      description: |
-        Operator 登録の確認を行う。
-        メールで送られてくる確認用ワンタイムトークンをパラメーターに含めて呼び出しを行う。
+      summary: ${operator.verify_operator.post.summary}
+      description: ${operator.verify_operator.post.description}
       operationId: verifyOperator
       x-soracom-cli:
         - operator verify
@@ -286,18 +280,17 @@ paths:
          '$ref': '#/definitions/VerifyOperatorsRequest'
       responses:
         '200':
-          description: 登録成功
+          description: ${operator.verify_operator.post.responses.status200.description}
         '400':
-          description: ワンタイムトークンが不正
+          description: ${operator.verify_operator.post.responses.status400.description}
         '404':
-          description: ワンタイムトークンが期限切れ
+          description: ${operator.verify_operator.post.responses.status404.description}
 
   '/operators/{operator_id}':
     get:
       tags: [Operator]
-      summary: Get Operator
-      description: |
-        Operatorの情報を返す。
+      summary: ${operator.get_operator.get.summary}
+      description: ${operator.get_operator.get.description}
       operationId: getOperator
       security:
         - api_key: []
@@ -314,17 +307,17 @@ paths:
         type: string
       responses:
         '200':
-          description: OK
+          description: ${operator.get_operator.get.responses.status200.description}
           schema:
            '$ref': '#/definitions/GetOperatorResponse'
         '400':
-          description: Invalid Operator Id
+          description: ${operator.get_operator.get.responses.status400.description}
 
   '/operators/{operator_id}/auth_keys':
     get:
       tags: [Operator]
-      summary: List Operator AuthKeys
-      description: OperatorのAuthKey一覧を返す。
+      summary: ${operator.list_operator_auth_keys.get.summary}
+      description: ${operator.list_operator_auth_keys.get.description}
       operationId: listOperatorAuthKeys
       security:
         - api_key: []
@@ -337,14 +330,14 @@ paths:
       - {name: operator_id, in: path, description: operator_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${operator.list_operator_auth_keys.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/AuthKeyResponse'}
     post:
       tags: [Operator]
-      summary: Generate Operator AuthKey
-      description: OperatorのAuthKeyを生成する。
+      summary: ${operator.generate_operator_auth_key.post.summary}
+      description: ${operator.generate_operator_auth_key.post.description}
       operationId: generateOperatorAuthKey
       security:
         - api_key: []
@@ -357,13 +350,13 @@ paths:
       - {name: operator_id, in: path, description: operator_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${operator.generate_operator_auth_key.post.responses.status200.description}
           schema: {'$ref': '#/definitions/GenerateOperatorsAuthKeyResponse'}
   '/operators/{operator_id}/auth_keys/{auth_key_id}':
     delete:
       tags: [Operator]
-      summary: Delete Operator AuthKey
-      description: OperatorのAuthKeyを削除する。
+      summary: ${operator.delete_operator_auth_key.delete.summary}
+      description: ${operator.delete_operator_auth_key.delete.description}
       operationId: deleteOperatorAuthKey
       security:
         - api_key: []
@@ -382,9 +375,8 @@ paths:
   '/operators/{operator_id}/password':
     post:
       tags: [Operator]
-      summary: Update Operator Password
-      description: |
-        Operator のパスワードを更新する。
+      summary: ${operator.update_operator_password.post.summary}
+      description: ${operator.update_operator_password.post.description}
       operationId: updateOperatorPassword
       security:
         - api_key: []
@@ -407,17 +399,16 @@ paths:
          '$ref': '#/definitions/UpdatePasswordRequest'
       responses:
         '200':
-          description: OK
+          description: ${operator.update_operator_password.post.responses.status200.description}
         '400':
-          description: Invalid password.
+          description: ${operator.update_operator_password.post.responses.status400.description}
 
 
   '/operators/{operator_id}/support/token':
     post:
       tags: [Operator]
-      summary: Generate Token for Support Console
-      description: |
-        サポート画面アクセス用のトークンを返す。
+      summary: ${operator.generate_support_token.post.summary}
+      description: ${operator.generate_support_token.post.description}
       operationId: generateSupportToken
       security:
         - api_key: []
@@ -434,22 +425,19 @@ paths:
         type: string
       responses:
         '200':
-          description: OK
+          description: ${operator.generate_support_token.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/SupportTokenResponse'
         '400':
-          description: Invalid Operator Id
+          description: ${operator.generate_support_token.post.responses.status400.description}
         '403':
-          description: Invalid token
+          description: ${operator.generate_support_token.post.responses.status403.description}
 
   '/operators/{operator_id}/token':
     post:
       tags: [Operator]
-      summary: Generate Authentication Token
-      description: |
-        新しい API トークンを発行する。
-        現在の API トークンをヘッダーに入れてリクエストを行うと、新しい API トークンを含んだレスポンスを返す。
-        以降のリクエスト時にはこの新しい API トークンを用いることができる。
+      summary: ${operator.generate_auth_token.post.summary}
+      description: ${operator.generate_auth_token.post.description}
       operationId: generateAuthToken
       security:
         - api_key: []
@@ -472,11 +460,11 @@ paths:
          '$ref': '#/definitions/GenerateTokenRequest'
       responses:
         '200':
-          description: OK
+          description: ${operator.generate_auth_token.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/GenerateTokenResponse'
         '400':
-          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+          description: ${operator.generate_auth_token.post.responses.status400.description}
           schema:
            '$ref': '#/definitions/APICallError'
 
@@ -484,8 +472,8 @@ paths:
   '/operators/{operator_id}/roles':
     get:
       tags: [Role]
-      summary: List Roles
-      description: Roleの一覧を返す。
+      summary: ${roles.list_roles.get.summary}
+      description: ${roles.list_roles.get.description}
       operationId: listRoles
       security:
         - api_key: []
@@ -498,15 +486,15 @@ paths:
       - {name: operator_id, in: path, description: operator_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${roles.list_roles.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/ListRolesResponse'}
   '/operators/{operator_id}/roles/{role_id}':
     get:
       tags: [Role]
-      summary: Get Role
-      description: Roleを取得する。
+      summary: ${roles.get_role.get.summary}
+      description: ${roles.get_role.get.description}
       operationId: getRole
       security:
         - api_key: []
@@ -520,12 +508,12 @@ paths:
       - {name: role_id, in: path, description: role_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${roles.get_role.get.responses.status200.description}
           schema: {'$ref': '#/definitions/RoleResponse'}
     post:
       tags: [Role]
-      summary: Create Role
-      description: Roleを新しく追加する。
+      summary: ${roles.create_role.post.summary}
+      description: ${roles.create_role.post.description}
       operationId: createRole
       security:
         - api_key: []
@@ -544,12 +532,12 @@ paths:
         schema: {'$ref': '#/definitions/CreateOrUpdateRoleRequest'}
       responses:
         '200':
-          description: OK
+          description: ${roles.create_role.post.responses.status200.description}
           schema: {'$ref': '#/definitions/CreateRoleResponse'}
     put:
       tags: [Role]
-      summary: Update Role
-      description: Roleを編集する。
+      summary: ${roles.update_role.put.summary}
+      description: ${roles.update_role.put.description}
       operationId: updateRole
       security:
         - api_key: []
@@ -572,8 +560,8 @@ paths:
 
     delete:
       tags: [Role]
-      summary: Delete Role
-      description: Roleを削除する。
+      summary: ${roles.delete_role.delete.summary}
+      description: ${roles.delete_role.delete.description}
       operationId: deleteRole
       security:
         - api_key: []
@@ -591,8 +579,8 @@ paths:
   '/operators/{operator_id}/roles/{role_id}/users':
     get:
       tags: [Role]
-      summary: List Role Attached Users
-      description: Roleに紐づくユーザーの一覧を取得する。
+      summary: ${roles.list_role_attached_users.get.summary}
+      description: ${roles.list_role_attached_users.get.description}
       operationId: listRoleAttachedUsers
       security:
         - api_key: []
@@ -606,7 +594,7 @@ paths:
       - {name: role_id, in: path, description: role_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${roles.list_role_attached_users.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/UserDetailResponse'}
@@ -614,8 +602,8 @@ paths:
   '/operators/{operator_id}/users/{user_name}/roles':
     get:
       tags: [Role]
-      summary: List User Roles
-      description: ユーザーのロールの一覧を取得する。
+      summary: ${roles.list_user_roles.get.summary}
+      description: ${roles.list_user_roles.get.description}
       operationId: listUserRoles
       security:
         - api_key: []
@@ -629,14 +617,14 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${roles.list_user_roles.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/RoleResponse'}
     post:
       tags: [Role]
-      summary: Attach Role to User
-      description: ユーザーにロールをアタッチする。
+      summary: ${roles.attach_role.post.summary}
+      description: ${roles.attach_role.post.description}
       operationId: attachRole
       security:
         - api_key: []
@@ -659,8 +647,8 @@ paths:
   '/operators/{operator_id}/users/{user_name}/roles/{role_id}':
     delete:
       tags: [Role]
-      summary: Detach Role from User
-      description: ユーザーからロールをデタッチする。
+      summary: ${roles.detach_role.delete.summary}
+      description: ${roles.detach_role.delete.description}
       operationId: detachRole
       security:
         - api_key: []
@@ -680,8 +668,8 @@ paths:
   '/operators/{operator_id}/shipping_addresses':
     get:
       tags: [ShippingAddress]
-      summary: List shipping addresses
-      description: 商品発送先の一覧を返します。
+      summary: ${shipping_addresses.list_shipping_addresses.get.summary}
+      description: ${shipping_addresses.list_shipping_addresses.get.description}
       operationId: listShippingAddresses
       security:
         - api_key: []
@@ -698,12 +686,12 @@ paths:
           type: string
       responses:
         '200':
-          description: OK
+          description: ${shipping_addresses.list_shipping_addresses.get.responses.status200.description}
           schema: {'$ref': '#/definitions/ListShippingAddressResponse'}
     post:
       tags: [ShippingAddress]
-      summary: Create shipping address
-      description: 商品発送先を新規登録する。
+      summary: ${shipping_addresses.create_shipping_address.post.summary}
+      description: ${shipping_addresses.create_shipping_address.post.description}
       operationId: createShippingAddress
       security:
         - api_key: []
@@ -725,7 +713,7 @@ paths:
           schema: {'$ref': '#/definitions/ShippingAddressModel'}
       responses:
         '200':
-          description: OK
+          description: ${shipping_addresses.create_shipping_address.post.responses.status200.description}
           schema: {type: string}
         '201':
           description: shippingAddreddId
@@ -734,8 +722,8 @@ paths:
   '/operators/{operator_id}/shipping_addresses/{shipping_address_id}':
     get:
       tags: [ShippingAddress]
-      summary: Get shipping address
-      description: 商品発送先を返す。
+      summary: ${shipping_addresses.get_shipping_address.get.summary}
+      description: ${shipping_addresses.get_shipping_address.get.description}
       operationId: getShippingAddress
       security:
         - api_key: []
@@ -749,12 +737,12 @@ paths:
         - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${shipping_addresses.get_shipping_address.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetShippingAddressResponse'}
     put:
       tags: [ShippingAddress]
-      summary: Update shipping address
-      description: 商品発送先を更新する。
+      summary: ${shipping_addresses.update_shipping_address.put.summary}
+      description: ${shipping_addresses.update_shipping_address.put.description}
       operationId: updateShippingAddress
       security:
         - api_key: []
@@ -775,8 +763,8 @@ paths:
         '200': {description: OK}
     delete:
       tags: [ShippingAddress]
-      summary: Delete shipping address
-      description: 商品発送先を削除する。
+      summary: ${shipping_addresses.delete_shipping_address.delete.summary}
+      description: ${shipping_addresses.delete_shipping_address.delete.description}
       operationId: deleteShippingAddress
       security:
         - api_key: []
@@ -795,8 +783,8 @@ paths:
   '/operators/{operator_id}/users':
     get:
       tags: [User]
-      summary: List Users
-      description: SAMユーザー一覧を返す。
+      summary: ${users.list_users.get.summary}
+      description: ${users.list_users.get.description}
       operationId: listUsers
       security:
         - api_key: []
@@ -809,7 +797,7 @@ paths:
       - {name: operator_id, in: path, description: operator_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.list_users.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/UserDetailResponse'}
@@ -817,8 +805,8 @@ paths:
   '/operators/{operator_id}/users/{user_name}':
     get:
       tags: [User]
-      summary: Get User
-      description: SAMユーザーを返す。
+      summary: ${users.get_user.get.summary}
+      description: ${users.get_user.get.description}
       operationId: getUser
       security:
         - api_key: []
@@ -832,12 +820,12 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.get_user.get.responses.status200.description}
           schema: {'$ref': '#/definitions/UserDetailResponse'}
     post:
       tags: [User]
-      summary: Create User
-      description: SAMユーザーを新しく追加する。
+      summary: ${users.create_user.post.summary}
+      description: ${users.create_user.post.description}
       operationId: createUser
       security:
         - api_key: []
@@ -859,8 +847,8 @@ paths:
         '201': {description: Created}
     put:
       tags: [User]
-      summary: Update User
-      description: SAMユーザーを更新する。
+      summary: ${users.update_user.put.summary}
+      description: ${users.update_user.put.description}
       operationId: updateUser
       security:
         - api_key: []
@@ -880,12 +868,12 @@ paths:
       responses:
         '200': {description: OK}
         '404':
-          description: SAM User not found.
+          description: ${users.update_user.put.responses.status404.description}
           schema: {'$ref': '#/definitions/APICallError'}
     delete:
       tags: [User]
-      summary: Delete User
-      description: SAMユーザーを削除する。
+      summary: ${users.delete_user.delete.summary}
+      description: ${users.delete_user.delete.description}
       operationId: deleteUser
       security:
         - api_key: []
@@ -901,14 +889,14 @@ paths:
         '200': {description: OK}
         '204': {description: OK}
         '404':
-          description: SAM User not found.
+          description: ${users.delete_user.delete.responses.status404.description}
           schema: {'$ref': '#/definitions/APICallError'}
 
   '/operators/{operator_id}/users/{user_name}/auth_keys':
     get:
       tags: [User]
-      summary: List User AuthKeys
-      description: SAMユーザーのAuthKey一覧を返す。
+      summary: ${users.list_user_auth_keys.get.summary}
+      description: ${users.list_user_auth_keys.get.description}
       operationId: listUserAuthKeys
       security:
         - api_key: []
@@ -922,14 +910,14 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.list_user_auth_keys.get.responses.status200.description}
           schema:
             type: array
             items: {'$ref': '#/definitions/AuthKeyResponse'}
     post:
       tags: [User]
-      summary: Generate AuthKey
-      description: SAMユーザーのAuthKeyを生成する。
+      summary: ${users.generate_user_auth_key.post.summary}
+      description: ${users.generate_user_auth_key.post.description}
       operationId: generateUserAuthKey
       security:
         - api_key: []
@@ -943,14 +931,14 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.generate_user_auth_key.post.responses.status200.description}
           schema: {'$ref': '#/definitions/GenerateUserAuthKeyResponse'}
 
   '/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}':
     get:
       tags: [User]
-      summary: Get AuthKey
-      description: SAMユーザーのAuthKeyを返す。
+      summary: ${users.get_user_auth_key.get.summary}
+      description: ${users.get_user_auth_key.get.description}
       operationId: getUserAuthKey
       security:
         - api_key: []
@@ -965,12 +953,12 @@ paths:
       - {name: auth_key_id, in: path, description: auth_key_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.get_user_auth_key.get.responses.status200.description}
           schema: {'$ref': '#/definitions/AuthKeyResponse'}
     delete:
       tags: [User]
-      summary: Delete User AuthKey
-      description: SAMユーザーのAuthKeyを削除する。
+      summary: ${users.delete_user_auth_key.delete.summary}
+      description: ${users.delete_user_auth_key.delete.description}
       operationId: deleteUserAuthKey
       security:
         - api_key: []
@@ -988,14 +976,14 @@ paths:
         '200': {description: OK}
         '204': {description: OK}
         '404':
-          description: AuthKey not found.
+          description: ${users.delete_user_auth_key.delete.responses.status404.description}
           schema: {'$ref': '#/definitions/APICallError'}
 
   '/operators/{operator_id}/users/{user_name}/password':
     get:
       tags: [User]
-      summary: Has User Password
-      description: SAMユーザーのパスワードがセットされているかを取得する。
+      summary: ${users.has_user_password.get.summary}
+      description: ${users.has_user_password.get.description}
       operationId: hasUserPassword
       security:
         - api_key: []
@@ -1009,12 +997,12 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.has_user_password.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetUserPasswordResponse'}
     post:
       tags: [User]
-      summary: Create Password
-      description: SAMユーザーのパスワードを作成する。
+      summary: ${users.create_user_password.post.summary}
+      description: ${users.create_user_password.post.description}
       operationId: createUserPassword
       security:
         - api_key: []
@@ -1035,8 +1023,8 @@ paths:
         '200': {description: OK}
     put:
       tags: [User]
-      summary: Update Password
-      description: SAMユーザーのパスワードを更新する。
+      summary: ${users.update_user_password.put.summary}
+      description: ${users.update_user_password.put.description}
       operationId: updateUserPassword
       security:
         - api_key: []
@@ -1057,8 +1045,8 @@ paths:
         '200': {description: OK}
     delete:
       tags: [User]
-      summary: Delete Password
-      description: ユーザーのパスワードを削除する。
+      summary: ${users.delete_user_password.delete.summary}
+      description: ${users.delete_user_password.delete.description}
       operationId: deleteUserPassword
       security:
         - api_key: []
@@ -1075,14 +1063,14 @@ paths:
         '200': {description: OK}
         '204': {description: OK}
         '404':
-          description: Password registration is required.
+          description: ${users.delete_user_password.delete.responses.status404.description}
           schema: {'$ref': '#/definitions/APICallError'}
 
   '/operators/{operator_id}/users/{user_name}/permission':
     get:
       tags: [User]
-      summary: Get User Permission
-      description: SAMユーザーの権限設定を取得する。
+      summary: ${users.get_user_permission.get.summary}
+      description: ${users.get_user_permission.get.description}
       operationId: getUserPermission
       security:
         - api_key: []
@@ -1096,12 +1084,12 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${users.get_user_permission.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetUserPermissionResponse'}
     put:
       tags: [User]
-      summary: Update Permission to User
-      description: SAMユーザーの権限を更新する。
+      summary: ${users.update_user_permission.put.summary}
+      description: ${users.update_user_permission.put.description}
       operationId: updateUserPermission
       security:
         - api_key: []
@@ -1123,14 +1111,11 @@ paths:
 
 
 
-
-
 # subscribers
   '/subscribers':
     get:
-      summary: List Subscribers
-      description: |
-        条件にマッチするSubscriberのリストを返す。Subscriberの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      summary: ${subscribers.list_subscribers.get.summary}
+      description: ${subscribers.list_subscribers.get.description}
       operationId: listSubscribers
       security:
         - api_key: []
@@ -1140,46 +1125,46 @@ paths:
       parameters:
         - name: tag_name
           in: query
-          description: 検索対象にするタグの名前(完全一致)。
+          description: ${subscribers.list_subscribers.get.parameters.tag_name.description}
           required: false
           type: string
         - name: tag_value
           in: query
-          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+          description: ${subscribers.list_subscribers.get.parameters.tag_value.description}
           required: false
           type: string
         - name: tag_value_match_mode
           in: query
-          description: タグの検索条件。
+          description: ${subscribers.list_subscribers.get.parameters.tag_value_match_mode.description}
           required: false
           type: string
           enum: [exact, prefix]
           default: exact
         - name: status_filter
           in: query
-          description: '検索対象にするstatus。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, `terminated`'
+          description: ${subscribers.list_subscribers.get.parameters.status_filter.description}
           required: false
           type: string
         - name: speed_class_filter
           in: query
-          description: '検索対象にする速度クラス。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`'
+          description: ${subscribers.list_subscribers.get.parameters.speed_class_filter.description}
           required: false
           type: string
         - name: limit
           in: query
-          description: 取得するSubscriberの上限
+          description: ${subscribers.list_subscribers.get.parameters.limit.description}
           required: false
           type: integer
         - name: last_evaluated_key
           in: query
-          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+          description: ${subscribers.list_subscribers.get.parameters.last_evaluated_key.description}
           required: false
           type: string
       tags:
         - Subscriber
       responses:
         200:
-          description: A list of subscibers
+          description: ${subscribers.list_subscribers.get.responses.status200.description}
           schema:
             type: array
             items:
@@ -1187,8 +1172,8 @@ paths:
 
   '/subscribers/{imsi}/register':
     post:
-      summary: Register Subscriber
-      description: Subscriberを登録
+      summary: ${subscribers.register_subscriber.post.summary}
+      description: ${subscribers.register_subscriber.post.description}
       operationId: registerSubscriber
       security:
         - api_key: []
@@ -1200,12 +1185,12 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.register_subscriber.post.parameters.imsi.description}
           required: true
           type: string
         - name: subscriber
           in: body
-          description: subscriber
+          description: ${subscribers.register_subscriber.post.parameters.subscriber.description}
           required: true
           schema:
            '$ref': '#/definitions/RegisterSubscribersRequest'
@@ -1213,14 +1198,14 @@ paths:
         - Subscriber
       responses:
         201:
-          description: Subscriber登録完了
+          description: ${subscribers.register_subscriber.post.responses.status201.description}
           schema:
            '$ref': '#/definitions/Subscriber'
 
   '/subscribers/{imsi}':
     get:
-      summary: Get Subscriber
-      description: 指定されたSubscriberの情報を返す。
+      summary: ${subscribers.get_subscriber.get.summary}
+      description: ${subscribers.get_subscriber.get.description}
       operationId: getSubscriber
       security:
         - api_key: []
@@ -1230,23 +1215,23 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.get_subscriber.get.parameters.imsi.description}
           required: true
           type: string
       tags:
         - Subscriber
       responses:
         200:
-          description: 指定されたSubscriberの詳細情報
+          description: ${subscribers.get_subscriber.get.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.get_subscriber.get.responses.status404.description}
 
   '/subscribers/{imsi}/update_speed_class':
     post:
-      summary: Update Subscriber speed class
-      description: 指定されたSubscriberの速度クラスを変更します
+      summary: ${subscribers.update_speedclass.post.summary}
+      description: ${subscribers.update_speedclass.post.description}
       operationId: updateSpeedClass
       security:
         - api_key: []
@@ -1259,7 +1244,7 @@ paths:
         - name: imsi
           in: path
           type: string
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.update_speedclass.post.parameters.imsi.description}
           required: true
         - name: speed_class
           in: body
@@ -1270,16 +1255,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.update_speedclass.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.update_speedclass.post.responses.status404.description}
 
   '/subscribers/{imsi}/activate':
     post:
-      summary: Activate Subscriber
-      description: 指定されたSubscriberのステータスを有効化
+      summary: ${subscribers.activate_subscriber.post.summary}
+      description: ${subscribers.activate_subscriber.post.description}
       operationId: activateSubscriber
       security:
         - api_key: []
@@ -1291,7 +1276,7 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.activate_subscriber.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
@@ -1299,16 +1284,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.activate_subscriber.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.activate_subscriber.post.responses.status404.description}
 
   '/subscribers/{imsi}/deactivate':
     post:
-      summary: Deactivate Subscriber
-      description: 指定されたSubscriberを無効化
+      summary: ${subscribers.deactivate_subscriber.post.summary}
+      description: ${subscribers.deactivate_subscriber.post.description}
       operationId: deactivateSubscriber
       security:
         - api_key: []
@@ -1320,7 +1305,7 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.deactivate_subscriber.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
@@ -1328,16 +1313,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.deactivate_subscriber.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.deactivate_subscriber.post.responses.status404.description}
 
   '/subscribers/{imsi}/terminate':
     post:
-      summary: Terminate Subscriber
-      description: 指定されたSubscriberをTerminate
+      summary: ${subscribers.terminate_subscriber.post.summary}
+      description: ${subscribers.terminate_subscriber.post.description}
       operationId: terminateSubscriber
       security:
         - api_key: []
@@ -1349,7 +1334,7 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.terminate_subscriber.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
@@ -1357,16 +1342,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.terminate_subscriber.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.terminate_subscriber.post.responses.status404.description}
 
   '/subscribers/{imsi}/enable_termination':
     post:
-      summary: Enable Termination of Subscriber
-      description: 指定されたSubscriberをTerminate可能に設定する
+      summary: ${subscribers.enable_termination.post.summary}
+      description: ${subscribers.enable_termination.post.description}
       operationId: enableTermination
       security:
         - api_key: []
@@ -1378,7 +1363,7 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.enable_termination.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
@@ -1386,16 +1371,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.enable_termination.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.enable_termination.post.responses.status404.description}
 
   '/subscribers/{imsi}/disable_termination':
     post:
-      summary: Disable Termination of Subscriber
-      description: 指定されたSubscriberをTerminate不可能に設定する
+      summary: ${subscribers.disable_termination.post.summary}
+      description: ${subscribers.disable_termination.post.description}
       operationId: disableTermination
       security:
         - api_key: []
@@ -1407,7 +1392,7 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.disable_termination.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
@@ -1415,16 +1400,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.disable_termination.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.disable_termination.post.responses.status404.description}
 
   '/subscribers/{imsi}/set_expiry_time':
     post:
-      summary: Update Expiry Time of Subscriber
-      description: 指定されたSubscriberの有効期限を更新
+      summary: ${subscribers.set_expirytime.post.summary}
+      description: ${subscribers.set_expirytime.post.description}
       operationId: setExpiryTime
       security:
         - api_key: []
@@ -1436,13 +1421,13 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.set_expirytime.post.parameters.imsi.description}
           required: true
           type: string
           format: IMSI
         - name: request
           in: body
-          description: 更新後の有効期限(unixtime:ミリ秒単位)
+          description: ${subscribers.set_expirytime.post.parameters.request.description}
           schema:
            '$ref': '#/definitions/ExpiryTime'
           required: true
@@ -1450,16 +1435,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.set_expirytime.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.set_expirytime.post.responses.status404.description}
 
   '/subscribers/{imsi}/unset_expiry_time':
     post:
-      summary: Delete Expiry Time of Subscriber
-      description: 指定されたSubscriberの有効期限を削除して無期限に変更
+      summary: ${subscribers.unset_expirytime.post.summary}
+      description: ${subscribers.unset_expirytime.post.description}
       operationId: unsetExpiryTime
       security:
         - api_key: []
@@ -1471,21 +1456,21 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.unset_expirytime.post.parameters.imsi.description}
           required: true
           type: string
       tags:
         - Subscriber
       responses:
         204:
-          description: 当該Subscriberの有効期限を無期限に変更完了
+          description: ${subscribers.unset_expirytime.post.responses.status204.description}
         404:
-          description: 指定されたSubscriberが存在しないか、Subscriberに有効期限がない
+          description: ${subscribers.unset_expirytime.post.responses.status404.description}
 
   '/subscribers/{imsi}/set_group':
     post:
-      summary: Set Group to Subscriber
-      description: 指定されたSubscriberの所属先Groupを指定あるいは上書き変更
+      summary: ${subscribers.set_group.post.summary}
+      description: ${subscribers.set_group.post.description}
       operationId: setGroup
       security:
         - api_key: []
@@ -1497,12 +1482,12 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.set_group.post.parameters.imsi.description}
           required: true
           type: string
         - name: group
           in: body
-          description: Group（IDのみを含めばよい）
+          description: ${subscribers.set_group.post.parameters.group.description}
           schema:
            '$ref': '#/definitions/Group'
           required: true
@@ -1510,16 +1495,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.set_group.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.set_group.post.responses.status404.description}
 
   '/subscribers/{imsi}/unset_group':
     post:
-      summary: Unset Group to Subscriber
-      description: 指定されたSubscriberのGroup指定を解除
+      summary: ${subscribers.unset_group.post.summary}
+      description: ${subscribers.unset_group.post.description}
       operationId: unsetGroup
       security:
         - api_key: []
@@ -1531,24 +1516,23 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.unset_group.post.parameters.imsi.description}
           required: true
           type: string
       tags:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.unset_group.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しないか、SubscriberはGroupに属していない
+          description: ${subscribers.unset_group.post.responses.status404.description}
 
   '/subscribers/{imsi}/events/sessions':
     get:
-      summary: List Session Events
-      description: |
-        指定されたSubscriberのセッション作成・変更・削除のイベント履歴を返す。イベントの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      summary: ${subscribers.list_session_events.get.summary}
+      description: ${subscribers.list_session_events.get.description}
       operationId: listSessionEvents
       security:
         - api_key: []
@@ -1558,34 +1542,34 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.list_session_events.get.parameters.imsi.description}
           required: true
           type: string
         - name: from
           in: query
-          description: イベントの検索範囲時刻の始まり
+          description: ${subscribers.list_session_events.get.parameters.from.description}
           required: false
           type: integer
         - name: to
           in: query
-          description: イベントの検索範囲時刻の終わり
+          description: ${subscribers.list_session_events.get.parameters.to.description}
           required: false
           type: integer
         - name: limit
           in: query
-          description: 取得するイベント数の上限
+          description: ${subscribers.list_session_events.get.parameters.limit.description}
           required: false
           type: integer
         - name: last_evaluated_key
           in: query
-          description: 現ページで取得した最後のイベントのタイムスタンプ。このパラメータを指定することで次のイベント以降のリストを取得できる。
+          description: ${subscribers.list_session_events.get.parameters.last_evaluated_key.description}
           required: false
           type: string
       tags:
         - Subscriber
       responses:
         200:
-          description: A list of session events
+          description: ${subscribers.list_session_events.get.responses.status200.description}
           schema:
             type: array
             items:
@@ -1593,8 +1577,8 @@ paths:
 
   '/subscribers/{imsi}/tags':
     put:
-      summary: Bulk Insert or Update Subscriber Tags
-      description: 指定されたSubscriberのタグを追加・更新
+      summary: ${subscribers.put_subscriber_tags.put.summary}
+      description: ${subscribers.put_subscriber_tags.put.description}
       operationId: putSubscriberTags
       x-sam-operationId: putTags
       security:
@@ -1605,12 +1589,12 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.put_subscriber_tags.put.parameters.imsi.description}
           required: true
           type: string
         - name: tags
           in: body
-          description: 追加・更新対象のタグの配列
+          description: ${subscribers.put_subscriber_tags.put.parameters.tags.description}
           schema:
             type: array
             items:
@@ -1621,16 +1605,16 @@ paths:
         - Subscriber
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${subscribers.put_subscriber_tags.put.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${subscribers.put_subscriber_tags.put.responses.status404.description}
 
   '/subscribers/{imsi}/tags/{tag_name}':
     delete:
-      summary: Delete Subscriber Tag
-      description: 指定されたSubscriberのタグを削除
+      summary: ${subscribers.delete_subscriber_tag.delete.summary}
+      description: ${subscribers.delete_subscriber_tag.delete.description}
       operationId: deleteSubscriberTag
       x-sam-operationId: deleteTag
       security:
@@ -1641,28 +1625,28 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: 対象のSubscriberのIMSI
+          description: ${subscribers.delete_subscriber_tag.delete.parameters.imsi.description}
           required: true
           type: string
         - name: tag_name
           in: path
-          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          description: ${subscribers.delete_subscriber_tag.delete.parameters.tag_name.description}
           type: string
           required: true
       tags:
         - Subscriber
       responses:
         204:
-          description: 対象のタグの削除が完了
+          description: ${subscribers.delete_subscriber_tag.delete.responses.status204.description}
         404:
-          description: 指定されたSubscriberあるいはタグが存在しない
+          description: ${subscribers.delete_subscriber_tag.delete.responses.status404.description}
 
   '/subscribers/transfer_token/issue':
     post:
       tags:
         - Subscriber
-      summary: Issue Subscribers Transfer Token
-      description: Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。
+      summary: ${subscribers.issue_subscriber_transfer_token.post.summary}
+      description: ${subscribers.issue_subscriber_transfer_token.post.description}
       operationId: issueSubscriberTransferToken
       security:
         - api_key: []
@@ -1688,8 +1672,8 @@ paths:
     post:
       tags:
         - Subscriber
-      summary: Verify Subscriber Transfer Token
-      description: Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。
+      summary: ${subscribers.verify_subscriber_transfer_token.post.summary}
+      description: ${subscribers.verify_subscriber_transfer_token.post.description}
       operationId: verifySubscriberTransferToken
       security:
         - api_key: []
@@ -1707,7 +1691,7 @@ paths:
          '$ref': '#/definitions/VerifySubscriberTransferTokenRequest'
       responses:
         '200':
-          description: OK
+          description: ${subscribers.verify_subscriber_transfer_token.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/VerifySubscriberTransferTokenResponse'
 
@@ -1715,8 +1699,8 @@ paths:
     delete:
       tags:
         - Subscriber
-      summary: Delete Subscribers Transfer Token
-      description: Subscriberのオペレーター間移管トークンを削除し、移管をキャンセルする。
+      summary: ${subscribers.delete_subscriber_transfer_token.delete.summary}
+      description: ${subscribers.delete_subscriber_transfer_token.delete.description}
       operationId: deleteSubscriberTransferToken
       security:
         - api_key: []
@@ -1728,21 +1712,21 @@ paths:
       parameters:
         - name: token
           in: path
-          description: token
+          description: ${subscribers.delete_subscriber_transfer_token.delete.parameters.token.description}
           required: true
           type: string
       responses:
         204:
-          description: 削除を実行
+          description: ${subscribers.delete_subscriber_transfer_token.delete.responses.status204.description}
         404:
-          description: トークンが存在しない
+          description: ${subscribers.delete_subscriber_transfer_token.delete.responses.status404.description}
 
 # Billing
   '/bills':
     get:
       tags: [Billing]
-      summary: Get billing history
-      description: 過去の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      summary: ${bills.get_billing_history.get.summary}
+      description: ${bills.get_billing_history.get.description}
       operationId: getBillingHistory
       security:
         - api_key: []
@@ -1753,14 +1737,14 @@ paths:
       produces: [application/json]
       responses:
         '200':
-          description: OK
+          description: ${bills.get_billing_history.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetBillingHistoryResponse'}
 
   '/bills/latest':
     get:
       tags: [Billing]
-      summary: Get latest bill
-      description: 無料利用枠などの割引適用後の、直近の利用額を返します。このAPIで取得した金額は請求確定前の金額になります。
+      summary: ${bills.get_latest_billing.get.summary}
+      description: ${bills.get_latest_billing.get.description}
       operationId: getLatestBilling
       security:
         - api_key: []
@@ -1777,8 +1761,8 @@ paths:
   '/bills/latest/export':
     post:
       tags: [Billing]
-      summary: Output latest billing CSV file to S3
-      description: 直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。
+      summary: ${bills.export_latest_billing.post.summary}
+      description: ${bills.export_latest_billing.post.description}
       operationId: exportLatestBilling
       security:
         - api_key: []
@@ -1789,14 +1773,14 @@ paths:
       produces: [application/json]
       responses:
         '200':
-          description: OK
+          description: ${bills.export_latest_billing.post.responses.status200.description}
           schema: {'$ref': '#/definitions/FileOutputResult'}
 
   '/bills/{yyyyMM}':
     get:
       tags: [Billing]
-      summary: Get bill
-      description: 指定した月の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      summary: ${bills.get_billing.get.summary}
+      description: ${bills.get_billing.get.description}
       operationId: getBilling
       security:
         - api_key: []
@@ -1808,19 +1792,19 @@ paths:
       parameters:
         - name: yyyyMM
           in: path
-          description: year and month
+          description: ${bills.get_billing.get.parameters.yyyyMM.description}
           required: true
           type: string
       responses:
         '200':
-          description: OK
+          description: ${bills.get_billing.get.responses.status200.description}
           schema: {'$ref': '#/definitions/MonthlyBill'}
 
   '/bills/{yyyyMM}/daily':
     get:
       tags: [Billing]
-      summary: Get bill per day
-      description: 指定した月の、日ごとの利用額明細を返します。このAPIは確定した利用額のみ返します。
+      summary: ${bills.get_billing_per_day.get.summary}
+      description: ${bills.get_billing_per_day.get.description}
       operationId: getBillingPerDay
       security:
         - api_key: []
@@ -1832,19 +1816,19 @@ paths:
       parameters:
         - name: yyyyMM
           in: path
-          description: year and month
+          description: ${bills.get_billing_per_day.get.parameters.yyyyMM.description}
           required: true
           type: string
       responses:
         '200':
-          description: OK
+          description: ${bills.get_billing_per_day.get.responses.status200.description}
           schema: {'$ref': '#/definitions/DailyBillResponse'}
 
   '/bills/{yyyyMM}/export':
     post:
       tags: [Billing]
-      summary: Output billing CSV file to S3
-      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。
+      summary: ${bills.export_billing.post.summary}
+      description: ${bills.export_billing.post.description}
       operationId: exportBilling
       security:
         - api_key: []
@@ -1857,15 +1841,15 @@ paths:
       - {name: yyyyMM, in: path, description: yyyyMM, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${bills.export_billing.post.responses.status200.description}
           schema: {'$ref': '#/definitions/FileOutputResult'}
 
 #Payment
   '/coupons':
     get:
       tags: [Payment]
-      summary: List coupons
-      description: 現在登録されているクーポン一覧を返します。
+      summary: ${payment.list_coupons.get.summary}
+      description: ${payment.list_coupons.get.description}
       operationId: listCoupons
       security:
         - api_key: []
@@ -1876,14 +1860,14 @@ paths:
       produces: [application/json;charset=UTF-8]
       responses:
         '200':
-          description: OK
+          description: ${payment.list_coupons.get.responses.status200.description}
           schema: {'$ref': '#/definitions/ListCouponResponse'}
 
   '/coupons/{coupon_code}/register':
     post:
       tags: [Payment]
-      summary: Register Coupon
-      description: クーポンを登録します。
+      summary: ${payment.register_coupon.post.summary}
+      description: ${payment.register_coupon.post.description}
       operationId: registerCoupon
       security:
         - api_key: []
@@ -1896,14 +1880,14 @@ paths:
       - {name: coupon_code, in: path, description: coupon_code, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${payment.register_coupon.post.responses.status200.description}
           schema: {'$ref': '#/definitions/CouponResponse'}
 
   '/payment_history/transactions/{payment_transaction_id}':
     get:
       tags: [Payment]
-      summary: Get payment transaction result
-      description: 課金処理の結果を返します
+      summary: ${payment.get_payment_transaction.get.summary}
+      description: ${payment.get_payment_transaction.get.description}
       operationId: getPaymentTransaction
       security:
         - api_key: []
@@ -1917,14 +1901,14 @@ paths:
         required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${payment.get_payment_transaction.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetPaymentTransactionResult'}
 
   '/payment_methods/current':
     get:
       tags: [Payment]
-      summary: Get payment method information
-      description: 現在の支払い方法を返します。propertiesに詳細情報が入っています
+      summary: ${payment.get_payment_method.get.summary}
+      description: ${payment.get_payment_method.get.description}
       operationId: getPaymentMethod
       security:
         - api_key: []
@@ -1935,14 +1919,14 @@ paths:
       produces: [application/json;charset=UTF-8]
       responses:
         '200':
-          description: OK
+          description: ${payment.get_payment_method.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetPaymentMethodResult'}
 
   '/payment_methods/current/activate':
     post:
       tags: [Payment]
-      summary: Activate payment method
-      description: エラーのある現在の支払い方法を有効化します。
+      summary: ${payment.activate_payment_method.post.summary}
+      description: ${payment.activate_payment_method.post.description}
       operationId: activatePaymentMethod
       security:
         - api_key: []
@@ -1953,14 +1937,14 @@ paths:
       produces: [application/json;charset=UTF-8]
       responses:
         '200':
-          description: OK
+          description: ${payment.activate_payment_method.post.responses.status200.description}
           schema: {type: object}
 
   '/payment_methods/webpay':
     post:
       tags: [Payment]
-      summary: Register credit card information for WebPay
-      description: WebPayでの支払い用のカード情報を登録します
+      summary: ${payment.register_webpay_payment_method.post.summary}
+      description: ${payment.register_webpay_payment_method.post.description}
       operationId: registerWebPayPaymentMethod
       security:
         - api_key: []
@@ -1972,22 +1956,20 @@ paths:
       parameters:
       - in: body
         name: creditCard
-        description: creditCard
+        description: ${payment.register_webpay_payment_method.post.parameters.creditCard.description}
         required: true
         schema: {'$ref': '#/definitions/CreditCard'}
       responses:
         '200':
-          description: OK
+          description: ${payment.register_webpay_payment_method.post.responses.status200.description}
           schema: {type: object}
-
 
 # event handlers
   '/event_handlers':
     get:
       tags: [EventHandler]
-      summary: List Event Handlers
-      description: |
-        イベントハンドラの一覧を返す。
+      summary: ${event_handlers.list_event_handlers.get.summary}
+      description: ${event_handlers.list_event_handlers.get.description}
       operationId: listEventHandlers
       security:
         - api_key: []
@@ -1999,22 +1981,21 @@ paths:
       parameters:
       - name: target
         in: query
-        description: target
+        description: ${event_handlers.list_event_handlers.get.parameters.target.description}
         required: false
         type: string
         enum: [operator, imsi, tag, group]
       responses:
         '200':
-          description: OK
+          description: ${event_handlers.list_event_handlers.get.responses.status200.description}
           schema:
             type: array
             items:
              '$ref': '#/definitions/EventHandlerModel'
     post:
       tags: [EventHandler]
-      summary: Create Event Handler
-      description: |
-        イベントハンドラを新規作成する。
+      summary: ${event_handlers.create_event_handler.post.summary}
+      description: ${event_handlers.create_event_handler.post.description}
       operationId: createEventHandler
       security:
         - api_key: []
@@ -2026,22 +2007,21 @@ paths:
       parameters:
       - in: body
         name: req
-        description: req
+        description: ${event_handlers.create_event_handler.post.parameters.req.description}
         required: true
         schema:
          '$ref': '#/definitions/CreateEventHandlerRequest'
       responses:
         201:
-          description: Created
+          description: ${event_handlers.create_event_handler.post.responses.status201.description}
           schema:
            '$ref': '#/definitions/EventHandlerModel'
 
   '/event_handlers/subscribers/{imsi}':
     get:
       tags: [EventHandler]
-      summary: List Event Handlers related to Subscriber
-      description: |
-        対象IMSIにひもづくイベントハンドラのリストを返す。
+      summary: ${event_handlers.list_event_handlers_by_subscriber.get.summary}
+      description: ${event_handlers.list_event_handlers_by_subscriber.get.description}
       operationId: listEventHandlersBySubscriber
       security:
         - api_key: []
@@ -2053,12 +2033,12 @@ paths:
       parameters:
       - in: path
         name: imsi
-        description: imsi
+        description: ${event_handlers.list_event_handlers_by_subscriber.get.parameters.imsi.description}
         required: true
         type: string
       responses:
         '200':
-          description: OK
+          description: ${event_handlers.list_event_handlers_by_subscriber.get.responses.status200.description}
           schema:
             type: array
             items:
@@ -2067,9 +2047,8 @@ paths:
   '/event_handlers/{handler_id}':
     get:
       tags: [EventHandler]
-      summary: Get Event Handler
-      description: |
-        指定されたイベントハンドラの情報を返す。
+      summary: ${event_handlers.get_event_handler.get.summary}
+      description: ${event_handlers.get_event_handler.get.description}
       operationId: getEventHandler
       security:
         - api_key: []
@@ -2081,12 +2060,12 @@ paths:
       parameters:
       - in: path
         name: handler_id
-        description: handler ID
+        description: ${event_handlers.get_event_handler.get.parameters.handler_id.description}
         required: true
         type: string
       responses:
         '200':
-          description: OK
+          description: ${event_handlers.get_event_handler.get.responses.status200.description}
           schema:
            '$ref': '#/definitions/EventHandlerModel'
         '404':
@@ -2094,9 +2073,8 @@ paths:
 
     put:
       tags: [EventHandler]
-      summary: Update Event Handler
-      description: |
-        指定されたイベントハンドラを更新する。
+      summary: ${event_handlers.update_event_handler.put.summary}
+      description: ${event_handlers.update_event_handler.put.description}
       operationId: updateEventHandler
       security:
         - api_key: []
@@ -2108,7 +2086,7 @@ paths:
       parameters:
       - in: path
         name: handler_id
-        description: handler ID
+        description: ${event_handlers.update_event_handler.put.parameters.handler_id.description}
         required: true
         type: string
       - in: body
@@ -2119,15 +2097,14 @@ paths:
          '$ref': '#/definitions/UpdateEventHandlerRequest'
       responses:
         '200':
-          description: OK
+          description: ${event_handlers.update_event_handler.put.responses.status200.description}
         '400':
           description: Invalid handlerId.
 
     delete:
       tags: [EventHandler]
-      summary: Delete Event Handler
-      description: |
-        指定されたイベントハンドラを削除する。
+      summary: ${event_handlers.delete_event_handler.delete.summary}
+      description: ${event_handlers.delete_event_handler.delete.description}
       operationId: deleteEventHandler
       security:
         - api_key: []
@@ -2139,20 +2116,20 @@ paths:
       parameters:
       - in: path
         name: handler_id
-        description: handler ID
+        description: ${event_handlers.delete_event_handler.delete.parameters.handler_id.description}
         required: true
         type: string
       responses:
         '204':
-          description: OK
+          description: ${event_handlers.delete_event_handler.delete.responses.status204.description}
         '404':
-          description: EventHandler not found.
+          description: ${event_handlers.delete_event_handler.delete.responses.status404.description}
 
   '/event_handlers/{handler_id}/subscribers/{imsi}/ignore':
     post:
       tags: [EventHandler]
-      summary: Ignore Event Handler
-      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を追加
+      summary: ${event_handlers.set_ignore_event_handler.post.summary}
+      description: ${event_handlers.set_ignore_event_handler.post.description}
       operationId: setIgnoreEventHandler
       security:
         - api_key: []
@@ -2168,8 +2145,8 @@ paths:
         '200': {description: OK}
     delete:
       tags: [EventHandler]
-      summary: Delete Ignore Event Handler
-      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を削除
+      summary: ${event_handlers.delete_ignore_event_handler.delete.summary}
+      description: ${event_handlers.delete_ignore_event_handler.delete.description}
       operationId: deleteIgnoreEventHandler
       security:
         - api_key: []
@@ -2189,8 +2166,8 @@ paths:
   '/orders':
     get:
       tags: [Order]
-      summary: List confirmed orders.
-      description: 発注確定済みの発注一覧を返します。
+      summary: ${orders.list_orders.get.summary}
+      description: ${orders.list_orders.get.description}
       operationId: listOrders
       security:
         - api_key: []
@@ -2201,12 +2178,12 @@ paths:
       produces: [application/json;charset=UTF-8]
       responses:
         '200':
-          description: OK
+          description: ${orders.list_orders.get.responses.status200.description}
           schema: {'$ref': '#/definitions/ListOrderResponse'}
     post:
       tags: [Order]
-      summary: Create Quotation
-      description: 新規で発注見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。
+      summary: ${orders.create_quotation.post.summary}
+      description: ${orders.create_quotation.post.description}
       operationId: createQuotation
       security:
         - api_key: []
@@ -2218,22 +2195,22 @@ paths:
       parameters:
       - in: body
         name: request
-        description: request
+        description: ${orders.create_quotation.post.parameters.request.description}
         required: true
         schema: {'$ref': '#/definitions/CreateEstimatedOrderRequest'}
       responses:
         '200':
-          description: OK
+          description: ${orders.create_quotation.post.responses.status200.description}
           schema: {'$ref': '#/definitions/EstimatedOrderModel'}
         '201':
-          description: Created.
+          description: ${orders.create_quotation.post.responses.status201.description}
           schema: {'$ref': '#/definitions/EstimatedOrderModel'}
 
   '/orders/{order_id}':
     get:
       tags: [Order]
-      summary: Get confirmed order.
-      description: 発注確定済みの発注を返します。
+      summary: ${orders.get_order.get.summary}
+      description: ${orders.get_order.get.description}
       operationId: getOrder
       security:
         - api_key: []
@@ -2246,14 +2223,14 @@ paths:
       - {name: order_id, in: path, description: order_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${orders.get_order.get.responses.status200.description}
           schema: {'$ref': '#/definitions/GetOrderResponse'}
 
   '/orders/{order_id}/cancel':
     put:
       tags: [Order]
-      summary: Cancel order.
-      description: 発注をキャンセルします。既に発送済みの場合はエラーが返されます。
+      summary: ${orders.cancel_order.put.summary}
+      description: ${orders.cancel_order.put.description}
       operationId: cancelOrder
       security:
         - api_key: []
@@ -2266,14 +2243,14 @@ paths:
       - {name: order_id, in: path, description: order_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${orders.cancel_order.put.responses.status200.description}
           schema: {type: string}
 
   '/orders/{order_id}/confirm':
     put:
       tags: [Order]
-      summary: Confirm order.
-      description: 与信を実施し、問題ない場合に発注を確定します。
+      summary: ${orders.confirm_order.put.summary}
+      description: ${orders.confirm_order.put.description}
       operationId: confirmOrder
       security:
         - api_key: []
@@ -2286,14 +2263,14 @@ paths:
       - {name: order_id, in: path, description: order_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${orders.confirm_order.put.responses.status200.description}
           schema: {type: string}
 
   '/orders/{order_id}/subscribers/register':
     post:
       tags: [Order]
-      summary: Register subscribers for operator.
-      description: 発注したSIMをオペレーターに登録します。
+      summary: ${orders.register_ordered_sim.post.summary}
+      description: ${orders.register_ordered_sim.post.description}
       operationId: registerOrderedSim
       security:
         - api_key: []
@@ -2306,14 +2283,40 @@ paths:
       - {name: order_id, in: path, description: order_id, required: true, type: string}
       responses:
         '200':
-          description: OK
+          description: ${orders.register_ordered_sim.post.responses.status200.description}
           schema: {type: string}
+
+  '/orders/{order_id}/subscribers':
+    get:
+      tags: [Order]
+      summary: ${orders.list_ordered_subscriber.get.summary}
+      description: ${orders.list_ordered_subscriber.get.description}
+      operationId: listOrderedSubscribers
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: order_id, in: path, description: order_id, required: true, type: string}
+      - name: last_evaluated_key
+        in: query
+        description: ${orders.list_ordered_subscriber.get.request.last_evaluated_key.description}
+        required: false
+        type: string
+      - name: limit
+        in: query
+        description: ${orders.list_ordered_subscriber.get.request.limit.description}
+        required: false
+        type: integer
+        format: int32
+      responses:
+        '200':
+          description:  ${orders.list_ordered_subscriber.get.responses.status200.description}
+          schema: {$ref: '#/definitions/ListOrderedSubscriberResponse'}
 
   '/products':
     get:
       tags: [Order]
-      summary: List products
-      description: 商品一覧を返します。
+      summary: ${orders.list_products.get.summary}
+      description: ${orders.list_products.get.description}
       operationId: listProducts
       security:
         - api_key: []
@@ -2324,7 +2327,7 @@ paths:
       produces: [application/json;charset=UTF-8]
       responses:
         '200':
-          description: OK
+          description: ${orders.list_products.get.responses.status200.description}
           schema: {'$ref': '#/definitions/ListProductResponse'}
 
 
@@ -2332,8 +2335,8 @@ paths:
   '/stats/air/subscribers/{imsi}':
     get:
       tags: [Stats]
-      summary:  Get Air Usage Report of Subscriber
-      description: IMSI で指定した Subscriber の通信量履歴を取得する。
+      summary: ${stats.get_air_stats.get.summary}
+      description: ${stats.get_air_stats.get.description}
       operationId: getAirStats
       security:
         - api_key: []
@@ -2345,28 +2348,28 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: imsi
+          description: ${stats.get_air_stats.get.parameters.imsi.description}
           required: true
           type: string
         - name: from
           in: query
-          description: 集計対象時刻の始まりをunixtimeで与える
+          description: ${stats.get_air_stats.get.parameters.from.description}
           required: true
           type: integer
         - name: to
           in: query
-          description: 集計対象時刻の終わりをunixtimeで与える
+          description: ${stats.get_air_stats.get.parameters.to.description}
           required: true
           type: integer
         - name: period
           in: query
-          description: 集計単位。minutesは5分おき
+          description: ${stats.get_air_stats.get.parameters.period.description}
           required: true
           type: string
           enum: [month, day, minutes]
       responses:
         '200':
-          description: OK
+          description: ${stats.get_air_stats.get.responses.status200.description}
           schema:
             type: array
             items:
@@ -2375,8 +2378,8 @@ paths:
   '/stats/beam/subscribers/{imsi}':
     get:
       tags: [Stats]
-      summary:  Get Beam Usage Report of Subscriber
-      description: IMSI で指定した Subscriber のSoracom Beam利用量履歴を取得する。
+      summary: ${stats.get_beam_stats.get.summary}
+      description: ${stats.get_beam_stats.get.description}
       operationId: getBeamStats
       security:
         - api_key: []
@@ -2388,28 +2391,28 @@ paths:
       parameters:
         - name: imsi
           in: path
-          description: imsi
+          description: ${stats.get_beam_stats.get.parameters.imsi.description}
           required: true
           type: string
         - name: from
           in: query
-          description: 集計対象時刻の始まりをunixtimeで与える
+          description: ${stats.get_beam_stats.get.parameters.from.description}
           required: true
           type: integer
         - name: to
           in: query
-          description: 集計対象時刻の終わりをunixtimeで与える
+          description: ${stats.get_beam_stats.get.parameters.to.description}
           required: true
           type: integer
         - name: period
           in: query
-          description: 集計単位。minutesは5分おき
+          description: ${stats.get_beam_stats.get.parameters.period.description}
           required: true
           type: string
           enum: [month, day, minutes]
       responses:
         '200':
-          description: OK
+          description: ${stats.get_beam_stats.get.responses.status200.description}
           schema:
             type: array
             items:
@@ -2418,13 +2421,8 @@ paths:
   '/stats/air/operators/{operator_id}/export':
     post:
       tags: [Stats]
-      summary: Export Air Usage Report of All Subscribers
-      description: |
-        Operator が保有する全 Subscriber の通信量をファイルで取得する。
-        取得対象の期間は from, to のunixtimeで指定する。
-        履歴の詳細度は月単位。
-        ファイルの出力先は AWS S3。
-        ファイルの出力形式は CSV。
+      summary: ${stats.export_air_stats.post.summary}
+      description: ${stats.export_air_stats.post.description}
       operationId: exportAirStats
       security:
         - api_key: []
@@ -2436,31 +2434,26 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: ${stats.export_air_stats.post.parameters.operator_id.description}
         required: true
         type: string
       - in: body
         name: request
-        description: request
+        description: ${stats.export_air_stats.post.parameters.request.description}
         required: true
         schema:
          '$ref': '#/definitions/ExportRequest'
       responses:
         '200':
-          description: OK
+          description: ${stats.export_air_stats.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/FileOutputResult'
 
   '/stats/beam/operators/{operator_id}/export':
     post:
       tags: [Stats]
-      summary: Export Beam Usage Report of All Subscribers
-      description: |
-        Operator が保有する全 Subscriber の通信量をファイルで取得する。
-        取得対象の期間は from, to のunixtimeで指定する。
-        履歴の詳細度は月単位。
-        ファイルの出力先は AWS S3。
-        ファイルの出力形式は CSV。
+      summary: ${stats.export_beam_stats.post.summary}
+      description: ${stats.export_beam_stats.post.description}
       operationId: exportBeamStats
       security:
         - api_key: []
@@ -2472,27 +2465,26 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: ${stats.export_beam_stats.post.parameters.operator_id.description}
         required: true
         type: string
       - in: body
         name: request
-        description: request
+        description: ${stats.export_beam_stats.post.parameters.request.description}
         required: true
         schema:
          '$ref': '#/definitions/ExportRequest'
       responses:
         '200':
-          description: OK
+          description: ${stats.export_beam_stats.post.responses.status200.description}
           schema:
            '$ref': '#/definitions/FileOutputResult'
 
 # groups
   '/groups':
     get:
-      summary: List Groups
-      description: |
-        Groupの一覧を返す
+      summary: ${groups.list_groups.get.summary}
+      description: ${groups.list_groups.get.description}
       operationId: listGroups
       security:
         - api_key: []
@@ -2502,44 +2494,43 @@ paths:
       parameters:
         - name: tag_name
           in: query
-          description: GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。
+          description: ${groups.list_groups.get.parameters.tag_name.description}
           required: false
           type: string
         - name: tag_value
           in: query
-          description: GroupについたTagの値。
+          description: ${groups.list_groups.get.parameters.tag_value.description}
           required: false
           type: string
         - name: tag_value_match_mode
           in: query
-          description: タグの検索条件。
+          description: ${groups.list_groups.get.parameters.tag_value_match_mode.description}
           required: false
           type: string
           enum: [exact, prefix]
           default: exact
         - name: limit
           in: query
-          description: レスポンス1ページあたりの最大数
+          description: ${groups.list_groups.get.parameters.limit.description}
           required: false
           type: integer
         - name: last_evaluated_key
           in: query
-          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のGroupから始まるリストを取得できる。
+          description: ${groups.list_groups.get.parameters.last_evaluated_key.description}
           required: false
           type: string
       tags:
         - Group
       responses:
         200:
-          description: Groupの一覧
+          description: ${groups.list_groups.get.responses.status200.description}
           schema:
             type: array
             items:
              '$ref': '#/definitions/Group'
     post:
-      summary: Create Group
-      description: |
-        Groupを新規作成する
+      summary: ${groups.create_group.post.summary}
+      description: ${groups.create_group.post.description}
       operationId: createGroup
       security:
         - api_key: []
@@ -2549,7 +2540,7 @@ paths:
       parameters:
         - name: Group
           in: body
-          description: 作成対象のGroup
+          description: ${groups.create_group.post.parameters.group.description}
           schema:
            '$ref': '#/definitions/CreateGroupRequest'
           required: true
@@ -2557,15 +2548,14 @@ paths:
         - Group
       responses:
         201:
-          description: Created
+          description: ${groups.create_group.post.responses.status201.description}
           schema:
            '$ref': '#/definitions/Group'
 
   '/groups/{group_id}':
     get:
-      summary: Get Group
-      description: |
-        Group IDで指定されたGroupを返す
+      summary: ${groups.get_group.get.summary}
+      description: ${groups.get_group.get.description}
       operationId: getGroup
       security:
         - api_key: []
@@ -2575,21 +2565,21 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroupのID
+          description: ${groups.get_group.get.parameters.group_id.description}
           required: true
           type: string
       tags:
         - Group
       responses:
         200:
-          description: 指定されたGroup
+          description: ${groups.get_group.get.responses.status200.description}
           schema:
            '$ref': '#/definitions/Group'
         404:
-          description: 指定されたGroupは存在しない
+          description: ${groups.get_group.get.responses.status404.description}
     delete:
-      summary: Delete Group
-      description: Group IDで指定されたGroupを削除する
+      summary: ${groups.delete_group.delete.summary}
+      description: ${groups.delete_group.delete.description}
       operationId: deleteGroup
       security:
         - api_key: []
@@ -2599,22 +2589,21 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroupのID
+          description: ${groups.delete_group.delete.parameters.group_id.description}
           required: true
           type: string
       tags:
         - Group
       responses:
         204:
-          description: 指定されたGroupを削除完了
+          description: ${groups.delete_group.delete.responses.status204.description}
         404:
-          description: 指定されたGroupは存在しない
+          description: ${groups.delete_group.delete.responses.status404.description}
 
   '/groups/{group_id}/subscribers':
     get:
-      summary: List Subscribers in a group
-      description: |
-        Group IDで指定されたGroupに属するSubscriberの一覧を返す
+      summary: ${groups.list_subscribers_in_group.get.summary}
+      description: ${groups.list_subscribers_in_group.get.description}
       operationId: listSubscribersInGroup
       x-sam-operationId: listSubscribers
       security:
@@ -2625,34 +2614,33 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroupのID
+          description: ${groups.list_subscribers_in_group.get.parameters.group_id.description}
           required: true
           type: string
         - name: limit
           in: query
-          description: レスポンス1ページあたりの最大数
+          description: ${groups.list_subscribers_in_group.get.parameters.limit.description}
           required: false
           type: integer
         - name: last_evaluated_key
           in: query
-          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+          description: ${groups.list_subscribers_in_group.get.parameters.last_evaluated_key.description}
           required: false
           type: string
       tags:
         - Group
       responses:
         200:
-          description: 指定されたGroup
+          description: ${groups.list_subscribers_in_group.get.responses.status200.description}
           schema:
            '$ref': '#/definitions/Group'
         404:
-          description: 指定されたGroupは存在しない
+          description: ${groups.list_subscribers_in_group.get.responses.status404.description}
 
   '/groups/{group_id}/configuration/{namespace}':
     put:
-      summary: Update Group Configuration Parameters
-      description: |
-          指定されたGroupのパラメータを追加・更新
+      summary: ${groups.put_configuration_parameters.put.summary}
+      description: ${groups.put_configuration_parameters.put.description}
       operationId: putConfigurationParameters
       security:
         - api_key: []
@@ -2662,12 +2650,12 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroup
+          description: ${groups.put_configuration_parameters.put.parameters.group_id.description}
           required: true
           type: string
         - name: namespace
           in: path
-          description: 対象のConfiguration
+          description: ${groups.put_configuration_parameters.put.parameters.namespace.description}
           required: true
           type: string
           enum:
@@ -2675,7 +2663,7 @@ paths:
             - SoracomBeam
         - name: parameters
           in: body
-          description: 更新対象のオブジェクトの配列
+          description: ${groups.put_configuration_parameters.put.parameters.parameters.description}
           required: true
           schema:
             type: array
@@ -2685,17 +2673,16 @@ paths:
         - Group
       responses:
         200:
-          description: 更新後のGroup
+          description: ${groups.put_configuration_parameters.put.responses.status200.description}
           schema:
            '$ref': '#/definitions/Group'
         404:
-          description: 指定されたGroupが存在しない
+          description: ${groups.put_configuration_parameters.put.responses.status404.description}
 
   '/groups/{group_id}/configuration/{namespace}/{name}':
     delete:
-      summary: Delete Group Configuration Parameters
-      description: |
-          指定されたGroupのパラメータを削除
+      summary: ${groups.delete_configuration_parameter.delete.summary}
+      description: ${groups.delete_configuration_parameter.delete.description}
       operationId: deleteConfigurationParameter
       security:
         - api_key: []
@@ -2705,12 +2692,12 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroup
+          description: ${groups.delete_configuration_parameter.delete.parameters.group_id.description}
           required: true
           type: string
         - name: namespace
           in: path
-          description: 対象のパラメータのネームスペース
+          description: ${groups.delete_configuration_parameter.delete.parameters.namespace.description}
           required: true
           type: string
           enum:
@@ -2718,24 +2705,23 @@ paths:
             - SoracomBeam
         - name: name
           in: path
-          description: 削除対象のパラメータ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          description: ${groups.delete_configuration_parameter.delete.parameters.name.description}
           required: true
           type: string
       tags:
         - Group
       responses:
         200:
-          description: 更新後のGroup
+          description: ${groups.delete_configuration_parameter.delete.responses.status200.description}
           schema:
            '$ref': '#/definitions/Group'
         404:
-          description: 指定されたGroupが存在しない
+          description: ${groups.delete_configuration_parameter.delete.responses.status404.description}
 
   '/groups/{group_id}/tags':
     put:
-      summary: Update Group Tags
-      description: |
-          指定されたConfiguratio Groupのタグを追加・更新
+      summary: ${groups.put_group_tags.put.summary}
+      description: ${groups.put_group_tags.put.description}
       operationId: putGroupTags
       x-sam-operationId: putTags
       security:
@@ -2746,12 +2732,12 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroupのID
+          description: ${groups.put_group_tags.put.parameters.group_id.description}
           required: true
           type: string
         - name: tags
           in: body
-          description: 更新対象のタグの配列
+          description: ${groups.put_group_tags.put.parameters.tags.description}
           schema:
             type: array
             items:
@@ -2761,17 +2747,16 @@ paths:
         - Group
       responses:
         200:
-          description: 更新後のSubscriberの詳細情報
+          description: ${groups.put_group_tags.put.responses.status200.description}
           schema:
            '$ref': '#/definitions/Subscriber'
         404:
-          description: 指定されたSubscriberが存在しない
+          description: ${groups.put_group_tags.put.responses.status404.description}
 
   '/groups/{group_id}/tags/{tag_name}':
     delete:
-      summary: Delete Group Tag
-      description: |
-          指定されたGroupのタグを削除
+      summary: ${groups.delete_group_tag.delete.summary}
+      description: ${groups.delete_group_tag.delete.description}
       operationId: deleteGroupTag
       x-sam-operationId: deleteTag
       security:
@@ -2782,28 +2767,27 @@ paths:
       parameters:
         - name: group_id
           in: path
-          description: 対象のGroupのID
+          description: ${groups.delete_group_tag.delete.parameters.group_id.description}
           required: true
           type: string
         - name: tag_name
           in: path
-          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+          description: ${groups.delete_group_tag.delete.parameters.tag_name.description}
           type: string
           required: true
       tags:
         - Group
       responses:
         204:
-          description: 対象のタグの削除が完了
+          description: ${groups.delete_group_tag.delete.responses.status204.description}
         404:
-          description: 指定されたSubscriberあるいはタグが存在しない
+          description: ${groups.delete_group_tag.delete.responses.status404.description}
 
 # Virtual Private Gateway
   '/virtual_private_gateways':
     get:
-      summary: List Virtual Private Gateways
-      description: |
-        VPGの一覧を返す
+      summary: ${virtual_private_gateway.list_virtual_private_gateways.get.summary}
+      description: ${virtual_private_gateway.list_virtual_private_gateways.get.description}
       x-soracom-cli:
         - vpg list
       operationId: listVirtualPrivateGateways
@@ -2814,44 +2798,43 @@ paths:
       parameters:
         - name: tag_name
           in: query
-          description: VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_name.description}
           required: false
           type: string
         - name: tag_value
           in: query
-          description: VPGについたTagの値。
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value.description}
           required: false
           type: string
         - name: tag_value_match_mode
           in: query
-          description: タグの検索条件。
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value_match_mode.description}
           required: false
           type: string
           enum: [exact, prefix]
           default: exact
         - name: limit
           in: query
-          description: レスポンス1ページあたりの最大数
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.parameters.limit.description}
           required: false
           type: integer
         - name: last_evaluated_key
           in: query
-          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のVPGから始まるリストを取得できる。
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.parameters.last_evaluated_key.description}
           required: false
           type: string
       tags:
         - VirtualPrivateGateway
       responses:
         200:
-          description: VPGの一覧
+          description: ${virtual_private_gateway.list_virtual_private_gateways.get.responses.status200.description}
           schema:
             type: array
             items:
               $ref: '#/definitions/VirtualPrivateGateway'
     post:
-      summary: Create Virtual Private Gateway
-      description: |
-        VPGを新規作成する
+      summary: ${virtual_private_gateway.create_virtual_private_gateway.post.summary}
+      description: ${virtual_private_gateway.create_virtual_private_gateway.post.description}
       x-soracom-cli:
         - vpg create
       operationId: createVirtualPrivateGateway
@@ -2863,7 +2846,7 @@ paths:
       parameters:
         - name: CreateVirtualPrivateGatewayRequest
           in: body
-          description: 作成対象のVPGの情報を含むリクエスト
+          description: ${virtual_private_gateway.create_virtual_private_gateway.post.parameters.create_virtual_private_gateway_request.description}
           schema:
             $ref: '#/definitions/CreateVirtualPrivateGatewayRequest'
           required: true
@@ -2871,14 +2854,14 @@ paths:
         - VirtualPrivateGateway
       responses:
         201:
-          description: Created
+          description: ${virtual_private_gateway.create_virtual_private_gateway.post.responses.status201.description}
           schema:
             $ref: '#/definitions/VirtualPrivateGateway'
 
   '/virtual_private_gateways/{vpg_id}':
     get:
-      summary: Get Virtual Private Gateway
-      description: 指定されたVPGの情報を取得する
+      summary: ${virtual_private_gateway.get_virtual_private_gateway.get.summary}
+      description: ${virtual_private_gateway.get_virtual_private_gateway.get.description}
       x-soracom-cli:
         - vpg get
       operationId: getVirtualPrivateGateway
@@ -2889,21 +2872,21 @@ paths:
       parameters:
         - name: vpg_id
           in: path
-          description: 対象のVPGのID
+          description: ${virtual_private_gateway.get_virtual_private_gateway.get.parameters.vpg_id.description}
           required: true
           type: string
       tags:
         - VirtualPrivateGateway
       responses:
         200:
-          description: 指定されたVPG
+          description: ${virtual_private_gateway.get_virtual_private_gateway.get.responses.status200.description}
         404:
-          description: 指定されたVPGは存在しない
+          description: ${virtual_private_gateway.get_virtual_private_gateway.get.responses.status404.description}
 
   '/virtual_private_gateways/{vpg_id}/terminate':
     post:
-      summary: Terminate Virtual Private Gateway
-      description: 指定されたVPGをTerminateする
+      summary: ${virtual_private_gateway.terminate_virtual_private_gateway.post.summary}
+      description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.description}
       x-soracom-cli:
         - vpg terminate
       operationId: terminateVirtualPrivateGateway
@@ -2915,24 +2898,23 @@ paths:
       parameters:
         - name: vpg_id
           in: path
-          description: 対象のVPGのID
+          description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.parameters.vpg_id.description}
           required: true
           type: string
       tags:
         - VirtualPrivateGateway
       responses:
         200:
-          description: 指定されたVPGのTerminate作業を開始
+          description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.responses.status200.description}
         400:
-          description: 指定されたVPGのTerminate出来ない理由が存在
+          description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.responses.status400.description}
         404:
-          description: 指定されたVPGは存在しない
+          description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.responses.status404.description}
 
   '/virtual_private_gateways/{vpg_id}/vpc_peering_connections':
     post:
-      summary: Create VPC Peering Connection
-      description: |
-        指定されたVPGにVPC Peering Connectionを作成
+      summary: ${virtual_private_gateway.create_vpc_peering_connection.post.summary}
+      description: ${virtual_private_gateway.create_vpc_peering_connection.post.description}
       operationId: createVpcPeeringConnection
       consumes: [application/json]
       produces: [application/json]
@@ -2944,12 +2926,12 @@ paths:
       parameters:
         - name: vpg_id
           in: path
-          description: 対象のVPGのID
+          description: ${virtual_private_gateway.create_vpc_peering_connection.post.parameters.vpg_id.description}
           required: true
           type: string
         - name: vpc_peering_connection
           in: body
-          description: 作成対象のVPC Peering Connection
+          description: ${virtual_private_gateway.create_vpc_peering_connection.post.parameters.vpc_peering_connection.description}
           schema:
             $ref: '#/definitions/CreateVpcPeeringConnectionRequest'
           required: true
@@ -2957,17 +2939,16 @@ paths:
         - VirtualPrivateGateway
       responses:
         201:
-          description: 作成されたVPC Peering Connection
+          description: ${virtual_private_gateway.create_vpc_peering_connection.post.responses.status201.description}
           schema:
             $ref: '#/definitions/CreateVpcPeeringConnectionRequest'
         404:
-          description: 指定されたVPC Peering Connectionは存在しない
+          description: ${virtual_private_gateway.create_vpc_peering_connection.post.responses.status404.description}
 
   '/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}':
     delete:
-      summary: Delete VPC Peering Connection
-      description: |
-        指定されたVPC Peering Connectionを削除
+      summary: ${virtual_private_gateway.delete_vpc_peering_connection.delete.summary}
+      description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.description}
       operationId: deleteVpcPeeringConnection
       x-soracom-cli:
         - vpg delete-vpc-peering-connection
@@ -2977,21 +2958,21 @@ paths:
       parameters:
         - name: vpg_id
           in: path
-          description: 対象のVPGのID
+          description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.vpg_id.description}
           required: true
           type: string
         - name: pcx_id
           in: path
-          description: 削除対象のVPC Peering ConnectionのID
+          description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.pcx_id.description}
           required: true
           type: string
       tags:
         - VirtualPrivateGateway
       responses:
         204:
-          description: 指定されたVPC Peering Connectionの削除完了
+          description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.responses.status204.description}
         404:
-          description: 指定されたVPC Peering Connectionは存在しない
+          description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.responses.status404.description}
 
 definitions:
 
@@ -3655,6 +3636,19 @@ definitions:
       product: {description: 商品,'$ref': '#/definitions/ProductModel'}
       productAmount: {type: number, format: double, description: 商品金額}
       quantity: {type: integer, format: int32, description: 購入数}
+
+  ListOrderedSubscriberResponse:
+    properties:
+      orderedSubscriberList:
+        type: array
+        description: 発注したSIMのリスト
+        items: {$ref: '#/definitions/OrderedSubscriber'}
+
+  OrderedSubscriber:
+    properties:
+      imsi: {type: string, description: IMSI}
+      msisdn: {type: string, description: MSISDN}
+      serialNumber: {type: string, description: serialNumber}
 
   ListProductResponse:
     properties:

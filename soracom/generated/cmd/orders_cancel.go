@@ -21,7 +21,7 @@ var OrdersCancelCmdOrderId string
 
 
 func init() {
-  OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", "order_id")
+  OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", TR("order_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OrdersCancelCmd = &cobra.Command{
   Use: "cancel",
-  Short: TR("Cancel order."),
-  Long: TR(`発注をキャンセルします。既に発送済みの場合はエラーが返されます。`),
+  Short: TR("orders.cancel_order.put.summary"),
+  Long: TR(`orders.cancel_order.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

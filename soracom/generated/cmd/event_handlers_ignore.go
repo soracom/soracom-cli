@@ -23,9 +23,9 @@ var EventHandlersIgnoreCmdImsi string
 
 
 func init() {
-  EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", "handler_id")
+  EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TR("handler_id"))
 
-  EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", "imsi")
+  EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TR("imsi"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var EventHandlersIgnoreCmd = &cobra.Command{
   Use: "ignore",
-  Short: TR("Ignore Event Handler"),
-  Long: TR(`指定のIMSIに対して、指定のイベントハンドラを無視する設定を追加`),
+  Short: TR("event_handlers.set_ignore_event_handler.post.summary"),
+  Long: TR(`event_handlers.set_ignore_event_handler.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -32,13 +32,13 @@ var VpgCreateVpcPeeringConnectionCmdBody string
 
 
 func init() {
-  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", "")
+  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", TR(""))
 
-  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", "")
+  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", TR(""))
 
-  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerVpcId, "peer-vpc-id", "", "")
+  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerVpcId, "peer-vpc-id", "", TR(""))
 
-  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", "対象のVPGのID")
+  VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.create_vpc_peering_connection.post.parameters.vpg_id.description"))
 
 
 
@@ -50,9 +50,8 @@ func init() {
 
 var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
   Use: "create-vpc-peering-connection",
-  Short: TR("Create VPC Peering Connection"),
-  Long: TR(`指定されたVPGにVPC Peering Connectionを作成
-`),
+  Short: TR("virtual_private_gateway.create_vpc_peering_connection.post.summary"),
+  Long: TR(`virtual_private_gateway.create_vpc_peering_connection.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

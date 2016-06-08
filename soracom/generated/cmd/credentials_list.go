@@ -27,8 +27,8 @@ func init() {
 
 var CredentialsListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Credentials"),
-  Long: TR(`認証情報の一覧を返す。`),
+  Short: TR("credentials.list_credentials.get.summary"),
+  Long: TR(`credentials.list_credentials.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

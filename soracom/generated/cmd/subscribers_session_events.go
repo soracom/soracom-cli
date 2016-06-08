@@ -29,15 +29,15 @@ var SubscribersSessionEventsCmdTo int64
 
 
 func init() {
-  SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TR("subscribers.list_session_events.get.parameters.imsi.description"))
 
-  SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", "現ページで取得した最後のイベントのタイムスタンプ。このパラメータを指定することで次のイベント以降のリストを取得できる。")
+  SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_session_events.get.parameters.last_evaluated_key.description"))
 
-  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, "イベントの検索範囲時刻の始まり")
+  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TR("subscribers.list_session_events.get.parameters.from.description"))
 
-  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, "取得するイベント数の上限")
+  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TR("subscribers.list_session_events.get.parameters.limit.description"))
 
-  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, "イベントの検索範囲時刻の終わり")
+  SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TR("subscribers.list_session_events.get.parameters.to.description"))
 
 
 
@@ -47,9 +47,8 @@ func init() {
 
 var SubscribersSessionEventsCmd = &cobra.Command{
   Use: "session-events",
-  Short: TR("List Session Events"),
-  Long: TR(`指定されたSubscriberのセッション作成・変更・削除のイベント履歴を返す。イベントの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを'Link'ヘッダに含めて返す。
-`),
+  Short: TR("subscribers.list_session_events.get.summary"),
+  Long: TR(`subscribers.list_session_events.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -21,7 +21,7 @@ var BillsGetCmdYyyyMM string
 
 
 func init() {
-  BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", "year and month")
+  BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TR("bills.get_billing.get.parameters.yyyyMM.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var BillsGetCmd = &cobra.Command{
   Use: "get",
-  Short: TR("Get bill"),
-  Long: TR(`指定した月の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。`),
+  Short: TR("bills.get_billing.get.summary"),
+  Long: TR(`bills.get_billing.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

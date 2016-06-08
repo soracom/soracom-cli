@@ -32,13 +32,13 @@ var RolesUpdateCmdBody string
 
 
 func init() {
-  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", "")
+  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", TR(""))
 
-  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdOperatorId, "operator-id", "", "operator_id")
+  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", "")
+  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TR(""))
 
-  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", "role_id")
+  RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TR("role_id"))
 
 
 
@@ -50,8 +50,8 @@ func init() {
 
 var RolesUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update Role"),
-  Long: TR(`Roleを編集する。`),
+  Short: TR("roles.update_role.put.summary"),
+  Long: TR(`roles.update_role.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

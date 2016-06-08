@@ -26,7 +26,7 @@ var SubscribersPutTagsCmdBody string
 
 
 func init() {
-  SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", TR("subscribers.put_subscriber_tags.put.parameters.imsi.description"))
 
 
 
@@ -38,8 +38,8 @@ func init() {
 
 var SubscribersPutTagsCmd = &cobra.Command{
   Use: "put-tags",
-  Short: TR("Bulk Insert or Update Subscriber Tags"),
-  Long: TR(`指定されたSubscriberのタグを追加・更新`),
+  Short: TR("subscribers.put_subscriber_tags.put.summary"),
+  Long: TR(`subscribers.put_subscriber_tags.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

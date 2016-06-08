@@ -26,7 +26,7 @@ var GroupsPutTagsCmdBody string
 
 
 func init() {
-  GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", "対象のGroupのID")
+  GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TR("groups.put_group_tags.put.parameters.group_id.description"))
 
 
 
@@ -38,9 +38,8 @@ func init() {
 
 var GroupsPutTagsCmd = &cobra.Command{
   Use: "put-tags",
-  Short: TR("Update Group Tags"),
-  Long: TR(`指定されたConfiguratio Groupのタグを追加・更新
-`),
+  Short: TR("groups.put_group_tags.put.summary"),
+  Long: TR(`groups.put_group_tags.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

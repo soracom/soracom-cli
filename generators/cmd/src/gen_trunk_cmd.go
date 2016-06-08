@@ -185,8 +185,8 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 		},
 		{
 			Use:                       "vpg",
-			Short:                     "vpg.cli.summary",
-			Long:                      "vpg.cli.description",
+			Short:                     "virtual_private_gateway.cli.summary",
+			Long:                      "virtual_private_gateway.cli.description",
 			CommandVariableName:       "VpgCmd",
 			ParentCommandVariableName: "RootCmd",
 			FileName:                  "vpg.go",

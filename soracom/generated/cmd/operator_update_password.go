@@ -30,11 +30,11 @@ var OperatorUpdatePasswordCmdBody string
 
 
 func init() {
-  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", "")
+  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", TR(""))
 
-  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", "")
+  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", TR(""))
 
-  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", "operator ID")
+  OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", TR("operator ID"))
 
 
 
@@ -46,9 +46,8 @@ func init() {
 
 var OperatorUpdatePasswordCmd = &cobra.Command{
   Use: "update-password",
-  Short: TR("Update Operator Password"),
-  Long: TR(`Operator のパスワードを更新する。
-`),
+  Short: TR("operator.update_operator_password.post.summary"),
+  Long: TR(`operator.update_operator_password.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

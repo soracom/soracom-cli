@@ -2,19 +2,19 @@
   "auth": {
     "auth": {
       "post": {
-        "summary": "Authenticate the API accessAPI, return an API key and API token",
-        "description": "It authenticates the API access. The following information must be included in the request: when doing authentication using a root account, the e-mail and password; when doing authentication using an authentication key, the authKeyId and authKey; when doing authentication using a SAM user, the operatorId, userName, and password. If the authentication is successful, it returns an API key and API token. When making further requests that require authentication, please include the API key and API token in the header of the request.",
+        "summary": "进行API联结认证。",
+        "description": "进行API联结认证。以根账户认证时，请包含email和password，以认证密钥认证时，请包含authKeyID和authKey，以SAM用户认证时，请包含operatorId、username和password进行请求。若认证成功，会返回API Key和API口令，之后认证需要请求的时候，请将该API Key和API口令赋予头文件后再实行请求。",
         "parameters": {
           "auth": {
-            "description": "Authentication request."
+            "description": "認証请求"
           }
         },
         "responses": {
           "status200": {
-            "description": "Authentication successful."
+            "description": "认证成功"
           },
           "status401": {
-            "description": "Authentication failed."
+            "description": "认证失败"
           }
         },
         "cli": {
@@ -25,14 +25,14 @@
     },
     "issue_password_reset_token": {
       "post": {
-        "summary": "Generate a one-time token for resetting the password",
-        "description": "Generates a one-time token for resetting the password and sends it to the operator's e-mail address. To set the new password, retrieve the token from the e-mail and call the /v1/auth/password_reset_token/verify API.",
+        "summary": "它会发出密码重置令牌。",
+        "description": "生成为了重设密码用的动态口令，送信至Operator的邮箱地址。获得邮件中记载的口令，调用/v1/auth/password_reset_token/verify API ，设定新密码。",
         "responses": {
           "status200": {
             "description": "OK"
           },
           "status400": {
-            "description": "The e-mail address is incorrect."
+            "description": "邮箱地址不正确。"
           }
         },
         "cli": {
@@ -43,17 +43,17 @@
     },
     "verify_password_reset_token": {
       "post": {
-        "summary": "Test the password reset token and update the operator's password.",
-        "description": "Tests the password reset token. If successful, it updates the operator's password.",
+        "summary": "验证重设密码用的口令，若验证成功，则更新Operator的密码。",
+        "description": "验证重设密码用的口令，若验证成功，则更新Operator的密码。",
         "responses": {
           "status200": {
             "description": "OK"
           },
           "status400": {
-            "description": "An invalid token has been specified."
+            "description": "指定了不正当的口令。"
           },
           "status404": {
-            "description": "The token has expired."
+            "description": "口令的有效期已过。"
           }
         },
         "cli": {
@@ -66,8 +66,8 @@
   "credentials": {
     "list_credentials": {
       "get": {
-        "summary": "List of credentials.",
-        "description": "Returns a list of credentials.",
+        "summary": "返回认证信息一览",
+        "description": "返回认证信息一览",
         "responses": {
           "status200": {
             "description": "OK"
@@ -77,8 +77,8 @@
     },
     "create_credential": {
       "post": {
-        "summary": "Create a credential.",
-        "description": "Creates a new credential.",
+        "summary": "新创建认证情报。",
+        "description": "新创建认证信息。",
         "responses": {
           "status201": {
             "description": "Created"
@@ -88,22 +88,22 @@
     },
     "update_credential": {
       "put": {
-        "summary": "Update a credential.",
-        "description": "Updates a credential.",
+        "summary": "更新认证信息。",
+        "description": "更新认证信息。",
         "responses": {
           "status200": {
             "description": "OK"
           },
           "status400": {
-            "description": "There was an error in the request or the specified token has already expired. (In the latter case, you will need to use the /auth API to do authentication once again.)"
+            "description": "请求错误，或指定令牌已经失效（若为后者，需要再次通过/auth API认证）"
           }
         }
       }
     },
     "delete_credential": {
       "delete": {
-        "summary": "Delete a credential.",
-        "description": "Deletes a credential."
+        "summary": "删除认证信息。",
+        "description": "删除认证信息。"
       }
     },
     "cli": {
@@ -115,13 +115,13 @@
     "create_operator": {
       "post": {
         "summary": "Create Operator",
-        "description": "Makes a request to create a new operator. An e-mail is sent to the e-mail address specified in the parameters, containing a one-time token for verifying the operator’s registration.",
+        "description": "请求Operator新登录。向参数指定的邮箱地址，发送Operator登录确认用的含有动态口令的邮件。",
         "responses": {
           "status200": {
-            "description": "Operator created."
+            "description": "Operator被创建"
           },
           "status400": {
-            "description": "The e-mail address is already registered or the password has an incorrect format."
+            "description": "邮箱地址已经被登录过、或者密码格式错误"
           }
         }
       }
@@ -129,28 +129,28 @@
     "issue_email_change_token": {
       "post": {
         "summary": "Issue Email Change Token",
-        "description": "Sends an e-mail with a one-time token for executing the e-mail address change."
+        "description": "以邮件形式发送更改邮箱地址的动态口令。"
       }
     },
     "verify_email_change_token": {
       "post": {
         "summary": "Verify Email Change Token",
-        "description": "Verifies the token for the e-mail address change, and then changes the e-mail address."
+        "description": "确认更改邮箱地址的口令，更改邮箱地址。"
       }
     },
     "verify_operator": {
       "post": {
         "summary": "Verify Operator",
-        "description": "Verifies the operator's registration. Called by setting as parameter the one-time verification token received via e-mail.",
+        "description": "进行Operator登录确认。将邮件发来的确认用动态口令包含在参数中进行调用。",
         "responses": {
           "status200": {
-            "description": "Registration successful."
+            "description": "成功登录"
           },
           "status400": {
-            "description": "The one-time token is incorrect."
+            "description": "动态口令错误"
           },
           "status404": {
-            "description": "The one-time token has expired."
+            "description": "动态口令过期"
           }
         }
       }
@@ -158,7 +158,7 @@
     "get_operator": {
       "get": {
         "summary": "Get Operator",
-        "description": "Returns information about the operator.",
+        "description": "返回Operator的信息。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -172,7 +172,7 @@
     "list_operator_auth_keys": {
       "get": {
         "summary": "List Operator AuthKeys",
-        "description": "Returns the operator's AuthKey list.",
+        "description": "返回Operator的AuthKey一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -183,7 +183,7 @@
     "generate_operator_auth_key": {
       "post": {
         "summary": "Generate Operator AuthKey",
-        "description": " Generates an AuthKey for the operator.",
+        "description": "创建Operator的AuthKey。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -194,7 +194,7 @@
     "delete_operator_auth_key": {
       "delete": {
         "summary": "Delete Operator AuthKey",
-        "description": "Deletes an AuthKey from the operator.",
+        "description": "删除Operator的AuthKey。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -205,7 +205,7 @@
     "update_operator_password": {
       "post": {
         "summary": "Update Operator Password",
-        "description": "Updates the operator's password.",
+        "description": "更新Operator的密码。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -219,7 +219,7 @@
     "generate_support_token": {
       "post": {
         "summary": "Generate Token for Support Console",
-        "description": "Returns a token for accessing the support console.",
+        "description": "返回连接到Support画面的口令。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -236,13 +236,13 @@
     "generate_auth_token": {
       "post": {
         "summary": "Generate Authentication Token",
-        "description": "Generates a new API token. If you insert the current API token into the header and make a request, a response is returned containing the new API token. You can then use the new API token in future requests.",
+        "description": "发行新的API口令。将现在的API口令输入头文件中进行请求，则会得到含有新API口令的应答。之后再进行请求时就可以使用新API口令。",
         "responses": {
           "status200": {
             "description": "OK"
           },
           "status400": {
-            "description": "There was an error in the request or the specified token has already expired. (In the latter case, you will need to use the /auth API to do authentication once again.)"
+            "description": "请求错误，或指定令牌已经失效（若为后者，需要再次通过/auth API认证）"
           }
         }
       }
@@ -262,7 +262,7 @@
     "list_roles": {
       "get": {
         "summary": "List Roles",
-        "description": "Returns a list of roles.",
+        "description": "返回Role一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -273,7 +273,7 @@
     "get_role": {
       "get": {
         "summary": "Get Role",
-        "description": "Retrieves a role.",
+        "description": "获得Role。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -284,7 +284,7 @@
     "create_role": {
       "post": {
         "summary": "Create Role",
-        "description": "Adds a new role.",
+        "description": "新追加Role。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -295,19 +295,19 @@
     "update_role": {
       "put": {
         "summary": "Update Role",
-        "description": "Edits a role."
+        "description": "编辑Role。"
       }
     },
     "delete_role": {
       "delete": {
         "summary": "Delete Role",
-        "description": "Deletes a role."
+        "description": "删除Role。"
       }
     },
     "list_role_attached_users": {
       "get": {
         "summary": "List Role Attached Users",
-        "description": "Retrieves a list of users attached to a role.",
+        "description": "获得与Role联结的用户一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -318,7 +318,7 @@
     "list_user_roles": {
       "get": {
         "summary": "List User Roles",
-        "description": "Retrieves a list of the user's roles.",
+        "description": "获得用户的Role一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -329,13 +329,13 @@
     "attach_role": {
       "post": {
         "summary": "Attach Role to User",
-        "description": "Attaches a role to a user."
+        "description": "在用户上附上Role。"
       }
     },
     "detach_role": {
       "delete": {
         "summary": "Detach Role from User",
-        "description": "Detaches a role from a user."
+        "description": "将Role从用户中分离开。"
       }
     },
     "cli": {
@@ -347,7 +347,7 @@
     "list_shipping_addresses": {
       "get": {
         "summary": "List shipping addresses",
-        "description": "Returns a list of shipping addresses.",
+        "description": "返回商品的派送地址一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -358,7 +358,7 @@
     "create_shipping_address": {
       "post": {
         "summary": "Create shipping address",
-        "description": "Creates a new shipping address.",
+        "description": "新登录商品的派送地址。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -372,7 +372,7 @@
     "get_shipping_address": {
       "get": {
         "summary": "Get shipping address",
-        "description": "Returns a shipping address.",
+        "description": "返回商品派送地址。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -383,13 +383,13 @@
     "update_shipping_address": {
       "put": {
         "summary": "Update shipping address",
-        "description": "Updates a shipping address."
+        "description": "更新商品派送地址。"
       }
     },
     "delete_shipping_address": {
       "delete": {
         "summary": "Delete shipping address",
-        "description": "Deletes a shipping address."
+        "description": "删除商品派送地址。"
       }
     },
     "cli": {
@@ -401,7 +401,7 @@
     "list_users": {
       "get": {
         "summary": "List Users",
-        "description": "Returns a list of SAM users.",
+        "description": "返回SAM用户一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -412,7 +412,7 @@
     "get_user": {
       "get": {
         "summary": "Get User",
-        "description": "Returns a SAM user.",
+        "description": "返回SAM用户。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -423,13 +423,13 @@
     "create_user": {
       "post": {
         "summary": "Create User",
-        "description": "Adds a new SAM user."
+        "description": "新追加SAM用户。"
       }
     },
     "update_user": {
       "put": {
         "summary": "Update User",
-        "description": "Updates the SAM user.",
+        "description": "更新SAM用户。",
         "responses": {
           "status404": {
             "description": "SAM User not found."
@@ -440,7 +440,7 @@
     "delete_user": {
       "delete": {
         "summary": "Delete User",
-        "description": "Deletes the SAM user.",
+        "description": "删除SAM用户。",
         "responses": {
           "status404": {
             "description": "SAM User not found."
@@ -451,7 +451,7 @@
     "list_user_auth_keys": {
       "get": {
         "summary": "List User AuthKeys",
-        "description": "Returns the SAM user's AuthKey list.",
+        "description": "返回SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -462,7 +462,7 @@
     "generate_user_auth_key": {
       "post": {
         "summary": "Generate AuthKey",
-        "description": "Generates an AuthKey for the SAM user.",
+        "description": "创建SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -473,7 +473,7 @@
     "get_user_auth_key": {
       "get": {
         "summary": "Get AuthKey",
-        "description": "Returns the SAM user's AuthKey.",
+        "description": "返回SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -484,7 +484,7 @@
     "delete_user_auth_key": {
       "delete": {
         "summary": "Delete User AuthKey",
-        "description": "Deletes an AuthKey from the SAM user.",
+        "description": "删除SAM用户的AuthKey一览。",
         "responses": {
           "status404": {
             "description": "AuthKey not found."
@@ -495,7 +495,7 @@
     "has_user_password": {
       "get": {
         "summary": "Has User Password",
-        "description": "Retrieves whether the SAM user has a password or not.",
+        "description": "获得关于SAM用户的密码是否被搜索成功的信息",
         "responses": {
           "status200": {
             "description": "OK"
@@ -506,19 +506,19 @@
     "create_user_password": {
       "post": {
         "summary": "Create Password",
-        "description": "Creates a password for the SAM user."
+        "description": "创建SAM用户的密码。"
       }
     },
     "update_user_password": {
       "put": {
         "summary": "Update Password",
-        "description": "Updates the password of the SAM user."
+        "description": "更新SAM用户的密码。"
       }
     },
     "delete_user_password": {
       "delete": {
         "summary": "Delete Password",
-        "description": "Deletes the user's password.",
+        "description": "删除用户的密码。",
         "responses": {
           "status404": {
             "description": "Password registration is required."
@@ -529,7 +529,7 @@
     "get_user_permission": {
       "get": {
         "summary": "Get User Permission",
-        "description": "Retrieves the SAM user's permissions.",
+        "description": "获得SAM用户的权限设定。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -540,7 +540,7 @@
     "update_user_permission": {
       "put": {
         "summary": "Update Permission to User",
-        "description": "Updates the SAM user's permissions."
+        "description": "更新SAM用户的权限。"
       }
     },
     "cli": {
@@ -570,28 +570,28 @@
     "list_subscribers": {
       "get": {
         "summary": "List Subscribers",
-        "description": "Returns a list of subscribers that match a certain criteria. If the total number of subscribers does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "返回符合条件的Subscriber的列表。如果Subscriber的总数超过1页，则在应答中，将联结到下一页的URL包含在`Link`头文件中返回。",
         "parameters": {
           "tag_name": {
-            "description": "Tag name for filtering the search (exact match)."
+            "description": "设定为检索对象的标签名（完全相同）。"
           },
           "tag_value": {
-            "description": "Tag search string for filtering the search. Required when `tag_name` has been specified."
+            "description": "设定为检索对象的标签检索文字列。指定为`tag_name`的情况则为必须。"
           },
           "tag_value_match_mode": {
-            "description": "Tag match mode."
+            "description": "标签的检索条件。"
           },
           "status_filter": {
-            "description": "Status for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, and `terminated`."
+            "description": "设为检索对象的status。用`|`隔开可以进行多个指定。可以指定的值如下：`active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, `terminated`"
           },
           "speed_class_filter": {
-            "description": "Speed class for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
+            "description": "设为检索对象的速度级别。用`|`隔开可以进行多个指定。可以指定的值如下：`s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
           },
           "limit": {
-            "description": "Maximum number of subscribers to retrieve."
+            "description": "能获得的Subscriber的上限"
           },
           "last_evaluated_key": {
-            "description": "The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."
+            "description": "本页获得的最后的Subscriber的IMSI。通过指定该参数，可以获得下一个Subscriber之后的列表。"
           }
         },
         "responses": {
@@ -604,10 +604,10 @@
     "register_subscriber": {
       "post": {
         "summary": "Register Subscriber",
-        "description": "Registers a subscriber.",
+        "description": "登录Subscriber",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "subscriber": {
             "description": "subscriber"
@@ -615,7 +615,7 @@
         },
         "responses": {
           "status201": {
-            "description": "Subscriber registration complete."
+            "description": "Subscriber登录完毕"
           }
         }
       }
@@ -623,18 +623,18 @@
     "get_subscriber": {
       "get": {
         "summary": "Get Subscriber",
-        "description": "Returns information about the specified subscriber.",
+        "description": "返回指定的Subscriber的信息。",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information."
+            "description": "指定的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -642,18 +642,18 @@
     "update_speedclass": {
       "post": {
         "summary": "Update Subscriber speed class",
-        "description": "Changes the speed class of the specified subscriber.",
+        "description": "更改指定的Subscriber的速度等级",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -661,18 +661,18 @@
     "activate_subscriber": {
       "post": {
         "summary": "Activate Subscriber",
-        "description": "Activates status of specified subscriber.",
+        "description": "将指定的Subscriber的状态有效化",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -680,18 +680,18 @@
     "deactivate_subscriber": {
       "post": {
         "summary": "Deactivate Subscriber",
-        "description": "Deactivates specified subscriber.",
+        "description": "将指定的Subscriber无效化",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -699,18 +699,18 @@
     "terminate_subscriber": {
       "post": {
         "summary": "Terminate Subscriber",
-        "description": "Terminates the specified subscriber",
+        "description": "将指定的Subscriber进行Terminate",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -718,18 +718,18 @@
     "enable_termination": {
       "post": {
         "summary": "Enable Termination of Subscriber",
-        "description": "Enables termination of specified subscriber.",
+        "description": "将指定的Subscriber设定为可以Terminate",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -737,18 +737,18 @@
     "disable_termination": {
       "post": {
         "summary": "Disable Termination of Subscriber",
-        "description": "Disables termination of specified subscriber.",
+        "description": "将指定的Subscriber设定为不可Terminate",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -756,21 +756,21 @@
     "set_expirytime": {
       "post": {
         "summary": "Update Expiry Time of Subscriber",
-        "description": "Updates expiry time of specified subscriber.",
+        "description": "更新指定的Subscriber的有效期",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "request": {
-            "description": "Expiry time after the update (unixtime: in milliseconds)."
+            "description": "更新后的有效期（unixtime：毫秒单位）"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -778,18 +778,18 @@
     "unset_expirytime": {
       "post": {
         "summary": "Delete Expiry Time of Subscriber",
-        "description": "Deletes expiry time of specified subscriber and changes it to indefinite.",
+        "description": "删除指定的Subscriber的有效期，更改为无限期",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status204": {
-            "description": "Change of specified subscriber's expiry time to indefinite complete."
+            "description": "该Subscriber的有效期更改完毕为无限期"
           },
           "status404": {
-            "description": "The specified subscriber does not exist or the subscriber does not have an expiry time."
+            "description": "指定的Subscriber不存在，或Subscriber没有有效期"
           }
         }
       }
@@ -797,21 +797,21 @@
     "set_group": {
       "post": {
         "summary": "Set Group to Subscriber",
-        "description": "Sets or overwrites a group for the specified subscriber.",
+        "description": "将指定的Subscriber的所属Group进行指定或替换更改",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "group": {
-            "description": "Group (may include ID only)."
+            "description": "Group（只需含有ID即可）"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -819,18 +819,18 @@
     "unset_group": {
       "post": {
         "summary": "Unset Group to Subscriber",
-        "description": "Removes the group configuration from the specified subscriber.",
+        "description": "将指定的Subscriber的Group指定解除",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist or the subscriber does not belong to a group."
+            "description": "指定的Subscriber不存在，或Subscriber不属于Group"
           }
         }
       }
@@ -838,22 +838,22 @@
     "list_session_events": {
       "get": {
         "summary": "List Session Events",
-        "description": "Returns the event history for the specified subscriber, including session creation, change, and deletion. If the total number of events does not fit in one page, a URL for accessing the next page is returned in the `Link` header of the response.",
+        "description": "返回指定的Subscriber的编号创建、更改、删除的事件履历。如果事件总数超过1页，则在应答中，将联结到下一页的URL包含在`Link`头文件中返回。",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "from": {
-            "description": "Start time for the events search range."
+            "description": "事件检索范围的开始时刻"
           },
           "to": {
-            "description": "End time for the events search range."
+            "description": "事件检索范围的终止时刻"
           },
           "limit": {
-            "description": "Maximum number of events to retrieve."
+            "description": "获得的事件数的上限"
           },
           "last_evaluated_key": {
-            "description": "The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."
+            "description": "本页获得的最后事件的时间戳。通过指定该参数，可以获得下一个事件之后的列表。"
           }
         },
         "responses": {
@@ -866,21 +866,21 @@
     "put_subscriber_tags": {
       "put": {
         "summary": "Bulk Insert or Update Subscriber Tags",
-        "description": "Inserts/updates tags for the specified subscriber.",
+        "description": "追加、更新指定的Subscriber的标签",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "tags": {
-            "description": "Array of tags to be inserted/updated."
+            "description": "追加、更新对象标签的排列"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -888,21 +888,21 @@
     "delete_subscriber_tag": {
       "delete": {
         "summary": "Delete Subscriber Tag",
-        "description": "Deletes a tag from the specified subscriber.",
+        "description": "删除指定的Subscriber的标签",
         "parameters": {
           "imsi": {
-            "description": "IMSI of the target subscriber."
+            "description": "对象的Subscriber的IMSI"
           },
           "tag_name": {
-            "description": "Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"
+            "description": "删除对象的标签名（由于是URL的Path的一部分，所以进行百分号编码。如果是JavaScript的话则指定encodeURIComponent()过的项目）"
           }
         },
         "responses": {
           "status204": {
-            "description": "Deletion of specified tag complete."
+            "description": "对象标签删除完毕"
           },
           "status404": {
-            "description": "The specified subscriber or the tag does not exist."
+            "description": "指定的Subscriber或者标签不存在"
           }
         }
       }
@@ -910,7 +910,7 @@
     "issue_subscriber_transfer_token": {
       "post": {
         "summary": "Issue Subscribers Transfer Token",
-        "description": "Sends the subscriber's inter-operator control transfer token to the control destination operator.",
+        "description": "将Subscriber的Operator间的移交用口令，通过邮件传送给移交处的Operator。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -921,7 +921,7 @@
     "verify_subscriber_transfer_token": {
       "post": {
         "summary": "Verify Subscriber Transfer Token",
-        "description": "Verifies the subscriber's control transfer token, and executes the transfer. This API is called from the operator of the control destination.",
+        "description": "确认Subscriber移交用的口令，实行移交。用移交处的Operator调用该API。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -932,7 +932,7 @@
     "delete_subscriber_transfer_token": {
       "delete": {
         "summary": "Delete Subscribers Transfer Token",
-        "description": "Deletes the subscriber's inter-operator control transfer token, and cancels the control transfer.",
+        "description": "删除Subscriber的Operator间移交口令，取消移交。",
         "parameters": {
           "token": {
             "description": "token"
@@ -940,10 +940,10 @@
         },
         "responses": {
           "status204": {
-            "description": "Deletion implemented."
+            "description": "实行删除"
           },
           "status404": {
-            "description": "The token does not exist."
+            "description": "口令不存在"
           }
         }
       }
@@ -957,7 +957,7 @@
     "get_billing_history": {
       "get": {
         "summary": "Get billing history",
-        "description": "Returns past billing history (after applied discounts such as free tiers, etc., inclusive of tax). This API only returns the billing amounts that have been finalized at the end of the month.",
+        "description": "返回过去的使用额履历（应用了免费利用范围的折扣后、含税）。该API仅返回进行月结后、确定的使用额。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -968,7 +968,7 @@
     "get_latest_billing": {
       "get": {
         "summary": "Get latest bill",
-        "description": "Returns the latest billing amounts after applied discounts such as free tiers, etc. The amounts retrieved using this API correspond to the values before the invoice was finalized.",
+        "description": "返回应用了免费利用范围的折扣后的最近的使用额。该API获得的金额为请求确定前的金额。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -979,7 +979,7 @@
     "export_latest_billing": {
       "post": {
         "summary": "Output latest billing CSV file to S3",
-        "description": "Returns detailed information of the billing amounts for the latest month. This detailed information includes billing amounts per day, subscriber, and billing item. The amounts retrieved using this API correspond to the values before the invoice was finalized.",
+        "description": "返回最近一个月的使用额明细。该明细中含有以每日、每个Subscriber、每个收费项目分别计算的使用额。该API获得的金额为请求确定前的金额。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -990,7 +990,7 @@
     "get_billing": {
       "get": {
         "summary": "Get bill",
-        "description": "Returns the billing history for the specified month (after applied discounts such as free tiers, etc., inclusive of tax). The amounts retrieved using this API correspond to the values before the invoice was finalized.",
+        "description": "返回指定月的使用额履历（应用了免费利用范围的折扣后、含税）。该API仅返回进行月结后、确定的使用额。",
         "parameters": {
           "yyyyMM": {
             "description": "year and month"
@@ -1006,7 +1006,7 @@
     "get_billing_per_day": {
       "get": {
         "summary": "Get bill per day",
-        "description": "Returns detailed information of billing amounts per day for the specified month. This API only returns the billing amounts that have been finalized.",
+        "description": "返回指定按月、按日计算的使用额明细。该API仅返回确定的使用额。",
         "parameters": {
           "yyyyMM": {
             "description": "year and month"
@@ -1022,7 +1022,7 @@
     "export_billing": {
       "post": {
         "summary": "Output billing CSV file to S3",
-        "description": "Returns detailed information for the billing amounts for the specified month. This detailed information includes billing amounts per day, subscriber, and billing item.",
+        "description": "返回指定月的使用额明细。该明细中含有以每日、每个Subscriber、每个收费项目分别计算的使用额。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1039,7 +1039,7 @@
     "list_coupons": {
       "get": {
         "summary": "List coupons",
-        "description": "Returns a list of currently registered coupons.",
+        "description": "返回现在被登记中的优惠券一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1050,7 +1050,7 @@
     "register_coupon": {
       "post": {
         "summary": "Register Coupon",
-        "description": "Registers a coupon.",
+        "description": "登记优惠券。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1061,7 +1061,7 @@
     "get_payment_transaction": {
       "get": {
         "summary": "Get payment transaction result",
-        "description": "Returns result of a payment transaction.",
+        "description": "返回收费处理的结果。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1072,7 +1072,7 @@
     "get_payment_method": {
       "get": {
         "summary": "Get payment method information",
-        "description": "Returns current payment methods. Detailed information is included in the properties.",
+        "description": "返回现在的支付方法。Properties里含有详细信息。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1083,7 +1083,7 @@
     "activate_payment_method": {
       "post": {
         "summary": "Activate payment method",
-        "description": "Activates a current payment method that has an error.",
+        "description": "将有误的现在的支付方法有效化。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1094,7 +1094,7 @@
     "register_webpay_payment_method": {
       "post": {
         "summary": "Register credit card information for WebPay",
-        "description": "Registers credit card information for WebPay payments.",
+        "description": "登记WebPay的支付用卡的信息。",
         "parameters": {
           "creditCard": {
             "description": "creditCard"
@@ -1130,7 +1130,7 @@
     "list_event_handlers": {
       "get": {
         "summary": "List Event Handlers",
-        "description": "Returns a list of event handlers.",
+        "description": "返回事件处理程序一览。",
         "parameters": {
           "target": {
             "description": "target"
@@ -1146,7 +1146,7 @@
     "create_event_handler": {
       "post": {
         "summary": "Create Event Handler",
-        "description": "Creates a new event handler.",
+        "description": "新创建事件处理程序。",
         "parameters": {
           "req": {
             "description": "req"
@@ -1162,7 +1162,7 @@
     "list_event_handlers_by_subscriber": {
       "get": {
         "summary": "List Event Handlers related to Subscriber",
-        "description": "Returns a list of event handlers related to the specified IMSI.",
+        "description": "返回联结对象IMSI的事件处理程序列表。",
         "parameters": {
           "imsi": {
             "description": "imsi"
@@ -1178,7 +1178,7 @@
     "get_event_handler": {
       "get": {
         "summary": "Get Event Handler",
-        "description": "Returns information about the specified event handler.",
+        "description": "返回指定事件处理程序的信息。",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
@@ -1194,7 +1194,7 @@
     "update_event_handler": {
       "put": {
         "summary": "Update Event Handler",
-        "description": "Updates the specified event handler.",
+        "description": "更新指定事件处理程序。",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
@@ -1210,7 +1210,7 @@
     "delete_event_handler": {
       "delete": {
         "summary": "Delete Event Handler",
-        "description": "Deletes the specified event handler.",
+        "description": "删除指定事件处理程序。",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
@@ -1229,13 +1229,13 @@
     "set_ignore_event_handler": {
       "post": {
         "summary": "Ignore Event Handler",
-        "description": "Adds a setting for ignoring the specified event handler of the specified IMSI."
+        "description": "对指定的IMSI，追加无视指定的事件处理程序的设定"
       }
     },
     "delete_ignore_event_handler": {
       "delete": {
         "summary": "Delete Ignore Event Handler",
-        "description": "Deletes the setting for ignoring the specified event handler of the specified IMSI."
+        "description": "对指定的IMSI，删除无视指定的事件处理程序的设定"
       }
     },
     "cli": {
@@ -1247,7 +1247,7 @@
     "list_orders": {
       "get": {
         "summary": "List confirmed orders.",
-        "description": "Returns a list of confirmed orders.",
+        "description": "返回确定订购的订购一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1258,7 +1258,7 @@
     "create_quotation": {
       "post": {
         "summary": "Create Quotation",
-        "description": "Creates a new order quotation. If the orderId is put in /confirm, the order is complete.",
+        "description": "创建新订购估价单。将orderId PUT至/confirm后，订购完成。",
         "parameters": {
           "request": {
             "description": "request"
@@ -1277,7 +1277,7 @@
     "get_order": {
       "get": {
         "summary": "Get confirmed order.",
-        "description": "Returns a confirmed order.",
+        "description": "返回订购完成的订购。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1288,7 +1288,7 @@
     "cancel_order": {
       "put": {
         "summary": "Cancel order.",
-        "description": "Cancels an order. If the order has already been dispatched, an error is returned.",
+        "description": "取消订购。若已经发送，则返回错误。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1299,7 +1299,7 @@
     "confirm_order": {
       "put": {
         "summary": "Confirm order.",
-        "description": "Performs a credit limit and confirms the order if no problems are encountered.",
+        "description": "实施与贷，若没有问题，则确认订购。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1310,7 +1310,7 @@
     "register_ordered_sim": {
       "post": {
         "summary": "Register subscribers for operator.",
-        "description": "Registers the ordered SIM with the operator.",
+        "description": "将订购的SIM登记到Operator。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1321,13 +1321,13 @@
     "list_ordered_subscriber": {
       "get": {
         "summary": "List ordered subscribers.",
-        "description": "List ordered subscribers",
+        "description": "返回用OrderId指定的Subscriber一览",
         "request": {
           "limit": {
-            "description": "Max number of subscribers in a response"
+            "description": "回应1页左右的最大数"
           },
           "last_evaluated_key": {
-            "description": "Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key"
+            "description": "本页获得的最后的Subscriber的序列號。通过指定该参数，可以获得下一个Subscriber之后的列表。"
           }
         },
         "responses": {
@@ -1340,7 +1340,7 @@
     "list_products": {
       "get": {
         "summary": "List products",
-        "description": "Returns a list of products.",
+        "description": "返回商品一览。",
         "responses": {
           "status200": {
             "description": "OK"
@@ -1357,19 +1357,19 @@
     "get_air_stats": {
       "get": {
         "summary": "Get Air Usage Report of Subscriber",
-        "description": "Retrieves the usage report for the subscriber specified by the IMSI.",
+        "description": "获得IMSI指定的Subscriber的通信量履历。",
         "parameters": {
           "imsi": {
             "description": "imsi"
           },
           "from": {
-            "description": "Start time in unixtime for the aggregate data."
+            "description": "以unixtime给予总计对象的开始时刻"
           },
           "to": {
-            "description": "End time in unixtime for the aggregate data."
+            "description": "以unixtime给予总计对象的终止时刻"
           },
           "period": {
-            "description": "Units of aggregate data. For minutes, the interval is every 5 minutes."
+            "description": "总计单位。Minutes为5分间隔"
           }
         },
         "responses": {
@@ -1382,19 +1382,19 @@
     "get_beam_stats": {
       "get": {
         "summary": "Get Beam Usage Report of Subscriber",
-        "description": "Retrieves the Soracom Beam usage report for the subscriber specified by the IMSI.",
+        "description": "获得IMSI指定的Subscriber的Soracom Beam利用量履历。",
         "parameters": {
           "imsi": {
             "description": "imsi"
           },
           "from": {
-            "description": "Start time in unixtime for the aggregate data."
+            "description": "以unixtime给予总计对象的开始时刻"
           },
           "to": {
-            "description": "End time in unixtime for the aggregate data."
+            "description": "以unixtime给予总计对象的终止时刻"
           },
           "period": {
-            "description": "Units of aggregate data. For minutes, the interval is every 5 minutes."
+            "description": "总计单位。Minutes为5分间隔"
           }
         },
         "responses": {
@@ -1407,7 +1407,7 @@
     "export_air_stats": {
       "post": {
         "summary": "Export Air Usage Report of All Subscribers",
-        "description": "Retrieves a file containing the usage report of all subscribers for the specified operator. The report data range is specified with from, to in unixtime. The report contains monthly data. The file output destination is AWS S3. The file output format is CSV.",
+        "description": "以文件形式获得Operator拥有的所有Subscriber的通信量。用from, to的unixtime指定取得对象的期间。履历的详细度为月单位。输出文件的位置为AWS S3。文件的输出格式为CSV。",
         "parameters": {
           "operator_id": {
             "description": "operator ID"
@@ -1426,7 +1426,7 @@
     "export_beam_stats": {
       "post": {
         "summary": "Export Beam Usage Report of All Subscribers",
-        "description": "Retrieves a file containing the usage report of all subscribers for the specified operator. The report data range is specified with from, to in unixtime. The report contains monthly data. The file output destination is AWS S3. The file output format is CSV.",
+        "description": "以文件形式获得Operator拥有的所有Subscriber的通信量。用from, to的unixtime指定取得对象的期间。履历的详细度为月单位。输出文件的位置为AWS S3。文件的输出格式为CSV。",
         "parameters": {
           "operator_id": {
             "description": "operator ID"
@@ -1463,27 +1463,27 @@
     "list_groups": {
       "get": {
         "summary": "List Groups",
-        "description": "Returns a list of groups.",
+        "description": "返回Group一览",
         "parameters": {
           "tag_name": {
-            "description": "Tag name of the group. Filters through all groups that exactly match the tag name. When tag_name is specified, tag_value is required."
+            "description": "Group的标签名。将完全相同的标签名作为检索对象。当指定标签名时，必须有tag value。"
           },
           "tag_value": {
-            "description": "Tag value of the groups."
+            "description": "Group的Tag的值。"
           },
           "tag_value_match_mode": {
-            "description": "Tag match mode."
+            "description": "标签的检索条件。"
           },
           "limit": {
-            "description": "Maximum number of results per response page."
+            "description": "回应的1页左右的最大数"
           },
           "last_evaluated_key": {
-            "description": "The last Group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."
+            "description": "本页获得的最后的Group的ID。通过指定该参数，可以获得从下一个Group开始的列表。"
           }
         },
         "responses": {
           "status200": {
-            "description": "A list of groups."
+            "description": "Group一览"
           }
         }
       }
@@ -1491,10 +1491,10 @@
     "create_group": {
       "post": {
         "summary": "Create Group",
-        "description": "Create a new group.",
+        "description": "新创建Group",
         "parameters": {
           "group": {
-            "description": "Group to be created."
+            "description": "创建对象的Group"
           }
         },
         "responses": {
@@ -1507,18 +1507,18 @@
     "get_group": {
       "get": {
         "summary": "Get Group",
-        "description": "Returns the group specified by the group ID.",
+        "description": "用Group ID返回指定的Group",
         "parameters": {
           "group_id": {
-            "description": "Target group ID."
+            "description": "对象的Group的ID"
           }
         },
         "responses": {
           "status200": {
-            "description": "The specified group"
+            "description": "指定Group"
           },
           "status404": {
-            "description": "The specified group does not exist."
+            "description": "指定Group不存在"
           }
         }
       }
@@ -1526,18 +1526,18 @@
     "delete_group": {
       "delete": {
         "summary": "Delete Group",
-        "description": "Deletes the specified group by group ID",
+        "description": "用Group ID删除指定Group",
         "parameters": {
           "group_id": {
-            "description": "Target group ID."
+            "description": "对象的Group的ID"
           }
         },
         "responses": {
           "status204": {
-            "description": "Deletion of specified group complete."
+            "description": "指定Group删除完毕"
           },
           "status404": {
-            "description": "The specified group does not exist."
+            "description": "指定Group不存在"
           }
         }
       }
@@ -1545,24 +1545,24 @@
     "list_subscribers_in_group": {
       "get": {
         "summary": "List Subscribers in a group",
-        "description": "Returns a list of subscribers that belong to the specified group by group ID.",
+        "description": "返回用Group ID指定的属于Group的Subscriber一览",
         "parameters": {
           "group_id": {
-            "description": "Target group ID."
+            "description": "对象的Group的ID"
           },
           "limit": {
-            "description": "Maximum number of results per response page."
+            "description": "回应1页左右的最大数"
           },
           "last_evaluated_key": {
-            "description": "The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."
+            "description": "本页获得的最后的Subscriber的IMSI。通过指定该参数，可以获得下一个Subscriber之后的列表。"
           }
         },
         "responses": {
           "status200": {
-            "description": "Target group ID"
+            "description": "指定Group"
           },
           "status404": {
-            "description": "The specified group does not exist."
+            "description": "指定Group不存在"
           }
         }
       }
@@ -1570,24 +1570,24 @@
     "put_configuration_parameters": {
       "put": {
         "summary": "Update Group Configuration Parameters",
-        "description": "Adds/updates parameters for the specified group.",
+        "description": "追加、更新指定Group的参数",
         "parameters": {
           "group_id": {
-            "description": "Target group."
+            "description": "对象的Group"
           },
           "namespace": {
-            "description": "Target configuration."
+            "description": "对象的Configuration"
           },
           "parameters": {
-            "description": "Array of values for target object to be updated."
+            "description": "更新对象的object排列"
           }
         },
         "responses": {
           "status200": {
-            "description": "The group after the update."
+            "description": "更新后的Group"
           },
           "status404": {
-            "description": "The specified group does not exist."
+            "description": "指定Group不存在"
           }
         }
       }
@@ -1595,24 +1595,24 @@
     "delete_configuration_parameter": {
       "delete": {
         "summary": "Delete Group Configuration Parameters",
-        "description": "Delete parameters for the specified group.",
+        "description": "删除指定Group的参数",
         "parameters": {
           "group_id": {
-            "description": "Target group."
+            "description": "对象的Group"
           },
           "namespace": {
-            "description": "Namespace of target parameters."
+            "description": "对象参数的命名空间"
           },
           "name": {
-            "description": "Parameter name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"
+            "description": "删除对象的参数名（由于是URL的Path的一部分，所以进行百分号编码。如果是JavaScript的话则指定encodeURIComponent()过的项目）"
           }
         },
         "responses": {
           "status200": {
-            "description": "The group after the update."
+            "description": "更新后的Group"
           },
           "status404": {
-            "description": "The specified group does not exist."
+            "description": "指定Group不存在"
           }
         }
       }
@@ -1620,21 +1620,21 @@
     "put_group_tags": {
       "put": {
         "summary": "Update Group Tags",
-        "description": "Adds/updates tags of specified configuration group.",
+        "description": "追加、更新指定Configuration Group的标签",
         "parameters": {
           "group_id": {
-            "description": "Target group ID."
+            "description": "对象的Group的ID"
           },
           "tags": {
-            "description": "Array of values for tags to be updated."
+            "description": "更新对象的标签排列"
           }
         },
         "responses": {
           "status200": {
-            "description": "The subscriber's detailed information after the update."
+            "description": "更新后的Subscriber的详细信息"
           },
           "status404": {
-            "description": "The specified subscriber does not exist."
+            "description": "指定的Subscriber不存在"
           }
         }
       }
@@ -1642,21 +1642,21 @@
     "delete_group_tag": {
       "delete": {
         "summary": "Delete Group Tag",
-        "description": "Deletes tag from the specified group.",
+        "description": "删除指定Group的标签",
         "parameters": {
           "group_id": {
-            "description": "Target group ID."
+            "description": "对象的Group的ID"
           },
           "tag_name": {
-            "description": "Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"
+            "description": "删除对象的标签名（由于是URL的Path的一部分，所以进行百分号编码。如果是JavaScript的话则指定encodeURIComponent()过的项目）"
           }
         },
         "responses": {
           "status204": {
-            "description": "Tag deletion complete."
+            "description": "对象标签删除完毕"
           },
           "status404": {
-            "description": "The specified subscriber or the tag does not exist."
+            "description": "指定Subscriber或标签不存在"
           }
         }
       }
@@ -1670,27 +1670,27 @@
     "list_virtual_private_gateways": {
       "get": {
         "summary": "List Virtual Private Gateways",
-        "description": "Returns a list of VPGs.",
+        "description": "返回VPG一览",
         "parameters": {
           "tag_name": {
-            "description": "Tag name of the VPG. Filters through all VPGs that exactly match the tag name. When tag_name is specified, tag_value is required."
+            "description": "VPG的标签名。完全相同的Tag名成为检索对象。指定tag name时，必须有tag value。"
           },
           "tag_value": {
-            "description": "Tag value of the VPGs."
+            "description": "VPG的Tag的值。"
           },
           "tag_value_match_mode": {
-            "description": "Tag match mode."
+            "description": "标签的检索条件。"
           },
           "limit": {
-            "description": "Maximum number of results per response page."
+            "description": "回应1页左右的最大数"
           },
           "last_evaluated_key": {
-            "description": "The last group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."
+            "description": "本业获得的最后的Group ID。通过指定该参数，可以获得从下一个VPG开始的列表。"
           }
         },
         "responses": {
           "status200": {
-            "description": "List of VPGs."
+            "description": "VPG一览"
           }
         }
       }
@@ -1698,10 +1698,10 @@
     "create_virtual_private_gateway": {
       "post": {
         "summary": "Create Virtual Private Gateway",
-        "description": "Create new VPG.",
+        "description": "新创建VPG",
         "parameters": {
           "create_virtual_private_gateway_request": {
-            "description": "Request containing information for the new VPG to be created."
+            "description": "包含创建对象的VPG信息的请求"
           }
         },
         "responses": {
@@ -1714,18 +1714,18 @@
     "get_virtual_private_gateway": {
       "get": {
         "summary": "Get Virtual Private Gateway",
-        "description": "Retrieves information about the specified VPG.",
+        "description": "获得指定VPG的信息",
         "parameters": {
           "vpg_id": {
-            "description": "Target VPG ID."
+            "description": "对象的VPG的ID"
           }
         },
         "responses": {
           "status200": {
-            "description": "The specified VPG."
+            "description": "指定VPG"
           },
           "status404": {
-            "description": "The specified VPG does not exist."
+            "description": "指定VPG不存在"
           }
         }
       }
@@ -1733,21 +1733,21 @@
     "terminate_virtual_private_gateway": {
       "post": {
         "summary": "Terminate Virtual Private Gateway",
-        "description": "Terminates the specified VPG.",
+        "description": "将指定VPG进行Terminate",
         "parameters": {
           "vpg_id": {
-            "description": "Target VPG ID."
+            "description": "对象VPG的ID"
           }
         },
         "responses": {
           "status200": {
-            "description": "Termination of specified VPG started."
+            "description": "开始指定VPG的Terminate操作"
           },
           "status400": {
-            "description": "There is a reason why the specified VPG cannot be terminated."
+            "description": "存在不能Terminate指定VPG的理由"
           },
           "status404": {
-            "description": "The specified VPG does not exist."
+            "description": "指定VPG不存在"
           }
         }
       }
@@ -1755,21 +1755,21 @@
     "create_vpc_peering_connection": {
       "post": {
         "summary": "Create VPC Peering Connection",
-        "description": "Creates a VPC peering connection for the specified VPG.",
+        "description": "在VPG里创建VPC Peering Connection",
         "parameters": {
           "vpg_id": {
-            "description": "Target VPG ID."
+            "description": "对象VPG的ID"
           },
           "vpc_peering_connection": {
-            "description": "VPC peering connection to be created."
+            "description": "创建对象的VPC Peering Connection"
           }
         },
         "responses": {
           "status201": {
-            "description": "The created VPC peering connection."
+            "description": "创建的VPC Peering Connection"
           },
           "status404": {
-            "description": "The specified VPC peering connection does not exist."
+            "description": "指定的VPC Peering Connection不存在"
           }
         }
       }
@@ -1777,21 +1777,21 @@
     "delete_vpc_peering_connection": {
       "delete": {
         "summary": "Delete VPC Peering Connection",
-        "description": "Deletes the specified VPC peering connection.",
+        "description": "删除指定的VPC Peering Connection",
         "parameters": {
           "vpg_id": {
-            "description": "Target VPG ID."
+            "description": "对象VPG的ID"
           },
           "pcx_id": {
-            "description": "VPC peering connection ID to be deleted."
+            "description": "喊出对象VPC Peering Connection的ID"
           }
         },
         "responses": {
           "status204": {
-            "description": "Deletion of specified VPC peering connection complete."
+            "description": "指定VPC Peering Connection删除完毕"
           },
           "status404": {
-            "description": "The specified VPC peering connection does not exist."
+            "description": "指定VPC Peering Connection不存在"
           }
         }
       }
@@ -1827,6 +1827,7 @@
     "cli": {
       "summary": "List or register coupons.",
       "description": "List or register coupons."
+
     }
   },
   "products": {

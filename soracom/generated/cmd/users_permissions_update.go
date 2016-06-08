@@ -32,13 +32,13 @@ var UsersPermissionsUpdateCmdBody string
 
 
 func init() {
-  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdDescription, "description", "", "")
+  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdDescription, "description", "", TR(""))
 
-  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", "")
+  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TR(""))
 
-  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", "user_name")
+  UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -50,8 +50,8 @@ func init() {
 
 var UsersPermissionsUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update Permission to User"),
-  Long: TR(`SAMユーザーの権限を更新する。`),
+  Short: TR("users.update_user_permission.put.summary"),
+  Long: TR(`users.update_user_permission.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

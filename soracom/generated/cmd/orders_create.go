@@ -26,7 +26,7 @@ var OrdersCreateCmdBody string
 
 
 func init() {
-  OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", "")
+  OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TR(""))
 
 
 
@@ -38,8 +38,8 @@ func init() {
 
 var OrdersCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Quotation"),
-  Long: TR(`新規で発注見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。`),
+  Short: TR("orders.create_quotation.post.summary"),
+  Long: TR(`orders.create_quotation.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

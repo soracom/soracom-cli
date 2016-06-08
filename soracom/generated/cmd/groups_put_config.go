@@ -28,9 +28,9 @@ var GroupsPutConfigCmdBody string
 
 
 func init() {
-  GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", "対象のGroup")
+  GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TR("groups.put_configuration_parameters.put.parameters.group_id.description"))
 
-  GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", "対象のConfiguration")
+  GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TR("groups.put_configuration_parameters.put.parameters.namespace.description"))
 
 
 
@@ -42,9 +42,8 @@ func init() {
 
 var GroupsPutConfigCmd = &cobra.Command{
   Use: "put-config",
-  Short: TR("Update Group Configuration Parameters"),
-  Long: TR(`指定されたGroupのパラメータを追加・更新
-`),
+  Short: TR("groups.put_configuration_parameters.put.summary"),
+  Long: TR(`groups.put_configuration_parameters.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

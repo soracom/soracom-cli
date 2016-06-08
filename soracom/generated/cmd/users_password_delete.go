@@ -23,9 +23,9 @@ var UsersPasswordDeleteCmdUserName string
 
 
 func init() {
-  UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", "operator_id")
+  UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", "user_name")
+  UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -35,8 +35,8 @@ func init() {
 
 var UsersPasswordDeleteCmd = &cobra.Command{
   Use: "delete",
-  Short: TR("Delete Password"),
-  Long: TR(`ユーザーのパスワードを削除する。`),
+  Short: TR("users.delete_user_password.delete.summary"),
+  Long: TR(`users.delete_user_password.delete.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

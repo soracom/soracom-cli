@@ -21,7 +21,7 @@ var OperatorGetSupportTokenCmdOperatorId string
 
 
 func init() {
-  OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", "operator ID")
+  OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TR("operator ID"))
 
 
 
@@ -31,9 +31,8 @@ func init() {
 
 var OperatorGetSupportTokenCmd = &cobra.Command{
   Use: "get-support-token",
-  Short: TR("Generate Token for Support Console"),
-  Long: TR(`サポート画面アクセス用のトークンを返す。
-`),
+  Short: TR("operator.generate_support_token.post.summary"),
+  Long: TR(`operator.generate_support_token.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -21,7 +21,7 @@ var SubscribersDisableTerminationCmdImsi string
 
 
 func init() {
-  SubscribersDisableTerminationCmd.Flags().StringVar(&SubscribersDisableTerminationCmdImsi, "imsi", "", "対象のSubscriberのIMSI")
+  SubscribersDisableTerminationCmd.Flags().StringVar(&SubscribersDisableTerminationCmdImsi, "imsi", "", TR("subscribers.disable_termination.post.parameters.imsi.description"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var SubscribersDisableTerminationCmd = &cobra.Command{
   Use: "disable-termination",
-  Short: TR("Disable Termination of Subscriber"),
-  Long: TR(`指定されたSubscriberをTerminate不可能に設定する`),
+  Short: TR("subscribers.disable_termination.post.summary"),
+  Long: TR(`subscribers.disable_termination.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

@@ -30,11 +30,11 @@ var UsersUpdateCmdBody string
 
 
 func init() {
-  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdDescription, "description", "", "")
+  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdDescription, "description", "", TR(""))
 
-  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", "operator_id")
+  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdUserName, "user-name", "", "user_name")
+  UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdUserName, "user-name", "", TR("user_name"))
 
 
 
@@ -46,8 +46,8 @@ func init() {
 
 var UsersUpdateCmd = &cobra.Command{
   Use: "update",
-  Short: TR("Update User"),
-  Long: TR(`SAMユーザーを更新する。`),
+  Short: TR("users.update_user.put.summary"),
+  Long: TR(`users.update_user.put.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

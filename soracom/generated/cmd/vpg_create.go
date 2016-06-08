@@ -28,9 +28,9 @@ var VpgCreateCmdBody string
 
 
 func init() {
-  VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", "")
+  VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", TR(""))
 
-  VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, "")
+  VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TR(""))
 
 
 
@@ -42,9 +42,8 @@ func init() {
 
 var VpgCreateCmd = &cobra.Command{
   Use: "create",
-  Short: TR("Create Virtual Private Gateway"),
-  Long: TR(`VPGを新規作成する
-`),
+  Short: TR("virtual_private_gateway.create_virtual_private_gateway.post.summary"),
+  Long: TR(`virtual_private_gateway.create_virtual_private_gateway.post.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),

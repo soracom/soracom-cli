@@ -21,7 +21,7 @@ var OperatorAuthKeysListCmdOperatorId string
 
 
 func init() {
-  OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", "operator_id")
+  OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 
 
@@ -31,8 +31,8 @@ func init() {
 
 var OperatorAuthKeysListCmd = &cobra.Command{
   Use: "list",
-  Short: TR("List Operator AuthKeys"),
-  Long: TR(`OperatorのAuthKey一覧を返す。`),
+  Short: TR("operator.list_operator_auth_keys.get.summary"),
+  Long: TR(`operator.list_operator_auth_keys.get.description`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       Endpoint: getSpecifiedEndpoint(),
