@@ -132,7 +132,7 @@ func registerPaymentMethod() error {
 	wp := &soracom.PaymentMethodInfoWebPay{
 		Cvc:         "123",
 		ExpireMonth: 12,
-		ExpireYear:  20,
+		ExpireYear:  getNextYear(),
 		Name:        "SORAO TAMAGAWA",
 		Number:      "4242424242424242", // https://webpay.jp/docs/mock_cards
 	}
@@ -142,6 +142,10 @@ func registerPaymentMethod() error {
 	}
 
 	return nil
+}
+
+func getNextYear() int {
+	return time.Now().AddDate(1, 0, 0).Year()
 }
 
 func registerSubscribers() error {

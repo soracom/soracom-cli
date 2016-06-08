@@ -4,7 +4,7 @@ Usage:
   soracom [command]
 
 Available Commands:
-  auth               Performs authentication to access to the SORACOM API.
+  auth               Authenticate the API accessAPI, return an API key and API token
   bills              Show or export billing info.
   completion         Generate script for bash completion
   configure          Show, create or update configurations.
