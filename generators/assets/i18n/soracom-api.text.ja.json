@@ -29,7 +29,7 @@
         "description": "パスワードをリセットするためのワンタイムトークンを生成して、オペレーターのメールアドレスに送付します。メールに記載されているトークンを取得し、/v1/auth/password_reset_token/verify API を呼び出して新しいパスワードを設定します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "メールアドレスが正しくありません。"
@@ -47,7 +47,7 @@
         "description": "パスワードリセット用のトークンを検証し、検証に成功した場合オペレーターのパスワードを更新します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "不正なトークンが指定されました。"
@@ -70,7 +70,7 @@
         "description": "認証情報の一覧を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -92,7 +92,7 @@
         "description": "認証情報を更新する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）"
@@ -161,7 +161,7 @@
         "description": "Operatorの情報を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -175,7 +175,7 @@
         "description": "OperatorのAuthKey一覧を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -186,7 +186,7 @@
         "description": "OperatorのAuthKeyを生成する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -197,7 +197,7 @@
         "description": "OperatorのAuthKeyを削除する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -208,7 +208,7 @@
         "description": "Operator のパスワードを更新する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid password."
@@ -222,7 +222,7 @@
         "description": "サポート画面アクセス用のトークンを返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -239,7 +239,7 @@
         "description": "新しい API トークンを発行する。現在の API トークンをヘッダーに入れてリクエストを行うと、新しい API トークンを含んだレスポンスを返す。以降のリクエスト時にはこの新しい API トークンを用いることができる。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）"
@@ -265,7 +265,7 @@
         "description": "Roleの一覧を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -276,7 +276,7 @@
         "description": "Roleを取得する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -287,7 +287,7 @@
         "description": "Roleを新しく追加する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -310,7 +310,7 @@
         "description": "Roleに紐づくユーザーの一覧を取得する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -321,7 +321,7 @@
         "description": "ユーザーのロールの一覧を取得する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -350,7 +350,7 @@
         "description": "商品発送先の一覧を返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -361,7 +361,7 @@
         "description": "商品発送先を新規登録する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "shippingAddreddId"
@@ -375,7 +375,7 @@
         "description": "商品発送先を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -404,7 +404,7 @@
         "description": "SAMユーザー一覧を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -415,7 +415,7 @@
         "description": "SAMユーザーを返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -454,7 +454,7 @@
         "description": "SAMユーザーのAuthKey一覧を返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -465,7 +465,7 @@
         "description": "SAMユーザーのAuthKeyを生成する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -476,7 +476,7 @@
         "description": "SAMユーザーのAuthKeyを返す。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -498,7 +498,7 @@
         "description": "SAMユーザーのパスワードがセットされているかを取得する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -532,7 +532,7 @@
         "description": "SAMユーザーの権限設定を取得する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -643,6 +643,25 @@
       "post": {
         "summary": "Update Subscriber speed class",
         "description": "指定されたSubscriberの速度クラスを変更します",
+        "parameters": {
+          "imsi": {
+            "description": "対象のSubscriberのIMSI"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のSubscriberの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたSubscriberが存在しない"
+          }
+        }
+      }
+    },
+    "delete_session": {
+      "post": {
+        "summary": "Delete Session",
+        "description": "指定されたSubscriberのセッションを切断します",
         "parameters": {
           "imsi": {
             "description": "対象のSubscriberのIMSI"
@@ -913,7 +932,7 @@
         "description": "Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -924,7 +943,7 @@
         "description": "Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -960,7 +979,7 @@
         "description": "過去の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -971,7 +990,7 @@
         "description": "無料利用枠などの割引適用後の、直近の利用額を返します。このAPIで取得した金額は請求確定前の金額になります。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -982,7 +1001,7 @@
         "description": "直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -998,7 +1017,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1014,7 +1033,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1025,7 +1044,7 @@
         "description": "指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1042,7 +1061,7 @@
         "description": "現在登録されているクーポン一覧を返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1053,7 +1072,7 @@
         "description": "クーポンを登録します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1064,7 +1083,7 @@
         "description": "課金処理の結果を返します",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1075,7 +1094,7 @@
         "description": "現在の支払い方法を返します。propertiesに詳細情報が入っています",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1086,7 +1105,7 @@
         "description": "エラーのある現在の支払い方法を有効化します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1102,7 +1121,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1138,7 +1157,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1170,7 +1189,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1186,7 +1205,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1202,7 +1221,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1218,7 +1237,7 @@
         },
         "responses": {
           "status204": {
-            "description": "OK"
+            "description": "OK."
           },
           "status404": {
             "description": "EventHandler not found."
@@ -1250,7 +1269,7 @@
         "description": "発注確定済みの発注一覧を返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1266,7 +1285,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "Created"
@@ -1280,7 +1299,7 @@
         "description": "発注確定済みの発注を返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1291,7 +1310,7 @@
         "description": "発注をキャンセルします。既に発送済みの場合はエラーが返されます。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1302,7 +1321,7 @@
         "description": "与信を実施し、問題ない場合に発注を確定します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1313,7 +1332,7 @@
         "description": "発注したSIMをオペレーターに登録します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1332,7 +1351,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1343,7 +1362,7 @@
         "description": "商品一覧を返します。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1374,7 +1393,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1399,7 +1418,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1418,7 +1437,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1437,7 +1456,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }

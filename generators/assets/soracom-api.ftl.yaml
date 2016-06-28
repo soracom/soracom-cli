@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: "20160405"
+  version: "20160428"
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -1260,6 +1260,34 @@ paths:
            '$ref': '#/definitions/Subscriber'
         404:
           description: ${subscribers.update_speedclass.post.responses.status404.description}
+
+  '/subscribers/{imsi}/delete_session':
+    post:
+      summary: ${subscribers.delete_session.post.summary}
+      description: ${subscribers.delete_session.post.description}
+      operationId: deleteSubscriberSession
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers delete-session
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          type: string
+          description: ${subscribers.delete_session.post.parameters.imsi.description}
+          required: true
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: ${subscribers.delete_session.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: ${subscribers.delete_session.post.responses.status404.description}
 
   '/subscribers/{imsi}/activate':
     post:
@@ -2999,8 +3027,12 @@ definitions:
       expiryTime:
         type: integer
         format: int64
+      expiryAction:
+        type: string
       status:
         type: string
+      sessionStatus:
+        '$ref': '#/definitions/SessionStatus'
       tags:
        '$ref': '#/definitions/Map'
       operatorId:
@@ -3020,6 +3052,27 @@ definitions:
           - terminate
     required:
       - expiryTime
+
+  SessionStatus:
+    properties:
+      isOnline:
+        type: boolean
+      lastUpdatedAt:
+        type: integer
+        format: int64
+      imei:
+        type: string
+      ueIpAddress:
+        type: string
+      dnsServers:
+        type: array
+        items: {type: string}
+      vpgId:
+        type: string
+      gatewayPrivateIpAddress:
+        type: string
+      gatewayPublicIpAddress:
+        type: string
 
   SessionEvent:
     properties:
@@ -3045,6 +3098,8 @@ definitions:
       vpgId:
         type: string
       gatewayPrivateIpAddress:
+        type: string
+      gatewayPublicIpAddress:
         type: string
 
   Map:

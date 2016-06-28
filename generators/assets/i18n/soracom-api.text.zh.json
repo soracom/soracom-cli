@@ -29,7 +29,7 @@
         "description": "生成为了重设密码用的动态口令，送信至Operator的邮箱地址。获得邮件中记载的口令，调用/v1/auth/password_reset_token/verify API ，设定新密码。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "邮箱地址不正确。"
@@ -47,7 +47,7 @@
         "description": "验证重设密码用的口令，若验证成功，则更新Operator的密码。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "指定了不正当的口令。"
@@ -70,7 +70,7 @@
         "description": "返回认证信息一览",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -92,7 +92,7 @@
         "description": "更新认证信息。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "请求错误，或指定令牌已经失效（若为后者，需要再次通过/auth API认证）"
@@ -161,7 +161,7 @@
         "description": "返回Operator的信息。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -175,7 +175,7 @@
         "description": "返回Operator的AuthKey一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -186,7 +186,7 @@
         "description": "创建Operator的AuthKey。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -197,7 +197,7 @@
         "description": "删除Operator的AuthKey。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -208,7 +208,7 @@
         "description": "更新Operator的密码。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid password."
@@ -222,7 +222,7 @@
         "description": "返回连接到Support画面的口令。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -239,7 +239,7 @@
         "description": "发行新的API口令。将现在的API口令输入头文件中进行请求，则会得到含有新API口令的应答。之后再进行请求时就可以使用新API口令。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "请求错误，或指定令牌已经失效（若为后者，需要再次通过/auth API认证）"
@@ -265,7 +265,7 @@
         "description": "返回Role一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -276,7 +276,7 @@
         "description": "获得Role。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -287,7 +287,7 @@
         "description": "新追加Role。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -310,7 +310,7 @@
         "description": "获得与Role联结的用户一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -321,7 +321,7 @@
         "description": "获得用户的Role一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -350,7 +350,7 @@
         "description": "返回商品的派送地址一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -361,7 +361,7 @@
         "description": "新登录商品的派送地址。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "shippingAddreddId"
@@ -375,7 +375,7 @@
         "description": "返回商品派送地址。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -404,7 +404,7 @@
         "description": "返回SAM用户一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -415,7 +415,7 @@
         "description": "返回SAM用户。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -454,7 +454,7 @@
         "description": "返回SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -465,7 +465,7 @@
         "description": "创建SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -476,7 +476,7 @@
         "description": "返回SAM用户的AuthKey一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -498,7 +498,7 @@
         "description": "获得关于SAM用户的密码是否被搜索成功的信息",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -532,7 +532,7 @@
         "description": "获得SAM用户的权限设定。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -643,6 +643,25 @@
       "post": {
         "summary": "Update Subscriber speed class",
         "description": "更改指定的Subscriber的速度等级",
+        "parameters": {
+          "imsi": {
+            "description": "对象的Subscriber的IMSI"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的Subscriber的详细信息"
+          },
+          "status404": {
+            "description": "指定的Subscriber不存在"
+          }
+        }
+      }
+    },
+    "delete_session": {
+      "post": {
+        "summary": "Delete session",
+        "description": "Deletes session for the specified subscriber.",
         "parameters": {
           "imsi": {
             "description": "对象的Subscriber的IMSI"
@@ -913,7 +932,7 @@
         "description": "将Subscriber的Operator间的移交用口令，通过邮件传送给移交处的Operator。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -924,7 +943,7 @@
         "description": "确认Subscriber移交用的口令，实行移交。用移交处的Operator调用该API。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -960,7 +979,7 @@
         "description": "返回过去的使用额履历（应用了免费利用范围的折扣后、含税）。该API仅返回进行月结后、确定的使用额。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -971,7 +990,7 @@
         "description": "返回应用了免费利用范围的折扣后的最近的使用额。该API获得的金额为请求确定前的金额。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -982,7 +1001,7 @@
         "description": "返回最近一个月的使用额明细。该明细中含有以每日、每个Subscriber、每个收费项目分别计算的使用额。该API获得的金额为请求确定前的金额。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -998,7 +1017,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1014,7 +1033,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1025,7 +1044,7 @@
         "description": "返回指定月的使用额明细。该明细中含有以每日、每个Subscriber、每个收费项目分别计算的使用额。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1042,7 +1061,7 @@
         "description": "返回现在被登记中的优惠券一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1053,7 +1072,7 @@
         "description": "登记优惠券。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1064,7 +1083,7 @@
         "description": "返回收费处理的结果。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1075,7 +1094,7 @@
         "description": "返回现在的支付方法。Properties里含有详细信息。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1086,7 +1105,7 @@
         "description": "将有误的现在的支付方法有效化。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1102,7 +1121,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1138,7 +1157,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1170,7 +1189,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1186,7 +1205,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1202,7 +1221,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1218,7 +1237,7 @@
         },
         "responses": {
           "status204": {
-            "description": "OK"
+            "description": "OK."
           },
           "status404": {
             "description": "EventHandler not found."
@@ -1250,7 +1269,7 @@
         "description": "返回确定订购的订购一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1266,7 +1285,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "Created"
@@ -1280,7 +1299,7 @@
         "description": "返回订购完成的订购。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1291,7 +1310,7 @@
         "description": "取消订购。若已经发送，则返回错误。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1302,7 +1321,7 @@
         "description": "实施与贷，若没有问题，则确认订购。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1313,7 +1332,7 @@
         "description": "将订购的SIM登记到Operator。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1332,7 +1351,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1343,7 +1362,7 @@
         "description": "返回商品一览。",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1374,7 +1393,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1399,7 +1418,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1418,7 +1437,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1437,7 +1456,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }

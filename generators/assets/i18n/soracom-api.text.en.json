@@ -2,8 +2,8 @@
   "auth": {
     "auth": {
       "post": {
-        "summary": "Authenticate the API accessAPI, return an API key and API token",
-        "description": "It authenticates the API access. The following information must be included in the request: when doing authentication using a root account, the e-mail and password; when doing authentication using an authentication key, the authKeyId and authKey; when doing authentication using a SAM user, the operatorId, userName, and password. If the authentication is successful, it returns an API key and API token. When making further requests that require authentication, please include the API key and API token in the header of the request.",
+        "summary": "Performs authentication to access to the SORACOM API.",
+        "description": "Performs authentication to access to the SORACOM API. To perform authentication by a root account, specify `email` and `password`. To perform authentication by an AuthKey, specify `authKeyId` and `authKey`. To perform authentication by a SAM user, specify `operatorId`, `userName` and `password`. An API Key and an API Token will be included in the response if successful. Specify the API Key and the API Token to requests afterwards",
         "parameters": {
           "auth": {
             "description": "Authentication request."
@@ -18,21 +18,21 @@
           }
         },
         "cli": {
-          "summary": "Performs authentication, issues an API Key and an API Token if successful.",
+          "summary": "Performs authentication and issue an API Key and an API Token if successful.",
           "description": "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
         }
       }
     },
     "issue_password_reset_token": {
       "post": {
-        "summary": "Generate a one-time token for resetting the password",
-        "description": "Generates a one-time token for resetting the password and sends it to the operator's e-mail address. To set the new password, retrieve the token from the e-mail and call the /v1/auth/password_reset_token/verify API.",
+        "summary": "Issues a password reset token for the operator.",
+        "description": "Generates a password reset token and send it to the operator's mail address. After receiving the password reset token, call /v1/auth/password_reset_token/verify API with the token to update operator's password.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
-            "description": "The e-mail address is incorrect."
+            "description": "Invalid email address."
           }
         },
         "cli": {
@@ -43,17 +43,17 @@
     },
     "verify_password_reset_token": {
       "post": {
-        "summary": "Test the password reset token and update the operator's password.",
-        "description": "Tests the password reset token. If successful, it updates the operator's password.",
+        "summary": "Verifies the password reset token and updates password.",
+        "description": "Updates the operator's password if the password reset token is verified.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
-            "description": "An invalid token has been specified."
+            "description": "Invalid token."
           },
           "status404": {
-            "description": "The token has expired."
+            "description": "Token expired."
           }
         },
         "cli": {
@@ -70,7 +70,7 @@
         "description": "Returns a list of credentials.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -92,7 +92,7 @@
         "description": "Updates a credential.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "There was an error in the request or the specified token has already expired. (In the latter case, you will need to use the /auth API to do authentication once again.)"
@@ -114,7 +114,7 @@
   "operator": {
     "create_operator": {
       "post": {
-        "summary": "Create Operator",
+        "summary": "Create Operator.",
         "description": "Makes a request to create a new operator. An e-mail is sent to the e-mail address specified in the parameters, containing a one-time token for verifying the operator’s registration.",
         "responses": {
           "status200": {
@@ -128,19 +128,19 @@
     },
     "issue_email_change_token": {
       "post": {
-        "summary": "Issue Email Change Token",
+        "summary": "Issue Email Change Token.",
         "description": "Sends an e-mail with a one-time token for executing the e-mail address change."
       }
     },
     "verify_email_change_token": {
       "post": {
-        "summary": "Verify Email Change Token",
+        "summary": "Verify Email Change Token.",
         "description": "Verifies the token for the e-mail address change, and then changes the e-mail address."
       }
     },
     "verify_operator": {
       "post": {
-        "summary": "Verify Operator",
+        "summary": "Verify Operator.",
         "description": "Verifies the operator's registration. Called by setting as parameter the one-time verification token received via e-mail.",
         "responses": {
           "status200": {
@@ -157,11 +157,11 @@
     },
     "get_operator": {
       "get": {
-        "summary": "Get Operator",
+        "summary": "Get Operator.",
         "description": "Returns information about the operator.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -171,44 +171,44 @@
     },
     "list_operator_auth_keys": {
       "get": {
-        "summary": "List Operator AuthKeys",
+        "summary": "List Operator AuthKeys.",
         "description": "Returns the operator's AuthKey list.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "generate_operator_auth_key": {
       "post": {
-        "summary": "Generate Operator AuthKey",
+        "summary": "Generate Operator AuthKey.",
         "description": " Generates an AuthKey for the operator.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "delete_operator_auth_key": {
       "delete": {
-        "summary": "Delete Operator AuthKey",
+        "summary": "Delete Operator AuthKey.",
         "description": "Deletes an AuthKey from the operator.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "update_operator_password": {
       "post": {
-        "summary": "Update Operator Password",
+        "summary": "Update Operator Password.",
         "description": "Updates the operator's password.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid password."
@@ -218,11 +218,11 @@
     },
     "generate_support_token": {
       "post": {
-        "summary": "Generate Token for Support Console",
+        "summary": "Generate Token for Support Console.",
         "description": "Returns a token for accessing the support console.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "Invalid Operator Id"
@@ -235,11 +235,11 @@
     },
     "generate_auth_token": {
       "post": {
-        "summary": "Generate Authentication Token",
+        "summary": "Generate Authentication Token.",
         "description": "Generates a new API token. If you insert the current API token into the header and make a request, a response is returned containing the new API token. You can then use the new API token in future requests.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status400": {
             "description": "There was an error in the request or the specified token has already expired. (In the latter case, you will need to use the /auth API to do authentication once again.)"
@@ -261,80 +261,80 @@
   "roles": {
     "list_roles": {
       "get": {
-        "summary": "List Roles",
+        "summary": "List Roles.",
         "description": "Returns a list of roles.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_role": {
       "get": {
-        "summary": "Get Role",
+        "summary": "Get Role.",
         "description": "Retrieves a role.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_role": {
       "post": {
-        "summary": "Create Role",
+        "summary": "Create Role.",
         "description": "Adds a new role.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "update_role": {
       "put": {
-        "summary": "Update Role",
+        "summary": "Update Role.",
         "description": "Edits a role."
       }
     },
     "delete_role": {
       "delete": {
-        "summary": "Delete Role",
+        "summary": "Delete Role.",
         "description": "Deletes a role."
       }
     },
     "list_role_attached_users": {
       "get": {
-        "summary": "List Role Attached Users",
+        "summary": "List Role Attached Users.",
         "description": "Retrieves a list of users attached to a role.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "list_user_roles": {
       "get": {
-        "summary": "List User Roles",
+        "summary": "List User Roles.",
         "description": "Retrieves a list of the user's roles.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "attach_role": {
       "post": {
-        "summary": "Attach Role to User",
+        "summary": "Attach Role to User.",
         "description": "Attaches a role to a user."
       }
     },
     "detach_role": {
       "delete": {
-        "summary": "Detach Role from User",
+        "summary": "Detach Role from User.",
         "description": "Detaches a role from a user."
       }
     },
@@ -346,22 +346,22 @@
   "shipping_addresses": {
     "list_shipping_addresses": {
       "get": {
-        "summary": "List shipping addresses",
+        "summary": "List shipping addresses.",
         "description": "Returns a list of shipping addresses.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_shipping_address": {
       "post": {
-        "summary": "Create shipping address",
+        "summary": "Create shipping address.",
         "description": "Creates a new shipping address.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "shippingAddreddId"
@@ -371,24 +371,24 @@
     },
     "get_shipping_address": {
       "get": {
-        "summary": "Get shipping address",
+        "summary": "Get shipping address.",
         "description": "Returns a shipping address.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "update_shipping_address": {
       "put": {
-        "summary": "Update shipping address",
+        "summary": "Update shipping address.",
         "description": "Updates a shipping address."
       }
     },
     "delete_shipping_address": {
       "delete": {
-        "summary": "Delete shipping address",
+        "summary": "Delete shipping address.",
         "description": "Deletes a shipping address."
       }
     },
@@ -400,35 +400,35 @@
   "users": {
     "list_users": {
       "get": {
-        "summary": "List Users",
+        "summary": "List Users.",
         "description": "Returns a list of SAM users.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_user": {
       "get": {
-        "summary": "Get User",
+        "summary": "Get User.",
         "description": "Returns a SAM user.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_user": {
       "post": {
-        "summary": "Create User",
+        "summary": "Create User.",
         "description": "Adds a new SAM user."
       }
     },
     "update_user": {
       "put": {
-        "summary": "Update User",
+        "summary": "Update User.",
         "description": "Updates the SAM user.",
         "responses": {
           "status404": {
@@ -439,7 +439,7 @@
     },
     "delete_user": {
       "delete": {
-        "summary": "Delete User",
+        "summary": "Delete User.",
         "description": "Deletes the SAM user.",
         "responses": {
           "status404": {
@@ -450,40 +450,40 @@
     },
     "list_user_auth_keys": {
       "get": {
-        "summary": "List User AuthKeys",
+        "summary": "List User AuthKeys.",
         "description": "Returns the SAM user's AuthKey list.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "generate_user_auth_key": {
       "post": {
-        "summary": "Generate AuthKey",
+        "summary": "Generate AuthKey.",
         "description": "Generates an AuthKey for the SAM user.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_user_auth_key": {
       "get": {
-        "summary": "Get AuthKey",
+        "summary": "Get AuthKey.",
         "description": "Returns the SAM user's AuthKey.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "delete_user_auth_key": {
       "delete": {
-        "summary": "Delete User AuthKey",
+        "summary": "Delete User AuthKey.",
         "description": "Deletes an AuthKey from the SAM user.",
         "responses": {
           "status404": {
@@ -494,30 +494,30 @@
     },
     "has_user_password": {
       "get": {
-        "summary": "Has User Password",
+        "summary": "Has User Password.",
         "description": "Retrieves whether the SAM user has a password or not.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_user_password": {
       "post": {
-        "summary": "Create Password",
+        "summary": "Create Password.",
         "description": "Creates a password for the SAM user."
       }
     },
     "update_user_password": {
       "put": {
-        "summary": "Update Password",
+        "summary": "Update Password.",
         "description": "Updates the password of the SAM user."
       }
     },
     "delete_user_password": {
       "delete": {
-        "summary": "Delete Password",
+        "summary": "Delete Password.",
         "description": "Deletes the user's password.",
         "responses": {
           "status404": {
@@ -528,18 +528,18 @@
     },
     "get_user_permission": {
       "get": {
-        "summary": "Get User Permission",
+        "summary": "Get User Permission.",
         "description": "Retrieves the SAM user's permissions.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "update_user_permission": {
       "put": {
-        "summary": "Update Permission to User",
+        "summary": "Update Permission to User.",
         "description": "Updates the SAM user's permissions."
       }
     },
@@ -569,7 +569,7 @@
   "subscribers": {
     "list_subscribers": {
       "get": {
-        "summary": "List Subscribers",
+        "summary": "List Subscribers.",
         "description": "Returns a list of subscribers that match a certain criteria. If the total number of subscribers does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "tag_name": {
@@ -596,14 +596,14 @@
         },
         "responses": {
           "status200": {
-            "description": "A list of subscibers"
+            "description": "A list of subscibers."
           }
         }
       }
     },
     "register_subscriber": {
       "post": {
-        "summary": "Register Subscriber",
+        "summary": "Register Subscriber.",
         "description": "Registers a subscriber.",
         "parameters": {
           "imsi": {
@@ -622,7 +622,7 @@
     },
     "get_subscriber": {
       "get": {
-        "summary": "Get Subscriber",
+        "summary": "Get Subscriber.",
         "description": "Returns information about the specified subscriber.",
         "parameters": {
           "imsi": {
@@ -641,8 +641,27 @@
     },
     "update_speedclass": {
       "post": {
-        "summary": "Update Subscriber speed class",
+        "summary": "Update Subscriber speed class.",
         "description": "Changes the speed class of the specified subscriber.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
+    "delete_session": {
+      "post": {
+        "summary": "Delete Session",
+        "description": "Deletes session for the specified subscriber.",
         "parameters": {
           "imsi": {
             "description": "IMSI of the target subscriber."
@@ -660,7 +679,7 @@
     },
     "activate_subscriber": {
       "post": {
-        "summary": "Activate Subscriber",
+        "summary": "Activate Subscriber.",
         "description": "Activates status of specified subscriber.",
         "parameters": {
           "imsi": {
@@ -679,7 +698,7 @@
     },
     "deactivate_subscriber": {
       "post": {
-        "summary": "Deactivate Subscriber",
+        "summary": "Deactivate Subscriber.",
         "description": "Deactivates specified subscriber.",
         "parameters": {
           "imsi": {
@@ -698,7 +717,7 @@
     },
     "terminate_subscriber": {
       "post": {
-        "summary": "Terminate Subscriber",
+        "summary": "Terminate Subscriber.",
         "description": "Terminates the specified subscriber",
         "parameters": {
           "imsi": {
@@ -717,7 +736,7 @@
     },
     "enable_termination": {
       "post": {
-        "summary": "Enable Termination of Subscriber",
+        "summary": "Enable Termination of Subscriber.",
         "description": "Enables termination of specified subscriber.",
         "parameters": {
           "imsi": {
@@ -736,7 +755,7 @@
     },
     "disable_termination": {
       "post": {
-        "summary": "Disable Termination of Subscriber",
+        "summary": "Disable Termination of Subscriber.",
         "description": "Disables termination of specified subscriber.",
         "parameters": {
           "imsi": {
@@ -755,7 +774,7 @@
     },
     "set_expirytime": {
       "post": {
-        "summary": "Update Expiry Time of Subscriber",
+        "summary": "Update Expiry Time of Subscriber.",
         "description": "Updates expiry time of specified subscriber.",
         "parameters": {
           "imsi": {
@@ -777,7 +796,7 @@
     },
     "unset_expirytime": {
       "post": {
-        "summary": "Delete Expiry Time of Subscriber",
+        "summary": "Delete Expiry Time of Subscriber.",
         "description": "Deletes expiry time of specified subscriber and changes it to indefinite.",
         "parameters": {
           "imsi": {
@@ -796,7 +815,7 @@
     },
     "set_group": {
       "post": {
-        "summary": "Set Group to Subscriber",
+        "summary": "Set Group to Subscriber.",
         "description": "Sets or overwrites a group for the specified subscriber.",
         "parameters": {
           "imsi": {
@@ -818,7 +837,7 @@
     },
     "unset_group": {
       "post": {
-        "summary": "Unset Group to Subscriber",
+        "summary": "Unset Group to Subscriber.",
         "description": "Removes the group configuration from the specified subscriber.",
         "parameters": {
           "imsi": {
@@ -837,7 +856,7 @@
     },
     "list_session_events": {
       "get": {
-        "summary": "List Session Events",
+        "summary": "List Session Events.",
         "description": "Returns the event history for the specified subscriber, including session creation, change, and deletion. If the total number of events does not fit in one page, a URL for accessing the next page is returned in the `Link` header of the response.",
         "parameters": {
           "imsi": {
@@ -865,7 +884,7 @@
     },
     "put_subscriber_tags": {
       "put": {
-        "summary": "Bulk Insert or Update Subscriber Tags",
+        "summary": "Bulk Insert or Update Subscriber Tags.",
         "description": "Inserts/updates tags for the specified subscriber.",
         "parameters": {
           "imsi": {
@@ -887,7 +906,7 @@
     },
     "delete_subscriber_tag": {
       "delete": {
-        "summary": "Delete Subscriber Tag",
+        "summary": "Delete Subscriber Tag.",
         "description": "Deletes a tag from the specified subscriber.",
         "parameters": {
           "imsi": {
@@ -909,29 +928,29 @@
     },
     "issue_subscriber_transfer_token": {
       "post": {
-        "summary": "Issue Subscribers Transfer Token",
+        "summary": "Issue Subscribers Transfer Token.",
         "description": "Sends the subscriber's inter-operator control transfer token to the control destination operator.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "verify_subscriber_transfer_token": {
       "post": {
-        "summary": "Verify Subscriber Transfer Token",
+        "summary": "Verify Subscriber Transfer Token.",
         "description": "Verifies the subscriber's control transfer token, and executes the transfer. This API is called from the operator of the control destination.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "delete_subscriber_transfer_token": {
       "delete": {
-        "summary": "Delete Subscribers Transfer Token",
+        "summary": "Delete Subscribers Transfer Token.",
         "description": "Deletes the subscriber's inter-operator control transfer token, and cancels the control transfer.",
         "parameters": {
           "token": {
@@ -956,40 +975,40 @@
   "bills": {
     "get_billing_history": {
       "get": {
-        "summary": "Get billing history",
+        "summary": "Get billing history.",
         "description": "Returns past billing history (after applied discounts such as free tiers, etc., inclusive of tax). This API only returns the billing amounts that have been finalized at the end of the month.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_latest_billing": {
       "get": {
-        "summary": "Get latest bill",
+        "summary": "Get latest bill.",
         "description": "Returns the latest billing amounts after applied discounts such as free tiers, etc. The amounts retrieved using this API correspond to the values before the invoice was finalized.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "export_latest_billing": {
       "post": {
-        "summary": "Output latest billing CSV file to S3",
+        "summary": "Output latest billing CSV file to S3.",
         "description": "Returns detailed information of the billing amounts for the latest month. This detailed information includes billing amounts per day, subscriber, and billing item. The amounts retrieved using this API correspond to the values before the invoice was finalized.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_billing": {
       "get": {
-        "summary": "Get bill",
+        "summary": "Get bill.",
         "description": "Returns the billing history for the specified month (after applied discounts such as free tiers, etc., inclusive of tax). The amounts retrieved using this API correspond to the values before the invoice was finalized.",
         "parameters": {
           "yyyyMM": {
@@ -998,14 +1017,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_billing_per_day": {
       "get": {
-        "summary": "Get bill per day",
+        "summary": "Get bill per day.",
         "description": "Returns detailed information of billing amounts per day for the specified month. This API only returns the billing amounts that have been finalized.",
         "parameters": {
           "yyyyMM": {
@@ -1014,18 +1033,18 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "export_billing": {
       "post": {
-        "summary": "Output billing CSV file to S3",
+        "summary": "Output billing CSV file to S3.",
         "description": "Returns detailed information for the billing amounts for the specified month. This detailed information includes billing amounts per day, subscriber, and billing item.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1038,33 +1057,33 @@
   "payment": {
     "list_coupons": {
       "get": {
-        "summary": "List coupons",
+        "summary": "List coupons.",
         "description": "Returns a list of currently registered coupons.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "register_coupon": {
       "post": {
-        "summary": "Register Coupon",
+        "summary": "Register Coupon.",
         "description": "Registers a coupon.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_payment_transaction": {
       "get": {
-        "summary": "Get payment transaction result",
+        "summary": "Get payment transaction result.",
         "description": "Returns result of a payment transaction.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1075,25 +1094,25 @@
         "description": "Returns current payment methods. Detailed information is included in the properties.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "activate_payment_method": {
       "post": {
-        "summary": "Activate payment method",
+        "summary": "Activate payment method.",
         "description": "Activates a current payment method that has an error.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "register_webpay_payment_method": {
       "post": {
-        "summary": "Register credit card information for WebPay",
+        "summary": "Register credit card information for WebPay.",
         "description": "Registers credit card information for WebPay payments.",
         "parameters": {
           "creditCard": {
@@ -1102,7 +1121,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1129,7 +1148,7 @@
   "event_handlers": {
     "list_event_handlers": {
       "get": {
-        "summary": "List Event Handlers",
+        "summary": "List Event Handlers.",
         "description": "Returns a list of event handlers.",
         "parameters": {
           "target": {
@@ -1138,14 +1157,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_event_handler": {
       "post": {
-        "summary": "Create Event Handler",
+        "summary": "Create Event Handler.",
         "description": "Creates a new event handler.",
         "parameters": {
           "req": {
@@ -1161,7 +1180,7 @@
     },
     "list_event_handlers_by_subscriber": {
       "get": {
-        "summary": "List Event Handlers related to Subscriber",
+        "summary": "List Event Handlers related to Subscriber.",
         "description": "Returns a list of event handlers related to the specified IMSI.",
         "parameters": {
           "imsi": {
@@ -1170,14 +1189,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_event_handler": {
       "get": {
-        "summary": "Get Event Handler",
+        "summary": "Get Event Handler.",
         "description": "Returns information about the specified event handler.",
         "parameters": {
           "handler_id": {
@@ -1186,14 +1205,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "update_event_handler": {
       "put": {
-        "summary": "Update Event Handler",
+        "summary": "Update Event Handler.",
         "description": "Updates the specified event handler.",
         "parameters": {
           "handler_id": {
@@ -1202,14 +1221,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "delete_event_handler": {
       "delete": {
-        "summary": "Delete Event Handler",
+        "summary": "Delete Event Handler.",
         "description": "Deletes the specified event handler.",
         "parameters": {
           "handler_id": {
@@ -1218,7 +1237,7 @@
         },
         "responses": {
           "status204": {
-            "description": "OK"
+            "description": "OK."
           },
           "status404": {
             "description": "EventHandler not found."
@@ -1228,13 +1247,13 @@
     },
     "set_ignore_event_handler": {
       "post": {
-        "summary": "Ignore Event Handler",
+        "summary": "Ignore Event Handler.",
         "description": "Adds a setting for ignoring the specified event handler of the specified IMSI."
       }
     },
     "delete_ignore_event_handler": {
       "delete": {
-        "summary": "Delete Ignore Event Handler",
+        "summary": "Delete Ignore Event Handler.",
         "description": "Deletes the setting for ignoring the specified event handler of the specified IMSI."
       }
     },
@@ -1250,14 +1269,14 @@
         "description": "Returns a list of confirmed orders.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "create_quotation": {
       "post": {
-        "summary": "Create Quotation",
+        "summary": "Create Quotation.",
         "description": "Creates a new order quotation. If the orderId is put in /confirm, the order is complete.",
         "parameters": {
           "request": {
@@ -1266,7 +1285,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           },
           "status201": {
             "description": "Created"
@@ -1280,7 +1299,7 @@
         "description": "Returns a confirmed order.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1291,7 +1310,7 @@
         "description": "Cancels an order. If the order has already been dispatched, an error is returned.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1302,7 +1321,7 @@
         "description": "Performs a credit limit and confirms the order if no problems are encountered.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1313,7 +1332,7 @@
         "description": "Registers the ordered SIM with the operator.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1324,26 +1343,26 @@
         "description": "List ordered subscribers",
         "request": {
           "limit": {
-            "description": "Max number of subscribers in a response"
+            "description": "Max number of subscribers in a response."
           },
           "last_evaluated_key": {
-            "description": "Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key"
+            "description": "Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key."
           }
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "list_products": {
       "get": {
-        "summary": "List products",
+        "summary": "List products.",
         "description": "Returns a list of products.",
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1356,7 +1375,7 @@
   "stats": {
     "get_air_stats": {
       "get": {
-        "summary": "Get Air Usage Report of Subscriber",
+        "summary": "Get Air Usage Report of Subscriber.",
         "description": "Retrieves the usage report for the subscriber specified by the IMSI.",
         "parameters": {
           "imsi": {
@@ -1374,14 +1393,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "get_beam_stats": {
       "get": {
-        "summary": "Get Beam Usage Report of Subscriber",
+        "summary": "Get Beam Usage Report of Subscriber.",
         "description": "Retrieves the Soracom Beam usage report for the subscriber specified by the IMSI.",
         "parameters": {
           "imsi": {
@@ -1399,14 +1418,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "export_air_stats": {
       "post": {
-        "summary": "Export Air Usage Report of All Subscribers",
+        "summary": "Export Air Usage Report of All Subscribers.",
         "description": "Retrieves a file containing the usage report of all subscribers for the specified operator. The report data range is specified with from, to in unixtime. The report contains monthly data. The file output destination is AWS S3. The file output format is CSV.",
         "parameters": {
           "operator_id": {
@@ -1418,14 +1437,14 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
     },
     "export_beam_stats": {
       "post": {
-        "summary": "Export Beam Usage Report of All Subscribers",
+        "summary": "Export Beam Usage Report of All Subscribers.",
         "description": "Retrieves a file containing the usage report of all subscribers for the specified operator. The report data range is specified with from, to in unixtime. The report contains monthly data. The file output destination is AWS S3. The file output format is CSV.",
         "parameters": {
           "operator_id": {
@@ -1437,7 +1456,7 @@
         },
         "responses": {
           "status200": {
-            "description": "OK"
+            "description": "OK."
           }
         }
       }
@@ -1462,7 +1481,7 @@
   "groups": {
     "list_groups": {
       "get": {
-        "summary": "List Groups",
+        "summary": "List Groups.",
         "description": "Returns a list of groups.",
         "parameters": {
           "tag_name": {
@@ -1490,7 +1509,7 @@
     },
     "create_group": {
       "post": {
-        "summary": "Create Group",
+        "summary": "Create Group.",
         "description": "Create a new group.",
         "parameters": {
           "group": {
@@ -1506,7 +1525,7 @@
     },
     "get_group": {
       "get": {
-        "summary": "Get Group",
+        "summary": "Get Group.",
         "description": "Returns the group specified by the group ID.",
         "parameters": {
           "group_id": {
@@ -1515,7 +1534,7 @@
         },
         "responses": {
           "status200": {
-            "description": "The specified group"
+            "description": "The specified group."
           },
           "status404": {
             "description": "The specified group does not exist."
@@ -1525,7 +1544,7 @@
     },
     "delete_group": {
       "delete": {
-        "summary": "Delete Group",
+        "summary": "Delete Group.",
         "description": "Deletes the specified group by group ID",
         "parameters": {
           "group_id": {
@@ -1544,7 +1563,7 @@
     },
     "list_subscribers_in_group": {
       "get": {
-        "summary": "List Subscribers in a group",
+        "summary": "List Subscribers in a group.",
         "description": "Returns a list of subscribers that belong to the specified group by group ID.",
         "parameters": {
           "group_id": {
@@ -1569,7 +1588,7 @@
     },
     "put_configuration_parameters": {
       "put": {
-        "summary": "Update Group Configuration Parameters",
+        "summary": "Update Group Configuration Parameters.",
         "description": "Adds/updates parameters for the specified group.",
         "parameters": {
           "group_id": {
@@ -1594,7 +1613,7 @@
     },
     "delete_configuration_parameter": {
       "delete": {
-        "summary": "Delete Group Configuration Parameters",
+        "summary": "Delete Group Configuration Parameters.",
         "description": "Delete parameters for the specified group.",
         "parameters": {
           "group_id": {
@@ -1619,7 +1638,7 @@
     },
     "put_group_tags": {
       "put": {
-        "summary": "Update Group Tags",
+        "summary": "Update Group Tags.",
         "description": "Adds/updates tags of specified configuration group.",
         "parameters": {
           "group_id": {
@@ -1641,7 +1660,7 @@
     },
     "delete_group_tag": {
       "delete": {
-        "summary": "Delete Group Tag",
+        "summary": "Delete Group Tag.",
         "description": "Deletes tag from the specified group.",
         "parameters": {
           "group_id": {
@@ -1669,7 +1688,7 @@
   "virtual_private_gateway": {
     "list_virtual_private_gateways": {
       "get": {
-        "summary": "List Virtual Private Gateways",
+        "summary": "List Virtual Private Gateways.",
         "description": "Returns a list of VPGs.",
         "parameters": {
           "tag_name": {
@@ -1697,7 +1716,7 @@
     },
     "create_virtual_private_gateway": {
       "post": {
-        "summary": "Create Virtual Private Gateway",
+        "summary": "Create Virtual Private Gateway.",
         "description": "Create new VPG.",
         "parameters": {
           "create_virtual_private_gateway_request": {
@@ -1713,7 +1732,7 @@
     },
     "get_virtual_private_gateway": {
       "get": {
-        "summary": "Get Virtual Private Gateway",
+        "summary": "Get Virtual Private Gateway.",
         "description": "Retrieves information about the specified VPG.",
         "parameters": {
           "vpg_id": {
@@ -1732,7 +1751,7 @@
     },
     "terminate_virtual_private_gateway": {
       "post": {
-        "summary": "Terminate Virtual Private Gateway",
+        "summary": "Terminate Virtual Private Gateway.",
         "description": "Terminates the specified VPG.",
         "parameters": {
           "vpg_id": {
@@ -1776,7 +1795,7 @@
     },
     "delete_vpc_peering_connection": {
       "delete": {
-        "summary": "Delete VPC Peering Connection",
+        "summary": "Delete VPC Peering Connection.",
         "description": "Deletes the specified VPC peering connection.",
         "parameters": {
           "vpg_id": {
@@ -1803,7 +1822,7 @@
   },
   "completion": {
     "cli": {
-      "summary": "Generate script for bash completion"
+      "summary": "Generate script for bash completion."
     }
   },
   "configure": {
@@ -1818,7 +1837,7 @@
     },
     "get": {
       "cli": {
-        "summary": "Show specified profile configurations",
+        "summary": "Show specified profile configurations.",
         "description": "Show specified profile configurations"
       }
     }
