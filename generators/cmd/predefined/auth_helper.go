@@ -22,14 +22,9 @@ type authResult struct {
 }
 
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
-	pn := getSpecifiedProfileName()
-	if pn == "" {
-		pn = "default"
-	}
-
-	profile, err := loadProfile(pn)
+	profile, err := getProfile()
 	if err != nil {
-		fmt.Println("unable to load the specified profile: " + pn)
+		fmt.Println("unable to load the profile.")
 		fmt.Println("run `soracom configure` first.")
 		return err
 	}

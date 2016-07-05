@@ -23,6 +23,30 @@ type profile struct {
 	AuthKey    *string `json:"authKey,omitempty"`
 	Username   *string `json:"username,omitempty"`
 	OperatorID *string `json:"operatorId,omitempty"`
+	Endpoint   *string `json:"endpoint,omitempty"`
+}
+
+var (
+	loadedProfile *profile
+)
+
+func getProfile() (*profile, error) {
+	if loadedProfile != nil {
+		return loadedProfile, nil
+	}
+
+	pn := getSpecifiedProfileName()
+	if pn == "" {
+		pn = "default"
+	}
+
+	profile, err := loadProfile(pn)
+	if err != nil {
+		return nil, err
+	}
+
+	loadedProfile = profile
+	return loadedProfile, nil
 }
 
 func getDefaultProfileName() string {

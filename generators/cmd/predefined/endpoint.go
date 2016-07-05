@@ -12,8 +12,18 @@ func setDefaultEndpoint(endpoint string) {
 
 func getSpecifiedEndpoint() string {
 	e := os.Getenv("SORACOM_ENDPOINT")
-	if e == "" {
-		e = defaultEndpoint
+	if e != "" {
+		return e
 	}
-	return e
+
+	profile, err := getProfile()
+	if err != nil {
+		return defaultEndpoint
+	}
+
+	if profile.Endpoint == nil {
+		return defaultEndpoint
+	}
+
+	return *profile.Endpoint
 }
