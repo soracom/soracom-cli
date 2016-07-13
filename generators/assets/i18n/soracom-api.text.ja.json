@@ -1627,8 +1627,8 @@
           }
         },
         "responses": {
-          "status200": {
-            "description": "更新後のGroup"
+          "status204": {
+            "description": "指定されたパラメータの削除完了"
           },
           "status404": {
             "description": "指定されたGroupが存在しない"
@@ -1767,6 +1767,188 @@
           },
           "status404": {
             "description": "指定されたVPGは存在しない"
+          }
+        }
+      }
+    },
+    "open_gate": {
+      "post": {
+        "summary": "Open SORACOM Gate",
+        "description": "指定したVPGでSORACOM Gateを有効化し、Gateを開く",
+        "parameters": {
+         "vpg_id": {
+           "description": "対象のVPGのID"
+         }
+       },
+       "responses": {
+         "status200": {
+           "description": "SORACOM Gateの有効化が完了"
+         },
+         "status400": {
+           "description": "リクエストに誤りがある"
+         },
+         "status404": {
+           "description": "指定されたVPGは存在しない"
+         }
+       }
+     }
+    },
+    "close_gate": {
+      "post": {
+        "summary": "Close SORACOM Gate.",
+        "description": "指定したVPGでSORACOM Gateを無効化し、Gateを閉じる",
+        "parameters": {
+         "vpg_id": {
+           "description": "対象のVPGのID"
+         }
+       },
+       "responses": {
+         "status200": {
+           "description": "SORACOM Gateの無効化が完了"
+         },
+         "status400": {
+           "description": "リクエストに誤りがある"
+         },
+         "status404": {
+           "description": "指定されたVPGは存在しない"
+         }
+       }
+     }
+    },
+    "list_virtual_private_gateway_peers": {
+      "get": {
+        "summary": "List VPG Gate peers",
+        "description": "VPGに登録されたGate Peerの一覧を取得する",
+         "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "正しくVPGに登録されたGate Peerのリストが取得出来た"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGは存在しない"
+          }
+        }
+      }
+    },
+    "register_virtual_private_gateway_peer": {
+      "post": {
+        "summary": "Register VPG Gate Peer",
+        "description": "VPGにGate Peerを登録する",
+        "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "VPGにGate Peerの登録が完了した"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGは存在しない"
+          }
+        }
+      }
+    },
+    "unregister_virtual_private_gateway_peer": {
+      "delete": {
+        "summary": "Unregister VPG Gate Peer",
+        "description": "Gate PeerをVPGから登録解除する",
+        "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          },
+          "host_id": {
+            "description": "対象のPeerのID"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Gate Peerの登録解除に成功"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGあるいはPeerは存在しない"
+          }
+        }
+      }
+    },
+    "list_virtual_private_gateway_ip_address_map_entries": {
+      "get": {
+        "summary": "List VPG IP address map entries",
+        "description": "指定されたVPGのIPアドレスマップのエントリーを取得する",
+        "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "IPアドレスのリスト取得に成功"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGあるいはPeerは存在しない"
+          }
+        }
+      }
+    },
+    "put_virtual_private_gateway_ip_address_map_entry": {
+      "post": {
+        "summary": "Put VPG IP address map entry",
+        "description": "VPGのIPアドレスマップのエントリーを追加する",
+        "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "IPアドレスマップのエントリー追加に成功"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGは存在しない"
+          }
+        }
+      }
+    },
+    "delete_virtual_private_gateway_ip_address_map_entry": {
+      "delete": {
+        "summary": "Delete VPG IP address map entry",
+        "description": "VPGのIPアドレスマップからエントリーを削除する",
+        "parameters": {
+          "vpg_id": {
+            "description": "対象のVPGのID"
+          },
+          "key": {
+            "description": "対象のKey"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "IPアドレスマップのエントリー削除に成功"
+          },
+          "status400": {
+            "description": "リクエストに誤りがある"
+          },
+          "status404": {
+            "description": "指定されたVPGあるいはPeerは存在しない"
           }
         }
       }

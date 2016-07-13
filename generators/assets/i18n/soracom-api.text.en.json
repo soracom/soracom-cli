@@ -1627,8 +1627,8 @@
           }
         },
         "responses": {
-          "status200": {
-            "description": "The group after the update."
+          "status204": {
+            "description": "The parameter was successfully deleted."
           },
           "status404": {
             "description": "The specified group does not exist."
@@ -1767,6 +1767,188 @@
           },
           "status404": {
             "description": "The specified VPG does not exist."
+          }
+        }
+      }
+    },
+    "open_gate": {
+      "post": {
+        "summary": "Open SORACOM Gate.",
+        "description": "Open SORACOM Gate on the specified VPG.",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "SORACOM Gate is successfully opened on the VPG."
+          },
+          "status400": {
+            "description": "Client side error."
+          },
+          "status404": {
+            "description": "The specified VPG does not exist."
+          }
+        }
+      }
+    },
+    "close_gate": {
+      "post": {
+        "summary": "Close SORACOM Gate.",
+        "description": "Close SORACOM Gate on the specified VPG.",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "SORACOM Gate is successfully closed on the VPG."
+          },
+          "status400": {
+            "description": "Client side error."
+          },
+          "status404": {
+            "description": "The specified VPG does not exist."
+          }
+        }
+      }
+    },
+    "list_virtual_private_gateway_peers": {
+      "get": {
+        "summary": "List VPG Gate peers",
+        "description": "List Gate peers registered in the Virtual Private Gateway",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "List of peers registered in the VPG."
+          },
+          "status400": {
+            "description": "Client side error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG does not exist."
+          }
+        }
+      }
+    },
+    "register_virtual_private_gateway_peer": {
+      "post": {
+        "summary": "Register VPG Gate peer",
+        "description": "Register a host as a gate peer in the Virtual Private Gateway",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "Gate peer is successfully registered."
+          },
+          "status400": {
+            "description": "Client side error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG does not exist."
+          }
+        }
+      }
+    },
+    "unregister_virtual_private_gateway_peer": {
+      "delete": {
+        "summary": "Unregister VPG gate peer",
+        "description": "Unregister a gate peer from the Virtual Private Gateway",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          },
+          "host_id": {
+            "description": "ID of the target node."
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Successfully deregistered the Gate peer."
+          },
+          "status400": {
+            "description": "Error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG or node does not exist."
+          }
+        }
+      }
+    },
+    "list_virtual_private_gateway_ip_address_map_entries": {
+      "get": {
+        "summary": "List VPG IP address map entries",
+        "description": "Describes the list of IP addresse map entries in the Virtual Private Gateway",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "Successfully fetched the list of IP address map entries."
+          },
+          "status400": {
+            "description": "Error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG or node does not exist."
+          }
+        }
+      }
+    },
+    "put_virtual_private_gateway_ip_address_map_entry": {
+      "post": {
+        "summary": "Put an entry in VPG IP address map",
+        "description": "Puts an entry in VPG IP address map.",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "Successfully put an entry for the specified key and IP address."
+          },
+          "status400": {
+            "description": "Error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG or node does not exist."
+          }
+        }
+      }
+    },
+    "delete_virtual_private_gateway_ip_address_map_entry": {
+      "delete": {
+        "summary": "Delete VPG IP address map entry",
+        "description": "Deletes an entry in VPG IP address map.",
+        "parameters": {
+          "vpg_id": {
+            "description": "Target VPG ID."
+          },
+          "key": {
+            "description": "Target key to remove."
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Successfully deleted the entry from the VPG IP address map."
+          },
+          "status400": {
+            "description": "Error in the request."
+          },
+          "status404": {
+            "description": "The specified VPG or node does not exist."
           }
         }
       }

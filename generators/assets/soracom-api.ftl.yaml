@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: "20160428"
+  version: "20160713"
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -1271,7 +1271,7 @@ paths:
         - api_token: []
       x-soracom-cli:
         - subscribers delete-session
-      consumes: [application/json]
+      consumes: [text/plain]
       produces: [application/json]
       parameters:
         - name: imsi
@@ -2739,10 +2739,8 @@ paths:
       tags:
         - Group
       responses:
-        200:
-          description: ${groups.delete_configuration_parameter.delete.responses.status200.description}
-          schema:
-           '$ref': '#/definitions/Group'
+        204:
+          description: ${groups.delete_configuration_parameter.delete.responses.status204.description}
         404:
           description: ${groups.delete_configuration_parameter.delete.responses.status404.description}
 
@@ -2939,6 +2937,262 @@ paths:
         404:
           description: ${virtual_private_gateway.terminate_virtual_private_gateway.post.responses.status404.description}
 
+  '/virtual_private_gateways/{vpg_id}/gate/open':
+    post:
+      summary: ${virtual_private_gateway.open_gate.post.summary}
+      description: ${virtual_private_gateway.open_gate.post.description}
+      x-soracom-cli:
+        - vpg open-gate
+      operationId: openGate
+      consumes: [text/plain]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.open_gate.post.parameters.vpg_id.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.open_gate.post.responses.status200.description}
+        400:
+          description: ${virtual_private_gateway.open_gate.post.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.open_gate.post.responses.status404.description}
+
+  '/virtual_private_gateways/{vpg_id}/gate/close':
+    post:
+      summary: ${virtual_private_gateway.close_gate.post.summary}
+      description: ${virtual_private_gateway.close_gate.post.description}
+      x-soracom-cli:
+        - vpg close-gate
+      operationId: closeGate
+      consumes: [text/plain]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.close_gate.post.parameters.vpg_id.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.close_gate.post.responses.status200.description}
+        400:
+          description: ${virtual_private_gateway.close_gate.post.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.close_gate.post.responses.status404.description}
+
+  '/virtual_private_gateways/{vpg_id}/gate/peers':
+    get:
+      summary: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.summary}
+      description: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.description}
+      x-soracom-cli:
+        - vpg list-gate-peers
+      operationId: listGatePeers
+      consumes: [text/plain]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.parameters.vpg_id.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/GatePeer'
+        400:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_peers.get.responses.status404.description}
+
+    post:
+      summary: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.summary}
+      description: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.description}
+      x-soracom-cli:
+        - vpg register-gate-peer
+      operationId: registerGatePeer
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.parameters.vpg_id.description}
+          required: true
+          type: string
+        - name: gate_peer
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/RegisterGatePeerRequest'
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/GatePeer'
+        400:
+          description: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.register_virtual_private_gateway_peer.post.responses.status404.description}
+
+  '/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}':
+    delete:
+      summary: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.summary}
+      description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.description}
+      x-soracom-cli:
+        - vpg unregister-gate-peer
+      operationId: unregisterGatePeer
+      consumes: [text/plain]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.parameters.vpg_id.description}
+          required: true
+          type: string
+        - name: outer_ip_address
+          in: path
+          description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.parameters.host_id.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        204:
+          description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.responses.status204.description}
+        400:
+          description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.responses.status404.description}
+
+  '/virtual_private_gateways/{vpg_id}/ip_address_map':
+    get:
+      summary: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.summary}
+      description: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.description}
+      x-soracom-cli:
+        - vpg list-ip-address-map-entries
+      operationId: listVirtualPrivateGatewayIpAddressMapEntries
+      consumes: [text/plain]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.parameters.vpg_id.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/IpAddressMapEntry'
+        400:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.responses.status404.description}
+
+    post:
+      summary: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.summary}
+      description: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.description}
+      x-soracom-cli:
+        - vpg put-ip-address-map-entry
+      operationId: putVirtualPrivateGatewayIpAddressMapEntry
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.parameters.vpg_id.description}
+          required: true
+          type: string
+        - name: put_ip_address_map_entry_request
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PutIpAddressMapEntryRequest'
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        200:
+          description: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/IpAddressMapEntry'
+        400:
+          description: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.responses.status404.description}
+
+  '/virtual_private_gateways/{vpg_id}/ip_address_map/{key}':
+    delete:
+      summary: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.summary}
+      description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.description}
+      x-soracom-cli:
+        - vpg delete-ip-address-map-entry
+      operationId: deleteVirtualPrivateGatewayIpAddressMapEntry
+      consumes: [text/plain]
+      produces: [text/plainn]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - name: vpg_id
+          in: path
+          description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.parameters.vpg_id.description}
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.parameters.key.description}
+          required: true
+          type: string
+      tags:
+        - VirtualPrivateGateway
+      responses:
+        204:
+          description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.responses.status204.description}
+          schema:
+           '$ref': '#/definitions/IpAddressMapEntry'
+        400:
+          description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.responses.status400.description}
+        404:
+          description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.responses.status404.description}
+
   '/virtual_private_gateways/{vpg_id}/vpc_peering_connections':
     post:
       summary: ${virtual_private_gateway.create_vpc_peering_connection.post.summary}
@@ -3012,7 +3266,7 @@ definitions:
         type: string
       serialNumber:
         type: string
-      ipAddress:
+      iccid:
         type: string
       apn:
         type: string
@@ -4078,9 +4332,10 @@ definitions:
         type: string
       primaryServiceName:
         type: string
-        enum: ["Canal"]
+        enum: ["Canal","Direct","Door","Gate"]
       type:
         type: integer
+        enum: [0xc, 0xd]
       status:
         type: string
       useInternetGateway:
@@ -4099,13 +4354,56 @@ definitions:
         $ref: '#/definitions/Tag'
 
   CreateVirtualPrivateGatewayRequest:
+    required:
+      - primaryServiceName
     properties:
       primaryServiceName:
         type: string
-        enum: ["Canal"]
+        enum: ["Canal","Gate"]
         default: "Canal"
       useInternetGateway:
         type: boolean
+      deviceSubnetCidrRange:
+        type: string
+        default: "10.128.0.0/9"
+
+  RegisterGatePeerRequest:
+    required:
+      - outerIpAddress
+    properties:
+      outerIpAddress:
+        type: string
+      innerIpAddress:
+        type: string
+
+  GatePeer:
+    properties:
+      outerIpAddress:
+        type: string
+      innerIpAddress:
+        type: string
+      ownedByCustomer:
+        type: boolean
+
+  IpAddressMapEntry:
+    properties:
+      key:
+        type: string
+      ipAddress:
+        type: string
+      type:
+        type: string
+        enum: ["static", "dynamic", "customerGatePeer", "gatePeer"]
+
+  PutIpAddressMapEntryRequest:
+    required:
+      - key
+      - ipAddress
+    properties:
+      key:
+        type: string
+      ipAddress:
+        type: string
 
   VpcPeeringConnection:
     properties:

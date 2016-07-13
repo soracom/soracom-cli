@@ -16,6 +16,8 @@ import (
 
 
 
+var VpgCreateCmdDeviceSubnetCidrRange string
+
 var VpgCreateCmdPrimaryServiceName string
 
 
@@ -28,6 +30,8 @@ var VpgCreateCmdBody string
 
 
 func init() {
+  VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "", TR(""))
+
   VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", TR(""))
 
   VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TR(""))
@@ -108,11 +112,15 @@ func buildPathForVpgCreateCmd(path string) string {
   
   
   
+  
+  
   return path
 }
 
 func buildQueryForVpgCreateCmd() string {
   result := []string{}
+  
+  
   
   
   
@@ -150,6 +158,12 @@ func buildBodyForVpgCreateCmd() (string, error) {
   }
 
   result := map[string]interface{}{}
+  
+  
+  if VpgCreateCmdDeviceSubnetCidrRange != "" {
+    result["deviceSubnetCidrRange"] = VpgCreateCmdDeviceSubnetCidrRange
+  }
+  
   
   
   if VpgCreateCmdPrimaryServiceName != "" {
