@@ -1,17 +1,11 @@
 package cmd
 
 import (
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var SubscribersListCmdLastEvaluatedKey string
 
@@ -25,163 +19,111 @@ var SubscribersListCmdTagValue string
 
 var SubscribersListCmdTagValueMatchMode string
 
-
 var SubscribersListCmdLimit int64
 
-
-
-
-
 func init() {
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_subscribers.get.parameters.last_evaluated_key.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_subscribers.get.parameters.last_evaluated_key.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TR("subscribers.list_subscribers.get.parameters.speed_class_filter.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TR("subscribers.list_subscribers.get.parameters.speed_class_filter.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TR("subscribers.list_subscribers.get.parameters.status_filter.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TR("subscribers.list_subscribers.get.parameters.status_filter.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TR("subscribers.list_subscribers.get.parameters.tag_name.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TR("subscribers.list_subscribers.get.parameters.tag_name.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TR("subscribers.list_subscribers.get.parameters.tag_value.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TR("subscribers.list_subscribers.get.parameters.tag_value.description"))
 
-  SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("subscribers.list_subscribers.get.parameters.tag_value_match_mode.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("subscribers.list_subscribers.get.parameters.tag_value_match_mode.description"))
 
-  SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TR("subscribers.list_subscribers.get.parameters.limit.description"))
+	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TR("subscribers.list_subscribers.get.parameters.limit.description"))
 
-
-
-
-  SubscribersCmd.AddCommand(SubscribersListCmd)
+	SubscribersCmd.AddCommand(SubscribersListCmd)
 }
 
 var SubscribersListCmd = &cobra.Command{
-  Use: "list",
-  Short: TR("subscribers.list_subscribers.get.summary"),
-  Long: TR(`subscribers.list_subscribers.get.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "list",
+	Short: TR("subscribers.list_subscribers.get.summary"),
+	Long:  TR(`subscribers.list_subscribers.get.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectSubscribersListCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectSubscribersListCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectSubscribersListCmdParams() (*apiParams, error) {
-  
 
-  return &apiParams{
-    method: "GET",
-    path: buildPathForSubscribersListCmd("/subscribers"),
-    query: buildQueryForSubscribersListCmd(),
-    
-    
-  }, nil
+	return &apiParams{
+		method: "GET",
+		path:   buildPathForSubscribersListCmd("/subscribers"),
+		query:  buildQueryForSubscribersListCmd(),
+	}, nil
 }
 
 func buildPathForSubscribersListCmd(path string) string {
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  return path
+
+	return path
 }
 
 func buildQueryForSubscribersListCmd() string {
-  result := []string{}
-  
-  
-  if SubscribersListCmdLastEvaluatedKey != "" {
-    result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
-  }
-  
-  
-  
-  if SubscribersListCmdSpeedClassFilter != "" {
-    result = append(result, sprintf("%s=%s", "speed_class_filter", SubscribersListCmdSpeedClassFilter))
-  }
-  
-  
-  
-  if SubscribersListCmdStatusFilter != "" {
-    result = append(result, sprintf("%s=%s", "status_filter", SubscribersListCmdStatusFilter))
-  }
-  
-  
-  
-  if SubscribersListCmdTagName != "" {
-    result = append(result, sprintf("%s=%s", "tag_name", SubscribersListCmdTagName))
-  }
-  
-  
-  
-  if SubscribersListCmdTagValue != "" {
-    result = append(result, sprintf("%s=%s", "tag_value", SubscribersListCmdTagValue))
-  }
-  
-  
-  
-  if SubscribersListCmdTagValueMatchMode != "" {
-    result = append(result, sprintf("%s=%s", "tag_value_match_mode", SubscribersListCmdTagValueMatchMode))
-  }
-  
-  
+	result := []string{}
 
-  
-  
-  if SubscribersListCmdLimit != 0 {
-    result = append(result, sprintf("%s=%d", "limit", SubscribersListCmdLimit))
-  }
-  
-  
+	if SubscribersListCmdLastEvaluatedKey != "" {
+		result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
+	}
 
-  
+	if SubscribersListCmdSpeedClassFilter != "" {
+		result = append(result, sprintf("%s=%s", "speed_class_filter", SubscribersListCmdSpeedClassFilter))
+	}
 
-  
+	if SubscribersListCmdStatusFilter != "" {
+		result = append(result, sprintf("%s=%s", "status_filter", SubscribersListCmdStatusFilter))
+	}
 
-  return strings.Join(result, "&")
+	if SubscribersListCmdTagName != "" {
+		result = append(result, sprintf("%s=%s", "tag_name", SubscribersListCmdTagName))
+	}
+
+	if SubscribersListCmdTagValue != "" {
+		result = append(result, sprintf("%s=%s", "tag_value", SubscribersListCmdTagValue))
+	}
+
+	if SubscribersListCmdTagValueMatchMode != "" {
+		result = append(result, sprintf("%s=%s", "tag_value_match_mode", SubscribersListCmdTagValueMatchMode))
+	}
+
+	if SubscribersListCmdLimit != 0 {
+		result = append(result, sprintf("%s=%d", "limit", SubscribersListCmdLimit))
+	}
+
+	return strings.Join(result, "&")
 }
-
-

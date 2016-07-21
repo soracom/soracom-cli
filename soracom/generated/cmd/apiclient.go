@@ -22,7 +22,7 @@ type apiClient struct {
 	verbose    bool
 }
 
-// APIError represents an error ocurred while calling API
+// APIError represents an error occurred while calling API
 type apiError struct {
 	ResponseBody string
 }

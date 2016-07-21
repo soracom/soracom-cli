@@ -1,15 +1,15 @@
 package cmd
 
 import (
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 func init() {
-  RootCmd.AddCommand(SubscribersCmd)
+	RootCmd.AddCommand(SubscribersCmd)
 }
 
 var SubscribersCmd = &cobra.Command{
-  Use: "subscribers",
-  Short: TR("subscribers.cli.summary"),
-  Long: TR(`subscribers.cli.description`),
+	Use:   "subscribers",
+	Short: TR("subscribers.cli.summary"),
+	Long:  TR(`subscribers.cli.description`),
 }

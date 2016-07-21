@@ -1,15 +1,15 @@
 package cmd
 
 import (
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 func init() {
-  RootCmd.AddCommand(OrdersCmd)
+	RootCmd.AddCommand(OrdersCmd)
 }
 
 var OrdersCmd = &cobra.Command{
-  Use: "orders",
-  Short: TR("orders.cli.summary"),
-  Long: TR(`orders.cli.description`),
+	Use:   "orders",
+	Short: TR("orders.cli.summary"),
+	Long:  TR(`orders.cli.description`),
 }

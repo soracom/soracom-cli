@@ -1,165 +1,124 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 
-  "encoding/json"
-  "io/ioutil"
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var SubscribersVerifyTransferTokenCmdToken string
 
-
-
-
-
 var SubscribersVerifyTransferTokenCmdBody string
 
-
 func init() {
-  SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TR(""))
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TR(""))
 
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
-
-  SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
-
-
-  SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
+	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
 }
 
 var SubscribersVerifyTransferTokenCmd = &cobra.Command{
-  Use: "verify-transfer-token",
-  Short: TR("subscribers.verify_subscriber_transfer_token.post.summary"),
-  Long: TR(`subscribers.verify_subscriber_transfer_token.post.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "verify-transfer-token",
+	Short: TR("subscribers.verify_subscriber_transfer_token.post.summary"),
+	Long:  TR(`subscribers.verify_subscriber_transfer_token.post.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectSubscribersVerifyTransferTokenCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectSubscribersVerifyTransferTokenCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectSubscribersVerifyTransferTokenCmdParams() (*apiParams, error) {
-  
-  body, err := buildBodyForSubscribersVerifyTransferTokenCmd()
-  if err != nil {
-    return nil, err
-  }
-  
 
-  return &apiParams{
-    method: "POST",
-    path: buildPathForSubscribersVerifyTransferTokenCmd("/subscribers/transfer_token/verify"),
-    query: buildQueryForSubscribersVerifyTransferTokenCmd(),
-    contentType: "application/json",
-    body: body,
-  }, nil
+	body, err := buildBodyForSubscribersVerifyTransferTokenCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiParams{
+		method:      "POST",
+		path:        buildPathForSubscribersVerifyTransferTokenCmd("/subscribers/transfer_token/verify"),
+		query:       buildQueryForSubscribersVerifyTransferTokenCmd(),
+		contentType: "application/json",
+		body:        body,
+	}, nil
 }
 
 func buildPathForSubscribersVerifyTransferTokenCmd(path string) string {
-  
-  
-  
-  
-  
-  
-  return path
+
+	return path
 }
 
 func buildQueryForSubscribersVerifyTransferTokenCmd() string {
-  result := []string{}
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
 
 func buildBodyForSubscribersVerifyTransferTokenCmd() (string, error) {
-  if SubscribersVerifyTransferTokenCmdBody != "" {
-    if strings.HasPrefix(SubscribersVerifyTransferTokenCmdBody, "@") {
-      fname := strings.TrimPrefix(SubscribersVerifyTransferTokenCmdBody, "@")
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else if SubscribersVerifyTransferTokenCmdBody == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else {
-      return SubscribersVerifyTransferTokenCmdBody, nil
-    }
-  }
+	if SubscribersVerifyTransferTokenCmdBody != "" {
+		if strings.HasPrefix(SubscribersVerifyTransferTokenCmdBody, "@") {
+			fname := strings.TrimPrefix(SubscribersVerifyTransferTokenCmdBody, "@")
+			bytes, err := ioutil.ReadFile(fname)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else if SubscribersVerifyTransferTokenCmdBody == "-" {
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else {
+			return SubscribersVerifyTransferTokenCmdBody, nil
+		}
+	}
 
-  result := map[string]interface{}{}
-  
-  
-  if SubscribersVerifyTransferTokenCmdToken != "" {
-    result["token"] = SubscribersVerifyTransferTokenCmdToken
-  }
-  
-  
+	result := map[string]interface{}{}
 
-  
+	if SubscribersVerifyTransferTokenCmdToken != "" {
+		result["token"] = SubscribersVerifyTransferTokenCmdToken
+	}
 
-  
-
-  
-
-  resultBytes, err := json.Marshal(result)
-  if err != nil {
-    return "", err
-  }
-  return string(resultBytes), nil
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }
-

@@ -1,20 +1,14 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 
-  "encoding/json"
-  "io/ioutil"
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var PaymentMethodsWebpayRegisterCmdCvc string
 
@@ -22,200 +16,141 @@ var PaymentMethodsWebpayRegisterCmdName string
 
 var PaymentMethodsWebpayRegisterCmdNumber string
 
-
 var PaymentMethodsWebpayRegisterCmdExpireMonth int64
 
 var PaymentMethodsWebpayRegisterCmdExpireYear int64
 
-
-
-
 var PaymentMethodsWebpayRegisterCmdBody string
 
-
 func init() {
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, TR(""))
 
-  PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, TR(""))
 
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
-
-  PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
-
-
-  PaymentMethodsWebpayCmd.AddCommand(PaymentMethodsWebpayRegisterCmd)
+	PaymentMethodsWebpayCmd.AddCommand(PaymentMethodsWebpayRegisterCmd)
 }
 
 var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
-  Use: "register",
-  Short: TR("payment.register_webpay_payment_method.post.summary"),
-  Long: TR(`payment.register_webpay_payment_method.post.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "register",
+	Short: TR("payment.register_webpay_payment_method.post.summary"),
+	Long:  TR(`payment.register_webpay_payment_method.post.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectPaymentMethodsWebpayRegisterCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectPaymentMethodsWebpayRegisterCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectPaymentMethodsWebpayRegisterCmdParams() (*apiParams, error) {
-  
-  body, err := buildBodyForPaymentMethodsWebpayRegisterCmd()
-  if err != nil {
-    return nil, err
-  }
-  
 
-  return &apiParams{
-    method: "POST",
-    path: buildPathForPaymentMethodsWebpayRegisterCmd("/payment_methods/webpay"),
-    query: buildQueryForPaymentMethodsWebpayRegisterCmd(),
-    contentType: "application/json",
-    body: body,
-  }, nil
+	body, err := buildBodyForPaymentMethodsWebpayRegisterCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiParams{
+		method:      "POST",
+		path:        buildPathForPaymentMethodsWebpayRegisterCmd("/payment_methods/webpay"),
+		query:       buildQueryForPaymentMethodsWebpayRegisterCmd(),
+		contentType: "application/json",
+		body:        body,
+	}, nil
 }
 
 func buildPathForPaymentMethodsWebpayRegisterCmd(path string) string {
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  return path
+
+	return path
 }
 
 func buildQueryForPaymentMethodsWebpayRegisterCmd() string {
-  result := []string{}
-  
-  
-  
-  
-  
-  
-  
+	result := []string{}
 
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
 
 func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
-  if PaymentMethodsWebpayRegisterCmdBody != "" {
-    if strings.HasPrefix(PaymentMethodsWebpayRegisterCmdBody, "@") {
-      fname := strings.TrimPrefix(PaymentMethodsWebpayRegisterCmdBody, "@")
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else if PaymentMethodsWebpayRegisterCmdBody == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else {
-      return PaymentMethodsWebpayRegisterCmdBody, nil
-    }
-  }
+	if PaymentMethodsWebpayRegisterCmdBody != "" {
+		if strings.HasPrefix(PaymentMethodsWebpayRegisterCmdBody, "@") {
+			fname := strings.TrimPrefix(PaymentMethodsWebpayRegisterCmdBody, "@")
+			bytes, err := ioutil.ReadFile(fname)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else if PaymentMethodsWebpayRegisterCmdBody == "-" {
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else {
+			return PaymentMethodsWebpayRegisterCmdBody, nil
+		}
+	}
 
-  result := map[string]interface{}{}
-  
-  
-  if PaymentMethodsWebpayRegisterCmdCvc != "" {
-    result["cvc"] = PaymentMethodsWebpayRegisterCmdCvc
-  }
-  
-  
-  
-  if PaymentMethodsWebpayRegisterCmdName != "" {
-    result["name"] = PaymentMethodsWebpayRegisterCmdName
-  }
-  
-  
-  
-  if PaymentMethodsWebpayRegisterCmdNumber != "" {
-    result["number"] = PaymentMethodsWebpayRegisterCmdNumber
-  }
-  
-  
+	result := map[string]interface{}{}
 
-  
-  
-  if PaymentMethodsWebpayRegisterCmdExpireMonth != 0 {
-    result["expireMonth"] = PaymentMethodsWebpayRegisterCmdExpireMonth
-  }
-  
-  
-  
-  if PaymentMethodsWebpayRegisterCmdExpireYear != 0 {
-    result["expireYear"] = PaymentMethodsWebpayRegisterCmdExpireYear
-  }
-  
-  
+	if PaymentMethodsWebpayRegisterCmdCvc != "" {
+		result["cvc"] = PaymentMethodsWebpayRegisterCmdCvc
+	}
 
-  
+	if PaymentMethodsWebpayRegisterCmdName != "" {
+		result["name"] = PaymentMethodsWebpayRegisterCmdName
+	}
 
-  
+	if PaymentMethodsWebpayRegisterCmdNumber != "" {
+		result["number"] = PaymentMethodsWebpayRegisterCmdNumber
+	}
 
-  resultBytes, err := json.Marshal(result)
-  if err != nil {
-    return "", err
-  }
-  return string(resultBytes), nil
+	if PaymentMethodsWebpayRegisterCmdExpireMonth != 0 {
+		result["expireMonth"] = PaymentMethodsWebpayRegisterCmdExpireMonth
+	}
+
+	if PaymentMethodsWebpayRegisterCmdExpireYear != 0 {
+		result["expireYear"] = PaymentMethodsWebpayRegisterCmdExpireYear
+	}
+
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }
-

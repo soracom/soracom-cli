@@ -1,20 +1,14 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 
-  "encoding/json"
-  "io/ioutil"
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var ShippingAddressesUpdateCmdAddressLine1 string
 
@@ -40,276 +34,175 @@ var ShippingAddressesUpdateCmdState string
 
 var ShippingAddressesUpdateCmdZipCode string
 
-
-
-
-
 var ShippingAddressesUpdateCmdBody string
 
-
 func init() {
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", TR("Operator ID"))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", TR("Operator ID"))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TR(""))
 
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TR(""))
 
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
-
-  ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
-
-
-  ShippingAddressesCmd.AddCommand(ShippingAddressesUpdateCmd)
+	ShippingAddressesCmd.AddCommand(ShippingAddressesUpdateCmd)
 }
 
 var ShippingAddressesUpdateCmd = &cobra.Command{
-  Use: "update",
-  Short: TR("shipping_addresses.update_shipping_address.put.summary"),
-  Long: TR(`shipping_addresses.update_shipping_address.put.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "update",
+	Short: TR("shipping_addresses.update_shipping_address.put.summary"),
+	Long:  TR(`shipping_addresses.update_shipping_address.put.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectShippingAddressesUpdateCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectShippingAddressesUpdateCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectShippingAddressesUpdateCmdParams() (*apiParams, error) {
-  
-  body, err := buildBodyForShippingAddressesUpdateCmd()
-  if err != nil {
-    return nil, err
-  }
-  
 
-  return &apiParams{
-    method: "PUT",
-    path: buildPathForShippingAddressesUpdateCmd("/operators/{operator_id}/shipping_addresses/{shipping_address_id}"),
-    query: buildQueryForShippingAddressesUpdateCmd(),
-    contentType: "application/json",
-    body: body,
-  }, nil
+	body, err := buildBodyForShippingAddressesUpdateCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiParams{
+		method:      "PUT",
+		path:        buildPathForShippingAddressesUpdateCmd("/operators/{operator_id}/shipping_addresses/{shipping_address_id}"),
+		query:       buildQueryForShippingAddressesUpdateCmd(),
+		contentType: "application/json",
+		body:        body,
+	}, nil
 }
 
 func buildPathForShippingAddressesUpdateCmd(path string) string {
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  path = strings.Replace(path, "{" + "operator_id" + "}", ShippingAddressesUpdateCmdOperatorId, -1)
-  
-  
-  
-  
-  
-  path = strings.Replace(path, "{" + "shipping_address_id" + "}", ShippingAddressesUpdateCmdShippingAddressId, -1)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", ShippingAddressesUpdateCmdOperatorId, -1)
+
+	path = strings.Replace(path, "{"+"shipping_address_id"+"}", ShippingAddressesUpdateCmdShippingAddressId, -1)
+
+	return path
 }
 
 func buildQueryForShippingAddressesUpdateCmd() string {
-  result := []string{}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
 
 func buildBodyForShippingAddressesUpdateCmd() (string, error) {
-  if ShippingAddressesUpdateCmdBody != "" {
-    if strings.HasPrefix(ShippingAddressesUpdateCmdBody, "@") {
-      fname := strings.TrimPrefix(ShippingAddressesUpdateCmdBody, "@")
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else if ShippingAddressesUpdateCmdBody == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else {
-      return ShippingAddressesUpdateCmdBody, nil
-    }
-  }
+	if ShippingAddressesUpdateCmdBody != "" {
+		if strings.HasPrefix(ShippingAddressesUpdateCmdBody, "@") {
+			fname := strings.TrimPrefix(ShippingAddressesUpdateCmdBody, "@")
+			bytes, err := ioutil.ReadFile(fname)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else if ShippingAddressesUpdateCmdBody == "-" {
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else {
+			return ShippingAddressesUpdateCmdBody, nil
+		}
+	}
 
-  result := map[string]interface{}{}
-  
-  
-  if ShippingAddressesUpdateCmdAddressLine1 != "" {
-    result["addressLine1"] = ShippingAddressesUpdateCmdAddressLine1
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdAddressLine2 != "" {
-    result["addressLine2"] = ShippingAddressesUpdateCmdAddressLine2
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdBuilding != "" {
-    result["building"] = ShippingAddressesUpdateCmdBuilding
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdCity != "" {
-    result["city"] = ShippingAddressesUpdateCmdCity
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdCompanyName != "" {
-    result["companyName"] = ShippingAddressesUpdateCmdCompanyName
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdDepartment != "" {
-    result["department"] = ShippingAddressesUpdateCmdDepartment
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdFullName != "" {
-    result["fullName"] = ShippingAddressesUpdateCmdFullName
-  }
-  
-  
-  
-  
-  
-  if ShippingAddressesUpdateCmdPhoneNumber != "" {
-    result["phoneNumber"] = ShippingAddressesUpdateCmdPhoneNumber
-  }
-  
-  
-  
-  
-  
-  if ShippingAddressesUpdateCmdState != "" {
-    result["state"] = ShippingAddressesUpdateCmdState
-  }
-  
-  
-  
-  if ShippingAddressesUpdateCmdZipCode != "" {
-    result["zipCode"] = ShippingAddressesUpdateCmdZipCode
-  }
-  
-  
+	result := map[string]interface{}{}
 
-  
+	if ShippingAddressesUpdateCmdAddressLine1 != "" {
+		result["addressLine1"] = ShippingAddressesUpdateCmdAddressLine1
+	}
 
-  
+	if ShippingAddressesUpdateCmdAddressLine2 != "" {
+		result["addressLine2"] = ShippingAddressesUpdateCmdAddressLine2
+	}
 
-  
+	if ShippingAddressesUpdateCmdBuilding != "" {
+		result["building"] = ShippingAddressesUpdateCmdBuilding
+	}
 
-  resultBytes, err := json.Marshal(result)
-  if err != nil {
-    return "", err
-  }
-  return string(resultBytes), nil
+	if ShippingAddressesUpdateCmdCity != "" {
+		result["city"] = ShippingAddressesUpdateCmdCity
+	}
+
+	if ShippingAddressesUpdateCmdCompanyName != "" {
+		result["companyName"] = ShippingAddressesUpdateCmdCompanyName
+	}
+
+	if ShippingAddressesUpdateCmdDepartment != "" {
+		result["department"] = ShippingAddressesUpdateCmdDepartment
+	}
+
+	if ShippingAddressesUpdateCmdFullName != "" {
+		result["fullName"] = ShippingAddressesUpdateCmdFullName
+	}
+
+	if ShippingAddressesUpdateCmdPhoneNumber != "" {
+		result["phoneNumber"] = ShippingAddressesUpdateCmdPhoneNumber
+	}
+
+	if ShippingAddressesUpdateCmdState != "" {
+		result["state"] = ShippingAddressesUpdateCmdState
+	}
+
+	if ShippingAddressesUpdateCmdZipCode != "" {
+		result["zipCode"] = ShippingAddressesUpdateCmdZipCode
+	}
+
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }
-

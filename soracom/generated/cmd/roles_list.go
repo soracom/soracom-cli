@@ -1,113 +1,79 @@
 package cmd
 
 import (
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var RolesListCmdOperatorId string
 
-
-
-
-
-
 func init() {
-  RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", TR("operator_id"))
+	RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-
-
-
-  RolesCmd.AddCommand(RolesListCmd)
+	RolesCmd.AddCommand(RolesListCmd)
 }
 
 var RolesListCmd = &cobra.Command{
-  Use: "list",
-  Short: TR("roles.list_roles.get.summary"),
-  Long: TR(`roles.list_roles.get.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "list",
+	Short: TR("roles.list_roles.get.summary"),
+	Long:  TR(`roles.list_roles.get.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectRolesListCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectRolesListCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectRolesListCmdParams() (*apiParams, error) {
-  
 
-  return &apiParams{
-    method: "GET",
-    path: buildPathForRolesListCmd("/operators/{operator_id}/roles"),
-    query: buildQueryForRolesListCmd(),
-    
-    
-  }, nil
+	return &apiParams{
+		method: "GET",
+		path:   buildPathForRolesListCmd("/operators/{operator_id}/roles"),
+		query:  buildQueryForRolesListCmd(),
+	}, nil
 }
 
 func buildPathForRolesListCmd(path string) string {
-  
-  
-  path = strings.Replace(path, "{" + "operator_id" + "}", RolesListCmdOperatorId, -1)
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", RolesListCmdOperatorId, -1)
+
+	return path
 }
 
 func buildQueryForRolesListCmd() string {
-  result := []string{}
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
-

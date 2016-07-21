@@ -1,113 +1,79 @@
 package cmd
 
 import (
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var OperatorAuthKeysListCmdOperatorId string
 
-
-
-
-
-
 func init() {
-  OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
-
-
-
-  OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)
+	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)
 }
 
 var OperatorAuthKeysListCmd = &cobra.Command{
-  Use: "list",
-  Short: TR("operator.list_operator_auth_keys.get.summary"),
-  Long: TR(`operator.list_operator_auth_keys.get.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "list",
+	Short: TR("operator.list_operator_auth_keys.get.summary"),
+	Long:  TR(`operator.list_operator_auth_keys.get.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectOperatorAuthKeysListCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectOperatorAuthKeysListCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectOperatorAuthKeysListCmdParams() (*apiParams, error) {
-  
 
-  return &apiParams{
-    method: "GET",
-    path: buildPathForOperatorAuthKeysListCmd("/operators/{operator_id}/auth_keys"),
-    query: buildQueryForOperatorAuthKeysListCmd(),
-    
-    
-  }, nil
+	return &apiParams{
+		method: "GET",
+		path:   buildPathForOperatorAuthKeysListCmd("/operators/{operator_id}/auth_keys"),
+		query:  buildQueryForOperatorAuthKeysListCmd(),
+	}, nil
 }
 
 func buildPathForOperatorAuthKeysListCmd(path string) string {
-  
-  
-  path = strings.Replace(path, "{" + "operator_id" + "}", OperatorAuthKeysListCmdOperatorId, -1)
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorAuthKeysListCmdOperatorId, -1)
+
+	return path
 }
 
 func buildQueryForOperatorAuthKeysListCmd() string {
-  result := []string{}
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
-

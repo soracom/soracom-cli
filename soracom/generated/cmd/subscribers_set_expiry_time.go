@@ -1,191 +1,138 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 
-  "encoding/json"
-  "io/ioutil"
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var SubscribersSetExpiryTimeCmdExpiryAction string
 
 var SubscribersSetExpiryTimeCmdImsi string
 
-
 var SubscribersSetExpiryTimeCmdExpiryTime int64
-
-
-
 
 var SubscribersSetExpiryTimeCmdBody string
 
-
 func init() {
-  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TR(""))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TR(""))
 
-  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.set_expirytime.post.parameters.imsi.description"))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.set_expirytime.post.parameters.imsi.description"))
 
-  SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TR(""))
+	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TR(""))
 
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
-
-  SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TR("cli.common_params.body.short_help"))
-
-
-  SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)
+	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)
 }
 
 var SubscribersSetExpiryTimeCmd = &cobra.Command{
-  Use: "set-expiry-time",
-  Short: TR("subscribers.set_expirytime.post.summary"),
-  Long: TR(`subscribers.set_expirytime.post.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "set-expiry-time",
+	Short: TR("subscribers.set_expirytime.post.summary"),
+	Long:  TR(`subscribers.set_expirytime.post.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectSubscribersSetExpiryTimeCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectSubscribersSetExpiryTimeCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectSubscribersSetExpiryTimeCmdParams() (*apiParams, error) {
-  
-  body, err := buildBodyForSubscribersSetExpiryTimeCmd()
-  if err != nil {
-    return nil, err
-  }
-  
 
-  return &apiParams{
-    method: "POST",
-    path: buildPathForSubscribersSetExpiryTimeCmd("/subscribers/{imsi}/set_expiry_time"),
-    query: buildQueryForSubscribersSetExpiryTimeCmd(),
-    contentType: "application/json",
-    body: body,
-  }, nil
+	body, err := buildBodyForSubscribersSetExpiryTimeCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiParams{
+		method:      "POST",
+		path:        buildPathForSubscribersSetExpiryTimeCmd("/subscribers/{imsi}/set_expiry_time"),
+		query:       buildQueryForSubscribersSetExpiryTimeCmd(),
+		contentType: "application/json",
+		body:        body,
+	}, nil
 }
 
 func buildPathForSubscribersSetExpiryTimeCmd(path string) string {
-  
-  
-  
-  
-  path = strings.Replace(path, "{" + "imsi" + "}", SubscribersSetExpiryTimeCmdImsi, -1)
-  
-  
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersSetExpiryTimeCmdImsi, -1)
+
+	return path
 }
 
 func buildQueryForSubscribersSetExpiryTimeCmd() string {
-  result := []string{}
-  
-  
-  
-  
-  
+	result := []string{}
 
-  
-  
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
 
 func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
-  if SubscribersSetExpiryTimeCmdBody != "" {
-    if strings.HasPrefix(SubscribersSetExpiryTimeCmdBody, "@") {
-      fname := strings.TrimPrefix(SubscribersSetExpiryTimeCmdBody, "@")
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else if SubscribersSetExpiryTimeCmdBody == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else {
-      return SubscribersSetExpiryTimeCmdBody, nil
-    }
-  }
+	if SubscribersSetExpiryTimeCmdBody != "" {
+		if strings.HasPrefix(SubscribersSetExpiryTimeCmdBody, "@") {
+			fname := strings.TrimPrefix(SubscribersSetExpiryTimeCmdBody, "@")
+			bytes, err := ioutil.ReadFile(fname)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else if SubscribersSetExpiryTimeCmdBody == "-" {
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else {
+			return SubscribersSetExpiryTimeCmdBody, nil
+		}
+	}
 
-  result := map[string]interface{}{}
-  
-  
-  if SubscribersSetExpiryTimeCmdExpiryAction != "" {
-    result["expiryAction"] = SubscribersSetExpiryTimeCmdExpiryAction
-  }
-  
-  
-  
-  
+	result := map[string]interface{}{}
 
-  
-  
-  if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
-    result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
-  }
-  
-  
+	if SubscribersSetExpiryTimeCmdExpiryAction != "" {
+		result["expiryAction"] = SubscribersSetExpiryTimeCmdExpiryAction
+	}
 
-  
+	if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
+		result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
+	}
 
-  
-
-  resultBytes, err := json.Marshal(result)
-  if err != nil {
-    return "", err
-  }
-  return string(resultBytes), nil
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }
-

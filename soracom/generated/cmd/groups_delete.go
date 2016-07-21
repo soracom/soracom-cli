@@ -1,113 +1,79 @@
 package cmd
 
 import (
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var GroupsDeleteCmdGroupId string
 
-
-
-
-
-
 func init() {
-  GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TR("groups.delete_group.delete.parameters.group_id.description"))
+	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TR("groups.delete_group.delete.parameters.group_id.description"))
 
-
-
-
-  GroupsCmd.AddCommand(GroupsDeleteCmd)
+	GroupsCmd.AddCommand(GroupsDeleteCmd)
 }
 
 var GroupsDeleteCmd = &cobra.Command{
-  Use: "delete",
-  Short: TR("groups.delete_group.delete.summary"),
-  Long: TR(`groups.delete_group.delete.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "delete",
+	Short: TR("groups.delete_group.delete.summary"),
+	Long:  TR(`groups.delete_group.delete.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectGroupsDeleteCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectGroupsDeleteCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectGroupsDeleteCmdParams() (*apiParams, error) {
-  
 
-  return &apiParams{
-    method: "DELETE",
-    path: buildPathForGroupsDeleteCmd("/groups/{group_id}"),
-    query: buildQueryForGroupsDeleteCmd(),
-    
-    
-  }, nil
+	return &apiParams{
+		method: "DELETE",
+		path:   buildPathForGroupsDeleteCmd("/groups/{group_id}"),
+		query:  buildQueryForGroupsDeleteCmd(),
+	}, nil
 }
 
 func buildPathForGroupsDeleteCmd(path string) string {
-  
-  
-  path = strings.Replace(path, "{" + "group_id" + "}", GroupsDeleteCmdGroupId, -1)
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"group_id"+"}", GroupsDeleteCmdGroupId, -1)
+
+	return path
 }
 
 func buildQueryForGroupsDeleteCmd() string {
-  result := []string{}
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
-

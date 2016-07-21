@@ -1,15 +1,15 @@
 package cmd
 
 import (
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 func init() {
-  RootCmd.AddCommand(CredentialsCmd)
+	RootCmd.AddCommand(CredentialsCmd)
 }
 
 var CredentialsCmd = &cobra.Command{
-  Use: "credentials",
-  Short: TR("credentials.cli.summary"),
-  Long: TR(`credentials.cli.description`),
+	Use:   "credentials",
+	Short: TR("credentials.cli.summary"),
+	Long:  TR(`credentials.cli.description`),
 }

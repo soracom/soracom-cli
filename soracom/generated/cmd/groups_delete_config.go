@@ -1,17 +1,11 @@
 package cmd
 
 import (
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var GroupsDeleteConfigCmdGroupId string
 
@@ -19,115 +13,79 @@ var GroupsDeleteConfigCmdName string
 
 var GroupsDeleteConfigCmdNamespace string
 
-
-
-
-
-
 func init() {
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TR("groups.delete_configuration_parameter.delete.parameters.group_id.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TR("groups.delete_configuration_parameter.delete.parameters.group_id.description"))
 
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TR("groups.delete_configuration_parameter.delete.parameters.name.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TR("groups.delete_configuration_parameter.delete.parameters.name.description"))
 
-  GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TR("groups.delete_configuration_parameter.delete.parameters.namespace.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TR("groups.delete_configuration_parameter.delete.parameters.namespace.description"))
 
-
-
-
-  GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
+	GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
 }
 
 var GroupsDeleteConfigCmd = &cobra.Command{
-  Use: "delete-config",
-  Short: TR("groups.delete_configuration_parameter.delete.summary"),
-  Long: TR(`groups.delete_configuration_parameter.delete.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "delete-config",
+	Short: TR("groups.delete_configuration_parameter.delete.summary"),
+	Long:  TR(`groups.delete_configuration_parameter.delete.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectGroupsDeleteConfigCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectGroupsDeleteConfigCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectGroupsDeleteConfigCmdParams() (*apiParams, error) {
-  
 
-  return &apiParams{
-    method: "DELETE",
-    path: buildPathForGroupsDeleteConfigCmd("/groups/{group_id}/configuration/{namespace}/{name}"),
-    query: buildQueryForGroupsDeleteConfigCmd(),
-    
-    
-  }, nil
+	return &apiParams{
+		method: "DELETE",
+		path:   buildPathForGroupsDeleteConfigCmd("/groups/{group_id}/configuration/{namespace}/{name}"),
+		query:  buildQueryForGroupsDeleteConfigCmd(),
+	}, nil
 }
 
 func buildPathForGroupsDeleteConfigCmd(path string) string {
-  
-  
-  path = strings.Replace(path, "{" + "group_id" + "}", GroupsDeleteConfigCmdGroupId, -1)
-  
-  
-  
-  path = strings.Replace(path, "{" + "name" + "}", GroupsDeleteConfigCmdName, -1)
-  
-  
-  
-  path = strings.Replace(path, "{" + "namespace" + "}", GroupsDeleteConfigCmdNamespace, -1)
-  
-  
-  
-  
-  
-  return path
+
+	path = strings.Replace(path, "{"+"group_id"+"}", GroupsDeleteConfigCmdGroupId, -1)
+
+	path = strings.Replace(path, "{"+"name"+"}", GroupsDeleteConfigCmdName, -1)
+
+	path = strings.Replace(path, "{"+"namespace"+"}", GroupsDeleteConfigCmdNamespace, -1)
+
+	return path
 }
 
 func buildQueryForGroupsDeleteConfigCmd() string {
-  result := []string{}
-  
-  
-  
-  
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
-

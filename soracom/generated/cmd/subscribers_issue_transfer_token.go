@@ -1,179 +1,132 @@
 package cmd
 
 import (
+	"encoding/json"
+	"io/ioutil"
 
-  "encoding/json"
-  "io/ioutil"
+	"os"
+	"strings"
 
-  "os"
-  "strings"
-
-  "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
-
-
-
-
-
 
 var SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail string
 
 var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 
-
-
-
-
 var SubscribersIssueTransferTokenCmdBody string
 
-
 func init() {
-  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TR(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TR(""))
 
-  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TR(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TR(""))
 
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
-
-  SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
-
-
-  SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
+	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
 }
 
 var SubscribersIssueTransferTokenCmd = &cobra.Command{
-  Use: "issue-transfer-token",
-  Short: TR("subscribers.issue_subscriber_transfer_token.post.summary"),
-  Long: TR(`subscribers.issue_subscriber_transfer_token.post.description`),
-  RunE: func(cmd *cobra.Command, args []string) error {
-    opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
-      BasePath: "/v1",
-      Language: getSelectedLanguage(),
-    }
+	Use:   "issue-transfer-token",
+	Short: TR("subscribers.issue_subscriber_transfer_token.post.summary"),
+	Long:  TR(`subscribers.issue_subscriber_transfer_token.post.description`),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opt := &apiClientOptions{
+			Endpoint: getSpecifiedEndpoint(),
+			BasePath: "/v1",
+			Language: getSelectedLanguage(),
+		}
 
-    ac := newAPIClient(opt)
-    if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-      ac.SetVerbose(true)
-    }
+		ac := newAPIClient(opt)
+		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+			ac.SetVerbose(true)
+		}
 
-    
-    err := authHelper(ac, cmd, args)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
-    
-    param, err := collectSubscribersIssueTransferTokenCmdParams()
-    if err != nil {
-      return err
-    }
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
-    result, err := ac.callAPI(param)
-    if err != nil {
-      cmd.SilenceUsage = true
-      return err
-    }
+		param, err := collectSubscribersIssueTransferTokenCmdParams()
+		if err != nil {
+			return err
+		}
 
-    if result != "" {
-      return prettyPrintStringAsJSON(result)
-    } else {
-      return nil
-    }
-  },
+		result, err := ac.callAPI(param)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if result != "" {
+			return prettyPrintStringAsJSON(result)
+		} else {
+			return nil
+		}
+	},
 }
 
 func collectSubscribersIssueTransferTokenCmdParams() (*apiParams, error) {
-  
-  body, err := buildBodyForSubscribersIssueTransferTokenCmd()
-  if err != nil {
-    return nil, err
-  }
-  
 
-  return &apiParams{
-    method: "POST",
-    path: buildPathForSubscribersIssueTransferTokenCmd("/subscribers/transfer_token/issue"),
-    query: buildQueryForSubscribersIssueTransferTokenCmd(),
-    contentType: "application/json",
-    body: body,
-  }, nil
+	body, err := buildBodyForSubscribersIssueTransferTokenCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	return &apiParams{
+		method:      "POST",
+		path:        buildPathForSubscribersIssueTransferTokenCmd("/subscribers/transfer_token/issue"),
+		query:       buildQueryForSubscribersIssueTransferTokenCmd(),
+		contentType: "application/json",
+		body:        body,
+	}, nil
 }
 
 func buildPathForSubscribersIssueTransferTokenCmd(path string) string {
-  
-  
-  
-  
-  
-  
-  
-  
-  return path
+
+	return path
 }
 
 func buildQueryForSubscribersIssueTransferTokenCmd() string {
-  result := []string{}
-  
-  
-  
-  
-  
+	result := []string{}
 
-  
-
-  
-
-  
-
-  return strings.Join(result, "&")
+	return strings.Join(result, "&")
 }
-
 
 func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
-  if SubscribersIssueTransferTokenCmdBody != "" {
-    if strings.HasPrefix(SubscribersIssueTransferTokenCmdBody, "@") {
-      fname := strings.TrimPrefix(SubscribersIssueTransferTokenCmdBody, "@")
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else if SubscribersIssueTransferTokenCmdBody == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
-    } else {
-      return SubscribersIssueTransferTokenCmdBody, nil
-    }
-  }
+	if SubscribersIssueTransferTokenCmdBody != "" {
+		if strings.HasPrefix(SubscribersIssueTransferTokenCmdBody, "@") {
+			fname := strings.TrimPrefix(SubscribersIssueTransferTokenCmdBody, "@")
+			bytes, err := ioutil.ReadFile(fname)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else if SubscribersIssueTransferTokenCmdBody == "-" {
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				return "", err
+			}
+			return string(bytes), nil
+		} else {
+			return SubscribersIssueTransferTokenCmdBody, nil
+		}
+	}
 
-  result := map[string]interface{}{}
-  
-  
-  if SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail != "" {
-    result["transferDestinationOperatorEmail"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail
-  }
-  
-  
-  
-  if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId != "" {
-    result["transferDestinationOperatorId"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorId
-  }
-  
-  
+	result := map[string]interface{}{}
 
-  
+	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail != "" {
+		result["transferDestinationOperatorEmail"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail
+	}
 
-  
+	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId != "" {
+		result["transferDestinationOperatorId"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorId
+	}
 
-  
-
-  resultBytes, err := json.Marshal(result)
-  if err != nil {
-    return "", err
-  }
-  return string(resultBytes), nil
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }
-
