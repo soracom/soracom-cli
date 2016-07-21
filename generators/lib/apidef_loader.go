@@ -119,6 +119,9 @@ func loadAPIDefYAML(inputFile string) (string, error) {
 	}
 	defer f.Close()
 	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		return "", err
+	}
 	return bytes.NewBuffer(data).String(), nil
 }
 

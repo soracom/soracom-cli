@@ -92,6 +92,9 @@ func TestVisit(t *testing.T) {
 
 	var o map[string]interface{}
 	err = json.Unmarshal(b, &o)
+	if err != nil {
+		t.Fatalf("unable to unmarshal the test object from json")
+	}
 
 	if visit(o, "a") != "a1" {
 		t.Fatalf("unable to visit to 'a'")

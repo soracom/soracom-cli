@@ -148,8 +148,13 @@ func formatGeneratedFiles(outputDir string) error {
 		if err != nil {
 			return err
 		}
-		format.Source(b)
-		err = ioutil.WriteFile(path, b, 0644)
+
+		b2, err := format.Source(b)
+		if err != nil {
+			return err
+		}
+
+		err = ioutil.WriteFile(path, b2, 0644)
 		if err != nil {
 			return err
 		}

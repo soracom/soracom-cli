@@ -38,7 +38,12 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 		if err != nil {
 			return err
 		}
-		defer f.Close()
+		defer func() {
+			err := f.Close()
+			if err != nil {
+				fmt.Printf("[WARN] unable to close a file '%s'", f.Name())
+			}
+		}()
 
 		a := commandArgs{
 			Use:                       getLast(commandName),
