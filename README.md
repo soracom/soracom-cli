@@ -1,4 +1,5 @@
 [![wercker status](https://app.wercker.com/status/52243183472f21dc72756d12a649ee19/m/master "wercker status")](https://app.wercker.com/project/bykey/52243183472f21dc72756d12a649ee19)
+[![go report status](https://goreportcard.com/badge/github.com/soracom/soracom-cli)]
 
 # soracom-cli
 

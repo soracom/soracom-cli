@@ -226,14 +226,15 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
-	"..": &bintree{nil, map[string]*bintree{
-		"generators": &bintree{nil, map[string]*bintree{
-			"assets": &bintree{nil, map[string]*bintree{
-				"i18n": &bintree{nil, map[string]*bintree{
-					"soracom-api.text.en.json": &bintree{GeneratorsAssetsI18nSoracomApiTextEnJson, map[string]*bintree{}},
-					"soracom-api.text.ja.json": &bintree{GeneratorsAssetsI18nSoracomApiTextJaJson, map[string]*bintree{}},
-					"soracom-api.text.zh.json": &bintree{GeneratorsAssetsI18nSoracomApiTextZhJson, map[string]*bintree{}},
+	"..": {nil, map[string]*bintree{
+		"generators": {nil, map[string]*bintree{
+			"assets": {nil, map[string]*bintree{
+				"i18n": {nil, map[string]*bintree{
+					"soracom-api.text.en.json": {GeneratorsAssetsI18nSoracomApiTextEnJson, map[string]*bintree{}},
+					"soracom-api.text.ja.json": {GeneratorsAssetsI18nSoracomApiTextJaJson, map[string]*bintree{}},
+					"soracom-api.text.zh.json": {GeneratorsAssetsI18nSoracomApiTextZhJson, map[string]*bintree{}},
 				}},
 			}},
 		}},
@@ -286,4 +287,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

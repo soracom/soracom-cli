@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -117,7 +118,13 @@ func loadAPIDefYAML(inputFile string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			fmt.Printf("warning: unable to close file %s", f.Name())
+		}
+	}()
+
 	data, err := ioutil.ReadAll(f)
 	if err != nil {
 		return "", err

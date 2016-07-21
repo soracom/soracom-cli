@@ -61,9 +61,9 @@ fi
 : "Building executables" && {
     pushd "$d/soracom" > /dev/null
     echo "Building artifacts ..."
-    gofmt -s -w .
     go generate
     go get ./...
+    gofmt -s -w .
     #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
     popd > /dev/null
