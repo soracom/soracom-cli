@@ -13,6 +13,7 @@ type authRequest struct {
 	Password   *string `json:"password,omitempty"`
 	AuthKeyID  *string `json:"authKeyId,omitempty"`
 	AuthKey    *string `json:"authKey,omitempty"`
+	Username   *string `json:"userName,omitempty"`
 	OperatorID *string `json:"operatorId,omitempty"`
 }
 
@@ -34,6 +35,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		Password:   profile.Password,
 		AuthKeyID:  profile.AuthKeyID,
 		AuthKey:    profile.AuthKey,
+		Username:   profile.Username,
 		OperatorID: profile.OperatorID,
 	}
 
