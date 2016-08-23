@@ -1376,6 +1376,35 @@ paths:
         404:
           description: ${subscribers.terminate_subscriber.post.responses.status404.description}
 
+  '/subscribers/{imsi}/suspend':
+    post:
+      summary: ${subscribers.suspend_subscriber.post.summary}
+      description: ${subscribers.suspend_subscriber.post.description}
+      operationId: suspendSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers suspend
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: ${subscribers.suspend_subscriber.post.parameters.imsi.description}
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: ${subscribers.suspend_subscriber.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: ${subscribers.suspend_subscriber.post.responses.status404.description}
+
   '/subscribers/{imsi}/enable_termination':
     post:
       summary: ${subscribers.enable_termination.post.summary}

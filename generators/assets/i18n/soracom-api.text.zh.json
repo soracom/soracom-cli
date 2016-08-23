@@ -734,6 +734,25 @@
         }
       }
     },
+    "suspend_subscriber": {
+      "post": {
+        "summary": "Suspend Subscriber",
+        "description": "将指定的Subscriber进行Suspend",
+        "parameters": {
+          "imsi": {
+            "description": "对象的Subscriber的IMSI"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的Subscriber的详细信息"
+          },
+          "status404": {
+            "description": "指定的Subscriber不存在"
+          }
+        }
+      }
+    },
     "enable_termination": {
       "post": {
         "summary": "Enable Termination of Subscriber",

@@ -734,6 +734,25 @@
         }
       }
     },
+    "suspend_subscriber": {
+      "post": {
+        "summary": "Suspend Subscriber",
+        "description": "指定されたSubscriberをSuspend",
+        "parameters": {
+          "imsi": {
+            "description": "対象のSubscriberのIMSI"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のSubscriberの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたSubscriberが存在しない"
+          }
+        }
+      }
+    },
     "enable_termination": {
       "post": {
         "summary": "Enable Termination of Subscriber",

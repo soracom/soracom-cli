@@ -734,6 +734,25 @@
         }
       }
     },
+    "suspend_subscriber": {
+      "post": {
+        "summary": "Suspend Subscriber.",
+        "description": "Suspends the specified subscriber",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
     "enable_termination": {
       "post": {
         "summary": "Enable Termination of Subscriber.",
