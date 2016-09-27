@@ -12,6 +12,7 @@ func init() {
 
 var version string
 
+// VersionCmd defines 'version' subcommand
 var VersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: TR("version.cli.summary"),
