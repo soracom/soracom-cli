@@ -6,6 +6,7 @@ func init() {
 	RootCmd.AddCommand(ConfigureCmd)
 }
 
+// ConfigureCmd defines 'configure' subcommand
 var ConfigureCmd = &cobra.Command{
 	Use:   "configure",
 	Short: TR("configure.cli.summary"),

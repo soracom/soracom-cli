@@ -10,6 +10,7 @@ func init() {
 	RootCmd.AddCommand(CompletionCmd)
 }
 
+// CompletionCmd defines 'completion' subcommand
 var CompletionCmd = &cobra.Command{
 	Use:   "completion",
 	Short: TR("completion.cli.summary"),

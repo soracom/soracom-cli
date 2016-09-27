@@ -82,11 +82,11 @@ var AuthCmd = &cobra.Command{
 			return err
 		}
 
-		if result != "" {
-			return prettyPrintStringAsJSON(result)
-		} else {
+		if result == "" {
 			return nil
 		}
+
+		return prettyPrintStringAsJSON(result)
 	},
 }
 

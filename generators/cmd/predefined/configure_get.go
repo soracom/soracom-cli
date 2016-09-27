@@ -6,6 +6,7 @@ func init() {
 	ConfigureCmd.AddCommand(ConfigureGetCmd)
 }
 
+// ConfigureGetCmd defineds 'get' subcommand
 var ConfigureGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("configure.get.cli.summary"),
