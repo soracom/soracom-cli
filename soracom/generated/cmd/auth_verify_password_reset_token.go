@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// AuthVerifyPasswordResetTokenCmdPassword holds value of 'password' option
 var AuthVerifyPasswordResetTokenCmdPassword string
 
+// AuthVerifyPasswordResetTokenCmdToken holds value of 'token' option
 var AuthVerifyPasswordResetTokenCmdToken string
 
+// AuthVerifyPasswordResetTokenCmdBody holds contents of request body to be sent
 var AuthVerifyPasswordResetTokenCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	AuthCmd.AddCommand(AuthVerifyPasswordResetTokenCmd)
 }
 
+// AuthVerifyPasswordResetTokenCmd defines 'verify-password-reset-token' subcommand
 var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	Use:   "verify-password-reset-token",
 	Short: TR("auth.verify_password_reset_token.post.summary"),

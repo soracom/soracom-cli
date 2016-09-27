@@ -10,18 +10,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersCreateCmdDescription holds value of 'description' option
 var EventHandlersCreateCmdDescription string
 
+// EventHandlersCreateCmdName holds value of 'name' option
 var EventHandlersCreateCmdName string
 
+// EventHandlersCreateCmdStatus holds value of 'status' option
 var EventHandlersCreateCmdStatus string
 
+// EventHandlersCreateCmdTargetGroupId holds value of 'targetGroupId' option
 var EventHandlersCreateCmdTargetGroupId string
 
+// EventHandlersCreateCmdTargetImsi holds value of 'targetImsi' option
 var EventHandlersCreateCmdTargetImsi string
 
+// EventHandlersCreateCmdTargetOperatorId holds value of 'targetOperatorId' option
 var EventHandlersCreateCmdTargetOperatorId string
 
+// EventHandlersCreateCmdBody holds contents of request body to be sent
 var EventHandlersCreateCmdBody string
 
 func init() {
@@ -42,6 +49,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersCreateCmd)
 }
 
+// EventHandlersCreateCmd defines 'create' subcommand
 var EventHandlersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("event_handlers.create_event_handler.post.summary"),

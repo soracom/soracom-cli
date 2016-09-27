@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersGetCmdOrderId holds value of 'order_id' option
 var OrdersGetCmdOrderId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersGetCmd)
 }
 
+// OrdersGetCmd defines 'get' subcommand
 var OrdersGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("orders.get_order.get.summary"),

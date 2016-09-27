@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgDeleteIpAddressMapEntryCmdKey holds value of 'key' option
 var VpgDeleteIpAddressMapEntryCmdKey string
 
+// VpgDeleteIpAddressMapEntryCmdVpgId holds value of 'vpg_id' option
 var VpgDeleteIpAddressMapEntryCmdVpgId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	VpgCmd.AddCommand(VpgDeleteIpAddressMapEntryCmd)
 }
 
+// VpgDeleteIpAddressMapEntryCmd defines 'delete-ip-address-map-entry' subcommand
 var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "delete-ip-address-map-entry",
 	Short: TR("virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.summary"),

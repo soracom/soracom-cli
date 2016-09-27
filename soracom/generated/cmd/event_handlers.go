@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(EventHandlersCmd)
 }
 
+// EventHandlersCmd defines 'event-handlers' subcommand
 var EventHandlersCmd = &cobra.Command{
 	Use:   "event-handlers",
 	Short: TR("event_handlers.cli.summary"),

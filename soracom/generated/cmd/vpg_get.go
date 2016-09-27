@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgGetCmdVpgId holds value of 'vpg_id' option
 var VpgGetCmdVpgId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	VpgCmd.AddCommand(VpgGetCmd)
 }
 
+// VpgGetCmd defines 'get' subcommand
 var VpgGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("virtual_private_gateway.get_virtual_private_gateway.get.summary"),

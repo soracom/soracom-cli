@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersConfirmCmdOrderId holds value of 'order_id' option
 var OrdersConfirmCmdOrderId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersConfirmCmd)
 }
 
+// OrdersConfirmCmd defines 'confirm' subcommand
 var OrdersConfirmCmd = &cobra.Command{
 	Use:   "confirm",
 	Short: TR("orders.confirm_order.put.summary"),

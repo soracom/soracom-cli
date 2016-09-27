@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorGetCmdOperatorId holds value of 'operator_id' option
 var OperatorGetCmdOperatorId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorGetCmd)
 }
 
+// OperatorGetCmd defines 'get' subcommand
 var OperatorGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("operator.get_operator.get.summary"),

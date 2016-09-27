@@ -7,10 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsDeleteConfigCmdGroupId holds value of 'group_id' option
 var GroupsDeleteConfigCmdGroupId string
 
+// GroupsDeleteConfigCmdName holds value of 'name' option
 var GroupsDeleteConfigCmdName string
 
+// GroupsDeleteConfigCmdNamespace holds value of 'namespace' option
 var GroupsDeleteConfigCmdNamespace string
 
 func init() {
@@ -23,6 +26,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
 }
 
+// GroupsDeleteConfigCmd defines 'delete-config' subcommand
 var GroupsDeleteConfigCmd = &cobra.Command{
 	Use:   "delete-config",
 	Short: TR("groups.delete_configuration_parameter.delete.summary"),

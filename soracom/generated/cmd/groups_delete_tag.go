@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsDeleteTagCmdGroupId holds value of 'group_id' option
 var GroupsDeleteTagCmdGroupId string
 
+// GroupsDeleteTagCmdTagName holds value of 'tag_name' option
 var GroupsDeleteTagCmdTagName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsDeleteTagCmd)
 }
 
+// GroupsDeleteTagCmd defines 'delete-tag' subcommand
 var GroupsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TR("groups.delete_group_tag.delete.summary"),

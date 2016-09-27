@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersUnignoreCmdHandlerId holds value of 'handler_id' option
 var EventHandlersUnignoreCmdHandlerId string
 
+// EventHandlersUnignoreCmdImsi holds value of 'imsi' option
 var EventHandlersUnignoreCmdImsi string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersUnignoreCmd)
 }
 
+// EventHandlersUnignoreCmd defines 'unignore' subcommand
 var EventHandlersUnignoreCmd = &cobra.Command{
 	Use:   "unignore",
 	Short: TR("event_handlers.delete_ignore_event_handler.delete.summary"),

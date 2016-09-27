@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgListIpAddressMapEntriesCmdVpgId holds value of 'vpg_id' option
 var VpgListIpAddressMapEntriesCmdVpgId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
 
+// VpgListIpAddressMapEntriesCmd defines 'list-ip-address-map-entries' subcommand
 var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 	Use:   "list-ip-address-map-entries",
 	Short: TR("virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.summary"),

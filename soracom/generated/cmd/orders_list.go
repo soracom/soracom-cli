@@ -12,6 +12,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersListCmd)
 }
 
+// OrdersListCmd defines 'list' subcommand
 var OrdersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("orders.list_orders.get.summary"),

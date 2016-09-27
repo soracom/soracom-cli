@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgUnregisterGatePeerCmdOuterIpAddress holds value of 'outer_ip_address' option
 var VpgUnregisterGatePeerCmdOuterIpAddress string
 
+// VpgUnregisterGatePeerCmdVpgId holds value of 'vpg_id' option
 var VpgUnregisterGatePeerCmdVpgId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	VpgCmd.AddCommand(VpgUnregisterGatePeerCmd)
 }
 
+// VpgUnregisterGatePeerCmd defines 'unregister-gate-peer' subcommand
 var VpgUnregisterGatePeerCmd = &cobra.Command{
 	Use:   "unregister-gate-peer",
 	Short: TR("virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.summary"),

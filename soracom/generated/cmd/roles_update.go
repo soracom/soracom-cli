@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// RolesUpdateCmdDescription holds value of 'description' option
 var RolesUpdateCmdDescription string
 
+// RolesUpdateCmdOperatorId holds value of 'operator_id' option
 var RolesUpdateCmdOperatorId string
 
+// RolesUpdateCmdPermission holds value of 'permission' option
 var RolesUpdateCmdPermission string
 
+// RolesUpdateCmdRoleId holds value of 'role_id' option
 var RolesUpdateCmdRoleId string
 
+// RolesUpdateCmdBody holds contents of request body to be sent
 var RolesUpdateCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	RolesCmd.AddCommand(RolesUpdateCmd)
 }
 
+// RolesUpdateCmd defines 'update' subcommand
 var RolesUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("roles.update_role.put.summary"),

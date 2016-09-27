@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersDeleteTransferTokenCmdToken holds value of 'token' option
 var SubscribersDeleteTransferTokenCmdToken string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersDeleteTransferTokenCmd)
 }
 
+// SubscribersDeleteTransferTokenCmd defines 'delete-transfer-token' subcommand
 var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 	Use:   "delete-transfer-token",
 	Short: TR("subscribers.delete_subscriber_transfer_token.delete.summary"),

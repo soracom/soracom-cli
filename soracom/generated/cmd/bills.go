@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(BillsCmd)
 }
 
+// BillsCmd defines 'bills' subcommand
 var BillsCmd = &cobra.Command{
 	Use:   "bills",
 	Short: TR("bills.cli.summary"),

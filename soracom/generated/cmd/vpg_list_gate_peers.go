@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgListGatePeersCmdVpgId holds value of 'vpg_id' option
 var VpgListGatePeersCmdVpgId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	VpgCmd.AddCommand(VpgListGatePeersCmd)
 }
 
+// VpgListGatePeersCmd defines 'list-gate-peers' subcommand
 var VpgListGatePeersCmd = &cobra.Command{
 	Use:   "list-gate-peers",
 	Short: TR("virtual_private_gateway.list_virtual_private_gateway_peers.get.summary"),

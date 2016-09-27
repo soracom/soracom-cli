@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgTerminateCmdVpgId holds value of 'vpg_id' option
 var VpgTerminateCmdVpgId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	VpgCmd.AddCommand(VpgTerminateCmd)
 }
 
+// VpgTerminateCmd defines 'terminate' subcommand
 var VpgTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TR("virtual_private_gateway.terminate_virtual_private_gateway.post.summary"),

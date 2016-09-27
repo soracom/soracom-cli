@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersPasswordConfiguredCmdOperatorId holds value of 'operator_id' option
 var UsersPasswordConfiguredCmdOperatorId string
 
+// UsersPasswordConfiguredCmdUserName holds value of 'user_name' option
 var UsersPasswordConfiguredCmdUserName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	UsersPasswordCmd.AddCommand(UsersPasswordConfiguredCmd)
 }
 
+// UsersPasswordConfiguredCmd defines 'configured' subcommand
 var UsersPasswordConfiguredCmd = &cobra.Command{
 	Use:   "configured",
 	Short: TR("users.has_user_password.get.summary"),

@@ -10,16 +10,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PaymentMethodsWebpayRegisterCmdCvc holds value of 'cvc' option
 var PaymentMethodsWebpayRegisterCmdCvc string
 
+// PaymentMethodsWebpayRegisterCmdName holds value of 'name' option
 var PaymentMethodsWebpayRegisterCmdName string
 
+// PaymentMethodsWebpayRegisterCmdNumber holds value of 'number' option
 var PaymentMethodsWebpayRegisterCmdNumber string
 
+// PaymentMethodsWebpayRegisterCmdExpireMonth holds value of 'expireMonth' option
 var PaymentMethodsWebpayRegisterCmdExpireMonth int64
 
+// PaymentMethodsWebpayRegisterCmdExpireYear holds value of 'expireYear' option
 var PaymentMethodsWebpayRegisterCmdExpireYear int64
 
+// PaymentMethodsWebpayRegisterCmdBody holds contents of request body to be sent
 var PaymentMethodsWebpayRegisterCmdBody string
 
 func init() {
@@ -38,6 +44,7 @@ func init() {
 	PaymentMethodsWebpayCmd.AddCommand(PaymentMethodsWebpayRegisterCmd)
 }
 
+// PaymentMethodsWebpayRegisterCmd defines 'register' subcommand
 var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TR("payment.register_webpay_payment_method.post.summary"),

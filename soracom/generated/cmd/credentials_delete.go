@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CredentialsDeleteCmdOperatorId holds value of 'operator_id' option
 var CredentialsDeleteCmdOperatorId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	CredentialsCmd.AddCommand(CredentialsDeleteCmd)
 }
 
+// CredentialsDeleteCmd defines 'delete' subcommand
 var CredentialsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("credentials.delete_credential.delete.summary"),

@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorGenerateApiTokenCmdOperatorId holds value of 'operator_id' option
 var OperatorGenerateApiTokenCmdOperatorId string
 
+// OperatorGenerateApiTokenCmdTokenTimeoutSeconds holds value of 'tokenTimeoutSeconds' option
 var OperatorGenerateApiTokenCmdTokenTimeoutSeconds int64
 
+// OperatorGenerateApiTokenCmdBody holds contents of request body to be sent
 var OperatorGenerateApiTokenCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorGenerateApiTokenCmd)
 }
 
+// OperatorGenerateApiTokenCmd defines 'generate-api-token' subcommand
 var OperatorGenerateApiTokenCmd = &cobra.Command{
 	Use:   "generate-api-token",
 	Short: TR("operator.generate_auth_token.post.summary"),

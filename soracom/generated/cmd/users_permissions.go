@@ -8,6 +8,7 @@ func init() {
 	UsersCmd.AddCommand(UsersPermissionsCmd)
 }
 
+// UsersPermissionsCmd defines 'permissions' subcommand
 var UsersPermissionsCmd = &cobra.Command{
 	Use:   "permissions",
 	Short: TR("users.permissions.cli.summary"),

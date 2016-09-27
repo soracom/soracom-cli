@@ -12,6 +12,7 @@ func init() {
 	BillsCmd.AddCommand(BillsGetLatestCmd)
 }
 
+// BillsGetLatestCmd defines 'get-latest' subcommand
 var BillsGetLatestCmd = &cobra.Command{
 	Use:   "get-latest",
 	Short: TR("bills.get_latest_billing.get.summary"),

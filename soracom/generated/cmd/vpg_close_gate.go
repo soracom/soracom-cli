@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgCloseGateCmdVpgId holds value of 'vpg_id' option
 var VpgCloseGateCmdVpgId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	VpgCmd.AddCommand(VpgCloseGateCmd)
 }
 
+// VpgCloseGateCmd defines 'close-gate' subcommand
 var VpgCloseGateCmd = &cobra.Command{
 	Use:   "close-gate",
 	Short: TR("virtual_private_gateway.close_gate.post.summary"),

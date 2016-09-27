@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersGetCmdImsi holds value of 'imsi' option
 var SubscribersGetCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersGetCmd)
 }
 
+// SubscribersGetCmd defines 'get' subcommand
 var SubscribersGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("subscribers.get_subscriber.get.summary"),

@@ -12,6 +12,7 @@ func init() {
 	PaymentMethodsCmd.AddCommand(PaymentMethodsReactivateCurrentCmd)
 }
 
+// PaymentMethodsReactivateCurrentCmd defines 'reactivate-current' subcommand
 var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 	Use:   "reactivate-current",
 	Short: TR("payment.activate_payment_method.post.summary"),

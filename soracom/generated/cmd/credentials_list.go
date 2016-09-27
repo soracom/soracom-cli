@@ -12,6 +12,7 @@ func init() {
 	CredentialsCmd.AddCommand(CredentialsListCmd)
 }
 
+// CredentialsListCmd defines 'list' subcommand
 var CredentialsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("credentials.list_credentials.get.summary"),

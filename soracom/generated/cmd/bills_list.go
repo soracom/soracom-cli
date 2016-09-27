@@ -12,6 +12,7 @@ func init() {
 	BillsCmd.AddCommand(BillsListCmd)
 }
 
+// BillsListCmd defines 'list' subcommand
 var BillsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("bills.get_billing_history.get.summary"),

@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersPasswordUpdateCmdCurrentPassword holds value of 'currentPassword' option
 var UsersPasswordUpdateCmdCurrentPassword string
 
+// UsersPasswordUpdateCmdNewPassword holds value of 'newPassword' option
 var UsersPasswordUpdateCmdNewPassword string
 
+// UsersPasswordUpdateCmdOperatorId holds value of 'operator_id' option
 var UsersPasswordUpdateCmdOperatorId string
 
+// UsersPasswordUpdateCmdUserName holds value of 'user_name' option
 var UsersPasswordUpdateCmdUserName string
 
+// UsersPasswordUpdateCmdBody holds contents of request body to be sent
 var UsersPasswordUpdateCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	UsersPasswordCmd.AddCommand(UsersPasswordUpdateCmd)
 }
 
+// UsersPasswordUpdateCmd defines 'update' subcommand
 var UsersPasswordUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("users.update_user_password.put.summary"),

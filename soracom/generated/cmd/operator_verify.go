@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorVerifyCmdToken holds value of 'token' option
 var OperatorVerifyCmdToken string
 
+// OperatorVerifyCmdBody holds contents of request body to be sent
 var OperatorVerifyCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorVerifyCmd)
 }
 
+// OperatorVerifyCmd defines 'verify' subcommand
 var OperatorVerifyCmd = &cobra.Command{
 	Use:   "verify",
 	Short: TR("operator.verify_operator.post.summary"),

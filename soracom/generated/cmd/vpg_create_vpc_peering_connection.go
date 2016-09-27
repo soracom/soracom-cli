@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock holds value of 'destinationCidrBlock' option
 var VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock string
 
+// VpgCreateVpcPeeringConnectionCmdPeerOwnerId holds value of 'peerOwnerId' option
 var VpgCreateVpcPeeringConnectionCmdPeerOwnerId string
 
+// VpgCreateVpcPeeringConnectionCmdPeerVpcId holds value of 'peerVpcId' option
 var VpgCreateVpcPeeringConnectionCmdPeerVpcId string
 
+// VpgCreateVpcPeeringConnectionCmdVpgId holds value of 'vpg_id' option
 var VpgCreateVpcPeeringConnectionCmdVpgId string
 
+// VpgCreateVpcPeeringConnectionCmdBody holds contents of request body to be sent
 var VpgCreateVpcPeeringConnectionCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	VpgCmd.AddCommand(VpgCreateVpcPeeringConnectionCmd)
 }
 
+// VpgCreateVpcPeeringConnectionCmd defines 'create-vpc-peering-connection' subcommand
 var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "create-vpc-peering-connection",
 	Short: TR("virtual_private_gateway.create_vpc_peering_connection.post.summary"),

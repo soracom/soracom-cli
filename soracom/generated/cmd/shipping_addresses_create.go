@@ -10,28 +10,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ShippingAddressesCreateCmdAddressLine1 holds value of 'addressLine1' option
 var ShippingAddressesCreateCmdAddressLine1 string
 
+// ShippingAddressesCreateCmdAddressLine2 holds value of 'addressLine2' option
 var ShippingAddressesCreateCmdAddressLine2 string
 
+// ShippingAddressesCreateCmdBuilding holds value of 'building' option
 var ShippingAddressesCreateCmdBuilding string
 
+// ShippingAddressesCreateCmdCity holds value of 'city' option
 var ShippingAddressesCreateCmdCity string
 
+// ShippingAddressesCreateCmdCompanyName holds value of 'companyName' option
 var ShippingAddressesCreateCmdCompanyName string
 
+// ShippingAddressesCreateCmdDepartment holds value of 'department' option
 var ShippingAddressesCreateCmdDepartment string
 
+// ShippingAddressesCreateCmdFullName holds value of 'fullName' option
 var ShippingAddressesCreateCmdFullName string
 
+// ShippingAddressesCreateCmdOperatorId holds value of 'operator_id' option
 var ShippingAddressesCreateCmdOperatorId string
 
+// ShippingAddressesCreateCmdPhoneNumber holds value of 'phoneNumber' option
 var ShippingAddressesCreateCmdPhoneNumber string
 
+// ShippingAddressesCreateCmdState holds value of 'state' option
 var ShippingAddressesCreateCmdState string
 
+// ShippingAddressesCreateCmdZipCode holds value of 'zipCode' option
 var ShippingAddressesCreateCmdZipCode string
 
+// ShippingAddressesCreateCmdBody holds contents of request body to be sent
 var ShippingAddressesCreateCmdBody string
 
 func init() {
@@ -62,6 +74,7 @@ func init() {
 	ShippingAddressesCmd.AddCommand(ShippingAddressesCreateCmd)
 }
 
+// ShippingAddressesCreateCmd defines 'create' subcommand
 var ShippingAddressesCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("shipping_addresses.create_shipping_address.post.summary"),

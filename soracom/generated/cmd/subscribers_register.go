@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersRegisterCmdGroupId holds value of 'groupId' option
 var SubscribersRegisterCmdGroupId string
 
+// SubscribersRegisterCmdImsi holds value of 'imsi' option
 var SubscribersRegisterCmdImsi string
 
+// SubscribersRegisterCmdRegistrationSecret holds value of 'registrationSecret' option
 var SubscribersRegisterCmdRegistrationSecret string
 
+// SubscribersRegisterCmdBody holds contents of request body to be sent
 var SubscribersRegisterCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersRegisterCmd)
 }
 
+// SubscribersRegisterCmd defines 'register' subcommand
 var SubscribersRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TR("subscribers.register_subscriber.post.summary"),

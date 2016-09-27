@@ -12,6 +12,7 @@ func init() {
 	BillsCmd.AddCommand(BillsExportLatestCmd)
 }
 
+// BillsExportLatestCmd defines 'export-latest' subcommand
 var BillsExportLatestCmd = &cobra.Command{
 	Use:   "export-latest",
 	Short: TR("bills.export_latest_billing.post.summary"),

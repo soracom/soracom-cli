@@ -7,14 +7,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersSessionEventsCmdImsi holds value of 'imsi' option
 var SubscribersSessionEventsCmdImsi string
 
+// SubscribersSessionEventsCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var SubscribersSessionEventsCmdLastEvaluatedKey string
 
+// SubscribersSessionEventsCmdFrom holds value of 'from' option
 var SubscribersSessionEventsCmdFrom int64
 
+// SubscribersSessionEventsCmdLimit holds value of 'limit' option
 var SubscribersSessionEventsCmdLimit int64
 
+// SubscribersSessionEventsCmdTo holds value of 'to' option
 var SubscribersSessionEventsCmdTo int64
 
 func init() {
@@ -31,6 +36,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersSessionEventsCmd)
 }
 
+// SubscribersSessionEventsCmd defines 'session-events' subcommand
 var SubscribersSessionEventsCmd = &cobra.Command{
 	Use:   "session-events",
 	Short: TR("subscribers.list_session_events.get.summary"),

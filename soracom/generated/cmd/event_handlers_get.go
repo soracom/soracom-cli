@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersGetCmdHandlerId holds value of 'handler_id' option
 var EventHandlersGetCmdHandlerId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersGetCmd)
 }
 
+// EventHandlersGetCmd defines 'get' subcommand
 var EventHandlersGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("event_handlers.get_event_handler.get.summary"),

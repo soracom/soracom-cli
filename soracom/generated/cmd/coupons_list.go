@@ -12,6 +12,7 @@ func init() {
 	CouponsCmd.AddCommand(CouponsListCmd)
 }
 
+// CouponsListCmd defines 'list' subcommand
 var CouponsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("payment.list_coupons.get.summary"),

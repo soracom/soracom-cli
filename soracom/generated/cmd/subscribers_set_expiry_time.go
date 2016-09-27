@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersSetExpiryTimeCmdExpiryAction holds value of 'expiryAction' option
 var SubscribersSetExpiryTimeCmdExpiryAction string
 
+// SubscribersSetExpiryTimeCmdImsi holds value of 'imsi' option
 var SubscribersSetExpiryTimeCmdImsi string
 
+// SubscribersSetExpiryTimeCmdExpiryTime holds value of 'expiryTime' option
 var SubscribersSetExpiryTimeCmdExpiryTime int64
 
+// SubscribersSetExpiryTimeCmdBody holds contents of request body to be sent
 var SubscribersSetExpiryTimeCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)
 }
 
+// SubscribersSetExpiryTimeCmd defines 'set-expiry-time' subcommand
 var SubscribersSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
 	Short: TR("subscribers.set_expirytime.post.summary"),

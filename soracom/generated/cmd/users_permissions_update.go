@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersPermissionsUpdateCmdDescription holds value of 'description' option
 var UsersPermissionsUpdateCmdDescription string
 
+// UsersPermissionsUpdateCmdOperatorId holds value of 'operator_id' option
 var UsersPermissionsUpdateCmdOperatorId string
 
+// UsersPermissionsUpdateCmdPermission holds value of 'permission' option
 var UsersPermissionsUpdateCmdPermission string
 
+// UsersPermissionsUpdateCmdUserName holds value of 'user_name' option
 var UsersPermissionsUpdateCmdUserName string
 
+// UsersPermissionsUpdateCmdBody holds contents of request body to be sent
 var UsersPermissionsUpdateCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	UsersPermissionsCmd.AddCommand(UsersPermissionsUpdateCmd)
 }
 
+// UsersPermissionsUpdateCmd defines 'update' subcommand
 var UsersPermissionsUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("users.update_user_permission.put.summary"),

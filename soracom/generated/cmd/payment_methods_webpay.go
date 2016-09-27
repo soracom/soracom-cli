@@ -8,6 +8,7 @@ func init() {
 	PaymentMethodsCmd.AddCommand(PaymentMethodsWebpayCmd)
 }
 
+// PaymentMethodsWebpayCmd defines 'webpay' subcommand
 var PaymentMethodsWebpayCmd = &cobra.Command{
 	Use:   "webpay",
 	Short: TR("payment_methods.webpay.cli.summary"),

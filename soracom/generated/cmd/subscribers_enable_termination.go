@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersEnableTerminationCmdImsi holds value of 'imsi' option
 var SubscribersEnableTerminationCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersEnableTerminationCmd)
 }
 
+// SubscribersEnableTerminationCmd defines 'enable-termination' subcommand
 var SubscribersEnableTerminationCmd = &cobra.Command{
 	Use:   "enable-termination",
 	Short: TR("subscribers.enable_termination.post.summary"),

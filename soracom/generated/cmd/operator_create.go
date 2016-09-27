@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorCreateCmdEmail holds value of 'email' option
 var OperatorCreateCmdEmail string
 
+// OperatorCreateCmdPassword holds value of 'password' option
 var OperatorCreateCmdPassword string
 
+// OperatorCreateCmdBody holds contents of request body to be sent
 var OperatorCreateCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorCreateCmd)
 }
 
+// OperatorCreateCmd defines 'create' subcommand
 var OperatorCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("operator.create_operator.post.summary"),

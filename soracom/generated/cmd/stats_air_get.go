@@ -7,12 +7,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsAirGetCmdImsi holds value of 'imsi' option
 var StatsAirGetCmdImsi string
 
+// StatsAirGetCmdPeriod holds value of 'period' option
 var StatsAirGetCmdPeriod string
 
+// StatsAirGetCmdFrom holds value of 'from' option
 var StatsAirGetCmdFrom int64
 
+// StatsAirGetCmdTo holds value of 'to' option
 var StatsAirGetCmdTo int64
 
 func init() {
@@ -27,6 +31,7 @@ func init() {
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
 
+// StatsAirGetCmd defines 'get' subcommand
 var StatsAirGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("stats.get_air_stats.get.summary"),

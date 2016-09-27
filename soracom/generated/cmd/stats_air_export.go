@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsAirExportCmdOperatorId holds value of 'operator_id' option
 var StatsAirExportCmdOperatorId string
 
+// StatsAirExportCmdPeriod holds value of 'period' option
 var StatsAirExportCmdPeriod string
 
+// StatsAirExportCmdFrom holds value of 'from' option
 var StatsAirExportCmdFrom int64
 
+// StatsAirExportCmdTo holds value of 'to' option
 var StatsAirExportCmdTo int64
 
+// StatsAirExportCmdBody holds contents of request body to be sent
 var StatsAirExportCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	StatsAirCmd.AddCommand(StatsAirExportCmd)
 }
 
+// StatsAirExportCmd defines 'export' subcommand
 var StatsAirExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TR("stats.export_air_stats.post.summary"),

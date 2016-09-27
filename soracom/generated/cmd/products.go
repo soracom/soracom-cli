@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(ProductsCmd)
 }
 
+// ProductsCmd defines 'products' subcommand
 var ProductsCmd = &cobra.Command{
 	Use:   "products",
 	Short: TR("products.cli.summary"),

@@ -8,6 +8,7 @@ func init() {
   {{.ParentCommandVariableName}}.AddCommand({{.CommandVariableName}})
 }
 
+// {{.CommandVariableName}} defines '{{.Use}}' subcommand
 var {{.CommandVariableName}} = &cobra.Command{
   Use: "{{.Use}}",
   Short: TR("{{.Short}}"),

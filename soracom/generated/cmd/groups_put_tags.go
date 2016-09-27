@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsPutTagsCmdGroupId holds value of 'group_id' option
 var GroupsPutTagsCmdGroupId string
 
+// GroupsPutTagsCmdBody holds contents of request body to be sent
 var GroupsPutTagsCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsPutTagsCmd)
 }
 
+// GroupsPutTagsCmd defines 'put-tags' subcommand
 var GroupsPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TR("groups.put_group_tags.put.summary"),

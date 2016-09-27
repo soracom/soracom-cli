@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CredentialsUpdateCmdCredentialsId holds value of 'credentials_id' option
 var CredentialsUpdateCmdCredentialsId string
 
+// CredentialsUpdateCmdDescription holds value of 'description' option
 var CredentialsUpdateCmdDescription string
 
+// CredentialsUpdateCmdType holds value of 'type' option
 var CredentialsUpdateCmdType string
 
+// CredentialsUpdateCmdBody holds contents of request body to be sent
 var CredentialsUpdateCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	CredentialsCmd.AddCommand(CredentialsUpdateCmd)
 }
 
+// CredentialsUpdateCmd defines 'update' subcommand
 var CredentialsUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("credentials.update_credential.put.summary"),

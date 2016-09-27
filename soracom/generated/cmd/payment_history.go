@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(PaymentHistoryCmd)
 }
 
+// PaymentHistoryCmd defines 'payment-history' subcommand
 var PaymentHistoryCmd = &cobra.Command{
 	Use:   "payment-history",
 	Short: TR("payment_history.cli.summary"),

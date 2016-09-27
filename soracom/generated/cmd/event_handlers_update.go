@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersUpdateCmdHandlerId holds value of 'handler_id' option
 var EventHandlersUpdateCmdHandlerId string
 
+// EventHandlersUpdateCmdBody holds contents of request body to be sent
 var EventHandlersUpdateCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersUpdateCmd)
 }
 
+// EventHandlersUpdateCmd defines 'update' subcommand
 var EventHandlersUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("event_handlers.update_event_handler.put.summary"),

@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// AuthIssuePasswordResetTokenCmdEmail holds value of 'email' option
 var AuthIssuePasswordResetTokenCmdEmail string
 
+// AuthIssuePasswordResetTokenCmdBody holds contents of request body to be sent
 var AuthIssuePasswordResetTokenCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	AuthCmd.AddCommand(AuthIssuePasswordResetTokenCmd)
 }
 
+// AuthIssuePasswordResetTokenCmd defines 'issue-password-reset-token' subcommand
 var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 	Use:   "issue-password-reset-token",
 	Short: TR("auth.issue_password_reset_token.post.summary"),

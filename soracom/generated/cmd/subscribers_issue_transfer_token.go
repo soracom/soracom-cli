@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail holds value of 'transferDestinationOperatorEmail' option
 var SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail string
 
+// SubscribersIssueTransferTokenCmdTransferDestinationOperatorId holds value of 'transferDestinationOperatorId' option
 var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 
+// SubscribersIssueTransferTokenCmdBody holds contents of request body to be sent
 var SubscribersIssueTransferTokenCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
 }
 
+// SubscribersIssueTransferTokenCmd defines 'issue-transfer-token' subcommand
 var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	Use:   "issue-transfer-token",
 	Short: TR("subscribers.issue_subscriber_transfer_token.post.summary"),

@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsCreateCmdBody holds contents of request body to be sent
 var GroupsCreateCmdBody string
 
 func init() {
@@ -19,6 +20,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsCreateCmd)
 }
 
+// GroupsCreateCmd defines 'create' subcommand
 var GroupsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("groups.create_group.post.summary"),

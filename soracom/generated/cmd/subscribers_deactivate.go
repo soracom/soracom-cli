@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersDeactivateCmdImsi holds value of 'imsi' option
 var SubscribersDeactivateCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersDeactivateCmd)
 }
 
+// SubscribersDeactivateCmd defines 'deactivate' subcommand
 var SubscribersDeactivateCmd = &cobra.Command{
 	Use:   "deactivate",
 	Short: TR("subscribers.deactivate_subscriber.post.summary"),

@@ -10,30 +10,43 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ShippingAddressesUpdateCmdAddressLine1 holds value of 'addressLine1' option
 var ShippingAddressesUpdateCmdAddressLine1 string
 
+// ShippingAddressesUpdateCmdAddressLine2 holds value of 'addressLine2' option
 var ShippingAddressesUpdateCmdAddressLine2 string
 
+// ShippingAddressesUpdateCmdBuilding holds value of 'building' option
 var ShippingAddressesUpdateCmdBuilding string
 
+// ShippingAddressesUpdateCmdCity holds value of 'city' option
 var ShippingAddressesUpdateCmdCity string
 
+// ShippingAddressesUpdateCmdCompanyName holds value of 'companyName' option
 var ShippingAddressesUpdateCmdCompanyName string
 
+// ShippingAddressesUpdateCmdDepartment holds value of 'department' option
 var ShippingAddressesUpdateCmdDepartment string
 
+// ShippingAddressesUpdateCmdFullName holds value of 'fullName' option
 var ShippingAddressesUpdateCmdFullName string
 
+// ShippingAddressesUpdateCmdOperatorId holds value of 'operator_id' option
 var ShippingAddressesUpdateCmdOperatorId string
 
+// ShippingAddressesUpdateCmdPhoneNumber holds value of 'phoneNumber' option
 var ShippingAddressesUpdateCmdPhoneNumber string
 
+// ShippingAddressesUpdateCmdShippingAddressId holds value of 'shipping_address_id' option
 var ShippingAddressesUpdateCmdShippingAddressId string
 
+// ShippingAddressesUpdateCmdState holds value of 'state' option
 var ShippingAddressesUpdateCmdState string
 
+// ShippingAddressesUpdateCmdZipCode holds value of 'zipCode' option
 var ShippingAddressesUpdateCmdZipCode string
 
+// ShippingAddressesUpdateCmdBody holds contents of request body to be sent
 var ShippingAddressesUpdateCmdBody string
 
 func init() {
@@ -66,6 +79,7 @@ func init() {
 	ShippingAddressesCmd.AddCommand(ShippingAddressesUpdateCmd)
 }
 
+// ShippingAddressesUpdateCmd defines 'update' subcommand
 var ShippingAddressesUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TR("shipping_addresses.update_shipping_address.put.summary"),

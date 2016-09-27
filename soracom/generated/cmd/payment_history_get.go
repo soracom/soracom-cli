@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PaymentHistoryGetCmdPaymentTransactionId holds value of 'payment_transaction_id' option
 var PaymentHistoryGetCmdPaymentTransactionId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	PaymentHistoryCmd.AddCommand(PaymentHistoryGetCmd)
 }
 
+// PaymentHistoryGetCmd defines 'get' subcommand
 var PaymentHistoryGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("payment.get_payment_transaction.get.summary"),

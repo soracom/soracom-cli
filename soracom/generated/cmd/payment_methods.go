@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(PaymentMethodsCmd)
 }
 
+// PaymentMethodsCmd defines 'payment-methods' subcommand
 var PaymentMethodsCmd = &cobra.Command{
 	Use:   "payment-methods",
 	Short: TR("payment_methods.cli.summary"),

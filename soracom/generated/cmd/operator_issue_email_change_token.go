@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorIssueEmailChangeTokenCmdEmail holds value of 'email' option
 var OperatorIssueEmailChangeTokenCmdEmail string
 
+// OperatorIssueEmailChangeTokenCmdBody holds contents of request body to be sent
 var OperatorIssueEmailChangeTokenCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorIssueEmailChangeTokenCmd)
 }
 
+// OperatorIssueEmailChangeTokenCmd defines 'issue-email-change-token' subcommand
 var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 	Use:   "issue-email-change-token",
 	Short: TR("operator.issue_email_change_token.post.summary"),

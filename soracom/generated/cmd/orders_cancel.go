@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersCancelCmdOrderId holds value of 'order_id' option
 var OrdersCancelCmdOrderId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersCancelCmd)
 }
 
+// OrdersCancelCmd defines 'cancel' subcommand
 var OrdersCancelCmd = &cobra.Command{
 	Use:   "cancel",
 	Short: TR("orders.cancel_order.put.summary"),

@@ -7,18 +7,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var SubscribersListCmdLastEvaluatedKey string
 
+// SubscribersListCmdSpeedClassFilter holds value of 'speed_class_filter' option
 var SubscribersListCmdSpeedClassFilter string
 
+// SubscribersListCmdStatusFilter holds value of 'status_filter' option
 var SubscribersListCmdStatusFilter string
 
+// SubscribersListCmdTagName holds value of 'tag_name' option
 var SubscribersListCmdTagName string
 
+// SubscribersListCmdTagValue holds value of 'tag_value' option
 var SubscribersListCmdTagValue string
 
+// SubscribersListCmdTagValueMatchMode holds value of 'tag_value_match_mode' option
 var SubscribersListCmdTagValueMatchMode string
 
+// SubscribersListCmdLimit holds value of 'limit' option
 var SubscribersListCmdLimit int64
 
 func init() {
@@ -39,6 +46,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersListCmd)
 }
 
+// SubscribersListCmd defines 'list' subcommand
 var SubscribersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("subscribers.list_subscribers.get.summary"),

@@ -12,6 +12,7 @@ func init() {
 	PaymentMethodsCmd.AddCommand(PaymentMethodsGetCurrentCmd)
 }
 
+// PaymentMethodsGetCurrentCmd defines 'get-current' subcommand
 var PaymentMethodsGetCurrentCmd = &cobra.Command{
 	Use:   "get-current",
 	Short: TR("payment.get_payment_method.get.summary"),

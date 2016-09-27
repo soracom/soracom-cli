@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersUnsetGroupCmdImsi holds value of 'imsi' option
 var SubscribersUnsetGroupCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersUnsetGroupCmd)
 }
 
+// SubscribersUnsetGroupCmd defines 'unset-group' subcommand
 var SubscribersUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
 	Short: TR("subscribers.unset_group.post.summary"),

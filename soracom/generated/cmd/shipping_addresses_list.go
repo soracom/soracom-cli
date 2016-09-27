@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ShippingAddressesListCmdOperatorId holds value of 'operator_id' option
 var ShippingAddressesListCmdOperatorId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	ShippingAddressesCmd.AddCommand(ShippingAddressesListCmd)
 }
 
+// ShippingAddressesListCmd defines 'list' subcommand
 var ShippingAddressesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("shipping_addresses.list_shipping_addresses.get.summary"),

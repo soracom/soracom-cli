@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(StatsCmd)
 }
 
+// StatsCmd defines 'stats' subcommand
 var StatsCmd = &cobra.Command{
 	Use:   "stats",
 	Short: TR("stats.cli.summary"),

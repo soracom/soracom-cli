@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersListForSubscriberCmdImsi holds value of 'imsi' option
 var EventHandlersListForSubscriberCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersListForSubscriberCmd)
 }
 
+// EventHandlersListForSubscriberCmd defines 'list-for-subscriber' subcommand
 var EventHandlersListForSubscriberCmd = &cobra.Command{
 	Use:   "list-for-subscriber",
 	Short: TR("event_handlers.list_event_handlers_by_subscriber.get.summary"),

@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersVerifyTransferTokenCmdToken holds value of 'token' option
 var SubscribersVerifyTransferTokenCmdToken string
 
+// SubscribersVerifyTransferTokenCmdBody holds contents of request body to be sent
 var SubscribersVerifyTransferTokenCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
 }
 
+// SubscribersVerifyTransferTokenCmd defines 'verify-transfer-token' subcommand
 var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 	Use:   "verify-transfer-token",
 	Short: TR("subscribers.verify_subscriber_transfer_token.post.summary"),

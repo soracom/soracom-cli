@@ -8,6 +8,7 @@ func init() {
 	UsersCmd.AddCommand(UsersAuthKeysCmd)
 }
 
+// UsersAuthKeysCmd defines 'auth-keys' subcommand
 var UsersAuthKeysCmd = &cobra.Command{
 	Use:   "auth-keys",
 	Short: TR("users.auth_keys.cli.summary"),

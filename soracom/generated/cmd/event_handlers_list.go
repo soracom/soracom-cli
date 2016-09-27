@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersListCmdTarget holds value of 'target' option
 var EventHandlersListCmdTarget string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersListCmd)
 }
 
+// EventHandlersListCmd defines 'list' subcommand
 var EventHandlersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("event_handlers.list_event_handlers.get.summary"),

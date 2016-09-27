@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersDeleteTagCmdImsi holds value of 'imsi' option
 var SubscribersDeleteTagCmdImsi string
 
+// SubscribersDeleteTagCmdTagName holds value of 'tag_name' option
 var SubscribersDeleteTagCmdTagName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersDeleteTagCmd)
 }
 
+// SubscribersDeleteTagCmd defines 'delete-tag' subcommand
 var SubscribersDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TR("subscribers.delete_subscriber_tag.delete.summary"),

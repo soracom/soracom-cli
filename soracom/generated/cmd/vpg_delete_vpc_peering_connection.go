@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgDeleteVpcPeeringConnectionCmdPcxId holds value of 'pcx_id' option
 var VpgDeleteVpcPeeringConnectionCmdPcxId string
 
+// VpgDeleteVpcPeeringConnectionCmdVpgId holds value of 'vpg_id' option
 var VpgDeleteVpcPeeringConnectionCmdVpgId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	VpgCmd.AddCommand(VpgDeleteVpcPeeringConnectionCmd)
 }
 
+// VpgDeleteVpcPeeringConnectionCmd defines 'delete-vpc-peering-connection' subcommand
 var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "delete-vpc-peering-connection",
 	Short: TR("virtual_private_gateway.delete_vpc_peering_connection.delete.summary"),

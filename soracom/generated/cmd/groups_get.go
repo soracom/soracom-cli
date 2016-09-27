@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsGetCmdGroupId holds value of 'group_id' option
 var GroupsGetCmdGroupId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsGetCmd)
 }
 
+// GroupsGetCmd defines 'get' subcommand
 var GroupsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("groups.get_group.get.summary"),

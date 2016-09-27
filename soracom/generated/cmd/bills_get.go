@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// BillsGetCmdYyyyMM holds value of 'yyyyMM' option
 var BillsGetCmdYyyyMM string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	BillsCmd.AddCommand(BillsGetCmd)
 }
 
+// BillsGetCmd defines 'get' subcommand
 var BillsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("bills.get_billing.get.summary"),

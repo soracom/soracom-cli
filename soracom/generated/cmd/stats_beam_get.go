@@ -7,12 +7,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsBeamGetCmdImsi holds value of 'imsi' option
 var StatsBeamGetCmdImsi string
 
+// StatsBeamGetCmdPeriod holds value of 'period' option
 var StatsBeamGetCmdPeriod string
 
+// StatsBeamGetCmdFrom holds value of 'from' option
 var StatsBeamGetCmdFrom int64
 
+// StatsBeamGetCmdTo holds value of 'to' option
 var StatsBeamGetCmdTo int64
 
 func init() {
@@ -27,6 +31,7 @@ func init() {
 	StatsBeamCmd.AddCommand(StatsBeamGetCmd)
 }
 
+// StatsBeamGetCmd defines 'get' subcommand
 var StatsBeamGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("stats.get_beam_stats.get.summary"),

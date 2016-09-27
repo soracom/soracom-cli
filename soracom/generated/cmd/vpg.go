@@ -8,6 +8,7 @@ func init() {
 	RootCmd.AddCommand(VpgCmd)
 }
 
+// VpgCmd defines 'vpg' subcommand
 var VpgCmd = &cobra.Command{
 	Use:   "vpg",
 	Short: TR("virtual_private_gateway.cli.summary"),

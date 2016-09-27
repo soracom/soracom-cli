@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsBeamExportCmdOperatorId holds value of 'operator_id' option
 var StatsBeamExportCmdOperatorId string
 
+// StatsBeamExportCmdPeriod holds value of 'period' option
 var StatsBeamExportCmdPeriod string
 
+// StatsBeamExportCmdFrom holds value of 'from' option
 var StatsBeamExportCmdFrom int64
 
+// StatsBeamExportCmdTo holds value of 'to' option
 var StatsBeamExportCmdTo int64
 
+// StatsBeamExportCmdBody holds contents of request body to be sent
 var StatsBeamExportCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	StatsBeamCmd.AddCommand(StatsBeamExportCmd)
 }
 
+// StatsBeamExportCmd defines 'export' subcommand
 var StatsBeamExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TR("stats.export_beam_stats.post.summary"),

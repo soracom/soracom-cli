@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// RolesListUsersCmdOperatorId holds value of 'operator_id' option
 var RolesListUsersCmdOperatorId string
 
+// RolesListUsersCmdRoleId holds value of 'role_id' option
 var RolesListUsersCmdRoleId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	RolesCmd.AddCommand(RolesListUsersCmd)
 }
 
+// RolesListUsersCmd defines 'list-users' subcommand
 var RolesListUsersCmd = &cobra.Command{
 	Use:   "list-users",
 	Short: TR("roles.list_role_attached_users.get.summary"),

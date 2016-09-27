@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsDeleteCmdGroupId holds value of 'group_id' option
 var GroupsDeleteCmdGroupId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsDeleteCmd)
 }
 
+// GroupsDeleteCmd defines 'delete' subcommand
 var GroupsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("groups.delete_group.delete.summary"),

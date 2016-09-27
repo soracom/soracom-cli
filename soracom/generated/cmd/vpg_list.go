@@ -7,14 +7,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var VpgListCmdLastEvaluatedKey string
 
+// VpgListCmdTagName holds value of 'tag_name' option
 var VpgListCmdTagName string
 
+// VpgListCmdTagValue holds value of 'tag_value' option
 var VpgListCmdTagValue string
 
+// VpgListCmdTagValueMatchMode holds value of 'tag_value_match_mode' option
 var VpgListCmdTagValueMatchMode string
 
+// VpgListCmdLimit holds value of 'limit' option
 var VpgListCmdLimit int64
 
 func init() {
@@ -31,6 +36,7 @@ func init() {
 	VpgCmd.AddCommand(VpgListCmd)
 }
 
+// VpgListCmd defines 'list' subcommand
 var VpgListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("virtual_private_gateway.list_virtual_private_gateways.get.summary"),

@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersPermissionsGetCmdOperatorId holds value of 'operator_id' option
 var UsersPermissionsGetCmdOperatorId string
 
+// UsersPermissionsGetCmdUserName holds value of 'user_name' option
 var UsersPermissionsGetCmdUserName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	UsersPermissionsCmd.AddCommand(UsersPermissionsGetCmd)
 }
 
+// UsersPermissionsGetCmd defines 'get' subcommand
 var UsersPermissionsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TR("users.get_user_permission.get.summary"),

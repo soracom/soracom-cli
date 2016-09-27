@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersUpdateSpeedClassCmdImsi holds value of 'imsi' option
 var SubscribersUpdateSpeedClassCmdImsi string
 
+// SubscribersUpdateSpeedClassCmdSpeedClass holds value of 'speedClass' option
 var SubscribersUpdateSpeedClassCmdSpeedClass string
 
+// SubscribersUpdateSpeedClassCmdBody holds contents of request body to be sent
 var SubscribersUpdateSpeedClassCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersUpdateSpeedClassCmd)
 }
 
+// SubscribersUpdateSpeedClassCmd defines 'update-speed-class' subcommand
 var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 	Use:   "update-speed-class",
 	Short: TR("subscribers.update_speedclass.post.summary"),

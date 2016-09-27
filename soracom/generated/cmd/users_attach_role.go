@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersAttachRoleCmdOperatorId holds value of 'operator_id' option
 var UsersAttachRoleCmdOperatorId string
 
+// UsersAttachRoleCmdRoleId holds value of 'roleId' option
 var UsersAttachRoleCmdRoleId string
 
+// UsersAttachRoleCmdUserName holds value of 'user_name' option
 var UsersAttachRoleCmdUserName string
 
+// UsersAttachRoleCmdBody holds contents of request body to be sent
 var UsersAttachRoleCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	UsersCmd.AddCommand(UsersAttachRoleCmd)
 }
 
+// UsersAttachRoleCmd defines 'attach-role' subcommand
 var UsersAttachRoleCmd = &cobra.Command{
 	Use:   "attach-role",
 	Short: TR("roles.attach_role.post.summary"),

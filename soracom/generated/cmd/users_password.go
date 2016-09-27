@@ -8,6 +8,7 @@ func init() {
 	UsersCmd.AddCommand(UsersPasswordCmd)
 }
 
+// UsersPasswordCmd defines 'password' subcommand
 var UsersPasswordCmd = &cobra.Command{
 	Use:   "password",
 	Short: TR("users.password.cli.summary"),

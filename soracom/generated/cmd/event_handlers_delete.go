@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersDeleteCmdHandlerId holds value of 'handler_id' option
 var EventHandlersDeleteCmdHandlerId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	EventHandlersCmd.AddCommand(EventHandlersDeleteCmd)
 }
 
+// EventHandlersDeleteCmd defines 'delete' subcommand
 var EventHandlersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("event_handlers.delete_event_handler.delete.summary"),

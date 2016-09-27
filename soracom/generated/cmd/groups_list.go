@@ -7,14 +7,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var GroupsListCmdLastEvaluatedKey string
 
+// GroupsListCmdTagName holds value of 'tag_name' option
 var GroupsListCmdTagName string
 
+// GroupsListCmdTagValue holds value of 'tag_value' option
 var GroupsListCmdTagValue string
 
+// GroupsListCmdTagValueMatchMode holds value of 'tag_value_match_mode' option
 var GroupsListCmdTagValueMatchMode string
 
+// GroupsListCmdLimit holds value of 'limit' option
 var GroupsListCmdLimit int64
 
 func init() {
@@ -31,6 +36,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
 
+// GroupsListCmd defines 'list' subcommand
 var GroupsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TR("groups.list_groups.get.summary"),

@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CouponsRegisterCmdCouponCode holds value of 'coupon_code' option
 var CouponsRegisterCmdCouponCode string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	CouponsCmd.AddCommand(CouponsRegisterCmd)
 }
 
+// CouponsRegisterCmd defines 'register' subcommand
 var CouponsRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TR("payment.register_coupon.post.summary"),

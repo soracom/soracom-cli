@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersPasswordCreateCmdOperatorId holds value of 'operator_id' option
 var UsersPasswordCreateCmdOperatorId string
 
+// UsersPasswordCreateCmdPassword holds value of 'password' option
 var UsersPasswordCreateCmdPassword string
 
+// UsersPasswordCreateCmdUserName holds value of 'user_name' option
 var UsersPasswordCreateCmdUserName string
 
+// UsersPasswordCreateCmdBody holds contents of request body to be sent
 var UsersPasswordCreateCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	UsersPasswordCmd.AddCommand(UsersPasswordCreateCmd)
 }
 
+// UsersPasswordCreateCmd defines 'create' subcommand
 var UsersPasswordCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("users.create_user_password.post.summary"),

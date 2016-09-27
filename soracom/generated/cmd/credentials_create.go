@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CredentialsCreateCmdCredentialsId holds value of 'credentials_id' option
 var CredentialsCreateCmdCredentialsId string
 
+// CredentialsCreateCmdDescription holds value of 'description' option
 var CredentialsCreateCmdDescription string
 
+// CredentialsCreateCmdType holds value of 'type' option
 var CredentialsCreateCmdType string
 
+// CredentialsCreateCmdBody holds contents of request body to be sent
 var CredentialsCreateCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	CredentialsCmd.AddCommand(CredentialsCreateCmd)
 }
 
+// CredentialsCreateCmd defines 'create' subcommand
 var CredentialsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("credentials.create_credential.post.summary"),

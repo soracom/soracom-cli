@@ -7,10 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersDetachRoleCmdOperatorId holds value of 'operator_id' option
 var UsersDetachRoleCmdOperatorId string
 
+// UsersDetachRoleCmdRoleId holds value of 'role_id' option
 var UsersDetachRoleCmdRoleId string
 
+// UsersDetachRoleCmdUserName holds value of 'user_name' option
 var UsersDetachRoleCmdUserName string
 
 func init() {
@@ -23,6 +26,7 @@ func init() {
 	UsersCmd.AddCommand(UsersDetachRoleCmd)
 }
 
+// UsersDetachRoleCmd defines 'detach-role' subcommand
 var UsersDetachRoleCmd = &cobra.Command{
 	Use:   "detach-role",
 	Short: TR("roles.detach_role.delete.summary"),

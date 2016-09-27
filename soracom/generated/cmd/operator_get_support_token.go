@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorGetSupportTokenCmdOperatorId holds value of 'operator_id' option
 var OperatorGetSupportTokenCmdOperatorId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorGetSupportTokenCmd)
 }
 
+// OperatorGetSupportTokenCmd defines 'get-support-token' subcommand
 var OperatorGetSupportTokenCmd = &cobra.Command{
 	Use:   "get-support-token",
 	Short: TR("operator.generate_support_token.post.summary"),

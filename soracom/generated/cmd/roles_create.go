@@ -10,14 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// RolesCreateCmdDescription holds value of 'description' option
 var RolesCreateCmdDescription string
 
+// RolesCreateCmdOperatorId holds value of 'operator_id' option
 var RolesCreateCmdOperatorId string
 
+// RolesCreateCmdPermission holds value of 'permission' option
 var RolesCreateCmdPermission string
 
+// RolesCreateCmdRoleId holds value of 'role_id' option
 var RolesCreateCmdRoleId string
 
+// RolesCreateCmdBody holds contents of request body to be sent
 var RolesCreateCmdBody string
 
 func init() {
@@ -34,6 +39,7 @@ func init() {
 	RolesCmd.AddCommand(RolesCreateCmd)
 }
 
+// RolesCreateCmd defines 'create' subcommand
 var RolesCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("roles.create_role.post.summary"),

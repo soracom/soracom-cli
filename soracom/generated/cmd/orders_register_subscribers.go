@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersRegisterSubscribersCmdOrderId holds value of 'order_id' option
 var OrdersRegisterSubscribersCmdOrderId string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersRegisterSubscribersCmd)
 }
 
+// OrdersRegisterSubscribersCmd defines 'register-subscribers' subcommand
 var OrdersRegisterSubscribersCmd = &cobra.Command{
 	Use:   "register-subscribers",
 	Short: TR("orders.register_ordered_sim.post.summary"),

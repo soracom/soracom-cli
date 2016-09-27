@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgRegisterGatePeerCmdInnerIpAddress holds value of 'innerIpAddress' option
 var VpgRegisterGatePeerCmdInnerIpAddress string
 
+// VpgRegisterGatePeerCmdOuterIpAddress holds value of 'outerIpAddress' option
 var VpgRegisterGatePeerCmdOuterIpAddress string
 
+// VpgRegisterGatePeerCmdVpgId holds value of 'vpg_id' option
 var VpgRegisterGatePeerCmdVpgId string
 
+// VpgRegisterGatePeerCmdBody holds contents of request body to be sent
 var VpgRegisterGatePeerCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	VpgCmd.AddCommand(VpgRegisterGatePeerCmd)
 }
 
+// VpgRegisterGatePeerCmd defines 'register-gate-peer' subcommand
 var VpgRegisterGatePeerCmd = &cobra.Command{
 	Use:   "register-gate-peer",
 	Short: TR("virtual_private_gateway.register_virtual_private_gateway_peer.post.summary"),

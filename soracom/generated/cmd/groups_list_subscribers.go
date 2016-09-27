@@ -7,10 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsListSubscribersCmdGroupId holds value of 'group_id' option
 var GroupsListSubscribersCmdGroupId string
 
+// GroupsListSubscribersCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var GroupsListSubscribersCmdLastEvaluatedKey string
 
+// GroupsListSubscribersCmdLimit holds value of 'limit' option
 var GroupsListSubscribersCmdLimit int64
 
 func init() {
@@ -23,6 +26,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsListSubscribersCmd)
 }
 
+// GroupsListSubscribersCmd defines 'list-subscribers' subcommand
 var GroupsListSubscribersCmd = &cobra.Command{
 	Use:   "list-subscribers",
 	Short: TR("groups.list_subscribers_in_group.get.summary"),

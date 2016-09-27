@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersUnsetExpiryTimeCmdImsi holds value of 'imsi' option
 var SubscribersUnsetExpiryTimeCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersUnsetExpiryTimeCmd)
 }
 
+// SubscribersUnsetExpiryTimeCmd defines 'unset-expiry-time' subcommand
 var SubscribersUnsetExpiryTimeCmd = &cobra.Command{
 	Use:   "unset-expiry-time",
 	Short: TR("subscribers.unset_expirytime.post.summary"),

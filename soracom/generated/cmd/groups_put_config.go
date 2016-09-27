@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GroupsPutConfigCmdGroupId holds value of 'group_id' option
 var GroupsPutConfigCmdGroupId string
 
+// GroupsPutConfigCmdNamespace holds value of 'namespace' option
 var GroupsPutConfigCmdNamespace string
 
+// GroupsPutConfigCmdBody holds contents of request body to be sent
 var GroupsPutConfigCmdBody string
 
 func init() {
@@ -26,6 +29,7 @@ func init() {
 	GroupsCmd.AddCommand(GroupsPutConfigCmd)
 }
 
+// GroupsPutConfigCmd defines 'put-config' subcommand
 var GroupsPutConfigCmd = &cobra.Command{
 	Use:   "put-config",
 	Short: TR("groups.put_configuration_parameters.put.summary"),

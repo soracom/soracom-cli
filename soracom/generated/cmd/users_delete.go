@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersDeleteCmdOperatorId holds value of 'operator_id' option
 var UsersDeleteCmdOperatorId string
 
+// UsersDeleteCmdUserName holds value of 'user_name' option
 var UsersDeleteCmdUserName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	UsersCmd.AddCommand(UsersDeleteCmd)
 }
 
+// UsersDeleteCmd defines 'delete' subcommand
 var UsersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("users.delete_user.delete.summary"),

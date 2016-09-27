@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersCreateCmdShippingAddressId holds value of 'shippingAddressId' option
 var OrdersCreateCmdShippingAddressId string
 
+// OrdersCreateCmdBody holds contents of request body to be sent
 var OrdersCreateCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	OrdersCmd.AddCommand(OrdersCreateCmd)
 }
 
+// OrdersCreateCmd defines 'create' subcommand
 var OrdersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("orders.create_quotation.post.summary"),

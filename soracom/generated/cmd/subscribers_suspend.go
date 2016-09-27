@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersSuspendCmdImsi holds value of 'imsi' option
 var SubscribersSuspendCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersSuspendCmd)
 }
 
+// SubscribersSuspendCmd defines 'suspend' subcommand
 var SubscribersSuspendCmd = &cobra.Command{
 	Use:   "suspend",
 	Short: TR("subscribers.suspend_subscriber.post.summary"),

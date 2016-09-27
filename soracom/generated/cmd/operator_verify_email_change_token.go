@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorVerifyEmailChangeTokenCmdToken holds value of 'token' option
 var OperatorVerifyEmailChangeTokenCmdToken string
 
+// OperatorVerifyEmailChangeTokenCmdBody holds contents of request body to be sent
 var OperatorVerifyEmailChangeTokenCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	OperatorCmd.AddCommand(OperatorVerifyEmailChangeTokenCmd)
 }
 
+// OperatorVerifyEmailChangeTokenCmd defines 'verify-email-change-token' subcommand
 var OperatorVerifyEmailChangeTokenCmd = &cobra.Command{
 	Use:   "verify-email-change-token",
 	Short: TR("operator.verify_email_change_token.post.summary"),

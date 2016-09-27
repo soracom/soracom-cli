@@ -16,18 +16,23 @@ import (
 {{$cmdvar := .CommandVariableName}}
 
 {{range .StringFlags}}
+// {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} string
 {{end}}
 {{range .IntegerFlags}}
+// {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} int64
 {{end}}
 {{range .FloatFlags}}
+// {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} float64
 {{end}}
 {{range .BoolFlags}}
+// {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} bool
 {{end}}
 {{if .BodyExists }}
+// {{$prefix}}Body holds contents of request body to be sent
 var {{$prefix}}Body string
 {{end}}
 
@@ -55,6 +60,7 @@ func init() {
   {{.ParentCommandVariableName}}.AddCommand({{$cmdvar}})
 }
 
+// {{.CommandVariableName}} defines '{{.Use}}' subcommand
 var {{ $cmdvar }} = &cobra.Command{
   Use: "{{.Use}}",
   Short: TR("{{.Short}}"),

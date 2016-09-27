@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OperatorAuthKeysDeleteCmdAuthKeyId holds value of 'auth_key_id' option
 var OperatorAuthKeysDeleteCmdAuthKeyId string
 
+// OperatorAuthKeysDeleteCmdOperatorId holds value of 'operator_id' option
 var OperatorAuthKeysDeleteCmdOperatorId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysDeleteCmd)
 }
 
+// OperatorAuthKeysDeleteCmd defines 'delete' subcommand
 var OperatorAuthKeysDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("operator.delete_operator_auth_key.delete.summary"),

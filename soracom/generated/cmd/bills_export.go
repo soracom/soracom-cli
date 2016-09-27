@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// BillsExportCmdYyyyMM holds value of 'yyyyMM' option
 var BillsExportCmdYyyyMM string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	BillsCmd.AddCommand(BillsExportCmd)
 }
 
+// BillsExportCmd defines 'export' subcommand
 var BillsExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TR("bills.export_billing.post.summary"),

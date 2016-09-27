@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersDeleteSessionCmdImsi holds value of 'imsi' option
 var SubscribersDeleteSessionCmdImsi string
 
 func init() {
@@ -15,6 +16,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersDeleteSessionCmd)
 }
 
+// SubscribersDeleteSessionCmd defines 'delete-session' subcommand
 var SubscribersDeleteSessionCmd = &cobra.Command{
 	Use:   "delete-session",
 	Short: TR("subscribers.delete_session.post.summary"),

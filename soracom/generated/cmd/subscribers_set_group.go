@@ -10,16 +10,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersSetGroupCmdGroupId holds value of 'groupId' option
 var SubscribersSetGroupCmdGroupId string
 
+// SubscribersSetGroupCmdImsi holds value of 'imsi' option
 var SubscribersSetGroupCmdImsi string
 
+// SubscribersSetGroupCmdOperatorId holds value of 'operatorId' option
 var SubscribersSetGroupCmdOperatorId string
 
+// SubscribersSetGroupCmdCreatedTime holds value of 'createdTime' option
 var SubscribersSetGroupCmdCreatedTime int64
 
+// SubscribersSetGroupCmdLastModifiedTime holds value of 'lastModifiedTime' option
 var SubscribersSetGroupCmdLastModifiedTime int64
 
+// SubscribersSetGroupCmdBody holds contents of request body to be sent
 var SubscribersSetGroupCmdBody string
 
 func init() {
@@ -38,6 +44,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersSetGroupCmd)
 }
 
+// SubscribersSetGroupCmd defines 'set-group' subcommand
 var SubscribersSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TR("subscribers.set_group.post.summary"),

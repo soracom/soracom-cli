@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SubscribersPutTagsCmdImsi holds value of 'imsi' option
 var SubscribersPutTagsCmdImsi string
 
+// SubscribersPutTagsCmdBody holds contents of request body to be sent
 var SubscribersPutTagsCmdBody string
 
 func init() {
@@ -22,6 +24,7 @@ func init() {
 	SubscribersCmd.AddCommand(SubscribersPutTagsCmd)
 }
 
+// SubscribersPutTagsCmd defines 'put-tags' subcommand
 var SubscribersPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TR("subscribers.put_subscriber_tags.put.summary"),

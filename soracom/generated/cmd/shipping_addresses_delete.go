@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ShippingAddressesDeleteCmdOperatorId holds value of 'operator_id' option
 var ShippingAddressesDeleteCmdOperatorId string
 
+// ShippingAddressesDeleteCmdShippingAddressId holds value of 'shipping_address_id' option
 var ShippingAddressesDeleteCmdShippingAddressId string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	ShippingAddressesCmd.AddCommand(ShippingAddressesDeleteCmd)
 }
 
+// ShippingAddressesDeleteCmd defines 'delete' subcommand
 var ShippingAddressesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TR("shipping_addresses.delete_shipping_address.delete.summary"),

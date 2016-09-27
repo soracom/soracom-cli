@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersAuthKeysGenerateCmdOperatorId holds value of 'operator_id' option
 var UsersAuthKeysGenerateCmdOperatorId string
 
+// UsersAuthKeysGenerateCmdUserName holds value of 'user_name' option
 var UsersAuthKeysGenerateCmdUserName string
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGenerateCmd)
 }
 
+// UsersAuthKeysGenerateCmd defines 'generate' subcommand
 var UsersAuthKeysGenerateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: TR("users.generate_user_auth_key.post.summary"),

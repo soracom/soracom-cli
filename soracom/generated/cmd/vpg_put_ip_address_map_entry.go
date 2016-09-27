@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgPutIpAddressMapEntryCmdIpAddress holds value of 'ipAddress' option
 var VpgPutIpAddressMapEntryCmdIpAddress string
 
+// VpgPutIpAddressMapEntryCmdKey holds value of 'key' option
 var VpgPutIpAddressMapEntryCmdKey string
 
+// VpgPutIpAddressMapEntryCmdVpgId holds value of 'vpg_id' option
 var VpgPutIpAddressMapEntryCmdVpgId string
 
+// VpgPutIpAddressMapEntryCmdBody holds contents of request body to be sent
 var VpgPutIpAddressMapEntryCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	VpgCmd.AddCommand(VpgPutIpAddressMapEntryCmd)
 }
 
+// VpgPutIpAddressMapEntryCmd defines 'put-ip-address-map-entry' subcommand
 var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "put-ip-address-map-entry",
 	Short: TR("virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.summary"),

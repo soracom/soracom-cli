@@ -10,20 +10,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// AuthCmdAuthKey holds value of 'authKey' option
 var AuthCmdAuthKey string
 
+// AuthCmdAuthKeyId holds value of 'authKeyId' option
 var AuthCmdAuthKeyId string
 
+// AuthCmdEmail holds value of 'email' option
 var AuthCmdEmail string
 
+// AuthCmdOperatorId holds value of 'operatorId' option
 var AuthCmdOperatorId string
 
+// AuthCmdPassword holds value of 'password' option
 var AuthCmdPassword string
 
+// AuthCmdUserName holds value of 'userName' option
 var AuthCmdUserName string
 
+// AuthCmdTokenTimeoutSeconds holds value of 'tokenTimeoutSeconds' option
 var AuthCmdTokenTimeoutSeconds int64
 
+// AuthCmdBody holds contents of request body to be sent
 var AuthCmdBody string
 
 func init() {
@@ -46,6 +54,7 @@ func init() {
 	RootCmd.AddCommand(AuthCmd)
 }
 
+// AuthCmd defines 'auth' subcommand
 var AuthCmd = &cobra.Command{
 	Use:   "auth",
 	Short: TR("auth.auth.post.summary"),

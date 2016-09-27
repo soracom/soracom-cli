@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UsersCreateCmdDescription holds value of 'description' option
 var UsersCreateCmdDescription string
 
+// UsersCreateCmdOperatorId holds value of 'operator_id' option
 var UsersCreateCmdOperatorId string
 
+// UsersCreateCmdUserName holds value of 'user_name' option
 var UsersCreateCmdUserName string
 
+// UsersCreateCmdBody holds contents of request body to be sent
 var UsersCreateCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	UsersCmd.AddCommand(UsersCreateCmd)
 }
 
+// UsersCreateCmd defines 'create' subcommand
 var UsersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("users.create_user.post.summary"),

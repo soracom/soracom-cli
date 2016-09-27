@@ -10,12 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgCreateCmdDeviceSubnetCidrRange holds value of 'deviceSubnetCidrRange' option
 var VpgCreateCmdDeviceSubnetCidrRange string
 
+// VpgCreateCmdPrimaryServiceName holds value of 'primaryServiceName' option
 var VpgCreateCmdPrimaryServiceName string
 
+// VpgCreateCmdUseInternetGateway holds value of 'useInternetGateway' option
 var VpgCreateCmdUseInternetGateway bool
 
+// VpgCreateCmdBody holds contents of request body to be sent
 var VpgCreateCmdBody string
 
 func init() {
@@ -30,6 +34,7 @@ func init() {
 	VpgCmd.AddCommand(VpgCreateCmd)
 }
 
+// VpgCreateCmd defines 'create' subcommand
 var VpgCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TR("virtual_private_gateway.create_virtual_private_gateway.post.summary"),
