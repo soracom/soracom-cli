@@ -24,21 +24,12 @@ soracom コマンドは以下のような特徴を備えています。
 
 # インストール方法
 
-## Go を必要としない方法
-
 [Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置します。
 
 
-## Go を使う方法
+# 使用方法
 
-```
-go get -u github.com/soracom/soracom-cli/soracom
-```
-
-
-## 使用方法
-
-### 基本的な使い方
+## 基本的な使い方
 
 まずはじめに、プロファイルの作成をします。
 
@@ -66,9 +57,9 @@ SAM ユーザーもしくはルートアカウントに対し、AuthKey（認証
 
 
 
-### 高度な使い方
+## 高度な使い方
 
-#### 複数のプロファイルを使い分ける
+### 複数のプロファイルを使い分ける
 
 SORACOM アカウントを複数所有しているとか、複数の SAM ユーザーを使い分けたい場合は、configure に --profile オプションを指定し、プロファイル名を設定します。
 
@@ -96,7 +87,7 @@ soracom groups list --profile user2
 ```
 
 
-#### Proxy 経由で API を呼び出したい場合
+### Proxy 経由で API を呼び出したい場合
 
 HTTP_PROXY 環境変数に http://your-proxy-nme:prot を設定した状態で soracom コマンドを実行してください。
 
