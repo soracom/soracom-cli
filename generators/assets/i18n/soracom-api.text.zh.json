@@ -873,6 +873,50 @@
         }
       }
     },
+    "set_imei_lock": {
+      "post": {
+        "summary": "Set IMEI lock configuration for Subscriber.",
+        "description": "Set IMEI that the subscriber should be locked to.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          },
+          "imeiLock": {
+            "description": "IMEI lock configuration for the subscriber. (IMEI can be left black for locking to the current IMEI of an online subscriber.)"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status400": {
+            "description": "Invalid IMEI string or subscriber is offline and IMEI not specified."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
+    "unset_imei_lock": {
+      "post": {
+        "summary": "Unset IMEI lock configuration for Subscriber.",
+        "description": "Unset IMEI lock configuration for the subscriber.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
     "list_session_events": {
       "get": {
         "summary": "List Session Events",
@@ -882,10 +926,10 @@
             "description": "对象的Subscriber的IMSI"
           },
           "from": {
-            "description": "事件检索范围的开始时刻"
+            "description": "事件检索范围的开始时刻 (unixtime)"
           },
           "to": {
-            "description": "事件检索范围的终止时刻"
+            "description": "事件检索范围的终止时刻 (unixtime)"
           },
           "limit": {
             "description": "获得的事件数的上限"
@@ -949,6 +993,11 @@
       "post": {
         "summary": "Issue Subscribers Transfer Token",
         "description": "将Subscriber的Operator间的移交用口令，通过邮件传送给移交处的Operator。",
+        "parameters": {
+          "request": {
+            "description": "传送目标 email address, Operator ID、转移对象IMSI"
+          }
+        },
         "responses": {
           "status200": {
             "description": "OK."
@@ -960,6 +1009,11 @@
       "post": {
         "summary": "Verify Subscriber Transfer Token",
         "description": "确认Subscriber移交用的口令，实行移交。用移交处的Operator调用该API。",
+        "parameters": {
+          "request": {
+            "description": "通過 email Subscriber Transfer Token 發送"
+          }
+        },
         "responses": {
           "status200": {
             "description": "OK."
@@ -1016,7 +1070,7 @@
     },
     "export_latest_billing": {
       "post": {
-        "summary": "Output latest billing CSV file to S3",
+        "summary": "Export latest billing CSV file to S3",
         "description": "返回最近一个月的使用额明细。该明细中含有以每日、每个Subscriber、每个收费项目分别计算的使用额。该API获得的金额为请求确定前的金额。",
         "responses": {
           "status200": {
@@ -1184,10 +1238,10 @@
     "create_event_handler": {
       "post": {
         "summary": "Create Event Handler",
-        "description": "新创建事件处理程序。",
+        "description": "新创建事件处理程序; https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "req": {
-            "description": "req"
+            "description": "事件处理程序"
           }
         },
         "responses": {
@@ -1232,10 +1286,13 @@
     "update_event_handler": {
       "put": {
         "summary": "Update Event Handler",
-        "description": "更新指定事件处理程序。",
+        "description": "更新指定事件处理程序; https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
+          },
+          "event_handler_model": {
+            "description": "事件处理程序"
           }
         },
         "responses": {
@@ -1299,7 +1356,7 @@
         "description": "创建新订购估价单。将orderId PUT至/confirm后，订购完成。",
         "parameters": {
           "request": {
-            "description": "request"
+            "description": "Order item list and shipping address ID"
           }
         },
         "responses": {
@@ -1407,7 +1464,7 @@
             "description": "以unixtime给予总计对象的终止时刻"
           },
           "period": {
-            "description": "总计单位。Minutes为5分间隔"
+            "description": "总计单位。Minutes为前5分钟和后。"
           }
         },
         "responses": {
@@ -1432,7 +1489,7 @@
             "description": "以unixtime给予总计对象的终止时刻"
           },
           "period": {
-            "description": "总计单位。Minutes为5分间隔"
+            "description": "总计单位。Minutes为前5分钟和后。"
           }
         },
         "responses": {
@@ -1448,10 +1505,10 @@
         "description": "以文件形式获得Operator拥有的所有Subscriber的通信量。用from, to的unixtime指定取得对象的期间。履历的详细度为月单位。输出文件的位置为AWS S3。文件的输出格式为CSV。",
         "parameters": {
           "operator_id": {
-            "description": "operator ID"
+            "description": "operator_id"
           },
           "request": {
-            "description": "request"
+            "description": "出口時間段"
           }
         },
         "responses": {
@@ -1470,7 +1527,7 @@
             "description": "operator ID"
           },
           "request": {
-            "description": "request"
+            "description": "出口時間段"
           }
         },
         "responses": {
@@ -1531,8 +1588,8 @@
         "summary": "Create Group",
         "description": "新创建Group",
         "parameters": {
-          "group": {
-            "description": "创建对象的Group"
+          "tags": {
+            "description": "标签排列"
           }
         },
         "responses": {
@@ -2019,6 +2076,42 @@
     "cli": {
       "summary": "List, create, update or delete VPGs.",
       "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
+    }
+  },
+  "logs": {
+    "get_logs": {
+      "get": {
+        "summary": "Get Logs.",
+        "description": "Returns a list of log entries that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "resource_type": {
+            "description": "Type of the target resource to query log entries."
+          },
+          "resource_id": {
+            "description": "Identity of the target resource to query log entries."
+          },
+          "service": {
+            "description": "Service name to filter log entries."
+          },
+          "from": {
+            "description": "Start time for the log search range (unixtime)."
+          },
+          "to": {
+            "description": "End time for the log search range (unixtime)."
+          },
+          "limit": {
+            "description": "Maximum number of log entries to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The ID of the last resource retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of log entries."
+          }
+        }
+      }
     }
   },
   "completion": {

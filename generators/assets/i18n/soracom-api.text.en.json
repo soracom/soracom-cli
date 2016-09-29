@@ -873,6 +873,50 @@
         }
       }
     },
+    "set_imei_lock": {
+      "post": {
+        "summary": "Set IMEI lock configuration for Subscriber.",
+        "description": "Set IMEI that the subscriber should be locked to.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          },
+          "imeiLock": {
+            "description": "IMEI lock configuration for the subscriber. (IMEI can be left blank for locking to the current IMEI of an online subscriber.)"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status400": {
+            "description": "Invalid IMEI string or subscriber is offline and IMEI not specified."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
+    "unset_imei_lock": {
+      "post": {
+        "summary": "Unset IMEI lock configuration for Subscriber.",
+        "description": "Remove any existing IMEI lock configuration for the subscriber.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The subscriber's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified subscriber does not exist."
+          }
+        }
+      }
+    },
     "list_session_events": {
       "get": {
         "summary": "List Session Events.",
@@ -882,10 +926,10 @@
             "description": "IMSI of the target subscriber."
           },
           "from": {
-            "description": "Start time for the events search range."
+            "description": "Start time for the events search range (unixtime)."
           },
           "to": {
-            "description": "End time for the events search range."
+            "description": "End time for the events search range (unixtime)."
           },
           "limit": {
             "description": "Maximum number of events to retrieve."
@@ -949,6 +993,11 @@
       "post": {
         "summary": "Issue Subscribers Transfer Token.",
         "description": "Sends the subscriber's inter-operator control transfer token to the control destination operator.",
+        "parameters": {
+          "request": {
+            "description": "Destination operator's email address, Operator ID, transferring IMSI"
+          }
+        },
         "responses": {
           "status200": {
             "description": "OK."
@@ -960,6 +1009,11 @@
       "post": {
         "summary": "Verify Subscriber Transfer Token.",
         "description": "Verifies the subscriber's control transfer token, and executes the transfer. This API is called from the operator of the control destination.",
+        "parameters": {
+          "request": {
+            "description": "Subscriber transfer token that noficed via email."
+          }
+        },
         "responses": {
           "status200": {
             "description": "OK."
@@ -1016,7 +1070,7 @@
     },
     "export_latest_billing": {
       "post": {
-        "summary": "Output latest billing CSV file to S3.",
+        "summary": "Export latest billing CSV file to S3.",
         "description": "Returns detailed information of the billing amounts for the latest month. This detailed information includes billing amounts per day, subscriber, and billing item. The amounts retrieved using this API correspond to the values before the invoice was finalized.",
         "responses": {
           "status200": {
@@ -1184,10 +1238,10 @@
     "create_event_handler": {
       "post": {
         "summary": "Create Event Handler.",
-        "description": "Creates a new event handler.",
+        "description": "Creates a new event handler. Please see also https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "req": {
-            "description": "req"
+            "description": "event handler settings"
           }
         },
         "responses": {
@@ -1232,10 +1286,13 @@
     "update_event_handler": {
       "put": {
         "summary": "Update Event Handler.",
-        "description": "Updates the specified event handler.",
+        "description": "Updates the specified event handler. Please see also https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
+          },
+          "event_handler_model": {
+            "description": "event handler settings"
           }
         },
         "responses": {
@@ -1299,7 +1356,7 @@
         "description": "Creates a new order quotation. If the orderId is put in /confirm, the order is complete.",
         "parameters": {
           "request": {
-            "description": "request"
+            "description": "Order item list and shipping address ID"
           }
         },
         "responses": {
@@ -1407,7 +1464,7 @@
             "description": "End time in unixtime for the aggregate data."
           },
           "period": {
-            "description": "Units of aggregate data. For minutes, the interval is every 5 minutes."
+            "description": "Units of aggregate data. For minutes, the interval is around 5 minutes."
           }
         },
         "responses": {
@@ -1432,7 +1489,7 @@
             "description": "End time in unixtime for the aggregate data."
           },
           "period": {
-            "description": "Units of aggregate data. For minutes, the interval is every 5 minutes."
+            "description": "Units of aggregate data. For minutes, the interval is around 5 minutes."
           }
         },
         "responses": {
@@ -1448,10 +1505,10 @@
         "description": "Retrieves a file containing the usage report of all subscribers for the specified operator. The report data range is specified with from, to in unixtime. The report contains monthly data. The file output destination is AWS S3. The file output format is CSV.",
         "parameters": {
           "operator_id": {
-            "description": "operator ID"
+            "description": "operator_id"
           },
           "request": {
-            "description": "request"
+            "description": "export time period"
           }
         },
         "responses": {
@@ -1470,7 +1527,7 @@
             "description": "operator ID"
           },
           "request": {
-            "description": "request"
+            "description": "export time period"
           }
         },
         "responses": {
@@ -1531,8 +1588,8 @@
         "summary": "Create Group.",
         "description": "Create a new group.",
         "parameters": {
-          "group": {
-            "description": "Group to be created."
+          "tags": {
+            "description": "Tags for group to be created."
           }
         },
         "responses": {
@@ -2019,6 +2076,42 @@
     "cli": {
       "summary": "List, create, update or delete VPGs.",
       "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
+    }
+  },
+  "logs": {
+    "get_logs": {
+      "get": {
+        "summary": "Get Logs.",
+        "description": "Returns a list of log entries that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "resource_type": {
+            "description": "Type of the target resource to query log entries."
+          },
+          "resource_id": {
+            "description": "Identity of the target resource to query log entries."
+          },
+          "service": {
+            "description": "Service name to filter log entries."
+          },
+          "from": {
+            "description": "Start time for the log search range (unixtime)."
+          },
+          "to": {
+            "description": "End time for the log search range (unixtime)."
+          },
+          "limit": {
+            "description": "Maximum number of log entries to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of log entries."
+          }
+        }
+      }
     }
   },
   "completion": {

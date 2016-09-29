@@ -16,15 +16,6 @@ var SubscribersSetGroupCmdGroupId string
 // SubscribersSetGroupCmdImsi holds value of 'imsi' option
 var SubscribersSetGroupCmdImsi string
 
-// SubscribersSetGroupCmdOperatorId holds value of 'operatorId' option
-var SubscribersSetGroupCmdOperatorId string
-
-// SubscribersSetGroupCmdCreatedTime holds value of 'createdTime' option
-var SubscribersSetGroupCmdCreatedTime int64
-
-// SubscribersSetGroupCmdLastModifiedTime holds value of 'lastModifiedTime' option
-var SubscribersSetGroupCmdLastModifiedTime int64
-
 // SubscribersSetGroupCmdBody holds contents of request body to be sent
 var SubscribersSetGroupCmdBody string
 
@@ -32,12 +23,6 @@ func init() {
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TR(""))
 
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TR("subscribers.set_group.post.parameters.imsi.description"))
-
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdOperatorId, "operator-id", "", TR(""))
-
-	SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdCreatedTime, "created-time", 0, TR(""))
-
-	SubscribersSetGroupCmd.Flags().Int64Var(&SubscribersSetGroupCmdLastModifiedTime, "last-modified-time", 0, TR(""))
 
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdBody, "body", "", TR("cli.common_params.body.short_help"))
 
@@ -139,18 +124,6 @@ func buildBodyForSubscribersSetGroupCmd() (string, error) {
 
 	if SubscribersSetGroupCmdGroupId != "" {
 		result["groupId"] = SubscribersSetGroupCmdGroupId
-	}
-
-	if SubscribersSetGroupCmdOperatorId != "" {
-		result["operatorId"] = SubscribersSetGroupCmdOperatorId
-	}
-
-	if SubscribersSetGroupCmdCreatedTime != 0 {
-		result["createdTime"] = SubscribersSetGroupCmdCreatedTime
-	}
-
-	if SubscribersSetGroupCmdLastModifiedTime != 0 {
-		result["lastModifiedTime"] = SubscribersSetGroupCmdLastModifiedTime
 	}
 
 	resultBytes, err := json.Marshal(result)

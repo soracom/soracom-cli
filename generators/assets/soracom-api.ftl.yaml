@@ -64,8 +64,8 @@ paths:
       produces: [application/json]
       parameters:
       - in: body
-        name: request
-        description: 'Request'
+        name: email
+        description: 'email address'
         required: true
         schema:
          '$ref': '#/definitions/IssuePasswordResetTokenRequest'
@@ -88,7 +88,7 @@ paths:
       parameters:
       - in: body
         name: request
-        description: request
+        description: 'token, password'
         required: true
         schema:
          '$ref': '#/definitions/VerifyPasswordResetTokenRequest'
@@ -185,7 +185,7 @@ paths:
       consumes: [application/json]
       produces: ['*/*']
       parameters:
-      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - {name: credentials_id, in: path, description: Credentials ID, required: true, type: string}
       responses:
         '204': {description: Deleted}
         '404': {description: Not Found}
@@ -207,7 +207,7 @@ paths:
       parameters:
       - in: body
         name: request
-        description: request
+        description: 'email, password'
         required: true
         schema:
          '$ref': '#/definitions/RegisterOperatorsRequest'
@@ -233,7 +233,7 @@ paths:
       parameters:
       - in: body
         name: request
-        description: request
+        description: 'email'
         required: true
         schema: {'$ref': '#/definitions/IssueEmailChangeTokenRequest'}
       responses:
@@ -254,8 +254,8 @@ paths:
       produces: [application/json]
       parameters:
       - in: body
-        name: request
-        description: request
+        name: token
+        description: 'token'
         required: true
         schema: {'$ref': '#/definitions/VerifyEmailChangeTokenRequest'}
       responses:
@@ -302,7 +302,7 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: operator_id
         required: true
         type: string
       responses:
@@ -388,12 +388,12 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: operator_id
         required: true
         type: string
       - in: body
         name: request
-        description: request
+        description: 'current password, new password'
         required: true
         schema:
          '$ref': '#/definitions/UpdatePasswordRequest'
@@ -420,7 +420,7 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: operator_id
         required: true
         type: string
       responses:
@@ -449,12 +449,12 @@ paths:
       parameters:
       - in: path
         name: operator_id
-        description: operator ID
+        description: operator_id
         required: true
         type: string
       - in: body
         name: request
-        description: request
+        description: 'token timeout seconds'
         required: true
         schema:
          '$ref': '#/definitions/GenerateTokenRequest'
@@ -527,7 +527,7 @@ paths:
       - {name: role_id, in: path, description: role_id, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'permission'
         required: true
         schema: {'$ref': '#/definitions/CreateOrUpdateRoleRequest'}
       responses:
@@ -552,7 +552,7 @@ paths:
       - {name: role_id, in: path, description: role_id, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'permission'
         required: true
         schema: {'$ref': '#/definitions/CreateOrUpdateRoleRequest'}
       responses:
@@ -638,7 +638,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: role_id
         required: true
         schema: {'$ref': '#/definitions/AttachRoleRequest'}
       responses:
@@ -681,7 +681,7 @@ paths:
       parameters:
         - name: operator_id
           in: path
-          description: Operator ID
+          description: operator_id
           required: true
           type: string
       responses:
@@ -703,7 +703,7 @@ paths:
       parameters:
         - name: operator_id
           in: path
-          description: Operator ID
+          description: operator_id
           required: true
           type: string
         - name: model
@@ -733,7 +733,7 @@ paths:
       consumes: [application/json]
       produces: [application/json;charset=UTF-8]
       parameters:
-        - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+        - {name: operator_id, in: path, description: operator_id, required: true, type: string}
         - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
       responses:
         '200':
@@ -774,7 +774,7 @@ paths:
       consumes: [application/json]
       produces: ['*/*']
       parameters:
-        - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+        - {name: operator_id, in: path, description: operator_id, required: true, type: string}
         - {name: shipping_address_id, in: path, description: shipping_address_id, required: true, type: string}
       responses:
         '200': {description: OK}
@@ -839,7 +839,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'description'
         required: true
         schema: {'$ref': '#/definitions/CreateUserRequest'}
       responses:
@@ -862,7 +862,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'description'
         required: true
         schema: {'$ref': '#/definitions/UpdateUserRequest'}
       responses:
@@ -1016,7 +1016,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'password'
         required: true
         schema: {'$ref': '#/definitions/CreateUserPasswordRequest'}
       responses:
@@ -1038,7 +1038,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'password'
         required: true
         schema: {'$ref': '#/definitions/UpdatePasswordRequest'}
       responses:
@@ -1103,7 +1103,7 @@ paths:
       - {name: user_name, in: path, description: user_name, required: true, type: string}
       - in: body
         name: request
-        description: request
+        description: 'permission'
         required: true
         schema: {'$ref': '#/definitions/SetUserPermissionRequest'}
       responses:
@@ -1248,6 +1248,7 @@ paths:
           required: true
         - name: speed_class
           in: body
+          description: 'speed_class'
           required: true
           schema:
            '$ref': '#/definitions/UpdateSpeedClassRequest'
@@ -1546,7 +1547,7 @@ paths:
           in: body
           description: ${subscribers.set_group.post.parameters.group.description}
           schema:
-           '$ref': '#/definitions/Group'
+           '$ref': '#/definitions/SetGroupRequest'
           required: true
       tags:
         - Subscriber
@@ -1585,6 +1586,71 @@ paths:
            '$ref': '#/definitions/Subscriber'
         404:
           description: ${subscribers.unset_group.post.responses.status404.description}
+
+  '/subscribers/{imsi}/set_imei_lock':
+    post:
+      summary: ${subscribers.set_imei_lock.post.summary}
+      description: ${subscribers.set_imei_lock.post.description}
+      operationId: setImeiLock
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers set-imei-lock
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: ${subscribers.set_imei_lock.post.parameters.imsi.description}
+          required: true
+          type: string
+        - name: imeiLock
+          in: body
+          description: ${subscribers.set_imei_lock.post.parameters.imeiLock.description}
+          schema:
+           '$ref': '#/definitions/SetImeiLockRequest'
+          required: false
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: ${subscribers.set_imei_lock.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        400:
+          description: ${subscribers.set_imei_lock.post.responses.status400.description}
+        404:
+          description: ${subscribers.set_imei_lock.post.responses.status404.description}
+
+  '/subscribers/{imsi}/unset_imei_lock':
+    post:
+      summary: ${subscribers.unset_imei_lock.post.summary}
+      description: ${subscribers.unset_imei_lock.post.description}
+      operationId: unsetImeiLock
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers unset-imei-lock
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: ${subscribers.unset_imei_lock.post.parameters.imsi.description}
+          required: true
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: ${subscribers.unset_imei_lock.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        404:
+          description: ${subscribers.unset_imei_lock.post.responses.status404.description}
+
 
   '/subscribers/{imsi}/events/sessions':
     get:
@@ -1715,7 +1781,7 @@ paths:
       parameters:
       - in: body
         name: request
-        description: request
+        description:  ${subscribers.issue_subscriber_transfer_token.post.parameters.request.description}
         required: true
         schema:
          '$ref': '#/definitions/IssueSubscriberTransferTokenRequest'
@@ -1741,8 +1807,8 @@ paths:
       produces: [application/json]
       parameters:
       - in: body
-        name: request
-        description: request
+        name: token
+        description: ${subscribers.verify_subscriber_transfer_token.post.parameters.request.description}
         required: true
         schema:
          '$ref': '#/definitions/VerifySubscriberTransferTokenRequest'
@@ -1828,10 +1894,19 @@ paths:
         - bills export-latest
       consumes: [application/json]
       produces: [application/json]
+      parameters:
+        - name: export_mode
+          in: query
+          description: export_mode (async, sync)
+          required: false
+          type: string
+          enum:
+            - async
+            - sync
       responses:
         '200':
           description: ${bills.export_latest_billing.post.responses.status200.description}
-          schema: {'$ref': '#/definitions/FileOutputResult'}
+          schema: {'$ref': '#/definitions/FileExportResponse'}
 
   '/bills/{yyyyMM}':
     get:
@@ -1896,10 +1971,18 @@ paths:
       produces: [application/json]
       parameters:
       - {name: yyyyMM, in: path, description: yyyyMM, required: true, type: string}
+      - name: export_mode
+        in: query
+        description: export_mode (async, sync)
+        required: false
+        type: string
+        enum:
+          - async
+          - sync
       responses:
         '200':
           description: ${bills.export_billing.post.responses.status200.description}
-          schema: {'$ref': '#/definitions/FileOutputResult'}
+          schema: {'$ref': '#/definitions/FileExportResponse'}
 
 #Payment
   '/coupons':
@@ -2100,6 +2183,7 @@ paths:
             type: array
             items:
              '$ref': '#/definitions/EventHandlerModel'
+        '404': {description: not found}
 
   '/event_handlers/{handler_id}':
     get:
@@ -2147,8 +2231,8 @@ paths:
         required: true
         type: string
       - in: body
-        name: eventHandlerModel
-        description: eventHandlerModel
+        name: event_handler_model
+        description:  ${event_handlers.update_event_handler.put.parameters.event_handler_model.description}
         required: true
         schema:
          '$ref': '#/definitions/UpdateEventHandlerRequest'
@@ -2219,6 +2303,26 @@ paths:
         '204': {description: OK}
         '404': {description: not found}
 
+# Files
+  '/files/exported/{exported_file_id}':
+    get:
+      tags: [Files]
+      summary: 'Get exported file.'
+      description: 'エクスポートされたファイルを取得します。ファイルエクスポートが完了している場合、レスポンスのurlにファイルダウンロードURLがセットされます。'
+      operationId: getExportedFile
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+        - name: exported_file_id
+          in: path
+          description: 'file export id'
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema: { '$ref': '#/definitions/GetExportedFileResponse'}
+
 #Order
   '/orders':
     get:
@@ -2251,7 +2355,7 @@ paths:
       produces: [application/json;charset=UTF-8]
       parameters:
       - in: body
-        name: request
+        name: 'request'
         description: ${orders.create_quotation.post.parameters.request.description}
         required: true
         schema: {'$ref': '#/definitions/CreateEstimatedOrderRequest'}
@@ -2494,6 +2598,14 @@ paths:
         description: ${stats.export_air_stats.post.parameters.operator_id.description}
         required: true
         type: string
+      - name: export_mode
+        in: query
+        description: export_mode (async, sync)
+        required: false
+        type: string
+        enum:
+          - async
+          - sync
       - in: body
         name: request
         description: ${stats.export_air_stats.post.parameters.request.description}
@@ -2504,7 +2616,7 @@ paths:
         '200':
           description: ${stats.export_air_stats.post.responses.status200.description}
           schema:
-           '$ref': '#/definitions/FileOutputResult'
+           '$ref': '#/definitions/FileExportResponse'
 
   '/stats/beam/operators/{operator_id}/export':
     post:
@@ -2525,17 +2637,25 @@ paths:
         description: ${stats.export_beam_stats.post.parameters.operator_id.description}
         required: true
         type: string
+      - name: export_mode
+        in: query
+        description: export_mode (async, sync)
+        required: false
+        type: string
+        enum:
+          - async
+          - sync
       - in: body
         name: request
         description: ${stats.export_beam_stats.post.parameters.request.description}
         required: true
         schema:
-         '$ref': '#/definitions/ExportRequest'
+          '$ref': '#/definitions/ExportRequest'
       responses:
         '200':
           description: ${stats.export_beam_stats.post.responses.status200.description}
           schema:
-           '$ref': '#/definitions/FileOutputResult'
+           '$ref': '#/definitions/FileExportResponse'
 
 # groups
   '/groups':
@@ -2595,9 +2715,9 @@ paths:
       x-soracom-cli:
         - groups create
       parameters:
-        - name: Group
+        - name: Tags
           in: body
-          description: ${groups.create_group.post.parameters.group.description}
+          description: ${groups.create_group.post.parameters.tags.description}
           schema:
            '$ref': '#/definitions/CreateGroupRequest'
           required: true
@@ -2718,6 +2838,8 @@ paths:
           enum:
             - SoracomAir
             - SoracomBeam
+            - SoracomFunnel
+            - SoracomEndose
         - name: parameters
           in: body
           description: ${groups.put_configuration_parameters.put.parameters.parameters.description}
@@ -2760,6 +2882,8 @@ paths:
           enum:
             - SoracomAir
             - SoracomBeam
+            - SoracomFunnel
+            - SoracomEndose
         - name: name
           in: path
           description: ${groups.delete_configuration_parameter.delete.parameters.name.description}
@@ -3285,6 +3409,66 @@ paths:
         404:
           description: ${virtual_private_gateway.delete_vpc_peering_connection.delete.responses.status404.description}
 
+# logs
+  '/logs':
+    get:
+      summary: ${logs.get_logs.get.summary}
+      description: ${logs.get_logs.get.description}
+      operationId: getLogs
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - logs get
+      parameters:
+        - name: resource_type
+          in: query
+          description: ${logs.get_logs.get.parameters.resource_type.description}
+          required: false
+          type: string
+          enum: ["Subscriber","EventHandler","VirtualPrivateGateway"]
+        - name: resource_id
+          in: query
+          description: ${logs.get_logs.get.parameters.resource_id.description}
+          required: false
+          type: string
+        - name: service
+          in: query
+          description: ${logs.get_logs.get.parameters.service.description}
+          required: false
+          type: string
+          enum: ["Air","Beam","Canal","Direct","Door","Endorse","Funnel","Gate"]
+        - name: from
+          in: query
+          description: ${logs.get_logs.get.parameters.from.description}
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: ${logs.get_logs.get.parameters.to.description}
+          required: false
+          type: integer
+        - name: limit
+          in: query
+          description: ${logs.get_logs.get.parameters.limit.description}
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: ${logs.get_logs.get.parameters.last_evaluated_key.description}
+          required: false
+          type: string
+      tags:
+        - Log
+      responses:
+        200:
+          description: ${logs.get_logs.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/LogEntry'
+
+
 definitions:
 
   Subscriber:
@@ -3316,8 +3500,10 @@ definitions:
         type: string
       sessionStatus:
         '$ref': '#/definitions/SessionStatus'
+      imeiLock:
+        '$ref': '#/definitions/ImeiLock'
       tags:
-       '$ref': '#/definitions/Map'
+        '$ref': '#/definitions/Map'
       operatorId:
         type: string
 
@@ -3434,6 +3620,23 @@ definitions:
         type: string
       tags:
        '$ref': '#/definitions/Tag'
+
+  SetGroupRequest:
+    properties:
+      groupId:
+        type: string
+      tags:
+        '$ref': '#/definitions/Tag'
+
+  ImeiLock:
+    properties:
+      imei:
+        type: string
+
+  SetImeiLockRequest:
+    properties:
+      imei:
+        type: string
 
   CreateGroupRequest:
     properties:
@@ -3570,7 +3773,7 @@ definitions:
       lastUsedDateTime: {type: integer, format: int64}
       type:
         type: string
-        enum: [aws-credentials, azure-credentials]
+        enum: [aws-credentials, azure-credentials, psk, x509]
       updateDateTime: {type: integer, format: int64}
 
   CreateAndUpdateCredentialsModel:
@@ -3579,7 +3782,7 @@ definitions:
       description: {type: string}
       type:
         type: string
-        enum: [aws-credentials, azure-credentials]
+        enum: [aws-credentials, azure-credentials, psk, x509]
 
 
 # Operator API
@@ -3831,9 +4034,6 @@ definitions:
     properties:
       amount: {type: integer, format: int64, description: 金額}
       lastEvaluatedTime: {type: string, example: yyyyMMddHHmmss, description: 利用額計算を実施した時間}
-  FileOutputResult:
-    properties:
-      url: {type: string}
   DailyBillResponse:
     properties:
       billList:
@@ -4088,6 +4288,19 @@ definitions:
       to:
         type: integer
         format: int64
+
+  GetExportedFileResponse:
+    properties:
+      status:
+        type: string
+        description: ファイル出力ステータス
+        enum:
+          - processing
+          - exported
+          - failed
+      url:
+        type: string
+        description: ファイルダウンロードURL
 
   Config:
     properties:
@@ -4352,6 +4565,18 @@ definitions:
         items:
           type: string
 
+  FileExportResponse:
+    properties:
+      exportedFileId:
+        type: string
+        description: ファイル出力ID(リクエストにexport_mode=asyncを指定した場合）
+      exportedFilePath:
+        type: string
+        description: 出力済みファイル取得パス(リクエストにexport_mode=asyncを付与した場合）
+      url:
+        type: string
+        description: ファイルダウンロードURL(export_mode指定なし、もしくはexport_mode=syncの場合
+
 # VirtualPrivateGateways API
   VirtualPrivateGateway:
     properties:
@@ -4453,3 +4678,20 @@ definitions:
         type: string
       destinationCidrBlock:
         type: string
+
+# Logs
+  LogEntry:
+    properties:
+      service:
+        type: string
+        enum: ["Air","Beam","Canal","Direct","Door","Endorse","Funnel","Gate"]
+      resourceType:
+        type: string
+        enum: ["Subscriber","EventHandler","VirtualPrivateGateway"]
+      resourceId:
+        type: string
+      time:
+        type: integer
+        format: int64
+      body:
+        type: object

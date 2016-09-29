@@ -873,6 +873,50 @@
         }
       }
     },
+    "set_imei_lock": {
+      "post": {
+        "summary": "Set IMEI lock configuration for Subscriber.",
+        "description": "指定されたSubscriberのIMEIロック設定を指定",
+        "parameters": {
+          "imsi": {
+            "description": "対象のSubscriberのIMSI"
+          },
+          "imeiLock": {
+            "description": "Subscriberに指定するIMEI lockの設定 （オンラインのSubscriberの現在のIMEIにロックするにはIMEIはしてしなくてもよい）"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のSubscriberの詳細情報"
+          },
+          "status400": {
+            "description": "IMEI文字列が無効か、オフラインのSubscriberにも関わらずIMEIが指定されていない."
+          },
+          "status404": {
+            "description": "指定されたSubscriberが存在しない"
+          }
+        }
+      }
+    },
+    "unset_imei_lock": {
+      "post": {
+        "summary": "Unset IMEI lock configuration for Subscriber.",
+        "description": "指定されたSubscriberのIMEIロック設定を解除",
+        "parameters": {
+          "imsi": {
+            "description": "対象のSubscriberのIMSI"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のSubscriberの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたSubscriberが存在しない"
+          }
+        }
+      }
+    },
     "list_session_events": {
       "get": {
         "summary": "List Session Events",
@@ -882,10 +926,10 @@
             "description": "対象のSubscriberのIMSI"
           },
           "from": {
-            "description": "イベントの検索範囲時刻の始まり"
+            "description": "イベントの検索範囲時刻の始まり(unixtime)"
           },
           "to": {
-            "description": "イベントの検索範囲時刻の終わり"
+            "description": "イベントの検索範囲時刻の終わり(unixtime)"
           },
           "limit": {
             "description": "取得するイベント数の上限"
@@ -949,6 +993,11 @@
       "post": {
         "summary": "Issue Subscribers Transfer Token",
         "description": "Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。",
+        "parameters": {
+          "request": {
+            "description": "移管先オペレーターのメールアドレス、オペレーターID、移管対象のIMSI"
+          }
+        },
         "responses": {
           "status200": {
             "description": "OK."
@@ -960,6 +1009,11 @@
       "post": {
         "summary": "Verify Subscriber Transfer Token",
         "description": "Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。",
+        "parameters": {
+         "request": {
+           "description": "移管先に送付されたトークン"
+         }
+       },
         "responses": {
           "status200": {
             "description": "OK."
@@ -1016,7 +1070,7 @@
     },
     "export_latest_billing": {
       "post": {
-        "summary": "Output latest billing CSV file to S3",
+        "summary": "Export latest billing CSV file to S3",
         "description": "直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。",
         "responses": {
           "status200": {
@@ -1184,10 +1238,10 @@
     "create_event_handler": {
       "post": {
         "summary": "Create Event Handler",
-        "description": "イベントハンドラを新規作成する。",
+        "description": "イベントハンドラを新規作成する。リクエストパラメータの指定方法; https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "req": {
-            "description": "req"
+            "description": "イベントハンドラの設定内容"
           }
         },
         "responses": {
@@ -1232,10 +1286,13 @@
     "update_event_handler": {
       "put": {
         "summary": "Update Event Handler",
-        "description": "指定されたイベントハンドラを更新する。",
+        "description": "指定されたイベントハンドラを更新する。リクエストパラメータの指定方法; https://dev.soracom.io/en/docs/event_handler/",
         "parameters": {
           "handler_id": {
             "description": "handler ID"
+          },
+          "event_handler_model": {
+            "description": "イベントハンドラの設定内容"
           }
         },
         "responses": {
@@ -1299,7 +1356,7 @@
         "description": "新規で発注見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。",
         "parameters": {
           "request": {
-            "description": "request"
+            "description": "注文品リストと配送先ID"
           }
         },
         "responses": {
@@ -1407,7 +1464,7 @@
             "description": "集計対象時刻の終わりをunixtimeで与える"
           },
           "period": {
-            "description": "集計単位。minutesは5分おき"
+            "description": "集計単位。minutesは基本的に5分間隔。"
           }
         },
         "responses": {
@@ -1432,7 +1489,7 @@
             "description": "集計対象時刻の終わりをunixtimeで与える"
           },
           "period": {
-            "description": "集計単位。minutesは5分おき"
+            "description": "集計単位。minutesは基本的に5分間隔。"
           }
         },
         "responses": {
@@ -1448,10 +1505,10 @@
         "description": "Operator が保有する全 Subscriber の通信量をファイルで取得する。取得対象の期間は from, to のunixtimeで指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。",
         "parameters": {
           "operator_id": {
-            "description": "operator ID"
+            "description": "operator_id"
           },
           "request": {
-            "description": "request"
+            "description": "出力するデータの期間"
           }
         },
         "responses": {
@@ -1470,7 +1527,7 @@
             "description": "operator ID"
           },
           "request": {
-            "description": "request"
+            "description": "出力するデータの期間"
           }
         },
         "responses": {
@@ -1504,7 +1561,7 @@
         "description": "Groupの一覧を返す",
         "parameters": {
           "tag_name": {
-            "description": "GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。"
+            "description": "GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueが必須。"
           },
           "tag_value": {
             "description": "GroupについたTagの値。"
@@ -1531,8 +1588,8 @@
         "summary": "Create Group",
         "description": "Groupを新規作成する",
         "parameters": {
-          "group": {
-            "description": "作成対象のGroup"
+          "tags": {
+            "description": "グループに付けるタグ"
           }
         },
         "responses": {
@@ -1711,7 +1768,7 @@
         "description": "VPGの一覧を返す",
         "parameters": {
           "tag_name": {
-            "description": "VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueはが必須。"
+            "description": "VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueが必須。"
           },
           "tag_value": {
             "description": "VPGについたTagの値。"
@@ -2019,6 +2076,42 @@
     "cli": {
       "summary": "VPG に関する操作を行います。",
       "description": "VPG (Virtual Private Gateways) に関する操作を行います。"
+    }
+  },
+  "logs": {
+    "get_logs": {
+      "get": {
+        "summary": "Get Logs.",
+        "description": "条件に合うログエントリのリストを返す。ログエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+        "parameters": {
+          "resource_type": {
+            "description": "ログ取得対象のリソースのタイプ"
+          },
+          "resource_id": {
+            "description": "ログ取得対象のリソースのID"
+          },
+          "service": {
+            "description": "ログエントリをフィルタするためのサービス名"
+          },
+          "from": {
+            "description": "ログ取得対象の期間の始まり (unixtime)"
+          },
+          "to": {
+            "description": "ログ取得対象の期間の終わり (unixtime)"
+          },
+          "limit": {
+            "description": "取得するログエントリ数の上限"
+          },
+          "last_evaluated_key": {
+            "description": "全ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "ログエントリのリスト"
+          }
+        }
+      }
     }
   },
   "completion": {

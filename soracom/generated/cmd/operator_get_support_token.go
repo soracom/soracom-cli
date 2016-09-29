@@ -11,7 +11,7 @@ import (
 var OperatorGetSupportTokenCmdOperatorId string
 
 func init() {
-	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TR("operator ID"))
+	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 	OperatorCmd.AddCommand(OperatorGetSupportTokenCmd)
 }

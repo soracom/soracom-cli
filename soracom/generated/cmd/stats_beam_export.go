@@ -10,6 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsBeamExportCmdExportMode holds value of 'export_mode' option
+var StatsBeamExportCmdExportMode string
+
 // StatsBeamExportCmdOperatorId holds value of 'operator_id' option
 var StatsBeamExportCmdOperatorId string
 
@@ -26,6 +29,8 @@ var StatsBeamExportCmdTo int64
 var StatsBeamExportCmdBody string
 
 func init() {
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TR("stats.export_beam_stats.post.parameters.operator_id.description"))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TR(""))
@@ -106,6 +111,10 @@ func buildPathForStatsBeamExportCmd(path string) string {
 
 func buildQueryForStatsBeamExportCmd() string {
 	result := []string{}
+
+	if StatsBeamExportCmdExportMode != "" {
+		result = append(result, sprintf("%s=%s", "export_mode", StatsBeamExportCmdExportMode))
+	}
 
 	return strings.Join(result, "&")
 }

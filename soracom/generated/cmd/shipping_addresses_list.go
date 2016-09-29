@@ -11,7 +11,7 @@ import (
 var ShippingAddressesListCmdOperatorId string
 
 func init() {
-	ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TR("Operator ID"))
+	ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 	ShippingAddressesCmd.AddCommand(ShippingAddressesListCmd)
 }

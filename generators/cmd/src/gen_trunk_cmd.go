@@ -191,6 +191,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			ParentCommandVariableName: "RootCmd",
 			FileName:                  "vpg.go",
 		},
+		{
+			Use:                       "logs",
+			Short:                     "logs.cli.summary",
+			Long:                      "logs.cli.description",
+			CommandVariableName:       "LogsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "logs.go",
+		},
 	}
 
 	for _, args := range argsSlice {

@@ -7,7 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// BillsExportLatestCmdExportMode holds value of 'export_mode' option
+var BillsExportLatestCmdExportMode string
+
 func init() {
+	BillsExportLatestCmd.Flags().StringVar(&BillsExportLatestCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
 
 	BillsCmd.AddCommand(BillsExportLatestCmd)
 }
@@ -70,6 +74,10 @@ func buildPathForBillsExportLatestCmd(path string) string {
 
 func buildQueryForBillsExportLatestCmd() string {
 	result := []string{}
+
+	if BillsExportLatestCmdExportMode != "" {
+		result = append(result, sprintf("%s=%s", "export_mode", BillsExportLatestCmdExportMode))
+	}
 
 	return strings.Join(result, "&")
 }

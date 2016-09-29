@@ -14,7 +14,7 @@ var ShippingAddressesGetCmdOperatorId string
 var ShippingAddressesGetCmdShippingAddressId string
 
 func init() {
-	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TR("Operator ID"))
+	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
 

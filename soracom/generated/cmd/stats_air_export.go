@@ -10,6 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StatsAirExportCmdExportMode holds value of 'export_mode' option
+var StatsAirExportCmdExportMode string
+
 // StatsAirExportCmdOperatorId holds value of 'operator_id' option
 var StatsAirExportCmdOperatorId string
 
@@ -26,6 +29,8 @@ var StatsAirExportCmdTo int64
 var StatsAirExportCmdBody string
 
 func init() {
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", TR("stats.export_air_stats.post.parameters.operator_id.description"))
 
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", TR(""))
@@ -106,6 +111,10 @@ func buildPathForStatsAirExportCmd(path string) string {
 
 func buildQueryForStatsAirExportCmd() string {
 	result := []string{}
+
+	if StatsAirExportCmdExportMode != "" {
+		result = append(result, sprintf("%s=%s", "export_mode", StatsAirExportCmdExportMode))
+	}
 
 	return strings.Join(result, "&")
 }

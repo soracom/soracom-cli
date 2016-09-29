@@ -7,11 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CredentialsDeleteCmdOperatorId holds value of 'operator_id' option
-var CredentialsDeleteCmdOperatorId string
+// CredentialsDeleteCmdCredentialsId holds value of 'credentials_id' option
+var CredentialsDeleteCmdCredentialsId string
 
 func init() {
-	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdOperatorId, "operator-id", "", TR("Operator ID"))
+	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TR("Credentials ID"))
 
 	CredentialsCmd.AddCommand(CredentialsDeleteCmd)
 }
@@ -69,7 +69,7 @@ func collectCredentialsDeleteCmdParams() (*apiParams, error) {
 
 func buildPathForCredentialsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", CredentialsDeleteCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"credentials_id"+"}", CredentialsDeleteCmdCredentialsId, -1)
 
 	return path
 }

@@ -20,7 +20,7 @@ var OperatorGenerateApiTokenCmdTokenTimeoutSeconds int64
 var OperatorGenerateApiTokenCmdBody string
 
 func init() {
-	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TR("operator ID"))
+	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TR("operator_id"))
 
 	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TR(""))
 
