@@ -12,6 +12,7 @@ Available Commands:
   credentials        List, create, update or delete credentials sets.
   event-handlers     List, create, update or delete event handlers.
   groups             List, create, update or delete groups.
+  logs               List logs.
   operator           Manage operators.
   orders             List, create or cancel orders.
   payment-history    List payment history.

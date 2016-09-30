@@ -2112,6 +2112,10 @@
           }
         }
       }
+    },
+    "cli": {
+      "summary": "List logs.",
+      "description": "List logs."
     }
   },
   "completion": {
