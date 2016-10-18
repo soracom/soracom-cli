@@ -1198,6 +1198,37 @@
           }
         }
       }
+    },
+    "list_payment_statements": {
+      "get": {
+        "summary": "List payment statements.",
+        "description": "List payment statements."
+      }
+    },
+    "export_payment_statement": {
+      "post": {
+        "summary": "Export payment statement.",
+        "description": "Export payment statement."
+      }
+    },
+    "payer_information": {
+      "get": {
+        "summary": "Export payer information.",
+        "description": "Export payer information."
+      },
+      "post": {
+        "summary": "Register payer information.",
+        "description": "Register payer information.",
+        "parameters": {
+          "req": {
+            "description": "Payer information to be registered in the accounting specification"
+          }
+        }
+      },
+      "cli": {
+        "summary": "Get or edit payer information.",
+        "description": "Get or edit payer information."
+      }
     }
   },
   "payment_history": {
@@ -1216,6 +1247,12 @@
         "summary": "Create or update WebPay payment method.",
         "description": "Create or update WebPay payment method."
       }
+    }
+  },
+  "payment_statements": {
+    "cli": {
+        "summary": "List or export payment statements.",
+        "description": "List or export payment statements."
     }
   },
   "event_handlers": {

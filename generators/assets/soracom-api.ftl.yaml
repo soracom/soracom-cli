@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: "20160713"
+  version: '20160713'
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -27,7 +27,7 @@ securityDefinitions:
 paths:
 
 #Auth API
-  "/auth":
+  /auth:
     post:
       tags: [Auth]
       summary: ${auth.auth.post.summary}
@@ -2104,6 +2104,99 @@ paths:
           description: ${payment.register_webpay_payment_method.post.responses.status200.description}
           schema: {type: object}
 
+  '/payment_statements':
+    get:
+      tags: [Payment]
+      summary: ${payment.list_payment_statements.get.summary}
+      description: ${payment.list_payment_statements.get.description}
+      operationId: listPaymentStatements
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-statements list
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema:
+            '$ref': '#/definitions/ListPaymentStatementResponse'
+
+  '/payment_statements/{payment_statement_id}/export':
+    post:
+      tags: [Payment]
+      summary:  ${payment.export_payment_statement.post.summary}
+      description: ${payment.export_payment_statement.post.description}
+      operationId: exportPaymentStatement
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payment-statements export
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+        - name: payment_statement_id
+          in: path
+          description: payment_statement_id
+          required: true
+          type: string
+        - name: export_mode
+          in: query
+          description: export_mode (async, sync)
+          required: false
+          type: string
+          enum:
+            - async
+            - sync
+      responses:
+        '200':
+          description: OK
+          schema:
+            '$ref': '#/definitions/FileExportResponse'
+
+  '/payment_statements/payer_information':
+    get:
+      tags: [Payment]
+      summary: ${payment.payer_information.get.summary}
+      description: ${payment.payer_information.get.description}
+      operationId: getPayerInformation
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payer-information get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      responses:
+        '200':
+          description: OK
+          schema:
+            '$ref': '#/definitions/RegisterPayerInformationModel'
+    post:
+      tags: [Payment]
+      summary:  ${payment.payer_information.post.summary}
+      description: ${payment.payer_information.post.description}
+      operationId: registerPayerInformation
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - payer-information register
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+        - in: body
+          name: req
+          description: ${payment.payer_information.post.parameters.req.description}
+          required: true
+          schema:
+           '$ref': '#/definitions/RegisterPayerInformationModel'
+      responses:
+        '201':
+          description: Created
+
 # event handlers
   '/event_handlers':
     get:
@@ -4113,6 +4206,34 @@ definitions:
       name: {type: string}
       number: {type: string}
 
+  PaymentStatementResponse:
+    properties:
+      amount: {type: number, format: double, description: 金額}
+      paymentDateTime: {type: integer, format: int64, description: 課金日時}
+      paymentInstrument: {type: string, description: 支払情報}
+      paymentMethod: {type: string, description: 支払方法}
+      paymentStatementId: {type: string, description: 課金明細ID}
+      paymentStatementInfo: {type: string, description: 支払内容}
+
+  ListPaymentStatementResponse:
+    properties:
+      paymentStatementsList:
+        type: array
+        description: 課金明細リスト
+        items: {'$ref': '#/definitions/PaymentStatementResponse'}
+
+  RegisterPayerInformationModel:
+    properties:
+      companyName:
+        type: string
+        description: 企業名
+      department:
+        type: string
+        description: 部署
+      fullName:
+        type: string
+        description: 氏名
+
 #Order API
   ListOrderResponse:
     properties:
@@ -4586,7 +4707,7 @@ definitions:
         type: string
       primaryServiceName:
         type: string
-        enum: ["Canal","Direct","Door","Gate"]
+        enum: [Canal,Direct,Door,Gate]
       type:
         type: integer
         enum: [0xc, 0xd]
@@ -4613,13 +4734,13 @@ definitions:
     properties:
       primaryServiceName:
         type: string
-        enum: ["Canal","Gate"]
-        default: "Canal"
+        enum: [Canal,Gate]
+        default: Canal
       useInternetGateway:
         type: boolean
       deviceSubnetCidrRange:
         type: string
-        default: "10.128.0.0/9"
+        default: 10.128.0.0/9
 
   RegisterGatePeerRequest:
     required:
@@ -4647,7 +4768,7 @@ definitions:
         type: string
       type:
         type: string
-        enum: ["static", "dynamic", "customerGatePeer", "gatePeer"]
+        enum: [static, dynamic, customerGatePeer, gatePeer]
 
   PutIpAddressMapEntryRequest:
     required:

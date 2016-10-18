@@ -88,6 +88,22 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "payment_methods.go",
 		},
 		{
+			Use:                       "payment-statements",
+			Short:                     "payment_statements.cli.summary",
+			Long:                      "payment_statements.cli.description",
+			CommandVariableName:       "PaymentStatementsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "payment_statements.go",
+		},
+		{
+			Use:                       "payer-information",
+			Short:                     "payment.payer_information.cli.summary",
+			Long:                      "payment.payer_information.cli.description",
+			CommandVariableName:       "PayerInformationCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "payer_information.go",
+		},
+		{
 			Use:                       "webpay",
 			Short:                     "payment_methods.webpay.cli.summary",
 			Long:                      "payment_methods.webpay.cli.description",

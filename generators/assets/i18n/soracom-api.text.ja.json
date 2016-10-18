@@ -1198,6 +1198,37 @@
           }
         }
       }
+    },
+    "list_payment_statements": {
+      "get": {
+        "summary": "List payment statements.",
+        "description": "課金明細の一覧を返します。"
+      }
+    },
+    "export_payment_statement": {
+      "post": {
+        "summary": "Export payment statement.",
+        "description": "課金明細を出力します。"
+      }
+    },
+    "payer_information": {
+      "get": {
+        "summary": "Export payer information.",
+        "description": "課金明細に出力する支払い者情報を取得します。"
+      },
+      "post": {
+        "summary": "Register payer information.",
+        "description": "課金明細に出力する支払い者情報を設定します。",
+        "parameters": {
+          "req": {
+            "description": "課金明細に登録する支払い者情報"
+          }
+        }
+      },
+      "cli": {
+        "summary": "課金明細に出力する支払い者情報を取得または設定します。",
+        "description": "課金明細に出力する支払い者情報を取得または設定します。"
+      }
     }
   },
   "payment_history": {
@@ -1208,7 +1239,7 @@
   },
   "payment_methods": {
     "cli": {
-      "summary": "お支払い方法に関する操作を行います",
+      "summary": "お支払い方法に関する操作を行います。",
       "description": "お支払い方法に関する操作を行います。"
     },
     "webpay": {
@@ -1216,6 +1247,12 @@
         "summary": "WebPay によるお支払い方法を設定または取得します。",
         "description": "WebPay によるお支払い方法を設定または取得します。"
       }
+    }
+  },
+  "payment_statements": {
+    "cli": {
+      "summary": "課金明細の一覧取得または出力を行います。",
+      "description": "課金明細の一覧取得または出力を行います。"
     }
   },
   "event_handlers": {

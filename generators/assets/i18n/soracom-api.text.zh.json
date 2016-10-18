@@ -1198,6 +1198,37 @@
           }
         }
       }
+    },
+    "list_payment_statements": {
+      "get": {
+        "summary": "List payment statements.",
+        "description": "清单付款报表"
+      }
+    },
+    "export_payment_statement": {
+      "post": {
+        "summary": "Export payment statement.",
+        "description": "导出付款报表"
+      }
+    },
+    "payer_information": {
+      "get": {
+        "summary": "Register payer information.",
+        "description": "注册收款人信息"
+      },
+      "post": {
+        "summary": "Register payer information.",
+        "description": "Register payer information.",
+        "parameters": {
+          "req": {
+            "description": "在会计规范登记付款人信息"
+          }
+        }
+      },
+      "cli": {
+        "summary": "Get or edit payer information.",
+        "description": "Get or edit payer information."
+      }
     }
   },
   "payment_history": {
@@ -1216,6 +1247,12 @@
         "summary": "Create or update WebPay payment method.",
         "description": "Create or update WebPay payment method."
       }
+    }
+  },
+  "payment_statements" : {
+    "cli": {
+      "summary": "List or export payment statements.",
+      "description": "List or export payment statements."
     }
   },
   "event_handlers": {
