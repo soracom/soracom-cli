@@ -15,8 +15,10 @@ Available Commands:
   logs               ログに関する操作を行います。
   operator           オペレーターに関する操作を行います。
   orders             商品の注文に関する操作を行います。
+  payer-information  課金明細に出力する支払い者情報を取得または設定します。
   payment-history    お支払い履歴を取得します。
-  payment-methods    お支払い方法に関する操作を行います
+  payment-methods    お支払い方法に関する操作を行います。
+  payment-statements 課金明細の一覧取得または出力を行います。
   products           商品一覧を取得します。
   roles              ロールに関する操作を行います。
   shipping-addresses 出荷先情報に関する操作を行います。

@@ -15,8 +15,10 @@ Available Commands:
   logs               List logs.
   operator           Manage operators.
   orders             List, create or cancel orders.
+  payer-information  Get or edit payer information.
   payment-history    List payment history.
   payment-methods    Create or update payment methods.
+  payment-statements List or export payment statements.
   products           List products.
   roles              List, create, update or delete roles.
   shipping-addresses List, create, update or delete shipping addresses.
