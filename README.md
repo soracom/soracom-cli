@@ -24,6 +24,14 @@ soracom コマンドは以下のような特徴を備えています。
 
 # インストール方法
 
+## Mac (macOS) をお使いで、homebrew によりインストールする場合
+
+```
+$ brew tap soracom/soracom-cli
+$ brew install soracom-cli
+```
+
+## それ以外の場合
 [Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置します。
 
 
