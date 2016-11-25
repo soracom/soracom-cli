@@ -41,7 +41,6 @@ var UsersAttachRoleCmd = &cobra.Command{
 	Long:  TR(`roles.attach_role.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

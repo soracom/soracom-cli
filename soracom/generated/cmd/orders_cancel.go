@@ -23,7 +23,6 @@ var OrdersCancelCmd = &cobra.Command{
 	Long:  TR(`orders.cancel_order.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

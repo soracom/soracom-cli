@@ -86,7 +86,6 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 	Long:  TR(`shipping_addresses.update_shipping_address.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

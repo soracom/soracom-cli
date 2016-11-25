@@ -23,7 +23,6 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 	Long:  TR(`orders.register_ordered_sim.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

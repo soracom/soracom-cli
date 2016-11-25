@@ -31,7 +31,6 @@ var GroupsPutTagsCmd = &cobra.Command{
 	Long:  TR(`groups.put_group_tags.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

@@ -23,7 +23,6 @@ var EventHandlersGetCmd = &cobra.Command{
 	Long:  TR(`event_handlers.get_event_handler.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

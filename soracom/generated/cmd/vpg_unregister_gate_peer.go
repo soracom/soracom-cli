@@ -28,7 +28,6 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 	Long:  TR(`virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

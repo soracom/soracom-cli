@@ -14,10 +14,9 @@ func generateRootCommand(apiDef *lib.APIDefinitions, templateDir, outputDir stri
 	}
 
 	a := commandArgs{
-		Endpoint: apiDef.Schemes[0] + "://" + apiDef.Host,
-		Use:      "soracom",
-		Short:    "soracom command",
-		Long:     `A command line tool to invoke SORACOM API`,
+		Use:   "soracom",
+		Short: "soracom command",
+		Long:  `A command line tool to invoke SORACOM API`,
 	}
 	err = t.Execute(w, a)
 	if err != nil {

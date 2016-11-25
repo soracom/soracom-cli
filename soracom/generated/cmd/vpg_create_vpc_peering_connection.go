@@ -46,7 +46,6 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	Long:  TR(`virtual_private_gateway.create_vpc_peering_connection.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

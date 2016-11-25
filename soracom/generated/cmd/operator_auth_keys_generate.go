@@ -23,7 +23,6 @@ var OperatorAuthKeysGenerateCmd = &cobra.Command{
 	Long:  TR(`operator.generate_operator_auth_key.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

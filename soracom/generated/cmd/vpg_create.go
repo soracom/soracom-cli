@@ -41,7 +41,6 @@ var VpgCreateCmd = &cobra.Command{
 	Long:  TR(`virtual_private_gateway.create_virtual_private_gateway.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

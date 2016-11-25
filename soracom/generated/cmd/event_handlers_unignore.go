@@ -28,7 +28,6 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 	Long:  TR(`event_handlers.delete_ignore_event_handler.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

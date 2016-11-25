@@ -41,7 +41,6 @@ var UsersPasswordCreateCmd = &cobra.Command{
 	Long:  TR(`users.create_user_password.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

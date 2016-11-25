@@ -23,7 +23,6 @@ var BillsExportLatestCmd = &cobra.Command{
 	Long:  TR(`bills.export_latest_billing.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

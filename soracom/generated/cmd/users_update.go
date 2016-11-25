@@ -41,7 +41,6 @@ var UsersUpdateCmd = &cobra.Command{
 	Long:  TR(`users.update_user.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

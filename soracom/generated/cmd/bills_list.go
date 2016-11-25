@@ -19,7 +19,6 @@ var BillsListCmd = &cobra.Command{
 	Long:  TR(`bills.get_billing_history.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

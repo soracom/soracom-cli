@@ -28,7 +28,6 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 	Long:  TR(`virtual_private_gateway.delete_vpc_peering_connection.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

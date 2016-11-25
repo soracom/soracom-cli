@@ -44,7 +44,6 @@ func (ae *apiError) Error() string {
 }
 
 type apiClientOptions struct {
-	Endpoint string
 	BasePath string
 	Language string
 }
@@ -53,10 +52,7 @@ type apiClientOptions struct {
 func newAPIClient(options *apiClientOptions) *apiClient {
 	hc := http.DefaultClient
 
-	var endpoint = "https://api.soracom.io"
-	if options != nil && options.Endpoint != "" {
-		endpoint = options.Endpoint
-	}
+	var endpoint = getSpecifiedEndpoint()
 
 	var basePath = "/"
 	if options != nil && options.BasePath != "" {

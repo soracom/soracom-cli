@@ -19,7 +19,6 @@ var ProductsListCmd = &cobra.Command{
 	Long:  TR(`orders.list_products.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

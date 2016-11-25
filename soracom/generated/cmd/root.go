@@ -12,9 +12,9 @@ var RootCmd = &cobra.Command{
 }
 
 var specifiedProfileName string
+var specifiedCoverageType string
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", "Specify profile name")
-
-	setDefaultEndpoint("https://api.soracom.io")
+	RootCmd.PersistentFlags().StringVar(&specifiedCoverageType, "coverage-type", "", "Specify coverage type")
 }

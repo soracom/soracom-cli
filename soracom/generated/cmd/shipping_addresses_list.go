@@ -23,7 +23,6 @@ var ShippingAddressesListCmd = &cobra.Command{
 	Long:  TR(`shipping_addresses.list_shipping_addresses.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

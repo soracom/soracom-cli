@@ -23,7 +23,6 @@ var CredentialsDeleteCmd = &cobra.Command{
 	Long:  TR(`credentials.delete_credential.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

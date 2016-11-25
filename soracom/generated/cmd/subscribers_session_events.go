@@ -43,7 +43,6 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 	Long:  TR(`subscribers.list_session_events.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

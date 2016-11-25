@@ -28,7 +28,6 @@ var UsersDeleteCmd = &cobra.Command{
 	Long:  TR(`users.delete_user.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

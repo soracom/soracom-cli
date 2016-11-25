@@ -17,13 +17,23 @@ import (
 )
 
 type profile struct {
-	Email      *string `json:"email,omitempty"`
-	Password   *string `json:"password,omitempty"`
-	AuthKeyID  *string `json:"authKeyId,omitempty"`
-	AuthKey    *string `json:"authKey,omitempty"`
-	Username   *string `json:"username,omitempty"`
-	OperatorID *string `json:"operatorId,omitempty"`
-	Endpoint   *string `json:"endpoint,omitempty"`
+	CoverageType string  `json:"coverageType"`
+	Email        *string `json:"email,omitempty"`
+	Password     *string `json:"password,omitempty"`
+	AuthKeyID    *string `json:"authKeyId,omitempty"`
+	AuthKey      *string `json:"authKey,omitempty"`
+	Username     *string `json:"username,omitempty"`
+	OperatorID   *string `json:"operatorId,omitempty"`
+	Endpoint     *string `json:"endpoint,omitempty"`
+}
+
+type authInfo struct {
+	Email      *string
+	Password   *string
+	AuthKeyID  *string
+	AuthKey    *string
+	Username   *string
+	OperatorID *string
 }
 
 var (
@@ -105,6 +115,12 @@ func loadProfile(profileName string) (*profile, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// supply default values for older versions (which support 'jp' coverage type only)
+	if p.CoverageType == "" {
+		p.CoverageType = "jp"
+	}
+
 	return &p, nil
 }
 
@@ -164,9 +180,63 @@ func collectProfileInfo(profileName string) (*profile, error) {
 
 	fmt.Printf(TR("configure.cli.profile.prompt"), profDir, getSpecifiedProfileName())
 
+	ct, err := collectCoverageType()
+	if err != nil {
+		return nil, err
+	}
+
+	ai, err := collectAuthInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	return &profile{
+		CoverageType: ct,
+		Email:        ai.Email,
+		Password:     ai.Password,
+		AuthKeyID:    ai.AuthKeyID,
+		AuthKey:      ai.AuthKey,
+		OperatorID:   ai.OperatorID,
+		Username:     ai.Username,
+	}, nil
+}
+
+func readPassword(prompt string) (string, error) {
+	fmt.Print(prompt)
+	password, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return "", err
+	}
+
+	return string(password), nil
+}
+
+func collectCoverageType() (string, error) {
+	fmt.Print(TR("configure.cli.profile.coverage_type.prompt"))
 	var i int
 	for {
-		fmt.Print(TR("configure.cli.profile.select"))
+		fmt.Print(TR("configure.cli.profile.coverage_type.select"))
+		fmt.Scanf("%d\n", &i)
+		if i >= 1 && i <= 2 {
+			break
+		}
+	}
+
+	switch i {
+	case 1:
+		return "g", nil
+	case 2:
+		return "jp", nil
+	}
+
+	return "", errors.New("this line should not be executed")
+}
+
+func collectAuthInfo() (*authInfo, error) {
+	fmt.Printf(TR("configure.cli.profile.auth.prompt"))
+	var i int
+	for {
+		fmt.Print(TR("configure.cli.profile.auth.select"))
 		fmt.Scanf("%d\n", &i)
 		if i >= 1 && i <= 3 {
 			break
@@ -180,7 +250,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 		fmt.Scanf("%s\n", &authKeyID)
 		fmt.Print("authKey: ")
 		fmt.Scanf("%s\n", &authKey)
-		return &profile{AuthKeyID: &authKeyID, AuthKey: &authKey}, nil
+		return &authInfo{AuthKeyID: &authKeyID, AuthKey: &authKey}, nil
 	case 2:
 		var email string
 		fmt.Print("email: ")
@@ -190,7 +260,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 			return nil, err
 		}
 		fmt.Println()
-		return &profile{Email: &email, Password: &password}, nil
+		return &authInfo{Email: &email, Password: &password}, nil
 	case 3:
 		var operatorID, username string
 		fmt.Print("Operator ID (OP00...): ")
@@ -202,7 +272,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 			return nil, err
 		}
 		fmt.Println()
-		return &profile{
+		return &authInfo{
 			OperatorID: &operatorID,
 			Username:   &username,
 			Password:   &password,
@@ -210,14 +280,4 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	}
 
 	return nil, errors.New("this line should not be executed")
-}
-
-func readPassword(prompt string) (string, error) {
-	fmt.Print(prompt)
-	password, err := terminal.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		return "", err
-	}
-
-	return string(password), nil
 }

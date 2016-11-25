@@ -27,7 +27,6 @@ var GroupsCreateCmd = &cobra.Command{
 	Long:  TR(`groups.create_group.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

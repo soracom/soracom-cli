@@ -36,7 +36,6 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	Long:  TR(`subscribers.issue_subscriber_transfer_token.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

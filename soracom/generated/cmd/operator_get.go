@@ -23,7 +23,6 @@ var OperatorGetCmd = &cobra.Command{
 	Long:  TR(`operator.get_operator.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

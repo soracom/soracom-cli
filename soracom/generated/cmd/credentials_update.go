@@ -41,7 +41,6 @@ var CredentialsUpdateCmd = &cobra.Command{
 	Long:  TR(`credentials.update_credential.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

@@ -28,7 +28,6 @@ var RolesListUsersCmd = &cobra.Command{
 	Long:  TR(`roles.list_role_attached_users.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

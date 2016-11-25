@@ -43,7 +43,6 @@ var GroupsListCmd = &cobra.Command{
 	Long:  TR(`groups.list_groups.get.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

@@ -67,7 +67,6 @@ var {{ $cmdvar }} = &cobra.Command{
   Long: TR(`{{.Long}}`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
-      Endpoint: getSpecifiedEndpoint(),
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
     }

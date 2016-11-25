@@ -23,7 +23,6 @@ var OrdersConfirmCmd = &cobra.Command{
 	Long:  TR(`orders.confirm_order.put.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

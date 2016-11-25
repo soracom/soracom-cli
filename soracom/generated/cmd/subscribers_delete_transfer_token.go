@@ -23,7 +23,6 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 	Long:  TR(`subscribers.delete_subscriber_transfer_token.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

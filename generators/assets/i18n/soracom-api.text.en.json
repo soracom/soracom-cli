@@ -2165,9 +2165,16 @@
       "summary": "Show, create or update configurations.",
       "description": "Show, create or update configurations.",
       "profile": {
-        "prompt": "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it.\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials(Operator Email and Password)\n3. Input SAM credentials(OperatorId, User name and Password)\n\n",
-        "select": "select (1-3) > ",
-        "overwrite": "Profile %s already exists. Overwrite it? (Y/n) "
+        "prompt": "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it.",
+        "coverage_type": {
+          "prompt": "\n\nPlease select which coverage type to use.\n\n1. Global\n2. Japan\n\n",
+          "select": "select (1-2) > "
+        },
+        "auth": {
+          "prompt": "\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials (Operator Email and Password)\n3. Input SAM credentials (OperatorId, User name and Password)\n\n",
+          "select": "select (1-3) > "
+        },
+        "overwrite": "\nProfile %s already exists. Overwrite it? (Y/n) "
       }
     },
     "get": {

@@ -28,7 +28,6 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 	Long:  TR(`event_handlers.set_ignore_event_handler.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

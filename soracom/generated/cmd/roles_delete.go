@@ -28,7 +28,6 @@ var RolesDeleteCmd = &cobra.Command{
 	Long:  TR(`roles.delete_role.delete.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

@@ -81,7 +81,6 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 	Long:  TR(`shipping_addresses.create_shipping_address.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

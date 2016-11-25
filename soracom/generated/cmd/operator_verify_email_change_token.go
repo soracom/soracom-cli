@@ -31,7 +31,6 @@ var OperatorVerifyEmailChangeTokenCmd = &cobra.Command{
 	Long:  TR(`operator.verify_email_change_token.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}

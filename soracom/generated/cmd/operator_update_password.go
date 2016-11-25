@@ -41,7 +41,6 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 	Long:  TR(`operator.update_operator_password.post.description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
-			Endpoint: getSpecifiedEndpoint(),
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
 		}
