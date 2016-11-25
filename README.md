@@ -3,143 +3,155 @@
 
 # soracom-cli
 
-SORACOM API を呼び出すためのコマンドラインツール soracom を提供します。
+A command line tool `soracom` to invoke SORACOM API.
 
-# 特徴
+# Feature
 
-soracom コマンドは以下のような特徴を備えています。
+The `soracom` command:
 
-- soracom コマンドのバイナリファイルは API 定義ファイルから自動生成されますので、新しい API がリリースされた場合も迅速に対応が可能です。
+- supports new APIs on-time. The binary file of the soracom command is automatically generated from the API definition file.
 
-- Go でクロスコンパイルされたバイナリファイルをターゲットの環境にコピーするだけで実行できます。環境を構築したり依存関係を解決したりする必要がありません。
+- just works by copying the cross-compiled binary file into the target environment. There is no need to build an environment or solve dependencies.
 
-- 指定された引数を元にリクエストを組み立て、SORACOM API を呼び出します。API からのレスポンス (JSON) をそのまま標準出力へ出力します。
-  - これにより、soracom コマンドの出力を加工して他のコマンドへ渡したりすることが容易にできるようになります。
+- constructs a request based on the specified argument and calls the SORACOM API. Response (JSON) from the API is output directly to standard output.
+  - This makes it easier to process the output of the soracom command and pass it to another command
 
-- bash completion（引数補完）に対応しています。以下のような行を .bashrc 等に記述してください。
+- supports bash completion. Please write the following line in .bashrc etc
   ```
   eval "$(soracom completion)"
   ```
 
 
-# インストール方法
+# How to install
 
-## Mac (macOS) をお使いで、homebrew によりインストールする場合
+## Using Mac (macOS), installing by homebrew
 
 ```
 $ brew tap soracom/soracom-cli
 $ brew install soracom-cli
 ```
 
-## それ以外の場合
-[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置します。
+## In other cases
+Download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in PATH.
 
 
-# 使用方法
+# How to use
 
-## 基本的な使い方
+## Basic usage
 
-まずはじめに、プロファイルの作成をします。
+First of all, create a profile by running the following command:
 
 ```
 soracom configure
 ```
 
-このコマンドを実行すると、どのタイプのプロファイルを作成するか聞かれます。
+You will be asked which coverage type to use.
 
 ```
-  :
-認証方法を選択してください。
+Please select which coverage type to use.
 
-1. AuthKeyId と AuthKey を入力する（推奨）
-2. オペレーターのメールアドレスとパスワードを入力する
-3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）
+1. Global
+2. Japan
 
-選択してください (1-3) >
+select (1-2) >
 ```
 
-SAM ユーザーもしくはルートアカウントに対し、AuthKey（認証キー）を発行している場合は 1 を選択してください。
-（SAM ユーザーに対し認証キーを発行する方法については [SORACOM Access Managementを使用して操作権限を管理する](https://dev.soracom.io/jp/start/sam/#sam01) を参照してください）
+Please select the coverage type which you mainly use. In most cases, please select Global. If you live in Japan and use SIM cards in Japan, please select Japan.
 
-以後、soracom コマンド実行時は、ここで入力した認証情報を使って API 呼び出しが行われます。
+Next you will be asked about the authentication method.
+
+```
+Please select which authentication method to use.
+
+1. Input AuthKeyId and AuthKey * Recommended *
+2. Input Operator credentials (Operator Email and Password)
+3. Input SAM credentials (OperatorId, User name and Password)
+
+select (1-3) >
+```
+
+Please select 1 if AuthKey (authentication key) has been issued to SAM user or root account.
+(For details on how to issue an authentication key to SAM users, please see [Using SORACOM Access Management to Manage Operation Access](https://dev.soracom.io/en/start/sam/).
+
+Thereafter, when executing the soracom command, an API call is made using the authentication information entered here.
 
 
 
-## 高度な使い方
+## Advanced usage
 
-### 複数のプロファイルを使い分ける
+### Use multiple profiles
 
-SORACOM アカウントを複数所有しているとか、複数の SAM ユーザーを使い分けたい場合は、configure に --profile オプションを指定し、プロファイル名を設定します。
+If you have multiple SORACOM accounts or want to use multiple SAM users differently, specify the --profile option to configure and set the profile name.
 
 ```
 soracom configure --profile user1
   :
-  （user1 のための認証情報を入力）
+  (Enter information for user1)
 
 soracom configure --profile user2
   :
-  （user2 のための認証情報を入力）
+  (Enter information for user2)
 ```
 
-このようにすると user1 および user2 という名前のプロファイルが作成されます。
-プロファイルを利用する場合は通常のコマンドの後ろに --profile オプションを指定します。
+This will create profiles named user1 and user2.
+To use the profile, specify the --profile option in addition to the normal command.
 
 ```
 soracom subscribers list --profile user1
   :
-  （user1 に SIM の一覧を表示する権限があれば表示される）
+  (SIM list for user1 will be displayed)
 
 soracom groups list --profile user2
   :
-  （user2 にグループの一覧を表示する権限があれば表示される）
+  (Group list for user2 will be displayed)
 ```
 
 
-### Proxy 経由で API を呼び出したい場合
+### Call API via proxy
 
-HTTP_PROXY 環境変数に http://your-proxy-nme:prot を設定した状態で soracom コマンドを実行してください。
+Set `http://your-proxy-nme:port` to HTTP_PROXY environment variable, then execute soracom command.
 
-例）Linux/Mac の場合：
-Proxy サーバーのアドレスを 10.0.1.2、ポート番号を 8080 だとすると
+e.g.) For Linux / Mac:
+Assume that the address of the proxy server is 10.0.1.2 and the port number is 8080
 ```
 export HTTP_PROXY=http://10.0.1.2:8080
 soracom subscribers list
 ```
 
-もしくは
+Or
 
 ```
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
 
-# ビルド/テスト方法
+# How to build / test
 
-ソースからビルドしたい開発者の方や、バグ修正/機能追加等の Pull Request をしたい場合は以下のいずれかの方法でビルドおよびテストを行ってください。
+For developers who want to build from source or for those who wish to make a pull request such as bug fix / function addition, please build and test in one of the following ways.
 
-## ローカル環境でビルドする方法 (Linux / Mac OS X)
+## How to build in a local environment (Linux / Mac OS X)
 
-Go がインストールされている状態で、以下のようにビルドスクリプトを実行します。
+In the environment where Go is installed, run the build script as follows:
 
 ```
 ./scripts/build.sh 1.2.3
 ```
 
-ここで 1.2.3 はバージョン番号です。適当な番号を指定してください。
+Here 1.2.3 is the version number. Please specify an appropriate number.
 
-ビルドが成功したら、次にテストを実行します。
+If the build succeeds, then run the test:
 
 ```
 ./test/test.sh
 ```
 
 
-## wercker を使ってビルドする方法
+## How to build using wercker
 
-wercker の CLI をインストールし、以下のようにビルドを実行します。テストまで自動的に実行されます。
+Install wercker's CLI and execute the build as follows. It will run the test as well.
 
 ```
 wercker build
 ```
 
-TODO: 現状、ビルド結果はコンテナの中に出力されるので、マウントしたボリュームに出力できるように修正予定です
+TODO: Currently, the build result is generated in the container. It will be fixed to generate to the mounted volume.
