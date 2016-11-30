@@ -10,6 +10,7 @@ Available Commands:
   configure          Show, create or update configurations.
   coupons            List or register coupons.
   credentials        List, create, update or delete credentials sets.
+  data               Get stored data from subscribers.
   event-handlers     List, create, update or delete event handlers.
   groups             List, create, update or delete groups.
   logs               List logs.
@@ -29,6 +30,8 @@ Available Commands:
   vpg                List, create, update or delete VPGs.
 
 Flags:
-      --profile string   Specify profile name
+      --coverage-type string   Specify coverage type
+  -h, --help                   help for soracom
+      --profile string         Specify profile name
 
 Use "soracom [command] --help" for more information about a command.

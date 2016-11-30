@@ -10,6 +10,7 @@ Available Commands:
   configure          コマンド実行環境（プロファイル）の設定や表示を行います。
   coupons            登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
   credentials        認証情報に関する操作を行います。
+  data               SIM からアップロードされて格納されているデータを取得します。
   event-handlers     イベントハンドラーに関する操作を行います。
   groups             グループに関する操作を行います。
   logs               ログに関する操作を行います。
@@ -28,7 +29,10 @@ Available Commands:
   version            バージョン情報を表示します。
   vpg                VPG に関する操作を行います。
 
+
 Flags:
-      --profile string   Specify profile name
+      --coverage-type string   Specify coverage type
+  -h, --help                   help for soracom
+      --profile string         Specify profile name
 
 Use "soracom [command] --help" for more information about a command.

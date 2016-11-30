@@ -882,7 +882,7 @@
             "description": "対象のSubscriberのIMSI"
           },
           "imeiLock": {
-            "description": "Subscriberに指定するIMEI lockの設定 （オンラインのSubscriberの現在のIMEIにロックするにはIMEIはしてしなくてもよい）"
+            "description": "Subscriberに指定するIMEI lockの設定 （オンラインのSubscriberの現在のIMEIにロックするにはIMEIは指定しなくてもよい）"
           }
         },
         "responses": {
@@ -1036,6 +1036,37 @@
           },
           "status404": {
             "description": "トークンが存在しない"
+          }
+        }
+      }
+    },
+    "get_data_from_subscriber": {
+      "get": {
+        "summary": "Get data sent from a subscriber.",
+        "description": "指定されたサブスクライバーから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+        "parameters": {
+          "imsi": {
+            "description": "データ取得対象のサブスクライバーのIMSI"
+          },
+          "from": {
+            "description": "取得対象の期間の始まり (unixtime ミリ秒単位)"
+          },
+          "to": {
+            "description": "取得対象の期間の終わり (unixtime ミリ秒単位)"
+          },
+          "sort": {
+            "description": "データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。"
+          },
+          "limit": {
+            "description": "取得するデータエントリ数の上限"
+          },
+          "last_evaluated_key": {
+            "description": "前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "データエントリのリスト"
           }
         }
       }
@@ -2140,7 +2171,7 @@
             "description": "取得するログエントリ数の上限"
           },
           "last_evaluated_key": {
-            "description": "全ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。"
+            "description": "前ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。"
           }
         },
         "responses": {
@@ -2188,6 +2219,12 @@
     "cli": {
       "summary": "登録済みクーポンを確認したりアカウントへのクーポン登録を行います。",
       "description": "登録済みクーポンを確認したりアカウントへのクーポン登録を行います。"
+    }
+  },
+  "data": {
+    "cli": {
+      "summary": "SIM からアップロードされて格納されているデータを取得します。",
+      "description": "SIM からアップロードされて格納されているデータを取得します。"
     }
   },
   "products": {

@@ -1040,6 +1040,37 @@
         }
       }
     },
+    "get_data_from_subscriber": {
+      "get": {
+        "summary": "Get data sent from a subscriber.",
+        "description": "Returns a list of data entries sent from a subscriber that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "imsi": {
+            "description": "IMSI of the target subscriber that generated data entries."
+          },
+          "from": {
+            "description": "Start time for the data entries search range (unixtime in milliseconds)."
+          },
+          "to": {
+            "description": "End time for the data entries search range (unixtime in milliseconds)."
+          },
+          "sort": {
+            "description": "Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first). Default "
+          },
+          "limit": {
+            "description": "Maximum number of data entries to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of data entries."
+          }
+        }
+      }
+    },
     "cli": {
       "summary": "Manage subscribers.",
       "description": "Manage subscribers."
@@ -2189,6 +2220,12 @@
       "summary": "List or register coupons.",
       "description": "List or register coupons."
 
+    }
+  },
+  "data": {
+    "cli": {
+      "summary": "Get stored data from subscribers.",
+      "description": "Get stored data from subscribers."
     }
   },
   "products": {

@@ -1844,6 +1844,59 @@ paths:
         404:
           description: ${subscribers.delete_subscriber_transfer_token.delete.responses.status404.description}
 
+  '/subscribers/{imsi}/data':
+    get:
+      summary: ${subscribers.get_data_from_subscriber.get.summary}
+      description: ${subscribers.get_data_from_subscriber.get.description}
+      operationId: getDataFromSubscriber
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - data get
+      parameters:
+        - name: imsi
+          in: path
+          description: ${subscribers.get_data_from_subscriber.get.parameters.imsi.description}
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: ${subscribers.get_data_from_subscriber.get.parameters.from.description}
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: ${subscribers.get_data_from_subscriber.get.parameters.to.description}
+          required: false
+          type: integer
+        - name: sort
+          in: query
+          description: ${subscribers.get_data_from_subscriber.get.parameters.sort.description}
+          required: false
+          type: string
+          enum: [desc, asc]
+          default: desc
+        - name: limit
+          in: query
+          description: ${subscribers.get_data_from_subscriber.get.parameters.limit.description}
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: ${subscribers.get_data_from_subscriber.get.parameters.last_evaluated_key.description}
+          required: false
+          type: string
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: ${subscribers.get_data_from_subscriber.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/DataEntry'
+
 # Billing
   '/bills':
     get:
@@ -2932,7 +2985,7 @@ paths:
             - SoracomAir
             - SoracomBeam
             - SoracomFunnel
-            - SoracomEndose
+            - SoracomEndorse
         - name: parameters
           in: body
           description: ${groups.put_configuration_parameters.put.parameters.parameters.description}
@@ -2976,7 +3029,7 @@ paths:
             - SoracomAir
             - SoracomBeam
             - SoracomFunnel
-            - SoracomEndose
+            - SoracomEndorse
         - name: name
           in: path
           description: ${groups.delete_configuration_parameter.delete.parameters.name.description}
@@ -3560,7 +3613,6 @@ paths:
             type: array
             items:
              '$ref': '#/definitions/LogEntry'
-
 
 definitions:
 
@@ -4816,3 +4868,14 @@ definitions:
         format: int64
       body:
         type: object
+
+# Data
+  DataEntry:
+    properties:
+      time:
+        type: integer
+        format: int64
+      content:
+        type: string
+      contentType:
+        type: string
