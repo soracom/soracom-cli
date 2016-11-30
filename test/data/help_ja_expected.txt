@@ -29,10 +29,8 @@ Available Commands:
   version            バージョン情報を表示します。
   vpg                VPG に関する操作を行います。
 
-
 Flags:
       --coverage-type string   Specify coverage type
-  -h, --help                   help for soracom
       --profile string         Specify profile name
 
 Use "soracom [command] --help" for more information about a command.

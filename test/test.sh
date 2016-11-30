@@ -94,6 +94,8 @@ PASSWORD=$(random_string)
 : "Run soracom configure and create the default profile" && {
     expect -c "$(cat <<EOD
 spawn env ${SORACOM_ENVS[@]} $SORACOM configure
+expect "\(1-2\)"
+send -- "2\n"
 expect "\(1-3\)"
 send -- "2\n"
 expect "email: "
