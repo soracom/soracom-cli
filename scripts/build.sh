@@ -25,9 +25,10 @@ fi
 : "Installing dependencies" && {
     echo "Installing build dependencies ..."
     go get -u golang.org/x/tools/cmd/goimports
-    go get -u github.com/laher/goxc
-    go get -u github.com/jteeuwen/go-bindata/...
     go get -u github.com/inconshreveable/mousetrap # required by spf13/cobra (only for windows env)
+    go get -u github.com/jteeuwen/go-bindata/...
+    go get -u github.com/laher/goxc
+    go get -u github.com/GoASTScanner/gas
 }
 
 : "Testing generator's library" && {
@@ -44,6 +45,7 @@ fi
     go get ./...
     go vet
     goimports -w ./*.go
+    gas ./...
     go test
     go build -o generate-cmd
     ./generate-cmd -a "$d/generators/assets/soracom-api.ftl.yaml" -t "$d/generators/cmd/templates" -p "$d/generators/cmd/predefined" -o "$d/soracom/generated/cmd/"
@@ -56,6 +58,7 @@ fi
     go generate
     go get ./...
     gofmt -s -w .
+    gas ./...
     #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
 

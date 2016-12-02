@@ -53,7 +53,7 @@ func run(apiDefFile, templateDir, predefinedDir, outputDir string) error {
 		return err
 	}
 
-	err = os.MkdirAll(outputDir, 0755)
+	err = os.MkdirAll(outputDir, 0700)
 	if err != nil {
 		return err
 	}
