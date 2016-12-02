@@ -2,11 +2,10 @@
 d=$( cd "$(dirname "$0" )"; cd ..; pwd )
 
 : "Checking shell scripts" && {
-    command -v shellcheck > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    command -v shellcheck > /dev/null 2>&1 && {
         shellcheck -e SC2164 "$d/scripts/"*.sh
         shellcheck -e SC2164 "$d/test/"*.sh
-    fi
+    }
 }
 
 set -e # aborting if any commands below exit with non-zero code
