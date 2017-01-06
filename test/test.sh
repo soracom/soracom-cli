@@ -64,11 +64,11 @@ tear_down() {
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
 : "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
 SORACOM_ENVS=(SORACOM_ENDPOINT=$SORACOM_ENDPOINT SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR SORACOM_DEBUG=$SORACOM_DEBUG)
-SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}/soracom"
+SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
 
-: "Extract binary" && {
+: "Extract binary" || {
     if [ "$OS" == "darwin" ]; then
         unzip -d "$d/soracom/dist/$VERSION/" -o "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.zip"
     elif [ "$OS" == "linux" ]; then

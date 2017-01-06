@@ -12,6 +12,7 @@ Available Commands:
   credentials        List, create, update or delete credentials sets.
   data               Get stored data from subscribers.
   event-handlers     List, create, update or delete event handlers.
+  files              Get an exported file.
   groups             List, create, update or delete groups.
   logs               List logs.
   operator           Manage operators.

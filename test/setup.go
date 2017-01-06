@@ -163,42 +163,42 @@ func registerSubscribers() error {
 		if i%3 == 2 {
 			o.Tags["soracom-sdk-go-test"] = "beam-stats"
 		}
-		_, err := apiClient.RegisterSubscriber(cs.Imsi, o)
+		_, err := apiClient.RegisterSubscriber(cs.IMSI, o)
 		if err != nil {
 			return err
 		}
 		if i%4 == 0 {
-			_, err := apiClient.ActivateSubscriber(cs.Imsi)
+			_, err := apiClient.ActivateSubscriber(cs.IMSI)
 			if err != nil {
 				return err
 			}
 		}
 		if i%4 == 1 {
-			_, err := apiClient.DeactivateSubscriber(cs.Imsi)
+			_, err := apiClient.DeactivateSubscriber(cs.IMSI)
 			if err != nil {
 				return err
 			}
 		}
 		if i%5 == 0 {
-			_, err := apiClient.UpdateSubscriberSpeedClass(cs.Imsi, "s1.minimum")
+			_, err := apiClient.UpdateSubscriberSpeedClass(cs.IMSI, "s1.minimum")
 			if err != nil {
 				return err
 			}
 		}
 		if i%5 == 1 {
-			_, err := apiClient.UpdateSubscriberSpeedClass(cs.Imsi, "s1.slow")
+			_, err := apiClient.UpdateSubscriberSpeedClass(cs.IMSI, "s1.slow")
 			if err != nil {
 				return err
 			}
 		}
 		if i%5 == 2 {
-			_, err := apiClient.UpdateSubscriberSpeedClass(cs.Imsi, "s1.standard")
+			_, err := apiClient.UpdateSubscriberSpeedClass(cs.IMSI, "s1.standard")
 			if err != nil {
 				return err
 			}
 		}
 		if i%5 == 3 {
-			_, err := apiClient.UpdateSubscriberSpeedClass(cs.Imsi, "s1.fast")
+			_, err := apiClient.UpdateSubscriberSpeedClass(cs.IMSI, "s1.fast")
 			if err != nil {
 				return err
 			}
@@ -207,7 +207,7 @@ func registerSubscribers() error {
 		for j := 0; j < 10; j++ {
 			t := time.Now().AddDate(0, 0, -10*j)
 			ts := t.UnixNano() / 1000 / 1000
-			err := apiClient.InsertAirStats(cs.Imsi, generateDummyAirStats(ts))
+			err := apiClient.InsertAirStats(cs.IMSI, generateDummyAirStats(ts))
 			if err != nil {
 				return err
 			}
@@ -216,7 +216,7 @@ func registerSubscribers() error {
 		for k := 0; k < 10; k++ {
 			t := time.Now().AddDate(0, 0, -10*k)
 			ts := t.UnixNano() / 1000 / 1000
-			err := apiClient.InsertBeamStats(cs.Imsi, generateDummyBeamStats(ts))
+			err := apiClient.InsertBeamStats(cs.IMSI, generateDummyBeamStats(ts))
 			if err != nil {
 				return err
 			}

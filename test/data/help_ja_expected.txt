@@ -12,6 +12,7 @@ Available Commands:
   credentials        認証情報に関する操作を行います。
   data               SIM からアップロードされて格納されているデータを取得します。
   event-handlers     イベントハンドラーに関する操作を行います。
+  files              エクスポートされたファイルを取得します。
   groups             グループに関する操作を行います。
   logs               ログに関する操作を行います。
   operator           オペレーターに関する操作を行います。
