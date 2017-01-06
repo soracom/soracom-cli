@@ -48,6 +48,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "event_handlers.go",
 		},
 		{
+			Use:                       "files",
+			Short:                     "files.cli.summary",
+			Long:                      "files.cli.description",
+			CommandVariableName:       "FilesCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "files.go",
+		},
+		{
 			Use:                       "groups",
 			Short:                     "groups.cli.summary",
 			Long:                      "groups.cli.description",

@@ -1406,6 +1406,18 @@
       "description": "List, create, update or delete event handlers."
     }
   },
+  "files":{
+    "get_exported": {
+      "get": {
+        "summary": "Get an exported file.",
+        "description": "Get an exported file. The `url` field in the response will contain a URL to download the exported file."
+      }
+    },
+    "cli": {
+      "summary": "Get an exported file.",
+      "description": "Get an exported file."
+    }
+  },
   "orders": {
     "list_orders": {
       "get": {

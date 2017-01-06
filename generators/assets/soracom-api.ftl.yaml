@@ -2453,9 +2453,14 @@ paths:
   '/files/exported/{exported_file_id}':
     get:
       tags: [Files]
-      summary: 'Get exported file.'
-      description: 'エクスポートされたファイルを取得します。ファイルエクスポートが完了している場合、レスポンスのurlにファイルダウンロードURLがセットされます。'
+      summary: ${files.get_exported.get.summary}
+      description: ${files.get_exported.get.description}
       operationId: getExportedFile
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - files get-exported
       consumes: [application/json]
       produces: [application/json;charset=UTF-8]
       parameters:
@@ -2599,6 +2604,11 @@ paths:
       summary: ${orders.list_ordered_subscriber.get.summary}
       description: ${orders.list_ordered_subscriber.get.description}
       operationId: listOrderedSubscribers
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - orders list-subscribers
       consumes: [application/json]
       produces: [application/json;charset=UTF-8]
       parameters:

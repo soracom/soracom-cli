@@ -25,7 +25,11 @@ func prettyPrintObjectAsJSON(obj interface{}) error {
 		return err
 	}
 
-	os.Stdout.Write(b)
+	_, err = os.Stdout.Write(b)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println()
 	return nil
 }
