@@ -68,10 +68,8 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
 
-: "Extract binary" || {
-    if [ "$OS" == "darwin" ]; then
-        unzip -d "$d/soracom/dist/$VERSION/" -o "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.zip"
-    elif [ "$OS" == "linux" ]; then
+: "Extract binary" && {
+    if [ "$OS" == "linux" ]; then
         tar xvzf "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.tar.gz" -C "$d/soracom/dist/$VERSION"
     fi
 }
