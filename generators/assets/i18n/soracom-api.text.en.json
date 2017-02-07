@@ -570,7 +570,7 @@
     "list_subscribers": {
       "get": {
         "summary": "List Subscribers.",
-        "description": "Returns a list of subscribers that match a certain criteria. If the total number of subscribers does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "Returns a list of subscribers that match certain criteria. If the total number of subscribers does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "tag_name": {
             "description": "Tag name for filtering the search (exact match)."
@@ -586,6 +586,9 @@
           },
           "speed_class_filter": {
             "description": "Speed class for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
+          },
+          "serial_number_filter": {
+            "description": "Serial number for filtering the search. Can specify multiple values delimited by `|`. Returns subscribers with serial number starting with the specified value(s)."
           },
           "limit": {
             "description": "Maximum number of subscribers to retrieve."
@@ -1043,7 +1046,7 @@
     "get_data_from_subscriber": {
       "get": {
         "summary": "Get data sent from a subscriber.",
-        "description": "Returns a list of data entries sent from a subscriber that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "Returns a list of data entries sent from a subscriber that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "imsi": {
             "description": "IMSI of the target subscriber that generated data entries."
@@ -1074,6 +1077,273 @@
     "cli": {
       "summary": "Manage subscribers.",
       "description": "Manage subscribers."
+    }
+  },
+  "lora_devices": {
+    "list_lora_devices": {
+      "get": {
+        "summary": "List LoRa devices.",
+        "description": "Returns a list of LoRa devices that match certain criteria. If the total number of LoRa devices does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "tag_name": {
+            "description": "Tag name for filtering the search (exact match)."
+          },
+          "tag_value": {
+            "description": "Tag search string for filtering the search. Required when `tag_name` has been specified."
+          },
+          "tag_value_match_mode": {
+            "description": "Tag match mode."
+          },
+          "limit": {
+            "description": "Maximum number of LoRa devices to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of LoRa devices."
+          }
+        }
+      }
+    },
+    "register_lora_device": {
+      "post": {
+        "summary": "Register LoRa device.",
+        "description": "Registers a LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          },
+          "lora_device": {
+            "description": "LoRa device"
+          }
+        },
+        "responses": {
+          "status201": {
+            "description": "LoRa device registration complete."
+          }
+        }
+      }
+    },
+    "get_lora_device": {
+      "get": {
+        "summary": "Get LoRa device.",
+        "description": "Returns information about the specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "get_data_from_lora_device": {
+      "get": {
+        "summary": "Get data sent from a LoRa device.",
+        "description": "Returns a list of data entries sent from a LoRa device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target subscriber that generated data entries."
+          },
+          "from": {
+            "description": "Start time for the data entries search range (unixtime in milliseconds)."
+          },
+          "to": {
+            "description": "End time for the data entries search range (unixtime in milliseconds)."
+          },
+          "sort": {
+            "description": "Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."
+          },
+          "limit": {
+            "description": "Maximum number of data entries to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of data entries."
+          }
+        }
+      }
+    },
+    "send_data_to_lora_device": {
+      "post": {
+        "summary": "Send data to a LoRa device.",
+        "description": "Sends data to the specified LoRa device. The data is sent to the LoRa network server, to be sent out to the device using the next available slot. If another message destined for the same LoRa device ID is already waiting to be sent, the existing message will be discarded, and the new message will be sent instead.",
+        "parameters": {
+          "device_id": {
+            "description": "ID of the recipient device."
+          },
+          "data": {
+            "description": "Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string)."
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Data has been received and sent to the LoRa network server for the recipient device to retrieve."
+          },
+          "status404": {
+            "description": "No such device found."
+          }
+        }
+      }
+    },
+    "terminate_lora_device": {
+      "post": {
+        "summary": "Terminate LoRa device.",
+        "description": "Terminates the specified LoRa device",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "enable_termination": {
+      "post": {
+        "summary": "Enable Termination of LoRa device.",
+        "description": "Enables termination of specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "disable_termination": {
+      "post": {
+        "summary": "Disable Termination of LoRa device.",
+        "description": "Disables termination of specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "set_group": {
+      "post": {
+        "summary": "Set Group of LoRa device.",
+        "description": "Sets or overwrites a group for the specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          },
+          "group": {
+            "description": "Group (may include ID only)."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "unset_group": {
+      "post": {
+        "summary": "Unset Group of LoRa device.",
+        "description": "Removes the group configuration from the specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist or the LoRa device does not belong to a group."
+          }
+        }
+      }
+    },
+    "put_lora_device_tags": {
+      "put": {
+        "summary": "Bulk Insert or Update LoRa device Tags.",
+        "description": "Inserts/updates tags for the specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "Device ID of the target LoRa device."
+          },
+          "tags": {
+            "description": "Array of tags to be inserted/updated."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "The LoRa device's detailed information after the update."
+          },
+          "status404": {
+            "description": "The specified LoRa device does not exist."
+          }
+        }
+      }
+    },
+    "delete_lora_device_tag": {
+      "delete": {
+        "summary": "Delete LoRa device Tag.",
+        "description": "Deletes a tag from the specified LoRa device.",
+        "parameters": {
+          "device_id": {
+            "description": "device ID of the target LoRa device."
+          },
+          "tag_name": {
+            "description": "Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Deletion of specified tag complete."
+          },
+          "status404": {
+            "description": "The specified LoRa device or the tag does not exist."
+          }
+        }
+      }
+    },
+    "cli": {
+      "summary": "Manage LoRa devices.",
+      "description": "Manage LoRa devices."
     }
   },
   "bills": {
@@ -2162,7 +2432,7 @@
     "get_logs": {
       "get": {
         "summary": "Get Logs.",
-        "description": "Returns a list of log entries that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "Returns a list of log entries that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "resource_type": {
             "description": "Type of the target resource to query log entries."

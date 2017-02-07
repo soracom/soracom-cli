@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: '20160713'
+  version: '20170207'
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -1150,6 +1150,11 @@ paths:
           description: ${subscribers.list_subscribers.get.parameters.speed_class_filter.description}
           required: false
           type: string
+        - name: serial_number_filter
+          in: query
+          description: ${subscribers.list_subscribers.get.parameters.serial_number_filter.description}
+          required: false
+          type: string
         - name: limit
           in: query
           description: ${subscribers.list_subscribers.get.parameters.limit.description}
@@ -1854,6 +1859,7 @@ paths:
         - api_token: []
       x-soracom-cli:
         - data get
+        - subscribers get-data
       parameters:
         - name: imsi
           in: path
@@ -1896,6 +1902,405 @@ paths:
             type: array
             items:
              '$ref': '#/definitions/DataEntry'
+
+# LoRa devices
+  '/lora_devices':
+    get:
+      summary: ${lora_devices.list_lora_devices.get.summary}
+      description: ${lora_devices.list_lora_devices.get.description}
+      operationId: listLoraDevices
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices list
+      parameters:
+        - name: tag_name
+          in: query
+          description: ${lora_devices.list_lora_devices.get.parameters.tag_name.description}
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: ${lora_devices.list_lora_devices.get.parameters.tag_value.description}
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: ${lora_devices.list_lora_devices.get.parameters.tag_value_match_mode.description}
+          required: false
+          type: string
+          enum: [exact, prefix]
+          default: exact
+        - name: limit
+          in: query
+          description: ${lora_devices.list_lora_devices.get.parameters.limit.description}
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: ${lora_devices.list_lora_devices.get.parameters.last_evaluated_key.description}
+          required: false
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.list_lora_devices.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/LoraDevice'
+
+  '/lora_devices/{device_id}/register':
+    post:
+      summary: ${lora_devices.register_lora_device.post.summary}
+      description: ${lora_devices.register_lora_device.post.description}
+      operationId: registerLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices register
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.register_lora_device.post.parameters.device_id.description}
+          required: true
+          type: string
+        - name: lora_device
+          in: body
+          description: ${lora_devices.register_lora_device.post.parameters.lora_device.description}
+          required: true
+          schema:
+           '$ref': '#/definitions/RegisterLoraDeviceRequest'
+      tags:
+        - LoraDevice
+      responses:
+        201:
+          description: ${lora_devices.register_lora_device.post.responses.status201.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+
+  '/lora_devices/{device_id}':
+    get:
+      summary: ${lora_devices.get_lora_device.get.summary}
+      description: ${lora_devices.get_lora_device.get.description}
+      operationId: getLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices get
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.get_lora_device.get.parameters.device_id.description}
+          required: true
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.get_lora_device.get.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.get_lora_device.get.responses.status404.description}
+
+  '/lora_devices/{device_id}/data':
+    get:
+      summary: ${lora_devices.get_data_from_lora_device.get.summary}
+      description: ${lora_devices.get_data_from_lora_device.get.description}
+      operationId: getDataFromLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices get-data
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.device_id.description}
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.from.description}
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.to.description}
+          required: false
+          type: integer
+        - name: sort
+          in: query
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.sort.description}
+          required: false
+          type: string
+          enum: [desc, asc]
+          default: desc
+        - name: limit
+          in: query
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.limit.description}
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: ${lora_devices.get_data_from_lora_device.get.parameters.last_evaluated_key.description}
+          required: false
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.get_data_from_lora_device.get.responses.status200.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/DataEntry'
+    post:
+      summary: ${lora_devices.send_data_to_lora_device.post.summary}
+      description: ${lora_devices.send_data_to_lora_device.post.description}
+      operationId: sendDataToLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices send-data
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.send_data_to_lora_device.post.parameters.device_id.description}
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: ${lora_devices.send_data_to_lora_device.post.parameters.data.description}
+          schema:
+           '$ref': '#/definitions/LoraData'
+          required: true
+      tags:
+        - LoraDevice
+      responses:
+        204:
+          description: ${lora_devices.send_data_to_lora_device.post.responses.status204.description}
+        404:
+          description: ${lora_devices.send_data_to_lora_device.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/terminate':
+    post:
+      summary: ${lora_devices.terminate_lora_device.post.summary}
+      description: ${lora_devices.terminate_lora_device.post.description}
+      operationId: terminateLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices terminate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.terminate_lora_device.post.parameters.device_id.description}
+          required: true
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.terminate_lora_device.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.terminate_lora_device.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/enable_termination':
+    post:
+      summary: ${lora_devices.enable_termination.post.summary}
+      description: ${lora_devices.enable_termination.post.description}
+      operationId: enableTerminationOnLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices enable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.enable_termination.post.parameters.device_id.description}
+          required: true
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.enable_termination.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.enable_termination.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/disable_termination':
+    post:
+      summary: ${lora_devices.disable_termination.post.summary}
+      description: ${lora_devices.disable_termination.post.description}
+      operationId: disableTerminationOnLoraDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices disable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.disable_termination.post.parameters.device_id.description}
+          required: true
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.disable_termination.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.disable_termination.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/set_group':
+    post:
+      summary: ${lora_devices.set_group.post.summary}
+      description: ${lora_devices.set_group.post.description}
+      operationId: setLoraDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices set-group
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.set_group.post.parameters.device_id.description}
+          required: true
+          type: string
+        - name: group
+          in: body
+          description: ${lora_devices.set_group.post.parameters.group.description}
+          schema:
+           '$ref': '#/definitions/Group'
+          required: true
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.set_group.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.set_group.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/unset_group':
+    post:
+      summary: ${lora_devices.unset_group.post.summary}
+      description: ${lora_devices.unset_group.post.description}
+      operationId: unsetLoraDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices unset-group
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.unset_group.post.parameters.device_id.description}
+          required: true
+          type: string
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.unset_group.post.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.unset_group.post.responses.status404.description}
+
+  '/lora_devices/{device_id}/tags':
+    put:
+      summary: ${lora_devices.put_lora_device_tags.put.summary}
+      description: ${lora_devices.put_lora_device_tags.put.description}
+      operationId: putLoraDeviceTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices put-tags
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.put_lora_device_tags.put.parameters.device_id.description}
+          required: true
+          type: string
+        - name: tags
+          in: body
+          description: ${lora_devices.put_lora_device_tags.put.parameters.tags.description}
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/TagUpdateRequest'
+
+          required: true
+      tags:
+        - LoraDevice
+      responses:
+        200:
+          description: ${lora_devices.put_lora_device_tags.put.responses.status200.description}
+          schema:
+           '$ref': '#/definitions/LoraDevice'
+        404:
+          description: ${lora_devices.put_lora_device_tags.put.responses.status404.description}
+
+  '/lora_devices/{device_id}/tags/{tag_name}':
+    delete:
+      summary: ${lora_devices.delete_lora_device_tag.delete.summary}
+      description: ${lora_devices.delete_lora_device_tag.delete.description}
+      operationId: deleteLoraDeviceTag
+      x-sam-operationId: deleteTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - lora-devices delete-tag
+      parameters:
+        - name: device_id
+          in: path
+          description: ${lora_devices.delete_lora_device_tag.delete.parameters.device_id.description}
+          required: true
+          type: string
+        - name: tag_name
+          in: path
+          description: ${lora_devices.delete_lora_device_tag.delete.parameters.tag_name.description}
+          type: string
+          required: true
+      tags:
+        - LoraDevice
+      responses:
+        204:
+          description: ${lora_devices.delete_lora_device_tag.delete.responses.status204.description}
+        404:
+          description: ${lora_devices.delete_lora_device_tag.delete.responses.status404.description}
 
 # Billing
   '/bills':
@@ -2994,8 +3399,9 @@ paths:
           enum:
             - SoracomAir
             - SoracomBeam
-            - SoracomFunnel
             - SoracomEndorse
+            - SoracomFunnel
+            - SoracomHarvest
         - name: parameters
           in: body
           description: ${groups.put_configuration_parameters.put.parameters.parameters.description}
@@ -3038,8 +3444,9 @@ paths:
           enum:
             - SoracomAir
             - SoracomBeam
-            - SoracomFunnel
             - SoracomEndorse
+            - SoracomFunnel
+            - SoracomHarvest
         - name: name
           in: path
           description: ${groups.delete_configuration_parameter.delete.parameters.name.description}
@@ -3628,39 +4035,49 @@ definitions:
 
   Subscriber:
     properties:
-      imsi:
-        type: string
-      msisdn:
-        type: string
-      serialNumber:
-        type: string
-      iccid:
-        type: string
       apn:
-        type: string
-      speedClass:
         type: string
       createdAt:
         type: integer
         format: int64
-      lastModifiedAt:
-        type: integer
-        format: int64
-      expiryTime:
+      expiredAt:
         type: integer
         format: int64
       expiryAction:
         type: string
-      status:
+      groupId:
+        type: string
+      iccid:
+        type: string
+      imeiLock:
+        '$ref': '#/definitions/ImeiLock'
+      imsi:
+        type: string
+      ipAddress:
+        type: string
+      lastModifiedAt:
+        type: integer
+        format: int64
+      moduleType:
+        type: string
+      msisdn:
+        type: string
+      operatorId:
+        type: string
+      plan:
+        type: integer
+      serialNumber:
         type: string
       sessionStatus:
         '$ref': '#/definitions/SessionStatus'
-      imeiLock:
-        '$ref': '#/definitions/ImeiLock'
+      speedClass:
+        type: string
+      status:
+        type: string
       tags:
         '$ref': '#/definitions/Map'
-      operatorId:
-        type: string
+      terminationEnabled:
+        type: boolean
 
   ExpiryTime:
     properties:
@@ -3679,18 +4096,18 @@ definitions:
 
   SessionStatus:
     properties:
-      isOnline:
-        type: boolean
-      lastUpdatedAt:
-        type: integer
-        format: int64
-      imei:
-        type: string
-      ueIpAddress:
-        type: string
       dnsServers:
         type: array
         items: {type: string}
+      imei:
+        type: string
+      lastUpdatedAt:
+        type: integer
+        format: int64
+      online:
+        type: boolean
+      ueIpAddress:
+        type: string
       vpgId:
         type: string
       gatewayPrivateIpAddress:
@@ -4888,4 +5305,10 @@ definitions:
       content:
         type: string
       contentType:
+        type: string
+
+# LoraData
+  LoraData:
+    properties:
+      data:
         type: string

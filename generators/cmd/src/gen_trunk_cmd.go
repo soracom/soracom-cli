@@ -64,6 +64,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "groups.go",
 		},
 		{
+			Use:                       "lora-devices",
+			Short:                     "lora_devices.cli.summary",
+			Long:                      "lora_devices.cli.description",
+			CommandVariableName:       "LoraDevicesCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "lora_devices.go",
+		},
+		{
 			Use:                       "operator",
 			Short:                     "operator.cli.summary",
 			Long:                      "operator.cli.description",

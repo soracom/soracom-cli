@@ -15,6 +15,7 @@ Available Commands:
   files              Get an exported file.
   groups             List, create, update or delete groups.
   logs               List logs.
+  lora-devices       Manage LoRa devices.
   operator           Manage operators.
   orders             List, create or cancel orders.
   payer-information  Get or edit payer information.

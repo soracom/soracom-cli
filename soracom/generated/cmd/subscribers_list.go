@@ -10,6 +10,9 @@ import (
 // SubscribersListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var SubscribersListCmdLastEvaluatedKey string
 
+// SubscribersListCmdSerialNumberFilter holds value of 'serial_number_filter' option
+var SubscribersListCmdSerialNumberFilter string
+
 // SubscribersListCmdSpeedClassFilter holds value of 'speed_class_filter' option
 var SubscribersListCmdSpeedClassFilter string
 
@@ -30,6 +33,8 @@ var SubscribersListCmdLimit int64
 
 func init() {
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_subscribers.get.parameters.last_evaluated_key.description"))
+
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TR("subscribers.list_subscribers.get.parameters.serial_number_filter.description"))
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TR("subscribers.list_subscribers.get.parameters.speed_class_filter.description"))
 
@@ -106,6 +111,10 @@ func buildQueryForSubscribersListCmd() string {
 
 	if SubscribersListCmdLastEvaluatedKey != "" {
 		result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
+	}
+
+	if SubscribersListCmdSerialNumberFilter != "" {
+		result = append(result, sprintf("%s=%s", "serial_number_filter", SubscribersListCmdSerialNumberFilter))
 	}
 
 	if SubscribersListCmdSpeedClassFilter != "" {

@@ -587,6 +587,9 @@
           "speed_class_filter": {
             "description": "设为检索对象的速度级别。用`|`隔开可以进行多个指定。可以指定的值如下：`s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
           },
+          "serial_number_filter": {
+            "description": "Serial number for filtering the search. Can specify multiple values delimited by `|`. Returns subscribers with serial number starting with the specified value(s)."
+          },
           "limit": {
             "description": "能获得的Subscriber的上限"
           },
@@ -1043,7 +1046,7 @@
     "get_data_from_subscriber": {
       "get": {
         "summary": "Get data sent from a subscriber.",
-        "description": "Returns a list of data entries sent from a subscriber that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "Returns a list of data entries sent from a subscriber that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "imsi": {
             "description": "IMSI of the target subscriber that generated data entries."
@@ -1074,6 +1077,273 @@
     "cli": {
       "summary": "Manage subscribers.",
       "description": "Manage subscribers."
+    }
+  },
+  "lora_devices": {
+    "list_lora_devices": {
+      "get": {
+        "summary": "List LoRa devices",
+        "description": "返回符合条件的LoRa device的列表。如果LoRa device的总数超过1页，则在应答中，将联结到下一页的URL包含在`Link`头文件中返回。",
+        "parameters": {
+          "tag_name": {
+            "description": "设定为检索对象的标签名（完全相同）。"
+          },
+          "tag_value": {
+            "description": "设定为检索对象的标签检索文字列。指定为`tag_name`的情况则为必须。"
+          },
+          "tag_value_match_mode": {
+            "description": "标签的检索条件。"
+          },
+          "limit": {
+            "description": "能获得的LoRa device的上限"
+          },
+          "last_evaluated_key": {
+            "description": "本页获得的最后的LoRa device的Device ID。通过指定该参数，可以获得下一个LoRa device之后的列表。"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of subscibers"
+          }
+        }
+      }
+    },
+    "register_lora_device": {
+      "post": {
+        "summary": "Register LoRa device",
+        "description": "登录LoRa device",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          },
+          "lora_device": {
+            "description": "LoRa device"
+          }
+        },
+        "responses": {
+          "status201": {
+            "description": "LoRa device登录完毕"
+          }
+        }
+      }
+    },
+    "get_lora_device": {
+      "get": {
+        "summary": "Get LoRa device",
+        "description": "返回指定的LoRa device的信息。",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "指定的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "get_data_from_lora_device": {
+      "get": {
+        "summary": "Get data sent from a LoRa device.",
+        "description": "Returns a list of data entries sent from a LoRa device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "parameters": {
+          "device_id": {
+            "description": "ID of the target subscriber that generated data entries."
+          },
+          "from": {
+            "description": "Start time for the data entries search range (unixtime in milliseconds)."
+          },
+          "to": {
+            "description": "End time for the data entries search range (unixtime in milliseconds)."
+          },
+          "sort": {
+            "description": "Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first). Default "
+          },
+          "limit": {
+            "description": "Maximum number of data entries to retrieve."
+          },
+          "last_evaluated_key": {
+            "description": "The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of data entries."
+          }
+        }
+      }
+    },
+    "send_data_to_lora_device": {
+      "post": {
+        "summary": "Send data to a LoRa device.",
+        "description": "Sends data to the specified LoRa device. The data is sent to the LoRa network server, to be sent out to the device using the next available slot. If another message destined for the same LoRa device ID is already waiting to be sent, the existing message will be discarded, and the new message will be sent instead.",
+        "parameters": {
+          "device_id": {
+            "description": "ID of the recipient device."
+          },
+          "data": {
+            "description": "Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string)."
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "Data has been received and sent to the LoRa network server for the recipient device to retrieve."
+          },
+          "status404": {
+            "description": "No such device found."
+          }
+        }
+      }
+    },
+    "terminate_lora_device": {
+      "post": {
+        "summary": "Terminate LoRa device",
+        "description": "将指定的LoRa device进行Terminate",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "enable_termination": {
+      "post": {
+        "summary": "Enable Termination of LoRa device",
+        "description": "将指定的LoRa device设定为可以Terminate",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "disable_termination": {
+      "post": {
+        "summary": "Disable Termination of LoRa device",
+        "description": "将指定的LoRa device设定为不可Terminate",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "set_group": {
+      "post": {
+        "summary": "Set Group of LoRa device",
+        "description": "将指定的LoRa device的所属Group进行指定或替换更改",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          },
+          "group": {
+            "description": "Group（只需含有ID即可）"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "unset_group": {
+      "post": {
+        "summary": "Unset Group of LoRa device",
+        "description": "将指定的LoRa device的Group指定解除",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在，或LoRa device不属于Group"
+          }
+        }
+      }
+    },
+    "put_lora_device_tags": {
+      "put": {
+        "summary": "Bulk Insert or Update LoRa device Tags",
+        "description": "追加、更新指定的LoRa device的标签",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          },
+          "tags": {
+            "description": "追加、更新对象标签的排列"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新后的LoRa device的详细信息"
+          },
+          "status404": {
+            "description": "指定的LoRa device不存在"
+          }
+        }
+      }
+    },
+    "delete_lora_device_tag": {
+      "delete": {
+        "summary": "Delete LoRa device Tag",
+        "description": "删除指定的LoRa device的标签",
+        "parameters": {
+          "device_id": {
+            "description": "对象的LoRa device的ID"
+          },
+          "tag_name": {
+            "description": "删除对象的标签名（由于是URL的Path的一部分，所以进行百分号编码。如果是JavaScript的话则指定encodeURIComponent()过的项目）"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "对象标签删除完毕"
+          },
+          "status404": {
+            "description": "指定的LoRa device或者标签不存在"
+          }
+        }
+      }
+    },
+    "cli": {
+      "summary": "Manage LoRa devices.",
+      "description": "Manage LoRa devices."
     }
   },
   "bills": {
@@ -2162,7 +2432,7 @@
     "get_logs": {
       "get": {
         "summary": "Get Logs.",
-        "description": "Returns a list of log entries that match a certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
+        "description": "Returns a list of log entries that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.",
         "parameters": {
           "resource_type": {
             "description": "Type of the target resource to query log entries."

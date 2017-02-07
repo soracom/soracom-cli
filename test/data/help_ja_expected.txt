@@ -15,6 +15,7 @@ Available Commands:
   files              エクスポートされたファイルを取得します。
   groups             グループに関する操作を行います。
   logs               ログに関する操作を行います。
+  lora-devices       LoRa deviceに関する操作を行います。
   operator           オペレーターに関する操作を行います。
   orders             商品の注文に関する操作を行います。
   payer-information  課金明細に出力する支払い者情報を取得または設定します。

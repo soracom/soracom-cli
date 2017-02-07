@@ -587,6 +587,9 @@
           "speed_class_filter": {
             "description": "検索対象にする速度クラス。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
           },
+          "serial_number_filter": {
+            "description": "検索対象にする製造番号。`|`で区切って複数指定することができる。指定された値で始まる製造番号を持つSubscriberの一覧を返す。"
+          },
           "limit": {
             "description": "取得するSubscriberの上限"
           },
@@ -1076,6 +1079,273 @@
       "description": "サブスクライバー (SIM) に関する操作を行います。"
     }
   },
+  "lora_devices": {
+    "list_lora_devices": {
+      "get": {
+        "summary": "List LoRa devices",
+        "description": "条件にマッチするLoRa deviceのリストを返す。LoRa deviceの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+        "parameters": {
+          "tag_name": {
+            "description": "検索対象にするタグの名前(完全一致)。"
+          },
+          "tag_value": {
+            "description": "検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。"
+          },
+          "tag_value_match_mode": {
+            "description": "タグの検索条件。"
+          },
+          "limit": {
+            "description": "取得するLoRa deviceの上限"
+          },
+          "last_evaluated_key": {
+            "description": "現ページで取得した最後のLoRa deviceのDevice ID。このパラメータを指定することで次のLoRa device以降のリストを取得できる。"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "A list of subscibers"
+          }
+        }
+      }
+    },
+    "register_lora_device": {
+      "post": {
+        "summary": "Register LoRa device",
+        "description": "LoRa deviceを登録",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのDevice ID"
+          },
+          "lora_device": {
+            "description": "LoRa device"
+          }
+        },
+        "responses": {
+          "status201": {
+            "description": "LoRa device登録完了"
+          }
+        }
+      }
+    },
+    "get_lora_device": {
+      "get": {
+        "summary": "Get LoRa device",
+        "description": "指定されたLoRa deviceの情報を返す。",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのDevice ID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "指定されたLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "get_data_from_lora_device": {
+      "get": {
+        "summary": "Get data sent from a LoRa device.",
+        "description": "指定されたLoRaデバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+        "parameters": {
+          "device_id": {
+            "description": "データ取得対象のLoRaデバイスのID"
+          },
+          "from": {
+            "description": "取得対象の期間の始まり (unixtime ミリ秒単位)"
+          },
+          "to": {
+            "description": "取得対象の期間の終わり (unixtime ミリ秒単位)"
+          },
+          "sort": {
+            "description": "データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。"
+          },
+          "limit": {
+            "description": "取得するデータエントリ数の上限"
+          },
+          "last_evaluated_key": {
+            "description": "前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "データエントリのリスト"
+          }
+        }
+      }
+    },
+    "send_data_to_lora_device": {
+      "post": {
+        "summary": "Send data to a LoRa device.",
+        "description": "指定したデバイスにデータを送信する。データはLoRa Network Serverにセットされ、次に利用可能なデータ送信スロットを使って指定デバイスに送信される。未送信のデータがLoRa Network Serverにあった場合には、最新の受信データで上書きされる。 一定時間(2時間)受け取られなかった場合、デバイス受信時に新しいメッセージを受けた場合は、メッセージは破棄されます。",
+        "parameters": {
+          "device_id": {
+            "description": "送信先デバイスのID"
+          },
+          "data": {
+            "description": "16進数でエンコードされたバイナリデータの文字列。バイナリデータの最大サイズは11 octets（16進数エンコードされた文字列で22文字）"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "データはLoRa Network Serverにセットされ、送信先デバイスが取得出来る状態になったことを示す。"
+          },
+          "status404": {
+            "description": "指定されたLoRaデバイスが存在しない。"
+          }
+        }
+      }
+    },
+    "terminate_lora_device": {
+      "post": {
+        "summary": "Terminate LoRa device",
+        "description": "指定されたLoRa deviceをTerminate",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "enable_termination": {
+      "post": {
+        "summary": "Enable Termination of LoRa device",
+        "description": "指定されたLoRa deviceをTerminate可能に設定する",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "disable_termination": {
+      "post": {
+        "summary": "Disable Termination of LoRa device",
+        "description": "指定されたLoRa deviceをTerminate不可能に設定する",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "set_group": {
+      "post": {
+        "summary": "Set Group to LoRa device",
+        "description": "指定されたLoRa deviceの所属先Groupを指定あるいは上書き変更",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          },
+          "group": {
+            "description": "Group（IDのみを含めばよい）"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "unset_group": {
+      "post": {
+        "summary": "Unset Group to LoRa device",
+        "description": "指定されたLoRa deviceのGroup指定を解除",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しないか、LoRa deviceはGroupに属していない"
+          }
+        }
+      }
+    },
+    "put_lora_device_tags": {
+      "put": {
+        "summary": "Bulk Insert or Update LoRa device Tags",
+        "description": "指定されたLoRa deviceのタグを追加・更新",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          },
+          "tags": {
+            "description": "追加・更新対象のタグの配列"
+          }
+        },
+        "responses": {
+          "status200": {
+            "description": "更新後のLoRa deviceの詳細情報"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceが存在しない"
+          }
+        }
+      }
+    },
+    "delete_lora_device_tag": {
+      "delete": {
+        "summary": "Delete LoRa device Tag",
+        "description": "指定されたLoRa deviceのタグを削除",
+        "parameters": {
+          "device_id": {
+            "description": "対象のLoRa deviceのID"
+          },
+          "tag_name": {
+            "description": "削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）"
+          }
+        },
+        "responses": {
+          "status204": {
+            "description": "対象のタグの削除が完了"
+          },
+          "status404": {
+            "description": "指定されたLoRa deviceあるいはタグが存在しない"
+          }
+        }
+      }
+    },
+    "cli": {
+      "summary": "LoRa deviceに関する操作を行います。",
+      "description": "LoRa deviceに関する操作を行います。"
+    }
+  },
   "bills": {
     "get_billing_history": {
       "get": {
@@ -1409,7 +1679,7 @@
   "files":{
     "get_exported": {
       "get": {
-        "summary": "",
+        "summary": "エクスポートされたファイルを取得します。",
         "description": "エクスポートされたファイルを取得します。ファイルエクスポートが完了している場合、レスポンスのurlにファイルダウンロードURLがセットされます。"
       }
     },
