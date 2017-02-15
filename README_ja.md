@@ -21,10 +21,18 @@ soracom コマンドは以下のような特徴を備えています。
   eval "$(soracom completion)"
   ```
 
+  macOS をお使いの場合、以下のいずれかの条件を満たす必要があるかもしれません：
+  1. `bash` のバージョン 4.0 以降を使用する
+  2. `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
+
+  以下のようなエラーが起きた場合は上記いずれかをお試し下さい。
+  ```
+  -bash: __ltrim_colon_completions: command not found
+  ```
 
 # インストール方法
 
-## Mac (macOS) をお使いで、homebrew によりインストールする場合
+## macOS をお使いで、homebrew によりインストールする場合
 
 ```
 $ brew tap soracom/soracom-cli

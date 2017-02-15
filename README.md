@@ -21,6 +21,14 @@ The `soracom` command:
   eval "$(soracom completion)"
   ```
 
+  if you are a macOS user, you probably need to either:
+  1. use `bash` version >= 4.0, or
+  2. use `brew install bash-completion` instead of using Xcode version of bash-completion
+
+  otherwise you might be getting the error like the following:
+  ```
+  -bash: __ltrim_colon_completions: command not found
+  ```
 
 # How to install
 
