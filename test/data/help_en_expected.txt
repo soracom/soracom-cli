@@ -14,6 +14,7 @@ Available Commands:
   event-handlers     List, create, update or delete event handlers.
   files              Get an exported file.
   groups             List, create, update or delete groups.
+  help               Help about any command
   logs               List logs.
   lora-devices       Manage LoRa devices.
   operator           Manage operators.

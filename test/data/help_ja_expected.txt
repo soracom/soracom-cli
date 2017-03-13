@@ -14,6 +14,7 @@ Available Commands:
   event-handlers     イベントハンドラーに関する操作を行います。
   files              エクスポートされたファイルを取得します。
   groups             グループに関する操作を行います。
+  help               Help about any command
   logs               ログに関する操作を行います。
   lora-devices       LoRa deviceに関する操作を行います。
   operator           オペレーターに関する操作を行います。
