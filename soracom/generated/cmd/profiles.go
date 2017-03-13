@@ -248,8 +248,10 @@ func collectAuthInfo() (*authInfo, error) {
 		var authKeyID, authKey string
 		fmt.Print("authKeyId: ")
 		fmt.Scanf("%s\n", &authKeyID)
-		fmt.Print("authKey: ")
-		fmt.Scanf("%s\n", &authKey)
+		authKey, err := readPassword("authKey: ")
+		if err != nil {
+			return nil, err
+		}
 		return &authInfo{AuthKeyID: &authKeyID, AuthKey: &authKey}, nil
 	case 2:
 		var email string
