@@ -100,6 +100,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	req.Header.Set("User-Agent", fmt.Sprintf("soracom-cli/%s", version))
 
 	if params.contentType != "" {
 		req.Header.Set("Content-Type", params.contentType)
