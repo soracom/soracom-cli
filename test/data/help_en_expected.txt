@@ -17,6 +17,8 @@ Available Commands:
   help               Help about any command
   logs               List logs.
   lora-devices       Manage LoRa devices.
+  lora-gateways      Manage LoRa gateways.
+  lora-network-sets  Manage LoRa network sets.
   operator           Manage operators.
   orders             List, create or cancel orders.
   payer-information  Get or edit payer information.

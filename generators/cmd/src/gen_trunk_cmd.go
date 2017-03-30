@@ -72,6 +72,22 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "lora_devices.go",
 		},
 		{
+			Use:                       "lora-gateways",
+			Short:                     "lora_gateways.cli.summary",
+			Long:                      "lora_gateways.cli.description",
+			CommandVariableName:       "LoraGatewaysCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "lora_gateways.go",
+		},
+		{
+			Use:                       "lora-network-sets",
+			Short:                     "lora_network_sets.cli.summary",
+			Long:                      "lora_network_sets.cli.description",
+			CommandVariableName:       "LoraNetworkSetsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "lora_network_sets.go",
+		},
+		{
 			Use:                       "operator",
 			Short:                     "operator.cli.summary",
 			Long:                      "operator.cli.description",

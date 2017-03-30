@@ -1342,8 +1342,368 @@
       }
     },
     "cli": {
-      "summary": "LoRa deviceに関する操作を行います。",
-      "description": "LoRa deviceに関する操作を行います。"
+      "summary": "LoRa device に関する操作を行います。",
+      "description": "LoRa device に関する操作を行います。"
+    }
+  },
+  "lora_gateways": {
+    "list": {
+      "summary": "List LoRa gateways.",
+      "description": "条件にマッチするLoRa gatewayのリストを返す。LoRa gatewayの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+      "parameters": {
+        "tag_name": {
+          "description": "検索対象にするタグの名前(完全一致)。"
+        },
+        "tag_value": {
+          "description": "検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。"
+        },
+        "tag_value_match_mode": {
+          "description": "タグの検索条件。"
+        },
+        "limit": {
+          "description": "一度に取得するLoRa gatewayの数の上限"
+        },
+        "last_evaluated_key": {
+          "description": "現ページで取得した最後のLoRa gatewayのID。このパラメータを指定することで次のLoRa gateway以降のリストを取得できる。"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "LoRa gatewayのリスト"
+        }
+      }
+    },
+    "get": {
+      "summary": "Get LoRa gateway.",
+      "description": "指定されたLoRa gatewayの情報を返す。",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "指定されたLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "terminate": {
+      "summary": "Terminate LoRa gateway.",
+      "description": "指定されたLoRa gatewayをTerminate",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "enable_termination": {
+      "summary": "Enable Termination of LoRa gateway.",
+      "description": "指定されたLoRa gatewayをTerminate可能に設定する",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "disable_termination": {
+      "summary": "Disable Termination of LoRa gateway.",
+      "description": "指定されたLoRa gatewayをTerminate不可能に設定する",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "set_network_set": {
+      "summary": "Set Network Set ID of LoRa gateway.",
+      "description": "指定されたLoRa gatewayのNetwork Set IDを指定あるいは上書き変更",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        },
+        "ns_id": {
+          "description": "LoRa Network Set ID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "unset_network_set": {
+      "summary": "Unset Network Set ID of LoRa gateway.",
+      "description": "指定されたLoRa gatewayのNetwork Set IDを削除",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "put_tags": {
+      "summary": "Bulk Insert or Update LoRa gateway Tags.",
+      "description": "指定されたLoRa gatewayのタグを追加・更新",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa deviceのID"
+        },
+        "tags": {
+          "description": "追加・更新対象のタグの配列"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa gatewayの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayが存在しない"
+        }
+      }
+    },
+    "delete_tag": {
+      "summary": "Delete LoRa gateway tag.",
+      "description": "指定されたLoRa gatewayのタグを削除",
+      "parameters": {
+        "gateway_id": {
+          "description": "対象のLoRa gatewayのID"
+        },
+        "tag_name": {
+          "description": "削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）"
+        }
+      },
+      "responses": {
+        "status204": {
+          "description": "対象のタグの削除が完了"
+        },
+        "status404": {
+          "description": "指定されたLoRa gatewayあるいはタグが存在しない"
+        }
+      }
+    },
+    "cli": {
+      "summary": "LoRa gateway に関する操作を行います。",
+      "description": "LoRa gateways に関する操作を行います。"
+    }
+  },
+  "lora_network_sets": {
+    "create": {
+      "summary": "Creates a LoRa network set",
+      "description": "LoRa network setを作成する",
+      "parameters": {
+        "lora_network_set": {
+          "description": "タグなど作成対象のLoRa network setに設定する付加情報"
+        }
+      },
+      "responses": {
+        "status201": {
+          "description": "LoRa network setの作成に成功."
+        }
+      }
+    },
+    "list": {
+      "summary": "List LoRa Network Sets.",
+      "description": "条件にマッチするLoRa network setのリストを返す。LoRa network setの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+      "parameters": {
+        "tag_name": {
+          "description": "検索対象にするタグの名前(完全一致)。"
+        },
+        "tag_value": {
+          "description": "検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。"
+        },
+        "tag_value_match_mode": {
+          "description": "タグの検索条件。"
+        },
+        "limit": {
+          "description": "一度に取得するLoRa network setの数の上限"
+        },
+        "last_evaluated_key": {
+          "description": "現ページで取得した最後のLoRa network setのID。このパラメータを指定することで次以降のリストを取得できる。"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "LoRa network setのリスト"
+        }
+      }
+      },
+    "get": {
+      "summary": "Get LoRa network set.",
+      "description": "指定されたLoRa network setの情報を返す",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "LoRa network setの詳細情報を取得完了"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "list_gateways": {
+      "summary": "List LoRa Gateways in a Network Set.",
+      "description": "指定されたNetwork Setに属するLoRa gatewayのリストを返す。LoRa gatewayの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        },
+        "limit": {
+          "description": "一度に取得するLoRa gatewayの数の上限"
+        },
+        "last_evaluated_key": {
+          "description": "現ページで取得した最後のLoRa gatewayのID。このパラメータを指定することで次のLoRa gateway以降のリストを取得できる。"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "LoRa gatewayのリスト"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Delete LoRa network set.",
+      "description": "指定されたLoRa network setを削除する",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        }
+      },
+      "responses": {
+        "status204": {
+          "description": "削除に成功"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "add_permission": {
+      "summary": "Adds permission to a LoRa network set.",
+      "description": "別のOperatorからNetwork Setが利用できるようにパーミッションを追加する。",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        },
+        "operator_id": {
+          "description": "許可されたOperatorのリストに追加すべきOperatorのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "指定されたnetwork setのパーミッションを更新完了"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "revoke_permission": {
+      "summary": "Revokes a permission from a LoRa network set.",
+      "description": "指定されたLoRa network setの別のOperatorへの利用許可を取り消す",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        },
+        "operator_id": {
+          "description": "許可されたOperatorのリストから削除すべきOperatorのID"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "指定されたLoRa network setのパーミッションを更新完了"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "put_tags": {
+      "summary": "Bulk Insert or Update LoRa network set tags.",
+      "description": "指定されたLoRa network setのタグを追加・更新",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        },
+        "tags": {
+          "description": "追加・更新対象のタグの配列"
+        }
+      },
+      "responses": {
+        "status200": {
+          "description": "更新後のLoRa network setの詳細情報"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setが存在しない"
+        }
+      }
+    },
+    "delete_tag": {
+      "summary": "Delete LoRa network set tag.",
+      "description": "指定されたLoRa network setのタグを削除",
+      "parameters": {
+        "ns_id": {
+          "description": "対象のLoRa network setのID"
+        },
+        "tag_name": {
+          "description": "削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）"
+        }
+      },
+      "responses": {
+        "status204": {
+          "description": "対象のタグの削除が完了"
+        },
+        "status404": {
+          "description": "指定されたLoRa network setあるいはタグが存在しない"
+        }
+      }
+    },
+    "cli": {
+      "summary": "LoRa network set に関する操作を行います。",
+      "description": "LoRa network set に関する操作を行います。"
     }
   },
   "bills": {
