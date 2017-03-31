@@ -1,11 +1,18 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/soracom/soracom-sdk-go"
@@ -14,6 +21,9 @@ import (
 const (
 	defaultSandboxEndpoint = "https://api-sandbox.soracom.io"
 	nSIM                   = 5
+	payJPPublishableKey    = "pk_test_5b4816eeedff49691d906902"
+	stripePublishableKeyJP = "pk_test_5xUDApYcCbvIEZ2mcemGgd26"
+	stripePublishableKeyG  = "pk_test_oDGnDF4fHODe1ARkDhPCvOlU"
 )
 
 var (
@@ -128,20 +138,98 @@ func auth(email, password string) error {
 	return nil
 }
 
+type paymentMethodInfo struct {
+	Cvc         string
+	ExpireMonth int
+	ExpireYear  int
+	Name        string
+	Number      string
+}
+
+func (pmi *paymentMethodInfo) getReader() io.Reader {
+	v := url.Values{}
+	v.Set("card[number]", pmi.Number)
+	v.Set("card[cvc]", pmi.Cvc)
+	v.Set("card[exp_month]", strconv.Itoa(pmi.ExpireMonth))
+	v.Set("card[exp_year]", strconv.Itoa(pmi.ExpireYear))
+	v.Set("card[name]", pmi.Name)
+	b := ([]byte)(v.Encode())
+	return bytes.NewBuffer(b)
+}
+
 func registerPaymentMethod() error {
-	wp := &soracom.PaymentMethodInfoWebPay{
+	pmi := &paymentMethodInfo{
 		Cvc:         "123",
 		ExpireMonth: 12,
 		ExpireYear:  getNextYear(),
 		Name:        "SORAO TAMAGAWA",
-		Number:      "4242424242424242", // https://webpay.jp/docs/mock_cards
+		Number:      "4242424242424242", // https://pay.jp/docs/testcard
 	}
-	err := apiClient.RegisterPaymentMethodWebPay(wp)
+
+	pt, err := getPayJPToken(pmi)
+	if err != nil {
+		return err
+	}
+
+	st, err := getStripeTokenJP(pmi)
+	if err != nil {
+		return err
+	}
+
+	p := &soracom.PaymentMethodInfoPayJP{
+		PayJPToken:  pt,
+		StripeToken: st,
+	}
+
+	err = apiClient.RegisterPaymentMethodPayJP(p)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+type paymentGatewayResponse struct {
+	ID string `json:"id"`
+}
+
+func getPayJPToken(pmi *paymentMethodInfo) (string, error) {
+	return getPaymentGatewayToken(pmi, "https://api.pay.jp/v1/tokens", payJPPublishableKey)
+}
+
+func getStripeTokenJP(pmi *paymentMethodInfo) (string, error) {
+	return getPaymentGatewayToken(pmi, "https://api.stripe.com/v1/tokens", stripePublishableKeyJP)
+}
+
+func getStripeTokenG(pmi *paymentMethodInfo) (string, error) {
+	return getPaymentGatewayToken(pmi, "https://api.stripe.com/v1/tokens", stripePublishableKeyG)
+}
+
+func getPaymentGatewayToken(pmi *paymentMethodInfo, url, publishableKey string) (string, error) {
+	req, err := http.NewRequest("POST", url, pmi.getReader())
+	if err != nil {
+		return "", err
+	}
+	req.SetBasicAuth(publishableKey, "")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var r paymentGatewayResponse
+	err = json.Unmarshal(b, &r)
+	if err != nil {
+		return "", err
+	}
+
+	return r.ID, nil
 }
 
 func getNextYear() int {
