@@ -181,12 +181,7 @@ func registerPaymentMethod() error {
 		StripeToken: st,
 	}
 
-	err = apiClient.RegisterPaymentMethodPayJP(p)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return apiClient.RegisterPaymentMethodPayJP(p)
 }
 
 type paymentGatewayResponse struct {
