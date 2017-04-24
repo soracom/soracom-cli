@@ -36,6 +36,7 @@ Available Commands:
 
 Flags:
       --coverage-type string   Specify coverage type
+  -h, --help                   help for soracom
       --profile string         Specify profile name
 
 Use "soracom [command] --help" for more information about a command.
