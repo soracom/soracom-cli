@@ -30,6 +30,7 @@ Available Commands:
   shipping-addresses 出荷先情報に関する操作を行います。
   stats              統計情報に関する操作を行います。
   subscribers        サブスクライバー (SIM) に関する操作を行います。
+  unconfigure        コマンド実行環境（プロファイル）を削除します。
   users              SAM ユーザーに関する操作を行います。
   version            バージョン情報を表示します。
   vpg                VPG に関する操作を行います。

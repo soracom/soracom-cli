@@ -2857,6 +2857,13 @@
       }
     }
   },
+  "unconfigure": {
+    "cli": {
+      "summary": "Remove configurations.",
+      "description": "Remove configurations.",
+      "prompt": "Are you sure to remove profile '%s' ? (y/N) "
+    }
+  },
   "coupons": {
     "cli": {
       "summary": "List or register coupons.",

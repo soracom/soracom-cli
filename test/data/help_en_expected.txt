@@ -30,6 +30,7 @@ Available Commands:
   shipping-addresses List, create, update or delete shipping addresses.
   stats              Show or export statistics.
   subscribers        Manage subscribers.
+  unconfigure        Remove configurations.
   users              Manage SAM users.
   version            Show version info.
   vpg                List, create, update or delete VPGs.

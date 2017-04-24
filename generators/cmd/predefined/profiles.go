@@ -172,6 +172,27 @@ func saveProfile(profileName string, prof *profile) error {
 	return nil
 }
 
+func confirmDeleteProfile(profileName string) bool {
+	fmt.Printf(TR("unconfigure.cli.prompt"), profileName)
+	var s string
+	fmt.Scanf("%s\n", &s)
+	if s != "" && strings.ToLower(s) == "y" {
+		return true
+	}
+	return false
+}
+
+func deleteProfile(profileName string) error {
+	dir, err := getProfileDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(dir, profileName+".json")
+
+	return os.Remove(path)
+}
+
 func collectProfileInfo(profileName string) (*profile, error) {
 	profDir, err := getProfileDir()
 	if err != nil {
