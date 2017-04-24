@@ -1,5 +1,5 @@
 #!/bin/bash
-d=$( cd "$(dirname "$0" )"; cd ..; pwd )
+d=$( cd "$(dirname "$0" )"; cd ..; pwd -P )
 
 : "Checking shell scripts" && {
     command -v shellcheck > /dev/null 2>&1 && {

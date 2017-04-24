@@ -1,5 +1,5 @@
 #!/bin/bash
-d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
+d="$( cd "$( dirname "$0" )"; cd ..; pwd -P )"
 set -e
 
 VERSION=$1
