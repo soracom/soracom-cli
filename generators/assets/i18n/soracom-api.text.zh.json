@@ -2838,6 +2838,7 @@
       "summary": "Show, create or update configurations.",
       "description": "Show, create or update configurations.",
       "profile": {
+        "permission_is_too_open": "Permissions for the file '%s' which contains your credentials are too open. It is required that your credential files are NOT accessible by others.",
         "prompt": "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it.",
         "auth": {
           "prompt": "\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials (Operator Email and Password)\n3. Input SAM credentials (OperatorId, User name and Password)\n\n",

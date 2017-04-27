@@ -13,6 +13,7 @@ import (
 
 	"github.com/kennygrant/sanitize"
 	"github.com/mitchellh/go-homedir"
+	"github.com/soracom/soracom-cli/generators/lib"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -91,18 +92,13 @@ func loadProfile(profileName string) (*profile, error) {
 
 	path := filepath.Join(dir, profileName+".json")
 
-	// check if permission is 0600
-	if runtime.GOOS != "windows" {
-		s, err := os.Stat(path)
-		if err != nil {
-			return nil, err
-		}
-
-		if s.Mode()&077 != 0 {
-			return nil, fmt.Errorf("permission for %s is too open", path)
-		}
-	} else {
-		// TODO: handle ACL on windows env
+	// check if permission is less than 0600
+	tooOpen, err := lib.IsFilePermissionTooOpen(path)
+	if err != nil {
+		return nil, err
+	}
+	if tooOpen {
+		return nil, fmt.Errorf(TR("configure.cli.profile.permission_is_too_open"), path)
 	}
 
 	b, err := ioutil.ReadFile(path)
@@ -132,7 +128,6 @@ func saveProfile(profileName string, prof *profile) error {
 
 	path := filepath.Join(dir, profileName+".json")
 
-	// check if profile dir exists
 	err = os.MkdirAll(dir, 0700)
 	if err != nil {
 		return err
