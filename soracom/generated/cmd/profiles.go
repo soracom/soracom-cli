@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"syscall"
 
@@ -143,10 +142,9 @@ func saveProfile(profileName string, prof *profile) error {
 			return errors.New("abort")
 		}
 
-		os.Chmod(path, 0600)
-
-		if runtime.GOOS == "windows" {
-			// TODO: handle ACL on windows
+		err = lib.ProtectFile(path)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -160,8 +158,9 @@ func saveProfile(profileName string, prof *profile) error {
 		return err
 	}
 
-	if runtime.GOOS == "windows" {
-		// TODO: handle ACL on windows
+	err = lib.ProtectFile(path)
+	if err != nil {
+		return err
 	}
 
 	return nil

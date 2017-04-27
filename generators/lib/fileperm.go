@@ -16,3 +16,7 @@ func IsFilePermissionTooOpen(path string) (bool, error) {
 
 	return false, nil
 }
+
+func ProtectFile(path string) error {
+	return os.Chmod(path, 0600)
+}

@@ -56,6 +56,8 @@ fi
     echo "Building artifacts ..."
     go generate
     go get ./...
+    go get -u github.com/bearmini/go-acl # required to specify some dependencies explicitly as they are imported only in windows builds
+    go get -u golang.org/x/sys/windows
     gofmt -s -w .
     gas ./...
     #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"

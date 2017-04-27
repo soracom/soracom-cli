@@ -133,6 +133,25 @@ soracom subscribers list
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
+### トラブルシューティング
+
+もし、以下のようなエラーメッセージが表示されてしまったら、
+
+```
+Error: 認証情報ファイル 'path/to/default.json' へのアクセス権が十分に絞り込まれていません。
+認証情報ファイルへは、soracom コマンドを実行しているユーザーのみがアクセス可能なように設定する必要があります。
+```
+
+以下のコマンドを実行して修復を試みてください。
+
+```
+soracom unconfigure
+soracom configure
+```
+
+いったん `unconfigure` してから `configure` することにより、認証情報ファイルを適切なパーミッションで再作成します。
+
+
 
 # ビルド/テスト方法
 

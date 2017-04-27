@@ -5,6 +5,7 @@ package lib
 import (
 	"fmt"
 
+	acl "github.com/bearmini/go-acl"
 	"github.com/bearmini/go-acl/api"
 	"golang.org/x/sys/windows"
 )
@@ -76,4 +77,8 @@ func sidToString(sid *windows.SID) string {
 		return "<err: " + err.Error()
 	}
 	return str
+}
+
+func ProtectFile(path string) error {
+	return acl.Apply(path, true, false, acl.GrantName((0600)<<23, "CREATOR OWNER"))
 }
