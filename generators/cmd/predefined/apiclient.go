@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"strings"
+	"time"
 )
 
 // APIClient provides an access to SORACOM REST API
@@ -50,7 +52,22 @@ type apiClientOptions struct {
 
 // New creates an instance of APIClient
 func newAPIClient(options *apiClientOptions) *apiClient {
-	hc := http.DefaultClient
+	hc := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+				DualStack: true,
+			}).DialContext,
+			MaxIdleConns:          100,
+			IdleConnTimeout:       90 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+			ResponseHeaderTimeout: 120 * time.Second,
+		},
+		Timeout: 120 * time.Second,
+	}
 
 	var endpoint = getSpecifiedEndpoint()
 
@@ -83,11 +100,12 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 }
 
 type apiParams struct {
-	method      string
-	path        string
-	query       string
-	contentType string
-	body        string
+	method         string
+	path           string
+	query          string
+	contentType    string
+	body           string
+	noRetryOnError bool
 }
 
 func (ac *apiClient) callAPI(params *apiParams) (string, error) {
@@ -122,7 +140,12 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		dumpHTTPRequest(req)
 	}
 
-	res, err := ac.httpClient.Do(req)
+	var res *http.Response
+	if params.noRetryOnError {
+		res, err = ac.httpClient.Do(req)
+	} else {
+		res, err = ac.doHTTPRequestWithRetries(req)
+	}
 	if err != nil {
 		return "", err
 	}
@@ -142,6 +165,58 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		return "", err
 	}
 	return bytes.NewBuffer(b).String(), nil
+}
+
+func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response, error) {
+	var err error
+	backoffSeconds := []int{10, 10, 20, 30, 50}
+	for _, wait := range backoffSeconds {
+		var res *http.Response
+		res, err = ac.httpClient.Do(req)
+		if err == nil && !retryableError(res.StatusCode) {
+			return res, nil
+		}
+		if err != nil && res != nil && res.Body != nil {
+			defer res.Body.Close()
+		}
+
+		ac.reportWaitingBeforeRetrying(res, err, wait)
+		time.Sleep(time.Duration(wait) * time.Second)
+		ac.reportRetrying()
+	}
+
+	return nil, err
+}
+
+func (ac *apiClient) reportWaitingBeforeRetrying(res *http.Response, err error, wait int) {
+	if !ac.verbose {
+		return
+	}
+	fmt.Fprintf(os.Stderr, "error detected. ")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%+v\n", err)
+	} else {
+		fmt.Fprintf(os.Stderr, "http status code == %d\n", res.StatusCode)
+	}
+	fmt.Fprintf(os.Stderr, "wait for %d seconds ...\n", wait)
+}
+
+func (ac *apiClient) reportRetrying() {
+	if !ac.verbose {
+		return
+	}
+	fmt.Fprintf(os.Stderr, "trying it again\n")
+}
+
+func retryableError(httpStatus int) bool {
+	if httpStatus == http.StatusTooManyRequests {
+		return true
+	}
+	if httpStatus < http.StatusInternalServerError {
+		return false
+	}
+
+	return true
 }
 
 // SetVerbose sets if verbose output is enabled or not
