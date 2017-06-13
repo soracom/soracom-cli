@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -25,8 +26,8 @@ type authResult struct {
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	profile, err := getProfile()
 	if err != nil {
-		fmt.Println("unable to load the profile.")
-		fmt.Println("run `soracom configure` first.")
+		fmt.Fprintln(os.Stderr, "unable to load the profile.")
+		fmt.Fprintln(os.Stderr, "run `soracom configure` first.")
 		return err
 	}
 
@@ -49,7 +50,6 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 
 	res, err := ac.callAPI(params)
 	if err != nil {
-		fmt.Println("auth failed: ", err.Error())
 		return err
 	}
 
