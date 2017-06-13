@@ -1,7 +1,7 @@
 package main
 
 func generateTrunkCommands(templateDir, outputDir string) error {
-	subCommandTemplate, err := openTemplateFile(templateDir, "trunk.tpl")
+	subCommandTemplate, err := openTemplateFile(templateDir, "trunk.gotmpl")
 	if err != nil {
 		return err
 	}

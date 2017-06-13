@@ -12,7 +12,7 @@ import (
 
 func generateLeafCommands(apiDef *lib.APIDefinitions, templateDir, outputDir string) error {
 	var err error
-	subCommandTemplate, err := openTemplateFile(templateDir, "leaf.tpl")
+	subCommandTemplate, err := openTemplateFile(templateDir, "leaf.gotmpl")
 	if err != nil {
 		return err
 	}
