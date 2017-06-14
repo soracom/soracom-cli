@@ -50,13 +50,15 @@ func IsFilePermissionTooOpen(path string) (bool, error) {
 			return true, nil
 		}
 		//fmt.Println(sidToString(ace.GetSID()))
-		if !windows.EqualSid(ace.GetSID(), currProcSID) {
+		sid := ace.GetSID()
+		if !windows.EqualSid(sid, currProcSID) {
 			return true, nil
 		}
 	}
 	return false, nil
 }
 
+// the returned SID from this function must NOT be freed. It's resident data in the Process Token
 func GetCurrentProcessSID() (*windows.SID, error) {
 	token, err := windows.OpenCurrentProcessToken()
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 
@@ -97,7 +98,12 @@ func loadProfile(profileName string) (*profile, error) {
 		return nil, err
 	}
 	if tooOpen {
-		return nil, fmt.Errorf(TR("configure.cli.profile.permission_is_too_open"), path)
+		msg := fmt.Sprintf(TR("configure.cli.profile.permission_is_too_open"), path)
+		if runtime.GOOS != "windows" {
+			return nil, errors.New(msg)
+		}
+		// only warn on windows
+		fmt.Fprintf(os.Stderr, "WARN: "+msg+"\n")
 	}
 
 	b, err := ioutil.ReadFile(path)

@@ -21,6 +21,9 @@ if [ -z "$2" ]; then
     TARGETS="linux windows darwin"
 fi
 
+# https://github.com/niemeyer/gopkg/issues/50
+git config --global http.https://gopkg.in.followRedirects true
+
 : "Installing dependencies" && {
     echo "Installing build dependencies ..."
     go get -u golang.org/x/tools/cmd/goimports
@@ -28,6 +31,7 @@ fi
     go get -u github.com/jteeuwen/go-bindata/...
     go get -u github.com/laher/goxc
     go get -u github.com/GoASTScanner/gas
+    go get -u github.com/elazarl/goproxy
 }
 
 : "Testing generator's library" && {
