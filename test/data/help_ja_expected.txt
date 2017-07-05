@@ -11,6 +11,7 @@ Available Commands:
   coupons            登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
   credentials        認証情報に関する操作を行います。
   data               SIM からアップロードされて格納されているデータを取得します。
+  devices            デバイスに関する操作を行います。
   event-handlers     イベントハンドラーに関する操作を行います。
   files              エクスポートされたファイルを取得します。
   groups             グループに関する操作を行います。

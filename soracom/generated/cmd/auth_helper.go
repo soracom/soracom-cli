@@ -24,6 +24,13 @@ type authResult struct {
 }
 
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
+	apiKey, apiToken, credentialsProvided := getProvidedCredentials()
+	if credentialsProvided {
+		ac.APIKey = apiKey
+		ac.Token = apiToken
+		return nil
+	}
+
 	profile, err := getProfile()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "unable to load the profile.")
@@ -63,6 +70,10 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	ac.APIKey = ares.APIKey
 	ac.Token = ares.Token
 	return nil
+}
+
+func getProvidedCredentials() (string, string, bool) {
+	return providedAPIKey, providedAPIToken, (providedAPIKey != "" && providedAPIToken != "")
 }
 
 func toJSON(x interface{}) string {

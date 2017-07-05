@@ -40,6 +40,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "data.go",
 		},
 		{
+			Use:                       "devices",
+			Short:                     "devices.cli.summary",
+			Long:                      "devices.cli.description",
+			CommandVariableName:       "DevicesCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "devices.go",
+		},
+		{
 			Use:                       "event-handlers",
 			Short:                     "event_handlers.cli.summary",
 			Long:                      "event_handlers.cli.description",

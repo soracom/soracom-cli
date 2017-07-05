@@ -2786,6 +2786,163 @@
     "cli": {
       "summary": "VPG に関する操作を行います。",
       "description": "VPG (Virtual Private Gateways) に関する操作を行います。"
+    },
+    "junction": {
+      "mirroring": {
+        "peers": {
+          "post":{
+            "summary": "Junction ミラーリング peer を追加します。",
+            "description": "Junction ミラーリング peer を追加します。",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "ミラーリング peer に関する情報"
+              }
+            },
+            "responses":{
+              "status201": {
+                "description": "ミラーリング peer が作成または更新されました。"
+              },
+              "status404": {
+                "description": "指定された VPG が見つかりませんでした。"
+              }
+            }
+          },
+          "ipaddr": {
+            "put":{
+              "summary": "Junction ミラーリング peer を更新します。",
+              "description": "Junction ミラーリング peer を更新します。",
+              "parameters": {
+                "id":{
+                  "description": "VPG ID"
+                },
+                "ipaddr": {
+                  "description": "更新したいミラーリング peer の IP アドレス"
+                },
+                "body":{
+                  "description": "更新する属性のリスト"
+                }
+              },
+              "responses":{
+                "status200": {
+                  "description": "ミラーリング peer の情報が更新されました。"
+                },
+                "status404": {
+                  "description": "指定された VPG が見つかりませんでした。"
+                }
+              }
+            },
+            "delete":{
+              "summary": "Junction ミラーリング peer を削除します。",
+              "description": "Junction ミラーリング peer を削除します。",
+              "parameters":{
+                "id":{
+                  "description": "VPG ID"
+                },
+                "ipaddr":{
+                  "description": "削除したいミラーリング peer の IP アドレス"
+                }
+              },
+              "responses":{
+                "status204": {
+                  "description": "ミラーリング peer が削除されました。"
+                },
+                "status404": {
+                  "description": "指定された VPG が見つかりませんでした。"
+                }
+              }
+            }
+          }
+        }
+      },
+      "inspection": {
+        "set": {
+          "post": {
+            "summary": "Junction インスペクション機能の設定を行います。",
+            "description": "Junction インスペクション機能の設定を行います。",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "インスペクション設定内容"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "設定内容が追加または更新されました。"
+              },
+              "status404": {
+                "description": "指定された VPG が見つかりませんでした。"
+              }
+            }
+          }
+        },
+        "unset": {
+          "post": {
+            "summary": "Junction インスペクション機能の設定を解除します。",
+            "description": "Junction インスペクション機能の設定を解除します。",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "設定が解除されました。"
+              },
+              "status404": {
+                "description": "指定された VPG が見つかりませんでした。"
+              }
+            }
+          }
+        }
+      },
+      "redirection": {
+        "set": {
+          "post": {
+            "summary": "Junction リダイレクション機能の設定を行います。",
+            "description": "Junction リダイレクション機能の設定を行います。",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "リダイレクション設定内容"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "設定内容が追加または更新されました。"
+              },
+              "status404": {
+                "description": "指定された VPG が見つかりませんでした。"
+              }
+            }
+          }
+        },
+        "unset": {
+          "post": {
+            "summary": "Junction リダイレクション機能の設定を行います。",
+            "description": "Junction リダイレクション機能の設定を行います。",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "設定が解除されました。"
+              },
+              "status404": {
+                "description": "指定された VPG が見つかりませんでした。"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "logs": {
@@ -2826,6 +2983,398 @@
     "cli": {
       "summary": "ログに関する操作を行います。",
       "description": "ログに関する操作を行います。"
+    }
+  },
+  "devices": {
+    "list": {
+      "summary": "デバイスのリストを取得します。",
+      "description": "デバイスのリストを取得します。",
+      "parameters":{
+        "tag_name":{
+          "description": "タグの名前"
+        },
+        "tag_value":{
+          "description": "タグの値"
+        },
+        "tag_value_match_mode":{
+          "description": "タグの検索条件 (exact | prefix)"
+        },
+        "last_evaluated_key":{
+          "description": "現ページで取得した最後のデバイスの ID。このパラメータを指定することで次のデバイスから始まるリストを取得できる。"
+        },
+        "limit":{
+          "description": "取得するデバイス数の上限"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "デバイスのリスト"
+        }
+      }
+    },
+    "create": {
+      "summary": "新しいデバイスを作成します。",
+      "description": "新しいデバイスを作成します。",
+      "parameters": {
+        "body": {
+          "description": "作成するデバイス"
+        }
+      },
+      "responses":{
+        "status201": {
+          "description": "作成されたデバイス"
+        }
+      }
+    },
+    "get": {
+      "summary": "指定されたデバイス ID のデバイスを取得します。",
+      "description": "指定されたデバイス ID のデバイスを取得します。",
+      "parameters": {
+        "deviceId":{
+          "description": "デバイス ID"
+        },
+        "model":{
+          "description": "モデル情報を取得するかどうか"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "指定されたデバイス ID のデバイス"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイスが見つからなかった"
+        }
+      }
+    },
+    "delete": {
+      "summary": "デバイスを削除します。",
+      "description": "デバイスを削除します。",
+      "parameters": {
+        "deviceId":{
+          "description": "削除するデバイス"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "デバイスが削除された"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイスが見つからなかった"
+        }
+      }
+    },
+    "set_group":{
+      "summary": "デバイスをグループに参加させます。",
+      "description": "デバイスをグループに参加させます。",
+      "parameters": {
+        "deviceId":{
+          "description": "更新するデバイスのデバイス ID"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "デバイスが更新された"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイスが見つからなかった"
+        }
+      }
+    },
+    "unset_group":{
+      "summary": "デバイスをグループから外します。",
+      "description": "デバイスをグループから外します。",
+      "parameters": {
+        "deviceId":{
+          "description": "更新するデバイスのデバイス ID"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "デバイスが更新された"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイスが見つからなかった"
+        }
+      }
+    },
+    "put_tags": {
+      "summary": "デバイスのタグを更新します。",
+      "description": "デバイスのタグを更新します。",
+      "parameters": {
+        "deviceId":{
+          "description": "更新するデバイスのデバイス ID"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "デバイスが更新された"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイスが見つからなかった"
+        }
+      }
+    },
+    "delete_tag": {
+      "summary": "デバイスのタグを削除します。",
+      "description": "デバイスのタグを削除します。",
+      "parameters": {
+        "deviceId":{
+          "description": "更新するデバイスのデバイス ID"
+        },
+        "tagName":{
+          "description": "削除するタグの名前"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "タグが削除された"
+        },
+        "status404":{
+          "description": "指定されたデバイス ID を持つデバイス、もしくは指定されたタグが見つからなかった"
+        }
+      }
+    },
+    "get_instance": {
+      "summary": "デバイスの Instance 以下のすべての Resource を Read します。",
+      "description": "デバイスの Instance 以下のすべての Resource を Read します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "model":{
+          "description": "モデル情報を含めるかどうか"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "指定されたObject Instance下のResourceのリスト"
+        },
+        "status400":{
+          "description": "Object InstanceがRead操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Object Instanceが見つかりません"
+        }                    
+      }
+    },
+    "get_resource": {
+      "summary": "指定されたデバイスの Resource を Read します。",
+      "description": "指定されたデバイスの Resource を Read します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "モデル情報を含めるかどうか"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Resource"
+        },
+        "status400":{
+          "description": "ResourceはRead操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Resourceが見つかりません"
+        }                              
+      }
+    },
+    "put_resource": {
+      "summary": "デバイスの Resource に値を Write します。",
+      "description": "デバイスの Resource に値を Write します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "モデル情報を含めるかどうか"
+        },
+        "value":{
+          "description": "リソースにセットする値"
+        }                    
+      },
+      "responses":{
+        "status202":{
+          "description": "Resourceの更新を受け付けました"
+        },
+        "status400":{
+          "description": "ResourceはWrite操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Resourceが見つかりません"
+        }                                        
+      }
+    },
+    "execute_resource": {
+      "summary": "デバイスの Resource を Execute します。",
+      "description": "デバイスの Resource を Execute します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "arg":{
+          "description": "Resourceを実行する際に渡す引数文字列"
+        }                    
+      },
+      "responses":{
+        "status202":{
+          "description": "Resourceの実行を受け付けました"
+        },
+        "status400":{
+          "description": "ResourceはExecute操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Resourceが見つかりません"
+        }                                        
+      }
+    },
+    "observe_resources": {
+      "summary": "指定された Object Instance 以下の Resource の Observe を開始します。",
+      "description": "指定された Object Instance 以下の Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "model":{
+          "description": "モデル情報を含めるかどうか"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Object Instance 下の Resource の Observe を開始しました"
+        },
+        "status400":{
+          "description": "Object Instance は Read 操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Resourceが見つかりません"
+        }                                        
+      }
+    },
+    "unobserve_resources": {
+      "summary": "Object Instance 下の Resource の Observe を停止します。",
+      "description": "Object Instance 下の Resource の Observe を停止します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Observe を停止しました"
+        },
+        "status404":{
+          "description": "Object Instance が見つかりません"
+        }          
+      }
+    },
+    "observe_resource": {
+      "summary": "指定されたデバイスの Resource の Observe を開始します。",
+      "description": "指定されたデバイスの Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "モデル情報を含めるかどうか"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Resource の Observe を開始しました"
+        },
+        "status400":{
+          "description": "Resource は Read 操作をサポートしていません"
+        },
+        "status404":{
+          "description": "Resource が見つかりません"
+        }                                        
+      }
+    },
+    "unobserve_resource": {
+      "summary": "デバイスの Resource の Observe を停止します。",
+      "description": "デバイスの Resource の Observe を停止します。",
+      "parameters": {
+        "deviceId":{
+          "description": "対象となるデバイス"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Observe を停止しました"
+        },
+        "status404":{
+          "description": "Resourceが見つかりません"
+        }          
+      }
+    },
+    "cli": {
+      "summary": "デバイスに関する操作を行います。",
+      "description": "デバイスに関する操作を行います。"
     }
   },
   "completion": {

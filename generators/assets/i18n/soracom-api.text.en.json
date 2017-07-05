@@ -2786,6 +2786,163 @@
     "cli": {
       "summary": "List, create, update or delete VPGs.",
       "description": "List, create, update or delete VPGs (Virtual Private Gateways)."
+    },
+    "junction": {
+      "mirroring": {
+        "peers": {
+          "post":{
+            "summary": "Add node in the list of Junction mirroring peers",
+            "description": "Add node in the list of Junction mirroring peers",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "Mirroring peer"
+              }
+            },
+            "responses":{
+              "status201": {
+                "description": "Mirroring peer added/updated"
+              },
+              "status404": {
+                "description": "No such VPG found"
+              }
+            }
+          },
+          "ipaddr": {
+            "put":{
+              "summary": "Update a Junction mirroring peer",
+              "description": "Update a Junction mirroring peer",
+              "parameters": {
+                "id":{
+                  "description": "VPG ID"
+                },
+                "ipaddr": {
+                  "description": "Mirroring peer IP address"
+                },
+                "body":{
+                  "description": "List of attributes to update"
+                }
+              },
+              "responses":{
+                "status200": {
+                  "description": "Mirroring peer updated"
+                },
+                "status404": {
+                  "description": "No such VPG found"
+                }
+              }
+            },
+            "delete":{
+              "summary": "Remove peer from the list of Junction mirroring peers",
+              "description": "Remove peer from the list of Junction mirroring peers",
+              "parameters":{
+                "id":{
+                  "description": "VPG ID"
+                },
+                "ipaddr":{
+                  "description": "IP address of mirroring peer"
+                }
+              },
+              "responses":{
+                "status204": {
+                  "description": "Mirroring peer removed"
+                },
+                "status404": {
+                  "description": "No such VPG found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "inspection": {
+        "set": {
+          "post": {
+            "summary": "Set configuration for Junction inspection feature",
+            "description": "Set configuration for Junction inspection feature",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "Inspection configuration"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "Configuration added/updated"
+              },
+              "status404": {
+                "description": "No such VPG found"
+              }
+            }
+          }
+        },
+        "unset": {
+          "post": {
+            "summary": "Unset configuration for Junction inspection feature",
+            "description": "Unset configuration for Junction inspection feature",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "Configuration unset"
+              },
+              "status404": {
+                "description": "No such VPG found"
+              }
+            }
+          }
+        }
+      },
+      "redirection": {
+        "set": {
+          "post": {
+            "summary": "Set configuration for Junction redirection feature",
+            "description": "Set configuration for Junction redirection feature",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              },
+              "body": {
+                "description": "Redirection configuration"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "Configuration added/updated"
+              },
+              "status404": {
+                "description": "No such VPG found"
+              }
+            }
+          }
+        },
+        "unset": {
+          "post": {
+            "summary": "Unset configuration for Junction redirection feature",
+            "description": "Unset configuration for Junction redirection feature",
+            "parameters": {
+              "id": {
+                "description": "VPG ID"
+              }
+            },
+            "responses":{
+              "status200": {
+                "description": "Configuration unset"
+              },
+              "status404": {
+                "description": "No such VPG found"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "logs": {
@@ -2826,6 +2983,404 @@
     "cli": {
       "summary": "List logs.",
       "description": "List logs."
+    }
+  },
+  "devices": {
+    "list": {
+      "summary": "Returns a list of Devices",
+      "description": "Returns a list of Devices",
+      "parameters":{
+        "tag_name":{
+          "description": "Tag name"
+        },
+        "tag_value":{
+          "description": "Tag value"
+        },
+        "tag_value_match_mode":{
+          "description": "Tag value match mode (exact | prefix)"
+        },
+        "last_evaluated_key":{
+          "description": "ID of the last Device in the previous page"
+        },
+        "limit":{
+          "description": "Max number of Devices in a response"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "List of Devices"
+        }
+      }
+    },
+    "create": {
+      "summary": "Creates a new Device",
+      "description": "Creates a new Device",
+      "parameters": {
+        "body": {
+          "description": "Device to create"
+        }
+      },
+      "responses":{
+        "status201": {
+          "description": "Device created"
+        }
+      }
+    },
+    "get": {
+      "summary": "Returns a Device identified by device ID",
+      "description": "Returns a Device identified by device ID",
+      "parameters": {
+        "deviceId":{
+          "description": "Device ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "A Device identified by device ID"
+        },
+        "status404":{
+          "description": "No such device found"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Delete Device",
+      "description": "Delete Device",
+      "parameters": {
+        "deviceId":{
+          "description": "Device to delete"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Device deleted"
+        },
+        "status404":{
+          "description": "No such device found"
+        }
+      }
+    },
+    "set_group":{
+      "summary": "Lets a device device join a group",
+      "description": "Lets a device device join a group",
+      "parameters": {
+        "deviceId":{
+          "description": "Device to update"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Device updated"
+        },
+        "status404":{
+          "description": "No such device found"
+        }
+      }
+    },
+    "unset_group":{
+      "summary": "Lets a device leave from a group",
+      "description": "Lets a device leave from a group",
+      "parameters": {
+        "deviceId":{
+          "description": "Device to update"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Device updated"
+        },
+        "status404":{
+          "description": "No such device found"
+        }
+      }
+    },
+    "put_tags": {
+      "summary": "Updates device tags",
+      "description": "Updates device tags",
+      "parameters": {
+        "deviceId":{
+          "description": "Device to update"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Device updated"
+        },
+        "status404":{
+          "description": "No such device found"
+        }
+      }
+    },
+    "delete_tag": {
+      "summary": "Delete device tag",
+      "description": "Delete device tag",
+      "parameters": {
+        "deviceId":{
+          "description": "Device to update"
+        },
+        "tagName":{
+          "description": "Name of tag to delete"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Device tag deleted"
+        },
+        "status404":{
+          "description": "No such device or tag found"
+        }
+      }
+    },
+    "get_instance": {
+      "summary": "Get resources under an object instance of a device",
+      "description": "Get resources under an object instance of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Resources under the specified object instance"
+        },
+        "status400":{
+          "description": "Object instance is not readable"
+        },
+        "status404":{
+          "description": "Object instance is not found"
+        }          
+      }
+    },
+    "get_resource": {
+      "summary": "Get the specified resource of a device",
+      "description": "Get the specified resource of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Resource"
+        },
+        "status400":{
+          "description": "Resource is not readable"
+        },
+        "status404":{
+          "description": "Resource is not found"
+        }                    
+      }
+    },
+    "put_resource": {
+      "summary": "Write value to a resource of a device",
+      "description": "Write value to a resource of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        },
+        "value":{
+          "description": "Value(s) to write to the resource"
+        }          
+      },
+      "responses":{
+        "status202":{
+          "description": "Updating resource is accepted"
+        },
+        "status400":{
+          "description": "Resource is not writable"
+        },
+        "status404":{
+          "description": "Resource is not found"
+        }                    
+      }
+    },
+    "execute_resource": {
+      "summary": "Executes a resource of a device",
+      "description": "Executes a resource of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "arg":{
+          "description": "Argument string when executing the resource"
+        }          
+      },
+      "responses":{
+        "status202":{
+          "description": "Execution request is accepted"
+        },
+        "status400":{
+          "description": "Resource is not executable"
+        },
+        "status404":{
+          "description": "Resource is not found"
+        }          
+      }
+    },
+    "observe_resource": {
+      "summary": "Triggers observation of the specified resource of a device",
+      "description": "Triggers observation of the specified resource of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Observation started. Returns current snapshot of the resource"
+        },
+        "status400":{
+          "description": "Resource is not readable"
+        },
+        "status404":{
+          "description": "Resource is not found"
+        }
+      }
+    },
+    "unobserve_resource": {
+      "summary": "Stops observation of a resource of a device",
+      "description": "Stops observation of a resource of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Observation cancelled"
+        },
+        "status404":{
+          "description": "Resource is not found"
+        }
+      }
+    },
+    "observe_resources": {
+      "summary": "Triggers observation of resources under a specified object instance of a device",
+      "description": "Triggers observation of resources under a specified object instance of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        },
+        "model":{
+          "description": "Whether or not to add model information"
+        }
+      },
+      "responses":{
+        "status200":{
+          "description": "Observation started. Returns current snapshot of the specified object instance"
+        },
+        "status400":{
+          "description": "Object instance is not readable"
+        },
+        "status404":{
+          "description": "Object instance is not found"
+        }
+      }
+    },
+    "unobserve_resources": {
+      "summary": "Stops observation of an object instance of a device",
+      "description": "Stops observation of an object instance of a device",
+      "parameters": {
+        "deviceId":{
+          "description": "Target device"
+        },
+        "object":{
+          "description": "Object ID"
+        },
+        "instance":{
+          "description": "Instance ID"
+        },
+        "resource":{
+          "description": "Resource ID"
+        }
+      },
+      "responses":{
+        "status204":{
+          "description": "Observation cancelled"
+        },
+        "status404":{
+          "description": "Object instance is not found"
+        }          
+      }
+    },
+    "cli": {
+      "summary": "Manage devices.",
+      "description": "Manage devices."
     }
   },
   "completion": {

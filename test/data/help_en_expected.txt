@@ -11,6 +11,7 @@ Available Commands:
   coupons            List or register coupons.
   credentials        List, create, update or delete credentials sets.
   data               Get stored data from subscribers.
+  devices            Manage devices.
   event-handlers     List, create, update or delete event handlers.
   files              Get an exported file.
   groups             List, create, update or delete groups.

@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: '20170207'
+  version: '20170705'
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -4474,6 +4474,211 @@ paths:
         404:
           description: ${virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.responses.status404.description}
 
+  "/virtual_private_gateways/{id}/junction/mirroring/peers":
+    post:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.mirroring.peers.post.summary}
+      description: ${virtual_private_gateway.junction.mirroring.peers.post.description}
+      operationId: createMirroringPeer
+      x-soracom-cli:
+        - vpg create-mirroring-peer
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.mirroring.peers.post.parameters.id.description}
+        required: true
+        type: string
+      - name: mirroring peer
+        in: body
+        description: ${virtual_private_gateway.junction.mirroring.peers.post.parameters.body.description}
+        required: true
+        schema:
+          "$ref": "#/definitions/JunctionMirroringPeer"
+      responses:
+        '201':
+          description: ${virtual_private_gateway.junction.mirroring.peers.post.responses.status201.description}
+        '404':
+          description: ${virtual_private_gateway.junction.mirroring.peers.post.responses.status404.description}
+
+  "/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}":
+    put:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.summary}
+      description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.description}
+      operationId: updateMirroringPeer
+      x-soracom-cli:
+        - vpg update-mirroring-peer
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.parameters.id.description}
+        required: true
+        type: string
+      - name: ipaddr
+        in: path
+        description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.parameters.ipaddr.description}
+        required: true
+        type: string
+      - name: updates
+        in: body
+        description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.parameters.body.description}
+        required: true
+        schema:
+          type: array
+          items:
+            "$ref": "#/definitions/AttributeUpdate"
+      responses:
+        '200':
+          description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.responses.status200.description}
+        '404':
+          description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.put.responses.status404.description}
+
+    delete:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.summary}
+      description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.description}
+      operationId: deleteMirroringPeer
+      x-soracom-cli:
+        - vpg delete-mirroring-peer
+      security:
+        - api_key: []
+        - api_token: []
+      consumes: [text/plain]
+      produces: [text/plainn]
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.parameters.id.description}
+        required: true
+        type: string
+      - name: ipaddr
+        in: path
+        description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.parameters.ipaddr.description}
+        required: true
+        type: string
+      responses:
+        '204':
+          description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.responses.status204.description}
+        '404':
+          description: ${virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.responses.status404.description}
+
+  "/virtual_private_gateways/{id}/junction/set_inspection":
+    post:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.inspection.set.post.summary}
+      description: ${virtual_private_gateway.junction.inspection.set.post.description}
+      operationId: setInspectionConfiguration
+      x-soracom-cli:
+        - vpg set-inspection
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.inspection.set.post.parameters.id.description}
+        required: true
+        type: string
+      - name: inspection configuration
+        in: body
+        description: ${virtual_private_gateway.junction.inspection.set.post.parameters.body.description}
+        required: true
+        schema:
+          "$ref": "#/definitions/JunctionInspectionConfiguration"
+      responses:
+        '200':
+          description: ${virtual_private_gateway.junction.inspection.set.post.responses.status200.description}
+        '404':
+          description: ${virtual_private_gateway.junction.inspection.set.post.responses.status404.description}
+
+  "/virtual_private_gateways/{id}/junction/set_redirection":
+    post:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.redirection.set.post.summary}
+      description: ${virtual_private_gateway.junction.redirection.set.post.description}
+      operationId: setRedirectionConfiguration
+      x-soracom-cli:
+        - vpg set-redirection
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.redirection.set.post.parameters.id.description}
+        required: true
+        type: string
+      - name: redirection configuration
+        in: body
+        description: ${virtual_private_gateway.junction.redirection.set.post.parameters.body.description}
+        required: true
+        schema:
+          "$ref": "#/definitions/JunctionRedirectionConfiguration"
+      responses:
+        '200':
+          description: ${virtual_private_gateway.junction.redirection.set.post.responses.status200.description}
+        '404':
+          description: ${virtual_private_gateway.junction.redirection.set.post.responses.status404.description}
+
+  "/virtual_private_gateways/{id}/junction/unset_inspection":
+    post:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.inspection.unset.post.summary}
+      description: ${virtual_private_gateway.junction.inspection.unset.post.description}
+      operationId: unsetInspectionConfiguration
+      x-soracom-cli:
+        - vpg unset-inspection
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.inspection.unset.post.parameters.id.description}
+        required: true
+        type: string
+      responses:
+        '200':
+          description: ${virtual_private_gateway.junction.inspection.unset.post.responses.status200.description}
+        '404':
+          description: ${virtual_private_gateway.junction.inspection.unset.post.responses.status404.description}
+
+  "/virtual_private_gateways/{id}/junction/unset_redirection":
+    post:
+      tags:
+      - VirtualPrivateGateway
+      summary: ${virtual_private_gateway.junction.redirection.unset.post.summary}
+      description: ${virtual_private_gateway.junction.redirection.unset.post.description}
+      operationId: unsetRedirectionConfiguration
+      x-soracom-cli:
+        - vpg unset-redirection
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: id
+        in: path
+        description: ${virtual_private_gateway.junction.redirection.unset.post.parameters.id.description}
+        required: true
+        type: string
+      responses:
+        '200':
+          description: ${virtual_private_gateway.junction.redirection.unset.post.responses.status200.description}
+        '404':
+          description: ${virtual_private_gateway.junction.redirection.unset.post.responses.status404.description}
+
   '/virtual_private_gateways/{vpg_id}/vpc_peering_connections':
     post:
       summary: ${virtual_private_gateway.create_vpc_peering_connection.post.summary}
@@ -4596,6 +4801,601 @@ paths:
             items:
              '$ref': '#/definitions/LogEntry'
 
+  "/devices":
+    get:
+      tags:
+      - Device
+      summary: ${devices.list.summary}
+      description: ${devices.list.description}
+      operationId: listDevices
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices list
+      parameters:
+      - name: tag_name
+        in: query
+        description: ${devices.list.parameters.tag_name.description}
+        required: false
+        type: string
+        default: 'null'
+      - name: tag_value
+        in: query
+        description: ${devices.list.parameters.tag_value.description}
+        required: false
+        type: string
+        default: 'null'
+      - name: tag_value_match_mode
+        in: query
+        description: ${devices.list.parameters.tag_value_match_mode.description}
+        required: false
+        type: string
+        default: 'null'
+      - name: last_evaluated_key
+        in: query
+        description: ${devices.list.parameters.last_evaluated_key.description}
+        required: false
+        type: string
+        default: 'null'
+      - name: limit
+        in: query
+        description: ${devices.list.parameters.limit.description}
+        required: false
+        type: integer
+        default: -1
+        format: int32
+      responses:
+        '200':
+          description: ${devices.list.responses.status200.description}
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/Device"
+
+    post:
+      tags:
+      - Device
+      summary: ${devices.create.summary}
+      description: ${devices.create.description}
+      operationId: createDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices create
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: device
+        description: ${devices.create.parameters.body.description}
+        required: true
+        schema:
+          "$ref": "#/definitions/Device"
+      responses:
+        '201':
+          description: ${devices.create.responses.status201.description}
+          schema:
+            "$ref": "#/definitions/Device"
+
+  "/devices/{deviceId}":
+    get:
+      tags:
+      - Device
+      summary: ${devices.get.summary}
+      description: ${devices.get.description}
+      operationId: getDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices get
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.get.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: ${devices.get.parameters.model.description}
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: ${devices.get.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/Device"
+        '404':
+          description: ${devices.get.responses.status404.description}
+
+    delete:
+      tags:
+      - Device
+      summary: ${devices.delete.summary}
+      description: ${devices.delete.description}
+      operationId: deleteDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices delete
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.delete.parameters.deviceId.description}
+        required: true
+        type: string
+      responses:
+        '204':
+          description: ${devices.delete.responses.status204.description}
+        '404':
+          description: ${devices.delete.responses.status404.description}
+
+  "/devices/{deviceId}/set_group":
+    post:
+      tags:
+      - Device
+      summary: ${devices.set_group.summary}
+      description: ${devices.set_group.description}
+      operationId: setDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices set-group
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.set_group.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: groupId
+        in: body
+        schema:
+          type: object
+          properties:
+            groupId:
+              type: string
+      responses:
+        '200':
+          description: ${devices.set_group.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/Device"
+        '404':
+          description: ${devices.set_group.responses.status404.description}
+
+  "/devices/{deviceId}/unset_group":
+    post:
+      tags:
+      - Device
+      summary: ${devices.unset_group.summary}
+      description: ${devices.unset_group.description}
+      operationId: unsetDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices unset-group
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.unset_group.parameters.deviceId.description}
+        required: true
+        type: string
+      responses:
+        '200':
+          description: ${devices.unset_group.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/Device"
+        '404':
+          description: ${devices.unset_group.responses.status404.description}
+
+  "/devices/{deviceId}/tags":
+    put:
+      tags:
+      - Device
+      summary: ${devices.put_tags.summary}
+      description: ${devices.put_tags.description}
+      operationId: putDeviceTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices put-device-tags
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.put_tags.parameters.deviceId.description}
+        required: true
+        type: string
+      responses:
+        '200':
+          description: ${devices.put_tags.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/Device"
+        '404':
+          description: ${devices.put_tags.responses.status404.description}
+
+  "/devices/{deviceId}/tags/{tagName}":
+    delete:
+      tags:
+      - Device
+      summary: ${devices.delete_tag.summary}
+      description: ${devices.delete_tag.description}
+      operationId: deleteDeviceTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices delete-device-tag
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.delete_tag.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: tagName
+        in: path
+        description: ${devices.delete_tag.parameters.tagName.description}
+        required: true
+        type: string
+      responses:
+        '204':
+          description: ${devices.delete_tag.responses.status204.description}
+        '404':
+          description: ${devices.delete_tag.responses.status404.description}
+
+  "/devices/{deviceId}/{object}/{instance}":
+    get:
+      tags:
+      - Device
+      summary: ${devices.get_instance.summary}
+      description: ${devices.get_instance.description}
+      operationId: readDeviceResources
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices get-instance
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.get_instance.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.get_instance.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.get_instance.parameters.instance.description}
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: ${devices.get_instance.parameters.model.description}
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: ${devices.get_instance.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/ObjectInstance"          
+        '400':
+          description: ${devices.get_instance.responses.status400.description}
+        '404':
+          description: ${devices.get_instance.responses.status404.description}
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}":
+    get:
+      tags:
+      - Device
+      summary: ${devices.get_resource.summary}
+      description: ${devices.get_resource.description}
+      operationId: readDeviceResource
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices get-resource
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.get_resource.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.get_resource.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.get_resource.parameters.instance.description}
+        required: true
+        type: string
+      - name: resource
+        in: path
+        description: ${devices.get_resource.parameters.resource.description}
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: ${devices.get_resource.parameters.model.description}
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: ${devices.get_resource.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/ResourceInstance"
+        '400':
+          description: ${devices.get_resource.responses.status400.description}
+        '404':
+          description: ${devices.get_resource.responses.status404.description}
+          
+
+    put:
+      tags:
+      - Device
+      summary: ${devices.put_resource.summary}
+      description: ${devices.put_resource.description}
+      operationId: writeDeviceResource
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices put-resource
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.put_resource.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.put_resource.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.put_resource.parameters.instance.description}
+        required: true
+        type: string
+      - name: resource
+        in: path
+        description: ${devices.put_resource.parameters.resource.description}
+        required: true
+        type: string
+      - name: value
+        in: body
+        description: ${devices.put_resource.parameters.value.description}
+        required: true
+        schema:
+          type: object
+          properties:
+            value:
+              type: string
+      responses:
+        '202':
+          description: ${devices.put_resource.responses.status202.description}
+        '400':
+          description: ${devices.put_resource.responses.status400.description}
+        '404':
+          description: ${devices.put_resource.responses.status404.description}
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/execute":
+    post:
+      tags:
+      - Device
+      summary: ${devices.execute_resource.summary}
+      description: ${devices.execute_resource.description}
+      operationId: executeDeviceResource
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices execute-resource
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.execute_resource.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.execute_resource.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.execute_resource.parameters.instance.description}
+        required: true
+        type: string
+      - name: resource
+        in: path
+        description: ${devices.execute_resource.parameters.resource.description}
+        required: true
+        type: string
+      - name: arg
+        in: body
+        required: false
+        description: ${devices.execute_resource.parameters.arg.description}
+        schema:
+          type: object
+          properties:
+            value:
+              type: string
+      responses:
+        '202':
+          description: ${devices.execute_resource.responses.status202.description}
+        '400':
+          description: ${devices.execute_resource.responses.status400.description}
+        '404':
+          description: ${devices.execute_resource.responses.status404.description}
+  "/v1/devices/{deviceId}/{object}/{instance}/observe":
+    post:
+      tags:
+      - Device
+      summary: ${devices.observe_resources.summary}
+      description: ${devices.observe_resources.description}
+      operationId: observeDeviceResources
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.observe_resources.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.observe_resources.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.observe_resources.parameters.instance.description}
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: ${devices.observe_resources.parameters.model.description}
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: ${devices.observe_resources.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/ObjectInstance"          
+        '400':
+          description: ${devices.observe_resources.responses.status400.description}
+        '404':
+          description: ${devices.observe_resources.responses.status404.description}
+      
+  "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
+    post:
+      tags:
+      - Device
+      summary: ${devices.unobserve_resources.summary}
+      description: ${devices.unobserve_resources.description}
+      operationId: unobserveDeviceResources
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.unobserve_resources.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.unobserve_resources.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.unobserve_resources.parameters.instance.description}
+        required: true
+        type: string
+      responses:
+        '204':
+          description: ${devices.unobserve_resources.responses.status204.description}
+        '404':
+          description: ${devices.unobserve_resources.responses.status404.description}
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
+    post:
+      tags:
+      - Device
+      summary: ${devices.observe_resource.summary}
+      description: ${devices.observe_resource.description}
+      operationId: observeDeviceResource
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices observe-resource
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.observe_resource.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.observe_resource.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.observe_resource.parameters.instance.description}
+        required: true
+        type: string
+      - name: resource
+        in: path
+        description: ${devices.observe_resource.parameters.resource.description}
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: ${devices.observe_resource.parameters.model.description}
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: ${devices.observe_resource.responses.status200.description}
+          schema:
+            "$ref": "#/definitions/ResourceInstance"          
+        '400':
+          description: ${devices.observe_resource.responses.status400.description}
+        '404':
+          description: ${devices.observe_resource.responses.status404.description}
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/unobserve":
+    post:
+      tags:
+      - Device
+      summary: ${devices.unobserve_resource.summary}
+      description: ${devices.unobserve_resource.description}
+      operationId: unobserveDeviceResource
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices unobserve-resource
+      parameters:
+      - name: deviceId
+        in: path
+        description: ${devices.unobserve_resource.parameters.deviceId.description}
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: ${devices.unobserve_resource.parameters.object.description}
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: ${devices.unobserve_resource.parameters.instance.description}
+        required: true
+        type: string
+      - name: resource
+        in: path
+        description: ${devices.unobserve_resource.parameters.resource.description}
+        required: true
+        type: string
+      responses:
+        '204':
+          description: ${devices.unobserve_resource.responses.status204.description}
+        '404':
+          description: ${devices.unobserve_resource.responses.status404.description}
+  
 definitions:
 
   Subscriber:
@@ -5844,6 +6644,70 @@ definitions:
       destinationCidrBlock:
         type: string
 
+  JunctionMirroringConfiguration:
+    type: object
+    properties:
+      peers:
+        type: object
+        additionalProperties:
+          "$ref": "#/definitions/JunctionMirroringPeer"
+
+  JunctionMirroringPeer:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+      enabled:
+        type: boolean
+        default: false
+      protocol:
+        type: string
+        enum:
+        - gre
+      description:
+        type: string
+
+  JunctionRedirectionConfiguration:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      gateway:
+        type: string
+      description:
+        type: string
+
+  FunnelConfiguration:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      credentialsId:
+        type: string
+      destination:
+        "$ref": "#/definitions/FunnelDestination"
+
+  FunnelDestination:
+    type: object
+    properties:
+      provider:
+        type: string
+      service:
+        type: string
+      resourceUrl:
+        type: string
+
+  JunctionInspectionConfiguration:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      report:
+        "$ref": "#/definitions/FunnelConfiguration"
+
 # Logs
   LogEntry:
     properties:
@@ -5977,4 +6841,120 @@ definitions:
     type: object
     properties:
       operatorId:
+        type: string
+
+  Device:
+    type: object
+    properties:
+      deviceId:
+        type: string
+      operatorId:
+        type: string
+      groupId:
+        type: string
+      lastModifiedTime:
+        type: string
+        format: date-time
+      endpoint:
+        type: string
+      registrationId:
+        type: string
+      registrationLifeTime:
+        type: integer
+        format: int64
+      lastRegistrationUpdate:
+        type: string
+        format: date-time
+      imsi:
+        type: string
+      imei:
+        type: string
+      ipAddress:
+        type: string
+      objects:
+        type: object
+      tags:
+        type: object
+        additionalProperties:
+          type: string
+      online:
+        type: boolean
+        default: false
+      manufacturer:
+        type: string
+      modelNumber:
+        type: string
+      serialNumber:
+        type: string
+      firmwareVersion:
+        type: string
+
+  ResourceInstance:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      operations:
+        type: string
+        enum:
+        - NONE
+        - R
+        - W
+        - RW
+        - E
+        - RE
+        - WE
+        - RWE
+      multiple:
+        type: boolean
+        default: false
+      mandatory:
+        type: boolean
+        default: false
+      type:
+        type: string
+        enum:
+        - STRING
+        - INTEGER
+        - FLOAT
+        - BOOLEAN
+        - OPAQUE
+        - TIME
+        - OBJLNK
+      rangeEnumeration:
+        type: string
+      units:
+        type: string
+      description:
+        type: string
+      value:
+        type: object
+      values:
+        type: object
+      observed:
+        type: boolean
+        default: false
+  ObjectInstance:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      resources:
+        type: object
+        additionalProperties:
+          "$ref": "#/definitions/ResourceInstance"
+      observed:
+        type: boolean
+        default: false
+
+  AttributeUpdate:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
         type: string

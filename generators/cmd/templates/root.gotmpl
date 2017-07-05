@@ -13,8 +13,12 @@ var RootCmd = &cobra.Command{
 
 var specifiedProfileName string
 var specifiedCoverageType string
+var providedAPIKey string
+var providedAPIToken string
 
 func init() {
   RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", "Specify profile name")
   RootCmd.PersistentFlags().StringVar(&specifiedCoverageType, "coverage-type", "", "Specify coverage type")
+  //RootCmd.PersistentFlags().StringVar(&providedAPIKey, "api-key", "", "Specify API key otherwise soracom-cli performs authentication in behalf of you")
+  //RootCmd.PersistentFlags().StringVar(&providedAPIToken, "api-token", "", "Specify API token otherwise soracom-cli performs authentication in behalf of you")
 }
