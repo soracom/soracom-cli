@@ -23,15 +23,15 @@ var LoraNetworkSetsListCmdTagValueMatchMode string
 var LoraNetworkSetsListCmdLimit int64
 
 func init() {
-	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("lora_network_sets.list.parameters.last_evaluated_key.description"))
+	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last network set retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
-	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagName, "tag-name", "", TR("lora_network_sets.list.parameters.tag_name.description"))
+	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValue, "tag-value", "", TR("lora_network_sets.list.parameters.tag_value.description"))
+	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("lora_network_sets.list.parameters.tag_value_match_mode.description"))
+	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TR("lora_network_sets.list.parameters.limit.description"))
+	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // LoraNetworkSetsListCmd defines 'list' subcommand
 var LoraNetworkSetsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("lora_network_sets.list.summary"),
-	Long:  TR(`lora_network_sets.list.description`),
+	Short: TRAPI("/lora_network_sets:get:summary"),
+	Long:  TRAPI(`/lora_network_sets:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

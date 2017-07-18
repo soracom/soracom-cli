@@ -11,6 +11,6 @@ func init() {
 // PaymentStatementsCmd defines 'payment-statements' subcommand
 var PaymentStatementsCmd = &cobra.Command{
 	Use:   "payment-statements",
-	Short: TR("payment_statements.cli.summary"),
-	Long:  TR(`payment_statements.cli.description`),
+	Short: TRCLI("cli.payment-statements.summary"),
+	Long:  TRCLI(`cli.payment-statements.description`),
 }

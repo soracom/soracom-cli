@@ -23,13 +23,13 @@ var UsersUpdateCmdUserName string
 var UsersUpdateCmdBody string
 
 func init() {
-	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdDescription, "description", "", TR(""))
+	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdDescription, "description", "", TRAPI(""))
 
-	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdUserName, "user-name", "", TR("user_name"))
+	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersCmd.AddCommand(UsersUpdateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // UsersUpdateCmd defines 'update' subcommand
 var UsersUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("users.update_user.put.summary"),
-	Long:  TR(`users.update_user.put.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}:put:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

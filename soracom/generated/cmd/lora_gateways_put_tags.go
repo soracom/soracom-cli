@@ -17,9 +17,9 @@ var LoraGatewaysPutTagsCmdGatewayId string
 var LoraGatewaysPutTagsCmdBody string
 
 func init() {
-	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TR("lora_gateways.put_tags.parameters.gateway_id.description"))
+	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysPutTagsCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // LoraGatewaysPutTagsCmd defines 'put-tags' subcommand
 var LoraGatewaysPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
-	Short: TR("lora_gateways.put_tags.summary"),
-	Long:  TR(`lora_gateways.put_tags.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/tags:put:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

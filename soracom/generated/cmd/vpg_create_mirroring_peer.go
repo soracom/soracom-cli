@@ -29,17 +29,17 @@ var VpgCreateMirroringPeerCmdEnabled bool
 var VpgCreateMirroringPeerCmdBody string
 
 func init() {
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdDescription, "description", "", TR(""))
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdDescription, "description", "", TRAPI(""))
 
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdId, "id", "", TR("virtual_private_gateway.junction.mirroring.peers.post.parameters.id.description"))
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
 
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdIpAddress, "ip-address", "", TR(""))
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdIpAddress, "ip-address", "", TRAPI(""))
 
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdProtocol, "protocol", "", TR(""))
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdProtocol, "protocol", "", TRAPI(""))
 
-	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TR(""))
+	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TRAPI(""))
 
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgCreateMirroringPeerCmd)
 }
@@ -47,8 +47,8 @@ func init() {
 // VpgCreateMirroringPeerCmd defines 'create-mirroring-peer' subcommand
 var VpgCreateMirroringPeerCmd = &cobra.Command{
 	Use:   "create-mirroring-peer",
-	Short: TR("virtual_private_gateway.junction.mirroring.peers.post.summary"),
-	Long:  TR(`virtual_private_gateway.junction.mirroring.peers.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

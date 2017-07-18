@@ -15,8 +15,8 @@ func init() {
 // CouponsListCmd defines 'list' subcommand
 var CouponsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("payment.list_coupons.get.summary"),
-	Long:  TR(`payment.list_coupons.get.description`),
+	Short: TRAPI("/coupons:get:summary"),
+	Long:  TRAPI(`/coupons:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

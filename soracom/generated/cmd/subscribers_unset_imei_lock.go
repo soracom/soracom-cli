@@ -11,7 +11,7 @@ import (
 var SubscribersUnsetImeiLockCmdImsi string
 
 func init() {
-	SubscribersUnsetImeiLockCmd.Flags().StringVar(&SubscribersUnsetImeiLockCmdImsi, "imsi", "", TR("subscribers.unset_imei_lock.post.parameters.imsi.description"))
+	SubscribersUnsetImeiLockCmd.Flags().StringVar(&SubscribersUnsetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersUnsetImeiLockCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersUnsetImeiLockCmd defines 'unset-imei-lock' subcommand
 var SubscribersUnsetImeiLockCmd = &cobra.Command{
 	Use:   "unset-imei-lock",
-	Short: TR("subscribers.unset_imei_lock.post.summary"),
-	Long:  TR(`subscribers.unset_imei_lock.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/unset_imei_lock:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/unset_imei_lock:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

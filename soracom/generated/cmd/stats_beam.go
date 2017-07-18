@@ -11,6 +11,6 @@ func init() {
 // StatsBeamCmd defines 'beam' subcommand
 var StatsBeamCmd = &cobra.Command{
 	Use:   "beam",
-	Short: TR("stats.beam.cli.summary"),
-	Long:  TR(`stats.beam.cli.description`),
+	Short: TRCLI("cli.stats.beam.summary"),
+	Long:  TRCLI(`cli.stats.beam.description`),
 }

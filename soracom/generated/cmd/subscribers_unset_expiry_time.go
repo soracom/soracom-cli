@@ -11,7 +11,7 @@ import (
 var SubscribersUnsetExpiryTimeCmdImsi string
 
 func init() {
-	SubscribersUnsetExpiryTimeCmd.Flags().StringVar(&SubscribersUnsetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.unset_expirytime.post.parameters.imsi.description"))
+	SubscribersUnsetExpiryTimeCmd.Flags().StringVar(&SubscribersUnsetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersUnsetExpiryTimeCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersUnsetExpiryTimeCmd defines 'unset-expiry-time' subcommand
 var SubscribersUnsetExpiryTimeCmd = &cobra.Command{
 	Use:   "unset-expiry-time",
-	Short: TR("subscribers.unset_expirytime.post.summary"),
-	Long:  TR(`subscribers.unset_expirytime.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/unset_expiry_time:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/unset_expiry_time:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

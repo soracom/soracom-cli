@@ -11,7 +11,7 @@ import (
 var OperatorAuthKeysListCmdOperatorId string
 
 func init() {
-	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OperatorAuthKeysListCmd defines 'list' subcommand
 var OperatorAuthKeysListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("operator.list_operator_auth_keys.get.summary"),
-	Long:  TR(`operator.list_operator_auth_keys.get.description`),
+	Short: TRAPI("/operators/{operator_id}/auth_keys:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/auth_keys:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

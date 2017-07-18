@@ -14,9 +14,9 @@ var LoraNetworkSetsDeleteTagCmdNsId string
 var LoraNetworkSetsDeleteTagCmdTagName string
 
 func init() {
-	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdNsId, "ns-id", "", TR("lora_network_sets.delete_tag.parameters.ns_id.description"))
+	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdTagName, "tag-name", "", TR("lora_network_sets.delete_tag.parameters.tag_name.description"))
+	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdTagName, "tag-name", "", TRAPI("Name of tag to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsDeleteTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // LoraNetworkSetsDeleteTagCmd defines 'delete-tag' subcommand
 var LoraNetworkSetsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TR("lora_network_sets.delete_tag.summary"),
-	Long:  TR(`lora_network_sets.delete_tag.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}/tags/{tagName}:delete:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/tags/{tagName}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

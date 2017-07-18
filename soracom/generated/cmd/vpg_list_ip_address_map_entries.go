@@ -11,7 +11,7 @@ import (
 var VpgListIpAddressMapEntriesCmdVpgId string
 
 func init() {
-	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.parameters.vpg_id.description"))
+	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgListIpAddressMapEntriesCmd defines 'list-ip-address-map-entries' subcommand
 var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 	Use:   "list-ip-address-map-entries",
-	Short: TR("virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.summary"),
-	Long:  TR(`virtual_private_gateway.list_virtual_private_gateway_ip_address_map_entries.get.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:get:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

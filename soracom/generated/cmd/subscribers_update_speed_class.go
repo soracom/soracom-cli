@@ -20,11 +20,11 @@ var SubscribersUpdateSpeedClassCmdSpeedClass string
 var SubscribersUpdateSpeedClassCmdBody string
 
 func init() {
-	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TR("subscribers.update_speedclass.post.parameters.imsi.description"))
+	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TR(""))
+	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI(""))
 
-	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersUpdateSpeedClassCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // SubscribersUpdateSpeedClassCmd defines 'update-speed-class' subcommand
 var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 	Use:   "update-speed-class",
-	Short: TR("subscribers.update_speedclass.post.summary"),
-	Long:  TR(`subscribers.update_speedclass.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/update_speed_class:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/update_speed_class:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

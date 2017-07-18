@@ -11,6 +11,6 @@ func init() {
 // UsersPasswordCmd defines 'password' subcommand
 var UsersPasswordCmd = &cobra.Command{
 	Use:   "password",
-	Short: TR("users.password.cli.summary"),
-	Long:  TR(`users.password.cli.description`),
+	Short: TRCLI("cli.users.password.summary"),
+	Long:  TRCLI(`cli.users.password.description`),
 }

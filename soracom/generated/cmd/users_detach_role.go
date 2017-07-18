@@ -17,11 +17,11 @@ var UsersDetachRoleCmdRoleId string
 var UsersDetachRoleCmdUserName string
 
 func init() {
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TR("role_id"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TR("user_name"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersCmd.AddCommand(UsersDetachRoleCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // UsersDetachRoleCmd defines 'detach-role' subcommand
 var UsersDetachRoleCmd = &cobra.Command{
 	Use:   "detach-role",
-	Short: TR("roles.detach_role.delete.summary"),
-	Long:  TR(`roles.detach_role.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/roles/{role_id}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles/{role_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

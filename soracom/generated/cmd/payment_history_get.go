@@ -11,7 +11,7 @@ import (
 var PaymentHistoryGetCmdPaymentTransactionId string
 
 func init() {
-	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TR("payment_transaction_id"))
+	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TRAPI("payment_transaction_id"))
 
 	PaymentHistoryCmd.AddCommand(PaymentHistoryGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // PaymentHistoryGetCmd defines 'get' subcommand
 var PaymentHistoryGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("payment.get_payment_transaction.get.summary"),
-	Long:  TR(`payment.get_payment_transaction.get.description`),
+	Short: TRAPI("/payment_history/transactions/{payment_transaction_id}:get:summary"),
+	Long:  TRAPI(`/payment_history/transactions/{payment_transaction_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

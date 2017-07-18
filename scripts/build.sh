@@ -51,7 +51,7 @@ git config --global http.https://gopkg.in.followRedirects true
     gas ./...
     go test
     go build -o generate-cmd
-    ./generate-cmd -a "$d/generators/assets/soracom-api.ftl.yaml" -t "$d/generators/cmd/templates" -p "$d/generators/cmd/predefined" -o "$d/soracom/generated/cmd/"
+    ./generate-cmd -a "$d/generators/assets/soracom-api.en.yaml" -t "$d/generators/cmd/templates" -p "$d/generators/cmd/predefined" -o "$d/soracom/generated/cmd/"
     popd > /dev/null
 }
 

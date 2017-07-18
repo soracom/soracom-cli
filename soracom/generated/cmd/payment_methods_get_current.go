@@ -15,8 +15,8 @@ func init() {
 // PaymentMethodsGetCurrentCmd defines 'get-current' subcommand
 var PaymentMethodsGetCurrentCmd = &cobra.Command{
 	Use:   "get-current",
-	Short: TR("payment.get_payment_method.get.summary"),
-	Long:  TR(`payment.get_payment_method.get.description`),
+	Short: TRAPI("/payment_methods/current:get:summary"),
+	Long:  TRAPI(`/payment_methods/current:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

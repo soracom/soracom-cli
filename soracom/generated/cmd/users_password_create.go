@@ -23,13 +23,13 @@ var UsersPasswordCreateCmdUserName string
 var UsersPasswordCreateCmdBody string
 
 func init() {
-	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdPassword, "password", "", TR(""))
+	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdPassword, "password", "", TRAPI(""))
 
-	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdUserName, "user-name", "", TR("user_name"))
+	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersPasswordCmd.AddCommand(UsersPasswordCreateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // UsersPasswordCreateCmd defines 'create' subcommand
 var UsersPasswordCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("users.create_user_password.post.summary"),
-	Long:  TR(`users.create_user_password.post.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

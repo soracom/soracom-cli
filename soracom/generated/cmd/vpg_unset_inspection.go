@@ -11,7 +11,7 @@ import (
 var VpgUnsetInspectionCmdId string
 
 func init() {
-	VpgUnsetInspectionCmd.Flags().StringVar(&VpgUnsetInspectionCmdId, "id", "", TR("virtual_private_gateway.junction.inspection.unset.post.parameters.id.description"))
+	VpgUnsetInspectionCmd.Flags().StringVar(&VpgUnsetInspectionCmdId, "id", "", TRAPI("VPG ID"))
 
 	VpgCmd.AddCommand(VpgUnsetInspectionCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgUnsetInspectionCmd defines 'unset-inspection' subcommand
 var VpgUnsetInspectionCmd = &cobra.Command{
 	Use:   "unset-inspection",
-	Short: TR("virtual_private_gateway.junction.inspection.unset.post.summary"),
-	Long:  TR(`virtual_private_gateway.junction.inspection.unset.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/unset_inspection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/unset_inspection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

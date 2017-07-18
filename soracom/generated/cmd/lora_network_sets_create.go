@@ -26,15 +26,15 @@ var LoraNetworkSetsCreateCmdOperatorId string
 var LoraNetworkSetsCreateCmdBody string
 
 func init() {
-	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdCreatedTime, "created-time", "", TR(""))
+	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdCreatedTime, "created-time", "", TRAPI(""))
 
-	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdLastModifiedTime, "last-modified-time", "", TR(""))
+	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdLastModifiedTime, "last-modified-time", "", TRAPI(""))
 
-	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdNetworkSetId, "network-set-id", "", TR(""))
+	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 
-	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdOperatorId, "operator-id", "", TR(""))
+	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsCreateCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // LoraNetworkSetsCreateCmd defines 'create' subcommand
 var LoraNetworkSetsCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("lora_network_sets.create.summary"),
-	Long:  TR(`lora_network_sets.create.description`),
+	Short: TRAPI("/lora_network_sets:post:summary"),
+	Long:  TRAPI(`/lora_network_sets:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

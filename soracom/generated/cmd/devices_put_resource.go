@@ -26,15 +26,15 @@ var DevicesPutResourceCmdResource string
 var DevicesPutResourceCmdBody string
 
 func init() {
-	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdDeviceId, "device-id", "", TR("devices.put_resource.parameters.deviceId.description"))
+	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdInstance, "instance", "", TR("devices.put_resource.parameters.instance.description"))
+	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdObject, "object", "", TR("devices.put_resource.parameters.object.description"))
+	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdResource, "resource", "", TR("devices.put_resource.parameters.resource.description"))
+	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesPutResourceCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // DevicesPutResourceCmd defines 'put-resource' subcommand
 var DevicesPutResourceCmd = &cobra.Command{
 	Use:   "put-resource",
-	Short: TR("devices.put_resource.summary"),
-	Long:  TR(`devices.put_resource.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}:put:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -17,11 +17,11 @@ var GroupsListSubscribersCmdLastEvaluatedKey string
 var GroupsListSubscribersCmdLimit int64
 
 func init() {
-	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TR("groups.list_subscribers_in_group.get.parameters.group_id.description"))
+	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TR("groups.list_subscribers_in_group.get.parameters.last_evaluated_key.description"))
+	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
-	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TR("groups.list_subscribers_in_group.get.parameters.limit.description"))
+	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsCmd.AddCommand(GroupsListSubscribersCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // GroupsListSubscribersCmd defines 'list-subscribers' subcommand
 var GroupsListSubscribersCmd = &cobra.Command{
 	Use:   "list-subscribers",
-	Short: TR("groups.list_subscribers_in_group.get.summary"),
-	Long:  TR(`groups.list_subscribers_in_group.get.description`),
+	Short: TRAPI("/groups/{group_id}/subscribers:get:summary"),
+	Long:  TRAPI(`/groups/{group_id}/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

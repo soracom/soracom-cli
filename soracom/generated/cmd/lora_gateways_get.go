@@ -11,7 +11,7 @@ import (
 var LoraGatewaysGetCmdGatewayId string
 
 func init() {
-	LoraGatewaysGetCmd.Flags().StringVar(&LoraGatewaysGetCmdGatewayId, "gateway-id", "", TR("lora_gateways.get.parameters.gateway_id.description"))
+	LoraGatewaysGetCmd.Flags().StringVar(&LoraGatewaysGetCmdGatewayId, "gateway-id", "", TRAPI("Gateway ID of the target LoRa gateway."))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraGatewaysGetCmd defines 'get' subcommand
 var LoraGatewaysGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("lora_gateways.get.summary"),
-	Long:  TR(`lora_gateways.get.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}:get:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

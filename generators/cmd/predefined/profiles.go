@@ -98,7 +98,7 @@ func loadProfile(profileName string) (*profile, error) {
 		return nil, err
 	}
 	if tooOpen {
-		msg := fmt.Sprintf(TR("configure.cli.profile.permission_is_too_open"), path)
+		msg := fmt.Sprintf(TRCLI("cli.configure.profile.permission_is_too_open"), path)
 		if runtime.GOOS != "windows" {
 			return nil, errors.New(msg)
 		}
@@ -141,7 +141,7 @@ func saveProfile(profileName string, prof *profile) error {
 	// check if profile file already exists
 	if _, err := os.Stat(path); err == nil {
 		// prompt if overwrites or not when already exist
-		fmt.Printf(TR("configure.cli.profile.overwrite"), profileName)
+		fmt.Printf(TRCLI("cli.configure.profile.overwrite"), profileName)
 		var s string
 		fmt.Scanf("%s\n", &s)
 		if s != "" && strings.ToLower(s) != "y" {
@@ -173,7 +173,7 @@ func saveProfile(profileName string, prof *profile) error {
 }
 
 func confirmDeleteProfile(profileName string) bool {
-	fmt.Printf(TR("unconfigure.cli.prompt"), profileName)
+	fmt.Printf(TRCLI("cli.unconfigure.prompt"), profileName)
 	var s string
 	fmt.Scanf("%s\n", &s)
 	if s != "" && strings.ToLower(s) == "y" {
@@ -199,7 +199,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 		return nil, err
 	}
 
-	fmt.Printf(TR("configure.cli.profile.prompt"), profDir, getSpecifiedProfileName())
+	fmt.Printf(TRCLI("cli.configure.profile.prompt"), profDir, getSpecifiedProfileName())
 
 	ct, err := collectCoverageType()
 	if err != nil {
@@ -233,10 +233,10 @@ func readPassword(prompt string) (string, error) {
 }
 
 func collectCoverageType() (string, error) {
-	fmt.Print(TR("configure.cli.profile.coverage_type.prompt"))
+	fmt.Print(TRCLI("cli.configure.profile.coverage_type.prompt"))
 	var i int
 	for {
-		fmt.Print(TR("configure.cli.profile.coverage_type.select"))
+		fmt.Print(TRCLI("cli.configure.profile.coverage_type.select"))
 		fmt.Scanf("%d\n", &i)
 		if i >= 1 && i <= 2 {
 			break
@@ -254,10 +254,10 @@ func collectCoverageType() (string, error) {
 }
 
 func collectAuthInfo() (*authInfo, error) {
-	fmt.Printf(TR("configure.cli.profile.auth.prompt"))
+	fmt.Printf(TRCLI("cli.configure.profile.auth.prompt"))
 	var i int
 	for {
-		fmt.Print(TR("configure.cli.profile.auth.select"))
+		fmt.Print(TRCLI("cli.configure.profile.auth.select"))
 		fmt.Scanf("%d\n", &i)
 		if i >= 1 && i <= 3 {
 			break

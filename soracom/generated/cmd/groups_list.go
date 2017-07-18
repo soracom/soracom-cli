@@ -23,15 +23,15 @@ var GroupsListCmdTagValueMatchMode string
 var GroupsListCmdLimit int64
 
 func init() {
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("groups.list_groups.get.parameters.last_evaluated_key.description"))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagName, "tag-name", "", TR("groups.list_groups.get.parameters.tag_name.description"))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagName, "tag-name", "", TRAPI("Tag name of the group. Filters through all groups that exactly match the tag name. When tag_name is specified, tag_value is required."))
 
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", TR("groups.list_groups.get.parameters.tag_value.description"))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", TRAPI("Tag value of the groups."))
 
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("groups.list_groups.get.parameters.tag_value_match_mode.description"))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TR("groups.list_groups.get.parameters.limit.description"))
+	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // GroupsListCmd defines 'list' subcommand
 var GroupsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("groups.list_groups.get.summary"),
-	Long:  TR(`groups.list_groups.get.description`),
+	Short: TRAPI("/groups:get:summary"),
+	Long:  TRAPI(`/groups:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

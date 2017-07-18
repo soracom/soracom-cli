@@ -26,15 +26,15 @@ var UsersPermissionsUpdateCmdUserName string
 var UsersPermissionsUpdateCmdBody string
 
 func init() {
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdDescription, "description", "", TR(""))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdDescription, "description", "", TRAPI(""))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TR(""))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI(""))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TR("user_name"))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersPermissionsCmd.AddCommand(UsersPermissionsUpdateCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // UsersPermissionsUpdateCmd defines 'update' subcommand
 var UsersPermissionsUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("users.update_user_permission.put.summary"),
-	Long:  TR(`users.update_user_permission.put.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/permission:put:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/permission:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

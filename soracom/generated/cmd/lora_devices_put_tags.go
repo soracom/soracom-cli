@@ -17,9 +17,9 @@ var LoraDevicesPutTagsCmdDeviceId string
 var LoraDevicesPutTagsCmdBody string
 
 func init() {
-	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdDeviceId, "device-id", "", TR("lora_devices.put_lora_device_tags.put.parameters.device_id.description"))
+	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
-	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesPutTagsCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // LoraDevicesPutTagsCmd defines 'put-tags' subcommand
 var LoraDevicesPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
-	Short: TR("lora_devices.put_lora_device_tags.put.summary"),
-	Long:  TR(`lora_devices.put_lora_device_tags.put.description`),
+	Short: TRAPI("/lora_devices/{device_id}/tags:put:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

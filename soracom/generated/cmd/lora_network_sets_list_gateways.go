@@ -17,11 +17,11 @@ var LoraNetworkSetsListGatewaysCmdNsId string
 var LoraNetworkSetsListGatewaysCmdLimit int64
 
 func init() {
-	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TR("lora_network_sets.list_gateways.parameters.last_evaluated_key.description"))
+	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
-	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TR("lora_network_sets.list_gateways.parameters.ns_id.description"))
+	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TR("lora_network_sets.list_gateways.parameters.limit.description"))
+	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa gateways to retrieve."))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListGatewaysCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // LoraNetworkSetsListGatewaysCmd defines 'list-gateways' subcommand
 var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 	Use:   "list-gateways",
-	Short: TR("lora_network_sets.list_gateways.summary"),
-	Long:  TR(`lora_network_sets.list_gateways.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}/gateways:get:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/gateways:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

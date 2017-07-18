@@ -11,6 +11,6 @@ func init() {
 // DataCmd defines 'data' subcommand
 var DataCmd = &cobra.Command{
 	Use:   "data",
-	Short: TR("data.cli.summary"),
-	Long:  TR(`data.cli.description`),
+	Short: TRCLI("cli.data.summary"),
+	Long:  TRCLI(`cli.data.description`),
 }

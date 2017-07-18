@@ -13,8 +13,8 @@ func init() {
 // CompletionCmd defines 'completion' subcommand
 var CompletionCmd = &cobra.Command{
 	Use:   "completion",
-	Short: TR("completion.cli.summary"),
-	Long:  TR("completion.cli.description"),
+	Short: TRCLI("cli.completion.summary"),
+	Long:  TRCLI("cli.completion.description"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := RootCmd.GenBashCompletion(os.Stdout)
 		if err != nil {

@@ -17,9 +17,9 @@ var SubscribersVerifyTransferTokenCmdToken string
 var SubscribersVerifyTransferTokenCmdBody string
 
 func init() {
-	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TR(""))
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI(""))
 
-	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // SubscribersVerifyTransferTokenCmd defines 'verify-transfer-token' subcommand
 var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 	Use:   "verify-transfer-token",
-	Short: TR("subscribers.verify_subscriber_transfer_token.post.summary"),
-	Long:  TR(`subscribers.verify_subscriber_transfer_token.post.description`),
+	Short: TRAPI("/subscribers/transfer_token/verify:post:summary"),
+	Long:  TRAPI(`/subscribers/transfer_token/verify:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

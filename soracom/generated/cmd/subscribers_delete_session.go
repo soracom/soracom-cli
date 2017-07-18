@@ -11,7 +11,7 @@ import (
 var SubscribersDeleteSessionCmdImsi string
 
 func init() {
-	SubscribersDeleteSessionCmd.Flags().StringVar(&SubscribersDeleteSessionCmdImsi, "imsi", "", TR("subscribers.delete_session.post.parameters.imsi.description"))
+	SubscribersDeleteSessionCmd.Flags().StringVar(&SubscribersDeleteSessionCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersDeleteSessionCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersDeleteSessionCmd defines 'delete-session' subcommand
 var SubscribersDeleteSessionCmd = &cobra.Command{
 	Use:   "delete-session",
-	Short: TR("subscribers.delete_session.post.summary"),
-	Long:  TR(`subscribers.delete_session.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/delete_session:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/delete_session:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -14,9 +14,9 @@ var UsersPasswordConfiguredCmdOperatorId string
 var UsersPasswordConfiguredCmdUserName string
 
 func init() {
-	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", TR("user_name"))
+	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersPasswordCmd.AddCommand(UsersPasswordConfiguredCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // UsersPasswordConfiguredCmd defines 'configured' subcommand
 var UsersPasswordConfiguredCmd = &cobra.Command{
 	Use:   "configured",
-	Short: TR("users.has_user_password.get.summary"),
-	Long:  TR(`users.has_user_password.get.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

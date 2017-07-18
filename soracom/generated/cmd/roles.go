@@ -11,6 +11,6 @@ func init() {
 // RolesCmd defines 'roles' subcommand
 var RolesCmd = &cobra.Command{
 	Use:   "roles",
-	Short: TR("roles.cli.summary"),
-	Long:  TR(`roles.cli.description`),
+	Short: TRCLI("cli.roles.summary"),
+	Long:  TRCLI(`cli.roles.description`),
 }

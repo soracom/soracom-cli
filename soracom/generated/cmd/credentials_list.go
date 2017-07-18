@@ -15,8 +15,8 @@ func init() {
 // CredentialsListCmd defines 'list' subcommand
 var CredentialsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("credentials.list_credentials.get.summary"),
-	Long:  TR(`credentials.list_credentials.get.description`),
+	Short: TRAPI("/credentials:get:summary"),
+	Long:  TRAPI(`/credentials:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

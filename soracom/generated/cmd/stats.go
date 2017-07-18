@@ -11,6 +11,6 @@ func init() {
 // StatsCmd defines 'stats' subcommand
 var StatsCmd = &cobra.Command{
 	Use:   "stats",
-	Short: TR("stats.cli.summary"),
-	Long:  TR(`stats.cli.description`),
+	Short: TRCLI("cli.stats.summary"),
+	Long:  TRCLI(`cli.stats.description`),
 }

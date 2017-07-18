@@ -23,13 +23,13 @@ var CredentialsUpdateCmdType string
 var CredentialsUpdateCmdBody string
 
 func init() {
-	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TR("credentials_id"))
+	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TRAPI("credentials_id"))
 
-	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TR(""))
+	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TRAPI(""))
 
-	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", TR(""))
+	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", TRAPI(""))
 
-	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	CredentialsCmd.AddCommand(CredentialsUpdateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // CredentialsUpdateCmd defines 'update' subcommand
 var CredentialsUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("credentials.update_credential.put.summary"),
-	Long:  TR(`credentials.update_credential.put.description`),
+	Short: TRAPI("/credentials/{credentials_id}:put:summary"),
+	Long:  TRAPI(`/credentials/{credentials_id}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

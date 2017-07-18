@@ -11,6 +11,6 @@ func init() {
 // GroupsCmd defines 'groups' subcommand
 var GroupsCmd = &cobra.Command{
 	Use:   "groups",
-	Short: TR("groups.cli.summary"),
-	Long:  TR(`groups.cli.description`),
+	Short: TRCLI("cli.groups.summary"),
+	Long:  TRCLI(`cli.groups.description`),
 }

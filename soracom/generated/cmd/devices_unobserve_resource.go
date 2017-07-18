@@ -20,13 +20,13 @@ var DevicesUnobserveResourceCmdObject string
 var DevicesUnobserveResourceCmdResource string
 
 func init() {
-	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdDeviceId, "device-id", "", TR("devices.unobserve_resource.parameters.deviceId.description"))
+	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdInstance, "instance", "", TR("devices.unobserve_resource.parameters.instance.description"))
+	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdObject, "object", "", TR("devices.unobserve_resource.parameters.object.description"))
+	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdResource, "resource", "", TR("devices.unobserve_resource.parameters.resource.description"))
+	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
 	DevicesCmd.AddCommand(DevicesUnobserveResourceCmd)
 }
@@ -34,8 +34,8 @@ func init() {
 // DevicesUnobserveResourceCmd defines 'unobserve-resource' subcommand
 var DevicesUnobserveResourceCmd = &cobra.Command{
 	Use:   "unobserve-resource",
-	Short: TR("devices.unobserve_resource.summary"),
-	Long:  TR(`devices.unobserve_resource.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}/unobserve:post:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}/unobserve:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

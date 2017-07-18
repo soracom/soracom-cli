@@ -26,15 +26,15 @@ var RolesUpdateCmdRoleId string
 var RolesUpdateCmdBody string
 
 func init() {
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", TR(""))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", TRAPI(""))
 
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TR(""))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TRAPI(""))
 
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TR("role_id"))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	RolesCmd.AddCommand(RolesUpdateCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // RolesUpdateCmd defines 'update' subcommand
 var RolesUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("roles.update_role.put.summary"),
-	Long:  TR(`roles.update_role.put.description`),
+	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:put:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

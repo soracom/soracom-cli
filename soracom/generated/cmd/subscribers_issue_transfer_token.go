@@ -20,11 +20,11 @@ var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 var SubscribersIssueTransferTokenCmdBody string
 
 func init() {
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TR(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI(""))
 
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TR(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI(""))
 
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // SubscribersIssueTransferTokenCmd defines 'issue-transfer-token' subcommand
 var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	Use:   "issue-transfer-token",
-	Short: TR("subscribers.issue_subscriber_transfer_token.post.summary"),
-	Long:  TR(`subscribers.issue_subscriber_transfer_token.post.description`),
+	Short: TRAPI("/subscribers/transfer_token/issue:post:summary"),
+	Long:  TRAPI(`/subscribers/transfer_token/issue:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

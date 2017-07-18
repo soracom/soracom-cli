@@ -23,15 +23,15 @@ var LoraDevicesListCmdTagValueMatchMode string
 var LoraDevicesListCmdLimit int64
 
 func init() {
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("lora_devices.list_lora_devices.get.parameters.last_evaluated_key.description"))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagName, "tag-name", "", TR("lora_devices.list_lora_devices.get.parameters.tag_name.description"))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValue, "tag-value", "", TR("lora_devices.list_lora_devices.get.parameters.tag_value.description"))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("lora_devices.list_lora_devices.get.parameters.tag_value_match_mode.description"))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TR("lora_devices.list_lora_devices.get.parameters.limit.description"))
+	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // LoraDevicesListCmd defines 'list' subcommand
 var LoraDevicesListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("lora_devices.list_lora_devices.get.summary"),
-	Long:  TR(`lora_devices.list_lora_devices.get.description`),
+	Short: TRAPI("/lora_devices:get:summary"),
+	Long:  TRAPI(`/lora_devices:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

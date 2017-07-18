@@ -15,7 +15,7 @@ var GroupsCreateCmdBody string
 
 func init() {
 
-	GroupsCreateCmd.Flags().StringVar(&GroupsCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	GroupsCreateCmd.Flags().StringVar(&GroupsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	GroupsCmd.AddCommand(GroupsCreateCmd)
 }
@@ -23,8 +23,8 @@ func init() {
 // GroupsCreateCmd defines 'create' subcommand
 var GroupsCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("groups.create_group.post.summary"),
-	Long:  TR(`groups.create_group.post.description`),
+	Short: TRAPI("/groups:post:summary"),
+	Long:  TRAPI(`/groups:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

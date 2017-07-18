@@ -11,7 +11,7 @@ import (
 var VpgUnsetRedirectionCmdId string
 
 func init() {
-	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdId, "id", "", TR("virtual_private_gateway.junction.redirection.unset.post.parameters.id.description"))
+	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdId, "id", "", TRAPI("VPG ID"))
 
 	VpgCmd.AddCommand(VpgUnsetRedirectionCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgUnsetRedirectionCmd defines 'unset-redirection' subcommand
 var VpgUnsetRedirectionCmd = &cobra.Command{
 	Use:   "unset-redirection",
-	Short: TR("virtual_private_gateway.junction.redirection.unset.post.summary"),
-	Long:  TR(`virtual_private_gateway.junction.redirection.unset.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/unset_redirection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/unset_redirection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

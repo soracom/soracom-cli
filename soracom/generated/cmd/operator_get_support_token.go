@@ -11,7 +11,7 @@ import (
 var OperatorGetSupportTokenCmdOperatorId string
 
 func init() {
-	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorCmd.AddCommand(OperatorGetSupportTokenCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OperatorGetSupportTokenCmd defines 'get-support-token' subcommand
 var OperatorGetSupportTokenCmd = &cobra.Command{
 	Use:   "get-support-token",
-	Short: TR("operator.generate_support_token.post.summary"),
-	Long:  TR(`operator.generate_support_token.post.description`),
+	Short: TRAPI("/operators/{operator_id}/support/token:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/support/token:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

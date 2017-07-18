@@ -11,6 +11,6 @@ func init() {
 // OrdersCmd defines 'orders' subcommand
 var OrdersCmd = &cobra.Command{
 	Use:   "orders",
-	Short: TR("orders.cli.summary"),
-	Long:  TR(`orders.cli.description`),
+	Short: TRCLI("cli.orders.summary"),
+	Long:  TRCLI(`cli.orders.description`),
 }

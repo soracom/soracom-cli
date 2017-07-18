@@ -15,8 +15,8 @@ func init() {
 // PayerInformationGetCmd defines 'get' subcommand
 var PayerInformationGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("payment.payer_information.get.summary"),
-	Long:  TR(`payment.payer_information.get.description`),
+	Short: TRAPI("/payment_statements/payer_information:get:summary"),
+	Long:  TRAPI(`/payment_statements/payer_information:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

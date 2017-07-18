@@ -1,0 +1,2905 @@
+paths:
+#Auth API
+  /auth:
+    post:
+      summary: API アクセスの認証を行い、API キーと API トークンを発行します。
+      description: API アクセスの認証を行います。ルートアカウントで認証する場合は email と password、認証キーでの認証の場合は authKeyId と authKey、SAM ユーザー認証の場合はoperatorId, userName, password をリクエストに含めてください。認証が成功した場合、API キーと API トークンが返されるので、以降の認証が必要なリクエスト時にはこの API キーと API トークンをヘッダーに付与してリクエストを行ってください。
+      parameters:
+      - name: auth
+        description: 認証リクエスト
+      responses:
+        '200':
+          description: 認証成功
+        '401':
+          description: 認証失敗
+
+  '/auth/password_reset_token/issue':
+    post:
+      summary: パスワードリセット用のトークンを発行します。
+      description: パスワードをリセットするためのワンタイムトークンを生成して、オペレーターのメールアドレスに送付します。メールに記載されているトークンを取得し、/v1/auth/password_reset_token/verify API を呼び出して新しいパスワードを設定します。
+      parameters:
+        - name: email
+          description: 'email address'
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: メールアドレスが正しくありません。
+
+  '/auth/password_reset_token/verify':
+    post:
+      summary: パスワードリセット用のトークンを検証し、パスワードを更新します。
+      description: パスワードリセット用のトークンを検証し、検証に成功した場合オペレーターのパスワードを更新します。
+      parameters:
+        - name: request
+          description: 'token, password'
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: 不正なトークンが指定されました。
+        '404':
+          description: トークンの有効期限が切れています。
+
+#Credential API
+  '/credentials':
+    get:
+      summary: 認証情報の表示
+      description: 認証情報の一覧を返す。
+      responses:
+        '200':
+          description: OK.
+
+  '/credentials/{credentials_id}':
+    post:
+      summary: 認証情報の作成
+      description: 認証情報を新規作成する。
+      parameters:
+        - name: credentials_id
+          description: credentials_id
+        - name: credentials
+          description: credentials
+      responses:
+        '201':
+          description: Created
+    put:
+      summary: 認証情報の更新
+      description: 認証情報を更新する。
+      parameters:
+        - name: credentials_id
+          description: credentials_id
+        - name: credentials
+          description: credentials
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+    delete:
+      summary: 認証情報の削除
+      description: 認証情報を削除する。
+      parameters:
+        - name: credentials_id
+          description: Credentials ID
+      responses:
+        '204': 
+          description: Deleted
+        '404': 
+          description: Not Found
+
+#Operator API
+  '/operators':
+    post:
+      summary: Create Operator
+      description: Operator の新規登録をリクエストする。パラメーターで指定されたメールアドレスに宛てて、Operator 登録確認用のワンタイムトークンを含んだメールが送信される。
+      parameters:
+        - name: request
+          description: 'email, password'
+      responses:
+        '201':
+          description: Operator が作成された
+        '400':
+          description: メールアドレスがすでに登録されているか、パスワードのフォーマットが不正
+
+  '/operators/email_change_token/issue':
+    post:
+      summary: Issue Email Change Token
+      description: メールアドレス変更用のワンタイムトークンをメールで送付する。
+      parameters:
+        - name: request
+          description: 'email'
+      responses:
+        '200': 
+          description: OK
+
+  '/operators/email_change_token/verify':
+    post:
+      summary: Verify Email Change Token
+      description: メールアドレス変更用のトークンを確認して、メールアドレスを変更する。
+      parameters:
+        - name: token
+          description: 'token'
+      responses:
+        '200':
+          description: OK
+
+  '/operators/verify':
+    post:
+      summary: Verify Operator
+      description: Operator 登録の確認を行う。メールで送られてくる確認用ワンタイムトークンをパラメーターに含めて呼び出しを行う。
+      parameters:
+      - name: token
+        description: token
+      responses:
+        '200':
+          description: 登録成功
+        '400':
+          description: ワンタイムトークンが不正
+        '404':
+          description: ワンタイムトークンが期限切れ
+
+  '/operators/{operator_id}':
+    get:
+      summary: Get Operator
+      description: Operatorの情報を返す。
+      parameters:
+        - name: operator_id
+          description: operator_id
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: Invalid Operator Id
+
+  '/operators/{operator_id}/auth_keys':
+    get:
+      summary: List Operator AuthKeys
+      description: OperatorのAuthKey一覧を返す。
+      parameters:
+        - name: operator_id
+          description: operator_id
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Generate Operator AuthKey
+      description: OperatorのAuthKeyを生成する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      responses:
+        '200':
+          description: OK.
+
+  '/operators/{operator_id}/auth_keys/{auth_key_id}':
+    delete:
+      summary: Delete Operator AuthKey
+      description: OperatorのAuthKeyを削除する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: auth_key_id
+        description: auth_key_id
+      responses:
+        '200':
+          description: OK
+
+  '/operators/{operator_id}/password':
+    post:
+      summary: Update Operator Password
+      description: Operator のパスワードを更新する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: request
+        description: 'current password, new password'
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: Invalid password.
+
+  '/operators/{operator_id}/support/token':
+    post:
+      summary: Generate Token for Support Console
+      description: サポート画面アクセス用のトークンを返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: Invalid Operator Id
+        '403':
+          description: Invalid token.
+
+  '/operators/{operator_id}/token':
+    post:
+      summary: Generate Authentication Token
+      description: 新しい API トークンを発行する。現在の API トークンをヘッダーに入れてリクエストを行うと、新しい API トークンを含んだレスポンスを返す。以降のリクエスト時にはこの新しい API トークンを用いることができる。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: request
+        description: 'token timeout seconds'
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
+
+# Role
+  '/operators/{operator_id}/roles':
+    get:
+      summary: List Roles
+      description: Roleの一覧を返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      responses:
+        '200':
+          description: OK.
+
+  '/operators/{operator_id}/roles/{role_id}':
+    get:
+      summary: Get Role
+      description: Roleを取得する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: role_id
+        description: role_id
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create Role
+      description: Roleを新しく追加する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: role_id
+        description: role_id
+      - name: request
+        description: 'permission'
+      responses:
+        '200':
+          description: OK.
+    put:
+      summary: Update Role
+      description: Roleを編集する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: role_id
+        description: role_id
+      - name: request
+        description: 'permission'
+      responses:
+        '200':
+          description: OK
+
+    delete:
+      summary: Delete Role
+      description: Roleを削除する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: role_id
+        description: role_id
+      responses:
+        '200':
+          description: OK
+
+  '/operators/{operator_id}/roles/{role_id}/users':
+    get:
+      summary: List Role Attached Users
+      description: Roleに紐づくユーザーの一覧を取得する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: role_id
+        description: role_id
+      responses:
+        '200':
+          description: OK.
+
+  '/operators/{operator_id}/users/{user_name}/roles':
+    get:
+      summary: List User Roles
+      description: ユーザーのロールの一覧を取得する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Attach Role to User
+      description: ユーザーにロールをアタッチする。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: request
+        description: role_id
+      responses:
+        '200': 
+          description: OK
+
+  '/operators/{operator_id}/users/{user_name}/roles/{role_id}':
+    delete:
+      summary: Detach Role from User
+      description: ユーザーからロールをデタッチする。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: role_id
+        description: role_id
+      responses:
+        '200':
+          description: OK
+
+# Shipping Address
+  '/operators/{operator_id}/shipping_addresses':
+    get:
+      summary: List shipping addresses
+      description: 商品発送先の一覧を返します。
+      parameters:
+        - name: operator_id
+          description: operator_id
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create shipping address
+      description: 商品発送先を新規登録する。
+      parameters:
+        - name: operator_id
+          description: operator_id
+        - name: model
+          description: model
+      responses:
+        '200':
+          description: OK.
+        '201':
+          description: shippingAddreddId
+
+  '/operators/{operator_id}/shipping_addresses/{shipping_address_id}':
+    get:
+      summary: Get shipping address
+      description: 商品発送先を返す。
+      parameters:
+        - name: operator_id
+          description: operator_id
+        - name: shipping_address_id
+          description: shipping_address_id
+      responses:
+        '200':
+          description: OK.
+    put:
+      summary: Update shipping address
+      description: 商品発送先を更新する。
+      parameters:
+        - name: operator_id
+          description: Operator ID
+        - name: shipping_address_id
+          description: shipping_address_id
+        - name: model
+          description: model
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Delete shipping address
+      description: 商品発送先を削除する。
+      parameters:
+        - name: operator_id
+          description: operator_id
+        - name: shipping_address_id
+          description: shipping_address_id
+      responses:
+        '200':
+          description: OK
+
+# Users
+  '/operators/{operator_id}/users':
+    get:
+      summary: List Users
+      description: SAMユーザー一覧を返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      responses:
+        '200':
+          description: OK.
+
+  '/operators/{operator_id}/users/{user_name}':
+    get:
+      summary: Get User
+      description: SAMユーザーを返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create User
+      description: SAMユーザーを新しく追加する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: request
+        description: 'description'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+    put:
+      summary: Update User
+      description: SAMユーザーを更新する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - in: body
+        name: request
+        description: 'description'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: SAM User not found.
+    delete:
+      summary: Delete User
+      description: SAMユーザーを削除する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: OK
+        '404':
+          description: SAM User not found.
+
+  '/operators/{operator_id}/users/{user_name}/auth_keys':
+    get:
+      summary: List User AuthKeys
+      description: SAMユーザーのAuthKey一覧を返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Generate AuthKey
+      description: SAMユーザーのAuthKeyを生成する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+
+  '/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}':
+    get:
+      summary: Get AuthKey
+      description: SAMユーザーのAuthKeyを返す。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: auth_key_id
+        description: auth_key_id
+      responses:
+        '200':
+          description: OK.
+    delete:
+      summary: Delete User AuthKey
+      description: SAMユーザーのAuthKeyを削除する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: auth_key_id
+        description: auth_key_id
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: OK
+        '404':
+          description: AuthKey not found.
+
+  '/operators/{operator_id}/users/{user_name}/password':
+    get:
+      summary: Has User Password
+      description: SAMユーザーのパスワードがセットされているかを取得する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create Password
+      description: SAMユーザーのパスワードを作成する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: request
+        description: 'password'
+      responses:
+        '200':
+          description: OK
+    put:
+      summary: Update Password
+      description: SAMユーザーのパスワードを更新する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: request
+        description: 'password'
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Delete Password
+      description: ユーザーのパスワードを削除する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: OK
+        '404':
+          description: Password registration is required.
+
+  '/operators/{operator_id}/users/{user_name}/permission':
+    get:
+      summary: Get User Permission
+      description: SAMユーザーの権限設定を取得する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      responses:
+        '200':
+          description: OK.
+    put:
+      summary: Update Permission to User
+      description: SAMユーザーの権限を更新する。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: user_name
+        description: user_name
+      - name: request
+        description: 'permission'
+      responses:
+        '200':
+          description: OK
+
+# subscribers
+  '/subscribers':
+    get:
+      summary: List Subscribers
+      description: 条件にマッチするSubscriberのリストを返す。Subscriberの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)。
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: status_filter
+          description: "検索対象にするstatus。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, `terminated`"
+        - name: speed_class_filter
+          description: "検索対象にする速度クラス。`|`で区切って複数指定することができる。指定可能な値の一覧は以下のとおり: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"
+        - name: serial_number_filter
+          description: 検索対象にする製造番号。`|`で区切って複数指定することができる。指定された値で始まる製造番号を持つSubscriberの一覧を返す。
+        - name: limit
+          description: 取得するSubscriberの上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+      responses:
+        200:
+          description: A list of subscibers
+
+  '/subscribers/{imsi}/register':
+    post:
+      summary: Register Subscriber
+      description: Subscriberを登録
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: subscriber
+          description: subscriber
+      responses:
+        201:
+          description: Subscriber登録完了
+
+  '/subscribers/{imsi}':
+    get:
+      summary: Get Subscriber
+      description: 指定されたSubscriberの情報を返す。
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 指定されたSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/update_speed_class':
+    post:
+      summary: Update Subscriber speed class
+      description: 指定されたSubscriberの速度クラスを変更します
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: speed_class
+          description: 'speed_class'
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/delete_session':
+    post:
+      summary: Delete Session
+      description: 指定されたSubscriberのセッションを切断します
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/activate':
+    post:
+      summary: Activate Subscriber
+      description: 指定されたSubscriberのステータスを有効化
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/deactivate':
+    post:
+      summary: Deactivate Subscriber
+      description: 指定されたSubscriberを無効化
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/terminate':
+    post:
+      summary: Terminate Subscriber
+      description: 指定されたSubscriberをTerminate
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/suspend':
+    post:
+      summary: Suspend Subscriber
+      description: 指定されたSubscriberをSuspend
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/enable_termination':
+    post:
+      summary: Enable Termination of Subscriber
+      description: 指定されたSubscriberをTerminate可能に設定する
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/disable_termination':
+    post:
+      summary: Disable Termination of Subscriber
+      description: 指定されたSubscriberをTerminate不可能に設定する
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/set_expiry_time':
+    post:
+      summary: Update Expiry Time of Subscriber
+      description: 指定されたSubscriberの有効期限を更新
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: request
+          description: 更新後の有効期限(unixtime:ミリ秒単位)
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/unset_expiry_time':
+    post:
+      summary: Delete Expiry Time of Subscriber
+      description: 指定されたSubscriberの有効期限を削除して無期限に変更
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        204:
+          description: 当該Subscriberの有効期限を無期限に変更完了
+        404:
+          description: 指定されたSubscriberが存在しないか、Subscriberに有効期限がない
+
+  '/subscribers/{imsi}/set_group':
+    post:
+      summary: Set Group to Subscriber
+      description: 指定されたSubscriberの所属先Groupを指定あるいは上書き変更
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: group
+          description: Group（IDのみを含めばよい）
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/unset_group':
+    post:
+      summary: Unset Group to Subscriber
+      description: 指定されたSubscriberのGroup指定を解除
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しないか、SubscriberはGroupに属していない
+
+  '/subscribers/{imsi}/set_imei_lock':
+    post:
+      summary: Set IMEI lock configuration for Subscriber.
+      description: 指定されたSubscriberのIMEIロック設定を指定
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: imeiLock
+          description: Subscriberに指定するIMEI lockの設定 （オンラインのSubscriberの現在のIMEIにロックするにはIMEIは指定しなくてもよい）
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        400:
+          description: IMEI文字列が無効か、オフラインのSubscriberにも関わらずIMEIが指定されていない.
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/unset_imei_lock':
+    post:
+      summary: Unset IMEI lock configuration for Subscriber.
+      description: 指定されたSubscriberのIMEIロック設定を解除
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/events/sessions':
+    get:
+      summary: List Session Events
+      description: 指定されたSubscriberのセッション作成・変更・削除のイベント履歴を返す。イベントの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: from
+          description: イベントの検索範囲時刻の始まり(unixtime)
+        - name: to
+          description: イベントの検索範囲時刻の終わり(unixtime)
+        - name: limit
+          description: 取得するイベント数の上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のイベントのタイムスタンプ。このパラメータを指定することで次のイベント以降のリストを取得できる。
+      responses:
+        200:
+          description: A list of session events
+
+  '/subscribers/{imsi}/tags':
+    put:
+      summary: Bulk Insert or Update Subscriber Tags
+      description: 指定されたSubscriberのタグを追加・更新
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: tags
+          description: 追加・更新対象のタグの配列
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/tags/{tag_name}':
+    delete:
+      summary: Delete Subscriber Tag
+      description: 指定されたSubscriberのタグを削除
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+        - name: tag_name
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたSubscriberあるいはタグが存在しない
+
+  '/subscribers/transfer_token/issue':
+    post:
+      summary: Issue Subscribers Transfer Token
+      description: Subscriberのオペレーター間移管用トークンを、移管先オペレーターにメールで送付する。
+      parameters:
+      - name: request
+        description:  移管先オペレーターのメールアドレス、オペレーターID、移管対象のIMSI
+      responses:
+        '200':
+          description: OK
+
+  '/subscribers/transfer_token/verify':
+    post:
+      summary: Verify Subscriber Transfer Token
+      description: Subscriber移管用のトークンを確認して、移管を実施する。このAPIは移管先のOperatorで呼び出しを行う。
+      parameters:
+      - name: token
+        description: 移管先に送付されたトークン
+      responses:
+        '200':
+          description: OK.
+
+  '/subscribers/transfer_token/{token}':
+    delete:
+      summary: Delete Subscribers Transfer Token
+      description: Subscriberのオペレーター間移管トークンを削除し、移管をキャンセルする。
+      parameters:
+        - name: token
+          description: token
+      responses:
+        204:
+          description: 削除を実行
+        404:
+          description: トークンが存在しない
+
+  '/subscribers/{imsi}/data':
+    get:
+      summary: Get data sent from a subscriber.
+      description: 指定されたサブスクライバーから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: imsi
+          description: データ取得対象のサブスクライバーのIMSI
+        - name: from
+          description: 取得対象の期間の始まり (unixtime ミリ秒単位)
+        - name: to
+          description: 取得対象の期間の終わり (unixtime ミリ秒単位)
+        - name: sort
+          description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+        - name: limit
+          description: 取得するデータエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      responses:
+        200:
+          description: データエントリのリスト
+
+# LoRa devices
+  '/lora_devices':
+    get:
+      summary: List LoRa devices
+      description: 条件にマッチするLoRa deviceのリストを返す。LoRa deviceの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)。
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: limit
+          description: 取得するLoRa deviceの上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のLoRa deviceのDevice ID。このパラメータを指定することで次のLoRa device以降のリストを取得できる。
+      responses:
+        200:
+          description: A list of subscibers
+
+  '/lora_devices/{device_id}/register':
+    post:
+      summary: Register LoRa device
+      description: LoRa deviceを登録
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのDevice ID
+        - name: lora_device
+          description: LoRa device
+      responses:
+        201:
+          description: LoRa device登録完了
+
+  '/lora_devices/{device_id}':
+    get:
+      summary: Get LoRa device
+      description: 指定されたLoRa deviceの情報を返す。
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのDevice ID
+      responses:
+        200:
+          description: 指定されたLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/data':
+    get:
+      summary: Get data sent from a LoRa device.
+      description: 指定されたLoRaデバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: device_id
+          description: データ取得対象のLoRaデバイスのID
+        - name: from
+          description: 取得対象の期間の始まり (unixtime ミリ秒単位)
+        - name: to
+          description: 取得対象の期間の終わり (unixtime ミリ秒単位)
+        - name: sort
+          description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+        - name: limit
+          description: 取得するデータエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      responses:
+        200:
+          description: データエントリのリスト
+    post:
+      summary: Send data to a LoRa device.
+      description: 指定したデバイスにデータを送信する。データはLoRa Network Serverにセットされ、次に利用可能なデータ送信スロットを使って指定デバイスに送信される。未送信のデータがLoRa Network Serverにあった場合には、最新の受信データで上書きされる。 一定時間(2時間)受け取られなかった場合、デバイス受信時に新しいメッセージを受けた場合は、メッセージは破棄されます。
+      parameters:
+        - name: device_id
+          description: 送信先デバイスのID
+        - name: data
+          description: 16進数でエンコードされたバイナリデータの文字列。バイナリデータの最大サイズは11 octets（16進数エンコードされた文字列で22文字）
+      responses:
+        204:
+          description: データはLoRa Network Serverにセットされ、送信先デバイスが取得出来る状態になったことを示す。
+        404:
+          description: 指定されたLoRaデバイスが存在しない。
+
+  '/lora_devices/{device_id}/terminate':
+    post:
+      summary: Terminate LoRa device
+      description: 指定されたLoRa deviceをTerminate
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/enable_termination':
+    post:
+      summary: Enable Termination of LoRa device
+      description: 指定されたLoRa deviceをTerminate可能に設定する
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/disable_termination':
+    post:
+      summary: Disable Termination of LoRa device
+      description: 指定されたLoRa deviceをTerminate不可能に設定する
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/set_group':
+    post:
+      summary: Set Group to LoRa device
+      description: 指定されたLoRa deviceの所属先Groupを指定あるいは上書き変更
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+        - name: group
+          description: Group（IDのみを含めばよい）
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/unset_group':
+    post:
+      summary: Unset Group to LoRa device
+      description: 指定されたLoRa deviceのGroup指定を解除
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しないか、LoRa deviceはGroupに属していない
+
+  '/lora_devices/{device_id}/tags':
+    put:
+      summary: Bulk Insert or Update LoRa device Tags
+      description: 指定されたLoRa deviceのタグを追加・更新
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+        - name: tags
+          description: 追加・更新対象のタグの配列
+      responses:
+        200:
+          description: 更新後のLoRa deviceの詳細情報
+        404:
+          description: 指定されたLoRa deviceが存在しない
+
+  '/lora_devices/{device_id}/tags/{tag_name}':
+    delete:
+      summary: Delete LoRa device Tag
+      description: 指定されたLoRa deviceのタグを削除
+      parameters:
+        - name: device_id
+          description: 対象のLoRa deviceのID
+        - name: tag_name
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたLoRa deviceあるいはタグが存在しない
+
+# LoRa Gateways
+  '/lora_gateways':
+    get:
+      summary: List LoRa gateways.
+      description: 条件にマッチするLoRa gatewayのリストを返す。LoRa gatewayの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)。
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: limit
+          description: 一度に取得するLoRa gatewayの数の上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のLoRa gatewayのID。このパラメータを指定することで次のLoRa gateway以降のリストを取得できる。
+      responses:
+        '200':
+          description: LoRa gatewayのリスト
+
+  '/lora_gateways/{gateway_id}':
+    get:
+      summary: Get LoRa gateway.
+      description: 指定されたLoRa gatewayの情報を返す。
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      responses:
+        '200':
+          description: 指定されたLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/disable_termination':
+    post:
+      summary: Disable Termination of LoRa gateway.
+      description: 指定されたLoRa gatewayをTerminate不可能に設定する
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/enable_termination':
+    post:
+      summary: Enable Termination of LoRa gateway.
+      description: 指定されたLoRa gatewayをTerminate可能に設定する
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/set_network_set':
+    post:
+      summary: Set Network Set ID of LoRa gateway.
+      description: 指定されたLoRa gatewayのNetwork Set IDを指定あるいは上書き変更
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      - name: ns_id
+        description: LoRa Network Set ID
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/unset_network_set':
+    post:
+      summary: Unset Network Set ID of LoRa gateway.
+      description: 指定されたLoRa gatewayのNetwork Set IDを削除
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/tags':
+    put:
+      summary: Bulk Insert or Update LoRa gateway Tags.
+      description: 指定されたLoRa gatewayのタグを追加・更新
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa deviceのID
+      - name: tags
+        description: 追加・更新対象のタグの配列
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+  '/lora_gateways/{gateway_id}/tags/{tag_name}':
+    delete:
+      summary: Delete LoRa gateway tag.
+      description: 指定されたLoRa gatewayのタグを削除
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      - name: tag_name
+        description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        '204':
+          description: 対象のタグの削除が完了
+        '404':
+          description: 指定されたLoRa gatewayあるいはタグが存在しない
+
+  '/lora_gateways/{gateway_id}/terminate':
+    post:
+      summary: Terminate LoRa gateway.
+      description: 指定されたLoRa gatewayをTerminate
+      parameters:
+      - name: gateway_id
+        description: 対象のLoRa gatewayのID
+      responses:
+        '200':
+          description: 更新後のLoRa gatewayの詳細情報
+        '404':
+          description: 指定されたLoRa gatewayが存在しない
+
+# LoRa Network set
+  '/lora_network_sets':
+    get:
+      summary: List LoRa Network Sets.
+      description: 条件にマッチするLoRa network setのリストを返す。LoRa network setの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)。
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: limit
+          description: 一度に取得するLoRa network setの数の上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のLoRa network setのID。このパラメータを指定することで次以降のリストを取得できる。
+      responses:
+        '200':
+          description: LoRa network setのリスト
+    post:
+      summary: Creates a LoRa network set
+      description: LoRa network setを作成する
+      parameters:
+      - name: lora_network_set
+        description: タグなど作成対象のLoRa network setに設定する付加情報
+      responses:
+        '201':
+          description: LoRa network setの作成に成功.
+
+  '/lora_network_sets/{ns_id}':
+    get:
+      summary: Get LoRa network set.
+      description: 指定されたLoRa network setの情報を返す
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      responses:
+        '200':
+          description: LoRa network setの詳細情報を取得完了
+        '404':
+          description: 指定されたLoRa network setが存在しない
+    delete:
+      summary: Delete LoRa network set.
+      description: 指定されたLoRa network setを削除する
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      responses:
+        '204':
+          description: 削除に成功
+        '404':
+          description: 指定されたLoRa network setが存在しない
+
+  '/lora_network_sets/{ns_id}/add_permission':
+    post:
+      summary: Adds permission to a LoRa network set.
+      description: 別のOperatorからNetwork Setが利用できるようにパーミッションを追加する。
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      - name: operator_id
+        description: 許可されたOperatorのリストに追加すべきOperatorのID
+      responses:
+        '200':
+          description: 指定されたnetwork setのパーミッションを更新完了
+
+  '/lora_network_sets/{ns_id}/gateways':
+    get:
+      summary: List LoRa Gateways in a Network Set.
+      description: 指定されたNetwork Setに属するLoRa gatewayのリストを返す。LoRa gatewayの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      - name: limit
+        description: 一度に取得するLoRa gatewayの数の上限
+      - name: last_evaluated_key
+        description: 現ページで取得した最後のLoRa gatewayのID。このパラメータを指定することで次のLoRa gateway以降のリストを取得できる。
+      responses:
+        '200':
+          description: LoRa gatewayのリスト
+        '404':
+          description: 指定されたLoRa network setが存在しない
+
+  '/lora_network_sets/{ns_id}/revoke_permission':
+    post:
+      summary: Revokes a permission from a LoRa network set.
+      description: 指定されたLoRa network setの別のOperatorへの利用許可を取り消す
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      - name: operator_id
+        description: 許可されたOperatorのリストに追加すべきOperatorのID
+      responses:
+        '200':
+          description: 指定されたLoRa network setのパーミッションを更新完了
+
+  '/lora_network_sets/{ns_id}/tags':
+    put:
+      summary: Bulk Insert or Update LoRa network set tags.
+      description: 指定されたLoRa network setのタグを追加・更新
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      - name: tags
+        description: 追加・更新対象のタグの配列
+      responses:
+        '200':
+          description: 更新後のLoRa network setの詳細情報
+        '404':
+          description: 指定されたLoRa network setが存在しない
+
+  '/lora_network_sets/{ns_id}/tags/{tagName}':
+    delete:
+      summary: Delete LoRa network set tag.
+      description: 指定されたLoRa network setのタグを削除
+      parameters:
+      - name: ns_id
+        description: 対象のLoRa network setのID
+      - name: tag_name
+        description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        '204':
+          description: 対象のタグの削除が完了
+        '404':
+          description: 指定されたLoRa network setあるいはタグが存在しない
+
+# Billing
+  '/bills':
+    get:
+      summary: Get billing history
+      description: 過去の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      responses:
+        '200':
+          description: OK.
+
+  '/bills/latest':
+    get:
+      summary: Get latest bill
+      description: 無料利用枠などの割引適用後の、直近の利用額を返します。このAPIで取得した金額は請求確定前の金額になります。
+      responses:
+        '200':
+          description: OK
+
+  '/bills/latest/export':
+    post:
+      summary: Export latest billing CSV file to S3
+      description: 直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。
+      parameters:
+        - name: export_mode
+          description: export_mode (async, sync)
+      responses:
+        '200':
+          description: OK.
+
+  '/bills/{yyyyMM}':
+    get:
+      summary: Get bill
+      description: 指定した月の利用額履歴（無料利用枠などの割引適用後、税込）を返します。このAPIは月末締めをして確定した利用額のみ返します。
+      parameters:
+        - name: yyyyMM
+          description: year and month
+      responses:
+        '200':
+          description: OK.
+
+  '/bills/{yyyyMM}/daily':
+    get:
+      summary: Get bill per day
+      description: 指定した月の、日ごとの利用額明細を返します。このAPIは確定した利用額のみ返します。
+      parameters:
+        - name: yyyyMM
+          description: year and month
+      responses:
+        '200':
+          description: OK.
+
+  '/bills/{yyyyMM}/export':
+    post:
+      summary: Output billing CSV file to S3
+      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。
+      parameters:
+      - name: yyyyMM
+        description: yyyyMM
+      - name: export_mode
+        description: export_mode (async, sync)
+      responses:
+        '200':
+          description: OK.
+
+#Payment
+  '/coupons':
+    get:
+      summary: List coupons
+      description: 現在登録されているクーポン一覧を返します。
+      responses:
+        '200':
+          description: OK.
+
+  '/coupons/{coupon_code}/register':
+    post:
+      summary: Register Coupon
+      description: クーポンを登録します。
+      parameters:
+      - name: coupon_code
+        description: coupon_code
+      responses:
+        '200':
+          description: OK.
+
+  '/payment_history/transactions/{payment_transaction_id}':
+    get:
+      summary: Get payment transaction result
+      description: 課金処理の結果を返します
+      parameters:
+      - name: payment_transaction_id
+        description: payment_transaction_id
+      responses:
+        '200':
+          description: OK.
+
+  '/payment_methods/current':
+    get:
+      summary: Get payment method information
+      description: 現在の支払い方法を返します。propertiesに詳細情報が入っています
+      responses:
+        '200':
+          description: OK.
+
+  '/payment_methods/current/activate':
+    post:
+      summary: Activate payment method
+      description: エラーのある現在の支払い方法を有効化します。
+      responses:
+        '200':
+          description: OK.
+
+  '/payment_methods/webpay':
+    post:
+      summary: Register credit card information for WebPay
+      description: WebPayでの支払い用のカード情報を登録します
+      parameters:
+      - name: creditCard
+        description: creditCard
+      responses:
+        '200':
+          description: OK.
+
+  '/payment_statements':
+    get:
+      summary: List payment statements.
+      description: 課金明細の一覧を返します。
+      responses:
+        '200':
+          description: OK
+
+  '/payment_statements/{payment_statement_id}/export':
+    post:
+      summary:  Export payment statement.
+      description: 課金明細を出力します。
+      parameters:
+        - name: payment_statement_id
+          description: payment_statement_id
+        - name: export_mode
+          description: export_mode (async, sync)
+      responses:
+        '200':
+          description: OK
+
+  '/payment_statements/payer_information':
+    get:
+      summary: Export payer information.
+      description: 課金明細に出力する支払い者情報を取得します。
+      responses:
+        '200':
+          description: OK
+    post:
+      summary:  Register payer information.
+      description: 課金明細に出力する支払い者情報を設定します。
+      parameters:
+        - name: req
+          description: 課金明細に登録する支払い者情報
+      responses:
+        '201':
+          description: Created
+
+# event handlers
+  '/event_handlers':
+    get:
+      summary: List Event Handlers
+      description: イベントハンドラの一覧を返す。
+      parameters:
+      - name: target
+        description: target
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create Event Handler
+      description: イベントハンドラを新規作成する。リクエストパラメータの指定方法; https://dev.soracom.io/en/docs/event_handler/
+      parameters:
+      - name: req
+        description: イベントハンドラの設定内容
+      responses:
+        201:
+          description: Created
+
+  '/event_handlers/subscribers/{imsi}':
+    get:
+      summary: List Event Handlers related to Subscriber
+      description: 対象IMSIにひもづくイベントハンドラのリストを返す。
+      parameters:
+      - name: imsi
+        description: imsi
+      responses:
+        '200':
+          description: OK.
+        '404':
+          description: not found
+
+  '/event_handlers/{handler_id}':
+    get:
+      summary: Get Event Handler
+      description: 指定されたイベントハンドラの情報を返す。
+      parameters:
+      - name: handler_id
+        description: handler ID
+      responses:
+        '200':
+          description: OK.
+        '404':
+          description: Handler not found.
+
+    put:
+      summary: Update Event Handler
+      description: 指定されたイベントハンドラを更新する。リクエストパラメータの指定方法; https://dev.soracom.io/en/docs/event_handler/
+      parameters:
+      - name: handler_id
+        description: handler ID
+      - name: event_handler_model
+        description:  イベントハンドラの設定内容
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: Invalid handlerId.
+
+    delete:
+      summary: Delete Event Handler
+      description: 指定されたイベントハンドラを削除する。
+      parameters:
+      - name: handler_id
+        description: handler ID
+      responses:
+        '204':
+          description: OK.
+        '404':
+          description: EventHandler not found.
+
+  '/event_handlers/{handler_id}/subscribers/{imsi}/ignore':
+    post:
+      summary: Ignore Event Handler
+      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を追加
+      parameters:
+      - name: imsi
+        description: imsi
+      - name: handler_id
+        description: handler_id
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Delete Ignore Event Handler
+      description: 指定のIMSIに対して、指定のイベントハンドラを無視する設定を削除
+      parameters:
+      - {name: imsi, description: imsi}
+      - {name: handler_id, description: handler_id}
+      responses:
+        '204': {description: OK}
+        '404': {description: not found}
+
+# Files
+  '/files/exported/{exported_file_id}':
+    get:
+      summary: エクスポートされたファイルを取得します。
+      description: エクスポートされたファイルを取得します。ファイルエクスポートが完了している場合、レスポンスのurlにファイルダウンロードURLがセットされます。
+      parameters:
+        - name: exported_file_id
+          description: 'file export id'
+      responses:
+        '200':
+          description: OK
+
+#Order
+  '/orders':
+    get:
+      summary: List confirmed orders.
+      description: 発注確定済みの発注一覧を返します。
+      responses:
+        '200':
+          description: OK.
+    post:
+      summary: Create Quotation
+      description: 新規で発注見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。
+      parameters:
+      - name: 'request'
+        description: 注文品リストと配送先ID
+      responses:
+        '200':
+          description: OK.
+        '201':
+          description: Created
+
+  '/orders/{order_id}':
+    get:
+      summary: Get confirmed order.
+      description: 発注確定済みの発注を返します。
+      parameters:
+      - {name: order_id, description: order_id}
+      responses:
+        '200':
+          description: OK.
+
+  '/orders/{order_id}/cancel':
+    put:
+      summary: Cancel order.
+      description: 発注をキャンセルします。既に発送済みの場合はエラーが返されます。
+      parameters:
+      - {name: order_id, description: order_id}
+      responses:
+        '200':
+          description: OK.
+
+  '/orders/{order_id}/confirm':
+    put:
+      summary: Confirm order.
+      description: 与信を実施し、問題ない場合に発注を確定します。
+      parameters:
+      - {name: order_id, description: order_id}
+      responses:
+        '200':
+          description: OK.
+
+  '/orders/{order_id}/subscribers/register':
+    post:
+      summary: Register subscribers for operator.
+      description: 発注したSIMをオペレーターに登録します。
+      parameters:
+      - {name: order_id, description: order_id}
+      responses:
+        '200':
+          description: OK.
+
+  '/orders/{order_id}/subscribers':
+    get:
+      summary: List ordered subscribers.
+      description: 発注したSIMのSubscriber一覧を返します。
+      parameters:
+      - {name: order_id, description: order_id}
+      - name: last_evaluated_key
+        description: 直前のリクエストで取得したうち、最後のSubscriberの製造番号。レスポンスヘッダのX-Soracom-Next-Keyに含まれる値
+      - name: limit
+        description: レスポンスに含まれる最大Subscriber数
+      responses:
+        '200':
+          description:  OK.
+
+  '/products':
+    get:
+      summary: List products
+      description: 商品一覧を返します。
+      responses:
+        '200':
+          description: OK.
+
+
+# stats
+  '/stats/air/subscribers/{imsi}':
+    get:
+      summary: Get Air Usage Report of Subscriber
+      description: IMSI で指定した Subscriber の通信量履歴を取得する。
+      parameters:
+        - name: imsi
+          description: imsi
+        - name: from
+          description: 集計対象時刻の始まりをunixtimeで与える
+        - name: to
+          description: 集計対象時刻の終わりをunixtimeで与える
+        - name: period
+          description: 集計単位。minutesは基本的に5分間隔。
+      responses:
+        '200':
+          description: OK.
+
+  '/stats/beam/subscribers/{imsi}':
+    get:
+      summary: Get Beam Usage Report of Subscriber
+      description: IMSI で指定した Subscriber のSoracom Beam利用量履歴を取得する。
+      parameters:
+        - name: imsi
+          description: imsi
+        - name: from
+          description: 集計対象時刻の始まりをunixtimeで与える
+        - name: to
+          description: 集計対象時刻の終わりをunixtimeで与える
+        - name: period
+          description: 集計単位。minutesは基本的に5分間隔。
+      responses:
+        '200':
+          description: OK.
+
+  '/stats/air/operators/{operator_id}/export':
+    post:
+      summary: Export Air Usage Report of All Subscribers
+      description: Operator が保有する全 Subscriber の通信量をファイルで取得する。取得対象の期間は from, to のunixtimeで指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
+      parameters:
+      - name: operator_id
+        description: operator_id
+      - name: export_mode
+        description: export_mode (async, sync)
+      - name: request
+        description: 出力するデータの期間
+      responses:
+        '200':
+          description: OK.
+
+  '/stats/beam/operators/{operator_id}/export':
+    post:
+      summary: Export Beam Usage Report of All Subscribers
+      description: Operator が保有する全 Subscriber の通信量をファイルで取得する。取得対象の期間は from, to のunixtimeで指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
+      parameters:
+      - name: operator_id
+        description: operator ID
+      - name: export_mode
+        description: export_mode (async, sync)
+      - name: request
+        description: 出力するデータの期間
+      responses:
+        '200':
+          description: OK.
+
+# groups
+  '/groups':
+    get:
+      summary: List Groups
+      description: Groupの一覧を返す
+      parameters:
+        - name: tag_name
+          description: GroupについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueが必須。
+        - name: tag_value
+          description: GroupについたTagの値。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: limit
+          description: レスポンス1ページあたりの最大数
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のGroupから始まるリストを取得できる。
+      responses:
+        200:
+          description: Groupの一覧
+    post:
+      summary: Create Group
+      description: Groupを新規作成する
+      parameters:
+        - name: Tags
+          description: グループに付けるタグ
+      responses:
+        201:
+          description: Created
+
+  '/groups/{group_id}':
+    get:
+      summary: Get Group
+      description: Group IDで指定されたGroupを返す
+      parameters:
+        - name: group_id
+          description: 対象のGroupのID
+      responses:
+        200:
+          description: 指定されたGroup
+        404:
+          description: 指定されたGroupは存在しない
+    delete:
+      summary: Delete Group
+      description: Group IDで指定されたGroupを削除する
+      parameters:
+        - name: group_id
+          description: 対象のGroupのID
+      responses:
+        204:
+          description: 指定されたGroupを削除完了
+        404:
+          description: 指定されたGroupは存在しない
+
+  '/groups/{group_id}/subscribers':
+    get:
+      summary: List Subscribers in a group
+      description: Group IDで指定されたGroupに属するSubscriberの一覧を返す
+      parameters:
+        - name: group_id
+          description: 対象のGroupのID
+        - name: limit
+          description: レスポンス1ページあたりの最大数
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+      responses:
+        200:
+          description: 指定されたGroup
+        404:
+          description: 指定されたGroupは存在しない
+
+  '/groups/{group_id}/configuration/{namespace}':
+    put:
+      summary: Update Group Configuration Parameters
+      description: 指定されたGroupのパラメータを追加・更新
+      parameters:
+        - name: group_id
+          description: 対象のGroup
+        - name: namespace
+          description: 対象のConfiguration
+        - name: parameters
+          description: 更新対象のオブジェクトの配列
+      responses:
+        200:
+          description: 更新後のGroup
+        404:
+          description: 指定されたGroupが存在しない
+
+  '/groups/{group_id}/configuration/{namespace}/{name}':
+    delete:
+      summary: Delete Group Configuration Parameters
+      description: 指定されたGroupのパラメータを削除
+      parameters:
+        - name: group_id
+          description: 対象のGroup
+        - name: namespace
+          description: 対象のパラメータのネームスペース
+        - name: name
+          description: 削除対象のパラメータ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 指定されたパラメータの削除完了
+        404:
+          description: 指定されたGroupが存在しない
+
+  '/groups/{group_id}/tags':
+    put:
+      summary: Update Group Tags
+      description: 指定されたConfiguratio Groupのタグを追加・更新
+      parameters:
+        - name: group_id
+          description: 対象のGroupのID
+        - name: tags
+          description: 更新対象のタグの配列
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/groups/{group_id}/tags/{tag_name}':
+    delete:
+      summary: Delete Group Tag
+      description: 指定されたGroupのタグを削除
+      parameters:
+        - name: group_id
+          description: 対象のGroupのID
+        - name: tag_name
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたSubscriberあるいはタグが存在しない
+
+# Virtual Private Gateway
+  '/virtual_private_gateways':
+    get:
+      summary: List Virtual Private Gateways
+      description: VPGの一覧を返す
+      parameters:
+        - name: tag_name
+          description: VPGについたTag名。完全一致するTag名が検索対象となる。tag_nameを指定した場合、tag_valueが必須。
+        - name: tag_value
+          description: VPGについたTagの値。
+        - name: tag_value_match_mode
+          description: タグの検索条件。
+        - name: limit
+          description: レスポンス1ページあたりの最大数
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のGroupのID。このパラメータを指定することで次のVPGから始まるリストを取得できる。
+      responses:
+        200:
+          description: VPGの一覧
+    post:
+      summary: Create Virtual Private Gateway
+      description: VPGを新規作成する
+      parameters:
+        - name: CreateVirtualPrivateGatewayRequest
+          description: 作成対象のVPGの情報を含むリクエスト
+      responses:
+        201:
+          description: Created
+
+  '/virtual_private_gateways/{vpg_id}':
+    get:
+      summary: Get Virtual Private Gateway
+      description: 指定されたVPGの情報を取得する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: 指定されたVPG
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/terminate':
+    post:
+      summary: Terminate Virtual Private Gateway
+      description: 指定されたVPGをTerminateする
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: 指定されたVPGのTerminate作業を開始
+        400:
+          description: 指定されたVPGのTerminate出来ない理由が存在
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/gate/open':
+    post:
+      summary: Open SORACOM Gate
+      description: 指定したVPGでSORACOM Gateを有効化し、Gateを開く
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: SORACOM Gateの有効化が完了
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/gate/close':
+    post:
+      summary: Close SORACOM Gate.
+      description: 指定したVPGでSORACOM Gateを無効化し、Gateを閉じる
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: SORACOM Gateの無効化が完了
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/gate/peers':
+    get:
+      summary: List VPG Gate peers
+      description: VPGに登録されたGate Peerの一覧を取得する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: 正しくVPGに登録されたGate Peerのリストが取得出来た
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGは存在しない
+
+    post:
+      summary: Register VPG Gate Peer
+      description: VPGにGate Peerを登録する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: gate_peer
+      responses:
+        200:
+          description: VPGにGate Peerの登録が完了した
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}':
+    delete:
+      summary: Unregister VPG Gate Peer
+      description: Gate PeerをVPGから登録解除する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: outer_ip_address
+          description: 対象のPeerのID
+      responses:
+        204:
+          description: Gate Peerの登録解除に成功
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGあるいはPeerは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/ip_address_map':
+    get:
+      summary: List VPG IP address map entries
+      description: 指定されたVPGのIPアドレスマップのエントリーを取得する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+      responses:
+        200:
+          description: IPアドレスのリスト取得に成功
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGあるいはPeerは存在しない
+
+    post:
+      summary: Put VPG IP address map entry
+      description: VPGのIPアドレスマップのエントリーを追加する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: put_ip_address_map_entry_request
+      responses:
+        200:
+          description: IPアドレスマップのエントリー追加に成功
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/ip_address_map/{key}':
+    delete:
+      summary: Delete VPG IP address map entry
+      description: VPGのIPアドレスマップからエントリーを削除する
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: key
+          description: 対象のKey
+      responses:
+        204:
+          description: IPアドレスマップのエントリー削除に成功
+        400:
+          description: リクエストに誤りがある
+        404:
+          description: 指定されたVPGあるいはPeerは存在しない
+
+  "/virtual_private_gateways/{id}/junction/mirroring/peers":
+    post:
+      summary: Junction ミラーリング peer を追加します。
+      description: Junction ミラーリング peer を追加します。
+      parameters:
+      - name: id
+        description: VPG ID
+      - name: mirroring peer
+        description: ミラーリング peer に関する情報
+      responses:
+        '201':
+          description: ミラーリング peer が作成または更新されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  "/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}":
+    put:
+      summary: Junction ミラーリング peer を更新します。
+      description: Junction ミラーリング peer を更新します。
+      parameters:
+      - name: id
+        description: VPG ID
+      - name: ipaddr
+        description: 更新したいミラーリング peer の IP アドレス
+      - name: updates
+        description: 更新する属性のリスト
+      responses:
+        '200':
+          description: ミラーリング peer の情報が更新されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+    delete:
+      summary: Junction ミラーリング peer を削除します。
+      description: Junction ミラーリング peer を削除します。
+      parameters:
+      - name: id
+        description: VPG ID
+      - name: ipaddr
+        description: 削除したいミラーリング peer の IP アドレス
+      responses:
+        '204':
+          description: ミラーリング peer が削除されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  "/virtual_private_gateways/{id}/junction/set_inspection":
+    post:
+      summary: Junction インスペクション機能の設定を行います。
+      description: Junction インスペクション機能の設定を行います。
+      parameters:
+      - name: id
+        description: VPG ID
+      - name: inspection configuration
+        description: インスペクション設定内容
+      responses:
+        '200':
+          description: 設定内容が追加または更新されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  "/virtual_private_gateways/{id}/junction/set_redirection":
+    post:
+      summary: Junction リダイレクション機能の設定を行います。
+      description: Junction リダイレクション機能の設定を行います。
+      parameters:
+      - name: id
+        description: VPG ID
+      - name: redirection configuration
+        description: リダイレクション設定内容
+      responses:
+        '200':
+          description: 設定内容が追加または更新されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  "/virtual_private_gateways/{id}/junction/unset_inspection":
+    post:
+      summary: Junction インスペクション機能の設定を解除します。
+      description: Junction インスペクション機能の設定を解除します。
+      parameters:
+      - name: id
+        description: VPG ID
+      responses:
+        '200':
+          description: 設定が解除されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  "/virtual_private_gateways/{id}/junction/unset_redirection":
+    post:
+      summary: Junction リダイレクション機能の設定を行います。
+      description: Junction リダイレクション機能の設定を行います。
+      parameters:
+      - name: id
+        description: VPG ID
+      responses:
+        '200':
+          description: 設定が解除されました。
+        '404':
+          description: 指定された VPG が見つかりませんでした。
+
+  '/virtual_private_gateways/{vpg_id}/vpc_peering_connections':
+    post:
+      summary: Create VPC Peering Connection
+      description: 指定されたVPGにVPC Peering Connectionを作成
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: vpc_peering_connection
+          description: 作成対象のVPC Peering Connection
+      responses:
+        201:
+          description: 作成されたVPC Peering Connection
+        404:
+          description: 指定されたVPC Peering Connectionは存在しない
+
+  '/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}':
+    delete:
+      summary: Delete VPC Peering Connection
+      description: 指定されたVPC Peering Connectionを削除
+      parameters:
+        - name: vpg_id
+          description: 対象のVPGのID
+        - name: pcx_id
+          description: 削除対象のVPC Peering ConnectionのID
+      responses:
+        204:
+          description: 指定されたVPC Peering Connectionの削除完了
+        404:
+          description: 指定されたVPC Peering Connectionは存在しない
+
+# logs
+  '/logs':
+    get:
+      summary: Get Logs.
+      description: 条件に合うログエントリのリストを返す。ログエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: resource_type
+          description: ログ取得対象のリソースのタイプ
+        - name: resource_id
+          description: ログ取得対象のリソースのID
+        - name: service
+          description: ログエントリをフィルタするためのサービス名
+        - name: from
+          description: ログ取得対象の期間の始まり (unixtime)
+        - name: to
+          description: ログ取得対象の期間の終わり (unixtime)
+        - name: limit
+          description: 取得するログエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
+      responses:
+        200:
+          description: ログエントリのリスト
+
+  "/devices":
+    get:
+      summary: デバイスのリストを取得します。
+      description: デバイスのリストを取得します。
+      parameters:
+      - name: tag_name
+        description: タグの名前
+      - name: tag_value
+        description: タグの値
+      - name: tag_value_match_mode
+        description: タグの検索条件 (exact | prefix)
+      - name: last_evaluated_key
+        description: 現ページで取得した最後のデバイスの ID。このパラメータを指定することで次のデバイスから始まるリストを取得できる。
+      - name: limit
+        description: 取得するデバイス数の上限
+      responses:
+        '200':
+          description: デバイスのリスト
+
+    post:
+      summary: 新しいデバイスを作成します。
+      description: 新しいデバイスを作成します。
+      parameters:
+      - name: device
+        description: 作成するデバイス
+      responses:
+        '201':
+          description: 作成されたデバイス
+
+  "/devices/{deviceId}":
+    get:
+      summary: 指定されたデバイス ID のデバイスを取得します。
+      description: 指定されたデバイス ID のデバイスを取得します。
+      parameters:
+      - name: deviceId
+        description: デバイス ID
+      - name: model
+        description: モデル情報を取得するかどうか
+      responses:
+        '200':
+          description: 指定されたデバイス ID のデバイス
+        '404':
+          description: 指定されたデバイス ID を持つデバイスが見つからなかった
+
+    delete:
+      summary: デバイスを削除します。
+      description: デバイスを削除します。
+      parameters:
+      - name: deviceId
+        description: 削除するデバイス
+      responses:
+        '204':
+          description: デバイスが削除された
+        '404':
+          description: 指定されたデバイス ID を持つデバイスが見つからなかった
+
+  "/devices/{deviceId}/set_group":
+    post:
+      summary: デバイスをグループに参加させます。
+      description: デバイスをグループに参加させます。
+      parameters:
+      - name: deviceId
+        description: 更新するデバイスのデバイス ID
+      - name: groupId
+      responses:
+        '200':
+          description: デバイスが更新された
+        '404':
+          description: 指定されたデバイス ID を持つデバイスが見つからなかった
+
+  "/devices/{deviceId}/unset_group":
+    post:
+      summary: デバイスをグループから外します。
+      description: デバイスをグループから外します。
+      parameters:
+      - name: deviceId
+        description: 更新するデバイスのデバイス ID
+      responses:
+        '200':
+          description: デバイスが更新された
+        '404':
+          description: 指定されたデバイス ID を持つデバイスが見つからなかった
+
+  "/devices/{deviceId}/tags":
+    put:
+      summary: デバイスのタグを更新します。
+      description: デバイスのタグを更新します。
+      parameters:
+      - name: deviceId
+        description: 更新するデバイスのデバイス ID
+      responses:
+        '200':
+          description: デバイスが更新された
+        '404':
+          description: 指定されたデバイス ID を持つデバイスが見つからなかった
+
+  "/devices/{deviceId}/tags/{tagName}":
+    delete:
+      summary: デバイスのタグを削除します。
+      description: デバイスのタグを削除します。
+      parameters:
+      - name: deviceId
+        description: 更新するデバイスのデバイス ID
+      - name: tagName
+        description: 削除するタグの名前
+      responses:
+        '204':
+          description: タグが削除された
+        '404':
+          description: 指定されたデバイス ID を持つデバイス、もしくは指定されたタグが見つからなかった
+
+  "/devices/{deviceId}/{object}/{instance}":
+    get:
+      summary: デバイスの Instance 以下のすべての Resource を Read します。
+      description: デバイスの Instance 以下のすべての Resource を Read します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: model
+        description: モデル情報を含めるかどうか
+      responses:
+        '200':
+          description: 指定されたObject Instance下のResourceのリスト
+        '400':
+          description: Object InstanceがRead操作をサポートしていません
+        '404':
+          description: Object Instanceが見つかりません
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}":
+    get:
+      summary: 指定されたデバイスの Resource を Read します。
+      description: 指定されたデバイスの Resource を Read します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: resource
+        description: Resource ID
+      - name: model
+        description: モデル情報を含めるかどうか
+      responses:
+        '200':
+          description: Resource
+        '400':
+          description: ResourceはRead操作をサポートしていません
+        '404':
+          description: Resourceが見つかりません
+
+    put:
+      summary: デバイスの Resource に値を Write します。
+      description: デバイスの Resource に値を Write します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: resource
+        description: Resource ID
+      - name: value
+        description: リソースにセットする値
+      responses:
+        '202':
+          description: Resourceの更新を受け付けました
+        '400':
+          description: ResourceはWrite操作をサポートしていません
+        '404':
+          description: Resourceが見つかりません
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/execute":
+    post:
+      summary: デバイスの Resource を Execute します。
+      description: デバイスの Resource を Execute します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: resource
+        description: Resource ID
+      - name: arg
+        description: Resourceを実行する際に渡す引数文字列
+      responses:
+        '202':
+          description: Resourceの実行を受け付けました
+        '400':
+          description: ResourceはExecute操作をサポートしていません
+        '404':
+          description: Resourceが見つかりません
+
+  "/v1/devices/{deviceId}/{object}/{instance}/observe":
+    post:
+      summary: 指定された Object Instance 以下の Resource の Observe を開始します。
+      description: 指定された Object Instance 以下の Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: model
+        description: モデル情報を含めるかどうか
+      responses:
+        '200':
+          description: Object Instance 下の Resource の Observe を開始しました
+        '400':
+          description: Object Instance は Read 操作をサポートしていません
+        '404':
+          description: Resourceが見つかりません
+      
+  "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
+    post:
+      summary: Object Instance 下の Resource の Observe を停止します。
+      description: Object Instance 下の Resource の Observe を停止します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      responses:
+        '204':
+          description: Observe を停止しました
+        '404':
+          description: Object Instance が見つかりません
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
+    post:
+      summary: 指定されたデバイスの Resource の Observe を開始します。
+      description: 指定されたデバイスの Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: resource
+        description: Resource ID
+      - name: model
+        description: モデル情報を含めるかどうか
+      responses:
+        '200':
+          description: Resource の Observe を開始しました
+        '400':
+          description: Resource は Read 操作をサポートしていません
+        '404':
+          description: Resource が見つかりません
+
+  "/devices/{deviceId}/{object}/{instance}/{resource}/unobserve":
+    post:
+      summary: デバイスの Resource の Observe を停止します。
+      description: デバイスの Resource の Observe を停止します。
+      parameters:
+      - name: deviceId
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: resource
+        description: Resource ID
+      responses:
+        '204':
+          description: Observe を停止しました
+        '404':
+          description: Resourceが見つかりません
+  
+definitions:
+
+  APICallErrorMessage:
+    properties:
+      code:
+        description: エラーコード
+      message:
+        description: 'エラーメッセージ。リクエスト時にX-Soracom-Langヘッダーに言語(en,ja)を設定するとその言語のメッセージがセットされます。'
+
+# Operator API
+  GenerateTokenRequest:
+    properties:
+      tokenTimeoutSeconds:
+        description: |
+          新しい API トークンの有効期限の長さ（秒単位）。
+          指定しなければデフォルトは 86400 [秒]（24時間）。
+          最大値は 172800 [秒]（48時間）。
+
+  RegisterOperatorsRequest:
+    properties:
+      password:
+        description: パスワードは以下の条件を満たしている必要があります：長さ 8 文字以上100 文字以内、アルファベット小文字 (a-z) を 1 文字以上使用、アルファベット大文字 (A-Z) を 1 文字以上使用、数字を 1 文字以上使用。記号なども使用できます。
+
+  GetShippingAddressResponse:
+    properties:
+      shippingAddressId:
+        description: 配送先ID
+      shippingArea:
+        description: 配送先エリア
+
+  GetUserPermissionResponse:
+    properties:
+      permission:
+        description: PermissionのJSON
+
+  SetUserPermissionRequest:
+    properties:
+      permission:
+        description: PermissionのJSON
+
+#Billing API
+  GetBillingHistoryResponse:
+    properties:
+      billList:
+        description: 月ごとの利用料リスト
+  MonthlyBill:
+    properties:
+      amount:
+        description: 金額
+      paymentStatus:
+        description: 直近の課金ステータス
+      paymentTransactionId:
+        description: 課金詳細取得用のID
+      yearMonth:
+        description: 年月
+  GetLatestBill:
+    properties:
+      amount:
+        description: 金額
+      lastEvaluatedTime:
+        description: 利用額計算を実施した時間
+  DailyBillResponse:
+    properties:
+      billList:
+        description: 日ごとの利用料リスト
+  DailyBill:
+    properties:
+      amount:
+        description: 金額
+      date:
+        description: 年月日
+
+#Payment API
+  CouponResponse:
+    properties:
+      amount:
+        description: クーポン額
+      balance:
+        description: 残高
+      billItemName:
+        description: 対象課金アイテム
+      couponCode:
+        description: クーポンコード
+      expiryYearMonth:
+        description: 有効期限
+
+  ListCouponResponse:
+    properties:
+      couponList:
+        description: クーポンリスト
+
+  GetPaymentTransactionResult:
+    properties:
+      amount:
+        description: 課金額
+      description:
+        description: 課金内容詳細
+      message:
+        description: メッセージ
+      messageCode:
+        description: メッセージコード
+      status:
+        description: ステータス
+
+  GetPaymentMethodResult:
+    properties:
+      errorCode:
+        description: エラーコード（支払い情報が無効な場合のみ）
+      errorMessage:
+        description: エラーメッセージ（支払い情報が無効な場合のみ
+      properties:
+        description: 支払い情報
+      providerType:
+        description: 課金プロバイダ種別
+      updateDate:
+        description: 登録日
+
+  PaymentStatementResponse:
+    properties:
+      amount:
+        description: 金額
+      paymentDateTime:
+        description: 課金日時
+      paymentInstrument:
+        description: 支払情報
+      paymentMethod:
+        description: 支払方法
+      paymentStatementId:
+        description: 課金明細ID
+      paymentStatementInfo:
+        description: 支払内容
+
+  ListPaymentStatementResponse:
+    properties:
+      paymentStatementsList:
+        description: 課金明細リスト
+
+  RegisterPayerInformationModel:
+    properties:
+      companyName:
+        description: 企業名
+      department:
+        description: 部署
+      fullName:
+        description: 氏名
+
+#Order API
+  ListOrderResponse:
+    properties:
+      orderList:
+        description: 発注リスト
+
+  OrderItemModel:
+    properties:
+      productCode:
+        description: 商品コード
+      quantity:
+        description: 購入数
+
+  CreateEstimatedOrderRequest:
+    properties:
+      orderItemList:
+        description: 発注商品リスト
+      shippingAddressId:
+        description: 商品発送先ID
+
+  EstimatedOrderModel:
+    properties:
+      email:
+        description: メールアドレス
+      orderId:
+        description: 発注ID
+      orderItemList:
+        description: 発注商品リスト
+      shippingAddress: 
+        description: 発送先
+      shippingAddressId:
+        description: 商品発送先ID
+      shippingCost:
+        description: 配送料
+      taxAmount:
+        description: 消費税
+      totalAmount:
+        description: 合計金額
+
+  GetOrderResponse:
+    properties:
+      email:
+        description: メールアドレス
+      orderDateTime:
+        description: 発注日時
+      orderId:
+        description: 発注ID
+      orderItemList:
+        description: 発注商品リスト
+      orderStatus:
+        description: 発注ステータス
+      shippingAddress: 
+        description: 発送先
+      shippingAddressId:
+        description: 商品発送先ID
+      shippingCost:
+        description: 配送料
+      shippingLabelNumber:
+        description: 宅配便送り状番号
+      taxAmount:
+        description: 消費税
+      totalAmount:
+        description: 合計金額
+
+  EstimatedOrderItemModel:
+    properties:
+      product:
+        description: 商品
+      productAmount:
+        description: 商品金額
+      quantity:
+        description: 購入数
+
+  ListOrderedSubscriberResponse:
+    properties:
+      orderedSubscriberList:
+        description: 発注したSIMのリスト
+
+  ShippingCostModel:
+    properties:
+      shippingArea:
+        description: 発送先エリア
+      shippingAreaName:
+        description: 発送先エリア名称
+      shippingCost:
+        description: 送料
+      size:
+        description: 発送サイズ
+    description: 発送料
+
+  ProductModel:
+    properties:
+      count:
+        description: 商品販売個数
+      maxQuantity:
+        description: 最大購入数量
+      price:
+        description: 商品販売個数ごとの価格
+      productCode:
+        description: 商品コード
+      productInfoURL:
+        description: 商品説明ページURL
+      productName:
+        description: 商品名
+      productType:
+        description: 商品種別
+      properties:
+        description: 商品プロパティ
+
+  GetExportedFileResponse:
+    properties:
+      status:
+        description: ファイル出力ステータス
+      url:
+        description: ファイルダウンロードURL
+
+  ActionConfigProperty:
+    properties:
+      to:
+        description: SendMailAction の時のみ有効
+      title:
+        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+      message:
+        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+      speedClass:
+        description: ChangeSpeedClassAction の時のみ有効
+      url:
+        description: 接続先URLとパラメーター ExecuteWebRequestAction の時のみ有効
+      httpMethod:
+        description: ExecuteWebRequestAction の時のみ有効
+      contentType:
+        description: ExecuteWebRequestAction の時のみ有効
+      headers:
+        description: ExecuteWebRequestAction の時のみ有効(任意)
+      body:
+        description: ExecuteWebRequestAction の時のみ有効(任意)
+      endpoint:
+        description: InvokeAWSLambdaAction の時のみ有効
+      functionName:
+        description: InvokeAWSLambdaAction の時のみ有効
+      accessKey:
+        description: InvokeAWSLambdaAction の時のみ有効
+      secretAccessKey:
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter1:
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter2:
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter3:
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter4:
+        description: InvokeAWSLambdaAction の時のみ有効
+      parameter5:
+        description: InvokeAWSLambdaAction の時のみ有効
+
+
+  RuleConfigProperty:
+    properties:
+      targetStatus:
+        description: SubscriberStatusAttributeRule の時のみ有効
+      targetSpeedClass:
+        description: SubscriberSpeedClassAttributeRule の時のみ有効
+
+  IssueSubscriberTransferTokenRequest:
+    properties:
+      transferDestinationOperatorEmail:
+        description: 移管先オペレーターEmail
+      transferDestinationOperatorId:
+        description: 移管先オペレーターID
+      transferImsi:
+        description: 移管するIMSIリスト
+
+  IssueSubscriberTransferTokenResponse:
+    properties:
+      token:
+        description: トークン
+
+  VerifySubscriberTransferTokenRequest:
+    properties:
+      token:
+        description: トークン
+
+  VerifySubscriberTransferTokenResponse:
+    properties:
+      transferredImsi:
+        description: 移管されたIMSIリスト
+
+  FileExportResponse:
+    properties:
+      exportedFileId:
+        description: ファイル出力ID(リクエストにexport_mode=asyncを指定した場合）
+      exportedFilePath:
+        description: 出力済みファイル取得パス(リクエストにexport_mode=asyncを付与した場合）
+      url:
+        description: ファイルダウンロードURL(export_mode指定なし、もしくはexport_mode=syncの場合

@@ -23,13 +23,13 @@ var SubscribersSetExpiryTimeCmdExpiryTime int64
 var SubscribersSetExpiryTimeCmdBody string
 
 func init() {
-	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TR(""))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI(""))
 
-	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TR("subscribers.set_expirytime.post.parameters.imsi.description"))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TR(""))
+	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI(""))
 
-	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // SubscribersSetExpiryTimeCmd defines 'set-expiry-time' subcommand
 var SubscribersSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
-	Short: TR("subscribers.set_expirytime.post.summary"),
-	Long:  TR(`subscribers.set_expirytime.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/set_expiry_time:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/set_expiry_time:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

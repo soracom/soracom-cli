@@ -26,15 +26,15 @@ var RolesCreateCmdRoleId string
 var RolesCreateCmdBody string
 
 func init() {
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdDescription, "description", "", TR(""))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdDescription, "description", "", TRAPI(""))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TR(""))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TRAPI(""))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TR("role_id"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	RolesCmd.AddCommand(RolesCreateCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // RolesCreateCmd defines 'create' subcommand
 var RolesCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("roles.create_role.post.summary"),
-	Long:  TR(`roles.create_role.post.description`),
+	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

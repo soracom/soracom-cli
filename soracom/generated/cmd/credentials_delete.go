@@ -11,7 +11,7 @@ import (
 var CredentialsDeleteCmdCredentialsId string
 
 func init() {
-	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TR("Credentials ID"))
+	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TRAPI("Credentials ID"))
 
 	CredentialsCmd.AddCommand(CredentialsDeleteCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // CredentialsDeleteCmd defines 'delete' subcommand
 var CredentialsDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("credentials.delete_credential.delete.summary"),
-	Long:  TR(`credentials.delete_credential.delete.description`),
+	Short: TRAPI("/credentials/{credentials_id}:delete:summary"),
+	Long:  TRAPI(`/credentials/{credentials_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

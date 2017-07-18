@@ -26,17 +26,17 @@ var DataGetCmdLimit int64
 var DataGetCmdTo int64
 
 func init() {
-	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TR("subscribers.get_data_from_subscriber.get.parameters.imsi.description"))
+	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.get_data_from_subscriber.get.parameters.last_evaluated_key.description"))
+	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "", TR("subscribers.get_data_from_subscriber.get.parameters.sort.description"))
+	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdFrom, "from", 0, TR("subscribers.get_data_from_subscriber.get.parameters.from.description"))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TR("subscribers.get_data_from_subscriber.get.parameters.limit.description"))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TR("subscribers.get_data_from_subscriber.get.parameters.to.description"))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DataCmd.AddCommand(DataGetCmd)
 }
@@ -44,8 +44,8 @@ func init() {
 // DataGetCmd defines 'get' subcommand
 var DataGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("subscribers.get_data_from_subscriber.get.summary"),
-	Long:  TR(`subscribers.get_data_from_subscriber.get.description`),
+	Short: TRAPI("/subscribers/{imsi}/data:get:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/data:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

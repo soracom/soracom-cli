@@ -11,7 +11,7 @@ import (
 var FilesGetExportedCmdExportedFileId string
 
 func init() {
-	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TR("file export id"))
+	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TRAPI("file export id"))
 
 	FilesCmd.AddCommand(FilesGetExportedCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // FilesGetExportedCmd defines 'get-exported' subcommand
 var FilesGetExportedCmd = &cobra.Command{
 	Use:   "get-exported",
-	Short: TR("files.get_exported.get.summary"),
-	Long:  TR(`files.get_exported.get.description`),
+	Short: TRAPI("/files/exported/{exported_file_id}:get:summary"),
+	Long:  TRAPI(`/files/exported/{exported_file_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

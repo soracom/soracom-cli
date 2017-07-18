@@ -14,9 +14,9 @@ var ShippingAddressesDeleteCmdOperatorId string
 var ShippingAddressesDeleteCmdShippingAddressId string
 
 func init() {
-	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
+	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
 	ShippingAddressesCmd.AddCommand(ShippingAddressesDeleteCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // ShippingAddressesDeleteCmd defines 'delete' subcommand
 var ShippingAddressesDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("shipping_addresses.delete_shipping_address.delete.summary"),
-	Long:  TR(`shipping_addresses.delete_shipping_address.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/shipping_addresses/{shipping_address_id}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

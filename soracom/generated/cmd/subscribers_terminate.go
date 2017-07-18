@@ -11,7 +11,7 @@ import (
 var SubscribersTerminateCmdImsi string
 
 func init() {
-	SubscribersTerminateCmd.Flags().StringVar(&SubscribersTerminateCmdImsi, "imsi", "", TR("subscribers.terminate_subscriber.post.parameters.imsi.description"))
+	SubscribersTerminateCmd.Flags().StringVar(&SubscribersTerminateCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersTerminateCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersTerminateCmd defines 'terminate' subcommand
 var SubscribersTerminateCmd = &cobra.Command{
 	Use:   "terminate",
-	Short: TR("subscribers.terminate_subscriber.post.summary"),
-	Long:  TR(`subscribers.terminate_subscriber.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/terminate:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/terminate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

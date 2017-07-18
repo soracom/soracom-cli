@@ -29,19 +29,19 @@ var LogsGetCmdLimit int64
 var LogsGetCmdTo int64
 
 func init() {
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TR("logs.get_logs.get.parameters.last_evaluated_key.description"))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceId, "resource-id", "", TR("logs.get_logs.get.parameters.resource_id.description"))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceId, "resource-id", "", TRAPI("Identity of the target resource to query log entries."))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceType, "resource-type", "", TR("logs.get_logs.get.parameters.resource_type.description"))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceType, "resource-type", "", TRAPI("Type of the target resource to query log entries."))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdService, "service", "", TR("logs.get_logs.get.parameters.service.description"))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdService, "service", "", TRAPI("Service name to filter log entries."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TR("logs.get_logs.get.parameters.from.description"))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime)."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TR("logs.get_logs.get.parameters.limit.description"))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TR("logs.get_logs.get.parameters.to.description"))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime)."))
 
 	LogsCmd.AddCommand(LogsGetCmd)
 }
@@ -49,8 +49,8 @@ func init() {
 // LogsGetCmd defines 'get' subcommand
 var LogsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("logs.get_logs.get.summary"),
-	Long:  TR(`logs.get_logs.get.description`),
+	Short: TRAPI("/logs:get:summary"),
+	Long:  TRAPI(`/logs:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

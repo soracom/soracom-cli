@@ -11,6 +11,6 @@ func init() {
 // FilesCmd defines 'files' subcommand
 var FilesCmd = &cobra.Command{
 	Use:   "files",
-	Short: TR("files.cli.summary"),
-	Long:  TR(`files.cli.description`),
+	Short: TRCLI("cli.files.summary"),
+	Long:  TRCLI(`cli.files.description`),
 }

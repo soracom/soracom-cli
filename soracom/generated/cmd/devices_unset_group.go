@@ -11,7 +11,7 @@ import (
 var DevicesUnsetGroupCmdDeviceId string
 
 func init() {
-	DevicesUnsetGroupCmd.Flags().StringVar(&DevicesUnsetGroupCmdDeviceId, "device-id", "", TR("devices.unset_group.parameters.deviceId.description"))
+	DevicesUnsetGroupCmd.Flags().StringVar(&DevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
 	DevicesCmd.AddCommand(DevicesUnsetGroupCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // DevicesUnsetGroupCmd defines 'unset-group' subcommand
 var DevicesUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
-	Short: TR("devices.unset_group.summary"),
-	Long:  TR(`devices.unset_group.description`),
+	Short: TRAPI("/devices/{deviceId}/unset_group:post:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/unset_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

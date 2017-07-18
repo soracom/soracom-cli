@@ -11,7 +11,7 @@ import (
 var EventHandlersListForSubscriberCmdImsi string
 
 func init() {
-	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TR("event_handlers.list_event_handlers_by_subscriber.get.parameters.imsi.description"))
+	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("imsi"))
 
 	EventHandlersCmd.AddCommand(EventHandlersListForSubscriberCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // EventHandlersListForSubscriberCmd defines 'list-for-subscriber' subcommand
 var EventHandlersListForSubscriberCmd = &cobra.Command{
 	Use:   "list-for-subscriber",
-	Short: TR("event_handlers.list_event_handlers_by_subscriber.get.summary"),
-	Long:  TR(`event_handlers.list_event_handlers_by_subscriber.get.description`),
+	Short: TRAPI("/event_handlers/subscribers/{imsi}:get:summary"),
+	Long:  TRAPI(`/event_handlers/subscribers/{imsi}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

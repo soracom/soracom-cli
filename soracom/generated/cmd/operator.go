@@ -11,6 +11,6 @@ func init() {
 // OperatorCmd defines 'operator' subcommand
 var OperatorCmd = &cobra.Command{
 	Use:   "operator",
-	Short: TR("operator.cli.summary"),
-	Long:  TR(`operator.cli.description`),
+	Short: TRCLI("cli.operator.summary"),
+	Long:  TRCLI(`cli.operator.description`),
 }

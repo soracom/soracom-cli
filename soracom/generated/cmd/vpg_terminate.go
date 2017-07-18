@@ -11,7 +11,7 @@ import (
 var VpgTerminateCmdVpgId string
 
 func init() {
-	VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.terminate_virtual_private_gateway.post.parameters.vpg_id.description"))
+	VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgTerminateCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgTerminateCmd defines 'terminate' subcommand
 var VpgTerminateCmd = &cobra.Command{
 	Use:   "terminate",
-	Short: TR("virtual_private_gateway.terminate_virtual_private_gateway.post.summary"),
-	Long:  TR(`virtual_private_gateway.terminate_virtual_private_gateway.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/terminate:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/terminate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

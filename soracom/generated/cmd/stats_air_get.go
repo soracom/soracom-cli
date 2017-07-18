@@ -20,13 +20,13 @@ var StatsAirGetCmdFrom int64
 var StatsAirGetCmdTo int64
 
 func init() {
-	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TR("stats.get_air_stats.get.parameters.imsi.description"))
+	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TR("stats.get_air_stats.get.parameters.period.description"))
+	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
 
-	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TR("stats.get_air_stats.get.parameters.from.description"))
+	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
-	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TR("stats.get_air_stats.get.parameters.to.description"))
+	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
 
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
@@ -34,8 +34,8 @@ func init() {
 // StatsAirGetCmd defines 'get' subcommand
 var StatsAirGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("stats.get_air_stats.get.summary"),
-	Long:  TR(`stats.get_air_stats.get.description`),
+	Short: TRAPI("/stats/air/subscribers/{imsi}:get:summary"),
+	Long:  TRAPI(`/stats/air/subscribers/{imsi}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

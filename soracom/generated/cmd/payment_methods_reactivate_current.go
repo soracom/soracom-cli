@@ -15,8 +15,8 @@ func init() {
 // PaymentMethodsReactivateCurrentCmd defines 'reactivate-current' subcommand
 var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 	Use:   "reactivate-current",
-	Short: TR("payment.activate_payment_method.post.summary"),
-	Long:  TR(`payment.activate_payment_method.post.description`),
+	Short: TRAPI("/payment_methods/current/activate:post:summary"),
+	Long:  TRAPI(`/payment_methods/current/activate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

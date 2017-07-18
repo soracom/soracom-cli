@@ -14,9 +14,9 @@ var RolesGetCmdOperatorId string
 var RolesGetCmdRoleId string
 
 func init() {
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TR("operator_id"))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TR("role_id"))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("role_id"))
 
 	RolesCmd.AddCommand(RolesGetCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // RolesGetCmd defines 'get' subcommand
 var RolesGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("roles.get_role.get.summary"),
-	Long:  TR(`roles.get_role.get.description`),
+	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -11,7 +11,7 @@ import (
 var OrdersCancelCmdOrderId string
 
 func init() {
-	OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", TR("order_id"))
+	OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", TRAPI("order_id"))
 
 	OrdersCmd.AddCommand(OrdersCancelCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OrdersCancelCmd defines 'cancel' subcommand
 var OrdersCancelCmd = &cobra.Command{
 	Use:   "cancel",
-	Short: TR("orders.cancel_order.put.summary"),
-	Long:  TR(`orders.cancel_order.put.description`),
+	Short: TRAPI("/orders/{order_id}/cancel:put:summary"),
+	Long:  TRAPI(`/orders/{order_id}/cancel:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

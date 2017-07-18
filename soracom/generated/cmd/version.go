@@ -15,8 +15,8 @@ var version string
 // VersionCmd defines 'version' subcommand
 var VersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: TR("version.cli.summary"),
-	Long:  TR("version.cli.description"),
+	Short: TRCLI("cli.version.summary"),
+	Long:  TRCLI("cli.version.description"),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("SORACOM API client v%s\n", version)
 	},

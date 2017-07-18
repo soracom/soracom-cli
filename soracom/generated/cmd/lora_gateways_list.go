@@ -23,15 +23,15 @@ var LoraGatewaysListCmdTagValueMatchMode string
 var LoraGatewaysListCmdLimit int64
 
 func init() {
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("lora_gateways.list.parameters.last_evaluated_key.description"))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagName, "tag-name", "", TR("lora_gateways.list.parameters.tag_name.description"))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValue, "tag-value", "", TR("lora_gateways.list.parameters.tag_value.description"))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("lora_gateways.list.parameters.tag_value_match_mode.description"))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TR("lora_gateways.list.parameters.limit.description"))
+	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // LoraGatewaysListCmd defines 'list' subcommand
 var LoraGatewaysListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("lora_gateways.list.summary"),
-	Long:  TR(`lora_gateways.list.description`),
+	Short: TRAPI("/lora_gateways:get:summary"),
+	Long:  TRAPI(`/lora_gateways:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

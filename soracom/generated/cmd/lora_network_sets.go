@@ -11,6 +11,6 @@ func init() {
 // LoraNetworkSetsCmd defines 'lora-network-sets' subcommand
 var LoraNetworkSetsCmd = &cobra.Command{
 	Use:   "lora-network-sets",
-	Short: TR("lora_network_sets.cli.summary"),
-	Long:  TR(`lora_network_sets.cli.description`),
+	Short: TRCLI("cli.lora-network-sets.summary"),
+	Long:  TRCLI(`cli.lora-network-sets.description`),
 }

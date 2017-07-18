@@ -15,8 +15,8 @@ func init() {
 // BillsListCmd defines 'list' subcommand
 var BillsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("bills.get_billing_history.get.summary"),
-	Long:  TR(`bills.get_billing_history.get.description`),
+	Short: TRAPI("/bills:get:summary"),
+	Long:  TRAPI(`/bills:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

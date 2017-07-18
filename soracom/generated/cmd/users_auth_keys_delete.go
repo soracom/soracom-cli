@@ -17,11 +17,11 @@ var UsersAuthKeysDeleteCmdOperatorId string
 var UsersAuthKeysDeleteCmdUserName string
 
 func init() {
-	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TR("auth_key_id"))
+	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", TR("user_name"))
+	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysDeleteCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // UsersAuthKeysDeleteCmd defines 'delete' subcommand
 var UsersAuthKeysDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("users.delete_user_auth_key.delete.summary"),
-	Long:  TR(`users.delete_user_auth_key.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

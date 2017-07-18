@@ -17,9 +17,9 @@ var GroupsPutTagsCmdGroupId string
 var GroupsPutTagsCmdBody string
 
 func init() {
-	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TR("groups.put_group_tags.put.parameters.group_id.description"))
+	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	GroupsCmd.AddCommand(GroupsPutTagsCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // GroupsPutTagsCmd defines 'put-tags' subcommand
 var GroupsPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
-	Short: TR("groups.put_group_tags.put.summary"),
-	Long:  TR(`groups.put_group_tags.put.description`),
+	Short: TRAPI("/groups/{group_id}/tags:put:summary"),
+	Long:  TRAPI(`/groups/{group_id}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

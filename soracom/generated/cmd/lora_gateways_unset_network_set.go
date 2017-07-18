@@ -11,7 +11,7 @@ import (
 var LoraGatewaysUnsetNetworkSetCmdGatewayId string
 
 func init() {
-	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TR("lora_gateways.unset_network_set.parameters.gateway_id.description"))
+	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysUnsetNetworkSetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraGatewaysUnsetNetworkSetCmd defines 'unset-network-set' subcommand
 var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 	Use:   "unset-network-set",
-	Short: TR("lora_gateways.unset_network_set.summary"),
-	Long:  TR(`lora_gateways.unset_network_set.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/unset_network_set:post:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/unset_network_set:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

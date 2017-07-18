@@ -11,7 +11,7 @@ import (
 var LoraGatewaysEnableTerminationCmdGatewayId string
 
 func init() {
-	LoraGatewaysEnableTerminationCmd.Flags().StringVar(&LoraGatewaysEnableTerminationCmdGatewayId, "gateway-id", "", TR("lora_gateways.enable_termination.parameters.gateway_id.description"))
+	LoraGatewaysEnableTerminationCmd.Flags().StringVar(&LoraGatewaysEnableTerminationCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysEnableTerminationCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraGatewaysEnableTerminationCmd defines 'enable-termination' subcommand
 var LoraGatewaysEnableTerminationCmd = &cobra.Command{
 	Use:   "enable-termination",
-	Short: TR("lora_gateways.enable_termination.summary"),
-	Long:  TR(`lora_gateways.enable_termination.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/enable_termination:post:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/enable_termination:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -20,13 +20,13 @@ var DevicesGetInstanceCmdObject string
 var DevicesGetInstanceCmdModel bool
 
 func init() {
-	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdDeviceId, "device-id", "", TR("devices.get_instance.parameters.deviceId.description"))
+	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdInstance, "instance", "", TR("devices.get_instance.parameters.instance.description"))
+	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdObject, "object", "", TR("devices.get_instance.parameters.object.description"))
+	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesGetInstanceCmd.Flags().BoolVar(&DevicesGetInstanceCmdModel, "model", false, TR("devices.get_instance.parameters.model.description"))
+	DevicesGetInstanceCmd.Flags().BoolVar(&DevicesGetInstanceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
 	DevicesCmd.AddCommand(DevicesGetInstanceCmd)
 }
@@ -34,8 +34,8 @@ func init() {
 // DevicesGetInstanceCmd defines 'get-instance' subcommand
 var DevicesGetInstanceCmd = &cobra.Command{
 	Use:   "get-instance",
-	Short: TR("devices.get_instance.summary"),
-	Long:  TR(`devices.get_instance.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}:get:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

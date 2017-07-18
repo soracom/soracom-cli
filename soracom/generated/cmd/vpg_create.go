@@ -23,13 +23,13 @@ var VpgCreateCmdUseInternetGateway bool
 var VpgCreateCmdBody string
 
 func init() {
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "", TR(""))
+	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "", TRAPI(""))
 
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", TR(""))
+	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", TRAPI(""))
 
-	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TR(""))
+	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TRAPI(""))
 
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgCreateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // VpgCreateCmd defines 'create' subcommand
 var VpgCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("virtual_private_gateway.create_virtual_private_gateway.post.summary"),
-	Long:  TR(`virtual_private_gateway.create_virtual_private_gateway.post.description`),
+	Short: TRAPI("/virtual_private_gateways:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

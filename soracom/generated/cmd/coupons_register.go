@@ -11,7 +11,7 @@ import (
 var CouponsRegisterCmdCouponCode string
 
 func init() {
-	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TR("coupon_code"))
+	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TRAPI("coupon_code"))
 
 	CouponsCmd.AddCommand(CouponsRegisterCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // CouponsRegisterCmd defines 'register' subcommand
 var CouponsRegisterCmd = &cobra.Command{
 	Use:   "register",
-	Short: TR("payment.register_coupon.post.summary"),
-	Long:  TR(`payment.register_coupon.post.description`),
+	Short: TRAPI("/coupons/{coupon_code}/register:post:summary"),
+	Long:  TRAPI(`/coupons/{coupon_code}/register:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

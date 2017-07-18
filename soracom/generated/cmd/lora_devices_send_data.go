@@ -20,11 +20,11 @@ var LoraDevicesSendDataCmdDeviceId string
 var LoraDevicesSendDataCmdBody string
 
 func init() {
-	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdData, "data", "", TR(""))
+	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdData, "data", "", TRAPI(""))
 
-	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdDeviceId, "device-id", "", TR("lora_devices.send_data_to_lora_device.post.parameters.device_id.description"))
+	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
 
-	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesSendDataCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // LoraDevicesSendDataCmd defines 'send-data' subcommand
 var LoraDevicesSendDataCmd = &cobra.Command{
 	Use:   "send-data",
-	Short: TR("lora_devices.send_data_to_lora_device.post.summary"),
-	Long:  TR(`lora_devices.send_data_to_lora_device.post.description`),
+	Short: TRAPI("/lora_devices/{device_id}/data:post:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/data:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -20,11 +20,11 @@ var SubscribersSetImeiLockCmdImsi string
 var SubscribersSetImeiLockCmdBody string
 
 func init() {
-	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImei, "imei", "", TR(""))
+	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImei, "imei", "", TRAPI(""))
 
-	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImsi, "imsi", "", TR("subscribers.set_imei_lock.post.parameters.imsi.description"))
+	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSetImeiLockCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // SubscribersSetImeiLockCmd defines 'set-imei-lock' subcommand
 var SubscribersSetImeiLockCmd = &cobra.Command{
 	Use:   "set-imei-lock",
-	Short: TR("subscribers.set_imei_lock.post.summary"),
-	Long:  TR(`subscribers.set_imei_lock.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/set_imei_lock:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/set_imei_lock:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

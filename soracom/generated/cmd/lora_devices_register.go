@@ -17,9 +17,9 @@ var LoraDevicesRegisterCmdDeviceId string
 var LoraDevicesRegisterCmdBody string
 
 func init() {
-	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TR("lora_devices.register_lora_device.post.parameters.device_id.description"))
+	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
-	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesRegisterCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // LoraDevicesRegisterCmd defines 'register' subcommand
 var LoraDevicesRegisterCmd = &cobra.Command{
 	Use:   "register",
-	Short: TR("lora_devices.register_lora_device.post.summary"),
-	Long:  TR(`lora_devices.register_lora_device.post.description`),
+	Short: TRAPI("/lora_devices/{device_id}/register:post:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/register:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

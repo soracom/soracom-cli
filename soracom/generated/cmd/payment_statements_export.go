@@ -14,9 +14,9 @@ var PaymentStatementsExportCmdExportMode string
 var PaymentStatementsExportCmdPaymentStatementId string
 
 func init() {
-	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TR("payment_statement_id"))
+	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("payment_statement_id"))
 
 	PaymentStatementsCmd.AddCommand(PaymentStatementsExportCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // PaymentStatementsExportCmd defines 'export' subcommand
 var PaymentStatementsExportCmd = &cobra.Command{
 	Use:   "export",
-	Short: TR("payment.export_payment_statement.post.summary"),
-	Long:  TR(`payment.export_payment_statement.post.description`),
+	Short: TRAPI("/payment_statements/{payment_statement_id}/export:post:summary"),
+	Long:  TRAPI(`/payment_statements/{payment_statement_id}/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -17,11 +17,11 @@ var UsersAuthKeysGetCmdOperatorId string
 var UsersAuthKeysGetCmdUserName string
 
 func init() {
-	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", TR("auth_key_id"))
+	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", TR("user_name"))
+	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGetCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // UsersAuthKeysGetCmd defines 'get' subcommand
 var UsersAuthKeysGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("users.get_user_auth_key.get.summary"),
-	Long:  TR(`users.get_user_auth_key.get.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

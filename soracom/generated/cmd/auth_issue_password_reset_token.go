@@ -17,9 +17,9 @@ var AuthIssuePasswordResetTokenCmdEmail string
 var AuthIssuePasswordResetTokenCmdBody string
 
 func init() {
-	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TR(""))
+	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TRAPI(""))
 
-	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	AuthCmd.AddCommand(AuthIssuePasswordResetTokenCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // AuthIssuePasswordResetTokenCmd defines 'issue-password-reset-token' subcommand
 var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 	Use:   "issue-password-reset-token",
-	Short: TR("auth.issue_password_reset_token.post.summary"),
-	Long:  TR(`auth.issue_password_reset_token.post.description`),
+	Short: TRAPI("/auth/password_reset_token/issue:post:summary"),
+	Long:  TRAPI(`/auth/password_reset_token/issue:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

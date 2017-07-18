@@ -20,11 +20,11 @@ var OperatorGenerateApiTokenCmdTokenTimeoutSeconds int64
 var OperatorGenerateApiTokenCmdBody string
 
 func init() {
-	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TR(""))
+	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TRAPI(""))
 
-	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorGenerateApiTokenCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // OperatorGenerateApiTokenCmd defines 'generate-api-token' subcommand
 var OperatorGenerateApiTokenCmd = &cobra.Command{
 	Use:   "generate-api-token",
-	Short: TR("operator.generate_auth_token.post.summary"),
-	Long:  TR(`operator.generate_auth_token.post.description`),
+	Short: TRAPI("/operators/{operator_id}/token:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/token:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

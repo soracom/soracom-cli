@@ -11,7 +11,7 @@ import (
 var SubscribersDeleteTransferTokenCmdToken string
 
 func init() {
-	SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TR("subscribers.delete_subscriber_transfer_token.delete.parameters.token.description"))
+	SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TRAPI("token"))
 
 	SubscribersCmd.AddCommand(SubscribersDeleteTransferTokenCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersDeleteTransferTokenCmd defines 'delete-transfer-token' subcommand
 var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 	Use:   "delete-transfer-token",
-	Short: TR("subscribers.delete_subscriber_transfer_token.delete.summary"),
-	Long:  TR(`subscribers.delete_subscriber_transfer_token.delete.description`),
+	Short: TRAPI("/subscribers/transfer_token/{token}:delete:summary"),
+	Long:  TRAPI(`/subscribers/transfer_token/{token}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -50,31 +50,31 @@ var ShippingAddressesUpdateCmdZipCode string
 var ShippingAddressesUpdateCmdBody string
 
 func init() {
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine1, "address-line1", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdAddressLine2, "address-line2", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBuilding, "building", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", TR("Operator ID"))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdPhoneNumber, "phone-number", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TR(""))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	ShippingAddressesCmd.AddCommand(ShippingAddressesUpdateCmd)
 }
@@ -82,8 +82,8 @@ func init() {
 // ShippingAddressesUpdateCmd defines 'update' subcommand
 var ShippingAddressesUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("shipping_addresses.update_shipping_address.put.summary"),
-	Long:  TR(`shipping_addresses.update_shipping_address.put.description`),
+	Short: TRAPI("/operators/{operator_id}/shipping_addresses/{shipping_address_id}:put:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

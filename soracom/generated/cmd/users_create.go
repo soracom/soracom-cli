@@ -23,13 +23,13 @@ var UsersCreateCmdUserName string
 var UsersCreateCmdBody string
 
 func init() {
-	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdDescription, "description", "", TR(""))
+	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdDescription, "description", "", TRAPI(""))
 
-	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", TR("user_name"))
+	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersCmd.AddCommand(UsersCreateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // UsersCreateCmd defines 'create' subcommand
 var UsersCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("users.create_user.post.summary"),
-	Long:  TR(`users.create_user.post.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -23,13 +23,13 @@ var OperatorUpdatePasswordCmdOperatorId string
 var OperatorUpdatePasswordCmdBody string
 
 func init() {
-	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", TR(""))
+	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", TRAPI(""))
 
-	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", TR(""))
+	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", TRAPI(""))
 
-	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorUpdatePasswordCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // OperatorUpdatePasswordCmd defines 'update-password' subcommand
 var OperatorUpdatePasswordCmd = &cobra.Command{
 	Use:   "update-password",
-	Short: TR("operator.update_operator_password.post.summary"),
-	Long:  TR(`operator.update_operator_password.post.description`),
+	Short: TRAPI("/operators/{operator_id}/password:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/password:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

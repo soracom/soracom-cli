@@ -11,7 +11,7 @@ import (
 var DevicesPutDeviceTagsCmdDeviceId string
 
 func init() {
-	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdDeviceId, "device-id", "", TR("devices.put_tags.parameters.deviceId.description"))
+	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
 	DevicesCmd.AddCommand(DevicesPutDeviceTagsCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // DevicesPutDeviceTagsCmd defines 'put-device-tags' subcommand
 var DevicesPutDeviceTagsCmd = &cobra.Command{
 	Use:   "put-device-tags",
-	Short: TR("devices.put_tags.summary"),
-	Long:  TR(`devices.put_tags.description`),
+	Short: TRAPI("/devices/{deviceId}/tags:put:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

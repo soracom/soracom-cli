@@ -23,13 +23,13 @@ var VpgRegisterGatePeerCmdVpgId string
 var VpgRegisterGatePeerCmdBody string
 
 func init() {
-	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdInnerIpAddress, "inner-ip-address", "", TR(""))
+	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdInnerIpAddress, "inner-ip-address", "", TRAPI(""))
 
-	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TR(""))
+	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI(""))
 
-	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.register_virtual_private_gateway_peer.post.parameters.vpg_id.description"))
+	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgRegisterGatePeerCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // VpgRegisterGatePeerCmd defines 'register-gate-peer' subcommand
 var VpgRegisterGatePeerCmd = &cobra.Command{
 	Use:   "register-gate-peer",
-	Short: TR("virtual_private_gateway.register_virtual_private_gateway_peer.post.summary"),
-	Long:  TR(`virtual_private_gateway.register_virtual_private_gateway_peer.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

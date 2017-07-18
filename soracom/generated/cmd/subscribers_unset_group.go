@@ -11,7 +11,7 @@ import (
 var SubscribersUnsetGroupCmdImsi string
 
 func init() {
-	SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TR("subscribers.unset_group.post.parameters.imsi.description"))
+	SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersUnsetGroupCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersUnsetGroupCmd defines 'unset-group' subcommand
 var SubscribersUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
-	Short: TR("subscribers.unset_group.post.summary"),
-	Long:  TR(`subscribers.unset_group.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/unset_group:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/unset_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

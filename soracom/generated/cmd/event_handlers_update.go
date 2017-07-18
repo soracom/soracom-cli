@@ -17,9 +17,9 @@ var EventHandlersUpdateCmdHandlerId string
 var EventHandlersUpdateCmdBody string
 
 func init() {
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TR("event_handlers.update_event_handler.put.parameters.handler_id.description"))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	EventHandlersCmd.AddCommand(EventHandlersUpdateCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // EventHandlersUpdateCmd defines 'update' subcommand
 var EventHandlersUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("event_handlers.update_event_handler.put.summary"),
-	Long:  TR(`event_handlers.update_event_handler.put.description`),
+	Short: TRAPI("/event_handlers/{handler_id}:put:summary"),
+	Long:  TRAPI(`/event_handlers/{handler_id}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

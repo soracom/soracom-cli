@@ -14,9 +14,9 @@ var UsersDeleteCmdOperatorId string
 var UsersDeleteCmdUserName string
 
 func init() {
-	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdUserName, "user-name", "", TR("user_name"))
+	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersCmd.AddCommand(UsersDeleteCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // UsersDeleteCmd defines 'delete' subcommand
 var UsersDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("users.delete_user.delete.summary"),
-	Long:  TR(`users.delete_user.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

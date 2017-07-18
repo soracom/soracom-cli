@@ -11,6 +11,6 @@ func init() {
 // BillsCmd defines 'bills' subcommand
 var BillsCmd = &cobra.Command{
 	Use:   "bills",
-	Short: TR("bills.cli.summary"),
-	Long:  TR(`bills.cli.description`),
+	Short: TRCLI("cli.bills.summary"),
+	Long:  TRCLI(`cli.bills.description`),
 }

@@ -11,7 +11,7 @@ import (
 var BillsGetDailyCmdYyyyMM string
 
 func init() {
-	BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", TR("bills.get_billing_per_day.get.parameters.yyyyMM.description"))
+	BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
 
 	BillsCmd.AddCommand(BillsGetDailyCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // BillsGetDailyCmd defines 'get-daily' subcommand
 var BillsGetDailyCmd = &cobra.Command{
 	Use:   "get-daily",
-	Short: TR("bills.get_billing_per_day.get.summary"),
-	Long:  TR(`bills.get_billing_per_day.get.description`),
+	Short: TRAPI("/bills/{yyyyMM}/daily:get:summary"),
+	Long:  TRAPI(`/bills/{yyyyMM}/daily:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

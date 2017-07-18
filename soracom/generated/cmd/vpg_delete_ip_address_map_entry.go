@@ -14,9 +14,9 @@ var VpgDeleteIpAddressMapEntryCmdKey string
 var VpgDeleteIpAddressMapEntryCmdVpgId string
 
 func init() {
-	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TR("virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.parameters.key.description"))
+	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TRAPI("Target key to remove."))
 
-	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.parameters.vpg_id.description"))
+	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgDeleteIpAddressMapEntryCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // VpgDeleteIpAddressMapEntryCmd defines 'delete-ip-address-map-entry' subcommand
 var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "delete-ip-address-map-entry",
-	Short: TR("virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.summary"),
-	Long:  TR(`virtual_private_gateway.delete_virtual_private_gateway_ip_address_map_entry.delete.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map/{key}:delete:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map/{key}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

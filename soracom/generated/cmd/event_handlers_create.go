@@ -32,19 +32,19 @@ var EventHandlersCreateCmdTargetOperatorId string
 var EventHandlersCreateCmdBody string
 
 func init() {
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TR(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	EventHandlersCmd.AddCommand(EventHandlersCreateCmd)
 }
@@ -52,8 +52,8 @@ func init() {
 // EventHandlersCreateCmd defines 'create' subcommand
 var EventHandlersCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("event_handlers.create_event_handler.post.summary"),
-	Long:  TR(`event_handlers.create_event_handler.post.description`),
+	Short: TRAPI("/event_handlers:post:summary"),
+	Long:  TRAPI(`/event_handlers:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

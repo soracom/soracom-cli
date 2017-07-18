@@ -11,7 +11,7 @@ import (
 var EventHandlersListCmdTarget string
 
 func init() {
-	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TR("event_handlers.list_event_handlers.get.parameters.target.description"))
+	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TRAPI("target"))
 
 	EventHandlersCmd.AddCommand(EventHandlersListCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // EventHandlersListCmd defines 'list' subcommand
 var EventHandlersListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("event_handlers.list_event_handlers.get.summary"),
-	Long:  TR(`event_handlers.list_event_handlers.get.description`),
+	Short: TRAPI("/event_handlers:get:summary"),
+	Long:  TRAPI(`/event_handlers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

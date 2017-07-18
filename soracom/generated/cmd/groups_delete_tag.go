@@ -14,9 +14,9 @@ var GroupsDeleteTagCmdGroupId string
 var GroupsDeleteTagCmdTagName string
 
 func init() {
-	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TR("groups.delete_group_tag.delete.parameters.group_id.description"))
+	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TR("groups.delete_group_tag.delete.parameters.tag_name.description"))
+	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	GroupsCmd.AddCommand(GroupsDeleteTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // GroupsDeleteTagCmd defines 'delete-tag' subcommand
 var GroupsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TR("groups.delete_group_tag.delete.summary"),
-	Long:  TR(`groups.delete_group_tag.delete.description`),
+	Short: TRAPI("/groups/{group_id}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/groups/{group_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -14,9 +14,9 @@ var SubscribersDeleteTagCmdImsi string
 var SubscribersDeleteTagCmdTagName string
 
 func init() {
-	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", TR("subscribers.delete_subscriber_tag.delete.parameters.imsi.description"))
+	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", TR("subscribers.delete_subscriber_tag.delete.parameters.tag_name.description"))
+	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	SubscribersCmd.AddCommand(SubscribersDeleteTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // SubscribersDeleteTagCmd defines 'delete-tag' subcommand
 var SubscribersDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TR("subscribers.delete_subscriber_tag.delete.summary"),
-	Long:  TR(`subscribers.delete_subscriber_tag.delete.description`),
+	Short: TRAPI("/subscribers/{imsi}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

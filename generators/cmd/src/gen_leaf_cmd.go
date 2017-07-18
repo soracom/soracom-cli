@@ -47,8 +47,8 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 
 		a := commandArgs{
 			Use:                       getLast(commandName),
-			Short:                     trimTemplate(m.Summary),
-			Long:                      escapeBackquote(trimTemplate(m.Description)),
+			Short:                     m.Path + ":" + m.Method + ":summary",
+			Long:                      m.Path + ":" + m.Method + ":description",
 			CommandVariableName:       getCommandVariableName(commandName),
 			ParentCommandVariableName: getParentCommandVariableName(commandName),
 			RequireAuth:               m.Security != nil,

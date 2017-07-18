@@ -20,11 +20,11 @@ var AuthVerifyPasswordResetTokenCmdToken string
 var AuthVerifyPasswordResetTokenCmdBody string
 
 func init() {
-	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdPassword, "password", "", TR(""))
+	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdPassword, "password", "", TRAPI(""))
 
-	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdToken, "token", "", TR(""))
+	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdToken, "token", "", TRAPI(""))
 
-	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	AuthCmd.AddCommand(AuthVerifyPasswordResetTokenCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // AuthVerifyPasswordResetTokenCmd defines 'verify-password-reset-token' subcommand
 var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	Use:   "verify-password-reset-token",
-	Short: TR("auth.verify_password_reset_token.post.summary"),
-	Long:  TR(`auth.verify_password_reset_token.post.description`),
+	Short: TRAPI("/auth/password_reset_token/verify:post:summary"),
+	Long:  TRAPI(`/auth/password_reset_token/verify:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

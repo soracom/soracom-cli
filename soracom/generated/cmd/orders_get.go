@@ -11,7 +11,7 @@ import (
 var OrdersGetCmdOrderId string
 
 func init() {
-	OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TR("order_id"))
+	OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TRAPI("order_id"))
 
 	OrdersCmd.AddCommand(OrdersGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OrdersGetCmd defines 'get' subcommand
 var OrdersGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("orders.get_order.get.summary"),
-	Long:  TR(`orders.get_order.get.description`),
+	Short: TRAPI("/orders/{order_id}:get:summary"),
+	Long:  TRAPI(`/orders/{order_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

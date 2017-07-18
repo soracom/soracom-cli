@@ -11,6 +11,6 @@ func init() {
 // UsersCmd defines 'users' subcommand
 var UsersCmd = &cobra.Command{
 	Use:   "users",
-	Short: TR("users.cli.summary"),
-	Long:  TR(`users.cli.description`),
+	Short: TRCLI("cli.users.summary"),
+	Long:  TRCLI(`cli.users.description`),
 }

@@ -17,9 +17,9 @@ var OperatorVerifyEmailChangeTokenCmdToken string
 var OperatorVerifyEmailChangeTokenCmdBody string
 
 func init() {
-	OperatorVerifyEmailChangeTokenCmd.Flags().StringVar(&OperatorVerifyEmailChangeTokenCmdToken, "token", "", TR(""))
+	OperatorVerifyEmailChangeTokenCmd.Flags().StringVar(&OperatorVerifyEmailChangeTokenCmdToken, "token", "", TRAPI(""))
 
-	OperatorVerifyEmailChangeTokenCmd.Flags().StringVar(&OperatorVerifyEmailChangeTokenCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OperatorVerifyEmailChangeTokenCmd.Flags().StringVar(&OperatorVerifyEmailChangeTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorVerifyEmailChangeTokenCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // OperatorVerifyEmailChangeTokenCmd defines 'verify-email-change-token' subcommand
 var OperatorVerifyEmailChangeTokenCmd = &cobra.Command{
 	Use:   "verify-email-change-token",
-	Short: TR("operator.verify_email_change_token.post.summary"),
-	Long:  TR(`operator.verify_email_change_token.post.description`),
+	Short: TRAPI("/operators/email_change_token/verify:post:summary"),
+	Long:  TRAPI(`/operators/email_change_token/verify:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

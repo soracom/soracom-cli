@@ -11,7 +11,7 @@ import (
 var GroupsDeleteCmdGroupId string
 
 func init() {
-	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TR("groups.delete_group.delete.parameters.group_id.description"))
+	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
 	GroupsCmd.AddCommand(GroupsDeleteCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // GroupsDeleteCmd defines 'delete' subcommand
 var GroupsDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("groups.delete_group.delete.summary"),
-	Long:  TR(`groups.delete_group.delete.description`),
+	Short: TRAPI("/groups/{group_id}:delete:summary"),
+	Long:  TRAPI(`/groups/{group_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

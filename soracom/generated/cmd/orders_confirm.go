@@ -11,7 +11,7 @@ import (
 var OrdersConfirmCmdOrderId string
 
 func init() {
-	OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TR("order_id"))
+	OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TRAPI("order_id"))
 
 	OrdersCmd.AddCommand(OrdersConfirmCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OrdersConfirmCmd defines 'confirm' subcommand
 var OrdersConfirmCmd = &cobra.Command{
 	Use:   "confirm",
-	Short: TR("orders.confirm_order.put.summary"),
-	Long:  TR(`orders.confirm_order.put.description`),
+	Short: TRAPI("/orders/{order_id}/confirm:put:summary"),
+	Long:  TRAPI(`/orders/{order_id}/confirm:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

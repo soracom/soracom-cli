@@ -14,9 +14,9 @@ var LoraDevicesDeleteTagCmdDeviceId string
 var LoraDevicesDeleteTagCmdTagName string
 
 func init() {
-	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdDeviceId, "device-id", "", TR("lora_devices.delete_lora_device_tag.delete.parameters.device_id.description"))
+	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target LoRa device."))
 
-	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdTagName, "tag-name", "", TR("lora_devices.delete_lora_device_tag.delete.parameters.tag_name.description"))
+	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesDeleteTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // LoraDevicesDeleteTagCmd defines 'delete-tag' subcommand
 var LoraDevicesDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TR("lora_devices.delete_lora_device_tag.delete.summary"),
-	Long:  TR(`lora_devices.delete_lora_device_tag.delete.description`),
+	Short: TRAPI("/lora_devices/{device_id}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

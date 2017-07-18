@@ -14,9 +14,9 @@ var DevicesDeleteDeviceTagCmdDeviceId string
 var DevicesDeleteDeviceTagCmdTagName string
 
 func init() {
-	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdDeviceId, "device-id", "", TR("devices.delete_tag.parameters.deviceId.description"))
+	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
-	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdTagName, "tag-name", "", TR("devices.delete_tag.parameters.tagName.description"))
+	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdTagName, "tag-name", "", TRAPI("Name of tag to delete"))
 
 	DevicesCmd.AddCommand(DevicesDeleteDeviceTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // DevicesDeleteDeviceTagCmd defines 'delete-device-tag' subcommand
 var DevicesDeleteDeviceTagCmd = &cobra.Command{
 	Use:   "delete-device-tag",
-	Short: TR("devices.delete_tag.summary"),
-	Long:  TR(`devices.delete_tag.description`),
+	Short: TRAPI("/devices/{deviceId}/tags/{tagName}:delete:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/tags/{tagName}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

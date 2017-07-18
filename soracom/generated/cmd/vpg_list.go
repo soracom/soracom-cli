@@ -23,15 +23,15 @@ var VpgListCmdTagValueMatchMode string
 var VpgListCmdLimit int64
 
 func init() {
-	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.last_evaluated_key.description"))
+	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."))
 
-	VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_name.description"))
+	VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", TRAPI("Tag name of the VPG. Filters through all VPGs that exactly match the tag name. When tag_name is specified, tag_value is required."))
 
-	VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value.description"))
+	VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TRAPI("Tag value of the VPGs."))
 
-	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.tag_value_match_mode.description"))
+	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TR("virtual_private_gateway.list_virtual_private_gateways.get.parameters.limit.description"))
+	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	VpgCmd.AddCommand(VpgListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // VpgListCmd defines 'list' subcommand
 var VpgListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("virtual_private_gateway.list_virtual_private_gateways.get.summary"),
-	Long:  TR(`virtual_private_gateway.list_virtual_private_gateways.get.description`),
+	Short: TRAPI("/virtual_private_gateways:get:summary"),
+	Long:  TRAPI(`/virtual_private_gateways:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

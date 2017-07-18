@@ -11,7 +11,7 @@ import (
 var VpgGetCmdVpgId string
 
 func init() {
-	VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.get_virtual_private_gateway.get.parameters.vpg_id.description"))
+	VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgGetCmd defines 'get' subcommand
 var VpgGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("virtual_private_gateway.get_virtual_private_gateway.get.summary"),
-	Long:  TR(`virtual_private_gateway.get_virtual_private_gateway.get.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}:get:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

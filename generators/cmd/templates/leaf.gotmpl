@@ -38,23 +38,23 @@ var {{$prefix}}Body string
 
 func init() {
 {{- range .StringFlags}}
-  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TR("{{.ShortHelp}}"))
+  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .IntegerFlags}}
-  {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
+  {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .FloatFlags}}
-  {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
+  {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .BoolFlags}}
-  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TR("{{.ShortHelp}}"))
+  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
 {{end}}
 
 {{if .BodyExists }}
-  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}Body, "body", "", TR("cli.common_params.body.short_help"))
+  {{$cmdvar}}.Flags().StringVar(&{{$prefix}}Body, "body", "", TRCLI("cli.common_params.body.short_help"))
 {{end}}
 
   {{.ParentCommandVariableName}}.AddCommand({{$cmdvar}})
@@ -63,8 +63,8 @@ func init() {
 // {{.CommandVariableName}} defines '{{.Use}}' subcommand
 var {{ $cmdvar }} = &cobra.Command{
   Use: "{{.Use}}",
-  Short: TR("{{.Short}}"),
-  Long: TR(`{{.Long}}`),
+  Short: TRAPI("{{.Short}}"),
+  Long: TRAPI(`{{.Long}}`),
   RunE: func(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",

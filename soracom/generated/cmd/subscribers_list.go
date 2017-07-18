@@ -32,21 +32,21 @@ var SubscribersListCmdTagValueMatchMode string
 var SubscribersListCmdLimit int64
 
 func init() {
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_subscribers.get.parameters.last_evaluated_key.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TR("subscribers.list_subscribers.get.parameters.serial_number_filter.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TRAPI("Serial number for filtering the search. Can specify multiple values delimited by `|`. Returns subscribers with serial number starting with the specified value(s)."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TR("subscribers.list_subscribers.get.parameters.speed_class_filter.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TRAPI("Speed class for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TR("subscribers.list_subscribers.get.parameters.status_filter.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TRAPI("Status for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, and `terminated`."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TR("subscribers.list_subscribers.get.parameters.tag_name.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TR("subscribers.list_subscribers.get.parameters.tag_value.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("subscribers.list_subscribers.get.parameters.tag_value_match_mode.description"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
-	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TR("subscribers.list_subscribers.get.parameters.limit.description"))
+	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve."))
 
 	SubscribersCmd.AddCommand(SubscribersListCmd)
 }
@@ -54,8 +54,8 @@ func init() {
 // SubscribersListCmd defines 'list' subcommand
 var SubscribersListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("subscribers.list_subscribers.get.summary"),
-	Long:  TR(`subscribers.list_subscribers.get.description`),
+	Short: TRAPI("/subscribers:get:summary"),
+	Long:  TRAPI(`/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

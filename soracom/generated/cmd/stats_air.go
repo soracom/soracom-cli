@@ -11,6 +11,6 @@ func init() {
 // StatsAirCmd defines 'air' subcommand
 var StatsAirCmd = &cobra.Command{
 	Use:   "air",
-	Short: TR("stats.air.cli.summary"),
-	Long:  TR(`stats.air.cli.description`),
+	Short: TRCLI("cli.stats.air.summary"),
+	Long:  TRCLI(`cli.stats.air.description`),
 }

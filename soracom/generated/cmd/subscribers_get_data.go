@@ -26,17 +26,17 @@ var SubscribersGetDataCmdLimit int64
 var SubscribersGetDataCmdTo int64
 
 func init() {
-	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TR("subscribers.get_data_from_subscriber.get.parameters.imsi.description"))
+	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.get_data_from_subscriber.get.parameters.last_evaluated_key.description"))
+	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "", TR("subscribers.get_data_from_subscriber.get.parameters.sort.description"))
+	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdFrom, "from", 0, TR("subscribers.get_data_from_subscriber.get.parameters.from.description"))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TR("subscribers.get_data_from_subscriber.get.parameters.limit.description"))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TR("subscribers.get_data_from_subscriber.get.parameters.to.description"))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	SubscribersCmd.AddCommand(SubscribersGetDataCmd)
 }
@@ -44,8 +44,8 @@ func init() {
 // SubscribersGetDataCmd defines 'get-data' subcommand
 var SubscribersGetDataCmd = &cobra.Command{
 	Use:   "get-data",
-	Short: TR("subscribers.get_data_from_subscriber.get.summary"),
-	Long:  TR(`subscribers.get_data_from_subscriber.get.description`),
+	Short: TRAPI("/subscribers/{imsi}/data:get:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/data:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

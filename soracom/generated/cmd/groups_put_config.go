@@ -20,11 +20,11 @@ var GroupsPutConfigCmdNamespace string
 var GroupsPutConfigCmdBody string
 
 func init() {
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TR("groups.put_configuration_parameters.put.parameters.group_id.description"))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TR("groups.put_configuration_parameters.put.parameters.namespace.description"))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("Target configuration."))
 
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	GroupsCmd.AddCommand(GroupsPutConfigCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // GroupsPutConfigCmd defines 'put-config' subcommand
 var GroupsPutConfigCmd = &cobra.Command{
 	Use:   "put-config",
-	Short: TR("groups.put_configuration_parameters.put.summary"),
-	Long:  TR(`groups.put_configuration_parameters.put.description`),
+	Short: TRAPI("/groups/{group_id}/configuration/{namespace}:put:summary"),
+	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

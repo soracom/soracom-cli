@@ -14,9 +14,9 @@ var UsersAuthKeysGenerateCmdOperatorId string
 var UsersAuthKeysGenerateCmdUserName string
 
 func init() {
-	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdUserName, "user-name", "", TR("user_name"))
+	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGenerateCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // UsersAuthKeysGenerateCmd defines 'generate' subcommand
 var UsersAuthKeysGenerateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: TR("users.generate_user_auth_key.post.summary"),
-	Long:  TR(`users.generate_user_auth_key.post.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

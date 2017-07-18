@@ -23,15 +23,15 @@ var DevicesGetResourceCmdResource string
 var DevicesGetResourceCmdModel bool
 
 func init() {
-	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdDeviceId, "device-id", "", TR("devices.get_resource.parameters.deviceId.description"))
+	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdInstance, "instance", "", TR("devices.get_resource.parameters.instance.description"))
+	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdObject, "object", "", TR("devices.get_resource.parameters.object.description"))
+	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdResource, "resource", "", TR("devices.get_resource.parameters.resource.description"))
+	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesGetResourceCmd.Flags().BoolVar(&DevicesGetResourceCmdModel, "model", false, TR("devices.get_resource.parameters.model.description"))
+	DevicesGetResourceCmd.Flags().BoolVar(&DevicesGetResourceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
 	DevicesCmd.AddCommand(DevicesGetResourceCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // DevicesGetResourceCmd defines 'get-resource' subcommand
 var DevicesGetResourceCmd = &cobra.Command{
 	Use:   "get-resource",
-	Short: TR("devices.get_resource.summary"),
-	Long:  TR(`devices.get_resource.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}:get:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

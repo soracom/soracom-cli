@@ -15,8 +15,8 @@ func init() {
 // BillsGetLatestCmd defines 'get-latest' subcommand
 var BillsGetLatestCmd = &cobra.Command{
 	Use:   "get-latest",
-	Short: TR("bills.get_latest_billing.get.summary"),
-	Long:  TR(`bills.get_latest_billing.get.description`),
+	Short: TRAPI("/bills/latest:get:summary"),
+	Long:  TRAPI(`/bills/latest:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

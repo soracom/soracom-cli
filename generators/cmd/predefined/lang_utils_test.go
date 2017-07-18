@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"testing"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 func TestGetLanguagePart(t *testing.T) {
@@ -66,9 +67,9 @@ func TestGetLanguagePreference(t *testing.T) {
 }
 
 type testStructForVisit struct {
-	A string              `json:"a"`
-	B string              `json:"b"`
-	C *testStructForVisit `json:"c"`
+	A string              `yaml:"a"`
+	B string              `yaml:"b"`
+	C *testStructForVisit `yaml:"c"`
 }
 
 func TestVisit(t *testing.T) {
@@ -85,13 +86,13 @@ func TestVisit(t *testing.T) {
 		},
 	}
 
-	b, err := json.Marshal(v)
+	b, err := yaml.Marshal(v)
 	if err != nil {
 		t.Fatalf("unable to marshal the test object to json")
 	}
 
-	var o map[string]interface{}
-	err = json.Unmarshal(b, &o)
+	var o map[interface{}]interface{}
+	err = yaml.Unmarshal(b, &o)
 	if err != nil {
 		t.Fatalf("unable to unmarshal the test object from json")
 	}

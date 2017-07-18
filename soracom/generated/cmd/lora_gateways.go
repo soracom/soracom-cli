@@ -11,6 +11,6 @@ func init() {
 // LoraGatewaysCmd defines 'lora-gateways' subcommand
 var LoraGatewaysCmd = &cobra.Command{
 	Use:   "lora-gateways",
-	Short: TR("lora_gateways.cli.summary"),
-	Long:  TR(`lora_gateways.cli.description`),
+	Short: TRCLI("cli.lora-gateways.summary"),
+	Long:  TRCLI(`cli.lora-gateways.description`),
 }

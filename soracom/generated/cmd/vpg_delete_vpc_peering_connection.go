@@ -14,9 +14,9 @@ var VpgDeleteVpcPeeringConnectionCmdPcxId string
 var VpgDeleteVpcPeeringConnectionCmdVpgId string
 
 func init() {
-	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", TR("virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.pcx_id.description"))
+	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", TRAPI("VPC peering connection ID to be deleted."))
 
-	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.delete_vpc_peering_connection.delete.parameters.vpg_id.description"))
+	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgDeleteVpcPeeringConnectionCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // VpgDeleteVpcPeeringConnectionCmd defines 'delete-vpc-peering-connection' subcommand
 var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "delete-vpc-peering-connection",
-	Short: TR("virtual_private_gateway.delete_vpc_peering_connection.delete.summary"),
-	Long:  TR(`virtual_private_gateway.delete_vpc_peering_connection.delete.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:delete:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -35,21 +35,21 @@ var AuthCmdTokenTimeoutSeconds int64
 var AuthCmdBody string
 
 func init() {
-	AuthCmd.Flags().StringVar(&AuthCmdAuthKey, "auth-key", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdAuthKey, "auth-key", "", TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdEmail, "email", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdEmail, "email", "", TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdOperatorId, "operator-id", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdPassword, "password", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdPassword, "password", "", TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", TR(""))
+	AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", TRAPI(""))
 
-	AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TR(""))
+	AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TRAPI(""))
 
-	AuthCmd.Flags().StringVar(&AuthCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	AuthCmd.Flags().StringVar(&AuthCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	RootCmd.AddCommand(AuthCmd)
 }
@@ -57,8 +57,8 @@ func init() {
 // AuthCmd defines 'auth' subcommand
 var AuthCmd = &cobra.Command{
 	Use:   "auth",
-	Short: TR("auth.auth.post.summary"),
-	Long:  TR(`auth.auth.post.description`),
+	Short: TRAPI("/auth:post:summary"),
+	Long:  TRAPI(`/auth:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

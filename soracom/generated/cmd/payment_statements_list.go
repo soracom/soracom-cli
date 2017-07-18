@@ -15,8 +15,8 @@ func init() {
 // PaymentStatementsListCmd defines 'list' subcommand
 var PaymentStatementsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("payment.list_payment_statements.get.summary"),
-	Long:  TR(`payment.list_payment_statements.get.description`),
+	Short: TRAPI("/payment_statements:get:summary"),
+	Long:  TRAPI(`/payment_statements:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

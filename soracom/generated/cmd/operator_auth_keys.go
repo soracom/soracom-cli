@@ -11,6 +11,6 @@ func init() {
 // OperatorAuthKeysCmd defines 'auth-keys' subcommand
 var OperatorAuthKeysCmd = &cobra.Command{
 	Use:   "auth-keys",
-	Short: TR("operator.auth_keys.cli.summary"),
-	Long:  TR(`operator.auth_keys.cli.description`),
+	Short: TRCLI("cli.operator.auth-keys.summary"),
+	Long:  TRCLI(`cli.operator.auth-keys.description`),
 }

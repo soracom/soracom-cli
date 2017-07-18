@@ -23,13 +23,13 @@ var VpgPutIpAddressMapEntryCmdVpgId string
 var VpgPutIpAddressMapEntryCmdBody string
 
 func init() {
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TR(""))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI(""))
 
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TR(""))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI(""))
 
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.parameters.vpg_id.description"))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgPutIpAddressMapEntryCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // VpgPutIpAddressMapEntryCmd defines 'put-ip-address-map-entry' subcommand
 var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "put-ip-address-map-entry",
-	Short: TR("virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.summary"),
-	Long:  TR(`virtual_private_gateway.put_virtual_private_gateway_ip_address_map_entry.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

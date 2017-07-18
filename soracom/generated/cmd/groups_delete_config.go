@@ -17,11 +17,11 @@ var GroupsDeleteConfigCmdName string
 var GroupsDeleteConfigCmdNamespace string
 
 func init() {
-	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TR("groups.delete_configuration_parameter.delete.parameters.group_id.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
-	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TR("groups.delete_configuration_parameter.delete.parameters.name.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TRAPI("Parameter name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
-	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TR("groups.delete_configuration_parameter.delete.parameters.namespace.description"))
+	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TRAPI("Namespace of target parameters."))
 
 	GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // GroupsDeleteConfigCmd defines 'delete-config' subcommand
 var GroupsDeleteConfigCmd = &cobra.Command{
 	Use:   "delete-config",
-	Short: TR("groups.delete_configuration_parameter.delete.summary"),
-	Long:  TR(`groups.delete_configuration_parameter.delete.description`),
+	Short: TRAPI("/groups/{group_id}/configuration/{namespace}/{name}:delete:summary"),
+	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}/{name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

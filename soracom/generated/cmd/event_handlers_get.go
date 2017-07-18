@@ -11,7 +11,7 @@ import (
 var EventHandlersGetCmdHandlerId string
 
 func init() {
-	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TR("event_handlers.get_event_handler.get.parameters.handler_id.description"))
+	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
 	EventHandlersCmd.AddCommand(EventHandlersGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // EventHandlersGetCmd defines 'get' subcommand
 var EventHandlersGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("event_handlers.get_event_handler.get.summary"),
-	Long:  TR(`event_handlers.get_event_handler.get.description`),
+	Short: TRAPI("/event_handlers/{handler_id}:get:summary"),
+	Long:  TRAPI(`/event_handlers/{handler_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

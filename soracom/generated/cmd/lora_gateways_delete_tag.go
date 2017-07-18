@@ -14,9 +14,9 @@ var LoraGatewaysDeleteTagCmdGatewayId string
 var LoraGatewaysDeleteTagCmdTagName string
 
 func init() {
-	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdGatewayId, "gateway-id", "", TR("lora_gateways.delete_tag.parameters.gateway_id.description"))
+	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdTagName, "tag-name", "", TR("lora_gateways.delete_tag.parameters.tag_name.description"))
+	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdTagName, "tag-name", "", TRAPI("Name of tag to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysDeleteTagCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // LoraGatewaysDeleteTagCmd defines 'delete-tag' subcommand
 var LoraGatewaysDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TR("lora_gateways.delete_tag.summary"),
-	Long:  TR(`lora_gateways.delete_tag.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

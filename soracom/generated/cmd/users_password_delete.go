@@ -14,9 +14,9 @@ var UsersPasswordDeleteCmdOperatorId string
 var UsersPasswordDeleteCmdUserName string
 
 func init() {
-	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", TR("user_name"))
+	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersPasswordCmd.AddCommand(UsersPasswordDeleteCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // UsersPasswordDeleteCmd defines 'delete' subcommand
 var UsersPasswordDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("users.delete_user_password.delete.summary"),
-	Long:  TR(`users.delete_user_password.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

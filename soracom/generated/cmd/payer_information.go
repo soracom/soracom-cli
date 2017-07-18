@@ -11,6 +11,6 @@ func init() {
 // PayerInformationCmd defines 'payer-information' subcommand
 var PayerInformationCmd = &cobra.Command{
 	Use:   "payer-information",
-	Short: TR("payment.payer_information.cli.summary"),
-	Long:  TR(`payment.payer_information.cli.description`),
+	Short: TRCLI("cli.payer-information.summary"),
+	Long:  TRCLI(`cli.payer-information.description`),
 }

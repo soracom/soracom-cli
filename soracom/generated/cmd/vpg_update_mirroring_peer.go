@@ -20,11 +20,11 @@ var VpgUpdateMirroringPeerCmdIpaddr string
 var VpgUpdateMirroringPeerCmdBody string
 
 func init() {
-	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdId, "id", "", TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.put.parameters.id.description"))
+	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
 
-	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdIpaddr, "ipaddr", "", TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.put.parameters.ipaddr.description"))
+	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("Mirroring peer IP address"))
 
-	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgUpdateMirroringPeerCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // VpgUpdateMirroringPeerCmd defines 'update-mirroring-peer' subcommand
 var VpgUpdateMirroringPeerCmd = &cobra.Command{
 	Use:   "update-mirroring-peer",
-	Short: TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.put.summary"),
-	Long:  TR(`virtual_private_gateway.junction.mirroring.peers.ipaddr.put.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:put:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -29,17 +29,17 @@ var PaymentMethodsWebpayRegisterCmdExpireYear int64
 var PaymentMethodsWebpayRegisterCmdBody string
 
 func init() {
-	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdCvc, "cvc", "", TRAPI(""))
 
-	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdName, "name", "", TRAPI(""))
 
-	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdNumber, "number", "", TRAPI(""))
 
-	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireMonth, "expire-month", 0, TRAPI(""))
 
-	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, TR(""))
+	PaymentMethodsWebpayRegisterCmd.Flags().Int64Var(&PaymentMethodsWebpayRegisterCmdExpireYear, "expire-year", 0, TRAPI(""))
 
-	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	PaymentMethodsWebpayRegisterCmd.Flags().StringVar(&PaymentMethodsWebpayRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	PaymentMethodsWebpayCmd.AddCommand(PaymentMethodsWebpayRegisterCmd)
 }
@@ -47,8 +47,8 @@ func init() {
 // PaymentMethodsWebpayRegisterCmd defines 'register' subcommand
 var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
 	Use:   "register",
-	Short: TR("payment.register_webpay_payment_method.post.summary"),
-	Long:  TR(`payment.register_webpay_payment_method.post.description`),
+	Short: TRAPI("/payment_methods/webpay:post:summary"),
+	Long:  TRAPI(`/payment_methods/webpay:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

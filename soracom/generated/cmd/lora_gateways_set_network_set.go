@@ -20,11 +20,11 @@ var LoraGatewaysSetNetworkSetCmdNetworkSetId string
 var LoraGatewaysSetNetworkSetCmdBody string
 
 func init() {
-	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TR("lora_gateways.set_network_set.parameters.gateway_id.description"))
+	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdNetworkSetId, "network-set-id", "", TR(""))
+	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 
-	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysSetNetworkSetCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // LoraGatewaysSetNetworkSetCmd defines 'set-network-set' subcommand
 var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 	Use:   "set-network-set",
-	Short: TR("lora_gateways.set_network_set.summary"),
-	Long:  TR(`lora_gateways.set_network_set.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/set_network_set:post:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/set_network_set:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

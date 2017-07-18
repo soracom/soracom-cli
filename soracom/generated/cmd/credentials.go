@@ -11,6 +11,6 @@ func init() {
 // CredentialsCmd defines 'credentials' subcommand
 var CredentialsCmd = &cobra.Command{
 	Use:   "credentials",
-	Short: TR("credentials.cli.summary"),
-	Long:  TR(`credentials.cli.description`),
+	Short: TRCLI("cli.credentials.summary"),
+	Long:  TRCLI(`cli.credentials.description`),
 }

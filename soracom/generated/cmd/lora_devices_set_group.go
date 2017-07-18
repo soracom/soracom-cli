@@ -29,17 +29,17 @@ var LoraDevicesSetGroupCmdLastModifiedTime int64
 var LoraDevicesSetGroupCmdBody string
 
 func init() {
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TR("lora_devices.set_group.post.parameters.device_id.description"))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TR(""))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdOperatorId, "operator-id", "", TR(""))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdCreatedTime, "created-time", 0, TR(""))
+	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdCreatedTime, "created-time", 0, TRAPI(""))
 
-	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TR(""))
+	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
 
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesSetGroupCmd)
 }
@@ -47,8 +47,8 @@ func init() {
 // LoraDevicesSetGroupCmd defines 'set-group' subcommand
 var LoraDevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
-	Short: TR("lora_devices.set_group.post.summary"),
-	Long:  TR(`lora_devices.set_group.post.description`),
+	Short: TRAPI("/lora_devices/{device_id}/set_group:post:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/set_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

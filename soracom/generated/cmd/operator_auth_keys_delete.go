@@ -14,9 +14,9 @@ var OperatorAuthKeysDeleteCmdAuthKeyId string
 var OperatorAuthKeysDeleteCmdOperatorId string
 
 func init() {
-	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TR("auth_key_id"))
+	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysDeleteCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // OperatorAuthKeysDeleteCmd defines 'delete' subcommand
 var OperatorAuthKeysDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("operator.delete_operator_auth_key.delete.summary"),
-	Long:  TR(`operator.delete_operator_auth_key.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/auth_keys/{auth_key_id}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/auth_keys/{auth_key_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

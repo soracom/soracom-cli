@@ -11,6 +11,6 @@ func init() {
 // EventHandlersCmd defines 'event-handlers' subcommand
 var EventHandlersCmd = &cobra.Command{
 	Use:   "event-handlers",
-	Short: TR("event_handlers.cli.summary"),
-	Long:  TR(`event_handlers.cli.description`),
+	Short: TRCLI("cli.event-handlers.summary"),
+	Long:  TRCLI(`cli.event-handlers.description`),
 }

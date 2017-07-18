@@ -11,7 +11,7 @@ import (
 var LoraDevicesGetCmdDeviceId string
 
 func init() {
-	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TR("lora_devices.get_lora_device.get.parameters.device_id.description"))
+	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraDevicesGetCmd defines 'get' subcommand
 var LoraDevicesGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("lora_devices.get_lora_device.get.summary"),
-	Long:  TR(`lora_devices.get_lora_device.get.description`),
+	Short: TRAPI("/lora_devices/{device_id}:get:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

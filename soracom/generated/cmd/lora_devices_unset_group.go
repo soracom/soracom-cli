@@ -11,7 +11,7 @@ import (
 var LoraDevicesUnsetGroupCmdDeviceId string
 
 func init() {
-	LoraDevicesUnsetGroupCmd.Flags().StringVar(&LoraDevicesUnsetGroupCmdDeviceId, "device-id", "", TR("lora_devices.unset_group.post.parameters.device_id.description"))
+	LoraDevicesUnsetGroupCmd.Flags().StringVar(&LoraDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesUnsetGroupCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraDevicesUnsetGroupCmd defines 'unset-group' subcommand
 var LoraDevicesUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
-	Short: TR("lora_devices.unset_group.post.summary"),
-	Long:  TR(`lora_devices.unset_group.post.description`),
+	Short: TRAPI("/lora_devices/{device_id}/unset_group:post:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/unset_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

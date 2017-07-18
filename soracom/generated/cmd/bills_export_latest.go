@@ -11,7 +11,7 @@ import (
 var BillsExportLatestCmdExportMode string
 
 func init() {
-	BillsExportLatestCmd.Flags().StringVar(&BillsExportLatestCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+	BillsExportLatestCmd.Flags().StringVar(&BillsExportLatestCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
 	BillsCmd.AddCommand(BillsExportLatestCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // BillsExportLatestCmd defines 'export-latest' subcommand
 var BillsExportLatestCmd = &cobra.Command{
 	Use:   "export-latest",
-	Short: TR("bills.export_latest_billing.post.summary"),
-	Long:  TR(`bills.export_latest_billing.post.description`),
+	Short: TRAPI("/bills/latest/export:post:summary"),
+	Long:  TRAPI(`/bills/latest/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

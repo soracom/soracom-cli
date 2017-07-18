@@ -62,39 +62,39 @@ var DevicesCreateCmdOnline bool
 var DevicesCreateCmdBody string
 
 func init() {
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdDeviceId, "device-id", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdDeviceId, "device-id", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdEndpoint, "endpoint", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdEndpoint, "endpoint", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdFirmwareVersion, "firmware-version", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdFirmwareVersion, "firmware-version", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdGroupId, "group-id", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdGroupId, "group-id", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImei, "imei", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImei, "imei", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImsi, "imsi", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImsi, "imsi", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdIpAddress, "ip-address", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdIpAddress, "ip-address", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdLastModifiedTime, "last-modified-time", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdLastModifiedTime, "last-modified-time", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdLastRegistrationUpdate, "last-registration-update", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdLastRegistrationUpdate, "last-registration-update", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdManufacturer, "manufacturer", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdManufacturer, "manufacturer", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdModelNumber, "model-number", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdModelNumber, "model-number", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdOperatorId, "operator-id", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdRegistrationId, "registration-id", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdRegistrationId, "registration-id", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdSerialNumber, "serial-number", "", TR(""))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdSerialNumber, "serial-number", "", TRAPI(""))
 
-	DevicesCreateCmd.Flags().Int64Var(&DevicesCreateCmdRegistrationLifeTime, "registration-life-time", 0, TR(""))
+	DevicesCreateCmd.Flags().Int64Var(&DevicesCreateCmdRegistrationLifeTime, "registration-life-time", 0, TRAPI(""))
 
-	DevicesCreateCmd.Flags().BoolVar(&DevicesCreateCmdOnline, "online", false, TR(""))
+	DevicesCreateCmd.Flags().BoolVar(&DevicesCreateCmdOnline, "online", false, TRAPI(""))
 
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesCreateCmd)
 }
@@ -102,8 +102,8 @@ func init() {
 // DevicesCreateCmd defines 'create' subcommand
 var DevicesCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("devices.create.summary"),
-	Long:  TR(`devices.create.description`),
+	Short: TRAPI("/devices:post:summary"),
+	Long:  TRAPI(`/devices:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

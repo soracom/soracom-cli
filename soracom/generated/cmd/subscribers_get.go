@@ -11,7 +11,7 @@ import (
 var SubscribersGetCmdImsi string
 
 func init() {
-	SubscribersGetCmd.Flags().StringVar(&SubscribersGetCmdImsi, "imsi", "", TR("subscribers.get_subscriber.get.parameters.imsi.description"))
+	SubscribersGetCmd.Flags().StringVar(&SubscribersGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersGetCmd defines 'get' subcommand
 var SubscribersGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("subscribers.get_subscriber.get.summary"),
-	Long:  TR(`subscribers.get_subscriber.get.description`),
+	Short: TRAPI("/subscribers/{imsi}:get:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -11,7 +11,7 @@ import (
 var OperatorGetCmdOperatorId string
 
 func init() {
-	OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", TR("operator_id"))
+	OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorCmd.AddCommand(OperatorGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OperatorGetCmd defines 'get' subcommand
 var OperatorGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("operator.get_operator.get.summary"),
-	Long:  TR(`operator.get_operator.get.description`),
+	Short: TRAPI("/operators/{operator_id}:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

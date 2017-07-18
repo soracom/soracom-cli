@@ -20,11 +20,11 @@ var LoraNetworkSetsAddPermissionCmdOperatorId string
 var LoraNetworkSetsAddPermissionCmdBody string
 
 func init() {
-	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdNsId, "ns-id", "", TR("lora_network_sets.add_permission.parameters.ns_id.description"))
+	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdOperatorId, "operator-id", "", TR(""))
+	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsAddPermissionCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // LoraNetworkSetsAddPermissionCmd defines 'add-permission' subcommand
 var LoraNetworkSetsAddPermissionCmd = &cobra.Command{
 	Use:   "add-permission",
-	Short: TR("lora_network_sets.add_permission.summary"),
-	Long:  TR(`lora_network_sets.add_permission.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}/add_permission:post:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/add_permission:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -11,7 +11,7 @@ import (
 var LoraNetworkSetsGetCmdNsId string
 
 func init() {
-	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TR("lora_network_sets.get.parameters.ns_id.description"))
+	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraNetworkSetsGetCmd defines 'get' subcommand
 var LoraNetworkSetsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("lora_network_sets.get.summary"),
-	Long:  TR(`lora_network_sets.get.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}:get:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

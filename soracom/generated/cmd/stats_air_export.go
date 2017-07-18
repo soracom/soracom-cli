@@ -29,17 +29,17 @@ var StatsAirExportCmdTo int64
 var StatsAirExportCmdBody string
 
 func init() {
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", TR("stats.export_air_stats.post.parameters.operator_id.description"))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", TR(""))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", TRAPI(""))
 
-	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdFrom, "from", 0, TR(""))
+	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdFrom, "from", 0, TRAPI(""))
 
-	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdTo, "to", 0, TR(""))
+	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdTo, "to", 0, TRAPI(""))
 
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	StatsAirCmd.AddCommand(StatsAirExportCmd)
 }
@@ -47,8 +47,8 @@ func init() {
 // StatsAirExportCmd defines 'export' subcommand
 var StatsAirExportCmd = &cobra.Command{
 	Use:   "export",
-	Short: TR("stats.export_air_stats.post.summary"),
-	Long:  TR(`stats.export_air_stats.post.description`),
+	Short: TRAPI("/stats/air/operators/{operator_id}/export:post:summary"),
+	Long:  TRAPI(`/stats/air/operators/{operator_id}/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -9,8 +9,8 @@ func init() {
 // ConfigureGetCmd defineds 'get' subcommand
 var ConfigureGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("configure.get.cli.summary"),
-	Long:  TR("configure.get.cli.description"),
+	Short: TRCLI("cli.configure.get.summary"),
+	Long:  TRCLI("cli.configure.get.description"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pn := getSpecifiedProfileName()
 		if pn == "" {

@@ -1,0 +1,129 @@
+cli:
+  auth:
+    summary: API アクセスの認証を行い、API キーと API トークンを発行します。
+    description: "API アクセスの認証を行います。\nルートアカウントで認証する場合は --email と --password を指定してください。\n認証キーを用いて認証する場合は --auth-key-id と --auth-key を指定してください。\nSAM ユーザーで認証する場合は --operator-id, --user-name, --password をリクエストに含めてください。認証が成功すると、API キーや API トークンの情報が表示されます。"
+  bills:
+    summary: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+    description: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+  common_params:
+    body:
+      short_help: リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。
+  completion:
+    summary: bash 用の補完 (completion) スクリプトを生成します。
+    description: bash 用の補完 (completion) スクリプトを生成します。
+  configure:
+    summary: コマンド実行環境（プロファイル）の設定や表示を行います。
+    description: コマンド実行環境（プロファイル）の設定や表示を行います。
+    profile:
+      permission_is_too_open: "認証情報ファイル %s へのアクセス権が十分に絞り込まれていません。\n認証情報ファイルへは、soracom コマンドを実行しているユーザーのみがアクセス可能なように設定する必要があります。"
+      prompt: "--- SORACOM CLI セットアップ ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
+      coverage_type: 
+        prompt: "\n\nカバレッジタイプを選択してください。\n\n1. Global\n2. Japan\n\n"
+        select: "選択してください (1-2) > "
+      auth:
+        prompt: "\n\n認証方法を選択してください。\n\n1. AuthKeyId と AuthKey を入力する（推奨）\n2. オペレーターのメールアドレスとパスワードを入力する\n3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）\n\n"
+        select: "選択してください (1-3) > "
+      overwrite: "\nプロファイル %s はすでに存在しています。上書きしますか？ (Y/n) "
+    get:
+      summary: プロファイル情報を表示します。
+      description: プロファイル情報を表示します。
+  coupons:
+    summary: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+    description: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+  credentials:
+    summary: 認証情報に関する操作を行います。
+    description: 認証情報に関する操作を行います。
+  data: 
+    summary: SIM からアップロードされて格納されているデータを取得します。
+    description: SIM からアップロードされて格納されているデータを取得します。
+  devices:
+    summary: デバイスに関する操作を行います。
+    description: デバイスに関する操作を行います。
+  event-handlers:
+    summary: イベントハンドラーに関する操作を行います。
+    description: イベントハンドラーに関する操作を行います。
+  files:
+    summary: エクスポートされたファイルを取得します。
+    description: エクスポートされたファイルを取得します。
+  groups:
+    summary: グループに関する操作を行います。
+    description: グループに関する操作を行います。
+  logs:
+    summary: ログに関する操作を行います。
+    description: ログに関する操作を行います。
+  lora-devices:
+    summary: LoRa device に関する操作を行います。
+    description: LoRa device に関する操作を行います。
+  lora-gateways:
+    summary: LoRa gateway に関する操作を行います。
+    description: LoRa gateway に関する操作を行います。
+  lora-network-sets:
+    summary: LoRa network set に関する操作を行います。
+    description: LoRa network set に関する操作を行います。
+  operator:
+    summary: オペレーターに関する操作を行います。
+    description: オペレーターに関する操作を行います。
+    auth-keys:
+      summary: オペレーターの認証キーに関する操作を行います。
+      description: オペレーターの認証キーに関する操作を行います。
+  orders:
+    summary: 商品の注文に関する操作を行います。
+    description: 商品の注文に関する操作を行います。
+  payer-information:
+    summary: 課金明細に出力する支払い者情報を取得または設定します。
+    description: 課金明細に出力する支払い者情報を取得または設定します。
+  payment-history:
+    summary: お支払い履歴を取得します。
+    description: お支払い履歴を取得します。
+  payment-methods:
+    summary: お支払い方法に関する操作を行います。
+    description: お支払い方法に関する操作を行います。
+    webpay:
+      summary: WebPay によるお支払い方法を設定または取得します。
+      description: WebPay によるお支払い方法を設定または取得します。
+  payment-statements:
+    summary: 課金明細の一覧取得または出力を行います。
+    description: 課金明細の一覧取得または出力を行います。
+  products:
+    summary: 商品一覧を取得します。
+    description: 商品一覧を取得します。
+  roles:
+    summary: ロールに関する操作を行います。
+    description: ロールに関する操作を行います。
+  shipping-addresses:
+    summary: 出荷先情報に関する操作を行います。
+    description: 出荷先情報に関する操作を行います。
+  stats:
+    summary: 統計情報に関する操作を行います。
+    description: 統計情報に関する操作を行います。
+    air:
+      summary: Air の統計情報に関する操作を行います。
+      description: Air の統計情報に関する操作を行います。
+    beam:
+      summary: Beam の統計情報に関する操作を行います。
+      description: Beam の統計情報に関する操作を行います。
+  subscribers:
+    summary: サブスクライバー (SIM) に関する操作を行います。
+    description: サブスクライバー (SIM) に関する操作を行います。
+  unconfigure:
+    summary: コマンド実行環境（プロファイル）を削除します。
+    description: コマンド実行環境（プロファイル）を削除します。
+    prompt: "プロファイル %s を削除します。よろしいですか？ (y/N) "
+  users:
+    summary: SAM ユーザーに関する操作を行います。
+    description: SAM ユーザーに関する操作を行います。
+    auth-keys:
+      summary: SAM ユーザーの認証キーに関する操作を行います。
+      description: SAM ユーザーの認証キーに関する操作を行います。
+    password:
+      summary: SAM ユーザーのパスワードに関する操作を行います。
+      description: SAM ユーザーのパスワードに関する操作を行います。
+    permissions:
+      summary: SAM ユーザーのパーミッションに関する操作を行います。
+      description: SAM ユーザーのパーミッションに関する操作を行います。
+  version:
+    summary: バージョン情報を表示します。
+    description: バージョン情報を表示します。
+  vpg:
+    summary: VPG に関する操作を行います。
+    description: VPG (Virtual Private Gateways) に関する操作を行います。

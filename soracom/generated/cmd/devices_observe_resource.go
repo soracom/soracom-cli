@@ -23,15 +23,15 @@ var DevicesObserveResourceCmdResource string
 var DevicesObserveResourceCmdModel bool
 
 func init() {
-	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdDeviceId, "device-id", "", TR("devices.observe_resource.parameters.deviceId.description"))
+	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdInstance, "instance", "", TR("devices.observe_resource.parameters.instance.description"))
+	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdObject, "object", "", TR("devices.observe_resource.parameters.object.description"))
+	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdResource, "resource", "", TR("devices.observe_resource.parameters.resource.description"))
+	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesObserveResourceCmd.Flags().BoolVar(&DevicesObserveResourceCmdModel, "model", false, TR("devices.observe_resource.parameters.model.description"))
+	DevicesObserveResourceCmd.Flags().BoolVar(&DevicesObserveResourceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
 	DevicesCmd.AddCommand(DevicesObserveResourceCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // DevicesObserveResourceCmd defines 'observe-resource' subcommand
 var DevicesObserveResourceCmd = &cobra.Command{
 	Use:   "observe-resource",
-	Short: TR("devices.observe_resource.summary"),
-	Long:  TR(`devices.observe_resource.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}/observe:post:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}/observe:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

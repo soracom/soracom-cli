@@ -23,15 +23,15 @@ var SubscribersSessionEventsCmdLimit int64
 var SubscribersSessionEventsCmdTo int64
 
 func init() {
-	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TR("subscribers.list_session_events.get.parameters.imsi.description"))
+	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TR("subscribers.list_session_events.get.parameters.last_evaluated_key.description"))
+	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
 
-	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TR("subscribers.list_session_events.get.parameters.from.description"))
+	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (unixtime)."))
 
-	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TR("subscribers.list_session_events.get.parameters.limit.description"))
+	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
-	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TR("subscribers.list_session_events.get.parameters.to.description"))
+	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
 
 	SubscribersCmd.AddCommand(SubscribersSessionEventsCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // SubscribersSessionEventsCmd defines 'session-events' subcommand
 var SubscribersSessionEventsCmd = &cobra.Command{
 	Use:   "session-events",
-	Short: TR("subscribers.list_session_events.get.summary"),
-	Long:  TR(`subscribers.list_session_events.get.description`),
+	Short: TRAPI("/subscribers/{imsi}/events/sessions:get:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/events/sessions:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -26,15 +26,15 @@ var DevicesExecuteResourceCmdResource string
 var DevicesExecuteResourceCmdBody string
 
 func init() {
-	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdDeviceId, "device-id", "", TR("devices.execute_resource.parameters.deviceId.description"))
+	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdInstance, "instance", "", TR("devices.execute_resource.parameters.instance.description"))
+	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
-	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdObject, "object", "", TR("devices.execute_resource.parameters.object.description"))
+	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdResource, "resource", "", TR("devices.execute_resource.parameters.resource.description"))
+	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesExecuteResourceCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // DevicesExecuteResourceCmd defines 'execute-resource' subcommand
 var DevicesExecuteResourceCmd = &cobra.Command{
 	Use:   "execute-resource",
-	Short: TR("devices.execute_resource.summary"),
-	Long:  TR(`devices.execute_resource.description`),
+	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}/execute:post:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}/execute:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

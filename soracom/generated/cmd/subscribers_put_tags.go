@@ -17,9 +17,9 @@ var SubscribersPutTagsCmdImsi string
 var SubscribersPutTagsCmdBody string
 
 func init() {
-	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", TR("subscribers.put_subscriber_tags.put.parameters.imsi.description"))
+	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersPutTagsCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // SubscribersPutTagsCmd defines 'put-tags' subcommand
 var SubscribersPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
-	Short: TR("subscribers.put_subscriber_tags.put.summary"),
-	Long:  TR(`subscribers.put_subscriber_tags.put.description`),
+	Short: TRAPI("/subscribers/{imsi}/tags:put:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

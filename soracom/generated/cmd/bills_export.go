@@ -14,9 +14,9 @@ var BillsExportCmdExportMode string
 var BillsExportCmdYyyyMM string
 
 func init() {
-	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TR("yyyyMM"))
+	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TRAPI("yyyyMM"))
 
 	BillsCmd.AddCommand(BillsExportCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // BillsExportCmd defines 'export' subcommand
 var BillsExportCmd = &cobra.Command{
 	Use:   "export",
-	Short: TR("bills.export_billing.post.summary"),
-	Long:  TR(`bills.export_billing.post.description`),
+	Short: TRAPI("/bills/{yyyyMM}/export:post:summary"),
+	Long:  TRAPI(`/bills/{yyyyMM}/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

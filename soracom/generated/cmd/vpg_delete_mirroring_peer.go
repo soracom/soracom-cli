@@ -14,9 +14,9 @@ var VpgDeleteMirroringPeerCmdId string
 var VpgDeleteMirroringPeerCmdIpaddr string
 
 func init() {
-	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdId, "id", "", TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.parameters.id.description"))
+	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
 
-	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdIpaddr, "ipaddr", "", TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.parameters.ipaddr.description"))
+	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("IP address of mirroring peer"))
 
 	VpgCmd.AddCommand(VpgDeleteMirroringPeerCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // VpgDeleteMirroringPeerCmd defines 'delete-mirroring-peer' subcommand
 var VpgDeleteMirroringPeerCmd = &cobra.Command{
 	Use:   "delete-mirroring-peer",
-	Short: TR("virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.summary"),
-	Long:  TR(`virtual_private_gateway.junction.mirroring.peers.ipaddr.delete.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:delete:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -26,15 +26,15 @@ var UsersPasswordUpdateCmdUserName string
 var UsersPasswordUpdateCmdBody string
 
 func init() {
-	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", TR(""))
+	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", TRAPI(""))
 
-	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", TR(""))
+	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", TRAPI(""))
 
-	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", TR("user_name"))
+	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersPasswordCmd.AddCommand(UsersPasswordUpdateCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // UsersPasswordUpdateCmd defines 'update' subcommand
 var UsersPasswordUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: TR("users.update_user_password.put.summary"),
-	Long:  TR(`users.update_user_password.put.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:put:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -23,13 +23,13 @@ var UsersAttachRoleCmdUserName string
 var UsersAttachRoleCmdBody string
 
 func init() {
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TR("operator_id"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TR(""))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI(""))
 
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TR("user_name"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersCmd.AddCommand(UsersAttachRoleCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // UsersAttachRoleCmd defines 'attach-role' subcommand
 var UsersAttachRoleCmd = &cobra.Command{
 	Use:   "attach-role",
-	Short: TR("roles.attach_role.post.summary"),
-	Long:  TR(`roles.attach_role.post.description`),
+	Short: TRAPI("/operators/{operator_id}/users/{user_name}/roles:post:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -20,11 +20,11 @@ var OperatorCreateCmdPassword string
 var OperatorCreateCmdBody string
 
 func init() {
-	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TR(""))
+	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TRAPI(""))
 
-	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TR(""))
+	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TRAPI(""))
 
-	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorCreateCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // OperatorCreateCmd defines 'create' subcommand
 var OperatorCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("operator.create_operator.post.summary"),
-	Long:  TR(`operator.create_operator.post.description`),
+	Short: TRAPI("/operators:post:summary"),
+	Long:  TRAPI(`/operators:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -23,13 +23,13 @@ var CredentialsCreateCmdType string
 var CredentialsCreateCmdBody string
 
 func init() {
-	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TR("credentials_id"))
+	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TRAPI("credentials_id"))
 
-	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", TR(""))
+	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", TRAPI(""))
 
-	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdType, "type", "", TR(""))
+	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdType, "type", "", TRAPI(""))
 
-	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	CredentialsCmd.AddCommand(CredentialsCreateCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // CredentialsCreateCmd defines 'create' subcommand
 var CredentialsCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("credentials.create_credential.post.summary"),
-	Long:  TR(`credentials.create_credential.post.description`),
+	Short: TRAPI("/credentials/{credentials_id}:post:summary"),
+	Long:  TRAPI(`/credentials/{credentials_id}:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

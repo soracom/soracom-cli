@@ -23,15 +23,15 @@ var DevicesListCmdTagValueMatchMode string
 var DevicesListCmdLimit int64
 
 func init() {
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TR("devices.list.parameters.last_evaluated_key.description"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "", TR("devices.list.parameters.tag_name.description"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "", TRAPI("Tag name"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "", TR("devices.list.parameters.tag_value.description"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "", TRAPI("Tag value"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TR("devices.list.parameters.tag_value_match_mode.description"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag value match mode (exact | prefix)"))
 
-	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", 0, TR("devices.list.parameters.limit.description"))
+	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", 0, TRAPI("Max number of Devices in a response"))
 
 	DevicesCmd.AddCommand(DevicesListCmd)
 }
@@ -39,8 +39,8 @@ func init() {
 // DevicesListCmd defines 'list' subcommand
 var DevicesListCmd = &cobra.Command{
 	Use:   "list",
-	Short: TR("devices.list.summary"),
-	Long:  TR(`devices.list.description`),
+	Short: TRAPI("/devices:get:summary"),
+	Long:  TRAPI(`/devices:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

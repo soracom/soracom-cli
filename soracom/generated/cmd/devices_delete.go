@@ -11,7 +11,7 @@ import (
 var DevicesDeleteCmdDeviceId string
 
 func init() {
-	DevicesDeleteCmd.Flags().StringVar(&DevicesDeleteCmdDeviceId, "device-id", "", TR("devices.delete.parameters.deviceId.description"))
+	DevicesDeleteCmd.Flags().StringVar(&DevicesDeleteCmdDeviceId, "device-id", "", TRAPI("Device to delete"))
 
 	DevicesCmd.AddCommand(DevicesDeleteCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // DevicesDeleteCmd defines 'delete' subcommand
 var DevicesDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("devices.delete.summary"),
-	Long:  TR(`devices.delete.description`),
+	Short: TRAPI("/devices/{deviceId}:delete:summary"),
+	Long:  TRAPI(`/devices/{deviceId}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

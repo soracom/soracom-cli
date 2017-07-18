@@ -26,15 +26,15 @@ var VpgSetRedirectionCmdEnabled bool
 var VpgSetRedirectionCmdBody string
 
 func init() {
-	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdDescription, "description", "", TR(""))
+	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdDescription, "description", "", TRAPI(""))
 
-	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdGateway, "gateway", "", TR(""))
+	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdGateway, "gateway", "", TRAPI(""))
 
-	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdId, "id", "", TR("virtual_private_gateway.junction.redirection.set.post.parameters.id.description"))
+	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdId, "id", "", TRAPI("VPG ID"))
 
-	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TR(""))
+	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TRAPI(""))
 
-	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgSetRedirectionCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // VpgSetRedirectionCmd defines 'set-redirection' subcommand
 var VpgSetRedirectionCmd = &cobra.Command{
 	Use:   "set-redirection",
-	Short: TR("virtual_private_gateway.junction.redirection.set.post.summary"),
-	Long:  TR(`virtual_private_gateway.junction.redirection.set.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/set_redirection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/set_redirection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

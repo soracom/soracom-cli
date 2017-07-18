@@ -11,7 +11,7 @@ import (
 var OrdersRegisterSubscribersCmdOrderId string
 
 func init() {
-	OrdersRegisterSubscribersCmd.Flags().StringVar(&OrdersRegisterSubscribersCmdOrderId, "order-id", "", TR("order_id"))
+	OrdersRegisterSubscribersCmd.Flags().StringVar(&OrdersRegisterSubscribersCmdOrderId, "order-id", "", TRAPI("order_id"))
 
 	OrdersCmd.AddCommand(OrdersRegisterSubscribersCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // OrdersRegisterSubscribersCmd defines 'register-subscribers' subcommand
 var OrdersRegisterSubscribersCmd = &cobra.Command{
 	Use:   "register-subscribers",
-	Short: TR("orders.register_ordered_sim.post.summary"),
-	Long:  TR(`orders.register_ordered_sim.post.description`),
+	Short: TRAPI("/orders/{order_id}/subscribers/register:post:summary"),
+	Long:  TRAPI(`/orders/{order_id}/subscribers/register:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

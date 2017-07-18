@@ -14,9 +14,9 @@ var VpgUnregisterGatePeerCmdOuterIpAddress string
 var VpgUnregisterGatePeerCmdVpgId string
 
 func init() {
-	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TR("virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.parameters.host_id.description"))
+	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI("ID of the target node."))
 
-	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.parameters.vpg_id.description"))
+	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgUnregisterGatePeerCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // VpgUnregisterGatePeerCmd defines 'unregister-gate-peer' subcommand
 var VpgUnregisterGatePeerCmd = &cobra.Command{
 	Use:   "unregister-gate-peer",
-	Short: TR("virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.summary"),
-	Long:  TR(`virtual_private_gateway.unregister_virtual_private_gateway_peer.delete.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:delete:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -11,6 +11,6 @@ func init() {
 // LogsCmd defines 'logs' subcommand
 var LogsCmd = &cobra.Command{
 	Use:   "logs",
-	Short: TR("logs.cli.summary"),
-	Long:  TR(`logs.cli.description`),
+	Short: TRCLI("cli.logs.summary"),
+	Long:  TRCLI(`cli.logs.description`),
 }

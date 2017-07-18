@@ -17,9 +17,9 @@ var OperatorVerifyCmdToken string
 var OperatorVerifyCmdBody string
 
 func init() {
-	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TR(""))
+	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TRAPI(""))
 
-	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorVerifyCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // OperatorVerifyCmd defines 'verify' subcommand
 var OperatorVerifyCmd = &cobra.Command{
 	Use:   "verify",
-	Short: TR("operator.verify_operator.post.summary"),
-	Long:  TR(`operator.verify_operator.post.description`),
+	Short: TRAPI("/operators/verify:post:summary"),
+	Long:  TRAPI(`/operators/verify:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

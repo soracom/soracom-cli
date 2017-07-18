@@ -11,7 +11,7 @@ import (
 var VpgListGatePeersCmdVpgId string
 
 func init() {
-	VpgListGatePeersCmd.Flags().StringVar(&VpgListGatePeersCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.list_virtual_private_gateway_peers.get.parameters.vpg_id.description"))
+	VpgListGatePeersCmd.Flags().StringVar(&VpgListGatePeersCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgListGatePeersCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgListGatePeersCmd defines 'list-gate-peers' subcommand
 var VpgListGatePeersCmd = &cobra.Command{
 	Use:   "list-gate-peers",
-	Short: TR("virtual_private_gateway.list_virtual_private_gateway_peers.get.summary"),
-	Long:  TR(`virtual_private_gateway.list_virtual_private_gateway_peers.get.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers:get:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

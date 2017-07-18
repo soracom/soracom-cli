@@ -11,6 +11,6 @@ func init() {
 // ShippingAddressesCmd defines 'shipping-addresses' subcommand
 var ShippingAddressesCmd = &cobra.Command{
 	Use:   "shipping-addresses",
-	Short: TR("shipping_addresses.cli.summary"),
-	Long:  TR(`shipping_addresses.cli.description`),
+	Short: TRCLI("cli.shipping-addresses.summary"),
+	Long:  TRCLI(`cli.shipping-addresses.description`),
 }

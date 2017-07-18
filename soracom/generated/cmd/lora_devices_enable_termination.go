@@ -11,7 +11,7 @@ import (
 var LoraDevicesEnableTerminationCmdDeviceId string
 
 func init() {
-	LoraDevicesEnableTerminationCmd.Flags().StringVar(&LoraDevicesEnableTerminationCmdDeviceId, "device-id", "", TR("lora_devices.enable_termination.post.parameters.device_id.description"))
+	LoraDevicesEnableTerminationCmd.Flags().StringVar(&LoraDevicesEnableTerminationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesEnableTerminationCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraDevicesEnableTerminationCmd defines 'enable-termination' subcommand
 var LoraDevicesEnableTerminationCmd = &cobra.Command{
 	Use:   "enable-termination",
-	Short: TR("lora_devices.enable_termination.post.summary"),
-	Long:  TR(`lora_devices.enable_termination.post.description`),
+	Short: TRAPI("/lora_devices/{device_id}/enable_termination:post:summary"),
+	Long:  TRAPI(`/lora_devices/{device_id}/enable_termination:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

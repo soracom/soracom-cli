@@ -14,9 +14,9 @@ var EventHandlersIgnoreCmdHandlerId string
 var EventHandlersIgnoreCmdImsi string
 
 func init() {
-	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TR("handler_id"))
+	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
 
-	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TR("imsi"))
+	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TRAPI("imsi"))
 
 	EventHandlersCmd.AddCommand(EventHandlersIgnoreCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // EventHandlersIgnoreCmd defines 'ignore' subcommand
 var EventHandlersIgnoreCmd = &cobra.Command{
 	Use:   "ignore",
-	Short: TR("event_handlers.set_ignore_event_handler.post.summary"),
-	Long:  TR(`event_handlers.set_ignore_event_handler.post.description`),
+	Short: TRAPI("/event_handlers/{handler_id}/subscribers/{imsi}/ignore:post:summary"),
+	Long:  TRAPI(`/event_handlers/{handler_id}/subscribers/{imsi}/ignore:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -23,13 +23,13 @@ var PayerInformationRegisterCmdFullName string
 var PayerInformationRegisterCmdBody string
 
 func init() {
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdCompanyName, "company-name", "", TR(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdCompanyName, "company-name", "", TRAPI(""))
 
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdDepartment, "department", "", TR(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdDepartment, "department", "", TRAPI(""))
 
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TR(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TRAPI(""))
 
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	PayerInformationCmd.AddCommand(PayerInformationRegisterCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // PayerInformationRegisterCmd defines 'register' subcommand
 var PayerInformationRegisterCmd = &cobra.Command{
 	Use:   "register",
-	Short: TR("payment.payer_information.post.summary"),
-	Long:  TR(`payment.payer_information.post.description`),
+	Short: TRAPI("/payment_statements/payer_information:post:summary"),
+	Long:  TRAPI(`/payment_statements/payer_information:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

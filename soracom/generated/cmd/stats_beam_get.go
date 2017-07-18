@@ -20,13 +20,13 @@ var StatsBeamGetCmdFrom int64
 var StatsBeamGetCmdTo int64
 
 func init() {
-	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TR("stats.get_beam_stats.get.parameters.imsi.description"))
+	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", TR("stats.get_beam_stats.get.parameters.period.description"))
+	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
 
-	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TR("stats.get_beam_stats.get.parameters.from.description"))
+	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
-	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TR("stats.get_beam_stats.get.parameters.to.description"))
+	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
 
 	StatsBeamCmd.AddCommand(StatsBeamGetCmd)
 }
@@ -34,8 +34,8 @@ func init() {
 // StatsBeamGetCmd defines 'get' subcommand
 var StatsBeamGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("stats.get_beam_stats.get.summary"),
-	Long:  TR(`stats.get_beam_stats.get.description`),
+	Short: TRAPI("/stats/beam/subscribers/{imsi}:get:summary"),
+	Long:  TRAPI(`/stats/beam/subscribers/{imsi}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -14,9 +14,9 @@ var RolesDeleteCmdOperatorId string
 var RolesDeleteCmdRoleId string
 
 func init() {
-	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TR("operator_id"))
+	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TR("role_id"))
+	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TRAPI("role_id"))
 
 	RolesCmd.AddCommand(RolesDeleteCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // RolesDeleteCmd defines 'delete' subcommand
 var RolesDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("roles.delete_role.delete.summary"),
-	Long:  TR(`roles.delete_role.delete.description`),
+	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:delete:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

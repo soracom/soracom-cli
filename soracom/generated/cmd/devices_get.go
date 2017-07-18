@@ -14,9 +14,9 @@ var DevicesGetCmdDeviceId string
 var DevicesGetCmdModel bool
 
 func init() {
-	DevicesGetCmd.Flags().StringVar(&DevicesGetCmdDeviceId, "device-id", "", TR("devices.get.parameters.deviceId.description"))
+	DevicesGetCmd.Flags().StringVar(&DevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID"))
 
-	DevicesGetCmd.Flags().BoolVar(&DevicesGetCmdModel, "model", false, TR("devices.get.parameters.model.description"))
+	DevicesGetCmd.Flags().BoolVar(&DevicesGetCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
 	DevicesCmd.AddCommand(DevicesGetCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // DevicesGetCmd defines 'get' subcommand
 var DevicesGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("devices.get.summary"),
-	Long:  TR(`devices.get.description`),
+	Short: TRAPI("/devices/{deviceId}:get:summary"),
+	Long:  TRAPI(`/devices/{deviceId}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -11,7 +11,7 @@ import (
 var LoraGatewaysTerminateCmdGatewayId string
 
 func init() {
-	LoraGatewaysTerminateCmd.Flags().StringVar(&LoraGatewaysTerminateCmdGatewayId, "gateway-id", "", TR("lora_gateways.terminate.parameters.gateway_id.description"))
+	LoraGatewaysTerminateCmd.Flags().StringVar(&LoraGatewaysTerminateCmdGatewayId, "gateway-id", "", TRAPI("Device ID of the target LoRa gateway."))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysTerminateCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraGatewaysTerminateCmd defines 'terminate' subcommand
 var LoraGatewaysTerminateCmd = &cobra.Command{
 	Use:   "terminate",
-	Short: TR("lora_gateways.terminate.summary"),
-	Long:  TR(`lora_gateways.terminate.description`),
+	Short: TRAPI("/lora_gateways/{gateway_id}/terminate:post:summary"),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/terminate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -1,0 +1,129 @@
+cli:
+  auth:
+    summary: Performs authentication and issue an API Key and an API Token if successful.
+    description: "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
+  bills:
+    summary: Show or export billing info.
+    description: Show billing info for specified period, or export the billing info to a file
+  common_params:
+    body:
+      short_help: JSON string or @filename for API request body.
+  completion:
+    summary: Generate script for bash completion.
+    description: Generate script for bash completion.
+  configure:
+    summary: Show, create or update configurations.
+    description: Show, create or update configurations.
+    profile:
+      permission_is_too_open: "Permissions for the file '%s' which contains your credentials are too open.\nIt is required that your credential files are NOT accessible by others."
+      prompt: "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
+      coverage_type:
+        prompt: "\n\nPlease select which coverage type to use.\n\n1. Global\n2. Japan\n\n"
+        select: "select (1-2) > "
+      auth:
+        prompt: "\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials (Operator Email and Password)\n3. Input SAM credentials (OperatorId, User name and Password)\n\n"
+        select: "select (1-3) > "
+      overwrite: "\nProfile %s already exists. Overwrite it? (Y/n) "
+    get:
+      summary: Show specified profile configurations.
+      description: Show specified profile configurations.
+  coupons:
+    summary: List or register coupons.
+    description: List or register coupons.
+  credentials:
+    summary: List, create, update or delete credentials sets.
+    description: List, create, update or delete credentials sets.
+  data: 
+    summary: Get stored data from subscribers.
+    description: Get stored data from subscribers.
+  devices:
+    summary: Manage devices.
+    description: Manage devices.
+  event-handlers:
+    summary: List, create, update or delete event handlers.
+    description: List, create, update or delete event handlers.
+  files:
+    summary: Get an exported file.
+    description: Get an exported file.
+  groups:
+    summary: List, create, update or delete groups.
+    description: List, create, update or delete groups.
+  logs:
+    summary: List logs.
+    description: List logs.
+  lora-devices:
+    summary: Manage LoRa devices.
+    description: Manage LoRa devices.
+  lora-gateways:
+    summary: Manage LoRa gateways.
+    description: Manage LoRa gateways.
+  lora-network-sets:
+    summary: Manage LoRa network sets.
+    description: Manage LoRa network sets.
+  operator:
+    summary: Manage operators.
+    description: Manage operators.
+    auth-keys:
+      summary: List, create or delete operator's AuthKeys.
+      description: List, create or delete operator's AuthKeys.
+  orders:
+    summary: List, create or cancel orders.
+    description: List, create or cancel orders.
+  payer-information:
+    summary: Get or edit payer information.
+    description: Get or edit payer information.
+  payment-history:
+    summary: List payment history.
+    description: List payment history.
+  payment-methods:
+    summary: Create or update payment methods.
+    description: Create or update payment methods.
+    webpay:
+      summary: Create or update WebPay payment method.
+      description: Create or update WebPay payment method.
+  payment-statements:
+    summary: List or export payment statements.
+    description: List or export payment statements.
+  products:
+    summary: List products.
+    description: List products.
+  roles:
+    summary: List, create, update or delete roles.
+    description: List, create, update or delete roles.
+  shipping-addresses:
+    summary: List, create, update or delete shipping addresses.
+    description: List, create, update or delete shipping addresses.
+  stats:
+    summary: Show or export statistics.
+    description: Show or export statistics.
+    air:
+      summary: Show or export Air statistics.
+      description: Show or export Air statistics.
+    beam:
+      summary: Show or export Beam statistics.
+      description: Show or export Beam statistics.
+  subscribers:
+    summary: Manage subscribers.
+    description: Manage subscribers.
+  unconfigure:
+    summary: Remove configurations.
+    description: Remove configurations.
+    prompt: "Are you sure to remove profile '%s' ? (y/N) "
+  users:
+    summary: Manage SAM users.
+    description: Manage SAM users.
+    auth-keys:
+      summary: List, create or delete SAM user's AuthKeys.
+      description: List, create or delete SAM user's AuthKeys.
+    password:
+      summary: Create, update or delete SAM user's password.
+      description: Create, update or delete SAM user's password.
+    permissions:
+      summary: Show, create and update SAM user's permission.
+      description: Show, create and update SAM user's permission.
+  version:
+    summary: Show version info.
+    description: Show version info.
+  vpg:
+    summary: List, create, update or delete VPGs.
+    description: List, create, update or delete VPGs.

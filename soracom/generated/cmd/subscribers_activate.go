@@ -11,7 +11,7 @@ import (
 var SubscribersActivateCmdImsi string
 
 func init() {
-	SubscribersActivateCmd.Flags().StringVar(&SubscribersActivateCmdImsi, "imsi", "", TR("subscribers.activate_subscriber.post.parameters.imsi.description"))
+	SubscribersActivateCmd.Flags().StringVar(&SubscribersActivateCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	SubscribersCmd.AddCommand(SubscribersActivateCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // SubscribersActivateCmd defines 'activate' subcommand
 var SubscribersActivateCmd = &cobra.Command{
 	Use:   "activate",
-	Short: TR("subscribers.activate_subscriber.post.summary"),
-	Long:  TR(`subscribers.activate_subscriber.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/activate:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/activate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

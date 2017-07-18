@@ -20,11 +20,11 @@ var VpgSetInspectionCmdEnabled bool
 var VpgSetInspectionCmdBody string
 
 func init() {
-	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdId, "id", "", TR("virtual_private_gateway.junction.inspection.set.post.parameters.id.description"))
+	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdId, "id", "", TRAPI("VPG ID"))
 
-	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TR(""))
+	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TRAPI(""))
 
-	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgSetInspectionCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // VpgSetInspectionCmd defines 'set-inspection' subcommand
 var VpgSetInspectionCmd = &cobra.Command{
 	Use:   "set-inspection",
-	Short: TR("virtual_private_gateway.junction.inspection.set.post.summary"),
-	Long:  TR(`virtual_private_gateway.junction.inspection.set.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{id}/junction/set_inspection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/set_inspection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

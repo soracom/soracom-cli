@@ -17,9 +17,9 @@ var OrdersCreateCmdShippingAddressId string
 var OrdersCreateCmdBody string
 
 func init() {
-	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TR(""))
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI(""))
 
-	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OrdersCmd.AddCommand(OrdersCreateCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // OrdersCreateCmd defines 'create' subcommand
 var OrdersCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: TR("orders.create_quotation.post.summary"),
-	Long:  TR(`orders.create_quotation.post.description`),
+	Short: TRAPI("/orders:post:summary"),
+	Long:  TRAPI(`/orders:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

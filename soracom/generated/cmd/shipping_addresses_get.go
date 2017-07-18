@@ -14,9 +14,9 @@ var ShippingAddressesGetCmdOperatorId string
 var ShippingAddressesGetCmdShippingAddressId string
 
 func init() {
-	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TR("operator_id"))
+	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TR("shipping_address_id"))
+	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
 	ShippingAddressesCmd.AddCommand(ShippingAddressesGetCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // ShippingAddressesGetCmd defines 'get' subcommand
 var ShippingAddressesGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("shipping_addresses.get_shipping_address.get.summary"),
-	Long:  TR(`shipping_addresses.get_shipping_address.get.description`),
+	Short: TRAPI("/operators/{operator_id}/shipping_addresses/{shipping_address_id}:get:summary"),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

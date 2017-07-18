@@ -26,15 +26,15 @@ var VpgCreateVpcPeeringConnectionCmdVpgId string
 var VpgCreateVpcPeeringConnectionCmdBody string
 
 func init() {
-	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", TR(""))
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", TRAPI(""))
 
-	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", TR(""))
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", TRAPI(""))
 
-	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerVpcId, "peer-vpc-id", "", TR(""))
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerVpcId, "peer-vpc-id", "", TRAPI(""))
 
-	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.create_vpc_peering_connection.post.parameters.vpg_id.description"))
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgCreateVpcPeeringConnectionCmd)
 }
@@ -42,8 +42,8 @@ func init() {
 // VpgCreateVpcPeeringConnectionCmd defines 'create-vpc-peering-connection' subcommand
 var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "create-vpc-peering-connection",
-	Short: TR("virtual_private_gateway.create_vpc_peering_connection.post.summary"),
-	Long:  TR(`virtual_private_gateway.create_vpc_peering_connection.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

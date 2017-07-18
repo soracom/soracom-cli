@@ -11,6 +11,6 @@ func init() {
 // LoraDevicesCmd defines 'lora-devices' subcommand
 var LoraDevicesCmd = &cobra.Command{
 	Use:   "lora-devices",
-	Short: TR("lora_devices.cli.summary"),
-	Long:  TR(`lora_devices.cli.description`),
+	Short: TRCLI("cli.lora-devices.summary"),
+	Long:  TRCLI(`cli.lora-devices.description`),
 }

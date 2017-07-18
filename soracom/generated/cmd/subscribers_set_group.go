@@ -20,11 +20,11 @@ var SubscribersSetGroupCmdImsi string
 var SubscribersSetGroupCmdBody string
 
 func init() {
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TR(""))
+	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TR("subscribers.set_group.post.parameters.imsi.description"))
+	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSetGroupCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // SubscribersSetGroupCmd defines 'set-group' subcommand
 var SubscribersSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
-	Short: TR("subscribers.set_group.post.summary"),
-	Long:  TR(`subscribers.set_group.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/set_group:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/set_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

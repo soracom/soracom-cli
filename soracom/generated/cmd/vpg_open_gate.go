@@ -11,7 +11,7 @@ import (
 var VpgOpenGateCmdVpgId string
 
 func init() {
-	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdVpgId, "vpg-id", "", TR("virtual_private_gateway.open_gate.post.parameters.vpg_id.description"))
+	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCmd.AddCommand(VpgOpenGateCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgOpenGateCmd defines 'open-gate' subcommand
 var VpgOpenGateCmd = &cobra.Command{
 	Use:   "open-gate",
-	Short: TR("virtual_private_gateway.open_gate.post.summary"),
-	Long:  TR(`virtual_private_gateway.open_gate.post.description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/open:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/open:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -20,11 +20,11 @@ var LoraNetworkSetsRevokePermissionCmdOperatorId string
 var LoraNetworkSetsRevokePermissionCmdBody string
 
 func init() {
-	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdNsId, "ns-id", "", TR("lora_network_sets.revoke_permission.parameters.ns_id.description"))
+	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdOperatorId, "operator-id", "", TR(""))
+	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 
-	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsRevokePermissionCmd)
 }
@@ -32,8 +32,8 @@ func init() {
 // LoraNetworkSetsRevokePermissionCmd defines 'revoke-permission' subcommand
 var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 	Use:   "revoke-permission",
-	Short: TR("lora_network_sets.revoke_permission.summary"),
-	Long:  TR(`lora_network_sets.revoke_permission.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}/revoke_permission:post:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/revoke_permission:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

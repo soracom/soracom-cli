@@ -11,7 +11,7 @@ import (
 var EventHandlersDeleteCmdHandlerId string
 
 func init() {
-	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TR("event_handlers.delete_event_handler.delete.parameters.handler_id.description"))
+	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
 	EventHandlersCmd.AddCommand(EventHandlersDeleteCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // EventHandlersDeleteCmd defines 'delete' subcommand
 var EventHandlersDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("event_handlers.delete_event_handler.delete.summary"),
-	Long:  TR(`event_handlers.delete_event_handler.delete.description`),
+	Short: TRAPI("/event_handlers/{handler_id}:delete:summary"),
+	Long:  TRAPI(`/event_handlers/{handler_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

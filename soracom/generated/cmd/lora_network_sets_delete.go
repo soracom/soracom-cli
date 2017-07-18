@@ -11,7 +11,7 @@ import (
 var LoraNetworkSetsDeleteCmdNsId string
 
 func init() {
-	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TR("lora_network_sets.delete.parameters.ns_id.description"))
+	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsDeleteCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // LoraNetworkSetsDeleteCmd defines 'delete' subcommand
 var LoraNetworkSetsDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TR("lora_network_sets.delete.summary"),
-	Long:  TR(`lora_network_sets.delete.description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}:delete:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

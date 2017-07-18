@@ -11,6 +11,6 @@ func init() {
 // DevicesCmd defines 'devices' subcommand
 var DevicesCmd = &cobra.Command{
 	Use:   "devices",
-	Short: TR("devices.cli.summary"),
-	Long:  TR(`devices.cli.description`),
+	Short: TRCLI("cli.devices.summary"),
+	Long:  TRCLI(`cli.devices.description`),
 }

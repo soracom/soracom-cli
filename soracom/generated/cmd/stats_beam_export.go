@@ -29,17 +29,17 @@ var StatsBeamExportCmdTo int64
 var StatsBeamExportCmdBody string
 
 func init() {
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdExportMode, "export-mode", "", TR("export_mode (async, sync)"))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TR("stats.export_beam_stats.post.parameters.operator_id.description"))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TRAPI("operator ID"))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TR(""))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TRAPI(""))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TR(""))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TRAPI(""))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TR(""))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI(""))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	StatsBeamCmd.AddCommand(StatsBeamExportCmd)
 }
@@ -47,8 +47,8 @@ func init() {
 // StatsBeamExportCmd defines 'export' subcommand
 var StatsBeamExportCmd = &cobra.Command{
 	Use:   "export",
-	Short: TR("stats.export_beam_stats.post.summary"),
-	Long:  TR(`stats.export_beam_stats.post.description`),
+	Short: TRAPI("/stats/beam/operators/{operator_id}/export:post:summary"),
+	Long:  TRAPI(`/stats/beam/operators/{operator_id}/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

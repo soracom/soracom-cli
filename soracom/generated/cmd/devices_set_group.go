@@ -17,9 +17,9 @@ var DevicesSetGroupCmdDeviceId string
 var DevicesSetGroupCmdBody string
 
 func init() {
-	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TR("devices.set_group.parameters.deviceId.description"))
+	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
-	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesSetGroupCmd)
 }
@@ -27,8 +27,8 @@ func init() {
 // DevicesSetGroupCmd defines 'set-group' subcommand
 var DevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
-	Short: TR("devices.set_group.summary"),
-	Long:  TR(`devices.set_group.description`),
+	Short: TRAPI("/devices/{deviceId}/set_group:post:summary"),
+	Long:  TRAPI(`/devices/{deviceId}/set_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

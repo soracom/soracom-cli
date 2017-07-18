@@ -11,6 +11,6 @@ func init() {
 // UsersPermissionsCmd defines 'permissions' subcommand
 var UsersPermissionsCmd = &cobra.Command{
 	Use:   "permissions",
-	Short: TR("users.permissions.cli.summary"),
-	Long:  TR(`users.permissions.cli.description`),
+	Short: TRCLI("cli.users.permissions.summary"),
+	Long:  TRCLI(`cli.users.permissions.description`),
 }

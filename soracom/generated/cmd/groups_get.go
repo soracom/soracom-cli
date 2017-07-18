@@ -11,7 +11,7 @@ import (
 var GroupsGetCmdGroupId string
 
 func init() {
-	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TR("groups.get_group.get.parameters.group_id.description"))
+	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
 	GroupsCmd.AddCommand(GroupsGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // GroupsGetCmd defines 'get' subcommand
 var GroupsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("groups.get_group.get.summary"),
-	Long:  TR(`groups.get_group.get.description`),
+	Short: TRAPI("/groups/{group_id}:get:summary"),
+	Long:  TRAPI(`/groups/{group_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

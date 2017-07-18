@@ -17,11 +17,11 @@ var OrdersListSubscribersCmdOrderId string
 var OrdersListSubscribersCmdLimit int64
 
 func init() {
-	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TR("orders.list_ordered_subscriber.get.request.last_evaluated_key.description"))
+	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key."))
 
-	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdOrderId, "order-id", "", TR("order_id"))
+	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdOrderId, "order-id", "", TRAPI("order_id"))
 
-	OrdersListSubscribersCmd.Flags().Int64Var(&OrdersListSubscribersCmdLimit, "limit", 0, TR("orders.list_ordered_subscriber.get.request.limit.description"))
+	OrdersListSubscribersCmd.Flags().Int64Var(&OrdersListSubscribersCmdLimit, "limit", 0, TRAPI("Max number of subscribers in a response."))
 
 	OrdersCmd.AddCommand(OrdersListSubscribersCmd)
 }
@@ -29,8 +29,8 @@ func init() {
 // OrdersListSubscribersCmd defines 'list-subscribers' subcommand
 var OrdersListSubscribersCmd = &cobra.Command{
 	Use:   "list-subscribers",
-	Short: TR("orders.list_ordered_subscriber.get.summary"),
-	Long:  TR(`orders.list_ordered_subscriber.get.description`),
+	Short: TRAPI("/orders/{order_id}/subscribers:get:summary"),
+	Long:  TRAPI(`/orders/{order_id}/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

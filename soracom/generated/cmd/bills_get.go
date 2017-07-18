@@ -11,7 +11,7 @@ import (
 var BillsGetCmdYyyyMM string
 
 func init() {
-	BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TR("bills.get_billing.get.parameters.yyyyMM.description"))
+	BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
 
 	BillsCmd.AddCommand(BillsGetCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // BillsGetCmd defines 'get' subcommand
 var BillsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TR("bills.get_billing.get.summary"),
-	Long:  TR(`bills.get_billing.get.description`),
+	Short: TRAPI("/bills/{yyyyMM}:get:summary"),
+	Long:  TRAPI(`/bills/{yyyyMM}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",

@@ -23,13 +23,13 @@ var SubscribersRegisterCmdRegistrationSecret string
 var SubscribersRegisterCmdBody string
 
 func init() {
-	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdGroupId, "group-id", "", TR(""))
+	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdGroupId, "group-id", "", TRAPI(""))
 
-	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TR("subscribers.register_subscriber.post.parameters.imsi.description"))
+	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TR(""))
+	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
-	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdBody, "body", "", TR("cli.common_params.body.short_help"))
+	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersRegisterCmd)
 }
@@ -37,8 +37,8 @@ func init() {
 // SubscribersRegisterCmd defines 'register' subcommand
 var SubscribersRegisterCmd = &cobra.Command{
 	Use:   "register",
-	Short: TR("subscribers.register_subscriber.post.summary"),
-	Long:  TR(`subscribers.register_subscriber.post.description`),
+	Short: TRAPI("/subscribers/{imsi}/register:post:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/register:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
