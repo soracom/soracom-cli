@@ -37,6 +37,8 @@ Available Commands:
   vpg                VPG に関する操作を行います。
 
 Flags:
+      --api-key string         Specify API key otherwise soracom-cli performs authentication on behalf of you
+      --api-token string       Specify API token otherwise soracom-cli performs authentication on behalf of you
       --coverage-type string   Specify coverage type
   -h, --help                   help for soracom
       --profile string         Specify profile name
