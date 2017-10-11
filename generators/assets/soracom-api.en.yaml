@@ -5086,7 +5086,7 @@ paths:
         '200':
           description: Resources under the specified object instance
           schema:
-            "$ref": "#/definitions/ObjectInstance"          
+            "$ref": "#/definitions/ObjectInstance"
         '400':
           description: Object instance is not readable
         '404':
@@ -5140,7 +5140,7 @@ paths:
           description: Resource is not readable
         '404':
           description: Resource is not found
-          
+
 
     put:
       tags:
@@ -5273,12 +5273,12 @@ paths:
         '200':
           description: Observation started. Returns current snapshot of the specified object instance
           schema:
-            "$ref": "#/definitions/ObjectInstance"          
+            "$ref": "#/definitions/ObjectInstance"
         '400':
           description: Object instance is not readable
         '404':
           description: Object instance is not found
-      
+
   "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
     post:
       tags:
@@ -5351,7 +5351,7 @@ paths:
         '200':
           description: Observation started. Returns current snapshot of the resource
           schema:
-            "$ref": "#/definitions/ResourceInstance"          
+            "$ref": "#/definitions/ResourceInstance"
         '400':
           description: Resource is not readable
         '404':
@@ -5395,7 +5395,7 @@ paths:
           description: Observation cancelled
         '404':
           description: Resource is not found
-  
+
 definitions:
 
   Subscriber:

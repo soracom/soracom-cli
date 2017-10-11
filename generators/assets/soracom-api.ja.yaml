@@ -971,18 +971,18 @@ paths:
       description: 条件にマッチするLoRa deviceのリストを返す。LoRa deviceの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
       parameters:
         - name: tag_name
-          description: 検索対象にするタグの名前(完全一致)。
+          description: 検索対象にするタグの名前(完全一致)
         - name: tag_value
-          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須。
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須
         - name: tag_value_match_mode
-          description: タグの検索条件。
+          description: タグの検索条件
         - name: limit
           description: 取得するLoRa deviceの上限
         - name: last_evaluated_key
-          description: 現ページで取得した最後のLoRa deviceのDevice ID。このパラメータを指定することで次のLoRa device以降のリストを取得できる。
+          description: 現ページで取得した最後のLoRa deviceのDevice ID。このパラメータを指定することで次のLoRa device以降のリストを取得できる
       responses:
         200:
-          description: A list of subscibers
+          description: 条件にマッチするLoRa deviceのリスト
 
   '/lora_devices/{device_id}/register':
     post:
