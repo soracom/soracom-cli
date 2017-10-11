@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -106,6 +108,7 @@ type apiParams struct {
 	contentType    string
 	body           string
 	noRetryOnError bool
+	noVersionCheck bool
 }
 
 func (ac *apiClient) callAPI(params *apiParams) (string, error) {
@@ -160,11 +163,60 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		return "", newAPIError(res)
 	}
 
+	if !params.noVersionCheck {
+		latestVersion := res.Header.Get("x-soracom-cli-version")
+		if isNewerThanCurrentVersion(latestVersion) {
+			fmt.Fprintf(os.Stderr, TRCLI("cli.new-version-is-released"), latestVersion, version)
+		}
+	}
+
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return "", err
 	}
 	return bytes.NewBuffer(b).String(), nil
+}
+
+// version strings are in the form of "v1.22.333" or "v0.0.1"
+func isNewerThanCurrentVersion(latestVersion string) bool {
+	cv := versionInt(version)
+	lv := versionInt(latestVersion)
+	return cv < lv
+}
+
+func versionInt(ver string) uint32 {
+	s := splitVersionString(ver)
+	if len(s) < 3 {
+		return 0
+	}
+
+	var n uint32
+	shift := uint(24)
+	for i := 0; i < 4; i++ {
+		if len(s) <= i {
+			break
+		}
+		x, err := strconv.Atoi(s[i])
+		if err == nil {
+			n |= uint32((x & 0xff) << shift)
+		}
+		shift -= 8
+	}
+	return n
+}
+
+var versionStringRegexp = regexp.MustCompile("([[:digit:]]+)[[:^digit:]]*")
+
+func splitVersionString(ver string) []string {
+	m := versionStringRegexp.FindAllStringSubmatch(ver, -1)
+	if len(m) < 2 {
+		return []string{}
+	}
+	result := make([]string, len(m))
+	for i, s := range m {
+		result[i] = s[1]
+	}
+	return result
 }
 
 func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response, error) {

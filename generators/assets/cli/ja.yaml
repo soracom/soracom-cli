@@ -60,6 +60,7 @@ cli:
   lora-network-sets:
     summary: LoRa network set に関する操作を行います。
     description: LoRa network set に関する操作を行います。
+  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。\n"
   operator:
     summary: オペレーターに関する操作を行います。
     description: オペレーターに関する操作を行います。

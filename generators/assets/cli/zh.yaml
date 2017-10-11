@@ -60,6 +60,7 @@ cli:
   lora-network-sets:
     summary: Manage LoRa network sets.
     description: Manage LoRa network sets.
+  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version.\n"
   operator:
     summary: Manage operators.
     description: Manage operators.
