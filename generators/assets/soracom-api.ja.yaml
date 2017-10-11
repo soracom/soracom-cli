@@ -747,6 +747,21 @@ paths:
         404:
           description: 指定されたSubscriberが存在しない
 
+  '/subscribers/{imsi}/set_to_standby':
+    post:
+      summary: Set Subscriber to standby mode.
+      description: 指定されたSubscriberをStandby（利用開始待ち）に設定する
+      parameters:
+        - name: imsi
+          description: 対象のSubscriberのIMSI
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+        400:
+          description: 指定されたSubscriberはStandby（利用開始待ち）モードに対応していない
+        404:
+          description: 指定されたSubscriberが存在しない
+
   '/subscribers/{imsi}/enable_termination':
     post:
       summary: Enable Termination of Subscriber
@@ -963,6 +978,38 @@ paths:
       responses:
         200:
           description: データエントリのリスト
+
+  '/subscribers/{imsi}/send_sms':
+    post:
+      summary: Send SMS to Subscriber
+      description: 指定されたサブスクライバー宛にSMSを送信する。
+      parameters:
+        - name: imsi
+          description: SMS送信対象のサブスクライバーのIMSI
+        - name: smsForwardingRequest
+          description: メッセージ本体とエンコーディングタイプからなるSMS送信リクエスト
+      responses:
+        202:
+          description: SMS送信を受け付け完了。メッセージに割り振られたIDを返す
+        400:
+          description: 指定されたサブスクライバーはSMS APIをサポートしていない
+        404:
+          description: 指定されたSubscriberが存在しない
+
+  '/subscribers/{imsi}/report_local_info':
+    post:
+      summary: Triggers Subscriber to report SIM local info.
+      description: サブスクライバーに対し、SIMローカル情報をレポートするように指示する。
+      parameters:
+        - name: imsi
+          description: 対象のサブスクライバーのIMSI
+      responses:
+        202:
+          description: SIMローカル情報レポートの指示に成功。Subscriberの情報はSIMからのレポートが成功した時点で非同期に更新される
+        400:
+          description: SubscriberがSIMローカル情報レポート機能に対応していない
+        404:
+          description: 指定されたSubscriberが存在しない
 
 # LoRa devices
   '/lora_devices':
@@ -2903,3 +2950,8 @@ definitions:
         description: 出力済みファイル取得パス(リクエストにexport_mode=asyncを付与した場合）
       url:
         description: ファイルダウンロードURL(export_mode指定なし、もしくはexport_mode=syncの場合
+
+  SmsForwardingRequest:
+    properties:
+      encodingType:
+        description: メッセージ本体のエンコーディングタイプ。`1` はメッセージ本体を `DCS_7BIT` で送信することを示す。このエンコーディングでは1バイト文字しか送ることができない。`2` は `DCS_UCS2` を示す。このエンコーディングではマルチバイト文字がサポートされる。encodingType が省略された場合のデフォルトは `2` (`DCS_UCS2`)。

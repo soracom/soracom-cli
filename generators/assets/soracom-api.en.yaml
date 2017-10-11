@@ -1411,6 +1411,37 @@ paths:
         404:
           description: The specified subscriber does not exist.
 
+  '/subscribers/{imsi}/set_to_standby':
+    post:
+      summary: Set Subscriber to standby mode.
+      description: Set the specified subscriber to standby mode.
+      operationId: setSubscriberToStandby
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers set-to-standby
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: IMSI of the target subscriber.
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        200:
+          description: The subscriber's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        400:
+          description: The specified subscriber does not support standby mode.
+        404:
+          description: The specified subscriber does not exist.
+
   '/subscribers/{imsi}/enable_termination':
     post:
       summary: Enable Termination of Subscriber.
@@ -1902,6 +1933,74 @@ paths:
             type: array
             items:
              '$ref': '#/definitions/DataEntry'
+
+  '/subscribers/{imsi}/send_sms':
+    post:
+      summary: Send SMS to Subscriber
+      description: Send SMS to the specified subscriber.
+      operationId: sendSms
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers send-sms
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: IMSI of the target subscriber.
+          required: true
+          type: string
+          format: IMSI
+        - name: smsForwardingRequest
+          in: body
+          description: SMS forwarding request that contains message body and its encoding type. 
+          required: true
+          schema:
+            '$ref': '#/definitions/SmsForwardingRequest'
+      tags:
+        - Subscriber
+      responses:
+        202:
+          description: SMS forwarding report containing message ID.
+          schema:
+           '$ref': '#/definitions/SmsForwardingReport'
+        400:
+          description: The specified subscriber does not support SMS API.
+        404:
+          description: The specified subscriber does not exist.
+
+  '/subscribers/{imsi}/report_local_info':
+    post:
+      summary: Triggers Subscriber to report SIM local info.
+      description: Triggers Subscriber to report SIM local info.
+      operationId: reportLocalInfo
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers report-local-info
+      consumes: [plain/text]
+      produces: [application/json]
+      parameters:
+        - name: imsi
+          in: path
+          description: IMSI of the target subscriber.
+          required: true
+          type: string
+          format: IMSI
+      tags:
+        - Subscriber
+      responses:
+        202:
+          description: The local info reporting has successfully been triggered. The subscriber information is asynchronously updated when the SIM reports the information back.
+          schema:
+           '$ref': '#/definitions/Subscriber'
+        400:
+          description: The specified subscriber does not support local info reporting feature.
+        404:
+          description: The specified subscriber does not exist.
 
 # LoRa devices
   '/lora_devices':
@@ -6935,4 +7034,19 @@ definitions:
       key:
         type: string
       value:
+        type: string
+
+  SmsForwardingRequest:
+    type: object
+    properties:
+      encodingType:
+        type: integer
+        description: Encoding type of the message body. `1` indicates the body is `DCS_7BIT` that only supports single byte characters. `2` is `DCS_UCS2` that supports multi-byte text. When omitted, it is treated as `2` (`DCS_UCS2`).
+      payload:
+        type: string
+
+  SmsForwardingReport:
+    type: object
+    properties:
+      messageId:
         type: string
