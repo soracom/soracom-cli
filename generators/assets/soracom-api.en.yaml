@@ -6355,9 +6355,11 @@ definitions:
           - DailyTrafficRule
           - MonthlyTrafficRule
           - CumulativeTrafficRule
+          - DailyTotalTrafficRule
           - MonthlyTotalTrafficRule
           - SubscriberStatusAttributeRule
           - SubscriberSpeedClassAttributeRule
+          - SubscriberExpiredRule
     required:
       - properties
       - type
