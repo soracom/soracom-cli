@@ -82,9 +82,9 @@ paths:
         - name: credentials_id
           description: Credentials ID
       responses:
-        '204': 
+        '204':
           description: Deleted
-        '404': 
+        '404':
           description: Not Found
 
 #Operator API
@@ -109,7 +109,7 @@ paths:
         - name: request
           description: 'email'
       responses:
-        '200': 
+        '200':
           description: OK
 
   '/operators/email_change_token/verify':
@@ -328,7 +328,7 @@ paths:
       - name: request
         description: role_id
       responses:
-        '200': 
+        '200':
           description: OK
 
   '/operators/{operator_id}/users/{user_name}/roles/{role_id}':
@@ -1444,6 +1444,157 @@ paths:
         '404':
           description: 指定されたLoRa network setあるいはタグが存在しない
 
+# Sigfox devices
+  '/sigfox_devices':
+    get:
+      summary: List Sigfox devices
+      description: 条件にマッチするSigfox deviceのリストを返す。Sigfox deviceの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須
+        - name: tag_value_match_mode
+          description: タグの検索条件
+        - name: limit
+          description: 取得するSigfox deviceの上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のSigfox deviceのDevice ID。このパラメータを指定することで次のSigfox device以降のリストを取得できる
+      responses:
+        200:
+          description: 条件にマッチするSigfox deviceのリスト
+
+  '/sigfox_devices/{device_id}':
+    get:
+      summary: Get Sigfox device
+      description: 指定されたSigfox deviceの情報を返す。
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのDevice ID
+      responses:
+        200:
+          description: 指定されたSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/data':
+    get:
+      summary: Get data sent from a Sigfox device.
+      description: 指定されたSigfoxデバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: device_id
+          description: データ取得対象のSigfoxデバイスのID
+        - name: from
+          description: 取得対象の期間の始まり (unixtime ミリ秒単位)
+        - name: to
+          description: 取得対象の期間の終わり (unixtime ミリ秒単位)
+        - name: sort
+          description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+        - name: limit
+          description: 取得するデータエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      responses:
+        200:
+          description: データエントリのリスト
+
+  '/sigfox_devices/{device_id}/terminate':
+    post:
+      summary: Terminate Sigfox device
+      description: 指定されたSigfox deviceをTerminate
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/enable_termination':
+    post:
+      summary: Enable Termination of Sigfox device
+      description: 指定されたSigfox deviceをTerminate可能に設定する
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/disable_termination':
+    post:
+      summary: Disable Termination of Sigfox device
+      description: 指定されたSigfox deviceをTerminate不可能に設定する
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/set_group':
+    post:
+      summary: Set Group to Sigfox device
+      description: 指定されたSigfox deviceの所属先Groupを指定あるいは上書き変更
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+        - name: group
+          description: Group（IDのみを含めばよい）
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/unset_group':
+    post:
+      summary: Unset Group to Sigfox device
+      description: 指定されたSigfox deviceのGroup指定を解除
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しないか、Sigfox deviceはGroupに属していない
+
+  '/sigfox_devices/{device_id}/tags':
+    put:
+      summary: Bulk Insert or Update Sigfox device Tags
+      description: 指定されたSigfox deviceのタグを追加・更新
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+        - name: tags
+          description: 追加・更新対象のタグの配列
+      responses:
+        200:
+          description: 更新後のSigfox deviceの詳細情報
+        404:
+          description: 指定されたSigfox deviceが存在しない
+
+  '/sigfox_devices/{device_id}/tags/{tag_name}':
+    delete:
+      summary: Delete Sigfox device Tag
+      description: 指定されたSigfox deviceのタグを削除
+      parameters:
+        - name: device_id
+          description: 対象のSigfox deviceのID
+        - name: tag_name
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたSigfox deviceあるいはタグが存在しない
+
 # Billing
   '/bills':
     get:
@@ -2549,7 +2700,7 @@ paths:
           description: Object Instance は Read 操作をサポートしていません
         '404':
           description: Resourceが見つかりません
-      
+
   "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
     post:
       summary: Object Instance 下の Resource の Observe を停止します。
@@ -2608,7 +2759,7 @@ paths:
           description: Observe を停止しました
         '404':
           description: Resourceが見つかりません
-  
+
 definitions:
 
   APICallErrorMessage:
@@ -2783,7 +2934,7 @@ definitions:
         description: 発注ID
       orderItemList:
         description: 発注商品リスト
-      shippingAddress: 
+      shippingAddress:
         description: 発送先
       shippingAddressId:
         description: 商品発送先ID
@@ -2806,7 +2957,7 @@ definitions:
         description: 発注商品リスト
       orderStatus:
         description: 発注ステータス
-      shippingAddress: 
+      shippingAddress:
         description: 発送先
       shippingAddressId:
         description: 商品発送先ID

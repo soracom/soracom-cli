@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   title: SORACOM API
   description: SORACOM API v1
-  version: '20170705'
+  version: '20171109'
 # the domain of the service
 host: api.soracom.io
 # array of all schemes that your API supports
@@ -2965,6 +2965,345 @@ paths:
           description: Deletion of specified tag complete.
         '404':
           description: The specified LoRa network set or the tag does not exist.
+
+# Sigfox devices
+  '/sigfox_devices':
+    get:
+      summary: List Sigfox devices.
+      description: Returns a list of Sigfox devices that match certain criteria. If the total number of Sigfox devices does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.
+      operationId: listSigfoxDevices
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices list
+      parameters:
+        - name: tag_name
+          in: query
+          description: Tag name for filtering the search (exact match).
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: Tag search string for filtering the search. Required when `tag_name` has been specified.
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: Tag match mode.
+          required: false
+          type: string
+          enum: [exact, prefix]
+          default: exact
+        - name: limit
+          in: query
+          description: Maximum number of Sigfox devices to retrieve.
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward.
+          required: false
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: A list of Sigfox devices.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/SigfoxDevice'
+
+  '/sigfox_devices/{device_id}':
+    get:
+      summary: Get Sigfox device.
+      description: Returns information about the specified Sigfox device.
+      operationId: getSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices get
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/data':
+    get:
+      summary: Get data sent from a Sigfox device.
+      description: Returns a list of data entries sent from a Sigfox device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.
+      operationId: getDataFromSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices get-data
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target subscriber that generated data entries.
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: Start time for the data entries search range (unixtime in milliseconds).
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: End time for the data entries search range (unixtime in milliseconds).
+          required: false
+          type: integer
+        - name: sort
+          in: query
+          description: Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first).
+          required: false
+          type: string
+          enum: [desc, asc]
+          default: desc
+        - name: limit
+          in: query
+          description: Maximum number of data entries to retrieve.
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward.
+          required: false
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: A list of data entries.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/DataEntry'
+
+  '/sigfox_devices/{device_id}/terminate':
+    post:
+      summary: Terminate Sigfox device.
+      description: Terminates the specified Sigfox device
+      operationId: terminateSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices terminate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/enable_termination':
+    post:
+      summary: Enable Termination of Sigfox device.
+      description: Enables termination of specified Sigfox device.
+      operationId: enableTerminationOnSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices enable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/disable_termination':
+    post:
+      summary: Disable Termination of Sigfox device.
+      description: Disables termination of specified Sigfox device.
+      operationId: disableTerminationOnSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices disable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/set_group':
+    post:
+      summary: Set Group of Sigfox device.
+      description: Sets or overwrites a group for the specified Sigfox device.
+      operationId: setSigfoxDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices set-group
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+        - name: group
+          in: body
+          description: Group (may include ID only).
+          schema:
+           '$ref': '#/definitions/Group'
+          required: true
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/unset_group':
+    post:
+      summary: Unset Group of Sigfox device.
+      description: Removes the group configuration from the specified Sigfox device.
+      operationId: unsetSigfoxDeviceGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices unset-group
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist or the Sigfox device does not belong to a group.
+
+  '/sigfox_devices/{device_id}/tags':
+    put:
+      summary: Bulk Insert or Update Sigfox device Tags.
+      description: Inserts/updates tags for the specified Sigfox device.
+      operationId: putSigfoxDeviceTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices put-tags
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target Sigfox device.
+          required: true
+          type: string
+        - name: tags
+          in: body
+          description: Array of tags to be inserted/updated.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/TagUpdateRequest'
+
+          required: true
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: The Sigfox device's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/SigfoxDevice'
+        404:
+          description: The specified Sigfox device does not exist.
+
+  '/sigfox_devices/{device_id}/tags/{tag_name}':
+    delete:
+      summary: Delete Sigfox device Tag.
+      description: Deletes a tag from the specified Sigfox device.
+      operationId: deleteSigfoxDeviceTag
+      x-sam-operationId: deleteTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices delete-tag
+      parameters:
+        - name: device_id
+          in: path
+          description: device ID of the target Sigfox device.
+          required: true
+          type: string
+        - name: tag_name
+          in: path
+          description: Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)
+          type: string
+          required: true
+      tags:
+        - SigfoxDevice
+      responses:
+        204:
+          description: Deletion of specified tag complete.
+        404:
+          description: The specified Sigfox device or the tag does not exist.
 
 # Billing
   '/bills':
@@ -6842,6 +7181,8 @@ definitions:
         - ready
         - terminated
         - instock
+      lastSeen:
+        "$ref": "#/definitions/LastSeen"
       tags:
         type: object
         additionalProperties:
@@ -6913,6 +7254,55 @@ definitions:
     properties:
       networkSetId:
         type: string
+
+# SigfoxData
+  SigfoxData:
+    properties:
+      data:
+        type: string
+
+# SigfoxDevice
+  SigfoxDevice:
+    type: object
+    properties:
+      deviceId:
+        type: string
+      operatorId:
+        type: string
+      groupId:
+        type: string
+      lastModifiedTime:
+        type: string
+        format: date-time
+      terminationEnabled:
+        type: boolean
+        default: false
+      status:
+        type: string
+        enum:
+        - active
+        - ready
+        - terminated
+        - instock
+      lastSeen:
+        "$ref": "#/definitions/LastSeen"
+      tags:
+        type: object
+        additionalProperties:
+          type: string
+
+  LastSeen:
+    type: object
+    properties:
+      time:
+        type: string
+        format: date-time
+      snr:
+        type: integer
+        format: int32
+      rssi:
+        type: integer
+        format: int32
 
   UpdatePermissionRequest:
     type: object

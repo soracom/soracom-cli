@@ -29,6 +29,7 @@ Available Commands:
   products           商品一覧を取得します。
   roles              ロールに関する操作を行います。
   shipping-addresses 出荷先情報に関する操作を行います。
+  sigfox-devices     Sigfox デバイスに関する操作を行います。
   stats              統計情報に関する操作を行います。
   subscribers        サブスクライバー (SIM) に関する操作を行います。
   unconfigure        コマンド実行環境（プロファイル）を削除します。

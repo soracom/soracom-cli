@@ -29,6 +29,7 @@ Available Commands:
   products           List products.
   roles              List, create, update or delete roles.
   shipping-addresses List, create, update or delete shipping addresses.
+  sigfox-devices     Manage Sigfox devices.
   stats              Show or export statistics.
   subscribers        Manage subscribers.
   unconfigure        Remove configurations.

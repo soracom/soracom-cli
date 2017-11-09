@@ -94,6 +94,9 @@ cli:
   shipping-addresses:
     summary: 出荷先情報に関する操作を行います。
     description: 出荷先情報に関する操作を行います。
+  sigfox-devices:
+    summary: Sigfox デバイスに関する操作を行います。
+    description: Sigfox デバイスに関する操作を行います。
   stats:
     summary: 統計情報に関する操作を行います。
     description: 統計情報に関する操作を行います。

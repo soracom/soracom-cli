@@ -91,6 +91,9 @@ cli:
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.
+  sigfox-devices:
+    summary: Manage Sigfox devices.
+    description: Manage Sigfox devices.
   shipping-addresses:
     summary: List, create, update or delete shipping addresses.
     description: List, create, update or delete shipping addresses.
