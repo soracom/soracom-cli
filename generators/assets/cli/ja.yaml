@@ -17,7 +17,7 @@ cli:
     profile:
       permission_is_too_open: "認証情報ファイル %s へのアクセス権が十分に絞り込まれていません。\n認証情報ファイルへは、soracom コマンドを実行しているユーザーのみがアクセス可能なように設定する必要があります。"
       prompt: "--- SORACOM CLI セットアップ ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
-      coverage_type: 
+      coverage_type:
         prompt: "\n\nカバレッジタイプを選択してください。\n\n1. Global\n2. Japan\n\n"
         select: "選択してください (1-2) > "
       auth:
@@ -33,7 +33,7 @@ cli:
   credentials:
     summary: 認証情報に関する操作を行います。
     description: 認証情報に関する操作を行います。
-  data: 
+  data:
     summary: SIM からアップロードされて格納されているデータを取得します。
     description: SIM からアップロードされて格納されているデータを取得します。
   devices:
@@ -131,3 +131,6 @@ cli:
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。
+  query:
+    summary: 検索に関する操作を行います。
+    description: 検索に関する操作を行います。
