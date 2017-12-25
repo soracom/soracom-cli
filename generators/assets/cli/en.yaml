@@ -88,6 +88,9 @@ cli:
   products:
     summary: List products.
     description: List products.
+  query:
+    summary: Search resources.
+    description: Search resources.
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.
@@ -131,6 +134,3 @@ cli:
   vpg:
     summary: List, create, update or delete VPGs.
     description: List, create, update or delete VPGs.
-  query:
-    summary: Search resources
-    description: Search resources

@@ -88,6 +88,9 @@ cli:
   products:
     summary: 商品一覧を取得します。
     description: 商品一覧を取得します。
+  query:
+    summary: リソース（サブスクライバー）をいろいろな条件で検索します。
+    description: いろいろな条件を指定して、その条件に適合するリソース（サブスクライバー）を抽出します。
   roles:
     summary: ロールに関する操作を行います。
     description: ロールに関する操作を行います。
@@ -131,6 +134,3 @@ cli:
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。
-  query:
-    summary: 検索に関する操作を行います。
-    description: 検索に関する操作を行います。
