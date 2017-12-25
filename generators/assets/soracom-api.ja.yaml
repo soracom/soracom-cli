@@ -2718,6 +2718,38 @@ paths:
         '404':
           description: Object Instance が見つかりません
 
+# Query (search)
+  "/query/subscribers":
+    get:
+      summary: Subscriberをクエリに応じて検索します。
+      description: Subscriberをクエリに応じて検索します。部分一致したものを返却します。
+      parameters:
+      - name: name
+        description: 検索したいデバイスの名前
+      - name: group
+        description: 検索したいグループの名前
+      - name: imsi
+        description: 検索したいIMSI
+      - name: msisdn
+        description: 検索したいMSISDN
+      - name: iccid
+        description: 検索したいICCID
+      - name: serial_number
+        description: 検索したい製造番号
+      - name: tag
+        description: 検索したいタグ中の値の文字列
+      - name: limit
+        description: 取得する結果の上限数
+      - name: last_evaluated_key
+        description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+      - name: search_type
+        description: 検索の種別を指定します (AND検索もしくはOR検索)
+      responses:
+        '200':
+          description: 検索結果を返却します
+        '400':
+          description: 不正な検索クエリです
+
   "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
     post:
       summary: 指定されたデバイスの Resource の Observe を開始します。

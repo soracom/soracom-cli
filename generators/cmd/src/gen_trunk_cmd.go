@@ -271,6 +271,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			ParentCommandVariableName: "RootCmd",
 			FileName:                  "logs.go",
 		},
+		{
+			Use:                       "query",
+			Short:                     "cli.query.summary",
+			Long:                      "cli.query.description",
+			CommandVariableName:       "QueryCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "query.go",
+		},
 	}
 
 	for _, args := range argsSlice {

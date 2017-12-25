@@ -33,7 +33,7 @@ cli:
   credentials:
     summary: List, create, update or delete credentials sets.
     description: List, create, update or delete credentials sets.
-  data: 
+  data:
     summary: Get stored data from subscribers.
     description: Get stored data from subscribers.
   devices:
@@ -88,6 +88,9 @@ cli:
   products:
     summary: List products.
     description: List products.
+  query:
+    summary: Search resources.
+    description: Search resources.
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.

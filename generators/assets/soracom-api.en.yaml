@@ -1955,7 +1955,7 @@ paths:
           format: IMSI
         - name: smsForwardingRequest
           in: body
-          description: SMS forwarding request that contains message body and its encoding type. 
+          description: SMS forwarding request that contains message body and its encoding type.
           required: true
           schema:
             '$ref': '#/definitions/SmsForwardingRequest'
@@ -5745,6 +5745,86 @@ paths:
           description: Observation cancelled
         '404':
           description: Object instance is not found
+
+# Query (search)
+  "/query/subscribers":
+    get:
+      tags:
+        - Query
+      summary: Search subscribers by query terms
+      description: Search subscibers by query terms. It returns partial match results.
+      operationId: searchSubscribers
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - query subscribers
+      parameters:
+      - name: name
+        description: Name to search
+        in: query
+        required: false
+        type: string
+      - name: group
+        description: Group name to search
+        in: query
+        required: false
+        type: string
+      - name: imsi
+        description: IMSI to search
+        in: query
+        required: false
+        type: string
+      - name: msisdn
+        description: MSISDN to search
+        in: query
+        required: false
+        type: string
+      - name: iccid
+        description: ICCID to search
+        in: query
+        required: false
+        type: string
+      - name: serial_number
+        description: Serial number to search
+        in: query
+        required: false
+        type: string
+      - name: tag
+        description: String of tag values to search
+        in: query
+        required: false
+        type: string
+      - name: limit
+        description: The maximum number of item to retrieve
+        in: query
+        required: false
+        default: 10
+        maximum: 100
+        type: integer
+        format: int32
+      - name: last_evaluated_key
+        in: query
+        description: The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward.
+        required: false
+        type: string
+      - name: search_type
+        in: query
+        description: "Type of the search ('AND searching' or 'OR searching')"
+        required: false
+        type: string
+        default: and
+        enum: [and, or]
+      responses:
+        '200':
+          description: "Returns result of searching"
+          schema:
+            type: array
+            items: {$ref: '#/definitions/Subscriber'}
+        '400':
+          description: "Invalid search queries"
 
   "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
     post:

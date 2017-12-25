@@ -33,7 +33,7 @@ cli:
   credentials:
     summary: List, create, update or delete credentials sets.
     description: List, create, update or delete credentials sets.
-  data: 
+  data:
     summary: Get stored data from subscribers.
     description: Get stored data from subscribers.
   devices:
@@ -128,3 +128,6 @@ cli:
   vpg:
     summary: List, create, update or delete VPGs.
     description: List, create, update or delete VPGs.
+  query:
+    summary: Search resources
+    description: Search resources
