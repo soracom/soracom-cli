@@ -27,6 +27,7 @@ Available Commands:
   payment-methods    Create or update payment methods.
   payment-statements List or export payment statements.
   products           List products.
+  query              Search resources.
   roles              List, create, update or delete roles.
   shipping-addresses List, create, update or delete shipping addresses.
   sigfox-devices     Manage Sigfox devices.
