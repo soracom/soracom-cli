@@ -166,7 +166,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	if !params.noVersionCheck {
 		latestVersion := res.Header.Get("x-soracom-cli-version")
 		if isNewerThanCurrentVersion(latestVersion) {
-			fmt.Fprintf(os.Stderr, TRCLI("cli.new-version-is-released"), latestVersion, version)
+			printfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
 		}
 	}
 
@@ -244,20 +244,20 @@ func (ac *apiClient) reportWaitingBeforeRetrying(res *http.Response, err error, 
 	if !ac.verbose {
 		return
 	}
-	fmt.Fprintf(os.Stderr, "error detected. ")
+	printfStderr("error detected. ")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%+v\n", err)
+		printfStderr("%+v\n", err)
 	} else {
-		fmt.Fprintf(os.Stderr, "http status code == %d\n", res.StatusCode)
+		printfStderr("http status code == %d\n", res.StatusCode)
 	}
-	fmt.Fprintf(os.Stderr, "wait for %d seconds ...\n", wait)
+	printfStderr("wait for %d seconds ...\n", wait)
 }
 
 func (ac *apiClient) reportRetrying() {
 	if !ac.verbose {
 		return
 	}
-	fmt.Fprintf(os.Stderr, "trying it again\n")
+	printfStderr("trying it again\n")
 }
 
 func retryableError(httpStatus int) bool {
@@ -292,4 +292,11 @@ func dumpHTTPResponse(resp *http.Response) {
 		return
 	}
 	fmt.Println(string(dump))
+}
+
+func printfStderr(format string, args ...interface{}) {
+	_, err := fmt.Fprintf(os.Stderr, format, args...)
+	if err != nil {
+		fmt.Printf("err: %+v\n", err)
+	}
 }

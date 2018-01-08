@@ -8,10 +8,10 @@
   revision = "a423b25ba3ef3afa637b85a6222ccf2abffd01c6"
 
 [[projects]]
+  branch = "master"
   name = "github.com/elazarl/goproxy"
   packages = ["."]
-  revision = "0a5b8bdb09049ae4ae68e75437ded0b7a2e324e3"
-  version = "v1.0"
+  revision = "a96fa3a318260eab29abaf32f7128c9eb07fb073"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"

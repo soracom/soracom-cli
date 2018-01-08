@@ -30,7 +30,7 @@ git config --global http.https://gopkg.in.followRedirects true
     go get -u github.com/inconshreveable/mousetrap # required by spf13/cobra (only for windows env)
     go get -u github.com/jteeuwen/go-bindata/...
     go get -u github.com/laher/goxc
-    go get -u github.com/GoASTScanner/gas
+    go get -u github.com/GoASTScanner/gas/cmd/gas
     go get -u github.com/elazarl/goproxy
 }
 

@@ -103,7 +103,7 @@ func loadProfile(profileName string) (*profile, error) {
 			return nil, errors.New(msg)
 		}
 		// only warn on windows
-		fmt.Fprintf(os.Stderr, "WARN: "+msg+"\n")
+		printfStderr("WARN: " + msg + "\n")
 	}
 
 	b, err := ioutil.ReadFile(path)
@@ -143,7 +143,10 @@ func saveProfile(profileName string, prof *profile) error {
 		// prompt if overwrites or not when already exist
 		fmt.Printf(TRCLI("cli.configure.profile.overwrite"), profileName)
 		var s string
-		fmt.Scanf("%s\n", &s)
+		_, err := fmt.Scanf("%s\n", &s)
+		if err != nil {
+			return err
+		}
 		if s != "" && strings.ToLower(s) != "y" {
 			return errors.New("abort")
 		}
@@ -175,7 +178,10 @@ func saveProfile(profileName string, prof *profile) error {
 func confirmDeleteProfile(profileName string) bool {
 	fmt.Printf(TRCLI("cli.unconfigure.prompt"), profileName)
 	var s string
-	fmt.Scanf("%s\n", &s)
+	_, err := fmt.Scanf("%s\n", &s)
+	if err != nil {
+		return false
+	}
 	if s != "" && strings.ToLower(s) == "y" {
 		return true
 	}
@@ -237,7 +243,10 @@ func collectCoverageType() (string, error) {
 	var i int
 	for {
 		fmt.Print(TRCLI("cli.configure.profile.coverage_type.select"))
-		fmt.Scanf("%d\n", &i)
+		_, err := fmt.Scanf("%d\n", &i)
+		if err != nil {
+			return "", err
+		}
 		if i >= 1 && i <= 2 {
 			break
 		}
@@ -258,7 +267,10 @@ func collectAuthInfo() (*authInfo, error) {
 	var i int
 	for {
 		fmt.Print(TRCLI("cli.configure.profile.auth.select"))
-		fmt.Scanf("%d\n", &i)
+		_, err := fmt.Scanf("%d\n", &i)
+		if err != nil {
+			return nil, err
+		}
 		if i >= 1 && i <= 3 {
 			break
 		}
@@ -268,8 +280,11 @@ func collectAuthInfo() (*authInfo, error) {
 	case 1:
 		var authKeyID, authKey string
 		fmt.Print("authKeyId: ")
-		fmt.Scanf("%s\n", &authKeyID)
-		authKey, err := readPassword("authKey: ")
+		_, err := fmt.Scanf("%s\n", &authKeyID)
+		if err != nil {
+			return nil, err
+		}
+		authKey, err = readPassword("authKey: ")
 		if err != nil {
 			return nil, err
 		}
@@ -277,7 +292,10 @@ func collectAuthInfo() (*authInfo, error) {
 	case 2:
 		var email string
 		fmt.Print("email: ")
-		fmt.Scanf("%s\n", &email)
+		_, err := fmt.Scanf("%s\n", &email)
+		if err != nil {
+			return nil, err
+		}
 		password, err := readPassword("password: ")
 		if err != nil {
 			return nil, err
@@ -287,9 +305,15 @@ func collectAuthInfo() (*authInfo, error) {
 	case 3:
 		var operatorID, username string
 		fmt.Print("Operator ID (OP00...): ")
-		fmt.Scanf("%s\n", &operatorID)
+		_, err := fmt.Scanf("%s\n", &operatorID)
+		if err != nil {
+			return nil, err
+		}
 		fmt.Print("username: ")
-		fmt.Scanf("%s\n", &username)
+		_, err = fmt.Scanf("%s\n", &username)
+		if err != nil {
+			return nil, err
+		}
 		password, err := readPassword("password: ")
 		if err != nil {
 			return nil, err

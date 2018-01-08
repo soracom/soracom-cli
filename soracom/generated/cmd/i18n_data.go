@@ -88,7 +88,7 @@ func GeneratorsAssetsSoracomApiEnYaml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../generators/assets/soracom-api.en.yaml", size: 222804, mode: os.FileMode(420), modTime: time.Unix(1514184159, 0)}
+	info := bindataFileInfo{name: "../generators/assets/soracom-api.en.yaml", size: 222804, mode: os.FileMode(420), modTime: time.Unix(1515393982, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -108,7 +108,7 @@ func GeneratorsAssetsSoracomApiJaYaml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../generators/assets/soracom-api.ja.yaml", size: 112755, mode: os.FileMode(420), modTime: time.Unix(1514184159, 0)}
+	info := bindataFileInfo{name: "../generators/assets/soracom-api.ja.yaml", size: 112755, mode: os.FileMode(420), modTime: time.Unix(1514186848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -148,7 +148,7 @@ func GeneratorsAssetsCliEnYaml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../generators/assets/cli/en.yaml", size: 5803, mode: os.FileMode(420), modTime: time.Unix(1514184525, 0)}
+	info := bindataFileInfo{name: "../generators/assets/cli/en.yaml", size: 5803, mode: os.FileMode(420), modTime: time.Unix(1514186848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -168,7 +168,7 @@ func GeneratorsAssetsCliJaYaml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../generators/assets/cli/ja.yaml", size: 8680, mode: os.FileMode(420), modTime: time.Unix(1514184657, 0)}
+	info := bindataFileInfo{name: "../generators/assets/cli/ja.yaml", size: 8680, mode: os.FileMode(420), modTime: time.Unix(1514186848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -188,7 +188,7 @@ func GeneratorsAssetsCliZhYaml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "../generators/assets/cli/zh.yaml", size: 5707, mode: os.FileMode(420), modTime: time.Unix(1514184159, 0)}
+	info := bindataFileInfo{name: "../generators/assets/cli/zh.yaml", size: 5707, mode: os.FileMode(420), modTime: time.Unix(1514186848, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

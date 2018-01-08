@@ -22,7 +22,6 @@ var ConfigureGetCmd = &cobra.Command{
 			return err
 		}
 
-		prettyPrintObjectAsJSON(p)
-		return nil
+		return prettyPrintObjectAsJSON(p)
 	},
 }

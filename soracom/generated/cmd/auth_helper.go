@@ -3,8 +3,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -33,8 +31,8 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 
 	profile, err := getProfile()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "unable to load the profile.")
-		fmt.Fprintln(os.Stderr, "run `soracom configure` first.")
+		printfStderr("unable to load the profile.\n")
+		printfStderr("run `soracom configure` first.\n")
 		return err
 	}
 
