@@ -57,6 +57,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			BasePath:                  apiDef.BasePath,
 			Path:                      m.Path,
 			StringFlags:               getStringFlags(m.Parameters, apiDef.StructDefs),
+			StringSliceFlags:          getStringSliceFlags(m.Parameters, apiDef.StructDefs),
 			IntegerFlags:              getIntegerFlags(m.Parameters, apiDef.StructDefs),
 			FloatFlags:                getFloatFlags(m.Parameters, apiDef.StructDefs),
 			BoolFlags:                 getBoolFlags(m.Parameters, apiDef.StructDefs),
@@ -157,7 +158,35 @@ func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.Struct
 			}
 			result = append(result, s...)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported", param.In)
+			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
+		}
+	}
+
+	sort.Sort(stringFlagsByName(result))
+	return result
+}
+
+func getStringSliceFlags(parameters []lib.APIParam, definitions map[string]lib.StructDef) []stringFlag {
+	result := []stringFlag{}
+	for _, param := range parameters {
+		switch param.In {
+		case "query":
+			if param.Type != "array" || param.Items.Type != "string" {
+				continue
+			}
+			var f stringFlag
+			f.VarName = lib.TitleCase(param.Name)
+			f.LongOption = lib.OptionCase(param.Name)
+			f.DefaultValue = ""
+			f.ShortHelp = trimTemplate(param.Description)
+			f.Name = param.Name
+			f.In = param.In
+			f.Required = param.Required
+			result = append(result, f)
+		case "path", "body":
+			continue
+		default:
+			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
 		}
 	}
 
@@ -212,7 +241,7 @@ func getIntegerFlags(parameters []lib.APIParam, definitions map[string]lib.Struc
 			}
 			result = append(result, s...)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported", param.In)
+			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
 		}
 	}
 
@@ -268,7 +297,7 @@ func getFloatFlags(parameters []lib.APIParam, definitions map[string]lib.StructD
 			}
 			result = append(result, s...)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported", param.In)
+			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
 		}
 	}
 
@@ -324,7 +353,7 @@ func getBoolFlags(parameters []lib.APIParam, definitions map[string]lib.StructDe
 			}
 			result = append(result, s...)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported", param.In)
+			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
 		}
 	}
 

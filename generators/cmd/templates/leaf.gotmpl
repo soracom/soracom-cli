@@ -19,6 +19,10 @@ import (
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} string
 {{end}}
+{{range .StringSliceFlags}}
+// {{$prefix}}{{.VarName}} holds multiple values of '{{.Name}}' option
+var {{$prefix}}{{.VarName}} []string
+{{end}}
 {{range .IntegerFlags}}
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} int64
@@ -39,6 +43,9 @@ var {{$prefix}}Body string
 func init() {
 {{- range .StringFlags}}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
+{{end}}
+{{- range .StringSliceFlags}}
+  {{$cmdvar}}.Flags().StringSliceVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", []string{}, TRAPI("{{.ShortHelp}}"))
 {{end}}
 
 {{- range .IntegerFlags}}
@@ -149,6 +156,15 @@ func buildQueryFor{{$suffix}}() string {
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != "{{.DefaultValue}}" {
     result = append(result, sprintf("%s=%s", "{{.Name}}", {{$prefix}}{{.VarName}}))
+  }
+  {{end}}
+  {{end}}
+  {{range .StringSliceFlags}}
+  {{if eq .In "query"}}
+  for _, s := range {{$prefix}}{{.VarName}} {
+    if s != "{{.DefaultValue}}" {
+      result = append(result, sprintf("%s=%s", "{{.Name}}", s))
+    }
   }
   {{end}}
   {{end}}

@@ -114,6 +114,7 @@ type commandArgs struct {
 	Path                      string
 	ContentType               string
 	StringFlags               []stringFlag
+	StringSliceFlags          []stringFlag
 	IntegerFlags              []integerFlag
 	FloatFlags                []floatFlag
 	BoolFlags                 []boolFlag

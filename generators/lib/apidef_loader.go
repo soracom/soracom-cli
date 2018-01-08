@@ -35,13 +35,14 @@ type APIMethod struct {
 
 // APIParam holds information about an API parameter
 type APIParam struct {
-	Name        string         `yaml:"name"`
-	In          string         `yaml:"in"`
-	Required    bool           `yaml:"required"`
-	Description string         `yaml:"description"`
-	Type        string         `yaml:"type"`
-	Enum        []string       `yaml:"enum"`
-	Schema      APIParamSchema `yaml:"schema"`
+	Name        string             `yaml:"name"`
+	In          string             `yaml:"in"`
+	Required    bool               `yaml:"required"`
+	Description string             `yaml:"description"`
+	Type        string             `yaml:"type"`
+	Enum        []string           `yaml:"enum"`
+	Schema      APIParamSchema     `yaml:"schema"`
+	Items       APIParamArrayItems `yaml:"items"`
 }
 
 // APIParamSchema holds information about a Schema in an API parameter
@@ -49,6 +50,12 @@ type APIParamSchema struct {
 	Type  string          `yaml:"type"`
 	Items *APIParamSchema `yaml:"items"`
 	Ref   string          `yaml:"$ref"`
+}
+
+// APIParamArrayItems holds information about array type of parameters
+type APIParamArrayItems struct {
+	Type   string `yaml:"type"`
+	Format string `yaml:"format"`
 }
 
 // APIResponse holds information about an API response
