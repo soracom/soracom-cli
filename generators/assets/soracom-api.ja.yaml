@@ -1497,6 +1497,19 @@ paths:
       responses:
         200:
           description: データエントリのリスト
+    post:
+      summary: Send data to a Sigfox device.
+      description: 指定したデバイスにデータを送信する。データはサーバに保持され、次に当該デバイスがデータ送信リクエストを行った際に送信される。未送信のデータがサーバにあった場合には、最新のデータで上書きされる。
+      parameters:
+        - name: device_id
+          description: 送信先デバイスのID
+        - name: data
+          description: 16進数でエンコードされたバイナリデータの文字列。バイナリデータのサイズは8 octets（16進数エンコードされた文字列で16文字）である必要がある。
+      responses:
+        204:
+          description: データがサーバにセットされ、対象のデバイスによる取得待ち状態になったことを示す。
+        404:
+          description: 指定されたSigfoxデバイスが存在しない。
 
   '/sigfox_devices/{device_id}/terminate':
     post:
@@ -2680,76 +2693,6 @@ paths:
         '404':
           description: Resourceが見つかりません
 
-  "/v1/devices/{deviceId}/{object}/{instance}/observe":
-    post:
-      summary: 指定された Object Instance 以下の Resource の Observe を開始します。
-      description: 指定された Object Instance 以下の Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。
-      parameters:
-      - name: deviceId
-        description: 対象となるデバイス
-      - name: object
-        description: Object ID
-      - name: instance
-        description: Instance ID
-      - name: model
-        description: モデル情報を含めるかどうか
-      responses:
-        '200':
-          description: Object Instance 下の Resource の Observe を開始しました
-        '400':
-          description: Object Instance は Read 操作をサポートしていません
-        '404':
-          description: Resourceが見つかりません
-
-  "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
-    post:
-      summary: Object Instance 下の Resource の Observe を停止します。
-      description: Object Instance 下の Resource の Observe を停止します。
-      parameters:
-      - name: deviceId
-        description: 対象となるデバイス
-      - name: object
-        description: Object ID
-      - name: instance
-        description: Instance ID
-      responses:
-        '204':
-          description: Observe を停止しました
-        '404':
-          description: Object Instance が見つかりません
-
-# Query (search)
-  "/query/subscribers":
-    get:
-      summary: Subscriberをクエリに応じて検索します。
-      description: Subscriberをクエリに応じて検索します。部分一致したものを返却します。
-      parameters:
-      - name: name
-        description: 検索したいデバイスの名前
-      - name: group
-        description: 検索したいグループの名前
-      - name: imsi
-        description: 検索したいIMSI
-      - name: msisdn
-        description: 検索したいMSISDN
-      - name: iccid
-        description: 検索したいICCID
-      - name: serial_number
-        description: 検索したい製造番号
-      - name: tag
-        description: 検索したいタグ中の値の文字列
-      - name: limit
-        description: 取得する結果の上限数
-      - name: last_evaluated_key
-        description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
-      - name: search_type
-        description: 検索の種別を指定します (AND検索もしくはOR検索)
-      responses:
-        '200':
-          description: 検索結果を返却します
-        '400':
-          description: 不正な検索クエリです
-
   "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
     post:
       summary: 指定されたデバイスの Resource の Observe を開始します。
@@ -2791,6 +2734,38 @@ paths:
           description: Observe を停止しました
         '404':
           description: Resourceが見つかりません
+
+# Query (search)
+  "/query/subscribers":
+    get:
+      summary: Subscriberをクエリに応じて検索します。
+      description: Subscriberをクエリに応じて検索します。部分一致したものを返却します。このAPI権限が付与された場合、すべてのSIMに対してgroupも含めた検索/一覧取得を行える権限が与えられます。
+      parameters:
+      - name: name
+        description: 検索したいデバイスの名前
+      - name: group
+        description: 検索したいグループの名前
+      - name: imsi
+        description: 検索したいIMSI
+      - name: msisdn
+        description: 検索したいMSISDN
+      - name: iccid
+        description: 検索したいICCID
+      - name: serial_number
+        description: 検索したい製造番号
+      - name: tag
+        description: 検索したいタグ中の値の文字列
+      - name: limit
+        description: 取得する結果の上限数
+      - name: last_evaluated_key
+        description: 現ページで取得した最後のSubscriberのIMSI。このパラメータを指定することで次のSubscriber以降のリストを取得できる。
+      - name: search_type
+        description: 検索の種別を指定します (AND検索もしくはOR検索)
+      responses:
+        '200':
+          description: 検索結果を返却します
+        '400':
+          description: 不正な検索クエリです
 
 definitions:
 

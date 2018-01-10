@@ -7,54 +7,54 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// QuerySubscribersCmdGroup holds value of 'group' option
-var QuerySubscribersCmdGroup string
-
-// QuerySubscribersCmdIccid holds value of 'iccid' option
-var QuerySubscribersCmdIccid string
-
-// QuerySubscribersCmdImsi holds value of 'imsi' option
-var QuerySubscribersCmdImsi string
-
 // QuerySubscribersCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var QuerySubscribersCmdLastEvaluatedKey string
-
-// QuerySubscribersCmdMsisdn holds value of 'msisdn' option
-var QuerySubscribersCmdMsisdn string
-
-// QuerySubscribersCmdName holds value of 'name' option
-var QuerySubscribersCmdName string
 
 // QuerySubscribersCmdSearchType holds value of 'search_type' option
 var QuerySubscribersCmdSearchType string
 
-// QuerySubscribersCmdSerialNumber holds value of 'serial_number' option
-var QuerySubscribersCmdSerialNumber string
+// QuerySubscribersCmdGroup holds multiple values of 'group' option
+var QuerySubscribersCmdGroup []string
 
-// QuerySubscribersCmdTag holds value of 'tag' option
-var QuerySubscribersCmdTag string
+// QuerySubscribersCmdIccid holds multiple values of 'iccid' option
+var QuerySubscribersCmdIccid []string
+
+// QuerySubscribersCmdImsi holds multiple values of 'imsi' option
+var QuerySubscribersCmdImsi []string
+
+// QuerySubscribersCmdMsisdn holds multiple values of 'msisdn' option
+var QuerySubscribersCmdMsisdn []string
+
+// QuerySubscribersCmdName holds multiple values of 'name' option
+var QuerySubscribersCmdName []string
+
+// QuerySubscribersCmdSerialNumber holds multiple values of 'serial_number' option
+var QuerySubscribersCmdSerialNumber []string
+
+// QuerySubscribersCmdTag holds multiple values of 'tag' option
+var QuerySubscribersCmdTag []string
 
 // QuerySubscribersCmdLimit holds value of 'limit' option
 var QuerySubscribersCmdLimit int64
 
 func init() {
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdGroup, "group", "", TRAPI("Group name to search"))
-
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdIccid, "iccid", "", TRAPI("ICCID to search"))
-
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdImsi, "imsi", "", TRAPI("IMSI to search"))
-
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
-
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdMsisdn, "msisdn", "", TRAPI("MSISDN to search"))
-
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdName, "name", "", TRAPI("Name to search"))
 
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
 
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSerialNumber, "serial-number", "", TRAPI("Serial number to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdGroup, "group", []string{}, TRAPI("Group name to search"))
 
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdTag, "tag", "", TRAPI("String of tag values to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdIccid, "iccid", []string{}, TRAPI("ICCID to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdImsi, "imsi", []string{}, TRAPI("IMSI to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdName, "name", []string{}, TRAPI("Name to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
 	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
 
@@ -119,40 +119,54 @@ func buildPathForQuerySubscribersCmd(path string) string {
 func buildQueryForQuerySubscribersCmd() string {
 	result := []string{}
 
-	if QuerySubscribersCmdGroup != "" {
-		result = append(result, sprintf("%s=%s", "group", QuerySubscribersCmdGroup))
-	}
-
-	if QuerySubscribersCmdIccid != "" {
-		result = append(result, sprintf("%s=%s", "iccid", QuerySubscribersCmdIccid))
-	}
-
-	if QuerySubscribersCmdImsi != "" {
-		result = append(result, sprintf("%s=%s", "imsi", QuerySubscribersCmdImsi))
-	}
-
 	if QuerySubscribersCmdLastEvaluatedKey != "" {
 		result = append(result, sprintf("%s=%s", "last_evaluated_key", QuerySubscribersCmdLastEvaluatedKey))
-	}
-
-	if QuerySubscribersCmdMsisdn != "" {
-		result = append(result, sprintf("%s=%s", "msisdn", QuerySubscribersCmdMsisdn))
-	}
-
-	if QuerySubscribersCmdName != "" {
-		result = append(result, sprintf("%s=%s", "name", QuerySubscribersCmdName))
 	}
 
 	if QuerySubscribersCmdSearchType != "" {
 		result = append(result, sprintf("%s=%s", "search_type", QuerySubscribersCmdSearchType))
 	}
 
-	if QuerySubscribersCmdSerialNumber != "" {
-		result = append(result, sprintf("%s=%s", "serial_number", QuerySubscribersCmdSerialNumber))
+	for _, s := range QuerySubscribersCmdGroup {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "group", s))
+		}
 	}
 
-	if QuerySubscribersCmdTag != "" {
-		result = append(result, sprintf("%s=%s", "tag", QuerySubscribersCmdTag))
+	for _, s := range QuerySubscribersCmdIccid {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "iccid", s))
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdImsi {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "imsi", s))
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdMsisdn {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "msisdn", s))
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdName {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "name", s))
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdSerialNumber {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "serial_number", s))
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdTag {
+		if s != "" {
+			result = append(result, sprintf("%s=%s", "tag", s))
+		}
 	}
 
 	if QuerySubscribersCmdLimit != 0 {

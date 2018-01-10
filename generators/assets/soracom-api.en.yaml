@@ -3093,6 +3093,34 @@ paths:
             type: array
             items:
              '$ref': '#/definitions/DataEntry'
+    post:
+      summary: Send data to a Sigfox device.
+      description: Sends data to the specified Sigfox device. The data will be stored until the device sends a next uplink message. If another message destined for the same Sigfox device ID is already waiting to be sent, the existing message will be discarded, and the new message will be sent instead.
+      operationId: sendDataToSigfoxDevice
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices send-data
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of the recipient device.
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Binary data encoded as a hexadecimal string. Length of original binary data must be 8 octets (16 characters when encoded as a hexadecimal string).
+          schema:
+            '$ref': '#/definitions/SigfoxData'
+          required: true
+      tags:
+        - SigfoxDevice
+      responses:
+        204:
+          description: Data has been received by server and waiting for the recipient device to retrieve.
+        404:
+          description: No such device found.
 
   '/sigfox_devices/{device_id}/terminate':
     post:
@@ -5678,153 +5706,6 @@ paths:
           description: Resource is not executable
         '404':
           description: Resource is not found
-  "/v1/devices/{deviceId}/{object}/{instance}/observe":
-    post:
-      tags:
-      - Device
-      summary: Triggers observation of resources under a specified object instance of a device
-      description: Triggers observation of resources under a specified object instance of a device
-      operationId: observeDeviceResources
-      parameters:
-      - name: deviceId
-        in: path
-        description: Target device
-        required: true
-        type: string
-      - name: object
-        in: path
-        description: Object ID
-        required: true
-        type: string
-      - name: instance
-        in: path
-        description: Instance ID
-        required: true
-        type: string
-      - name: model
-        in: query
-        description: Whether or not to add model information
-        required: false
-        type: boolean
-        default: false
-      responses:
-        '200':
-          description: Observation started. Returns current snapshot of the specified object instance
-          schema:
-            "$ref": "#/definitions/ObjectInstance"
-        '400':
-          description: Object instance is not readable
-        '404':
-          description: Object instance is not found
-
-  "/v1/devices/{deviceId}/{object}/{instance}/unobserve":
-    post:
-      tags:
-      - Device
-      summary: Stops observation of an object instance of a device
-      description: Stops observation of an object instance of a device
-      operationId: unobserveDeviceResources
-      parameters:
-      - name: deviceId
-        in: path
-        description: Target device
-        required: true
-        type: string
-      - name: object
-        in: path
-        description: Object ID
-        required: true
-        type: string
-      - name: instance
-        in: path
-        description: Instance ID
-        required: true
-        type: string
-      responses:
-        '204':
-          description: Observation cancelled
-        '404':
-          description: Object instance is not found
-
-# Query (search)
-  "/query/subscribers":
-    get:
-      tags:
-        - Query
-      summary: Search subscribers by query terms
-      description: Search subscibers by query terms. It returns partial match results.
-      operationId: searchSubscribers
-      consumes: [application/json]
-      produces: [application/json;charset=UTF-8]
-      security:
-        - api_key: []
-        - api_token: []
-      x-soracom-cli:
-        - query subscribers
-      parameters:
-      - name: name
-        description: Name to search
-        in: query
-        required: false
-        type: string
-      - name: group
-        description: Group name to search
-        in: query
-        required: false
-        type: string
-      - name: imsi
-        description: IMSI to search
-        in: query
-        required: false
-        type: string
-      - name: msisdn
-        description: MSISDN to search
-        in: query
-        required: false
-        type: string
-      - name: iccid
-        description: ICCID to search
-        in: query
-        required: false
-        type: string
-      - name: serial_number
-        description: Serial number to search
-        in: query
-        required: false
-        type: string
-      - name: tag
-        description: String of tag values to search
-        in: query
-        required: false
-        type: string
-      - name: limit
-        description: The maximum number of item to retrieve
-        in: query
-        required: false
-        default: 10
-        maximum: 100
-        type: integer
-        format: int32
-      - name: last_evaluated_key
-        in: query
-        description: The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward.
-        required: false
-        type: string
-      - name: search_type
-        in: query
-        description: "Type of the search ('AND searching' or 'OR searching')"
-        required: false
-        type: string
-        default: and
-        enum: [and, or]
-      responses:
-        '200':
-          description: "Returns result of searching"
-          schema:
-            type: array
-            items: {$ref: '#/definitions/Subscriber'}
-        '400':
-          description: "Invalid search queries"
 
   "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
     post:
@@ -5913,6 +5794,100 @@ paths:
           description: Observation cancelled
         '404':
           description: Resource is not found
+
+# Query (search)
+  "/query/subscribers":
+    get:
+      tags:
+        - Query
+      summary: Search subscribers by query terms
+      description: Search subscibers by query terms. It returns partial match results.  When this API permission is allowed, it grants the authority to search and retrieve all SIMs that includes group information.
+      operationId: searchSubscribers
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - query subscribers
+      parameters:
+      - name: name
+        description: Name to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: group
+        description: Group name to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: imsi
+        description: IMSI to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: msisdn
+        description: MSISDN to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: iccid
+        description: ICCID to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: serial_number
+        description: Serial number to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: tag
+        description: String of tag values to search
+        in: query
+        required: false
+        type: array
+        items: {type: string}
+        collectionFormat: multi
+      - name: limit
+        description: The maximum number of item to retrieve
+        in: query
+        required: false
+        default: 10
+        maximum: 100
+        type: integer
+        format: int32
+      - name: last_evaluated_key
+        in: query
+        description: The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward.
+        required: false
+        type: string
+      - name: search_type
+        in: query
+        description: "Type of the search ('AND searching' or 'OR searching')"
+        required: false
+        type: string
+        default: and
+        enum: [and, or]
+      responses:
+        '200':
+          description: "Returns result of searching"
+          schema:
+            type: array
+            items: {$ref: '#/definitions/Subscriber'}
+        '400':
+          description: "Invalid search queries"
 
 definitions:
 
@@ -7512,6 +7487,7 @@ definitions:
       encodingType:
         type: integer
         description: Encoding type of the message body. `1` indicates the body is `DCS_7BIT` that only supports single byte characters. `2` is `DCS_UCS2` that supports multi-byte text. When omitted, it is treated as `2` (`DCS_UCS2`).
+        default: 2
       payload:
         type: string
 
