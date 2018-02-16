@@ -1,7 +1,7 @@
 package main
 
 // generate i18n data to be embedded to cli
-//go:generate go-bindata -o ./generated/cmd/i18n_data.go -pkg cmd ../generators/assets/ ../generators/assets/cli/
+//go:generate go-assets-builder --strip-prefix="/generators/assets" --output="./generated/cmd/i18n_data.go" --package="cmd" ../generators/assets
 
 import (
 	"os"

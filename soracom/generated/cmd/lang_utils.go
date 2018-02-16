@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -37,9 +38,15 @@ func getSelectedLanguage() string {
 func loadAPIResources() {
 	apiResources = make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		b, err := Asset("../generators/assets/soracom-api." + lang + ".yaml")
+		f, err := Assets.Open("/soracom-api." + lang + ".yaml")
 		if err != nil {
 			fmt.Printf("warning: unable to load API language resource '%s'\n", lang)
+			continue
+		}
+
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			fmt.Printf("warning: unable to read API language resource '%s'\n", lang)
 			continue
 		}
 
@@ -57,9 +64,15 @@ func loadAPIResources() {
 func loadCLIResources() {
 	cliResources = make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		b, err := Asset("../generators/assets/cli/" + lang + ".yaml")
+		f, err := Assets.Open("/cli/" + lang + ".yaml")
 		if err != nil {
 			fmt.Printf("warning: unable to load CLI language resource '%s'\n", lang)
+			continue
+		}
+
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			fmt.Printf("warning: unable to read API language resource '%s'\n", lang)
 			continue
 		}
 

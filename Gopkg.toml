@@ -26,8 +26,8 @@
   name = "github.com/bearmini/go-acl"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/elazarl/goproxy"
-  version = "1.0.0"
 
 [[constraint]]
   name = "github.com/kennygrant/sanitize"
