@@ -23,8 +23,13 @@ The `soracom` command:
 
   if you are a macOS user, you probably need to either:
   1. use `bash` version >= 4.0, or
-  2. use `brew install bash-completion` instead of using Xcode version of bash-completion
-
+  2. use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
+  
+  ```
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+  fi
+  ```
   otherwise you might be getting the error like the following:
   ```
   -bash: __ltrim_colon_completions: command not found
@@ -37,6 +42,7 @@ The `soracom` command:
 ```
 $ brew tap soracom/soracom-cli
 $ brew install soracom-cli
+$ brew install bash-completion
 ```
 
 ## In other cases
