@@ -23,13 +23,13 @@ soracom コマンドは以下のような特徴を備えています。
 
   macOS をお使いの場合、以下のいずれかの条件を満たす必要があるかもしれません：
   1. `bash` のバージョン 4.0 以降を使用する
-  2. `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）あなたの `.bash_profile` または `.profile` ファイルに以下を追加してください。
-  
-  ```
-  if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
-  fi
-  ```
+  2. `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
+    そしてこの場合、`.bash_profile` または `.profile` ファイルに以下を追加します:
+    ```
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+      . $(brew --prefix)/etc/bash_completion
+    fi
+    ```
 
   以下のようなエラーが起きた場合は上記いずれかをお試し下さい。
   ```
