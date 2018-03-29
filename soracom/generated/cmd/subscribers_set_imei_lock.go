@@ -103,6 +103,7 @@ func buildBodyForSubscribersSetImeiLockCmd() (string, error) {
 	if SubscribersSetImeiLockCmdBody != "" {
 		if strings.HasPrefix(SubscribersSetImeiLockCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersSetImeiLockCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -98,6 +98,7 @@ func buildBodyForSigfoxDevicesPutTagsCmd() (string, error) {
 	if SigfoxDevicesPutTagsCmdBody != "" {
 		if strings.HasPrefix(SigfoxDevicesPutTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(SigfoxDevicesPutTagsCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

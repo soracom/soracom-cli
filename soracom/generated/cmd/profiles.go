@@ -106,6 +106,7 @@ func loadProfile(profileName string) (*profile, error) {
 		printfStderr("WARN: " + msg + "\n")
 	}
 
+	// #nosec
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err

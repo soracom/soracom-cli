@@ -120,6 +120,7 @@ func buildBodyForAuthCmd() (string, error) {
 	if AuthCmdBody != "" {
 		if strings.HasPrefix(AuthCmdBody, "@") {
 			fname := strings.TrimPrefix(AuthCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

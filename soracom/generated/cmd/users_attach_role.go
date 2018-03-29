@@ -110,6 +110,7 @@ func buildBodyForUsersAttachRoleCmd() (string, error) {
 	if UsersAttachRoleCmdBody != "" {
 		if strings.HasPrefix(UsersAttachRoleCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersAttachRoleCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

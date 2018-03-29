@@ -148,6 +148,7 @@ func buildBodyForShippingAddressesCreateCmd() (string, error) {
 	if ShippingAddressesCreateCmdBody != "" {
 		if strings.HasPrefix(ShippingAddressesCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(ShippingAddressesCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

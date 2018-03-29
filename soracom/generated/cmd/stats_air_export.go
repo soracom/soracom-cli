@@ -122,6 +122,7 @@ func buildBodyForStatsAirExportCmd() (string, error) {
 	if StatsAirExportCmdBody != "" {
 		if strings.HasPrefix(StatsAirExportCmdBody, "@") {
 			fname := strings.TrimPrefix(StatsAirExportCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -108,6 +108,7 @@ func buildBodyForVpgRegisterGatePeerCmd() (string, error) {
 	if VpgRegisterGatePeerCmdBody != "" {
 		if strings.HasPrefix(VpgRegisterGatePeerCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgRegisterGatePeerCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

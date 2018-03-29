@@ -98,6 +98,7 @@ func buildBodyForLoraDevicesPutTagsCmd() (string, error) {
 	if LoraDevicesPutTagsCmdBody != "" {
 		if strings.HasPrefix(LoraDevicesPutTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraDevicesPutTagsCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -115,6 +115,7 @@ func buildBodyForRolesUpdateCmd() (string, error) {
 	if RolesUpdateCmdBody != "" {
 		if strings.HasPrefix(RolesUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(RolesUpdateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

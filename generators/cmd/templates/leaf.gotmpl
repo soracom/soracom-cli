@@ -201,6 +201,7 @@ func buildBodyFor{{$suffix}}() (string, error) {
   if {{$prefix}}Body != "" {
     if strings.HasPrefix({{$prefix}}Body, "@") {
       fname := strings.TrimPrefix({{$prefix}}Body, "@")
+      // #nosec
       bytes, err := ioutil.ReadFile(fname)
       if err != nil {
         return "", err

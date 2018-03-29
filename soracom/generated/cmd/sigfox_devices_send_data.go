@@ -103,6 +103,7 @@ func buildBodyForSigfoxDevicesSendDataCmd() (string, error) {
 	if SigfoxDevicesSendDataCmdBody != "" {
 		if strings.HasPrefix(SigfoxDevicesSendDataCmdBody, "@") {
 			fname := strings.TrimPrefix(SigfoxDevicesSendDataCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

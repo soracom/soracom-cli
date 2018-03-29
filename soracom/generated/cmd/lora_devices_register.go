@@ -98,6 +98,7 @@ func buildBodyForLoraDevicesRegisterCmd() (string, error) {
 	if LoraDevicesRegisterCmdBody != "" {
 		if strings.HasPrefix(LoraDevicesRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraDevicesRegisterCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

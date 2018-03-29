@@ -96,6 +96,7 @@ func buildBodyForOrdersCreateCmd() (string, error) {
 	if OrdersCreateCmdBody != "" {
 		if strings.HasPrefix(OrdersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(OrdersCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

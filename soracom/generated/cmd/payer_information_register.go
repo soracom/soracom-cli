@@ -106,6 +106,7 @@ func buildBodyForPayerInformationRegisterCmd() (string, error) {
 	if PayerInformationRegisterCmdBody != "" {
 		if strings.HasPrefix(PayerInformationRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(PayerInformationRegisterCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

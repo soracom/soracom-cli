@@ -113,6 +113,7 @@ func buildBodyForVpgSetRedirectionCmd() (string, error) {
 	if VpgSetRedirectionCmdBody != "" {
 		if strings.HasPrefix(VpgSetRedirectionCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgSetRedirectionCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

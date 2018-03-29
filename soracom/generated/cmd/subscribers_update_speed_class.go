@@ -103,6 +103,7 @@ func buildBodyForSubscribersUpdateSpeedClassCmd() (string, error) {
 	if SubscribersUpdateSpeedClassCmdBody != "" {
 		if strings.HasPrefix(SubscribersUpdateSpeedClassCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersUpdateSpeedClassCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

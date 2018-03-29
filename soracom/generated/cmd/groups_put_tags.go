@@ -98,6 +98,7 @@ func buildBodyForGroupsPutTagsCmd() (string, error) {
 	if GroupsPutTagsCmdBody != "" {
 		if strings.HasPrefix(GroupsPutTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(GroupsPutTagsCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

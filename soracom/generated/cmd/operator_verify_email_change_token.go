@@ -96,6 +96,7 @@ func buildBodyForOperatorVerifyEmailChangeTokenCmd() (string, error) {
 	if OperatorVerifyEmailChangeTokenCmdBody != "" {
 		if strings.HasPrefix(OperatorVerifyEmailChangeTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorVerifyEmailChangeTokenCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

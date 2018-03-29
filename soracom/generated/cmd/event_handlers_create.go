@@ -121,6 +121,7 @@ func buildBodyForEventHandlersCreateCmd() (string, error) {
 	if EventHandlersCreateCmdBody != "" {
 		if strings.HasPrefix(EventHandlersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(EventHandlersCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

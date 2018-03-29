@@ -122,6 +122,7 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
 	if StatsBeamExportCmdBody != "" {
 		if strings.HasPrefix(StatsBeamExportCmdBody, "@") {
 			fname := strings.TrimPrefix(StatsBeamExportCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

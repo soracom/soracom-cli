@@ -103,6 +103,7 @@ func buildBodyForLoraNetworkSetsAddPermissionCmd() (string, error) {
 	if LoraNetworkSetsAddPermissionCmdBody != "" {
 		if strings.HasPrefix(LoraNetworkSetsAddPermissionCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraNetworkSetsAddPermissionCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

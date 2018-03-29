@@ -106,6 +106,7 @@ func buildBodyForVpgCreateCmd() (string, error) {
 	if VpgCreateCmdBody != "" {
 		if strings.HasPrefix(VpgCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

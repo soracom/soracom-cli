@@ -108,6 +108,7 @@ func buildBodyForSubscribersRegisterCmd() (string, error) {
 	if SubscribersRegisterCmdBody != "" {
 		if strings.HasPrefix(SubscribersRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersRegisterCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

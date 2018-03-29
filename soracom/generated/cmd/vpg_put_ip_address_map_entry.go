@@ -108,6 +108,7 @@ func buildBodyForVpgPutIpAddressMapEntryCmd() (string, error) {
 	if VpgPutIpAddressMapEntryCmdBody != "" {
 		if strings.HasPrefix(VpgPutIpAddressMapEntryCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgPutIpAddressMapEntryCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

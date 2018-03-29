@@ -118,6 +118,7 @@ func buildBodyForVpgCreateMirroringPeerCmd() (string, error) {
 	if VpgCreateMirroringPeerCmdBody != "" {
 		if strings.HasPrefix(VpgCreateMirroringPeerCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgCreateMirroringPeerCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

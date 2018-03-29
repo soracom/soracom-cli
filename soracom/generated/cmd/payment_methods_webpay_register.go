@@ -116,6 +116,7 @@ func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
 	if PaymentMethodsWebpayRegisterCmdBody != "" {
 		if strings.HasPrefix(PaymentMethodsWebpayRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(PaymentMethodsWebpayRegisterCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

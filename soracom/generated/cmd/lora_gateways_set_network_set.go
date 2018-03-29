@@ -103,6 +103,7 @@ func buildBodyForLoraGatewaysSetNetworkSetCmd() (string, error) {
 	if LoraGatewaysSetNetworkSetCmdBody != "" {
 		if strings.HasPrefix(LoraGatewaysSetNetworkSetCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraGatewaysSetNetworkSetCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -103,6 +103,7 @@ func buildBodyForSubscribersSetGroupCmd() (string, error) {
 	if SubscribersSetGroupCmdBody != "" {
 		if strings.HasPrefix(SubscribersSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersSetGroupCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

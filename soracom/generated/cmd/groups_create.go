@@ -92,6 +92,7 @@ func buildBodyForGroupsCreateCmd() (string, error) {
 	if GroupsCreateCmdBody != "" {
 		if strings.HasPrefix(GroupsCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(GroupsCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

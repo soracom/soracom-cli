@@ -118,6 +118,7 @@ func buildBodyForSigfoxDevicesSetGroupCmd() (string, error) {
 	if SigfoxDevicesSetGroupCmdBody != "" {
 		if strings.HasPrefix(SigfoxDevicesSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(SigfoxDevicesSetGroupCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -118,6 +118,7 @@ func buildBodyForLoraDevicesSetGroupCmd() (string, error) {
 	if LoraDevicesSetGroupCmdBody != "" {
 		if strings.HasPrefix(LoraDevicesSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraDevicesSetGroupCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

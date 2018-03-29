@@ -110,6 +110,7 @@ func buildBodyForUsersUpdateCmd() (string, error) {
 	if UsersUpdateCmdBody != "" {
 		if strings.HasPrefix(UsersUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersUpdateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

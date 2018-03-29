@@ -119,6 +119,7 @@ func buildBodyForDevicesExecuteResourceCmd() (string, error) {
 	if DevicesExecuteResourceCmdBody != "" {
 		if strings.HasPrefix(DevicesExecuteResourceCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesExecuteResourceCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

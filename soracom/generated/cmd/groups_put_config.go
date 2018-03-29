@@ -105,6 +105,7 @@ func buildBodyForGroupsPutConfigCmd() (string, error) {
 	if GroupsPutConfigCmdBody != "" {
 		if strings.HasPrefix(GroupsPutConfigCmdBody, "@") {
 			fname := strings.TrimPrefix(GroupsPutConfigCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

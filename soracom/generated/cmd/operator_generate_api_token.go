@@ -103,6 +103,7 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
 	if OperatorGenerateApiTokenCmdBody != "" {
 		if strings.HasPrefix(OperatorGenerateApiTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorGenerateApiTokenCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

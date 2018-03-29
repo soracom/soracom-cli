@@ -115,6 +115,7 @@ func buildBodyForUsersPermissionsUpdateCmd() (string, error) {
 	if UsersPermissionsUpdateCmdBody != "" {
 		if strings.HasPrefix(UsersPermissionsUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPermissionsUpdateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

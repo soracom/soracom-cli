@@ -113,6 +113,7 @@ func buildBodyForVpgCreateVpcPeeringConnectionCmd() (string, error) {
 	if VpgCreateVpcPeeringConnectionCmdBody != "" {
 		if strings.HasPrefix(VpgCreateVpcPeeringConnectionCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgCreateVpcPeeringConnectionCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

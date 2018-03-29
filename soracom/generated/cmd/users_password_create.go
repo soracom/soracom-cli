@@ -110,6 +110,7 @@ func buildBodyForUsersPasswordCreateCmd() (string, error) {
 	if UsersPasswordCreateCmdBody != "" {
 		if strings.HasPrefix(UsersPasswordCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPasswordCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

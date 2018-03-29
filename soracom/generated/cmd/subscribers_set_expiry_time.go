@@ -108,6 +108,7 @@ func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
 	if SubscribersSetExpiryTimeCmdBody != "" {
 		if strings.HasPrefix(SubscribersSetExpiryTimeCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersSetExpiryTimeCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

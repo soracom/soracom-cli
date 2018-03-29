@@ -123,6 +123,7 @@ func copyPredefinedCommands(predefinedDir, outputDir string) error {
 	}
 
 	for _, path := range paths {
+		// #nosec
 		b, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err
@@ -144,6 +145,7 @@ func formatGeneratedFiles(outputDir string) error {
 	}
 	for _, path := range paths {
 		fmt.Printf("formatting %s\n", path)
+		// #nosec
 		b, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err

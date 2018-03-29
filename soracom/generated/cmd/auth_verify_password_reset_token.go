@@ -95,6 +95,7 @@ func buildBodyForAuthVerifyPasswordResetTokenCmd() (string, error) {
 	if AuthVerifyPasswordResetTokenCmdBody != "" {
 		if strings.HasPrefix(AuthVerifyPasswordResetTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(AuthVerifyPasswordResetTokenCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

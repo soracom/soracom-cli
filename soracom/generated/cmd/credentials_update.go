@@ -108,6 +108,7 @@ func buildBodyForCredentialsUpdateCmd() (string, error) {
 	if CredentialsUpdateCmdBody != "" {
 		if strings.HasPrefix(CredentialsUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(CredentialsUpdateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

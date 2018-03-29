@@ -171,6 +171,7 @@ func buildBodyForDevicesCreateCmd() (string, error) {
 	if DevicesCreateCmdBody != "" {
 		if strings.HasPrefix(DevicesCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

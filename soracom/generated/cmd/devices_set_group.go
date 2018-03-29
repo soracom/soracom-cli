@@ -98,6 +98,7 @@ func buildBodyForDevicesSetGroupCmd() (string, error) {
 	if DevicesSetGroupCmdBody != "" {
 		if strings.HasPrefix(DevicesSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesSetGroupCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

@@ -90,6 +90,7 @@ func buildBodyForOperatorVerifyCmd() (string, error) {
 	if OperatorVerifyCmdBody != "" {
 		if strings.HasPrefix(OperatorVerifyCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorVerifyCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

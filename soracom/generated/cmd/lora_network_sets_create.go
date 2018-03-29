@@ -111,6 +111,7 @@ func buildBodyForLoraNetworkSetsCreateCmd() (string, error) {
 	if LoraNetworkSetsCreateCmdBody != "" {
 		if strings.HasPrefix(LoraNetworkSetsCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraNetworkSetsCreateCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

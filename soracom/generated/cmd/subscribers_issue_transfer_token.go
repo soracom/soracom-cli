@@ -101,6 +101,7 @@ func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
 	if SubscribersIssueTransferTokenCmdBody != "" {
 		if strings.HasPrefix(SubscribersIssueTransferTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersIssueTransferTokenCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

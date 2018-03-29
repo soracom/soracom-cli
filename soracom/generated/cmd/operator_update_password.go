@@ -108,6 +108,7 @@ func buildBodyForOperatorUpdatePasswordCmd() (string, error) {
 	if OperatorUpdatePasswordCmdBody != "" {
 		if strings.HasPrefix(OperatorUpdatePasswordCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorUpdatePasswordCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

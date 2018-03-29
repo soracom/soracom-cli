@@ -108,6 +108,7 @@ func buildBodyForSubscribersSendSmsCmd() (string, error) {
 	if SubscribersSendSmsCmdBody != "" {
 		if strings.HasPrefix(SubscribersSendSmsCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersSendSmsCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err

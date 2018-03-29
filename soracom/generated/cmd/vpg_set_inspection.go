@@ -103,6 +103,7 @@ func buildBodyForVpgSetInspectionCmd() (string, error) {
 	if VpgSetInspectionCmdBody != "" {
 		if strings.HasPrefix(VpgSetInspectionCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgSetInspectionCmdBody, "@")
+			// #nosec
 			bytes, err := ioutil.ReadFile(fname)
 			if err != nil {
 				return "", err
