@@ -56,7 +56,7 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgPutIpAddressMapEntryCmdParams()
+		param, err := collectVpgPutIpAddressMapEntryCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 	},
 }
 
-func collectVpgPutIpAddressMapEntryCmdParams() (*apiParams, error) {
+func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgPutIpAddressMapEntryCmd()
 	if err != nil {

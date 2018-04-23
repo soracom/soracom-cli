@@ -121,7 +121,7 @@ var DevicesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesCreateCmdParams()
+		param, err := collectDevicesCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -140,7 +140,7 @@ var DevicesCreateCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesCreateCmdParams() (*apiParams, error) {
+func collectDevicesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForDevicesCreateCmd()
 	if err != nil {

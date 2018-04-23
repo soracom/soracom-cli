@@ -52,6 +52,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			CommandVariableName:       getCommandVariableName(commandName),
 			ParentCommandVariableName: getParentCommandVariableName(commandName),
 			RequireAuth:               m.Security != nil,
+			RequireOperatorID:         isOperatorIDRequired(m.Parameters),
 			BodyExists:                doesRequestBodyExist(m.Parameters),
 			Method:                    strings.ToUpper(m.Method),
 			BasePath:                  apiDef.BasePath,
@@ -164,6 +165,22 @@ func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.Struct
 
 	sort.Sort(stringFlagsByName(result))
 	return result
+}
+
+func isOperatorIDRequired(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		switch param.In {
+		case "path":
+			if param.Name != "operator_id" {
+				continue
+			}
+			if param.Type != "string" {
+				continue
+			}
+			return true
+		}
+	}
+	return false
 }
 
 func getStringSliceFlags(parameters []lib.APIParam, definitions map[string]lib.StructDef) []stringFlag {

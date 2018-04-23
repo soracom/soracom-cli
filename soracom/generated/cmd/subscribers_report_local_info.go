@@ -38,7 +38,7 @@ var SubscribersReportLocalInfoCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersReportLocalInfoCmdParams()
+		param, err := collectSubscribersReportLocalInfoCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersReportLocalInfoCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersReportLocalInfoCmdParams() (*apiParams, error) {
+func collectSubscribersReportLocalInfoCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

@@ -51,7 +51,7 @@ var SubscribersSetImeiLockCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSetImeiLockCmdParams()
+		param, err := collectSubscribersSetImeiLockCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var SubscribersSetImeiLockCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSetImeiLockCmdParams() (*apiParams, error) {
+func collectSubscribersSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersSetImeiLockCmd()
 	if err != nil {

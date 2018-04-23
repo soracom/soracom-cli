@@ -51,7 +51,7 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersUpdateSpeedClassCmdParams()
+		param, err := collectSubscribersUpdateSpeedClassCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersUpdateSpeedClassCmdParams() (*apiParams, error) {
+func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersUpdateSpeedClassCmd()
 	if err != nil {

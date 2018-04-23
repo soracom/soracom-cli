@@ -38,7 +38,7 @@ var SubscribersDeactivateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersDeactivateCmdParams()
+		param, err := collectSubscribersDeactivateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersDeactivateCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersDeactivateCmdParams() (*apiParams, error) {
+func collectSubscribersDeactivateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

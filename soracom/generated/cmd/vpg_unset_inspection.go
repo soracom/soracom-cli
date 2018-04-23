@@ -38,7 +38,7 @@ var VpgUnsetInspectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgUnsetInspectionCmdParams()
+		param, err := collectVpgUnsetInspectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgUnsetInspectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgUnsetInspectionCmdParams() (*apiParams, error) {
+func collectVpgUnsetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

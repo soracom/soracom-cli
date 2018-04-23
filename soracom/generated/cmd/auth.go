@@ -70,7 +70,7 @@ var AuthCmd = &cobra.Command{
 			ac.SetVerbose(true)
 		}
 
-		param, err := collectAuthCmdParams()
+		param, err := collectAuthCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -89,7 +89,7 @@ var AuthCmd = &cobra.Command{
 	},
 }
 
-func collectAuthCmdParams() (*apiParams, error) {
+func collectAuthCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForAuthCmd()
 	if err != nil {

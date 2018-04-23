@@ -51,7 +51,7 @@ var SigfoxDevicesSendDataCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesSendDataCmdParams()
+		param, err := collectSigfoxDevicesSendDataCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var SigfoxDevicesSendDataCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesSendDataCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSigfoxDevicesSendDataCmd()
 	if err != nil {

@@ -66,7 +66,7 @@ var LoraDevicesSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesSetGroupCmdParams()
+		param, err := collectLoraDevicesSetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ var LoraDevicesSetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesSetGroupCmdParams() (*apiParams, error) {
+func collectLoraDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraDevicesSetGroupCmd()
 	if err != nil {

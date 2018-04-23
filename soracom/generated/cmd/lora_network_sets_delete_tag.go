@@ -43,7 +43,7 @@ var LoraNetworkSetsDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraNetworkSetsDeleteTagCmdParams()
+		param, err := collectLoraNetworkSetsDeleteTagCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var LoraNetworkSetsDeleteTagCmd = &cobra.Command{
 	},
 }
 
-func collectLoraNetworkSetsDeleteTagCmdParams() (*apiParams, error) {
+func collectLoraNetworkSetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

@@ -43,7 +43,7 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectShippingAddressesDeleteCmdParams()
+		param, err := collectShippingAddressesDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectShippingAddressesDeleteCmdParams() (*apiParams, error) {
+func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if ShippingAddressesDeleteCmdOperatorId == "" {
+		ShippingAddressesDeleteCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "DELETE",

@@ -46,7 +46,7 @@ var GroupsPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectGroupsPutTagsCmdParams()
+		param, err := collectGroupsPutTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var GroupsPutTagsCmd = &cobra.Command{
 	},
 }
 
-func collectGroupsPutTagsCmdParams() (*apiParams, error) {
+func collectGroupsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForGroupsPutTagsCmd()
 	if err != nil {

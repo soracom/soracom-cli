@@ -43,7 +43,7 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgDeleteVpcPeeringConnectionCmdParams()
+		param, err := collectVpgDeleteVpcPeeringConnectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgDeleteVpcPeeringConnectionCmdParams() (*apiParams, error) {
+func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

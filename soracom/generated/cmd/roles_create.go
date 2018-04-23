@@ -61,7 +61,7 @@ var RolesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectRolesCreateCmdParams()
+		param, err := collectRolesCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,11 +80,15 @@ var RolesCreateCmd = &cobra.Command{
 	},
 }
 
-func collectRolesCreateCmdParams() (*apiParams, error) {
+func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForRolesCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if RolesCreateCmdOperatorId == "" {
+		RolesCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

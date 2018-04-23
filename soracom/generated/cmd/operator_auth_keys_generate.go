@@ -38,7 +38,7 @@ var OperatorAuthKeysGenerateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorAuthKeysGenerateCmdParams()
+		param, err := collectOperatorAuthKeysGenerateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,11 @@ var OperatorAuthKeysGenerateCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorAuthKeysGenerateCmdParams() (*apiParams, error) {
+func collectOperatorAuthKeysGenerateCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if OperatorAuthKeysGenerateCmdOperatorId == "" {
+		OperatorAuthKeysGenerateCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "POST",

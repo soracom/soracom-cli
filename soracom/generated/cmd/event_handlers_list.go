@@ -38,7 +38,7 @@ var EventHandlersListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectEventHandlersListCmdParams()
+		param, err := collectEventHandlersListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var EventHandlersListCmd = &cobra.Command{
 	},
 }
 
-func collectEventHandlersListCmdParams() (*apiParams, error) {
+func collectEventHandlersListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

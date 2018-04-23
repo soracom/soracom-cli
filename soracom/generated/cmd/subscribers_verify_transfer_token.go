@@ -46,7 +46,7 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersVerifyTransferTokenCmdParams()
+		param, err := collectSubscribersVerifyTransferTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersVerifyTransferTokenCmdParams() (*apiParams, error) {
+func collectSubscribersVerifyTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersVerifyTransferTokenCmd()
 	if err != nil {

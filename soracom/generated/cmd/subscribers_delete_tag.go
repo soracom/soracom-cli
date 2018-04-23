@@ -43,7 +43,7 @@ var SubscribersDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersDeleteTagCmdParams()
+		param, err := collectSubscribersDeleteTagCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var SubscribersDeleteTagCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersDeleteTagCmdParams() (*apiParams, error) {
+func collectSubscribersDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

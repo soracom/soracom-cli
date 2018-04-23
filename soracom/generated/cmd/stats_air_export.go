@@ -66,7 +66,7 @@ var StatsAirExportCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectStatsAirExportCmdParams()
+		param, err := collectStatsAirExportCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,11 +85,15 @@ var StatsAirExportCmd = &cobra.Command{
 	},
 }
 
-func collectStatsAirExportCmdParams() (*apiParams, error) {
+func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForStatsAirExportCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if StatsAirExportCmdOperatorId == "" {
+		StatsAirExportCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

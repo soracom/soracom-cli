@@ -61,7 +61,7 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersPasswordUpdateCmdParams()
+		param, err := collectUsersPasswordUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,11 +80,15 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectUsersPasswordUpdateCmdParams() (*apiParams, error) {
+func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersPasswordUpdateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersPasswordUpdateCmdOperatorId == "" {
+		UsersPasswordUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

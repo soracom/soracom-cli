@@ -61,7 +61,7 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgCreateVpcPeeringConnectionCmdParams()
+		param, err := collectVpgCreateVpcPeeringConnectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgCreateVpcPeeringConnectionCmdParams() (*apiParams, error) {
+func collectVpgCreateVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgCreateVpcPeeringConnectionCmd()
 	if err != nil {

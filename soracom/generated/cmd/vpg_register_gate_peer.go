@@ -56,7 +56,7 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgRegisterGatePeerCmdParams()
+		param, err := collectVpgRegisterGatePeerCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 	},
 }
 
-func collectVpgRegisterGatePeerCmdParams() (*apiParams, error) {
+func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgRegisterGatePeerCmd()
 	if err != nil {

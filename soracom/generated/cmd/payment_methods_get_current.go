@@ -34,7 +34,7 @@ var PaymentMethodsGetCurrentCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPaymentMethodsGetCurrentCmdParams()
+		param, err := collectPaymentMethodsGetCurrentCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var PaymentMethodsGetCurrentCmd = &cobra.Command{
 	},
 }
 
-func collectPaymentMethodsGetCurrentCmdParams() (*apiParams, error) {
+func collectPaymentMethodsGetCurrentCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

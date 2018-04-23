@@ -38,7 +38,7 @@ var LoraGatewaysGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysGetCmdParams()
+		param, err := collectLoraGatewaysGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraGatewaysGetCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysGetCmdParams() (*apiParams, error) {
+func collectLoraGatewaysGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

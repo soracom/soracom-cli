@@ -38,7 +38,7 @@ var VpgOpenGateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgOpenGateCmdParams()
+		param, err := collectVpgOpenGateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgOpenGateCmd = &cobra.Command{
 	},
 }
 
-func collectVpgOpenGateCmdParams() (*apiParams, error) {
+func collectVpgOpenGateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

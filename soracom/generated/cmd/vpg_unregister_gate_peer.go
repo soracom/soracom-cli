@@ -43,7 +43,7 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgUnregisterGatePeerCmdParams()
+		param, err := collectVpgUnregisterGatePeerCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 	},
 }
 
-func collectVpgUnregisterGatePeerCmdParams() (*apiParams, error) {
+func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

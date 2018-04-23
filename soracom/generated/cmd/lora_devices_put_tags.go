@@ -46,7 +46,7 @@ var LoraDevicesPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesPutTagsCmdParams()
+		param, err := collectLoraDevicesPutTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var LoraDevicesPutTagsCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesPutTagsCmdParams() (*apiParams, error) {
+func collectLoraDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraDevicesPutTagsCmd()
 	if err != nil {

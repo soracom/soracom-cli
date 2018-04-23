@@ -51,7 +51,7 @@ var SubscribersSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSetGroupCmdParams()
+		param, err := collectSubscribersSetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var SubscribersSetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSetGroupCmdParams() (*apiParams, error) {
+func collectSubscribersSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersSetGroupCmd()
 	if err != nil {

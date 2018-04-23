@@ -46,7 +46,7 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesRegisterCmdParams()
+		param, err := collectLoraDevicesRegisterCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesRegisterCmdParams() (*apiParams, error) {
+func collectLoraDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraDevicesRegisterCmd()
 	if err != nil {

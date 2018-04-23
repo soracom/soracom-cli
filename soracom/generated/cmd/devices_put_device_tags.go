@@ -38,7 +38,7 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesPutDeviceTagsCmdParams()
+		param, err := collectDevicesPutDeviceTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesPutDeviceTagsCmdParams() (*apiParams, error) {
+func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "PUT",

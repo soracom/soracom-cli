@@ -43,7 +43,7 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgDeleteIpAddressMapEntryCmdParams()
+		param, err := collectVpgDeleteIpAddressMapEntryCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 	},
 }
 
-func collectVpgDeleteIpAddressMapEntryCmdParams() (*apiParams, error) {
+func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

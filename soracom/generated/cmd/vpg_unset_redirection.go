@@ -38,7 +38,7 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgUnsetRedirectionCmdParams()
+		param, err := collectVpgUnsetRedirectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgUnsetRedirectionCmdParams() (*apiParams, error) {
+func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

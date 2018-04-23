@@ -43,7 +43,7 @@ var OperatorAuthKeysDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorAuthKeysDeleteCmdParams()
+		param, err := collectOperatorAuthKeysDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var OperatorAuthKeysDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorAuthKeysDeleteCmdParams() (*apiParams, error) {
+func collectOperatorAuthKeysDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if OperatorAuthKeysDeleteCmdOperatorId == "" {
+		OperatorAuthKeysDeleteCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "DELETE",

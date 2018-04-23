@@ -51,7 +51,7 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorGenerateApiTokenCmdParams()
+		param, err := collectOperatorGenerateApiTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,11 +70,15 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorGenerateApiTokenCmdParams() (*apiParams, error) {
+func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOperatorGenerateApiTokenCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if OperatorGenerateApiTokenCmdOperatorId == "" {
+		OperatorGenerateApiTokenCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

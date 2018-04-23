@@ -61,7 +61,7 @@ var DevicesPutResourceCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesPutResourceCmdParams()
+		param, err := collectDevicesPutResourceCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ var DevicesPutResourceCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesPutResourceCmdParams() (*apiParams, error) {
+func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForDevicesPutResourceCmd()
 	if err != nil {

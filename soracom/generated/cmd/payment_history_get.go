@@ -38,7 +38,7 @@ var PaymentHistoryGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPaymentHistoryGetCmdParams()
+		param, err := collectPaymentHistoryGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var PaymentHistoryGetCmd = &cobra.Command{
 	},
 }
 
-func collectPaymentHistoryGetCmdParams() (*apiParams, error) {
+func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

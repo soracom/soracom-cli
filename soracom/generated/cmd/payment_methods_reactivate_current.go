@@ -34,7 +34,7 @@ var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPaymentMethodsReactivateCurrentCmdParams()
+		param, err := collectPaymentMethodsReactivateCurrentCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 	},
 }
 
-func collectPaymentMethodsReactivateCurrentCmdParams() (*apiParams, error) {
+func collectPaymentMethodsReactivateCurrentCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

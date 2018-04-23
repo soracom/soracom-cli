@@ -53,7 +53,7 @@ var StatsBeamGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectStatsBeamGetCmdParams()
+		param, err := collectStatsBeamGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ var StatsBeamGetCmd = &cobra.Command{
 	},
 }
 
-func collectStatsBeamGetCmdParams() (*apiParams, error) {
+func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

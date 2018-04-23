@@ -38,7 +38,7 @@ var LoraGatewaysTerminateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysTerminateCmdParams()
+		param, err := collectLoraGatewaysTerminateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraGatewaysTerminateCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysTerminateCmdParams() (*apiParams, error) {
+func collectLoraGatewaysTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

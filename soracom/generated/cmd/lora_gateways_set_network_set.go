@@ -51,7 +51,7 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysSetNetworkSetCmdParams()
+		param, err := collectLoraGatewaysSetNetworkSetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysSetNetworkSetCmdParams() (*apiParams, error) {
+func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraGatewaysSetNetworkSetCmd()
 	if err != nil {

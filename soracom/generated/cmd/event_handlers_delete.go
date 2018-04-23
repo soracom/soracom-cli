@@ -38,7 +38,7 @@ var EventHandlersDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectEventHandlersDeleteCmdParams()
+		param, err := collectEventHandlersDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var EventHandlersDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectEventHandlersDeleteCmdParams() (*apiParams, error) {
+func collectEventHandlersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

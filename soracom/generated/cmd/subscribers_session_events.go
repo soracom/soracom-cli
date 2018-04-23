@@ -58,7 +58,7 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSessionEventsCmdParams()
+		param, err := collectSubscribersSessionEventsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSessionEventsCmdParams() (*apiParams, error) {
+func collectSubscribersSessionEventsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

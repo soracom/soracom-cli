@@ -58,7 +58,7 @@ var SigfoxDevicesListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesListCmdParams()
+		param, err := collectSigfoxDevicesListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ var SigfoxDevicesListCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesListCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

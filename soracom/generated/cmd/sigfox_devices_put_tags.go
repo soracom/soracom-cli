@@ -46,7 +46,7 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesPutTagsCmdParams()
+		param, err := collectSigfoxDevicesPutTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesPutTagsCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSigfoxDevicesPutTagsCmd()
 	if err != nil {

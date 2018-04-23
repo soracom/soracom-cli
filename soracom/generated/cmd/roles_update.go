@@ -61,7 +61,7 @@ var RolesUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectRolesUpdateCmdParams()
+		param, err := collectRolesUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,11 +80,15 @@ var RolesUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectRolesUpdateCmdParams() (*apiParams, error) {
+func collectRolesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForRolesUpdateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if RolesUpdateCmdOperatorId == "" {
+		RolesUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

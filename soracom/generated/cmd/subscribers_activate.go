@@ -38,7 +38,7 @@ var SubscribersActivateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersActivateCmdParams()
+		param, err := collectSubscribersActivateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersActivateCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersActivateCmdParams() (*apiParams, error) {
+func collectSubscribersActivateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

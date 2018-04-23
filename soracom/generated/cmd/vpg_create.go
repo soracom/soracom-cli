@@ -56,7 +56,7 @@ var VpgCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgCreateCmdParams()
+		param, err := collectVpgCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var VpgCreateCmd = &cobra.Command{
 	},
 }
 
-func collectVpgCreateCmdParams() (*apiParams, error) {
+func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgCreateCmd()
 	if err != nil {

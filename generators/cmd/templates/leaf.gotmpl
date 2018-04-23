@@ -90,7 +90,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return err
     }
     {{end}}
-    param, err := collect{{$cmdvar}}Params()
+    param, err := collect{{$cmdvar}}Params(ac)
     if err != nil {
       return err
     }
@@ -109,11 +109,17 @@ var {{ $cmdvar }} = &cobra.Command{
   },
 }
 
-func collect{{$cmdvar}}Params() (*apiParams, error) {
+func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{if .BodyExists }}
   body, err := buildBodyFor{{$suffix}}()
   if err != nil {
     return nil, err
+  }
+  {{end}}
+  
+  {{if .RequireOperatorID }}
+  if {{$prefix}}OperatorId == "" {
+    {{$prefix}}OperatorId = ac.OperatorID
   }
   {{end}}
 

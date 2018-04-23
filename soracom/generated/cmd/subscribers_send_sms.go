@@ -56,7 +56,7 @@ var SubscribersSendSmsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSendSmsCmdParams()
+		param, err := collectSubscribersSendSmsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var SubscribersSendSmsCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSendSmsCmdParams() (*apiParams, error) {
+func collectSubscribersSendSmsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersSendSmsCmd()
 	if err != nil {

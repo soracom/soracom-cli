@@ -51,7 +51,7 @@ var OperatorCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorCreateCmdParams()
+		param, err := collectOperatorCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var OperatorCreateCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorCreateCmdParams() (*apiParams, error) {
+func collectOperatorCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOperatorCreateCmd()
 	if err != nil {

@@ -34,7 +34,7 @@ var OrdersListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOrdersListCmdParams()
+		param, err := collectOrdersListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var OrdersListCmd = &cobra.Command{
 	},
 }
 
-func collectOrdersListCmdParams() (*apiParams, error) {
+func collectOrdersListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

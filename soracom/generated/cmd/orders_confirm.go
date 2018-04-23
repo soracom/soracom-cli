@@ -38,7 +38,7 @@ var OrdersConfirmCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOrdersConfirmCmdParams()
+		param, err := collectOrdersConfirmCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var OrdersConfirmCmd = &cobra.Command{
 	},
 }
 
-func collectOrdersConfirmCmdParams() (*apiParams, error) {
+func collectOrdersConfirmCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "PUT",

@@ -108,6 +108,7 @@ type commandArgs struct {
 	ParentCommandVariableName string
 	FileName                  string
 	RequireAuth               bool
+	RequireOperatorID         bool
 	BodyExists                bool
 	Method                    string
 	BasePath                  string

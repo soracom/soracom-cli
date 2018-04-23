@@ -46,7 +46,7 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorIssueEmailChangeTokenCmdParams()
+		param, err := collectOperatorIssueEmailChangeTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorIssueEmailChangeTokenCmdParams() (*apiParams, error) {
+func collectOperatorIssueEmailChangeTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOperatorIssueEmailChangeTokenCmd()
 	if err != nil {

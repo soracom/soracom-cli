@@ -38,7 +38,7 @@ var CouponsRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectCouponsRegisterCmdParams()
+		param, err := collectCouponsRegisterCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var CouponsRegisterCmd = &cobra.Command{
 	},
 }
 
-func collectCouponsRegisterCmdParams() (*apiParams, error) {
+func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

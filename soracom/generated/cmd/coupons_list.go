@@ -34,7 +34,7 @@ var CouponsListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectCouponsListCmdParams()
+		param, err := collectCouponsListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var CouponsListCmd = &cobra.Command{
 	},
 }
 
-func collectCouponsListCmdParams() (*apiParams, error) {
+func collectCouponsListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

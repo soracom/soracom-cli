@@ -51,7 +51,7 @@ var GroupsPutConfigCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectGroupsPutConfigCmdParams()
+		param, err := collectGroupsPutConfigCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var GroupsPutConfigCmd = &cobra.Command{
 	},
 }
 
-func collectGroupsPutConfigCmdParams() (*apiParams, error) {
+func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForGroupsPutConfigCmd()
 	if err != nil {

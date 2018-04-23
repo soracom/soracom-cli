@@ -96,7 +96,7 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectShippingAddressesCreateCmdParams()
+		param, err := collectShippingAddressesCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -115,11 +115,15 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 	},
 }
 
-func collectShippingAddressesCreateCmdParams() (*apiParams, error) {
+func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForShippingAddressesCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if ShippingAddressesCreateCmdOperatorId == "" {
+		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

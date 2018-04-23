@@ -66,7 +66,7 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesSetGroupCmdParams()
+		param, err := collectSigfoxDevicesSetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesSetGroupCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSigfoxDevicesSetGroupCmd()
 	if err != nil {

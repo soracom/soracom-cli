@@ -46,7 +46,7 @@ var OrdersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOrdersCreateCmdParams()
+		param, err := collectOrdersCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var OrdersCreateCmd = &cobra.Command{
 	},
 }
 
-func collectOrdersCreateCmdParams() (*apiParams, error) {
+func collectOrdersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOrdersCreateCmd()
 	if err != nil {

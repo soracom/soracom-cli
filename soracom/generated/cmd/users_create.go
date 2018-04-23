@@ -56,7 +56,7 @@ var UsersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersCreateCmdParams()
+		param, err := collectUsersCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,11 +75,15 @@ var UsersCreateCmd = &cobra.Command{
 	},
 }
 
-func collectUsersCreateCmdParams() (*apiParams, error) {
+func collectUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersCreateCmdOperatorId == "" {
+		UsersCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

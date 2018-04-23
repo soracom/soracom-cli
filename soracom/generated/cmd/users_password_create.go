@@ -56,7 +56,7 @@ var UsersPasswordCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersPasswordCreateCmdParams()
+		param, err := collectUsersPasswordCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,11 +75,15 @@ var UsersPasswordCreateCmd = &cobra.Command{
 	},
 }
 
-func collectUsersPasswordCreateCmdParams() (*apiParams, error) {
+func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersPasswordCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersPasswordCreateCmdOperatorId == "" {
+		UsersPasswordCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

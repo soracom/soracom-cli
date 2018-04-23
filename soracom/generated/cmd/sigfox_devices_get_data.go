@@ -63,7 +63,7 @@ var SigfoxDevicesGetDataCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesGetDataCmdParams()
+		param, err := collectSigfoxDevicesGetDataCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -82,7 +82,7 @@ var SigfoxDevicesGetDataCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesGetDataCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

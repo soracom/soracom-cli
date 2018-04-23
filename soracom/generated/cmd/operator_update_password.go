@@ -56,7 +56,7 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorUpdatePasswordCmdParams()
+		param, err := collectOperatorUpdatePasswordCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,11 +75,15 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorUpdatePasswordCmdParams() (*apiParams, error) {
+func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOperatorUpdatePasswordCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if OperatorUpdatePasswordCmdOperatorId == "" {
+		OperatorUpdatePasswordCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

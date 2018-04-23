@@ -38,7 +38,7 @@ var CredentialsDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectCredentialsDeleteCmdParams()
+		param, err := collectCredentialsDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var CredentialsDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectCredentialsDeleteCmdParams() (*apiParams, error) {
+func collectCredentialsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

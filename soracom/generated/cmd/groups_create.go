@@ -42,7 +42,7 @@ var GroupsCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectGroupsCreateCmdParams()
+		param, err := collectGroupsCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ var GroupsCreateCmd = &cobra.Command{
 	},
 }
 
-func collectGroupsCreateCmdParams() (*apiParams, error) {
+func collectGroupsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForGroupsCreateCmd()
 	if err != nil {

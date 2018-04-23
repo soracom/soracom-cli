@@ -38,7 +38,7 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysUnsetNetworkSetCmdParams()
+		param, err := collectLoraGatewaysUnsetNetworkSetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysUnsetNetworkSetCmdParams() (*apiParams, error) {
+func collectLoraGatewaysUnsetNetworkSetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

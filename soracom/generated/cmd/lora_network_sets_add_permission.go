@@ -51,7 +51,7 @@ var LoraNetworkSetsAddPermissionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraNetworkSetsAddPermissionCmdParams()
+		param, err := collectLoraNetworkSetsAddPermissionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var LoraNetworkSetsAddPermissionCmd = &cobra.Command{
 	},
 }
 
-func collectLoraNetworkSetsAddPermissionCmdParams() (*apiParams, error) {
+func collectLoraNetworkSetsAddPermissionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraNetworkSetsAddPermissionCmd()
 	if err != nil {

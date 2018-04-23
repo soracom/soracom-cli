@@ -56,7 +56,7 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSetExpiryTimeCmdParams()
+		param, err := collectSubscribersSetExpiryTimeCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSetExpiryTimeCmdParams() (*apiParams, error) {
+func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersSetExpiryTimeCmd()
 	if err != nil {

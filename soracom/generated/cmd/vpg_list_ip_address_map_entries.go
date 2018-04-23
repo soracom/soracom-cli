@@ -38,7 +38,7 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgListIpAddressMapEntriesCmdParams()
+		param, err := collectVpgListIpAddressMapEntriesCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 	},
 }
 
-func collectVpgListIpAddressMapEntriesCmdParams() (*apiParams, error) {
+func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

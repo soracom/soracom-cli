@@ -43,7 +43,7 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectEventHandlersIgnoreCmdParams()
+		param, err := collectEventHandlersIgnoreCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 	},
 }
 
-func collectEventHandlersIgnoreCmdParams() (*apiParams, error) {
+func collectEventHandlersIgnoreCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

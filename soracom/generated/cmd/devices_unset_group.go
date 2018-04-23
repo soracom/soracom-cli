@@ -38,7 +38,7 @@ var DevicesUnsetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesUnsetGroupCmdParams()
+		param, err := collectDevicesUnsetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var DevicesUnsetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesUnsetGroupCmdParams() (*apiParams, error) {
+func collectDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

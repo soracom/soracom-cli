@@ -38,7 +38,7 @@ var SigfoxDevicesDisableTerminationCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesDisableTerminationCmdParams()
+		param, err := collectSigfoxDevicesDisableTerminationCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SigfoxDevicesDisableTerminationCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesDisableTerminationCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesDisableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

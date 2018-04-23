@@ -43,7 +43,7 @@ var UsersPasswordDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersPasswordDeleteCmdParams()
+		param, err := collectUsersPasswordDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var UsersPasswordDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectUsersPasswordDeleteCmdParams() (*apiParams, error) {
+func collectUsersPasswordDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if UsersPasswordDeleteCmdOperatorId == "" {
+		UsersPasswordDeleteCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "DELETE",

@@ -38,7 +38,7 @@ var VpgListGatePeersCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgListGatePeersCmdParams()
+		param, err := collectVpgListGatePeersCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgListGatePeersCmd = &cobra.Command{
 	},
 }
 
-func collectVpgListGatePeersCmdParams() (*apiParams, error) {
+func collectVpgListGatePeersCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

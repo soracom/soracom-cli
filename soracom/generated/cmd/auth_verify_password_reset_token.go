@@ -45,7 +45,7 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 			ac.SetVerbose(true)
 		}
 
-		param, err := collectAuthVerifyPasswordResetTokenCmdParams()
+		param, err := collectAuthVerifyPasswordResetTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	},
 }
 
-func collectAuthVerifyPasswordResetTokenCmdParams() (*apiParams, error) {
+func collectAuthVerifyPasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForAuthVerifyPasswordResetTokenCmd()
 	if err != nil {

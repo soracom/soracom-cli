@@ -38,7 +38,7 @@ var LoraGatewaysEnableTerminationCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysEnableTerminationCmdParams()
+		param, err := collectLoraGatewaysEnableTerminationCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraGatewaysEnableTerminationCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysEnableTerminationCmdParams() (*apiParams, error) {
+func collectLoraGatewaysEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

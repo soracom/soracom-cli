@@ -63,7 +63,7 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesGetDataCmdParams()
+		param, err := collectLoraDevicesGetDataCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -82,7 +82,7 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesGetDataCmdParams() (*apiParams, error) {
+func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

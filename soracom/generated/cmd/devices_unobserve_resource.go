@@ -53,7 +53,7 @@ var DevicesUnobserveResourceCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesUnobserveResourceCmdParams()
+		param, err := collectDevicesUnobserveResourceCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ var DevicesUnobserveResourceCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesUnobserveResourceCmdParams() (*apiParams, error) {
+func collectDevicesUnobserveResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

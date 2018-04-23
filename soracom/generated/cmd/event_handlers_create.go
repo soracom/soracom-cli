@@ -71,7 +71,7 @@ var EventHandlersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectEventHandlersCreateCmdParams()
+		param, err := collectEventHandlersCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ var EventHandlersCreateCmd = &cobra.Command{
 	},
 }
 
-func collectEventHandlersCreateCmdParams() (*apiParams, error) {
+func collectEventHandlersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForEventHandlersCreateCmd()
 	if err != nil {

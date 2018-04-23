@@ -68,7 +68,7 @@ var LogsGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLogsGetCmdParams()
+		param, err := collectLogsGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ var LogsGetCmd = &cobra.Command{
 	},
 }
 
-func collectLogsGetCmdParams() (*apiParams, error) {
+func collectLogsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

@@ -38,7 +38,7 @@ var SigfoxDevicesUnsetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesUnsetGroupCmdParams()
+		param, err := collectSigfoxDevicesUnsetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SigfoxDevicesUnsetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesUnsetGroupCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

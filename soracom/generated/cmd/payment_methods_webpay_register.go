@@ -66,7 +66,7 @@ var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPaymentMethodsWebpayRegisterCmdParams()
+		param, err := collectPaymentMethodsWebpayRegisterCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
 	},
 }
 
-func collectPaymentMethodsWebpayRegisterCmdParams() (*apiParams, error) {
+func collectPaymentMethodsWebpayRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForPaymentMethodsWebpayRegisterCmd()
 	if err != nil {

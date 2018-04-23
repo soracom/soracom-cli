@@ -58,7 +58,7 @@ var VpgListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgListCmdParams()
+		param, err := collectVpgListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ var VpgListCmd = &cobra.Command{
 	},
 }
 
-func collectVpgListCmdParams() (*apiParams, error) {
+func collectVpgListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

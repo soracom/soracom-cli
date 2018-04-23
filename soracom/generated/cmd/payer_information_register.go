@@ -56,7 +56,7 @@ var PayerInformationRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPayerInformationRegisterCmdParams()
+		param, err := collectPayerInformationRegisterCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var PayerInformationRegisterCmd = &cobra.Command{
 	},
 }
 
-func collectPayerInformationRegisterCmdParams() (*apiParams, error) {
+func collectPayerInformationRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForPayerInformationRegisterCmd()
 	if err != nil {

@@ -66,7 +66,7 @@ var StatsBeamExportCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectStatsBeamExportCmdParams()
+		param, err := collectStatsBeamExportCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,11 +85,15 @@ var StatsBeamExportCmd = &cobra.Command{
 	},
 }
 
-func collectStatsBeamExportCmdParams() (*apiParams, error) {
+func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForStatsBeamExportCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if StatsBeamExportCmdOperatorId == "" {
+		StatsBeamExportCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

@@ -38,7 +38,7 @@ var SubscribersUnsetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersUnsetGroupCmdParams()
+		param, err := collectSubscribersUnsetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersUnsetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersUnsetGroupCmdParams() (*apiParams, error) {
+func collectSubscribersUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

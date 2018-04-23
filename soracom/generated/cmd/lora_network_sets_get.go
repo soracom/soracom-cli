@@ -38,7 +38,7 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraNetworkSetsGetCmdParams()
+		param, err := collectLoraNetworkSetsGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 	},
 }
 
-func collectLoraNetworkSetsGetCmdParams() (*apiParams, error) {
+func collectLoraNetworkSetsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

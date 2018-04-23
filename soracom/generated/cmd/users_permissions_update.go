@@ -61,7 +61,7 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersPermissionsUpdateCmdParams()
+		param, err := collectUsersPermissionsUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,11 +80,15 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectUsersPermissionsUpdateCmdParams() (*apiParams, error) {
+func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersPermissionsUpdateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersPermissionsUpdateCmdOperatorId == "" {
+		UsersPermissionsUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

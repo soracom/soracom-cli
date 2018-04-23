@@ -73,7 +73,7 @@ var SubscribersListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersListCmdParams()
+		param, err := collectSubscribersListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -92,7 +92,7 @@ var SubscribersListCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersListCmdParams() (*apiParams, error) {
+func collectSubscribersListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

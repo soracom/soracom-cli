@@ -51,7 +51,7 @@ var LoraDevicesSendDataCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesSendDataCmdParams()
+		param, err := collectLoraDevicesSendDataCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var LoraDevicesSendDataCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesSendDataCmdParams() (*apiParams, error) {
+func collectLoraDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraDevicesSendDataCmd()
 	if err != nil {

@@ -61,7 +61,7 @@ var LoraNetworkSetsCreateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraNetworkSetsCreateCmdParams()
+		param, err := collectLoraNetworkSetsCreateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ var LoraNetworkSetsCreateCmd = &cobra.Command{
 	},
 }
 
-func collectLoraNetworkSetsCreateCmdParams() (*apiParams, error) {
+func collectLoraNetworkSetsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraNetworkSetsCreateCmd()
 	if err != nil {

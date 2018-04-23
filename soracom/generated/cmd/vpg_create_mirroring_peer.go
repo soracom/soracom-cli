@@ -66,7 +66,7 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgCreateMirroringPeerCmdParams()
+		param, err := collectVpgCreateMirroringPeerCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 	},
 }
 
-func collectVpgCreateMirroringPeerCmdParams() (*apiParams, error) {
+func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgCreateMirroringPeerCmd()
 	if err != nil {

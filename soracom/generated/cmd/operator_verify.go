@@ -40,7 +40,7 @@ var OperatorVerifyCmd = &cobra.Command{
 			ac.SetVerbose(true)
 		}
 
-		param, err := collectOperatorVerifyCmdParams()
+		param, err := collectOperatorVerifyCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ var OperatorVerifyCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorVerifyCmdParams() (*apiParams, error) {
+func collectOperatorVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForOperatorVerifyCmd()
 	if err != nil {

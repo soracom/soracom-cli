@@ -43,7 +43,7 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysDeleteTagCmdParams()
+		param, err := collectLoraGatewaysDeleteTagCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysDeleteTagCmdParams() (*apiParams, error) {
+func collectLoraGatewaysDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

@@ -43,7 +43,7 @@ var RolesDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectRolesDeleteCmdParams()
+		param, err := collectRolesDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var RolesDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectRolesDeleteCmdParams() (*apiParams, error) {
+func collectRolesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if RolesDeleteCmdOperatorId == "" {
+		RolesDeleteCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "DELETE",

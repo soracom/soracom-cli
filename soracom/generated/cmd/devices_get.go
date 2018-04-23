@@ -43,7 +43,7 @@ var DevicesGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesGetCmdParams()
+		param, err := collectDevicesGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var DevicesGetCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesGetCmdParams() (*apiParams, error) {
+func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

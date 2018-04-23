@@ -38,7 +38,7 @@ var SubscribersSetToStandbyCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSetToStandbyCmdParams()
+		param, err := collectSubscribersSetToStandbyCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersSetToStandbyCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSetToStandbyCmdParams() (*apiParams, error) {
+func collectSubscribersSetToStandbyCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

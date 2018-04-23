@@ -43,7 +43,7 @@ var UsersGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersGetCmdParams()
+		param, err := collectUsersGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var UsersGetCmd = &cobra.Command{
 	},
 }
 
-func collectUsersGetCmdParams() (*apiParams, error) {
+func collectUsersGetCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if UsersGetCmdOperatorId == "" {
+		UsersGetCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "GET",

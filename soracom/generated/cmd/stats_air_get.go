@@ -53,7 +53,7 @@ var StatsAirGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectStatsAirGetCmdParams()
+		param, err := collectStatsAirGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ var StatsAirGetCmd = &cobra.Command{
 	},
 }
 
-func collectStatsAirGetCmdParams() (*apiParams, error) {
+func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

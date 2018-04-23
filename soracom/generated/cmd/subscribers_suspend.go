@@ -38,7 +38,7 @@ var SubscribersSuspendCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersSuspendCmdParams()
+		param, err := collectSubscribersSuspendCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersSuspendCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersSuspendCmdParams() (*apiParams, error) {
+func collectSubscribersSuspendCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

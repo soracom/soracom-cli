@@ -34,7 +34,7 @@ var PaymentStatementsListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPaymentStatementsListCmdParams()
+		param, err := collectPaymentStatementsListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var PaymentStatementsListCmd = &cobra.Command{
 	},
 }
 
-func collectPaymentStatementsListCmdParams() (*apiParams, error) {
+func collectPaymentStatementsListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

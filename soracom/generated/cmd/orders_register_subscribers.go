@@ -38,7 +38,7 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOrdersRegisterSubscribersCmdParams()
+		param, err := collectOrdersRegisterSubscribersCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 	},
 }
 
-func collectOrdersRegisterSubscribersCmdParams() (*apiParams, error) {
+func collectOrdersRegisterSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

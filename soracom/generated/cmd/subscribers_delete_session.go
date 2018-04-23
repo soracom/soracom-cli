@@ -38,7 +38,7 @@ var SubscribersDeleteSessionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersDeleteSessionCmdParams()
+		param, err := collectSubscribersDeleteSessionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersDeleteSessionCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersDeleteSessionCmdParams() (*apiParams, error) {
+func collectSubscribersDeleteSessionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

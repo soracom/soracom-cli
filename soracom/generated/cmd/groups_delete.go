@@ -38,7 +38,7 @@ var GroupsDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectGroupsDeleteCmdParams()
+		param, err := collectGroupsDeleteCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var GroupsDeleteCmd = &cobra.Command{
 	},
 }
 
-func collectGroupsDeleteCmdParams() (*apiParams, error) {
+func collectGroupsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

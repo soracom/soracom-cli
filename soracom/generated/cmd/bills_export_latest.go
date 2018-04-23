@@ -38,7 +38,7 @@ var BillsExportLatestCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectBillsExportLatestCmdParams()
+		param, err := collectBillsExportLatestCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var BillsExportLatestCmd = &cobra.Command{
 	},
 }
 
-func collectBillsExportLatestCmdParams() (*apiParams, error) {
+func collectBillsExportLatestCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

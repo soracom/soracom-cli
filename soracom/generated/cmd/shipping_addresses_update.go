@@ -101,7 +101,7 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectShippingAddressesUpdateCmdParams()
+		param, err := collectShippingAddressesUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -120,11 +120,15 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectShippingAddressesUpdateCmdParams() (*apiParams, error) {
+func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForShippingAddressesUpdateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if ShippingAddressesUpdateCmdOperatorId == "" {
+		ShippingAddressesUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

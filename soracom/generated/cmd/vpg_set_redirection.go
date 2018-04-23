@@ -61,7 +61,7 @@ var VpgSetRedirectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgSetRedirectionCmdParams()
+		param, err := collectVpgSetRedirectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ var VpgSetRedirectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgSetRedirectionCmdParams() (*apiParams, error) {
+func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgSetRedirectionCmd()
 	if err != nil {

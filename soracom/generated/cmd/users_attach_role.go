@@ -56,7 +56,7 @@ var UsersAttachRoleCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersAttachRoleCmdParams()
+		param, err := collectUsersAttachRoleCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,11 +75,15 @@ var UsersAttachRoleCmd = &cobra.Command{
 	},
 }
 
-func collectUsersAttachRoleCmdParams() (*apiParams, error) {
+func collectUsersAttachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersAttachRoleCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersAttachRoleCmdOperatorId == "" {
+		UsersAttachRoleCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

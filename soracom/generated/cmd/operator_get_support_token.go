@@ -38,7 +38,7 @@ var OperatorGetSupportTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectOperatorGetSupportTokenCmdParams()
+		param, err := collectOperatorGetSupportTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,11 @@ var OperatorGetSupportTokenCmd = &cobra.Command{
 	},
 }
 
-func collectOperatorGetSupportTokenCmdParams() (*apiParams, error) {
+func collectOperatorGetSupportTokenCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if OperatorGetSupportTokenCmdOperatorId == "" {
+		OperatorGetSupportTokenCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "POST",

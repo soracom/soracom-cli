@@ -38,7 +38,7 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersDeleteTransferTokenCmdParams()
+		param, err := collectSubscribersDeleteTransferTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersDeleteTransferTokenCmdParams() (*apiParams, error) {
+func collectSubscribersDeleteTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

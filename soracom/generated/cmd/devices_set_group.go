@@ -46,7 +46,7 @@ var DevicesSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesSetGroupCmdParams()
+		param, err := collectDevicesSetGroupCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var DevicesSetGroupCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesSetGroupCmdParams() (*apiParams, error) {
+func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForDevicesSetGroupCmd()
 	if err != nil {

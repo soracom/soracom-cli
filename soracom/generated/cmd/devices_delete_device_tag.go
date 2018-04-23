@@ -43,7 +43,7 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesDeleteDeviceTagCmdParams()
+		param, err := collectDevicesDeleteDeviceTagCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesDeleteDeviceTagCmdParams() (*apiParams, error) {
+func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

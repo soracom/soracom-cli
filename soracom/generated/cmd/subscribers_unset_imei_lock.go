@@ -38,7 +38,7 @@ var SubscribersUnsetImeiLockCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersUnsetImeiLockCmdParams()
+		param, err := collectSubscribersUnsetImeiLockCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersUnsetImeiLockCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersUnsetImeiLockCmdParams() (*apiParams, error) {
+func collectSubscribersUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

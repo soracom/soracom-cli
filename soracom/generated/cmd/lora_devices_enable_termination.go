@@ -38,7 +38,7 @@ var LoraDevicesEnableTerminationCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraDevicesEnableTerminationCmdParams()
+		param, err := collectLoraDevicesEnableTerminationCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var LoraDevicesEnableTerminationCmd = &cobra.Command{
 	},
 }
 
-func collectLoraDevicesEnableTerminationCmdParams() (*apiParams, error) {
+func collectLoraDevicesEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

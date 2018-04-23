@@ -43,7 +43,7 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectEventHandlersUnignoreCmdParams()
+		param, err := collectEventHandlersUnignoreCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 	},
 }
 
-func collectEventHandlersUnignoreCmdParams() (*apiParams, error) {
+func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

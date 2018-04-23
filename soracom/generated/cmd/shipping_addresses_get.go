@@ -43,7 +43,7 @@ var ShippingAddressesGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectShippingAddressesGetCmdParams()
+		param, err := collectShippingAddressesGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var ShippingAddressesGetCmd = &cobra.Command{
 	},
 }
 
-func collectShippingAddressesGetCmdParams() (*apiParams, error) {
+func collectShippingAddressesGetCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if ShippingAddressesGetCmdOperatorId == "" {
+		ShippingAddressesGetCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "GET",

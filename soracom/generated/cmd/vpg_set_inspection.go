@@ -51,7 +51,7 @@ var VpgSetInspectionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgSetInspectionCmdParams()
+		param, err := collectVpgSetInspectionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var VpgSetInspectionCmd = &cobra.Command{
 	},
 }
 
-func collectVpgSetInspectionCmdParams() (*apiParams, error) {
+func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForVpgSetInspectionCmd()
 	if err != nil {

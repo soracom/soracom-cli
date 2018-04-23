@@ -43,7 +43,7 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgDeleteMirroringPeerCmdParams()
+		param, err := collectVpgDeleteMirroringPeerCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 	},
 }
 
-func collectVpgDeleteMirroringPeerCmdParams() (*apiParams, error) {
+func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

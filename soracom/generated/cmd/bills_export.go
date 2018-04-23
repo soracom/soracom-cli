@@ -43,7 +43,7 @@ var BillsExportCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectBillsExportCmdParams()
+		param, err := collectBillsExportCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var BillsExportCmd = &cobra.Command{
 	},
 }
 
-func collectBillsExportCmdParams() (*apiParams, error) {
+func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

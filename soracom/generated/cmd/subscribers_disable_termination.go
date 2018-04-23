@@ -38,7 +38,7 @@ var SubscribersDisableTerminationCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersDisableTerminationCmdParams()
+		param, err := collectSubscribersDisableTerminationCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var SubscribersDisableTerminationCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersDisableTerminationCmdParams() (*apiParams, error) {
+func collectSubscribersDisableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

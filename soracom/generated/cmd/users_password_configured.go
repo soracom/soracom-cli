@@ -43,7 +43,7 @@ var UsersPasswordConfiguredCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersPasswordConfiguredCmdParams()
+		param, err := collectUsersPasswordConfiguredCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var UsersPasswordConfiguredCmd = &cobra.Command{
 	},
 }
 
-func collectUsersPasswordConfiguredCmdParams() (*apiParams, error) {
+func collectUsersPasswordConfiguredCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if UsersPasswordConfiguredCmdOperatorId == "" {
+		UsersPasswordConfiguredCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "GET",

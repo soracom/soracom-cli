@@ -51,7 +51,7 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraNetworkSetsRevokePermissionCmdParams()
+		param, err := collectLoraNetworkSetsRevokePermissionCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 	},
 }
 
-func collectLoraNetworkSetsRevokePermissionCmdParams() (*apiParams, error) {
+func collectLoraNetworkSetsRevokePermissionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraNetworkSetsRevokePermissionCmd()
 	if err != nil {

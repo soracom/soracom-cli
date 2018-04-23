@@ -34,7 +34,7 @@ var PayerInformationGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectPayerInformationGetCmdParams()
+		param, err := collectPayerInformationGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var PayerInformationGetCmd = &cobra.Command{
 	},
 }
 
-func collectPayerInformationGetCmdParams() (*apiParams, error) {
+func collectPayerInformationGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

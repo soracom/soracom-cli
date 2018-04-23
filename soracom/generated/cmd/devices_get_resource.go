@@ -58,7 +58,7 @@ var DevicesGetResourceCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectDevicesGetResourceCmdParams()
+		param, err := collectDevicesGetResourceCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ var DevicesGetResourceCmd = &cobra.Command{
 	},
 }
 
-func collectDevicesGetResourceCmdParams() (*apiParams, error) {
+func collectDevicesGetResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

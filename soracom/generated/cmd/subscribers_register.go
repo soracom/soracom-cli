@@ -56,7 +56,7 @@ var SubscribersRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersRegisterCmdParams()
+		param, err := collectSubscribersRegisterCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var SubscribersRegisterCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersRegisterCmdParams() (*apiParams, error) {
+func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersRegisterCmd()
 	if err != nil {

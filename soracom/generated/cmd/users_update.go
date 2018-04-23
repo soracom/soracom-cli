@@ -56,7 +56,7 @@ var UsersUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersUpdateCmdParams()
+		param, err := collectUsersUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,11 +75,15 @@ var UsersUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectUsersUpdateCmdParams() (*apiParams, error) {
+func collectUsersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForUsersUpdateCmd()
 	if err != nil {
 		return nil, err
+	}
+
+	if UsersUpdateCmdOperatorId == "" {
+		UsersUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{

@@ -48,7 +48,7 @@ var UsersAuthKeysGetCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectUsersAuthKeysGetCmdParams()
+		param, err := collectUsersAuthKeysGetCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -67,7 +67,11 @@ var UsersAuthKeysGetCmd = &cobra.Command{
 	},
 }
 
-func collectUsersAuthKeysGetCmdParams() (*apiParams, error) {
+func collectUsersAuthKeysGetCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if UsersAuthKeysGetCmdOperatorId == "" {
+		UsersAuthKeysGetCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "GET",

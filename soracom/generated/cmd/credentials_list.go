@@ -34,7 +34,7 @@ var CredentialsListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectCredentialsListCmdParams()
+		param, err := collectCredentialsListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var CredentialsListCmd = &cobra.Command{
 	},
 }
 
-func collectCredentialsListCmdParams() (*apiParams, error) {
+func collectCredentialsListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

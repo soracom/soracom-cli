@@ -56,7 +56,7 @@ var CredentialsUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectCredentialsUpdateCmdParams()
+		param, err := collectCredentialsUpdateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var CredentialsUpdateCmd = &cobra.Command{
 	},
 }
 
-func collectCredentialsUpdateCmdParams() (*apiParams, error) {
+func collectCredentialsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForCredentialsUpdateCmd()
 	if err != nil {

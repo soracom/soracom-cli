@@ -46,7 +46,7 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectLoraGatewaysPutTagsCmdParams()
+		param, err := collectLoraGatewaysPutTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 	},
 }
 
-func collectLoraGatewaysPutTagsCmdParams() (*apiParams, error) {
+func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForLoraGatewaysPutTagsCmd()
 	if err != nil {

@@ -17,8 +17,9 @@ type authRequest struct {
 }
 
 type authResult struct {
-	APIKey string `json:"apiKey"`
-	Token  string `json:"token"`
+	APIKey     string `json:"apiKey"`
+	Token      string `json:"token"`
+	OperatorID string `json:"operatorId"`
 }
 
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
@@ -68,6 +69,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 
 	ac.APIKey = ares.APIKey
 	ac.Token = ares.Token
+	ac.OperatorID = ares.OperatorID
 	return nil
 }
 

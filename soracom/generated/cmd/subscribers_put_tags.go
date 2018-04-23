@@ -46,7 +46,7 @@ var SubscribersPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersPutTagsCmdParams()
+		param, err := collectSubscribersPutTagsCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var SubscribersPutTagsCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersPutTagsCmdParams() (*apiParams, error) {
+func collectSubscribersPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersPutTagsCmd()
 	if err != nil {

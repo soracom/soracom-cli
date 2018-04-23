@@ -38,7 +38,7 @@ var FilesGetExportedCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectFilesGetExportedCmdParams()
+		param, err := collectFilesGetExportedCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var FilesGetExportedCmd = &cobra.Command{
 	},
 }
 
-func collectFilesGetExportedCmdParams() (*apiParams, error) {
+func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

@@ -38,7 +38,7 @@ var VpgTerminateCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectVpgTerminateCmdParams()
+		param, err := collectVpgTerminateCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ var VpgTerminateCmd = &cobra.Command{
 	},
 }
 
-func collectVpgTerminateCmdParams() (*apiParams, error) {
+func collectVpgTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",

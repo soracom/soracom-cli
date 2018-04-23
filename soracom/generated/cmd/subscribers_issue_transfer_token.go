@@ -51,7 +51,7 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSubscribersIssueTransferTokenCmdParams()
+		param, err := collectSubscribersIssueTransferTokenCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -70,7 +70,7 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	},
 }
 
-func collectSubscribersIssueTransferTokenCmdParams() (*apiParams, error) {
+func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
 	body, err := buildBodyForSubscribersIssueTransferTokenCmd()
 	if err != nil {

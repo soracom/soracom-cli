@@ -43,7 +43,7 @@ var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectSigfoxDevicesDeleteTagCmdParams()
+		param, err := collectSigfoxDevicesDeleteTagCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 	},
 }
 
-func collectSigfoxDevicesDeleteTagCmdParams() (*apiParams, error) {
+func collectSigfoxDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",

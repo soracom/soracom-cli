@@ -48,7 +48,7 @@ var GroupsListSubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectGroupsListSubscribersCmdParams()
+		param, err := collectGroupsListSubscribersCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -67,7 +67,7 @@ var GroupsListSubscribersCmd = &cobra.Command{
 	},
 }
 
-func collectGroupsListSubscribersCmdParams() (*apiParams, error) {
+func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

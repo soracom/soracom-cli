@@ -34,7 +34,7 @@ var BillsListCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectBillsListCmdParams()
+		param, err := collectBillsListCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ var BillsListCmd = &cobra.Command{
 	},
 }
 
-func collectBillsListCmdParams() (*apiParams, error) {
+func collectBillsListCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",

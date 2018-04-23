@@ -43,7 +43,7 @@ var RolesListUsersCmd = &cobra.Command{
 			return err
 		}
 
-		param, err := collectRolesListUsersCmdParams()
+		param, err := collectRolesListUsersCmdParams(ac)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,11 @@ var RolesListUsersCmd = &cobra.Command{
 	},
 }
 
-func collectRolesListUsersCmdParams() (*apiParams, error) {
+func collectRolesListUsersCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if RolesListUsersCmdOperatorId == "" {
+		RolesListUsersCmdOperatorId = ac.OperatorID
+	}
 
 	return &apiParams{
 		method: "GET",
