@@ -231,22 +231,28 @@ paths:
 
   '/operators/mfa_revoke_token/issue':
     post:
+      summary: Issue Operator's MFA Revoke Token.
       description: オペレーターの MFA を無効化するためのトークンを発行します。この API が呼ばれた後、トークンはメールで送信されます。
 
   '/operators/mfa_revoke_token/verify':
     post:
+      summary: Verify Operator's MFA revoke token.
       description: MFA を無効化するためのワンタイムトークン、アカウントのメールアドレス、パスワードおよびバックアップコードの組み合わせによって MFA を無効化します。
 
   '/operators/{operator_id}/mfa':
     get:
+      summary: Get Operator's MFA Status.
       description: オペレーターの MFA の状態を取得します。MFA の状態は `ACTIVE`, `INACTIVE` もしくは `UNCONFIRMED` のいずれかです。
     post:
+      summary: Enable Operator's MFA.
       description: オペレーターの MFA を有効化します。この API を呼んだ後に、`Operator:verifyMFA` API を用いて MFA OTP を検証する必要があります。
     delete:
+      summary: Revoke Operator's MFA.
       description: オペレーターの MFA を無効化します。
 
   '/operators/{operator_id}/mfa/verify':
     post:
+      summary: Verify Operator's MFA OTP Code.
       description: オペレーターの MFA OTP を検証します。 `Operator:enableMFA` を呼んだ後に呼び出す必要があります。この API で正しく検証が行われるまで、MFAは有効になりません。このAPIのレスポンスとして返ってくるバックアップコードは必ず保管してください。
 
 # Role
