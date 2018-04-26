@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesDeleteCmdDeviceId holds value of 'deviceId' option
+// DevicesDeleteCmdDeviceId holds value of 'device_id' option
 var DevicesDeleteCmdDeviceId string
 
 func init() {
@@ -19,8 +19,8 @@ func init() {
 // DevicesDeleteCmd defines 'delete' subcommand
 var DevicesDeleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: TRAPI("/devices/{deviceId}:delete:summary"),
-	Long:  TRAPI(`/devices/{deviceId}:delete:description`),
+	Short: TRAPI("/devices/{device_id}:delete:summary"),
+	Long:  TRAPI(`/devices/{device_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,14 +61,14 @@ func collectDevicesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",
-		path:   buildPathForDevicesDeleteCmd("/devices/{deviceId}"),
+		path:   buildPathForDevicesDeleteCmd("/devices/{device_id}"),
 		query:  buildQueryForDevicesDeleteCmd(),
 	}, nil
 }
 
 func buildPathForDevicesDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesDeleteCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesDeleteCmdDeviceId, -1)
 
 	return path
 }

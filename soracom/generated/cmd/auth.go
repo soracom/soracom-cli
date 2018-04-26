@@ -19,6 +19,9 @@ var AuthCmdAuthKeyId string
 // AuthCmdEmail holds value of 'email' option
 var AuthCmdEmail string
 
+// AuthCmdMfaOTPCode holds value of 'mfaOTPCode' option
+var AuthCmdMfaOTPCode string
+
 // AuthCmdOperatorId holds value of 'operatorId' option
 var AuthCmdOperatorId string
 
@@ -40,6 +43,8 @@ func init() {
 	AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
 
 	AuthCmd.Flags().StringVar(&AuthCmdEmail, "email", "", TRAPI(""))
+
+	AuthCmd.Flags().StringVar(&AuthCmdMfaOTPCode, "mfa-otpcode", "", TRAPI(""))
 
 	AuthCmd.Flags().StringVar(&AuthCmdOperatorId, "operator-id", "", TRAPI(""))
 
@@ -149,6 +154,10 @@ func buildBodyForAuthCmd() (string, error) {
 
 	if AuthCmdEmail != "" {
 		result["email"] = AuthCmdEmail
+	}
+
+	if AuthCmdMfaOTPCode != "" {
+		result["mfaOTPCode"] = AuthCmdMfaOTPCode
 	}
 
 	if AuthCmdOperatorId != "" {

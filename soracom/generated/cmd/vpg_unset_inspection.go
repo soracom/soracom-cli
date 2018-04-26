@@ -7,11 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// VpgUnsetInspectionCmdId holds value of 'id' option
-var VpgUnsetInspectionCmdId string
+// VpgUnsetInspectionCmdVpgId holds value of 'vpg_id' option
+var VpgUnsetInspectionCmdVpgId string
 
 func init() {
-	VpgUnsetInspectionCmd.Flags().StringVar(&VpgUnsetInspectionCmdId, "id", "", TRAPI("VPG ID"))
+	VpgUnsetInspectionCmd.Flags().StringVar(&VpgUnsetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgCmd.AddCommand(VpgUnsetInspectionCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgUnsetInspectionCmd defines 'unset-inspection' subcommand
 var VpgUnsetInspectionCmd = &cobra.Command{
 	Use:   "unset-inspection",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/unset_inspection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/unset_inspection:post:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/unset_inspection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_inspection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,14 +61,14 @@ func collectVpgUnsetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",
-		path:   buildPathForVpgUnsetInspectionCmd("/virtual_private_gateways/{id}/junction/unset_inspection"),
+		path:   buildPathForVpgUnsetInspectionCmd("/virtual_private_gateways/{vpg_id}/junction/unset_inspection"),
 		query:  buildQueryForVpgUnsetInspectionCmd(),
 	}, nil
 }
 
 func buildPathForVpgUnsetInspectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgUnsetInspectionCmdId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgUnsetInspectionCmdVpgId, -1)
 
 	return path
 }

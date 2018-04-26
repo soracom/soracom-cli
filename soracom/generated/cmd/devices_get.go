@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesGetCmdDeviceId holds value of 'deviceId' option
+// DevicesGetCmdDeviceId holds value of 'device_id' option
 var DevicesGetCmdDeviceId string
 
 // DevicesGetCmdModel holds value of 'model' option
@@ -24,8 +24,8 @@ func init() {
 // DevicesGetCmd defines 'get' subcommand
 var DevicesGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TRAPI("/devices/{deviceId}:get:summary"),
-	Long:  TRAPI(`/devices/{deviceId}:get:description`),
+	Short: TRAPI("/devices/{device_id}:get:summary"),
+	Long:  TRAPI(`/devices/{device_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -66,14 +66,14 @@ func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForDevicesGetCmd("/devices/{deviceId}"),
+		path:   buildPathForDevicesGetCmd("/devices/{device_id}"),
 		query:  buildQueryForDevicesGetCmd(),
 	}, nil
 }
 
 func buildPathForDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesGetCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesGetCmdDeviceId, -1)
 
 	return path
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesPutResourceCmdDeviceId holds value of 'deviceId' option
+// DevicesPutResourceCmdDeviceId holds value of 'device_id' option
 var DevicesPutResourceCmdDeviceId string
 
 // DevicesPutResourceCmdInstance holds value of 'instance' option
@@ -42,8 +42,8 @@ func init() {
 // DevicesPutResourceCmd defines 'put-resource' subcommand
 var DevicesPutResourceCmd = &cobra.Command{
 	Use:   "put-resource",
-	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}:put:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}:put:description`),
+	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}:put:summary"),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -89,7 +89,7 @@ func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "PUT",
-		path:        buildPathForDevicesPutResourceCmd("/devices/{deviceId}/{object}/{instance}/{resource}"),
+		path:        buildPathForDevicesPutResourceCmd("/devices/{device_id}/{object}/{instance}/{resource}"),
 		query:       buildQueryForDevicesPutResourceCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -98,7 +98,7 @@ func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesPutResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesPutResourceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesPutResourceCmdDeviceId, -1)
 
 	path = strings.Replace(path, "{"+"instance"+"}", DevicesPutResourceCmdInstance, -1)
 

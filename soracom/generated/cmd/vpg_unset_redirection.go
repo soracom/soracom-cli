@@ -7,11 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// VpgUnsetRedirectionCmdId holds value of 'id' option
-var VpgUnsetRedirectionCmdId string
+// VpgUnsetRedirectionCmdVpgId holds value of 'vpg_id' option
+var VpgUnsetRedirectionCmdVpgId string
 
 func init() {
-	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdId, "id", "", TRAPI("VPG ID"))
+	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgCmd.AddCommand(VpgUnsetRedirectionCmd)
 }
@@ -19,8 +19,8 @@ func init() {
 // VpgUnsetRedirectionCmd defines 'unset-redirection' subcommand
 var VpgUnsetRedirectionCmd = &cobra.Command{
 	Use:   "unset-redirection",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/unset_redirection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/unset_redirection:post:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/unset_redirection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_redirection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,14 +61,14 @@ func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",
-		path:   buildPathForVpgUnsetRedirectionCmd("/virtual_private_gateways/{id}/junction/unset_redirection"),
+		path:   buildPathForVpgUnsetRedirectionCmd("/virtual_private_gateways/{vpg_id}/junction/unset_redirection"),
 		query:  buildQueryForVpgUnsetRedirectionCmd(),
 	}, nil
 }
 
 func buildPathForVpgUnsetRedirectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgUnsetRedirectionCmdId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgUnsetRedirectionCmdVpgId, -1)
 
 	return path
 }

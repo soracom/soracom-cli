@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// VpgSetInspectionCmdId holds value of 'id' option
-var VpgSetInspectionCmdId string
+// VpgSetInspectionCmdVpgId holds value of 'vpg_id' option
+var VpgSetInspectionCmdVpgId string
 
 // VpgSetInspectionCmdEnabled holds value of 'enabled' option
 var VpgSetInspectionCmdEnabled bool
@@ -20,7 +20,7 @@ var VpgSetInspectionCmdEnabled bool
 var VpgSetInspectionCmdBody string
 
 func init() {
-	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdId, "id", "", TRAPI("VPG ID"))
+	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TRAPI(""))
 
@@ -32,8 +32,8 @@ func init() {
 // VpgSetInspectionCmd defines 'set-inspection' subcommand
 var VpgSetInspectionCmd = &cobra.Command{
 	Use:   "set-inspection",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/set_inspection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/set_inspection:post:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -79,7 +79,7 @@ func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "POST",
-		path:        buildPathForVpgSetInspectionCmd("/virtual_private_gateways/{id}/junction/set_inspection"),
+		path:        buildPathForVpgSetInspectionCmd("/virtual_private_gateways/{vpg_id}/junction/set_inspection"),
 		query:       buildQueryForVpgSetInspectionCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -88,7 +88,7 @@ func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgSetInspectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgSetInspectionCmdId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgSetInspectionCmdVpgId, -1)
 
 	return path
 }

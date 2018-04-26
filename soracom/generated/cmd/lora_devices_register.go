@@ -13,11 +13,21 @@ import (
 // LoraDevicesRegisterCmdDeviceId holds value of 'device_id' option
 var LoraDevicesRegisterCmdDeviceId string
 
+// LoraDevicesRegisterCmdGroupId holds value of 'groupId' option
+var LoraDevicesRegisterCmdGroupId string
+
+// LoraDevicesRegisterCmdRegistrationSecret holds value of 'registrationSecret' option
+var LoraDevicesRegisterCmdRegistrationSecret string
+
 // LoraDevicesRegisterCmdBody holds contents of request body to be sent
 var LoraDevicesRegisterCmdBody string
 
 func init() {
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+
+	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdGroupId, "group-id", "", TRAPI(""))
+
+	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -116,6 +126,14 @@ func buildBodyForLoraDevicesRegisterCmd() (string, error) {
 	}
 
 	result := map[string]interface{}{}
+
+	if LoraDevicesRegisterCmdGroupId != "" {
+		result["groupId"] = LoraDevicesRegisterCmdGroupId
+	}
+
+	if LoraDevicesRegisterCmdRegistrationSecret != "" {
+		result["registrationSecret"] = LoraDevicesRegisterCmdRegistrationSecret
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

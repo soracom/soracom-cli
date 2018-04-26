@@ -10,19 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// VpgUpdateMirroringPeerCmdId holds value of 'id' option
-var VpgUpdateMirroringPeerCmdId string
-
 // VpgUpdateMirroringPeerCmdIpaddr holds value of 'ipaddr' option
 var VpgUpdateMirroringPeerCmdIpaddr string
+
+// VpgUpdateMirroringPeerCmdVpgId holds value of 'vpg_id' option
+var VpgUpdateMirroringPeerCmdVpgId string
 
 // VpgUpdateMirroringPeerCmdBody holds contents of request body to be sent
 var VpgUpdateMirroringPeerCmdBody string
 
 func init() {
-	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
-
 	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("Mirroring peer IP address"))
+
+	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -32,8 +32,8 @@ func init() {
 // VpgUpdateMirroringPeerCmd defines 'update-mirroring-peer' subcommand
 var VpgUpdateMirroringPeerCmd = &cobra.Command{
 	Use:   "update-mirroring-peer",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:put:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:put:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:put:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -79,7 +79,7 @@ func collectVpgUpdateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "PUT",
-		path:        buildPathForVpgUpdateMirroringPeerCmd("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}"),
+		path:        buildPathForVpgUpdateMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}"),
 		query:       buildQueryForVpgUpdateMirroringPeerCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -88,9 +88,9 @@ func collectVpgUpdateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgUpdateMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgUpdateMirroringPeerCmdId, -1)
-
 	path = strings.Replace(path, "{"+"ipaddr"+"}", VpgUpdateMirroringPeerCmdIpaddr, -1)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgUpdateMirroringPeerCmdVpgId, -1)
 
 	return path
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesUnsetGroupCmdDeviceId holds value of 'deviceId' option
+// DevicesUnsetGroupCmdDeviceId holds value of 'device_id' option
 var DevicesUnsetGroupCmdDeviceId string
 
 func init() {
@@ -19,8 +19,8 @@ func init() {
 // DevicesUnsetGroupCmd defines 'unset-group' subcommand
 var DevicesUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
-	Short: TRAPI("/devices/{deviceId}/unset_group:post:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/unset_group:post:description`),
+	Short: TRAPI("/devices/{device_id}/unset_group:post:summary"),
+	Long:  TRAPI(`/devices/{device_id}/unset_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,14 +61,14 @@ func collectDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",
-		path:   buildPathForDevicesUnsetGroupCmd("/devices/{deviceId}/unset_group"),
+		path:   buildPathForDevicesUnsetGroupCmd("/devices/{device_id}/unset_group"),
 		query:  buildQueryForDevicesUnsetGroupCmd(),
 	}, nil
 }
 
 func buildPathForDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesUnsetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesUnsetGroupCmdDeviceId, -1)
 
 	return path
 }

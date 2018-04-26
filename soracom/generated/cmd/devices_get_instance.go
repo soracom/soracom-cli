@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesGetInstanceCmdDeviceId holds value of 'deviceId' option
+// DevicesGetInstanceCmdDeviceId holds value of 'device_id' option
 var DevicesGetInstanceCmdDeviceId string
 
 // DevicesGetInstanceCmdInstance holds value of 'instance' option
@@ -34,8 +34,8 @@ func init() {
 // DevicesGetInstanceCmd defines 'get-instance' subcommand
 var DevicesGetInstanceCmd = &cobra.Command{
 	Use:   "get-instance",
-	Short: TRAPI("/devices/{deviceId}/{object}/{instance}:get:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}:get:description`),
+	Short: TRAPI("/devices/{device_id}/{object}/{instance}:get:summary"),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -76,14 +76,14 @@ func collectDevicesGetInstanceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForDevicesGetInstanceCmd("/devices/{deviceId}/{object}/{instance}"),
+		path:   buildPathForDevicesGetInstanceCmd("/devices/{device_id}/{object}/{instance}"),
 		query:  buildQueryForDevicesGetInstanceCmd(),
 	}, nil
 }
 
 func buildPathForDevicesGetInstanceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesGetInstanceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesGetInstanceCmdDeviceId, -1)
 
 	path = strings.Replace(path, "{"+"instance"+"}", DevicesGetInstanceCmdInstance, -1)
 

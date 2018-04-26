@@ -7,16 +7,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// VpgDeleteMirroringPeerCmdId holds value of 'id' option
-var VpgDeleteMirroringPeerCmdId string
-
 // VpgDeleteMirroringPeerCmdIpaddr holds value of 'ipaddr' option
 var VpgDeleteMirroringPeerCmdIpaddr string
 
-func init() {
-	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
+// VpgDeleteMirroringPeerCmdVpgId holds value of 'vpg_id' option
+var VpgDeleteMirroringPeerCmdVpgId string
 
+func init() {
 	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("IP address of mirroring peer"))
+
+	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgCmd.AddCommand(VpgDeleteMirroringPeerCmd)
 }
@@ -24,8 +24,8 @@ func init() {
 // VpgDeleteMirroringPeerCmd defines 'delete-mirroring-peer' subcommand
 var VpgDeleteMirroringPeerCmd = &cobra.Command{
 	Use:   "delete-mirroring-peer",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:delete:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}:delete:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:delete:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -66,16 +66,16 @@ func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",
-		path:   buildPathForVpgDeleteMirroringPeerCmd("/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}"),
+		path:   buildPathForVpgDeleteMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}"),
 		query:  buildQueryForVpgDeleteMirroringPeerCmd(),
 	}, nil
 }
 
 func buildPathForVpgDeleteMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgDeleteMirroringPeerCmdId, -1)
-
 	path = strings.Replace(path, "{"+"ipaddr"+"}", VpgDeleteMirroringPeerCmdIpaddr, -1)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgDeleteMirroringPeerCmdVpgId, -1)
 
 	return path
 }

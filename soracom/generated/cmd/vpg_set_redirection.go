@@ -16,8 +16,8 @@ var VpgSetRedirectionCmdDescription string
 // VpgSetRedirectionCmdGateway holds value of 'gateway' option
 var VpgSetRedirectionCmdGateway string
 
-// VpgSetRedirectionCmdId holds value of 'id' option
-var VpgSetRedirectionCmdId string
+// VpgSetRedirectionCmdVpgId holds value of 'vpg_id' option
+var VpgSetRedirectionCmdVpgId string
 
 // VpgSetRedirectionCmdEnabled holds value of 'enabled' option
 var VpgSetRedirectionCmdEnabled bool
@@ -30,7 +30,7 @@ func init() {
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdGateway, "gateway", "", TRAPI(""))
 
-	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdId, "id", "", TRAPI("VPG ID"))
+	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TRAPI(""))
 
@@ -42,8 +42,8 @@ func init() {
 // VpgSetRedirectionCmd defines 'set-redirection' subcommand
 var VpgSetRedirectionCmd = &cobra.Command{
 	Use:   "set-redirection",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/set_redirection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/set_redirection:post:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/set_redirection:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_redirection:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -89,7 +89,7 @@ func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "POST",
-		path:        buildPathForVpgSetRedirectionCmd("/virtual_private_gateways/{id}/junction/set_redirection"),
+		path:        buildPathForVpgSetRedirectionCmd("/virtual_private_gateways/{vpg_id}/junction/set_redirection"),
 		query:       buildQueryForVpgSetRedirectionCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -98,7 +98,7 @@ func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgSetRedirectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgSetRedirectionCmdId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgSetRedirectionCmdVpgId, -1)
 
 	return path
 }

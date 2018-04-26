@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesPutDeviceTagsCmdDeviceId holds value of 'deviceId' option
+// DevicesPutDeviceTagsCmdDeviceId holds value of 'device_id' option
 var DevicesPutDeviceTagsCmdDeviceId string
 
 func init() {
@@ -19,8 +19,8 @@ func init() {
 // DevicesPutDeviceTagsCmd defines 'put-device-tags' subcommand
 var DevicesPutDeviceTagsCmd = &cobra.Command{
 	Use:   "put-device-tags",
-	Short: TRAPI("/devices/{deviceId}/tags:put:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/tags:put:description`),
+	Short: TRAPI("/devices/{device_id}/tags:put:summary"),
+	Long:  TRAPI(`/devices/{device_id}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,14 +61,14 @@ func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "PUT",
-		path:   buildPathForDevicesPutDeviceTagsCmd("/devices/{deviceId}/tags"),
+		path:   buildPathForDevicesPutDeviceTagsCmd("/devices/{device_id}/tags"),
 		query:  buildQueryForDevicesPutDeviceTagsCmd(),
 	}, nil
 }
 
 func buildPathForDevicesPutDeviceTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesPutDeviceTagsCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesPutDeviceTagsCmdDeviceId, -1)
 
 	return path
 }

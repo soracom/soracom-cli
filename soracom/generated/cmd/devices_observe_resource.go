@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesObserveResourceCmdDeviceId holds value of 'deviceId' option
+// DevicesObserveResourceCmdDeviceId holds value of 'device_id' option
 var DevicesObserveResourceCmdDeviceId string
 
 // DevicesObserveResourceCmdInstance holds value of 'instance' option
@@ -39,8 +39,8 @@ func init() {
 // DevicesObserveResourceCmd defines 'observe-resource' subcommand
 var DevicesObserveResourceCmd = &cobra.Command{
 	Use:   "observe-resource",
-	Short: TRAPI("/devices/{deviceId}/{object}/{instance}/{resource}/observe:post:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/{object}/{instance}/{resource}/observe:post:description`),
+	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}/observe:post:summary"),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}/observe:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -81,14 +81,14 @@ func collectDevicesObserveResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "POST",
-		path:   buildPathForDevicesObserveResourceCmd("/devices/{deviceId}/{object}/{instance}/{resource}/observe"),
+		path:   buildPathForDevicesObserveResourceCmd("/devices/{device_id}/{object}/{instance}/{resource}/observe"),
 		query:  buildQueryForDevicesObserveResourceCmd(),
 	}, nil
 }
 
 func buildPathForDevicesObserveResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesObserveResourceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesObserveResourceCmdDeviceId, -1)
 
 	path = strings.Replace(path, "{"+"instance"+"}", DevicesObserveResourceCmdInstance, -1)
 

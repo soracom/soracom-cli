@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesDeleteDeviceTagCmdDeviceId holds value of 'deviceId' option
+// DevicesDeleteDeviceTagCmdDeviceId holds value of 'device_id' option
 var DevicesDeleteDeviceTagCmdDeviceId string
 
-// DevicesDeleteDeviceTagCmdTagName holds value of 'tagName' option
+// DevicesDeleteDeviceTagCmdTagName holds value of 'tag_name' option
 var DevicesDeleteDeviceTagCmdTagName string
 
 func init() {
@@ -24,8 +24,8 @@ func init() {
 // DevicesDeleteDeviceTagCmd defines 'delete-device-tag' subcommand
 var DevicesDeleteDeviceTagCmd = &cobra.Command{
 	Use:   "delete-device-tag",
-	Short: TRAPI("/devices/{deviceId}/tags/{tagName}:delete:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/tags/{tagName}:delete:description`),
+	Short: TRAPI("/devices/{device_id}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/devices/{device_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -66,16 +66,16 @@ func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "DELETE",
-		path:   buildPathForDevicesDeleteDeviceTagCmd("/devices/{deviceId}/tags/{tagName}"),
+		path:   buildPathForDevicesDeleteDeviceTagCmd("/devices/{device_id}/tags/{tag_name}"),
 		query:  buildQueryForDevicesDeleteDeviceTagCmd(),
 	}, nil
 }
 
 func buildPathForDevicesDeleteDeviceTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesDeleteDeviceTagCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesDeleteDeviceTagCmdDeviceId, -1)
 
-	path = strings.Replace(path, "{"+"tagName"+"}", DevicesDeleteDeviceTagCmdTagName, -1)
+	path = strings.Replace(path, "{"+"tag_name"+"}", DevicesDeleteDeviceTagCmdTagName, -1)
 
 	return path
 }

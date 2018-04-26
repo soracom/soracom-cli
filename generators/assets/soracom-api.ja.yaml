@@ -229,6 +229,26 @@ paths:
         '400':
           description: リクエストに誤りがあるか、指定されたトークンがすでに無効になっている（後者の場合、/auth API で再度認証を行う必要がある）
 
+  '/operators/mfa_revoke_token/issue':
+    post:
+      description: オペレーターの MFA を無効化するためのトークンを発行します。この API が呼ばれた後、トークンはメールで送信されます。
+
+  '/operators/mfa_revoke_token/verify':
+    post:
+      description: MFA を無効化するためのワンタイムトークン、アカウントのメールアドレス、パスワードおよびバックアップコードの組み合わせによって MFA を無効化します。
+
+  '/operators/{operator_id}/mfa':
+    get:
+      description: オペレーターの MFA の状態を取得します。MFA の状態は `ACTIVE`, `INACTIVE` もしくは `UNCONFIRMED` のいずれかです。
+    post:
+      description: オペレーターの MFA を有効化します。この API を呼んだ後に、`Operator:verifyMFA` API を用いて MFA OTP を検証する必要があります。
+    delete:
+      description: オペレーターの MFA を無効化します。
+
+  '/operators/{operator_id}/mfa/verify':
+    post:
+      description: オペレーターの MFA OTP を検証します。 `Operator:enableMFA` を呼んだ後に呼び出す必要があります。この API で正しく検証が行われるまで、MFAは有効になりません。このAPIのレスポンスとして返ってくるバックアップコードは必ず保管してください。
+
 # Role
   '/operators/{operator_id}/roles':
     get:
@@ -1084,10 +1104,12 @@ paths:
         - name: device_id
           description: 送信先デバイスのID
         - name: data
-          description: 16進数でエンコードされたバイナリデータの文字列。バイナリデータの最大サイズは11 octets（16進数エンコードされた文字列で22文字）
+          description: 16進数でエンコードされたバイナリデータの文字列。バイナリデータの最大サイズは11 octets（16進数エンコードされた文字列で22文字）。fPortを任意で指定できます。fPortは0以上でなければなりません。0はコントロールプレーンに使用され、通常は1以上を使用します。無効な値が与えられた場合には特定ベンダーのデバイスで問題が起こらないように設定されたデフォルト値である2が使用されます。また、confirmedでダウンリンクメッセージがデバイスに送信されたかをデバイスによるackで確認するかどうかを指定することができます。デフォルトではfalseで、この場合デバイスからのackを確認せずに一方的にダウンリンクメッセージを送信します。
       responses:
         204:
           description: データはLoRa Network Serverにセットされ、送信先デバイスが取得出来る状態になったことを示す。
+        400:
+          description: 与えられたJSONに無効な値が含まれている。
         404:
           description: 指定されたLoRaデバイスが存在しない。
 
@@ -1429,7 +1451,7 @@ paths:
         '404':
           description: 指定されたLoRa network setが存在しない
 
-  '/lora_network_sets/{ns_id}/tags/{tagName}':
+  '/lora_network_sets/{ns_id}/tags/{tag_name}':
     delete:
       summary: Delete LoRa network set tag.
       description: 指定されたLoRa network setのタグを削除
@@ -2337,12 +2359,12 @@ paths:
         404:
           description: 指定されたVPGあるいはPeerは存在しない
 
-  "/virtual_private_gateways/{id}/junction/mirroring/peers":
+  "/virtual_private_gateways/{vpg_id}/junction/mirroring/peers":
     post:
       summary: Junction ミラーリング peer を追加します。
       description: Junction ミラーリング peer を追加します。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       - name: mirroring peer
         description: ミラーリング peer に関する情報
@@ -2352,12 +2374,12 @@ paths:
         '404':
           description: 指定された VPG が見つかりませんでした。
 
-  "/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}":
+  "/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}":
     put:
       summary: Junction ミラーリング peer を更新します。
       description: Junction ミラーリング peer を更新します。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       - name: ipaddr
         description: 更新したいミラーリング peer の IP アドレス
@@ -2373,7 +2395,7 @@ paths:
       summary: Junction ミラーリング peer を削除します。
       description: Junction ミラーリング peer を削除します。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       - name: ipaddr
         description: 削除したいミラーリング peer の IP アドレス
@@ -2383,12 +2405,12 @@ paths:
         '404':
           description: 指定された VPG が見つかりませんでした。
 
-  "/virtual_private_gateways/{id}/junction/set_inspection":
+  "/virtual_private_gateways/{vpg_id}/junction/set_inspection":
     post:
       summary: Junction インスペクション機能の設定を行います。
       description: Junction インスペクション機能の設定を行います。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       - name: inspection configuration
         description: インスペクション設定内容
@@ -2398,12 +2420,12 @@ paths:
         '404':
           description: 指定された VPG が見つかりませんでした。
 
-  "/virtual_private_gateways/{id}/junction/set_redirection":
+  "/virtual_private_gateways/{vpg_id}/junction/set_redirection":
     post:
       summary: Junction リダイレクション機能の設定を行います。
       description: Junction リダイレクション機能の設定を行います。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       - name: redirection configuration
         description: リダイレクション設定内容
@@ -2413,12 +2435,12 @@ paths:
         '404':
           description: 指定された VPG が見つかりませんでした。
 
-  "/virtual_private_gateways/{id}/junction/unset_inspection":
+  "/virtual_private_gateways/{vpg_id}/junction/unset_inspection":
     post:
       summary: Junction インスペクション機能の設定を解除します。
       description: Junction インスペクション機能の設定を解除します。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       responses:
         '200':
@@ -2426,12 +2448,12 @@ paths:
         '404':
           description: 指定された VPG が見つかりませんでした。
 
-  "/virtual_private_gateways/{id}/junction/unset_redirection":
+  "/virtual_private_gateways/{vpg_id}/junction/unset_redirection":
     post:
       summary: Junction リダイレクション機能の設定を行います。
       description: Junction リダイレクション機能の設定を行います。
       parameters:
-      - name: id
+      - name: vpg_id
         description: VPG ID
       responses:
         '200':
@@ -2522,12 +2544,12 @@ paths:
         '201':
           description: 作成されたデバイス
 
-  "/devices/{deviceId}":
+  "/devices/{device_id}":
     get:
       summary: 指定されたデバイス ID のデバイスを取得します。
       description: 指定されたデバイス ID のデバイスを取得します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: デバイス ID
       - name: model
         description: モデル情報を取得するかどうか
@@ -2541,7 +2563,7 @@ paths:
       summary: デバイスを削除します。
       description: デバイスを削除します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 削除するデバイス
       responses:
         '204':
@@ -2549,12 +2571,12 @@ paths:
         '404':
           description: 指定されたデバイス ID を持つデバイスが見つからなかった
 
-  "/devices/{deviceId}/set_group":
+  "/devices/{device_id}/set_group":
     post:
       summary: デバイスをグループに参加させます。
       description: デバイスをグループに参加させます。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 更新するデバイスのデバイス ID
       - name: groupId
       responses:
@@ -2563,12 +2585,12 @@ paths:
         '404':
           description: 指定されたデバイス ID を持つデバイスが見つからなかった
 
-  "/devices/{deviceId}/unset_group":
+  "/devices/{device_id}/unset_group":
     post:
       summary: デバイスをグループから外します。
       description: デバイスをグループから外します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 更新するデバイスのデバイス ID
       responses:
         '200':
@@ -2576,12 +2598,12 @@ paths:
         '404':
           description: 指定されたデバイス ID を持つデバイスが見つからなかった
 
-  "/devices/{deviceId}/tags":
+  "/devices/{device_id}/tags":
     put:
       summary: デバイスのタグを更新します。
       description: デバイスのタグを更新します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 更新するデバイスのデバイス ID
       responses:
         '200':
@@ -2589,14 +2611,14 @@ paths:
         '404':
           description: 指定されたデバイス ID を持つデバイスが見つからなかった
 
-  "/devices/{deviceId}/tags/{tagName}":
+  "/devices/{device_id}/tags/{tag_name}":
     delete:
       summary: デバイスのタグを削除します。
       description: デバイスのタグを削除します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 更新するデバイスのデバイス ID
-      - name: tagName
+      - name: tag_name
         description: 削除するタグの名前
       responses:
         '204':
@@ -2604,12 +2626,12 @@ paths:
         '404':
           description: 指定されたデバイス ID を持つデバイス、もしくは指定されたタグが見つからなかった
 
-  "/devices/{deviceId}/{object}/{instance}":
+  "/devices/{device_id}/{object}/{instance}":
     get:
       summary: デバイスの Instance 以下のすべての Resource を Read します。
       description: デバイスの Instance 以下のすべての Resource を Read します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2625,12 +2647,12 @@ paths:
         '404':
           description: Object Instanceが見つかりません
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}":
+  "/devices/{device_id}/{object}/{instance}/{resource}":
     get:
       summary: 指定されたデバイスの Resource を Read します。
       description: 指定されたデバイスの Resource を Read します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2652,7 +2674,7 @@ paths:
       summary: デバイスの Resource に値を Write します。
       description: デバイスの Resource に値を Write します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2670,12 +2692,12 @@ paths:
         '404':
           description: Resourceが見つかりません
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/execute":
+  "/devices/{device_id}/{object}/{instance}/{resource}/execute":
     post:
       summary: デバイスの Resource を Execute します。
       description: デバイスの Resource を Execute します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2693,12 +2715,12 @@ paths:
         '404':
           description: Resourceが見つかりません
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
+  "/devices/{device_id}/{object}/{instance}/{resource}/observe":
     post:
       summary: 指定されたデバイスの Resource の Observe を開始します。
       description: 指定されたデバイスの Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2716,12 +2738,12 @@ paths:
         '404':
           description: Resource が見つかりません
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/unobserve":
+  "/devices/{device_id}/{object}/{instance}/{resource}/unobserve":
     post:
       summary: デバイスの Resource の Observe を停止します。
       description: デバイスの Resource の Observe を停止します。
       parameters:
-      - name: deviceId
+      - name: device_id
         description: 対象となるデバイス
       - name: object
         description: Object ID
@@ -2734,6 +2756,126 @@ paths:
           description: Observe を停止しました
         '404':
           description: Resourceが見つかりません
+
+  "/devices/{device_id}/{object}/{instance}/observe":
+    post:
+      summary: 指定されたデバイスの Object Instance 下の Resource 全体の Observe を開始します。
+      description: 指定されたデバイスの Object Instance 下の Resource 全体の Observe を開始します。
+      parameters:
+      - name: device_id
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      - name: model
+        description: モデルの情報を追加するか否か
+      responses:
+        '202':
+          description: Observe を開始しました
+        '400':
+          description: Resource に到達できません
+        '404':
+          description: Resource が見つかりません
+
+  "/devices/{device_id}/{object}/{instance}/unobserve":
+    post:
+      summary: 指定されたデバイスの Object Instance への Observe を停止します。
+      description: 指定されたデバイスの Object Instance への Observe を停止します。
+      parameters:
+      - name: device_id
+        description: 対象となるデバイス
+      - name: object
+        description: Object ID
+      - name: instance
+        description: Instance ID
+      responses:
+        '204':
+          description: Observe を停止しました
+        '404':
+          description: Resource が見つかりません
+
+  "/device_object_models":
+    get:
+      summary: デバイスオブジェクトモデルのリストを返します。
+      description: デバイスオブジェクトモデルのリストを返します。
+      parameters:
+      - name: limit
+        description: 取得する結果の上限数
+      - name: last_evaluated_key
+        description: 現ページで取得した最後のデバイスオブジェクトモデルのID。このパラメータを指定することで次のデバイスオブジェクトモデル以降のリストを取得できる。
+      responses:
+        '200':
+          description: デバイスオブジェクトモデル定義のリスト
+
+    post:
+      summary: 新しいデバイスオブジェクトモデルを作成します。
+      description: 新しいデバイスオブジェクトモデルを作成します。
+      parameters:
+      - in: body
+        name: object_model_definition
+        description: XML か JSON により表現されたデバイスオブジェクトモデルの表記。
+      responses:
+        '200':
+          description: デバイスオブジェクトモデルが作成されました
+        '400':
+          description: デバイスオブジェクトモデル定義の解析に失敗しました
+
+  "/device_object_models/{model_id}":
+    post:
+      summary: デバイスオブジェクトモデルを更新します。
+      description: デバイスオブジェクトモデルを更新します。
+      parameters:
+      - name: model_id
+        description: 対象のデバイスオブジェクトモデルの ID
+      - name: object_model_definition
+        description: XML か JSON により表現されたデバイスオブジェクトモデルの表記。
+      responses:
+        '200':
+          description: デバイスオブジェクトモデルが作成されました
+        '400':
+          description: デバイスオブジェクトモデル定義の解析に失敗しました
+        '404':
+          description: デバイスオブジェクトモデルが見つかりません
+
+    get:
+      summary: デバイスオブジェクトモデルを取得します。
+      description: デバイスオブジェクトモデルを取得します。
+      parameters:
+      - name: model_id
+        description: 対象のデバイスオブジェクトモデルのID
+      responses:
+        '200':
+          description: 取得したデバイスオブジェクトモデル
+        '404':
+          description: デバイスオブジェクトモデルが見つかりません
+
+    delete:
+      summary: 対象のデバイスオブジェクトモデルを削除します。
+      description: 対象のデバイスオブジェクトモデルを削除します。
+      parameters:
+      - name: model_id
+        description: 対象のデバイスオブジェクトモデルの ID
+      responses:
+        '204':
+          description: 削除に成功しました
+        '404':
+          description: デバイスオブジェクトモデルが見つかりません
+
+  "/device_object_models/{model_id}/set_scope":
+    post:
+      summary: 対象のデバイスオブジェクトモデルが適用される Scope をセットします。
+      description: 対象のデバイスオブジェクトモデルが適用される Scope をセットします。
+      parameters:
+      - name: model_id
+        description: 対象のデバイスオブジェクトモデルの ID
+      - name: scope
+        description: 対象のデバイスオブジェクトモデルにセットする Scope の値
+      responses:
+        '200':
+          description: デバイスオブジェクトモデルの Scope がセットされました
+        '404':
+          description: デバイスオブジェクトモデルが見つかりません
 
 # Query (search)
   "/query/subscribers":

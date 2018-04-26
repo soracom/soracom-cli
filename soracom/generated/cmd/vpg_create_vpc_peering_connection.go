@@ -16,6 +16,9 @@ var VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock string
 // VpgCreateVpcPeeringConnectionCmdPeerOwnerId holds value of 'peerOwnerId' option
 var VpgCreateVpcPeeringConnectionCmdPeerOwnerId string
 
+// VpgCreateVpcPeeringConnectionCmdPeerRegion holds value of 'peerRegion' option
+var VpgCreateVpcPeeringConnectionCmdPeerRegion string
+
 // VpgCreateVpcPeeringConnectionCmdPeerVpcId holds value of 'peerVpcId' option
 var VpgCreateVpcPeeringConnectionCmdPeerVpcId string
 
@@ -29,6 +32,8 @@ func init() {
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", TRAPI(""))
 
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", TRAPI(""))
+
+	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerRegion, "peer-region", "", TRAPI(""))
 
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerVpcId, "peer-vpc-id", "", TRAPI(""))
 
@@ -138,6 +143,10 @@ func buildBodyForVpgCreateVpcPeeringConnectionCmd() (string, error) {
 
 	if VpgCreateVpcPeeringConnectionCmdPeerOwnerId != "" {
 		result["peerOwnerId"] = VpgCreateVpcPeeringConnectionCmdPeerOwnerId
+	}
+
+	if VpgCreateVpcPeeringConnectionCmdPeerRegion != "" {
+		result["peerRegion"] = VpgCreateVpcPeeringConnectionCmdPeerRegion
 	}
 
 	if VpgCreateVpcPeeringConnectionCmdPeerVpcId != "" {

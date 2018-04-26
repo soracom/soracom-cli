@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesSetGroupCmdDeviceId holds value of 'deviceId' option
+// DevicesSetGroupCmdDeviceId holds value of 'device_id' option
 var DevicesSetGroupCmdDeviceId string
 
 // DevicesSetGroupCmdBody holds contents of request body to be sent
@@ -27,8 +27,8 @@ func init() {
 // DevicesSetGroupCmd defines 'set-group' subcommand
 var DevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
-	Short: TRAPI("/devices/{deviceId}/set_group:post:summary"),
-	Long:  TRAPI(`/devices/{deviceId}/set_group:post:description`),
+	Short: TRAPI("/devices/{device_id}/set_group:post:summary"),
+	Long:  TRAPI(`/devices/{device_id}/set_group:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -74,7 +74,7 @@ func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "POST",
-		path:        buildPathForDevicesSetGroupCmd("/devices/{deviceId}/set_group"),
+		path:        buildPathForDevicesSetGroupCmd("/devices/{device_id}/set_group"),
 		query:       buildQueryForDevicesSetGroupCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -83,7 +83,7 @@ func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"deviceId"+"}", DevicesSetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", DevicesSetGroupCmdDeviceId, -1)
 
 	return path
 }

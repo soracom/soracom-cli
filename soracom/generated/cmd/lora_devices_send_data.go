@@ -16,6 +16,12 @@ var LoraDevicesSendDataCmdData string
 // LoraDevicesSendDataCmdDeviceId holds value of 'device_id' option
 var LoraDevicesSendDataCmdDeviceId string
 
+// LoraDevicesSendDataCmdFPort holds value of 'fPort' option
+var LoraDevicesSendDataCmdFPort int64
+
+// LoraDevicesSendDataCmdConfirmed holds value of 'confirmed' option
+var LoraDevicesSendDataCmdConfirmed bool
+
 // LoraDevicesSendDataCmdBody holds contents of request body to be sent
 var LoraDevicesSendDataCmdBody string
 
@@ -23,6 +29,10 @@ func init() {
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdData, "data", "", TRAPI(""))
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
+
+	LoraDevicesSendDataCmd.Flags().Int64Var(&LoraDevicesSendDataCmdFPort, "f-port", 0, TRAPI(""))
+
+	LoraDevicesSendDataCmd.Flags().BoolVar(&LoraDevicesSendDataCmdConfirmed, "confirmed", false, TRAPI(""))
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -124,6 +134,14 @@ func buildBodyForLoraDevicesSendDataCmd() (string, error) {
 
 	if LoraDevicesSendDataCmdData != "" {
 		result["data"] = LoraDevicesSendDataCmdData
+	}
+
+	if LoraDevicesSendDataCmdFPort != 0 {
+		result["fPort"] = LoraDevicesSendDataCmdFPort
+	}
+
+	if LoraDevicesSendDataCmdConfirmed != false {
+		result["confirmed"] = LoraDevicesSendDataCmdConfirmed
 	}
 
 	resultBytes, err := json.Marshal(result)

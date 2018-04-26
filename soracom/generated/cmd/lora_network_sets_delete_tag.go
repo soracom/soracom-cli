@@ -24,8 +24,8 @@ func init() {
 // LoraNetworkSetsDeleteTagCmd defines 'delete-tag' subcommand
 var LoraNetworkSetsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
-	Short: TRAPI("/lora_network_sets/{ns_id}/tags/{tagName}:delete:summary"),
-	Long:  TRAPI(`/lora_network_sets/{ns_id}/tags/{tagName}:delete:description`),
+	Short: TRAPI("/lora_network_sets/{ns_id}/tags/{tag_name}:delete:summary"),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -66,7 +66,7 @@ func collectLoraNetworkSetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error)
 
 	return &apiParams{
 		method: "DELETE",
-		path:   buildPathForLoraNetworkSetsDeleteTagCmd("/lora_network_sets/{ns_id}/tags/{tagName}"),
+		path:   buildPathForLoraNetworkSetsDeleteTagCmd("/lora_network_sets/{ns_id}/tags/{tag_name}"),
 		query:  buildQueryForLoraNetworkSetsDeleteTagCmd(),
 	}, nil
 }

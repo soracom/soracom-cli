@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DevicesCreateCmdDeviceId holds value of 'deviceId' option
+// DevicesCreateCmdDeviceId holds value of 'device_id' option
 var DevicesCreateCmdDeviceId string
 
 // DevicesCreateCmdEndpoint holds value of 'endpoint' option
@@ -21,12 +21,6 @@ var DevicesCreateCmdFirmwareVersion string
 
 // DevicesCreateCmdGroupId holds value of 'groupId' option
 var DevicesCreateCmdGroupId string
-
-// DevicesCreateCmdImei holds value of 'imei' option
-var DevicesCreateCmdImei string
-
-// DevicesCreateCmdImsi holds value of 'imsi' option
-var DevicesCreateCmdImsi string
 
 // DevicesCreateCmdIpAddress holds value of 'ipAddress' option
 var DevicesCreateCmdIpAddress string
@@ -69,10 +63,6 @@ func init() {
 	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdFirmwareVersion, "firmware-version", "", TRAPI(""))
 
 	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdGroupId, "group-id", "", TRAPI(""))
-
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImei, "imei", "", TRAPI(""))
-
-	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdImsi, "imsi", "", TRAPI(""))
 
 	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdIpAddress, "ip-address", "", TRAPI(""))
 
@@ -191,7 +181,7 @@ func buildBodyForDevicesCreateCmd() (string, error) {
 	result := map[string]interface{}{}
 
 	if DevicesCreateCmdDeviceId != "" {
-		result["deviceId"] = DevicesCreateCmdDeviceId
+		result["device_id"] = DevicesCreateCmdDeviceId
 	}
 
 	if DevicesCreateCmdEndpoint != "" {
@@ -204,14 +194,6 @@ func buildBodyForDevicesCreateCmd() (string, error) {
 
 	if DevicesCreateCmdGroupId != "" {
 		result["groupId"] = DevicesCreateCmdGroupId
-	}
-
-	if DevicesCreateCmdImei != "" {
-		result["imei"] = DevicesCreateCmdImei
-	}
-
-	if DevicesCreateCmdImsi != "" {
-		result["imsi"] = DevicesCreateCmdImsi
 	}
 
 	if DevicesCreateCmdIpAddress != "" {

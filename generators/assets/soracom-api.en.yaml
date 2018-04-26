@@ -468,6 +468,131 @@ paths:
           schema:
            '$ref': '#/definitions/APICallError'
 
+  '/operators/mfa_revoke_token/issue':
+    post:
+      tags: [Operator]
+      summary: Issue Operator's MFA Revoke Token.
+      description: Issues a token to revoke operator's MFA. The issued token will be sent to the operator via email.
+      operationId: issueMFARevokingToken
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/MFAIssueRevokingTokenRequest'}
+      responses:
+        '200': {description: OK}
+        '400': {description: Bad request}
+        '404': {description: Operator not found}
+      x-soracom-cli:
+        - operator issue-mfa-revoke-token
+
+  '/operators/mfa_revoke_token/verify':
+    post:
+      tags: [Operator]
+      summary: Verify Operator's MFA revoke token.
+      description: Verifies the one-time token which is previously issued by calling `/operators/mfa_revoke_token/issue` API, operator's email address, password, and one of the backup codes. If verified, operator's MFA is going to be revoked.
+      operationId: verifyMFARevokingToken
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/MFARevokingTokenVerifyRequest'}
+      responses:
+        '200': {description: Revoked}
+        '400': {description: Bad request}
+        '403': {description: Invalid username or password}
+      x-soracom-cli:
+        - operator verify-mfa-revoke-token
+
+  '/operators/{operator_id}/mfa':
+    get:
+      tags: [Operator]
+      summary: Get Operator's MFA Status.
+      description: Gets operator's MFA status. The MFA status is one of `ACTIVE`, `INACTIVE` or `UNCONFIRMED`.
+      operationId: getMFAStatus
+      security:
+        - api_key: []
+        - api_token: []
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/MFAStatusOfUseResponse'}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - operator get-mfa-status
+    post:
+      tags: [Operator]
+      summary: Enable Operator's MFA.
+      description: Enables operator's MFA. After calling this APIg, it should be verified by calling `Operator:verifyMFA` API.
+      operationId: enableMFA
+      security:
+        - api_key: []
+        - api_token: []
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/EnableMFAOTPResponse'}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - operator enable-mfa
+    delete:
+      tags: [Operator]
+      summary: Revoke Operator's MFA.
+      description: Revokes operator's MFA without backup codes.
+      operationId: revokeMFA
+      security:
+        - api_key: []
+        - api_token: []
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      responses:
+        '204': {description: Revoked}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - operator revoke-mfa
+
+  '/operators/{operator_id}/mfa/verify':
+    post:
+      tags: [Operator]
+      summary: Verify Operator's MFA OTP Code.
+      description: Verifies operator's MFA with OTP code after calling `Operator:enableMFA` API. MFA will not be activated unless the MFA OTP is verified with this API. Backup codes are going to be returned in the response. These codes must be securely stored.
+      operationId: verifyMFA
+      security:
+        - api_key: []
+        - api_token: []
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: operator_id, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/MFAAuthenticationRequest'}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/OperatorMFAVerifyingResponse'}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - operator verify-mfa-otp
+
 # Role
   '/operators/{operator_id}/roles':
     get:
@@ -2178,7 +2303,7 @@ paths:
           type: string
         - name: data
           in: body
-          description: Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string). The number of characters must be even.
+          description: Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string). The number of characters must be even. "fPort" MUST be equal to or greater than 0. 0 is used for the control plane and 1 or greater values should be used in general. It defaults to 2 to avoid the issues of some devices from some vendors and all invalid values that can not be parsed fallback to 2. "confirmed" represents if you want your device to respond back with the ack that your device actually received the downlink message. It defaults to false, with which the network server does not confirm if the downlink message is sent to the device.
           schema:
            '$ref': '#/definitions/LoraData'
           required: true
@@ -2187,6 +2312,8 @@ paths:
       responses:
         204:
           description: Data has been received and sent to the LoRa network server for the recipient device to retrieve.
+        400:
+          description: The payload JSON data contains one or more invalid parameters.
         404:
           description: No such device found.
 
@@ -2935,7 +3062,7 @@ paths:
             '$ref': '#/definitions/LoraNetworkSet'
         '404':
           description: The specified LoRa network set does not exist.
-  '/lora_network_sets/{ns_id}/tags/{tagName}':
+  '/lora_network_sets/{ns_id}/tags/{tag_name}':
     delete:
       tags:
       - LoraNetworkSet
@@ -4940,7 +5067,7 @@ paths:
         404:
           description: The specified VPG or node does not exist.
 
-  "/virtual_private_gateways/{id}/junction/mirroring/peers":
+  "/virtual_private_gateways/{vpg_id}/junction/mirroring/peers":
     post:
       tags:
       - VirtualPrivateGateway
@@ -4953,7 +5080,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -4970,7 +5097,7 @@ paths:
         '404':
           description: No such VPG found
 
-  "/virtual_private_gateways/{id}/junction/mirroring/peers/{ipaddr}":
+  "/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}":
     put:
       tags:
       - VirtualPrivateGateway
@@ -4983,7 +5110,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5021,7 +5148,7 @@ paths:
       consumes: [text/plain]
       produces: [text/plainn]
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5037,7 +5164,7 @@ paths:
         '404':
           description: No such VPG found
 
-  "/virtual_private_gateways/{id}/junction/set_inspection":
+  "/virtual_private_gateways/{vpg_id}/junction/set_inspection":
     post:
       tags:
       - VirtualPrivateGateway
@@ -5050,7 +5177,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5067,7 +5194,7 @@ paths:
         '404':
           description: No such VPG found
 
-  "/virtual_private_gateways/{id}/junction/set_redirection":
+  "/virtual_private_gateways/{vpg_id}/junction/set_redirection":
     post:
       tags:
       - VirtualPrivateGateway
@@ -5080,7 +5207,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5097,7 +5224,7 @@ paths:
         '404':
           description: No such VPG found
 
-  "/virtual_private_gateways/{id}/junction/unset_inspection":
+  "/virtual_private_gateways/{vpg_id}/junction/unset_inspection":
     post:
       tags:
       - VirtualPrivateGateway
@@ -5110,7 +5237,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5121,7 +5248,7 @@ paths:
         '404':
           description: No such VPG found
 
-  "/virtual_private_gateways/{id}/junction/unset_redirection":
+  "/virtual_private_gateways/{vpg_id}/junction/unset_redirection":
     post:
       tags:
       - VirtualPrivateGateway
@@ -5134,7 +5261,7 @@ paths:
         - api_key: []
         - api_token: []
       parameters:
-      - name: id
+      - name: vpg_id
         in: path
         description: VPG ID
         required: true
@@ -5345,7 +5472,7 @@ paths:
           schema:
             "$ref": "#/definitions/Device"
 
-  "/devices/{deviceId}":
+  "/devices/{device_id}":
     get:
       tags:
       - Device
@@ -5358,7 +5485,7 @@ paths:
       x-soracom-cli:
         - devices get
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device ID
         required: true
@@ -5389,7 +5516,7 @@ paths:
       x-soracom-cli:
         - devices delete
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device to delete
         required: true
@@ -5400,7 +5527,7 @@ paths:
         '404':
           description: No such device found
 
-  "/devices/{deviceId}/set_group":
+  "/devices/{device_id}/set_group":
     post:
       tags:
       - Device
@@ -5413,7 +5540,7 @@ paths:
       x-soracom-cli:
         - devices set-group
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device to update
         required: true
@@ -5433,7 +5560,7 @@ paths:
         '404':
           description: No such device found
 
-  "/devices/{deviceId}/unset_group":
+  "/devices/{device_id}/unset_group":
     post:
       tags:
       - Device
@@ -5446,7 +5573,7 @@ paths:
       x-soracom-cli:
         - devices unset-group
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device to update
         required: true
@@ -5459,7 +5586,7 @@ paths:
         '404':
           description: No such device found
 
-  "/devices/{deviceId}/tags":
+  "/devices/{device_id}/tags":
     put:
       tags:
       - Device
@@ -5472,7 +5599,7 @@ paths:
       x-soracom-cli:
         - devices put-device-tags
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device to update
         required: true
@@ -5485,7 +5612,7 @@ paths:
         '404':
           description: No such device found
 
-  "/devices/{deviceId}/tags/{tagName}":
+  "/devices/{device_id}/tags/{tag_name}":
     delete:
       tags:
       - Device
@@ -5498,12 +5625,12 @@ paths:
       x-soracom-cli:
         - devices delete-device-tag
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Device to update
         required: true
         type: string
-      - name: tagName
+      - name: tag_name
         in: path
         description: Name of tag to delete
         required: true
@@ -5514,7 +5641,7 @@ paths:
         '404':
           description: No such device or tag found
 
-  "/devices/{deviceId}/{object}/{instance}":
+  "/devices/{device_id}/{object}/{instance}":
     get:
       tags:
       - Device
@@ -5527,7 +5654,7 @@ paths:
       x-soracom-cli:
         - devices get-instance
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Target device
         required: true
@@ -5558,7 +5685,7 @@ paths:
         '404':
           description: Object instance is not found
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}":
+  "/devices/{device_id}/{object}/{instance}/{resource}":
     get:
       tags:
       - Device
@@ -5571,7 +5698,7 @@ paths:
       x-soracom-cli:
         - devices get-resource
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Target device
         required: true
@@ -5620,7 +5747,7 @@ paths:
       x-soracom-cli:
         - devices put-resource
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Target device
         required: true
@@ -5657,7 +5784,7 @@ paths:
         '404':
           description: Resource is not found
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/execute":
+  "/devices/{device_id}/{object}/{instance}/{resource}/execute":
     post:
       tags:
       - Device
@@ -5670,7 +5797,7 @@ paths:
       x-soracom-cli:
         - devices execute-resource
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Target device
         required: true
@@ -5707,10 +5834,10 @@ paths:
         '404':
           description: Resource is not found
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/observe":
+  "/devices/{device_id}/{object}/{instance}/{resource}/observe":
     post:
       tags:
-      - Device
+        - Device
       summary: Triggers observation of the specified resource of a device
       description: Triggers observation of the specified resource of a device
       operationId: observeDeviceResource
@@ -5720,43 +5847,41 @@ paths:
       x-soracom-cli:
         - devices observe-resource
       parameters:
-      - name: deviceId
-        in: path
-        description: Target device
-        required: true
-        type: string
-      - name: object
-        in: path
-        description: Object ID
-        required: true
-        type: string
-      - name: instance
-        in: path
-        description: Instance ID
-        required: true
-        type: string
-      - name: resource
-        in: path
-        description: Resource ID
-        required: true
-        type: string
-      - name: model
-        in: query
-        description: Whether or not to add model information
-        required: false
-        type: boolean
-        default: false
+        - name: device_id
+          in: path
+          description: Target device
+          required: true
+          type: string
+        - name: object
+          in: path
+          description: Object ID
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: Instance ID
+          required: true
+          type: string
+        - name: resource
+          in: path
+          description: Resource ID
+          required: true
+          type: string
+        - name: model
+          in: query
+          description: Whether or not to add model information
+          required: false
+          type: boolean
+          default: false
       responses:
-        '200':
-          description: Observation started. Returns current snapshot of the resource
-          schema:
-            "$ref": "#/definitions/ResourceInstance"
+        '202':
+          description: Observation started.
         '400':
           description: Resource is not readable
         '404':
           description: Resource is not found
 
-  "/devices/{deviceId}/{object}/{instance}/{resource}/unobserve":
+  "/devices/{device_id}/{object}/{instance}/{resource}/unobserve":
     post:
       tags:
       - Device
@@ -5769,7 +5894,7 @@ paths:
       x-soracom-cli:
         - devices unobserve-resource
       parameters:
-      - name: deviceId
+      - name: device_id
         in: path
         description: Target device
         required: true
@@ -5794,6 +5919,268 @@ paths:
           description: Observation cancelled
         '404':
           description: Resource is not found
+
+  "/devices/{device_id}/{object}/{instance}/observe":
+    post:
+      tags:
+      - Device
+      summary: Triggers observation of resources under an object instance of a device
+      description: Triggers observation of resources under an object instance of a device
+      operationId: observeDeviceResources
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices observe-resources
+      parameters:
+      - name: device_id
+        in: path
+        description: Target device
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: Object ID
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: Instance ID
+        required: true
+        type: string
+      - name: model
+        in: query
+        description: Whether or not to add model information
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '202':
+          description: Observation started.
+        '400':
+          description: Resource is not readable
+        '404':
+          description: Resource is not found
+
+  "/devices/{device_id}/{object}/{instance}/unobserve":
+    post:
+      tags:
+      - Device
+      summary: Stops observation of resources under an object instance of a device
+      description: Stops observation of resources under an object instance of a device
+      operationId: unobserveDeviceResources
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices unobserve-resources
+      parameters:
+      - name: device_id
+        in: path
+        description: Target device
+        required: true
+        type: string
+      - name: object
+        in: path
+        description: Object ID
+        required: true
+        type: string
+      - name: instance
+        in: path
+        description: Instance ID
+        required: true
+        type: string
+      responses:
+        '204':
+          description: Observation cancelled
+        '404':
+          description: Resource is not found
+
+  "/device_object_models":
+    get:
+      tags:
+      - DeviceObjectModel
+      summary: Returns a list of device object models
+      description: Returns a list of device object models
+      operationId: listDeviceObjectModels
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices list-object-models
+      parameters:
+      - name: last_evaluated_key
+        in: query
+        description: ID of the last device object model in the previous page
+        required: false
+        type: string
+        default: 'null'
+      - name: limit
+        in: query
+        description: Max number of device object models in a response
+        required: false
+        type: integer
+        default: -1
+        format: int32
+      responses:
+        '200':
+          description: List of device object models
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/DeviceObjectModel"
+
+    post:
+      tags:
+      - DeviceObjectModel
+      summary: Creates a new device object model
+      description: Creates a new device object model
+      operationId: createDeviceObjectModel
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices create-object-model
+      consumes:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: object_model_definition
+        description: Device object model definition in either XML or JSON format.
+        required: true
+        schema:
+          "$ref": "#/definitions/DeviceObjectModel"
+      responses:
+        '200':
+          description: Device object model created
+          schema:
+            "$ref": "#/definitions/DeviceObjectModel"
+        '400':
+          description: Failed to parse device object model definition
+
+  "/device_object_models/{model_id}":
+    post:
+      tags:
+      - DeviceObjectModel
+      summary: Updates a device object model
+      description: Updates a device object model
+      operationId: updateDeviceObjectModel
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices update-object-model
+      consumes:
+      - application/json
+      - application/xml
+      parameters:
+      - name: model_id
+        in: path
+        description: Device object model ID
+        required: true
+        type: string
+      - in: body
+        name: object_model_definition
+        description: Device object model definition in either XML or JSON format.
+        required: true
+        schema:
+          "$ref": "#/definitions/DeviceObjectModel"
+      responses:
+        '200':
+          description: Device object model updated
+          schema:
+            "$ref": "#/definitions/DeviceObjectModel"
+        '400':
+          description: Failed to parse device object model definition
+        '404':
+          description: No such device object model found
+
+    get:
+      tags:
+      - DeviceObjectModel
+      summary: Gets a device object model
+      description: Gets a device object model
+      operationId: getDeviceObjectModel
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices get-object-model
+      consumes:
+      - text/plain
+      parameters:
+      - name: model_id
+        in: path
+        description: Device object model ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Device object model
+          schema:
+            "$ref": "#/definitions/DeviceObjectModel"
+        '404':
+          description: No such device object model found
+
+    delete:
+      tags:
+      - DeviceObjectModel
+      summary: Deletes a device object model
+      description: Deletes a device object model
+      operationId: deleteDeviceObjectModel
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices delete-object-model
+      consumes:
+      - text/plain
+      parameters:
+      - name: model_id
+        in: path
+        description: Device object model ID
+        required: true
+        type: string
+      responses:
+        '204':
+          description: Successfuly deleted
+        '404':
+          description: No such device object model found
+
+  "/device_object_models/{model_id}/set_scope":
+    post:
+      tags:
+      - DeviceObjectModel
+      summary: Sets scope for a device object model
+      description: Sets scope for a device object model
+      operationId: setDeviceObjectModelScope
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - devices set-object-model-scope
+      consumes:
+      - application/json
+      parameters:
+      - name: model_id
+        in: path
+        description: Target device object model ID
+        required: true
+        type: string
+      - name: scope
+        in: body
+        description: Scope value that is applied to the target device object model
+        required: true
+        schema:
+          "$ref": "#/definitions/SetDeviceObjectModelScopeRequest"
+      responses:
+        '200':
+          description: Scope is set to the target device object model
+          schema:
+            "$ref": "#/definitions/DeviceObjectModel"
+        '404':
+          description: No such device object model found
 
 # Query (search)
   "/query/subscribers":
@@ -5948,6 +6335,7 @@ definitions:
           - doNothing
           - deleteSession
           - deactivate
+          - suspend
           - terminate
     required:
       - expiryTime
@@ -6016,12 +6404,12 @@ definitions:
   TagUpdateRequest:
     type: object
     properties:
-      tagName:
+      tag_name:
         type: string
       tagValue:
         type: string
     required:
-      - tagName
+      - tag_name
       - tagValue
 
   GroupConfigurationUpdateRequest:
@@ -6112,6 +6500,7 @@ definitions:
       password: {type: string}
       tokenTimeoutSeconds: {type: integer, format: int64, default: 86400, maximum: 172800}
       userName: {type: string}
+      mfaOTPCode: {type: string}
 
   AuthResponse:
     properties:
@@ -6303,6 +6692,31 @@ definitions:
         items: {'$ref': '#/definitions/ListRolesResponse'}
       updateDateTime: {type: integer, format: int64}
       userName: {type: string}
+
+  EnableMFAOTPResponse:
+    properties:
+      totpUri: {type: string}
+  MFARevokingTokenVerifyRequest:
+    properties:
+      backupCode: {type: string}
+      email: {type: string}
+      password: {type: string}
+      token: {type: string}
+  MFAIssueRevokingTokenRequest:
+    properties:
+      email: {type: string}
+      password: {type: string}
+  MFAAuthenticationRequest:
+    properties:
+      mfaOTPCode: {type: string}
+  MFAStatusOfUseResponse:
+    properties:
+      status: {type: string}
+  OperatorMFAVerifyingResponse:
+    properties:
+      backupCodes:
+        type: array
+        items: {type: string}
 
   AttachRoleRequest:
     properties:
@@ -7114,6 +7528,8 @@ definitions:
         type: string
       destinationCidrBlock:
         type: string
+      peerRegion:
+        type: string
 
   JunctionMirroringConfiguration:
     type: object
@@ -7212,12 +7628,18 @@ definitions:
     properties:
       data:
         type: string
+      fPort:
+        type: integer
+        default: 2
+      confirmed:
+        type: boolean
+        default: false
 
 # LoraDevice
   LoraDevice:
     type: object
     properties:
-      deviceId:
+      device_id:
         type: string
       operatorId:
         type: string
@@ -7238,6 +7660,18 @@ definitions:
         - instock
       lastSeen:
         "$ref": "#/definitions/LastSeen"
+      tags:
+        type: object
+        additionalProperties:
+          type: string
+
+  RegisterLoraDeviceRequest:
+    type: object
+    properties:
+      registrationSecret:
+        type: string
+      groupId:
+        type: string
       tags:
         type: object
         additionalProperties:
@@ -7320,7 +7754,7 @@ definitions:
   SigfoxDevice:
     type: object
     properties:
-      deviceId:
+      device_id:
         type: string
       operatorId:
         type: string
@@ -7368,7 +7802,7 @@ definitions:
   Device:
     type: object
     properties:
-      deviceId:
+      device_id:
         type: string
       operatorId:
         type: string
@@ -7387,10 +7821,6 @@ definitions:
       lastRegistrationUpdate:
         type: string
         format: date-time
-      imsi:
-        type: string
-      imei:
-        type: string
       ipAddress:
         type: string
       objects:
@@ -7472,6 +7902,37 @@ definitions:
       observed:
         type: boolean
         default: false
+
+  DeviceObjectModel:
+    type: object
+    properties:
+      #modelId:
+      #  type: string
+      operatorId:
+        type: string
+      createdTime:
+        type: string
+        format: date-time
+      lastModifiedTime:
+        type: string
+        format: date-time
+      objectName:
+        type: string
+      objectId:
+        type: string
+      format:
+        type: string
+        enum:
+        - xml
+        - json
+      scope:
+        type: string
+
+  SetDeviceObjectModelScopeRequest:
+    type: object
+    properties:
+      scope:
+        type: string
 
   AttributeUpdate:
     type: object

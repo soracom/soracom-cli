@@ -13,14 +13,14 @@ import (
 // VpgCreateMirroringPeerCmdDescription holds value of 'description' option
 var VpgCreateMirroringPeerCmdDescription string
 
-// VpgCreateMirroringPeerCmdId holds value of 'id' option
-var VpgCreateMirroringPeerCmdId string
-
 // VpgCreateMirroringPeerCmdIpAddress holds value of 'ipAddress' option
 var VpgCreateMirroringPeerCmdIpAddress string
 
 // VpgCreateMirroringPeerCmdProtocol holds value of 'protocol' option
 var VpgCreateMirroringPeerCmdProtocol string
+
+// VpgCreateMirroringPeerCmdVpgId holds value of 'vpg_id' option
+var VpgCreateMirroringPeerCmdVpgId string
 
 // VpgCreateMirroringPeerCmdEnabled holds value of 'enabled' option
 var VpgCreateMirroringPeerCmdEnabled bool
@@ -31,11 +31,11 @@ var VpgCreateMirroringPeerCmdBody string
 func init() {
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdDescription, "description", "", TRAPI(""))
 
-	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdId, "id", "", TRAPI("VPG ID"))
-
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdIpAddress, "ip-address", "", TRAPI(""))
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdProtocol, "protocol", "", TRAPI(""))
+
+	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TRAPI(""))
 
@@ -47,8 +47,8 @@ func init() {
 // VpgCreateMirroringPeerCmd defines 'create-mirroring-peer' subcommand
 var VpgCreateMirroringPeerCmd = &cobra.Command{
 	Use:   "create-mirroring-peer",
-	Short: TRAPI("/virtual_private_gateways/{id}/junction/mirroring/peers:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{id}/junction/mirroring/peers:post:description`),
+	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:summary"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -94,7 +94,7 @@ func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method:      "POST",
-		path:        buildPathForVpgCreateMirroringPeerCmd("/virtual_private_gateways/{id}/junction/mirroring/peers"),
+		path:        buildPathForVpgCreateMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers"),
 		query:       buildQueryForVpgCreateMirroringPeerCmd(),
 		contentType: "application/json",
 		body:        body,
@@ -103,7 +103,7 @@ func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgCreateMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"id"+"}", VpgCreateMirroringPeerCmdId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgCreateMirroringPeerCmdVpgId, -1)
 
 	return path
 }
