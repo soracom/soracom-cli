@@ -2303,7 +2303,7 @@ paths:
           type: string
         - name: data
           in: body
-          description: Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string). The number of characters must be even. "fPort" MUST be equal to or greater than 0. 0 is used for the control plane and 1 or greater values should be used in general. It defaults to 2 to avoid the issues of some devices from some vendors and all invalid values that can not be parsed fallback to 2. "confirmed" represents if you want your device to respond back with the ack that your device actually received the downlink message. It defaults to false, with which the network server does not confirm if the downlink message is sent to the device.
+          description: Binary data encoded as a hexadecimal string. Maximum length of original binary data is 11 octets (22 characters when encoded as a hexadecimal string). The number of characters must be even. fPort MUST be equal to or greater than 0. 0 is used for the control plane and 1 or greater values should be used in general. It defaults to 2 to avoid the issues of some devices from some vendors and all invalid values that can not be parsed fallback to 2.
           schema:
            '$ref': '#/definitions/LoraData'
           required: true
@@ -7631,9 +7631,6 @@ definitions:
       fPort:
         type: integer
         default: 2
-      confirmed:
-        type: boolean
-        default: false
 
 # LoraDevice
   LoraDevice:
