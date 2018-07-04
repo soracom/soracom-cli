@@ -48,6 +48,9 @@ cli:
   groups:
     summary: List, create, update or delete groups.
     description: List, create, update or delete groups.
+  lagoon:
+    summary: Manage Lagoon settings.
+    description: Manage Lagoon settings.
   logs:
     summary: List logs.
     description: List logs.

@@ -16,6 +16,7 @@ Available Commands:
   files              エクスポートされたファイルを取得します。
   groups             グループに関する操作を行います。
   help               Help about any command
+  lagoon             Lagoon に関する操作を行います。
   logs               ログに関する操作を行います。
   lora-devices       LoRa device に関する操作を行います。
   lora-gateways      LoRa gateway に関する操作を行います。

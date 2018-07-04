@@ -48,6 +48,9 @@ cli:
   groups:
     summary: グループに関する操作を行います。
     description: グループに関する操作を行います。
+  lagoon:
+    summary: Lagoon に関する操作を行います。
+    description: Lagoon に関する操作を行います。
   logs:
     summary: ログに関する操作を行います。
     description: ログに関する操作を行います。

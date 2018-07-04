@@ -72,6 +72,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "groups.go",
 		},
 		{
+			Use:                       "lagoon",
+			Short:                     "cli.lagoon.summary",
+			Long:                      "cli.lagoon.description",
+			CommandVariableName:       "LagoonCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "lagoon.go",
+		},
+		{
 			Use:                       "lora-devices",
 			Short:                     "cli.lora-devices.summary",
 			Long:                      "cli.lora-devices.description",

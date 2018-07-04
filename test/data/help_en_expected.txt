@@ -16,6 +16,7 @@ Available Commands:
   files              Get an exported file.
   groups             List, create, update or delete groups.
   help               Help about any command
+  lagoon             Manage Lagoon settings.
   logs               List logs.
   lora-devices       Manage LoRa devices.
   lora-gateways      Manage LoRa gateways.

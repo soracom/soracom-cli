@@ -140,17 +140,7 @@ func buildPathFor{{$suffix}}(path string) string {
   {{end}}
   {{range .IntegerFlags}}
   {{if eq .In "path"}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", {{$prefix}}{{.VarName}}, -1)
-  {{end}}
-  {{end}}
-  {{range .FloatFlags}}
-  {{if eq .In "path"}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", {{$prefix}}{{.VarName}}, -1)
-  {{end}}
-  {{end}}
-  {{range .BoolFlags}}
-  {{if eq .In "path"}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", {{$prefix}}{{.VarName}}, -1)
+  path = strings.Replace(path, "{" + "{{.Name}}" + "}", sprintf("%d", {{$prefix}}{{.VarName}}), -1)
   {{end}}
   {{end}}
   return path

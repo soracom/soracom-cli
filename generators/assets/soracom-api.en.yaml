@@ -4560,6 +4560,7 @@ paths:
             - SoracomEndorse
             - SoracomFunnel
             - SoracomHarvest
+            - SoracomKrypton
         - name: parameters
           in: body
           description: Array of values for target object to be updated.
@@ -4605,6 +4606,7 @@ paths:
             - SoracomEndorse
             - SoracomFunnel
             - SoracomHarvest
+            - SoracomKrypton
         - name: name
           in: path
           description: Parameter name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)
@@ -6276,6 +6278,201 @@ paths:
         '400':
           description: "Invalid search queries"
 
+# Lagoon API
+  '/lagoon/register':
+    post:
+      tags: [Lagoon]
+      summary: Register (activate) SORACOM Lagoon
+      description: Register (activate) SORACOM Lagoon. This API is only allowed to operate by root account.
+      operationId: registerLagoon
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/LagoonRegistrationRequest'}
+      responses:
+        '201':
+          description: Registered
+          schema: {$ref: '#/definitions/LagoonRegistrationResponse'}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon register
+
+  '/lagoon/terminate':
+    post:
+      tags: [Lagoon]
+      summary: Terminate (deactivate) SORACOM Lagoon
+      description: Terminate (deactivate) SORACOM Lagoon.
+      operationId: terminateLagoon
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      responses:
+        '204': {description: Terminated}
+        '400': {description: Bad request}
+        '404': {description: Operator not found}
+      x-soracom-cli:
+        - lagoon terminate
+
+  '/lagoon/users':
+    get:
+      tags: [Lagoon]
+      summary: List SORACOM Lagoon users that belong to operator
+      description: List SORACOM Lagoon users that belong to operator.
+      operationId: listLagoonUsers
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            $ref: '#/definitions/LagoonUser'
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon list-users
+    post:
+      tags: [Lagoon]
+      summary: Create a SORACOM Lagoon user
+      description: Create a SORACOM Lagoon user.
+      operationId: createLagoonUser
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/LagoonUserCreationRequest'}
+      responses:
+        '201':
+          description: Created
+          schema: {$ref: '#/definitions/LagoonUserCreationResponse'}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon create-user
+
+  '/lagoon/users/{lagoon_user_id}':
+    delete:
+      tags: [Lagoon]
+      summary: Delete a SORACOM Lagoon user
+      description: Delete a SORACOM Lagoon user.
+      operationId: deleteLagoonUser
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: lagoon_user_id
+        in: path
+        description: Target ID of the lagoon user
+        required: true
+        type: integer
+      responses:
+        '204': {description: Deleted}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon delete-user
+
+  '/lagoon/users/{lagoon_user_id}/permission':
+    put:
+      tags: [Lagoon]
+      summary: Update permission of a SORACOM Lagoon user
+      description: Update permission of a SORACOM Lagoon user.
+      operationId: updateLagoonUserPermission
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: lagoon_user_id
+        in: path
+        description: Target ID of the lagoon user
+        required: true
+        type: integer
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/LagoonUserPermissionUpdatingRequest'}
+      responses:
+        '200': {description: OK}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon update-user-permission
+
+  '/lagoon/users/{lagoon_user_id}/password':
+    put:
+      tags: [Lagoon]
+      summary: Update password of a SORACOM Lagoon user
+      description: Update password of a SORACOM Lagoon user.
+      operationId: updateLagoonUserPassword
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: lagoon_user_id
+        in: path
+        description: Target ID of the lagoon user
+        required: true
+        type: integer
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/LagoonUserPasswordUpdatingRequest'}
+      responses:
+        '200': {description: OK}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon update-user-password
+
+  '/lagoon/users/{lagoon_user_id}/email':
+    put:
+      tags: [Lagoon]
+      summary: Update email address of a SORACOM Lagoon user
+      description: Update email address of a SORACOM Lagoon user.
+      operationId: updateLagoonUserEmail
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+      - name: lagoon_user_id
+        in: path
+        description: Target ID of the lagoon user
+        required: true
+        type: integer
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/LagoonUserEmailUpdatingRequest'}
+      responses:
+        '200': {description: OK}
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon update-user-email
+
 definitions:
 
   Subscriber:
@@ -6404,12 +6601,12 @@ definitions:
   TagUpdateRequest:
     type: object
     properties:
-      tag_name:
+      tagName:
         type: string
       tagValue:
         type: string
     required:
-      - tag_name
+      - tagName
       - tagValue
 
   GroupConfigurationUpdateRequest:
@@ -7954,3 +8151,88 @@ definitions:
     properties:
       messageId:
         type: string
+# Lagoon
+  LagoonRegistrationRequest:
+    type: object
+    properties:
+      plan:
+        type: string
+        # TODO rewrite if `business` is supported
+        enum:
+        - maker
+      userPassword:
+        type: string
+        description: This password is used by the initial user's login.
+
+  LagoonRegistrationResponse:
+    type: object
+    properties:
+      lagoonUserEmail:
+        type: string
+        description: This email address is used on login with the initial user.
+
+  LagoonUser:
+    type: object
+    properties:
+      id:
+        type: number
+      email:
+        type: string
+        description: This value used on login.
+      role:
+        type: string
+        description: A role that represents the permission.
+        enum:
+        - Viewer
+        - Editor
+      lastSeenAt:
+        type: string
+        description: The last login datetime.
+
+  LagoonUserCreationRequest:
+    type: object
+    properties:
+      userEmail:
+        type: string
+      userPassword:
+        type: string
+      role:
+        type: string
+        description: A role that represents the permission.
+        enum:
+        - Viewer
+        - Editor
+
+  LagoonUserCreationResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Lagoon user ID assigned to the created user.
+
+  LagoonUserPermissionUpdatingRequest:
+    type: object
+    properties:
+      role:
+        type: string
+        description: A role that represents the permission.
+        enum:
+        - Viewer
+        - Editor
+
+  LagoonUserPasswordUpdatingRequest:
+    type: object
+    properties:
+      userEmail:
+        type: string
+      oldPassword:
+        type: string
+      newPassword:
+        type: string
+
+  LagoonUserEmailUpdatingRequest:
+    type: object
+    properties:
+      userEmail:
+        type: string
+

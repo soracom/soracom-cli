@@ -2915,6 +2915,45 @@ paths:
         '400':
           description: 不正な検索クエリです
 
+# Lagoon API
+  '/lagoon/register':
+    post:
+      summary: SORACOM Lagoon サービスを有効にします。
+      description: SORACOM Lagoon サービスを有効にします。この API による操作は root アカウントのみが可能です。
+
+  '/lagoon/terminate':
+    post:
+      summary: SORACOM Lagoon サービスの使用を終了します。
+      description: SORACOM Lagoon サービスの使用を終了します。この API による操作は root アカウントのみが可能です。
+
+  '/lagoon/users':
+    get:
+      summary: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得します。
+      description: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得します。
+    post:
+      summary: SORACOM Lagoon のユーザーを新たに作成します。
+      description: SORACOM Lagoon のユーザーを新たに作成します。
+
+  '/lagoon/users/{lagoon_user_id}':
+    delete:
+      summary: SORACOM Lagoon のユーザーを削除します。
+      description: SORACOM Lagoon のユーザーを削除します。
+
+  '/lagoon/users/{lagoon_user_id}/permission':
+    put:
+      summary: SORACOM Lagoon のユーザーの権限を変更します。
+      description: SORACOM Lagoon のユーザーの権限を変更します。
+
+  '/lagoon/users/{lagoon_user_id}/password':
+    put:
+      summary: SORACOM Lagoon のユーザーのパスワードを変更します。
+      description: SORACOM Lagoon のユーザーのパスワードを変更します。
+
+  '/lagoon/users/{lagoon_user_id}/email':
+    put:
+      summary: SORACOM Lagoon のユーザーのメールアドレスを変更します。
+      description: SORACOM Lagoon のユーザーのメールアドレスを変更します。
+
 definitions:
 
   APICallErrorMessage:
