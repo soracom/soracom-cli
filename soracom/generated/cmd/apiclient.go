@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -152,6 +153,9 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if res == nil {
+		return "", errors.New("nil response received")
+	}
 	defer res.Body.Close()
 
 	if ac.verbose {
@@ -237,7 +241,7 @@ func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response
 		ac.reportRetrying()
 	}
 
-	return nil, err
+	return nil, errors.New("unable to receive successful response with some retires")
 }
 
 func (ac *apiClient) reportWaitingBeforeRetrying(res *http.Response, err error, wait int) {

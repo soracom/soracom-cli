@@ -80,7 +80,7 @@ git config --global http.https://gopkg.in.followRedirects true
     popd > /dev/null
 }
 
-: "Buildi soracom-cli executables" && {
+: "Build soracom-cli executables" && {
     pushd "$d/soracom" > /dev/null
     echo "Building artifacts ..."
     go generate

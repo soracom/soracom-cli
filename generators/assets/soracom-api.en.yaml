@@ -6473,6 +6473,168 @@ paths:
       x-soracom-cli:
         - lagoon update-user-email
 
+  '/data/{resource_type}/{resource_id}':
+    get:
+      summary: Get data sent from a resource.
+      description: Returns a list of data entries sent from a resource that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.
+      operationId: getDataEntries
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - data get-entries
+      parameters:
+        - name: resource_type
+          in: path
+          description: Type of data source resource
+          required: true
+          type: string
+          enum: ['Subscriber','LoraDevice','SubscriberIdentityModule','SigfoxDevice','Device']
+        - name: resource_id
+          in: path
+          description: ID of data source resource
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: Start time for the data entries search range (unixtime in milliseconds).
+          required: false
+          type: integer
+        - name: to
+          in: query
+          description: End time for the data entries search range (unixtime in milliseconds).
+          required: false
+          type: integer
+        - name: sort
+          in: query
+          description: Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first).
+          required: false
+          type: string
+          enum: [desc, asc]
+          default: desc
+        - name: limit
+          in: query
+          description: Maximum number of data entries to retrieve.
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward.
+          required: false
+          type: string
+      tags:
+        - DataEntry
+      responses:
+        200:
+          description: A list of data entries.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/DataEntry'
+
+  '/data/resources':
+    get:
+      summary: Get the list of data source resources
+      description: Returns a list of data source resources that have sent data from resources that belong to the operator. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.
+      operationId: listDataSourceResources
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - data list-source-resources
+      parameters:
+        - name: resource_type
+          in: query
+          description: Type of data source resource
+          required: false
+          type: string
+          enum: ['Subscriber','LoraDevice','SubscriberIdentityModule','SigfoxDevice','Device']
+        - name: limit
+          in: query
+          description: Maximum number of data entries to retrieve.
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: The value of `resourceId` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward.
+          required: false
+          type: string
+      tags:
+        - DataEntry
+      responses:
+        200:
+          description: A list of data source resources.
+          schema:
+            type: array
+            items: { $ref: '#/definitions/DataSourceResourceMetadata' }
+
+  '/data/{resource_type}/{resource_id}/{time}':
+    get:
+      summary: Gets a data entry
+      description: Gets a data entry identified with resource ID and timestamp
+      operationId: getDataEntry
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - data get-entry
+      parameters:
+        - name: resource_type
+          in: path
+          description: Type of data source resource
+          required: true
+          type: string
+          enum: ['Subscriber','LoraDevice','SubscriberIdentityModule','SigfoxDevice','Device']
+        - name: resource_id
+          in: path
+          description: ID of data source resource
+          required: true
+          type: string
+        - name: time
+          in: query
+          description: Timestamp of the target data entry to get (unixtime in milliseconds).
+          required: true
+          type: integer
+      tags:
+        - DataEntry
+      responses:
+        200:
+          description: The data entry specified with resource ID and timestamp
+        404:
+          description: No such entry found
+
+    delete:
+      summary: Deletes a data entry
+      description: Deletes a data entry identified with resource ID and timestamp
+      operationId: deleteDataEntry
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - data delete-entry
+      parameters:
+        - name: resource_type
+          in: path
+          description: Type of data source resource
+          required: true
+          type: string
+          enum: ['Subscriber','LoraDevice','SubscriberIdentityModule','SigfoxDevice','Device']
+        - name: resource_id
+          in: path
+          description: ID of data source resource
+          required: true
+          type: string
+        - name: time
+          in: query
+          description: Timestamp of the target data entry to delete (unixtime in milliseconds).
+          required: true
+          type: integer
+      tags:
+        - DataEntry
+      responses:
+        204:
+          description: The data entry has been successfully deleted
+
 definitions:
 
   Subscriber:
@@ -7820,6 +7982,20 @@ definitions:
       contentType:
         type: string
 
+  DataSourceResourceMetadata:
+    properties:
+      resourceType:
+        type: string
+      resourceId:
+        type: string
+      lastModifiedTime:
+        type: integer
+        format: int64
+      attributeNames:
+        type: array
+        items:
+          type: string
+
 # LoraData
   LoraData:
     properties:
@@ -8235,4 +8411,3 @@ definitions:
     properties:
       userEmail:
         type: string
-

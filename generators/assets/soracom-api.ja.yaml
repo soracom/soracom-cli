@@ -2954,6 +2954,75 @@ paths:
       summary: SORACOM Lagoon のユーザーのメールアドレスを変更します。
       description: SORACOM Lagoon のユーザーのメールアドレスを変更します。
 
+  '/data/{resource_type}/{resource_id}':
+    get:
+      summary: Get data sent from a resource
+      description: 指定されたデータ送信元リソースから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: resource_type
+          description: データ送信元リソースのType
+        - name: resource_id
+          description: データ送信元リソースのID
+        - name: from
+          description: 取得対象の期間の始まり (unixtime ミリ秒単位)
+        - name: to
+          description: 取得対象の期間の終わり (unixtime ミリ秒単位)
+        - name: sort
+          description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+        - name: limit
+          description: 取得するデータエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      responses:
+        200:
+          description: データエントリのリスト
+
+  '/data/resources':
+    get:
+      summary: Get the list of data source resources
+      description: 当該オペレータに属するデータ送信元リソースのリストを返す。データ送信元リソースの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: resource_type
+          description: 対象のリソースType
+        - name: limit
+          description: 取得するデータエントリ数の上限
+        - name: last_evaluated_key
+          description: 前ページで取得した最後のデータ送信元リソースのID。このパラメータを指定することで次のデータ送信元リソース以降のリストを取得できる。
+      responses:
+        200:
+          description: データ送信元リソースのリスト
+
+  '/data/{resource_type}/{resource_id}/{time}':
+    get:
+      summary: Gets a data entry
+      description: リソースIDとタイムスタンプで指定されたデータエントリを削除する。
+      parameters:
+        - name: resource_type
+          description: データ送信元リソースのType
+        - name: resource_id
+          description: データ送信元リソースのID
+        - name: time
+          description: 取得対象のデータエントリのタイムスタンプ (unixtime ミリ秒単位)
+      responses:
+        204:
+          description: リソースIDとタイムスタンプで特定されるデータエントリ
+        404:
+          description: 対象のデータエントリが存在しない
+    delete:
+      summary: Deletes a data entry
+      description: リソースIDとタイムスタンプで指定されたデータエントリを削除する。
+      operationId: deleteDataEntry
+      parameters:
+        - name: resource_type
+          description: データ送信元リソースのType
+        - name: resource_id
+          description: データ送信元リソースのID
+        - name: time
+          description: 削除対象のデータエントリのタイムスタンプ (unixtime ミリ秒単位)
+      responses:
+        204:
+          description: データエントリは正常に削除されました
+
 definitions:
 
   APICallErrorMessage:
