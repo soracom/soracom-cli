@@ -3168,6 +3168,40 @@ paths:
         404:
           description: The specified Sigfox device does not exist.
 
+  '/sigfox_devices/{device_id}/register':
+    post:
+      summary: Register a Sigfox device.
+      description: Registers a Sigfox device
+      operationId: registerSigfoxDevice
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - sigfox-devices register
+      parameters:
+        - name: device_id
+          in: path
+          description: Device ID of the target sigfox device to register
+          required: true
+          type: string
+        - name: registration_request
+          in: body
+          description: Sigfox device registration request
+          schema:
+            '$ref': '#/definitions/SigfoxRegistrationRequest'
+          required: true
+      tags:
+        - SigfoxDevice
+      responses:
+        200:
+          description: Sigfox device successfully registered
+          schema:
+            '$ref': '#/definitions/SigfoxDevice'
+        400:
+          description: PAC code is missing
+
   '/sigfox_devices/{device_id}/data':
     get:
       summary: Get data sent from a Sigfox device.
@@ -8145,6 +8179,16 @@ definitions:
         - instock
       lastSeen:
         "$ref": "#/definitions/LastSeen"
+      tags:
+        type: object
+        additionalProperties:
+          type: string
+
+  SigfoxRegistrationRequest:
+    type: object
+    properties:
+      registrationSecret:
+        type: string
       tags:
         type: object
         additionalProperties:

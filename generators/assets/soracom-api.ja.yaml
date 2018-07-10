@@ -1505,6 +1505,21 @@ paths:
         404:
           description: 指定されたSigfox deviceが存在しない
 
+  '/sigfox_devices/{device_id}/register':
+    post:
+      summary: Register a Sigfox device.
+      description: Sigfox デバイスを登録する
+      parameters:
+        - name: device_id
+          description: 登録対象のSigfoxデバイスのID
+        - name: registration_request
+          description: Sigfoxデバイスの登録リクエスト
+      responses:
+        200:
+          description: Sigfoxデバイスが正しく登録されました
+        400:
+          description: PACが指定されていません
+
   '/sigfox_devices/{device_id}/data':
     get:
       summary: Get data sent from a Sigfox device.
