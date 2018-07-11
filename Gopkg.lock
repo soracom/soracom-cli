@@ -71,7 +71,7 @@
     "html",
     "html/atom"
   ]
-  revision = "ed29d75add3d7c4bf7ca65aac0c6df3d1420216f"
+  revision = "039a4258aec0ad3c79b905677cceeab13b296a77"
 
 [[projects]]
   branch = "master"
@@ -80,7 +80,7 @@
     "unix",
     "windows"
   ]
-  revision = "151529c776cdc58ddbe7963ba9af779f3577b419"
+  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
