@@ -195,7 +195,8 @@ TODO: Currently, the build result is generated in the container. It will be fixe
 ```
 VERSION=1.2.3                         # => specify a version number to be released
 ./scripts/build.sh $VERSION           # => build a version to be released
-./scripts/test.sh $VERSION            # => test the version
+./test/test.sh $VERSION            # => test the version
+# commit & push all changes to github
 ./scripts/release.sh $VERSION         # => release the version to GitHub
 # edit the release on github.com release page
 ./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
