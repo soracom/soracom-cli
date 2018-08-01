@@ -42,7 +42,7 @@ Available Commands:
 Flags:
       --api-key string         Specify API key otherwise soracom-cli performs authentication on behalf of you
       --api-token string       Specify API token otherwise soracom-cli performs authentication on behalf of you
-      --coverage-type string   Specify coverage type
+      --coverage-type string   Specify coverage type, 'g' for Global, 'jp' for Japan
   -h, --help                   help for soracom
       --profile string         Specify profile name
 
