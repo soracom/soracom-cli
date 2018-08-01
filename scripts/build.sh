@@ -48,7 +48,7 @@ git config --global http.https://gopkg.in.followRedirects true
     go get -u github.com/jessevdk/go-assets
     go get -u github.com/jessevdk/go-assets-builder
     go get -u github.com/laher/goxc
-    go get -u github.com/GoASTScanner/gas/cmd/gas
+    go get -u github.com/securego/gosec/cmd/gosec/...
     go get -u github.com/elazarl/goproxy
     set +x
 
@@ -71,7 +71,7 @@ git config --global http.https://gopkg.in.followRedirects true
     go get ./...
     go vet
     goimports -w ./*.go
-    gas ./...
+    gosec ./...
     go test
     go build -o generate-cmd
 
@@ -88,7 +88,7 @@ git config --global http.https://gopkg.in.followRedirects true
     go get -u github.com/bearmini/go-acl # required to specify some dependencies explicitly as they are imported only in windows builds
     go get -u golang.org/x/sys/windows
     gofmt -s -w .
-    gas ./...
+    gosec ./...
     #gox -ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version $VERSION" -osarch="windows/386 windows/amd64 darwin/amd64 linux/386 linux/amd64 linux/arm" -parallel=6 -output="bin/{{.OS}}/{{.Arch}}/soracom"
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
 
