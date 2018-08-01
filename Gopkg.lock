@@ -11,10 +11,10 @@
   revision = "a423b25ba3ef3afa637b85a6222ccf2abffd01c6"
 
 [[projects]]
-  branch = "master"
   name = "github.com/elazarl/goproxy"
   packages = ["."]
-  revision = "91d82cc1070b9ec55e722ab471af64c82b2bcb9c"
+  revision = "947c36da3153ff334e74d9d980de341d25f358ba"
+  version = "v1.1"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -62,7 +62,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
+  revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
 
 [[projects]]
   branch = "master"
@@ -71,7 +71,7 @@
     "html",
     "html/atom"
   ]
-  revision = "039a4258aec0ad3c79b905677cceeab13b296a77"
+  revision = "49c15d80dfbc983ea25246ee959d970efe09ec09"
 
 [[projects]]
   branch = "master"
@@ -80,7 +80,7 @@
     "unix",
     "windows"
   ]
-  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
+  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
