@@ -18,6 +18,7 @@ import (
 )
 
 type profile struct {
+	Sandbox      bool    `json:"sandbox"`
 	CoverageType string  `json:"coverageType"`
 	Email        *string `json:"email,omitempty"`
 	Password     *string `json:"password,omitempty"`
@@ -64,6 +65,14 @@ func getDefaultProfileName() string {
 	return "default"
 }
 
+func getDefaultSandboxProfileName() string {
+	return "sandbox"
+}
+
+func getDefaultCoverageType() string {
+	return "g"
+}
+
 func getProfileDir() (string, error) {
 	profDir := os.Getenv("SORACOM_PROFILE_DIR")
 	if profDir == "" {
@@ -82,6 +91,17 @@ func getSpecifiedProfileName() string {
 		return getDefaultProfileName()
 	}
 	return sanitize.BaseName(specifiedProfileName)
+}
+
+func getSpecifiedSandboxProfileName() string {
+	if specifiedProfileName == "" {
+		return getDefaultSandboxProfileName()
+	}
+	return sanitize.BaseName(specifiedProfileName)
+}
+
+func getSpecifiedCoverageType() string {
+	return specifiedCoverageType
 }
 
 func loadProfile(profileName string) (*profile, error) {
@@ -229,6 +249,39 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	}, nil
 }
 
+func collectSandboxProfileInfo(profileName string) (*profile, error) {
+	profDir, err := getProfileDir()
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf(TRCLI("cli.configure_sandbox.profile.prompt"), profDir, getSpecifiedSandboxProfileName())
+
+	ct, err := collectCoverageType()
+	if err != nil {
+		return nil, err
+	}
+
+	ai, err := collectProductionEnvAuthInfoForSandbox()
+	if err != nil {
+		return nil, err
+	}
+
+	sa, err := collectSandboxAccountInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	return &profile{
+		Sandbox:      true,
+		CoverageType: ct,
+		Email:        sa.Email,
+		Password:     sa.Password,
+		AuthKeyID:    ai.AuthKeyID,
+		AuthKey:      ai.AuthKey,
+	}, nil
+}
+
 func readPassword(prompt string) (string, error) {
 	fmt.Print(prompt)
 	password, err := terminal.ReadPassword(int(syscall.Stdin))
@@ -328,4 +381,38 @@ func collectAuthInfo() (*authInfo, error) {
 	}
 
 	return nil, errors.New("this line should not be executed")
+}
+
+func collectProductionEnvAuthInfoForSandbox() (*authInfo, error) {
+	fmt.Printf(TRCLI("cli.configure_sandbox.profile.prod_auth.prompt"))
+
+	var authKeyID, authKey string
+	fmt.Print("authKeyId: ")
+	_, err := fmt.Scanf("%s\n", &authKeyID)
+	if err != nil {
+		return nil, err
+	}
+	authKey, err = readPassword("authKey: ")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println()
+	return &authInfo{AuthKeyID: &authKeyID, AuthKey: &authKey}, nil
+}
+
+func collectSandboxAccountInfo() (*authInfo, error) {
+	fmt.Printf(TRCLI("cli.configure_sandbox.profile.sandbox_account.prompt"))
+
+	var email string
+	fmt.Print("email: ")
+	_, err := fmt.Scanf("%s\n", &email)
+	if err != nil {
+		return nil, err
+	}
+	password, err := readPassword("password: ")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println()
+	return &authInfo{Email: &email, Password: &password}, nil
 }

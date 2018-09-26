@@ -56,17 +56,17 @@ var SubscribersSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -100,27 +100,35 @@ func buildQueryForSubscribersSetGroupCmd() string {
 }
 
 func buildBodyForSubscribersSetGroupCmd() (string, error) {
+	var result map[string]interface{}
+
 	if SubscribersSetGroupCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(SubscribersSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersSetGroupCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if SubscribersSetGroupCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return SubscribersSetGroupCmdBody, nil
+			b = []byte(SubscribersSetGroupCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if SubscribersSetGroupCmdGroupId != "" {
 		result["groupId"] = SubscribersSetGroupCmdGroupId

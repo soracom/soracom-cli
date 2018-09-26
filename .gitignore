@@ -12,3 +12,4 @@ vendor/
 
 # personal preferences
 .envrc
+.DS_Store

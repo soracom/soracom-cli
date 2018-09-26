@@ -45,17 +45,17 @@ var OperatorVerifyCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -87,27 +87,35 @@ func buildQueryForOperatorVerifyCmd() string {
 }
 
 func buildBodyForOperatorVerifyCmd() (string, error) {
+	var result map[string]interface{}
+
 	if OperatorVerifyCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(OperatorVerifyCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorVerifyCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if OperatorVerifyCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return OperatorVerifyCmdBody, nil
+			b = []byte(OperatorVerifyCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if OperatorVerifyCmdToken != "" {
 		result["token"] = OperatorVerifyCmdToken

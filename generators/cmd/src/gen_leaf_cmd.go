@@ -52,7 +52,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			CommandVariableName:       getCommandVariableName(commandName),
 			ParentCommandVariableName: getParentCommandVariableName(commandName),
 			RequireAuth:               m.Security != nil,
-			RequireOperatorID:         isOperatorIDRequired(m.Parameters),
+			RequireOperatorID:         isOperatorIDRequired(m.Parameters, apiDef.StructDefs),
 			BodyExists:                doesRequestBodyExist(m.Parameters),
 			Method:                    strings.ToUpper(m.Method),
 			BasePath:                  apiDef.BasePath,
@@ -167,7 +167,7 @@ func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.Struct
 	return result
 }
 
-func isOperatorIDRequired(parameters []lib.APIParam) bool {
+func isOperatorIDRequired(parameters []lib.APIParam, definitions map[string]lib.StructDef) bool {
 	for _, param := range parameters {
 		switch param.In {
 		case "path":
@@ -178,6 +178,15 @@ func isOperatorIDRequired(parameters []lib.APIParam) bool {
 				continue
 			}
 			return true
+		case "body":
+			if param.Schema.Ref != "" {
+				s := definitions[getStructNameFromReference(param.Schema.Ref)]
+				for _, p := range s.Properties {
+					if p.Name == "operatorId" {
+						return p.Required
+					}
+				}
+			}
 		}
 	}
 	return false

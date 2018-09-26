@@ -61,17 +61,17 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -105,27 +105,35 @@ func buildQueryForVpgRegisterGatePeerCmd() string {
 }
 
 func buildBodyForVpgRegisterGatePeerCmd() (string, error) {
+	var result map[string]interface{}
+
 	if VpgRegisterGatePeerCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(VpgRegisterGatePeerCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgRegisterGatePeerCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if VpgRegisterGatePeerCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return VpgRegisterGatePeerCmdBody, nil
+			b = []byte(VpgRegisterGatePeerCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if VpgRegisterGatePeerCmdInnerIpAddress != "" {
 		result["innerIpAddress"] = VpgRegisterGatePeerCmdInnerIpAddress

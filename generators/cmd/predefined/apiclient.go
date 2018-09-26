@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -51,6 +52,7 @@ func (ae *apiError) Error() string {
 type apiClientOptions struct {
 	BasePath string
 	Language string
+	Endpoint string
 }
 
 // New creates an instance of APIClient
@@ -72,7 +74,12 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 		Timeout: 120 * time.Second,
 	}
 
-	var endpoint = getSpecifiedEndpoint()
+	var endpoint string
+	if options.Endpoint != "" {
+		endpoint = options.Endpoint
+	} else {
+		endpoint = getSpecifiedEndpoint()
+	}
 
 	var basePath = "/"
 	if options != nil && options.BasePath != "" {
@@ -112,7 +119,7 @@ type apiParams struct {
 	noVersionCheck bool
 }
 
-func (ac *apiClient) callAPI(params *apiParams) (string, error) {
+func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
 	url := ac.endpoint + ac.basePath + params.path
 	if params.query != "" {
 		url += "?" + params.query
@@ -120,7 +127,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	//fmt.Printf("url == %v\n", url)
 	req, err := http.NewRequest(params.method, url, strings.NewReader(params.body))
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	req.Header.Set("User-Agent", fmt.Sprintf("soracom-cli/%s", version))
 
@@ -151,12 +158,17 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		res, err = ac.doHTTPRequestWithRetries(req)
 	}
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	if res == nil {
-		return "", errors.New("nil response received")
+		return nil, "", errors.New("nil response received")
 	}
-	defer res.Body.Close()
+	defer func() {
+		// #nosec G104
+		res.Body.Close()
+		// #nosec G104
+		io.Copy(ioutil.Discard, res.Body)
+	}()
 
 	if ac.verbose {
 		dumpHTTPResponse(res)
@@ -164,7 +176,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	}
 
 	if res.StatusCode >= http.StatusBadRequest {
-		return "", newAPIError(res)
+		return nil, "", newAPIError(res)
 	}
 
 	if !params.noVersionCheck {
@@ -176,9 +188,9 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
-	return bytes.NewBuffer(b).String(), nil
+	return res.Header, bytes.NewBuffer(b).String(), nil
 }
 
 // version strings are in the form of "v1.22.333" or "v0.0.1"
@@ -233,7 +245,12 @@ func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response
 			return res, nil
 		}
 		if err != nil && res != nil && res.Body != nil {
-			defer res.Body.Close()
+			defer func() {
+				// #nosec G104
+				res.Body.Close()
+				// #nosec G104
+				io.Copy(ioutil.Discard, res.Body)
+			}()
 		}
 
 		ac.reportWaitingBeforeRetrying(res, err, wait)

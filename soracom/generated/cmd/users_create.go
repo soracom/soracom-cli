@@ -61,29 +61,29 @@ var UsersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersCreateCmdOperatorId == "" {
+		UsersCreateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersCreateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersCreateCmdOperatorId == "" {
-		UsersCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -111,27 +111,35 @@ func buildQueryForUsersCreateCmd() string {
 }
 
 func buildBodyForUsersCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersCreateCmdBody, nil
+			b = []byte(UsersCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersCreateCmdDescription != "" {
 		result["description"] = UsersCreateCmdDescription

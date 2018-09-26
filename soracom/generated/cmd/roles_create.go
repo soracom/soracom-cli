@@ -66,29 +66,29 @@ var RolesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if RolesCreateCmdOperatorId == "" {
+		RolesCreateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForRolesCreateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if RolesCreateCmdOperatorId == "" {
-		RolesCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -116,27 +116,35 @@ func buildQueryForRolesCreateCmd() string {
 }
 
 func buildBodyForRolesCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if RolesCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(RolesCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(RolesCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if RolesCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return RolesCreateCmdBody, nil
+			b = []byte(RolesCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if RolesCreateCmdDescription != "" {
 		result["description"] = RolesCreateCmdDescription

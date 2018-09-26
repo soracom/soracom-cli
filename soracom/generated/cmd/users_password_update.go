@@ -66,29 +66,29 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersPasswordUpdateCmdOperatorId == "" {
+		UsersPasswordUpdateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersPasswordUpdateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersPasswordUpdateCmdOperatorId == "" {
-		UsersPasswordUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -116,27 +116,35 @@ func buildQueryForUsersPasswordUpdateCmd() string {
 }
 
 func buildBodyForUsersPasswordUpdateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersPasswordUpdateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersPasswordUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPasswordUpdateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersPasswordUpdateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersPasswordUpdateCmdBody, nil
+			b = []byte(UsersPasswordUpdateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersPasswordUpdateCmdCurrentPassword != "" {
 		result["currentPassword"] = UsersPasswordUpdateCmdCurrentPassword

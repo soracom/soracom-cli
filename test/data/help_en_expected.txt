@@ -7,7 +7,8 @@ Available Commands:
   auth               Performs authentication to access to the SORACOM API.
   bills              Show or export billing info.
   completion         Generate script for bash completion.
-  configure          Show, create or update configurations.
+  configure          Show, create or update configurations (profiles).
+  configure-sandbox  Create configurations (profiles) for API Sandbox.
   coupons            List or register coupons.
   credentials        List, create, update or delete credentials sets.
   data               Get stored data from subscribers.
@@ -30,6 +31,7 @@ Available Commands:
   products           List products.
   query              Search resources.
   roles              List, create, update or delete roles.
+  sandbox            Sandbox related operations.
   shipping-addresses List, create, update or delete shipping addresses.
   sigfox-devices     Manage Sigfox devices.
   stats              Show or export statistics.

@@ -51,17 +51,17 @@ var GroupsPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -95,27 +95,35 @@ func buildQueryForGroupsPutTagsCmd() string {
 }
 
 func buildBodyForGroupsPutTagsCmd() (string, error) {
+	var result map[string]interface{}
+
 	if GroupsPutTagsCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(GroupsPutTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(GroupsPutTagsCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if GroupsPutTagsCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return GroupsPutTagsCmdBody, nil
+			b = []byte(GroupsPutTagsCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

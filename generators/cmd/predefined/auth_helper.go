@@ -55,7 +55,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		noVersionCheck: true,
 	}
 
-	res, err := ac.callAPI(params)
+	_, res, err := ac.callAPI(params)
 	if err != nil {
 		return err
 	}

@@ -81,17 +81,17 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -123,27 +123,35 @@ func buildQueryForDevicesCreateObjectModelCmd() string {
 }
 
 func buildBodyForDevicesCreateObjectModelCmd() (string, error) {
+	var result map[string]interface{}
+
 	if DevicesCreateObjectModelCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(DevicesCreateObjectModelCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesCreateObjectModelCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if DevicesCreateObjectModelCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return DevicesCreateObjectModelCmdBody, nil
+			b = []byte(DevicesCreateObjectModelCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if DevicesCreateObjectModelCmdCreatedTime != "" {
 		result["createdTime"] = DevicesCreateObjectModelCmdCreatedTime

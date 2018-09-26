@@ -27,6 +27,15 @@ cli:
     get:
       summary: プロファイル情報を表示します。
       description: プロファイル情報を表示します。
+  configure_sandbox:
+    summary: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+    description: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+    profile:
+      prompt: "--- SORACOM CLI セットアップ (Sandbox) ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
+      prod_auth:
+        prompt: "\n\n本番環境の AuthKeyID と AuthKey のペアを入力してください。これらは本番環境のアカウントを持っているかどうかを確認するためだけに使われます。\n\n"
+      sandbox_account:
+        prompt: "\n\nSandbox 環境に作成するオペレーターのメールアドレスとパスワードを入力してください。\n\n"
   coupons:
     summary: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
     description: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
@@ -97,6 +106,9 @@ cli:
   roles:
     summary: ロールに関する操作を行います。
     description: ロールに関する操作を行います。
+  sandbox:
+    summary: API サンドボックスに関する操作を行います。
+    description: API サンドボックスに関する操作を行います。
   shipping-addresses:
     summary: 出荷先情報に関する操作を行います。
     description: 出荷先情報に関する操作を行います。

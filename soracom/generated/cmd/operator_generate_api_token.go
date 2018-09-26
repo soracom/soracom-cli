@@ -56,29 +56,29 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if OperatorGenerateApiTokenCmdOperatorId == "" {
+		OperatorGenerateApiTokenCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForOperatorGenerateApiTokenCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if OperatorGenerateApiTokenCmdOperatorId == "" {
-		OperatorGenerateApiTokenCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -104,27 +104,35 @@ func buildQueryForOperatorGenerateApiTokenCmd() string {
 }
 
 func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
+	var result map[string]interface{}
+
 	if OperatorGenerateApiTokenCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(OperatorGenerateApiTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorGenerateApiTokenCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if OperatorGenerateApiTokenCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return OperatorGenerateApiTokenCmdBody, nil
+			b = []byte(OperatorGenerateApiTokenCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 0 {
 		result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds

@@ -16,6 +16,7 @@ import (
 func main() {
 	outputDir := flag.String("o", "", "output directory")
 	apiDefFile := flag.String("a", "", "API definition YAML file")
+	apiSandboxDefFile := flag.String("s", "", "API Sandbox definition YAML file")
 	templateDir := flag.String("t", "", "template directory")
 	predefinedDir := flag.String("p", "", "predefined command files directory")
 	flag.Parse()
@@ -30,6 +31,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if apiSandboxDefFile == nil || *apiSandboxDefFile == "" {
+		fmt.Println("-s <api sandbox definition file> is required")
+		os.Exit(1)
+	}
+
 	if templateDir == nil || *templateDir == "" {
 		fmt.Println("-t <template dir> is required")
 		os.Exit(1)
@@ -40,14 +46,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := run(*apiDefFile, *templateDir, *predefinedDir, *outputDir)
+	err := run(*apiDefFile, *apiSandboxDefFile, *templateDir, *predefinedDir, *outputDir)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func run(apiDefFile, templateDir, predefinedDir, outputDir string) error {
+func run(apiDefFile, apiSandboxDefFile, templateDir, predefinedDir, outputDir string) error {
 	err := cleanOutputDir(outputDir)
 	if err != nil {
 		return err
@@ -63,7 +69,12 @@ func run(apiDefFile, templateDir, predefinedDir, outputDir string) error {
 		return err
 	}
 
-	err = generateCommands(apiDef, templateDir, predefinedDir, outputDir)
+	apiSandboxDef, err := lib.LoadAPIDef(apiSandboxDefFile)
+	if err != nil {
+		return err
+	}
+
+	err = generateCommands(apiDef, apiSandboxDef, templateDir, predefinedDir, outputDir)
 	if err != nil {
 		return err
 	}
@@ -71,7 +82,7 @@ func run(apiDefFile, templateDir, predefinedDir, outputDir string) error {
 	return nil
 }
 
-func generateCommands(apiDef *lib.APIDefinitions, templateDir, predefinedDir, outputDir string) error {
+func generateCommands(apiDef, apiSandboxDef *lib.APIDefinitions, templateDir, predefinedDir, outputDir string) error {
 	err := generateRootCommand(apiDef, templateDir, outputDir)
 	if err != nil {
 		return err
@@ -83,6 +94,11 @@ func generateCommands(apiDef *lib.APIDefinitions, templateDir, predefinedDir, ou
 	}
 
 	err = generateLeafCommands(apiDef, templateDir, outputDir)
+	if err != nil {
+		return err
+	}
+
+	err = generateLeafCommands(apiSandboxDef, templateDir, outputDir)
 	if err != nil {
 		return err
 	}

@@ -95,21 +95,27 @@ var {{ $cmdvar }} = &cobra.Command{
       return err
     }
 
-    result, err := ac.callAPI(param)
+    _, body, err := ac.callAPI(param)
     if err != nil {
       cmd.SilenceUsage = true
       return err
     }
 
-    if result == "" {
+    if body == "" {
       return nil
     }
 
-    return prettyPrintStringAsJSON(result)
+    return prettyPrintStringAsJSON(body)
   },
 }
 
 func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
+  {{if .RequireOperatorID }}
+  if {{$prefix}}OperatorId == "" {
+    {{$prefix}}OperatorId = ac.OperatorID
+  }
+  {{end}}
+
   {{if .BodyExists }}
   body, err := buildBodyFor{{$suffix}}()
   if err != nil {
@@ -117,12 +123,6 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   }
   {{end}}
   
-  {{if .RequireOperatorID }}
-  if {{$prefix}}OperatorId == "" {
-    {{$prefix}}OperatorId = ac.OperatorID
-  }
-  {{end}}
-
   return &apiParams{
     method: "{{.Method}}",
     path: buildPathFor{{$suffix}}("{{.Path}}"),
@@ -194,27 +194,36 @@ func buildQueryFor{{$suffix}}() string {
 
 {{if .BodyExists }}
 func buildBodyFor{{$suffix}}() (string, error) {
+  var result map[string]interface{}
+
   if {{$prefix}}Body != "" {
+    var b []byte
+    var err error
+
     if strings.HasPrefix({{$prefix}}Body, "@") {
       fname := strings.TrimPrefix({{$prefix}}Body, "@")
       // #nosec
-      bytes, err := ioutil.ReadFile(fname)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
+      b, err = ioutil.ReadFile(fname)
     } else if {{$prefix}}Body == "-" {
-      bytes, err := ioutil.ReadAll(os.Stdin)
-      if err != nil {
-        return "", err
-      }
-      return string(bytes), nil
+      b, err = ioutil.ReadAll(os.Stdin)
     } else {
-      return {{$prefix}}Body, nil
+      b = []byte({{$prefix}}Body)
+    }
+
+    if err != nil {
+      return "", err
+    }
+
+    err = json.Unmarshal(b, &result)
+    if err != nil {
+      return "", err
     }
   }
 
-  result := map[string]interface{}{}
+  if result == nil {
+    result = make(map[string]interface{})
+  }
+
   {{range .StringFlags}}
   {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != "{{.DefaultValue}}" {

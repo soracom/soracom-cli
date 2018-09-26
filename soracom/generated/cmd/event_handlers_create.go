@@ -76,17 +76,17 @@ var EventHandlersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -118,27 +118,35 @@ func buildQueryForEventHandlersCreateCmd() string {
 }
 
 func buildBodyForEventHandlersCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if EventHandlersCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(EventHandlersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(EventHandlersCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if EventHandlersCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return EventHandlersCreateCmdBody, nil
+			b = []byte(EventHandlersCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if EventHandlersCreateCmdDescription != "" {
 		result["description"] = EventHandlersCreateCmdDescription

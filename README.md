@@ -121,6 +121,42 @@ soracom groups list --profile user2
 ```
 
 
+### Create a profile for API Sandbox
+
+It is possible to use soracom-cli for setting up [SORACOM API Sandbox](https://dev.soracom.io/en/docs/api_sandbox/) environment.
+
+In order to create a profile for sandbox, use `configure-sandbox` subcommand.
+
+```
+soracom configure-sandbox
+```
+
+By answering to the questions prompted, a profile named `sandbox` will be created. By using the `sandbox` profile, you can issue commands to the API sandbox as follows.
+ 
+```
+soracom subscribers list --profile sandbox
+```
+
+You can use commands dedicated for the sandbox.
+
+```
+soracom sandbox subscribers create --profile sandbox
+```
+
+You can use different profile name.
+
+```
+soracom configure-sandbox --profile test
+soracom sandbox subscribers create --profile test
+```
+
+In order to make it easier to use from shell scripts etc., all the parameters necessary for profile creation can be specified with arguments.
+
+```
+soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-key="$AUTHKEY" --email="$EMAIL" --password="$PASSWORD"
+```
+
+
 ### Call API via proxy
 
 Set `http://your-proxy-nme:port` to HTTP_PROXY environment variable, then execute soracom command.
@@ -195,7 +231,7 @@ TODO: Currently, the build result is generated in the container. It will be fixe
 ```
 VERSION=1.2.3                         # => specify a version number to be released
 ./scripts/build.sh $VERSION           # => build a version to be released
-./test/test.sh $VERSION            # => test the version
+./test/test.sh $VERSION               # => test the version
 # commit & push all changes to github
 ./scripts/release.sh $VERSION         # => release the version to GitHub
 # edit the release on github.com release page

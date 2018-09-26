@@ -1,0 +1,425 @@
+# Definition of the SORACOM Sandox API
+swagger: '2.0'
+info:
+  title: SORACOM SANDBOX API
+  description: SORACOM SANDBOX API v1
+  version: "20160218"
+# the domain of the service
+host: api-sandbox.soracom.io
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+
+paths:
+
+  /sandbox/init:
+    post:
+      tags: [Operator]
+      summary: Creates an operator account.
+      description: Performs complex signup process at once, including registering dummy payment method. Specify `email` and `password` for an operator which will be created on sandbox, `authKeyId` and `authKey` for a real operator on the production environment. An API Key and an API Token will be included in the response if successful. Use the API Key and the API Token to requests afterwards.
+      operationId: sandboxInitializeOperator
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox init
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxInitRequest'
+      responses:
+        '201':
+          description: Successfully created a sandbox operator.
+          schema:
+            $ref: '#/definitions/sandboxAuthResponse'
+        '400':
+          description: Email address, AuthKeyId, or AuthKey is not correct.
+
+  /sandbox/operators/token/{email}:
+    post:
+      tags: [Operator]
+      summary: Gets a signup token
+      description: Retrieves a 'signup token' for registration confirmation. Please specify a pair of AuthKeyId and AuthKey of a SAM user on the production environment to check if the caller has a valid account on it.
+      operationId: sandboxGetSignupToken
+      consumes: [application/json]
+      produces: [application/json]
+      x-soraocm-cli:
+        - sandbox operators get-signup-token
+      parameters:
+        - in: body
+          name: auth
+          description: Authentication request
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxGetSignupTokenRequest'
+        - in: path
+          name: email
+          description: email
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved signup token.
+          schema:
+            $ref: '#/definitions/sandboxGetSignupTokenResponse'
+        '400':
+          description: Email address, AuthKeyId, or AuthKey is not correct.
+
+  /sandbox/operators/{operator_id}:
+    delete:
+      tags: [Operator]
+      summary: Deletes an operator
+      description: Deletes the specified operator.
+      operationId: sandboxDeleteOperator
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox operators delete
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - in: path
+          name: operator_id
+          description: operator_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Operator does not exist.
+
+  /sandbox/orders/ship:
+    post:
+      tags: [Order]
+      summary: Ships the specified order.
+      description: Changes the shipping status to 'shipped' and gets ready the subscribers included in the order.
+      operationId: sandboxShipOrder
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox orders ship
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - in: body
+          name: shippingRequest
+          description: Shipping request
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxShipOrderRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Order does not exist.
+
+  /sandbox/subscribers/create:
+    post:
+      tags: [Subscriber]
+      summary: Creates a new subscriber for sandbox.
+      description: Creates a new subscriber for sandbox.
+      operationId: sandboxCreateSubscriber
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox subscribers create
+      security:
+        - api_key: []
+        - api_token: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/sandboxCreateSubscriberResponse'
+
+  /sandbox/stats/air/subscribers/{imsi}:
+    post:
+      tags: [Stats]
+      summary: Inserts Air stats for testing
+      description: Populates Air stats for testing purpose. Inserted data are going to be automatically accumulated. It is not possible to put the data multiple times with the same timestamp.
+      operationId: sandboxInsertAirStats
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox stats air insert
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - in: path
+          name: imsi
+          description: IMSI
+          required: true
+          type: string
+        - in: body
+          name: stats
+          description: The Air stats (up/down bytes of data) with specified timestamp.
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxInsertAirStatsRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Data with the same timestamp already exists.
+
+  /sandbox/stats/beam/subscribers/{imsi}:
+    post:
+      tags: [Stats]
+      summary: Inserts Beam stats for testing
+      description: Populates Beam stats for testing purpose. Inserted data are going to be automatically accumulated. It is not possible to put the data multiple times with the same timestamp.
+      operationId: sandboxInsertBeamStats
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox stats beam insert
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - in: path
+          name: imsi
+          description: IMSI
+          required: true
+          type: string
+        - in: body
+          name: stats
+          description: The Beam stats (number of requests) with specified timestamp.
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxInsertBeamStatsRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Data with the same timestamp already exists.
+
+  /sandbox/coupons/create:
+    post:
+      tags: [Coupon]
+      summary: Creates a coupon
+      description: Creates a coupon.
+      operationId: sandboxCreateCoupon
+      consumes: [application/json]
+      produces: [application/json]
+      x-soracom-cli:
+        - sandbox coupons create
+      security:
+        - api_key: []
+        - api_token: []
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/sandboxCreateCouponRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/sandboxCreateCouponResponse'
+        '400':
+          description: Request is not correct.
+
+definitions:
+  sandboxInitRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      authKeyId:
+        type: string
+      authKey:
+        type: string
+    required:
+      - email
+      - password
+      - authKeyId
+      - authKey
+
+  sandboxAuthResponse:
+    properties:
+      apiKey: {type: string}
+      operatorId: {type: string}
+      token: {type: string}
+      userName: {type: string}
+
+  sandboxCreateSubscriberResponse:
+    properties:
+      imsi:
+        type: string
+      msisdn:
+        type: string
+      serialNumber:
+        type: string
+      registrationSecret:
+        type: string
+      ipAddress:
+        type: string
+      apn:
+        type: string
+      speedClass:
+        type: string
+      createdAt:
+        type: integer
+        format: int64
+      lastModifiedAt:
+        type: integer
+        format: int64
+      expiryTime:
+        type: integer
+        format: int64
+      status:
+        type: string
+      tags:
+        $ref: '#/definitions/Map'
+      operatorId:
+        type: string
+
+  Map:
+    type: object
+    additionalProperties:
+      type: string
+
+  sandboxGetSignupTokenRequest:
+    properties:
+      authKeyId:
+        type: string
+      authKey:
+        type: string
+
+  sandboxGetSignupTokenResponse:
+    properties:
+      token:
+        type: string
+    required:
+      - token
+
+  sandboxInsertAirStatsRequest:
+    properties:
+      unixtime:
+        type: integer
+        format: int64
+        description: UNIX time (in milliseconds)
+      dataTrafficStatsMap:
+        type: object
+        properties:
+          "s1.minimum":
+            $ref: '#/definitions/sandboxDataTrafficStats'
+          "s1.slow":
+            $ref: '#/definitions/sandboxDataTrafficStats'
+          "s1.standard":
+            $ref: '#/definitions/sandboxDataTrafficStats'
+          "s1.fast":
+            $ref: '#/definitions/sandboxDataTrafficStats'
+
+  sandboxDataTrafficStats:
+    properties:
+      downloadByteSizeTotal:
+        type: integer
+        format: int64
+      downloadPacketSizeTotal:
+        type: integer
+        format: int64
+      uploadByteSizeTotal:
+        type: integer
+        format: int64
+      uploadPacketSizeTotal:
+        type: integer
+        format: int64
+
+  sandboxInsertBeamStatsRequest:
+    properties:
+      unixtime:
+        type: integer
+        format: int64
+        description: UNIX time (in milliseconds)
+      beamStatsMap:
+        type: object
+        properties:
+          inTcp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          inUdp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          inHttp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          inMqtt:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outTcp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outTcps:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outUdp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outHttp:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outHttps:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outMqtt:
+            $ref: '#/definitions/sandboxBeamCounts'
+          outMqtts:
+            $ref: '#/definitions/sandboxBeamCounts'
+
+  sandboxBeamCounts:
+    properties:
+      count:
+        type: integer
+        format: int64
+
+  sandboxCreateCouponRequest:
+    properties:
+      amount:
+        type: integer
+        format: int32
+        example: 1000
+      applicableBillItemName:
+        type: string
+        example: dailyDataTrafficChargeTotal
+        enum:
+          - dailyDataTrafficChargeTotal
+          - dailyChargeTotal
+          - dailySoracomBeamRequestChargeTotal
+      expiryYearMonth:
+        type: string
+        example: "yyyyMM"
+
+  sandboxCreateCouponResponse:
+    properties:
+      amount:
+        type: "number"
+        format: "double"
+        description: "Coupon amount"
+      balance:
+        type: "number"
+        format: "double"
+        description: "Balance"
+      billItemName:
+        type: "string"
+        description: "Bill Item"
+      couponCode:
+        type: "string"
+        description: "Coupon code"
+      expiryYearMonth:
+        type: "string"
+        example: "yyyyMM"
+        description: "Year and month of expiration"
+
+  sandboxShipOrderRequest:
+    properties:
+      orderId:
+        type: string
+      operatorId:
+        type: string
+    required:
+      - orderId
+      - operatorId

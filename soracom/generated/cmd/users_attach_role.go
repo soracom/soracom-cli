@@ -61,29 +61,29 @@ var UsersAttachRoleCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersAttachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersAttachRoleCmdOperatorId == "" {
+		UsersAttachRoleCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersAttachRoleCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersAttachRoleCmdOperatorId == "" {
-		UsersAttachRoleCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -111,27 +111,35 @@ func buildQueryForUsersAttachRoleCmd() string {
 }
 
 func buildBodyForUsersAttachRoleCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersAttachRoleCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersAttachRoleCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersAttachRoleCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersAttachRoleCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersAttachRoleCmdBody, nil
+			b = []byte(UsersAttachRoleCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersAttachRoleCmdRoleId != "" {
 		result["roleId"] = UsersAttachRoleCmdRoleId

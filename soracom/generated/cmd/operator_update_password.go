@@ -61,29 +61,29 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if OperatorUpdatePasswordCmdOperatorId == "" {
+		OperatorUpdatePasswordCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForOperatorUpdatePasswordCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if OperatorUpdatePasswordCmdOperatorId == "" {
-		OperatorUpdatePasswordCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -109,27 +109,35 @@ func buildQueryForOperatorUpdatePasswordCmd() string {
 }
 
 func buildBodyForOperatorUpdatePasswordCmd() (string, error) {
+	var result map[string]interface{}
+
 	if OperatorUpdatePasswordCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(OperatorUpdatePasswordCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorUpdatePasswordCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if OperatorUpdatePasswordCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return OperatorUpdatePasswordCmdBody, nil
+			b = []byte(OperatorUpdatePasswordCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if OperatorUpdatePasswordCmdCurrentPassword != "" {
 		result["currentPassword"] = OperatorUpdatePasswordCmdCurrentPassword

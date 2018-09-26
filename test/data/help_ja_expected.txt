@@ -8,6 +8,7 @@ Available Commands:
   bills              課金に関する情報を確認したりファイルへのエクスポートを行います。
   completion         bash 用の補完 (completion) スクリプトを生成します。
   configure          コマンド実行環境（プロファイル）の設定や表示を行います。
+  configure-sandbox  API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
   coupons            登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
   credentials        認証情報に関する操作を行います。
   data               SIM からアップロードされて格納されているデータを取得します。
@@ -30,6 +31,7 @@ Available Commands:
   products           商品一覧を取得します。
   query              リソース（サブスクライバー）をいろいろな条件で検索します。
   roles              ロールに関する操作を行います。
+  sandbox            API サンドボックスに関する操作を行います。
   shipping-addresses 出荷先情報に関する操作を行います。
   sigfox-devices     Sigfox デバイスに関する操作を行います。
   stats              統計情報に関する操作を行います。

@@ -71,17 +71,17 @@ var PaymentMethodsWebpayRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -113,27 +113,35 @@ func buildQueryForPaymentMethodsWebpayRegisterCmd() string {
 }
 
 func buildBodyForPaymentMethodsWebpayRegisterCmd() (string, error) {
+	var result map[string]interface{}
+
 	if PaymentMethodsWebpayRegisterCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(PaymentMethodsWebpayRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(PaymentMethodsWebpayRegisterCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if PaymentMethodsWebpayRegisterCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return PaymentMethodsWebpayRegisterCmdBody, nil
+			b = []byte(PaymentMethodsWebpayRegisterCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if PaymentMethodsWebpayRegisterCmdCvc != "" {
 		result["cvc"] = PaymentMethodsWebpayRegisterCmdCvc

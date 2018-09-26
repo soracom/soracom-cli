@@ -101,29 +101,29 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if ShippingAddressesCreateCmdOperatorId == "" {
+		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForShippingAddressesCreateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if ShippingAddressesCreateCmdOperatorId == "" {
-		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -149,27 +149,35 @@ func buildQueryForShippingAddressesCreateCmd() string {
 }
 
 func buildBodyForShippingAddressesCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if ShippingAddressesCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(ShippingAddressesCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(ShippingAddressesCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if ShippingAddressesCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return ShippingAddressesCreateCmdBody, nil
+			b = []byte(ShippingAddressesCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if ShippingAddressesCreateCmdAddressLine1 != "" {
 		result["addressLine1"] = ShippingAddressesCreateCmdAddressLine1

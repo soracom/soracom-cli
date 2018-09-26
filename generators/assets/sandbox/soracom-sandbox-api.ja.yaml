@@ -1,0 +1,130 @@
+paths:
+  /sandbox/init:
+    post:
+      summary: Operator を初期化する
+      description: Operator のサインアップ、認証および課金情報の登録を行います。サンドボックス環境に新しく作成するオペレーターの email と password、本番環境の SAM ユーザーの authKeyId と authKey をリクエストに含めてください。オペレーターの作成に成功した場合、API キーと API トークンが返されるので、以降の認証が必要なリクエスト時にはこの API キーと API トークンをヘッダーに付与してリクエストを行ってください。
+      parameters:
+        - name: request
+          description: request
+      responses:
+        '201':
+          description: Sandbox 用の Operator の作成に成功
+        '400':
+          description: メールアドレスが不正もしくは AuthKeyId, AuthKey が誤っている。
+
+  /sandbox/operators/token/{email}:
+    post:
+      summary: サインアップトークンを取得する
+      description: 登録確認用のサインアップトークンを取得します。API の引数に本番環境の SAM ユーザーの AuthKeyId と AuthKey を指定してください。
+      parameters:
+        - name: auth
+          description: 認証リクエスト
+        - name: email
+          description: email
+      responses:
+        '200':
+          description: 認証成功
+        '400':
+          description: メールアドレス、AuthKeyId、AuthKey のいずれかが誤っている。
+
+  /sandbox/operators/{operator_id}:
+    delete:
+      summary: Operator を削除する
+      description: Operator を削除します。
+      parameters:
+        - name: operator_id
+          description: operator_id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Operator が存在しない
+
+  /sandbox/orders/ship:
+    post:
+      summary: Order を出荷済状態にする
+      description: 指定された Order を出荷済み状態に変更し、Order に含まれる Subscriber を準備完了状態にします。
+      parameters:
+        - name: shippingRequest
+          description: Shipping request
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Order が存在しない
+
+  /sandbox/subscribers/create:
+    post:
+      summary: Subscriber を作成する
+      description: Subscriber を新規作成します
+      responses:
+        '200':
+          description: OK
+
+  /sandbox/stats/air/subscribers/{imsi}:
+    post:
+      summary: テスト用に Air の統計情報を登録する
+      description: Air の統計情報としてテスト用データ（上り下りのデータ通信量、タイムスタンプ付き）を投入します。Sandbox 内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
+      parameters:
+        - name: imsi
+          description: IMSI
+        - name: stats
+          description: ある時点のデータ通信量の統計情報
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 同じ IMSI に対して同じタイムスタンプのデータが投入された
+
+  /sandbox/stats/beam/subscribers/{imsi}:
+    post:
+      summary: テスト用に Beam の統計情報を登録する
+      description: Beam の統計情報としてテスト用データ（リクエスト数、タイムスタンプ付き）を投入します。Sandbox 内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
+      parameters:
+        - name: imsi
+          description: IMSI
+        - name: stats
+          description: ある時点のリクエスト数の統計情報
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 同じ IMSI に対して同じタイムスタンプのデータが投入された
+
+  /sandbox/coupons/create:
+    post:
+      summary: クーポンを作成する
+      description: クーポンをを新規作成します。
+      parameters:
+        - name: request
+          description: request
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: API の引数が誤っている。
+
+definitions:
+
+  sandboxInsertAirStatsRequest:
+    properties:
+      unixtime:
+        description: UNIX 時刻（ミリ秒単位）
+
+  sandboxInsertBeamStatsRequest:
+    properties:
+      unixtime:
+        description: UNIX 時刻（ミリ秒単位）
+
+  sandboxCreateCouponResponse:
+    properties:
+      amount:
+        description: "クーポン額"
+      balance:
+        description: "残高"
+      billItemName:
+        description: "対象課金アイテム"
+      couponCode:
+        description: "クーポンコード"
+      expiryYearMonth:
+        description: "有効期限"

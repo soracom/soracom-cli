@@ -66,29 +66,29 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersPermissionsUpdateCmdOperatorId == "" {
+		UsersPermissionsUpdateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersPermissionsUpdateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersPermissionsUpdateCmdOperatorId == "" {
-		UsersPermissionsUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -116,27 +116,35 @@ func buildQueryForUsersPermissionsUpdateCmd() string {
 }
 
 func buildBodyForUsersPermissionsUpdateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersPermissionsUpdateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersPermissionsUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPermissionsUpdateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersPermissionsUpdateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersPermissionsUpdateCmdBody, nil
+			b = []byte(UsersPermissionsUpdateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersPermissionsUpdateCmdDescription != "" {
 		result["description"] = UsersPermissionsUpdateCmdDescription

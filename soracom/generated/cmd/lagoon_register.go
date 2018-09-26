@@ -56,17 +56,17 @@ var LagoonRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -98,27 +98,35 @@ func buildQueryForLagoonRegisterCmd() string {
 }
 
 func buildBodyForLagoonRegisterCmd() (string, error) {
+	var result map[string]interface{}
+
 	if LagoonRegisterCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(LagoonRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(LagoonRegisterCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if LagoonRegisterCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return LagoonRegisterCmdBody, nil
+			b = []byte(LagoonRegisterCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if LagoonRegisterCmdPlan != "" {
 		result["plan"] = LagoonRegisterCmdPlan

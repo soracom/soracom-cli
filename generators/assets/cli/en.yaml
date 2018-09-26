@@ -12,8 +12,8 @@ cli:
     summary: Generate script for bash completion.
     description: Generate script for bash completion.
   configure:
-    summary: Show, create or update configurations.
-    description: Show, create or update configurations.
+    summary: Show, create or update configurations (profiles).
+    description: Show, create or update configurations (profiles).
     profile:
       permission_is_too_open: "Permissions for the file '%s' which contains your credentials are too open.\nIt is required that your credential files are NOT accessible by others."
       prompt: "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
@@ -27,6 +27,15 @@ cli:
     get:
       summary: Show specified profile configurations.
       description: Show specified profile configurations.
+  configure_sandbox:
+    summary: Create configurations (profiles) for API Sandbox.
+    description: Create configurations (profiles) for API Sandbox.
+    profile:
+      prompt: "--- SORACOM CLI setup (Sandbox) ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
+      prod_auth:
+        prompt: "\n\nPlease Specify a pair of AuthKeyID and AuthKey for the production environment to check if you have a valid account on it.\n\n"
+      sandbox_account:
+        prompt: "\n\nPlease Specify Email and Password for a sandbox account to be created.\n\n"
   coupons:
     summary: List or register coupons.
     description: List or register coupons.
@@ -97,6 +106,30 @@ cli:
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.
+  sandbox:
+    summary: Sandbox related operations.
+    description: Sandbox related operations. Use this subcommand with sandbox-enabled profile.
+    coupons:
+      summary: Create coupons that are able to be used only in sandbox.
+      description: Create coupons that are able to be used only in sandbox.
+    operators:
+      summary: Manage operators in sandbox.
+      description: Manage operators in sandbox.
+    orders:
+      summary: Manage order status.
+      description: Manage order status.
+    stats:
+      summary: Insert stats for Air or Beam for testing purpose.
+      description: Insert stats for Air or Beam for testing purpose.
+      air:
+        summary: Insert stats for Air for testing purpose.
+        description: Insert stats for Air for testing purpose.
+      beam:
+        summary: Insert stats for Beam for testing purpose.
+        description: Insert stats for Beam for testing purpose.
+    subscribers:
+      summary: Create virtual subscribers in sandbox.
+      description: Create virtual subscribers in sandbox.
   sigfox-devices:
     summary: Manage Sigfox devices.
     description: Manage Sigfox devices.

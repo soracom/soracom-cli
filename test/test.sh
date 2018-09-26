@@ -30,7 +30,7 @@ fi
 random_string() {
     x=
     until [[ "$x" =~ [a-z] ]] && [[ "$x" =~ [A-Z] ]] && [[ "$x" =~ [0-9] ]]; do
-        x=$( env LC_ALL=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 8 | head -n 1)
+        x=$( env LC_ALL=C dd if=/dev/urandom bs=256 count=1 2> /dev/null | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 8 )
     done
     echo "$x"
 }
@@ -66,6 +66,12 @@ SORACOM_PROFILE_DIR=$tmpdir/.soracom
 SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=$SORACOM_DEBUG")
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
+ZIPCODE="1234567"
+STATE="東京都"
+CITY="港区"
+ADDR1="赤坂1-2-3"
+FULL_NAME="ソラコム 太郎"
+PHONE="03-1234-5678"
 
 : "Extract binary" && {
     if [ "$OS" == "darwin" ]; then
@@ -76,9 +82,112 @@ PASSWORD=$(random_string)
     fi
 }
 
+#: "Create an account on the sandbox" && {
+#    go get -u github.com/soracom/soracom-sdk-go
+#    env SORACOM_ENDPOINT="$SORACOM_ENDPOINT" "${SORACOM_ENVS[@]}" go run "$d/test/setup.go" --email="$EMAIL" --password="$PASSWORD"
+#}
+
 : "Create an account on the sandbox" && {
-    go get -u github.com/soracom/soracom-sdk-go
-    env SORACOM_ENDPOINT="$SORACOM_ENDPOINT" "${SORACOM_ENVS[@]}" go run "$d/test/setup.go" --email="$EMAIL" --password="$PASSWORD"
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        configure-sandbox \
+        --auth-key-id "$SORACOM_AUTHKEY_ID_FOR_TEST" \
+        --auth-key "$SORACOM_AUTHKEY_FOR_TEST" \
+        --email "$EMAIL" \
+        --password "$PASSWORD" \
+        --profile soracom-cli-test
+}
+
+: "Check if no subscribers are registered" && {
+    n="$( env "${SORACOM_ENVS[@]}" "$SORACOM" subscribers list --profile soracom-cli-test | jq .[] | wc -l )"
+    test "$n" -eq 0
+}
+
+: "Create a shipping address" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        shipping-addresses create \
+        --zip-code "$ZIPCODE" \
+        --state "$STATE" \
+        --city "$CITY" \
+        --address-line1 "$ADDR1" \
+        --full-name "$FULL_NAME" \
+        --phone-number "$PHONE" \
+        --profile soracom-cli-test
+        )"
+    shipping_address_id="$( echo "$resp" | jq -r .shippingAddressId )"
+}
+
+: "Create an order" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        orders create \
+        --shipping-address-id "$shipping_address_id" \
+        --body '{"orderItemList":[{"productCode":"4573326590013","quantity":1}]}' \
+        --profile soracom-cli-test
+        )"
+    order_id="$( echo "$resp" | jq -r .orderId )"
+}
+
+: "Confirm the order" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        orders confirm \
+        --order-id "$order_id" \
+        --profile soracom-cli-test
+        )"
+}
+
+: "🚢🇹Ship it!" && {
+    resp="$( env SORACOM_VERBOSE=1 "${SORACOM_ENVS[@]}" "$SORACOM" \
+        sandbox orders ship \
+        --order-id "$order_id" \
+        --profile soracom-cli-test
+        )"
+}
+
+: "Check if a subscriber is registered" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers list \
+        --profile soracom-cli-test
+        )"
+    n="$( echo "$resp" | jq .[].imsi | wc -l )"
+    test "$n" -eq 1
+    imsi="$( echo "$resp" | jq -r .[].imsi )"
+}
+
+: "Activate the SIM" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers activate \
+        --imsi "$imsi" \
+        --profile soracom-cli-test
+}
+
+: "Change speed class to s1.fast" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers update-speed-class \
+        --imsi "$imsi" \
+        --speed-class "s1.fast" \
+        --profile soracom-cli-test
+}
+
+: "Enable termination" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers enable-termination \
+        --imsi "$imsi" \
+        --profile soracom-cli-test
+}
+
+: "Terminate the SIM" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers terminate \
+        --imsi "$imsi" \
+        --profile soracom-cli-test
+}
+
+: "Check if the SIM is terminated" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers list \
+        --profile soracom-cli-test
+        )"
+    status="$( echo "$resp" | jq -r .[].status )"
+    test "$status" = "terminated"
 }
 
 : "Checking english help text" && {
@@ -91,30 +200,11 @@ PASSWORD=$(random_string)
     diff <( echo "$help_ja" ) <( cat "$d/test/data/help_ja_expected.txt" )
 }
 
-: "Run soracom configure and create the default profile" && {
-    expect -c "$(cat <<EOD
-spawn env ${SORACOM_ENVS[@]} $SORACOM configure
-expect "\\(1-2\\)"
-send -- "2\\n"
-expect "\\(1-3\\)"
-send -- "2\\n"
-expect "email: "
-send -- "$EMAIL\\n"
-expect "password: "
-send -- "$PASSWORD\\r\\n"
-expect eof
-EOD
-)"
-}
-
-: "Run soracom auth" && {
-    env "${SORACOM_ENVS[@]}" "$SORACOM" auth --body "$( jo email="$EMAIL" password="$PASSWORD" )"
-    env "${SORACOM_ENVS[@]}" "$SORACOM" auth --email="$EMAIL" --password="$PASSWORD"
-}
+: "Displaying all top-level subcommands' help text"
 
 : "Run soracom bills" && {
-    env "${SORACOM_ENVS[@]}" "$SORACOM" bills
-    env "${SORACOM_ENVS[@]}" "$SORACOM" bills list
+    env "${SORACOM_ENVS[@]}" "$SORACOM" bills --profile soracom-cli-test
+    env "${SORACOM_ENVS[@]}" "$SORACOM" bills list --profile soracom-cli-test
 }
 
 : "Run soracom completion" && {

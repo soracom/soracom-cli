@@ -76,7 +76,7 @@ git config --global http.https://gopkg.in.followRedirects true
     go build -o generate-cmd
 
     echo "Generating source codes for soracom-cli by using the generator ..."
-    ./generate-cmd -a "$d/generators/assets/soracom-api.en.yaml" -t "$d/generators/cmd/templates" -p "$d/generators/cmd/predefined" -o "$d/soracom/generated/cmd/"
+    ./generate-cmd -a "$d/generators/assets/soracom-api.en.yaml" -s "$d/generators/assets/sandbox/soracom-sandbox-api.en.yaml" -t "$d/generators/cmd/templates" -p "$d/generators/cmd/predefined" -o "$d/soracom/generated/cmd/"
     popd > /dev/null
 }
 

@@ -61,29 +61,29 @@ var UsersUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersUpdateCmdOperatorId == "" {
+		UsersUpdateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersUpdateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersUpdateCmdOperatorId == "" {
-		UsersUpdateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -111,27 +111,35 @@ func buildQueryForUsersUpdateCmd() string {
 }
 
 func buildBodyForUsersUpdateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersUpdateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersUpdateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersUpdateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersUpdateCmdBody, nil
+			b = []byte(UsersUpdateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersUpdateCmdDescription != "" {
 		result["description"] = UsersUpdateCmdDescription

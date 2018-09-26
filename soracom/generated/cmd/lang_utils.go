@@ -13,10 +13,11 @@ import (
 type languageResourceMap map[interface{}]interface{}
 
 var defaultLang = "en"
-var supportedLanguages = map[string]bool{"en": true, "ja": true, "zh": true}
+var supportedLanguages = map[string]bool{"en": true, "ja": true}
 var selectedLang = ""
 var languageRegexp = regexp.MustCompile(".*:(..)_?")
 var apiResources map[string]languageResourceMap
+var sandboxResources map[string]languageResourceMap
 var cliResources map[string]languageResourceMap
 
 func initIfRequired() {
@@ -24,10 +25,13 @@ func initIfRequired() {
 		selectedLang = getLanguagePreference(loadLanguageSettings())
 	}
 	if apiResources == nil {
-		loadAPIResources()
+		apiResources = loadAPIResources()
+	}
+	if sandboxResources == nil {
+		sandboxResources = loadSandboxResources()
 	}
 	if cliResources == nil {
-		loadCLIResources()
+		cliResources = loadCLIResources()
 	}
 }
 
@@ -35,56 +39,50 @@ func getSelectedLanguage() string {
 	return selectedLang
 }
 
-func loadAPIResources() {
-	apiResources = make(map[string]languageResourceMap)
+func loadAPIResources() map[string]languageResourceMap {
+	m := make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		f, err := Assets.Open("/soracom-api." + lang + ".yaml")
-		if err != nil {
-			fmt.Printf("warning: unable to load API language resource '%s'\n", lang)
-			continue
-		}
-
-		b, err := ioutil.ReadAll(f)
-		if err != nil {
-			fmt.Printf("warning: unable to read API language resource '%s'\n", lang)
-			continue
-		}
-
-		var data map[interface{}]interface{}
-		err = yaml.Unmarshal(b, &data)
-		if err != nil {
-			fmt.Printf("warning: unable to parse API language resource '%s'\n", lang)
-			fmt.Println(err)
-			continue
-		}
-		apiResources[lang] = data
+		m[lang] = loadLanguageResourceFile("/soracom-api." + lang + ".yaml")
 	}
+	return m
 }
 
-func loadCLIResources() {
-	cliResources = make(map[string]languageResourceMap)
+func loadSandboxResources() map[string]languageResourceMap {
+	m := make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		f, err := Assets.Open("/cli/" + lang + ".yaml")
-		if err != nil {
-			fmt.Printf("warning: unable to load CLI language resource '%s'\n", lang)
-			continue
-		}
-
-		b, err := ioutil.ReadAll(f)
-		if err != nil {
-			fmt.Printf("warning: unable to read API language resource '%s'\n", lang)
-			continue
-		}
-
-		var data map[interface{}]interface{}
-		err = yaml.Unmarshal(b, &data)
-		if err != nil {
-			fmt.Printf("warning: unable to parse CLI language resource '%s'\n", lang)
-			fmt.Println(err)
-			continue
-		}
-		cliResources[lang] = data
+		m[lang] = loadLanguageResourceFile("/sandbox/soracom-sandbox-api." + lang + ".yaml")
 	}
+	return m
+}
+
+func loadCLIResources() map[string]languageResourceMap {
+	m := make(map[string]languageResourceMap)
+	for lang := range supportedLanguages {
+		m[lang] = loadLanguageResourceFile("/cli/" + lang + ".yaml")
+	}
+	return m
+}
+
+func loadLanguageResourceFile(resourceFileName string) languageResourceMap {
+	f, err := Assets.Open(resourceFileName)
+	if err != nil {
+		fmt.Printf("warning: unable to load CLI language resource '%s'\n", resourceFileName)
+		return nil
+	}
+
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		fmt.Printf("warning: unable to read API language resource '%s'\n", resourceFileName)
+		return nil
+	}
+
+	var data map[interface{}]interface{}
+	err = yaml.Unmarshal(b, &data)
+	if err != nil {
+		fmt.Printf("warning: unable to parse CLI language resource '%s'\n", resourceFileName)
+		fmt.Println(err)
+	}
+	return data
 }
 
 type languageSettings struct {
@@ -162,16 +160,25 @@ func getAltLang(ll string) string {
 
 func TRAPI(pathAndMethodAndField string) string {
 	initIfRequired()
-	r := apiResources[selectedLang]
-	s := getStringResource(r, pathAndMethodAndField)
-	if s == "" {
-		r = apiResources[defaultLang]
-		s = getStringResource(r, pathAndMethodAndField)
-		if s == "" {
-			return pathAndMethodAndField
-		}
+	s := getStringResource(apiResources[selectedLang], pathAndMethodAndField)
+	if s != "" {
+		return s
 	}
-	return s
+	s = getStringResource(sandboxResources[selectedLang], pathAndMethodAndField)
+	if s != "" {
+		return s
+	}
+
+	s = getStringResource(apiResources[defaultLang], pathAndMethodAndField)
+	if s != "" {
+		return s
+	}
+	s = getStringResource(sandboxResources[defaultLang], pathAndMethodAndField)
+	if s != "" {
+		return s
+	}
+
+	return pathAndMethodAndField
 }
 
 func getStringResource(data map[interface{}]interface{}, pathAndMethodAndField string) string {
@@ -184,11 +191,30 @@ func getStringResource(data map[interface{}]interface{}, pathAndMethodAndField s
 		return ""
 	}
 
-	paths := data["paths"].(map[interface{}]interface{})
-	methods := paths[pmf[0]].(map[interface{}]interface{})
-	methodInfo := methods[pmf[1]].(map[interface{}]interface{})
+	if data["paths"] == nil {
+		return ""
+	}
 
-	str := methodInfo[pmf[2]].(string)
+	paths, ok := data["paths"].(map[interface{}]interface{})
+	if !ok || paths == nil {
+		return ""
+	}
+
+	methods, ok := paths[pmf[0]].(map[interface{}]interface{})
+	if !ok || methods == nil {
+		return ""
+	}
+
+	methodInfo, ok := methods[pmf[1]].(map[interface{}]interface{})
+	if !ok || methodInfo == nil {
+		return ""
+	}
+
+	str, ok := methodInfo[pmf[2]].(string)
+	if !ok {
+		return ""
+	}
+
 	return str
 }
 

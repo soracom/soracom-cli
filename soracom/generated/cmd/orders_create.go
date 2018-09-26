@@ -51,17 +51,17 @@ var OrdersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
@@ -93,27 +93,35 @@ func buildQueryForOrdersCreateCmd() string {
 }
 
 func buildBodyForOrdersCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if OrdersCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(OrdersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(OrdersCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if OrdersCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return OrdersCreateCmdBody, nil
+			b = []byte(OrdersCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if OrdersCreateCmdShippingAddressId != "" {
 		result["shippingAddressId"] = OrdersCreateCmdShippingAddressId

@@ -71,29 +71,29 @@ var StatsAirExportCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if StatsAirExportCmdOperatorId == "" {
+		StatsAirExportCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForStatsAirExportCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if StatsAirExportCmdOperatorId == "" {
-		StatsAirExportCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -123,27 +123,35 @@ func buildQueryForStatsAirExportCmd() string {
 }
 
 func buildBodyForStatsAirExportCmd() (string, error) {
+	var result map[string]interface{}
+
 	if StatsAirExportCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(StatsAirExportCmdBody, "@") {
 			fname := strings.TrimPrefix(StatsAirExportCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if StatsAirExportCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return StatsAirExportCmdBody, nil
+			b = []byte(StatsAirExportCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if StatsAirExportCmdPeriod != "" {
 		result["period"] = StatsAirExportCmdPeriod

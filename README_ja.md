@@ -122,6 +122,40 @@ soracom groups list --profile user2
   （user2 にグループの一覧を表示する権限があれば表示される）
 ```
 
+### API Sandbox 環境用のプロファイルを作成する
+
+[SORACOM API Sandbox](https://dev.soracom.io/jp/docs/api_sandbox/) のセットアップなどにも soracom-cli を使うことができます。
+
+`configure-sandbox` サブコマンドを用いてプロファイルを作成します。
+
+```
+soracom configure-sandbox
+```
+表示される質問に従って入力していくと、デフォルトでは `sandbox` という名前のプロファイルが作成されます。
+その `sandbox` プロファイルを用いることで、以下のように API Sandbox に対してコマンドを発行することができます。
+ 
+```
+soracom subscribers list --profile sandbox
+```
+
+また、Sandbox 専用コマンドを利用することもできるようになります。
+
+```
+soracom sandbox subscribers create --profile sandbox
+```
+
+デフォルトとは異なるプロファイル名を使うこともできます。
+
+```
+soracom configure-sandbox --profile test
+soracom sandbox subscribers create --profile test
+```
+
+シェルスクリプトなどから使いやすいように、プロファイル作成時に必要なパラメータをすべて引数で指定できるようになっています。
+
+```
+soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-key="$AUTHKEY" --email="$EMAIL" --password="$PASSWORD"
+```
 
 ### Proxy 経由で API を呼び出したい場合
 

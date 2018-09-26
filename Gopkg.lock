@@ -3,94 +3,132 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:03b79024e6e6a322c20fa2631c8c2b4d0c15bf5ec133272b67227439555728b6"
   name = "github.com/bearmini/go-acl"
   packages = [
     ".",
-    "api"
+    "api",
   ]
+  pruneopts = ""
   revision = "a423b25ba3ef3afa637b85a6222ccf2abffd01c6"
 
 [[projects]]
+  branch = "master"
+  digest = "1:2bb7c3f28dc56124857cc07745c293cb15c1eff3417aaef3356a4e614fa728bc"
   name = "github.com/elazarl/goproxy"
   packages = ["."]
+  pruneopts = ""
   revision = "947c36da3153ff334e74d9d980de341d25f358ba"
-  version = "v1.1"
 
 [[projects]]
+  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
+  pruneopts = ""
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:860e1118ccf3d852a848b510624521344c0d4d0f35026ae2438fa96a0ec28740"
   name = "github.com/jessevdk/go-assets"
   packages = ["."]
+  pruneopts = ""
   revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
 
 [[projects]]
+  digest = "1:717859f53ed0a55fab7284704ecaac4b0d292f4caca5ceaa2afd512be49189ea"
   name = "github.com/kennygrant/sanitize"
   packages = ["."]
-  revision = "2e6820834a1f36c626bf19a253b7d3cc060e9b8b"
-  version = "v1.2.3"
+  pruneopts = ""
+  revision = "06ec0d0dbcd497d01e5189b16f5263f712e61a8e"
+  version = "v1.2.4"
 
 [[projects]]
   branch = "master"
+  digest = "1:096a8a9182648da3d00ff243b88407838902b6703fc12657f76890e08d1899bf"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
-  revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
+  pruneopts = ""
+  revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
 
 [[projects]]
   branch = "master"
+  digest = "1:41c4382cab33584e0a6b71d1b9d98172b81eadfdc74a3098ccd72d06852628da"
   name = "github.com/soracom/soracom-sdk-go"
   packages = ["."]
+  pruneopts = ""
   revision = "f5d11ed3ed3a2517e6f47a796791e7a4412e1f1b"
 
 [[projects]]
+  digest = "1:a1403cc8a94b8d7956ee5e9694badef0e7b051af289caad1cf668331e3ffa4f6"
   name = "github.com/spf13/cobra"
   packages = ["."]
+  pruneopts = ""
   revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:0a52bcb568386d98f4894575d53ce3e456f56471de6897bb8b9de13c33d9340e"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
-  version = "v1.0.1"
+  pruneopts = ""
+  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
+  version = "v1.0.2"
 
 [[projects]]
   branch = "master"
+  digest = "1:61a86f0be8b466d6e3fbdabb155aaa4006137cb5e3fd3b949329d103fa0ceb0f"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
+  pruneopts = ""
+  revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
 
 [[projects]]
   branch = "master"
+  digest = "1:6846191f608c0dd6109f37ca46b784f9630191ff13f86ae974135c05a4c92971"
   name = "golang.org/x/net"
   packages = [
     "html",
-    "html/atom"
+    "html/atom",
   ]
-  revision = "49c15d80dfbc983ea25246ee959d970efe09ec09"
+  pruneopts = ""
+  revision = "f04abc6bdfa7a0171a8a0c9fd2ada9391044d056"
 
 [[projects]]
   branch = "master"
+  digest = "1:18ebd6e65d5223778b5fc92bbf2afffb54c6ac3889bbc362df692b965f932fae"
   name = "golang.org/x/sys"
   packages = [
     "unix",
-    "windows"
+    "windows",
   ]
-  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
+  pruneopts = ""
+  revision = "b09afc3d579e346c4a7e4705953acaf6f9e551bd"
 
 [[projects]]
+  branch = "v2"
+  digest = "1:f0620375dd1f6251d9973b5f2596228cc8042e887cd7f827e4220bc1ce8c30e2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = ""
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5dd9498a1812705e122612c345cecd16049c7626c20104d8f499d2ac284d3cc9"
+  input-imports = [
+    "github.com/bearmini/go-acl",
+    "github.com/bearmini/go-acl/api",
+    "github.com/elazarl/goproxy",
+    "github.com/jessevdk/go-assets",
+    "github.com/kennygrant/sanitize",
+    "github.com/mitchellh/go-homedir",
+    "github.com/soracom/soracom-sdk-go",
+    "github.com/spf13/cobra",
+    "golang.org/x/crypto/ssh/terminal",
+    "golang.org/x/sys/windows",
+    "gopkg.in/yaml.v2",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

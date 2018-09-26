@@ -61,29 +61,29 @@ var UsersPasswordCreateCmd = &cobra.Command{
 			return err
 		}
 
-		result, err := ac.callAPI(param)
+		_, body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
 		}
 
-		if result == "" {
+		if body == "" {
 			return nil
 		}
 
-		return prettyPrintStringAsJSON(result)
+		return prettyPrintStringAsJSON(body)
 	},
 }
 
 func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
+	if UsersPasswordCreateCmdOperatorId == "" {
+		UsersPasswordCreateCmdOperatorId = ac.OperatorID
+	}
+
 	body, err := buildBodyForUsersPasswordCreateCmd()
 	if err != nil {
 		return nil, err
-	}
-
-	if UsersPasswordCreateCmdOperatorId == "" {
-		UsersPasswordCreateCmdOperatorId = ac.OperatorID
 	}
 
 	return &apiParams{
@@ -111,27 +111,35 @@ func buildQueryForUsersPasswordCreateCmd() string {
 }
 
 func buildBodyForUsersPasswordCreateCmd() (string, error) {
+	var result map[string]interface{}
+
 	if UsersPasswordCreateCmdBody != "" {
+		var b []byte
+		var err error
+
 		if strings.HasPrefix(UsersPasswordCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPasswordCreateCmdBody, "@")
 			// #nosec
-			bytes, err := ioutil.ReadFile(fname)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadFile(fname)
 		} else if UsersPasswordCreateCmdBody == "-" {
-			bytes, err := ioutil.ReadAll(os.Stdin)
-			if err != nil {
-				return "", err
-			}
-			return string(bytes), nil
+			b, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			return UsersPasswordCreateCmdBody, nil
+			b = []byte(UsersPasswordCreateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
 		}
 	}
 
-	result := map[string]interface{}{}
+	if result == nil {
+		result = make(map[string]interface{})
+	}
 
 	if UsersPasswordCreateCmdPassword != "" {
 		result["password"] = UsersPasswordCreateCmdPassword
