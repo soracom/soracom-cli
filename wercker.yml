@@ -1,22 +1,18 @@
-box: tcnksm/gox
+box: 
+    id: golang
 
 build:
   steps:
     - wercker/setup-go-workspace:
         package-dir: github.com/soracom/soracom-cli
+        gopath: /go
 
     # Install dev-dependencies
     - script:
         name: install-dev-dependencies
         code: |
             apt-get update
-            apt-get install -y expect
-            curl -sLO https://github.com/jpmens/jo/releases/download/v1.0/jo-1.0.tar.gz
-            tar xvzf jo-1.0.tar.gz
-            cd jo-1.0
-            ./configure
-            make check
-            make install
+            apt-get install -y jq
 
     # Build the project
     - script:
