@@ -2263,6 +2263,8 @@ paths:
       parameters:
         - name: vpg_id
           description: 対象のVPGのID
+        - name: configuration_parameters
+          description: オプショナルなGateの設定パラメータ。
       responses:
         200:
           description: SORACOM Gateの有効化が完了

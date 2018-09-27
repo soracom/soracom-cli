@@ -4854,7 +4854,7 @@ paths:
       x-soracom-cli:
         - vpg open-gate
       operationId: openGate
-      consumes: [text/plain]
+      consumes: [application/json]
       produces: [application/json]
       security:
         - api_key: []
@@ -4865,6 +4865,12 @@ paths:
           description: Target VPG ID.
           required: true
           type: string
+        - name: configuration_parameters
+          in: body
+          description: Optional configuration parameters for Gate.
+          required: false
+          schema:
+            $ref: '#/definitions/OpenGateRequest'
       tags:
         - VirtualPrivateGateway
       responses:
@@ -7863,6 +7869,16 @@ definitions:
       deviceSubnetCidrRange:
         type: string
         default: 10.128.0.0/9
+
+  OpenGateRequest:
+    properties:
+      vxlanId:
+        type: integer
+        format: int32
+        default: 10
+      privacySeparatorEnabled:
+        type: boolean
+        default: false
 
   RegisterGatePeerRequest:
     required:
