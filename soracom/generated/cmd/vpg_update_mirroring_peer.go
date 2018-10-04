@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"io/ioutil"
 
 	"os"
@@ -102,12 +101,10 @@ func buildQueryForVpgUpdateMirroringPeerCmd() string {
 }
 
 func buildBodyForVpgUpdateMirroringPeerCmd() (string, error) {
-	var result map[string]interface{}
+	var b []byte
+	var err error
 
 	if VpgUpdateMirroringPeerCmdBody != "" {
-		var b []byte
-		var err error
-
 		if strings.HasPrefix(VpgUpdateMirroringPeerCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgUpdateMirroringPeerCmdBody, "@")
 			// #nosec
@@ -121,20 +118,11 @@ func buildBodyForVpgUpdateMirroringPeerCmd() (string, error) {
 		if err != nil {
 			return "", err
 		}
-
-		err = json.Unmarshal(b, &result)
-		if err != nil {
-			return "", err
-		}
 	}
 
-	if result == nil {
-		result = make(map[string]interface{})
+	if b == nil {
+		b = []byte{}
 	}
 
-	resultBytes, err := json.Marshal(result)
-	if err != nil {
-		return "", err
-	}
-	return string(resultBytes), nil
+	return string(b), nil
 }

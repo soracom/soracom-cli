@@ -110,6 +110,7 @@ type commandArgs struct {
 	RequireAuth               bool
 	RequireOperatorID         bool
 	BodyExists                bool
+	IsBodyArray               bool
 	Method                    string
 	BasePath                  string
 	Path                      string

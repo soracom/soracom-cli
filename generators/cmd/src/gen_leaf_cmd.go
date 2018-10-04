@@ -54,6 +54,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			RequireAuth:               m.Security != nil,
 			RequireOperatorID:         isOperatorIDRequired(m.Parameters, apiDef.StructDefs),
 			BodyExists:                doesRequestBodyExist(m.Parameters),
+			IsBodyArray:               isBodyArray(m.Parameters),
 			Method:                    strings.ToUpper(m.Method),
 			BasePath:                  apiDef.BasePath,
 			Path:                      m.Path,
@@ -133,6 +134,15 @@ func doesRequestBodyExist(parameters []lib.APIParam) bool {
 	return false
 }
 
+func isBodyArray(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		if param.In == "body" {
+			return (param.Type == "array") || (param.Schema.Type == "array")
+		}
+	}
+	return false
+}
+
 func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.StructDef) []stringFlag {
 	result := []stringFlag{}
 	for _, param := range parameters {
@@ -141,14 +151,17 @@ func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.Struct
 			if param.Type != "string" {
 				continue
 			}
-			var f stringFlag
-			f.VarName = lib.TitleCase(param.Name)
-			f.LongOption = lib.OptionCase(param.Name)
-			f.DefaultValue = ""
-			f.ShortHelp = trimTemplate(param.Description)
-			f.Name = param.Name
-			f.In = param.In
-			f.Required = param.Required
+			f := stringFlag{
+				VarName:      lib.TitleCase(param.Name),
+				LongOption:   lib.OptionCase(param.Name),
+				DefaultValue: "",
+				ShortHelp:    trimTemplate(param.Description),
+				Name:         param.Name,
+				In:           param.In,
+			}
+			if param.Name != "operator_id" {
+				f.Required = param.Required
+			}
 			result = append(result, f)
 		case "body":
 			var s []stringFlag

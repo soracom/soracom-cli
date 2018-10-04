@@ -82,11 +82,6 @@ PHONE="03-1234-5678"
     fi
 }
 
-#: "Create an account on the sandbox" && {
-#    go get -u github.com/soracom/soracom-sdk-go
-#    env SORACOM_ENDPOINT="$SORACOM_ENDPOINT" "${SORACOM_ENVS[@]}" go run "$d/test/setup.go" --email="$EMAIL" --password="$PASSWORD"
-#}
-
 : "Create an account on the sandbox" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" \
         configure-sandbox \
@@ -190,6 +185,25 @@ PHONE="03-1234-5678"
     test "$status" = "terminated"
 }
 
+: "Create a group" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        groups create \
+        --body '{"tags":{"name":"test1"}}' \
+        --profile soracom-cli-test
+        )"
+    groupId="$( echo "$resp" | jq -r .groupId)"
+}
+
+: "Put config to the group" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        groups put-config \
+        --group-id "$groupId" \
+        --namespace SoracomAir \
+        --body '[{"key":"useVpg","value":true}]' \
+        --profile soracom-cli-test
+        )"
+
+}
 : "Checking english help text" && {
     help_en="$( env LC_ALL=en_US.UTF-8 "${SORACOM_ENVS[@]}" "$SORACOM" -h )"
     diff <( echo "$help_en" ) <( cat "$d/test/data/help_en_expected.txt" )

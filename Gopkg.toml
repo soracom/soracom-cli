@@ -38,10 +38,6 @@
   name = "github.com/mitchellh/go-homedir"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/soracom/soracom-sdk-go"
-
-[[constraint]]
   name = "github.com/spf13/cobra"
   version = "0.0.1"
 

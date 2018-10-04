@@ -14,11 +14,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2bb7c3f28dc56124857cc07745c293cb15c1eff3417aaef3356a4e614fa728bc"
+  digest = "1:21934b55dd42f6dbd3ee9abbc787f0f8d4b05d5fd54ac51821019481f835e26f"
   name = "github.com/elazarl/goproxy"
   packages = ["."]
   pruneopts = ""
-  revision = "947c36da3153ff334e74d9d980de341d25f358ba"
+  revision = "f58a169a71a51037728990b2d3597a14f56b525b"
 
 [[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
@@ -53,14 +53,6 @@
   revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
 
 [[projects]]
-  branch = "master"
-  digest = "1:41c4382cab33584e0a6b71d1b9d98172b81eadfdc74a3098ccd72d06852628da"
-  name = "github.com/soracom/soracom-sdk-go"
-  packages = ["."]
-  pruneopts = ""
-  revision = "f5d11ed3ed3a2517e6f47a796791e7a4412e1f1b"
-
-[[projects]]
   digest = "1:a1403cc8a94b8d7956ee5e9694badef0e7b051af289caad1cf668331e3ffa4f6"
   name = "github.com/spf13/cobra"
   packages = ["."]
@@ -69,42 +61,42 @@
   version = "v0.0.3"
 
 [[projects]]
-  digest = "1:0a52bcb568386d98f4894575d53ce3e456f56471de6897bb8b9de13c33d9340e"
+  digest = "1:cbaf13cdbfef0e4734ed8a7504f57fe893d471d62a35b982bf6fb3f036449a66"
   name = "github.com/spf13/pflag"
   packages = ["."]
   pruneopts = ""
-  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
-  version = "v1.0.2"
+  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
+  version = "v1.0.3"
 
 [[projects]]
   branch = "master"
-  digest = "1:61a86f0be8b466d6e3fbdabb155aaa4006137cb5e3fd3b949329d103fa0ceb0f"
+  digest = "1:6914c49eed986dfb8dffb33516fa129c49929d4d873f41e073c83c11c372b870"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = ""
-  revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
+  revision = "e3636079e1a4c1f337f212cc5cd2aca108f6c900"
 
 [[projects]]
   branch = "master"
-  digest = "1:08e41d63f8dac84d83797368b56cf0b339e42d0224e5e56668963c28aec95685"
+  digest = "1:db4fdf03f745823eff6c2f06cd50eb447a7b77f307079cf5220e1621a1d63593"
   name = "golang.org/x/net"
   packages = [
     "html",
     "html/atom",
   ]
   pruneopts = ""
-  revision = "4dfa2610cdf3b287375bbba5b8f2a14d3b01d8de"
+  revision = "f5e5bdd778241bfefa8627f7124c39cd6ad8d74f"
 
 [[projects]]
   branch = "master"
-  digest = "1:dad137c4b24778e11782675f4ef8a00e9625dfe8cf063cb7d104d370c303c6cb"
+  digest = "1:69e22fc503ccbebfa61f4eb1799d905b7100f86458a62589103541f3dd15dd36"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = ""
-  revision = "c2ed4eda69e7f62900806e4cd6e45f0429f859fa"
+  revision = "af653ce8b74f808d092db8ca9741fbb63d2a469d"
 
 [[projects]]
   branch = "v2"
@@ -124,7 +116,6 @@
     "github.com/jessevdk/go-assets",
     "github.com/kennygrant/sanitize",
     "github.com/mitchellh/go-homedir",
-    "github.com/soracom/soracom-sdk-go",
     "github.com/spf13/cobra",
     "golang.org/x/crypto/ssh/terminal",
     "golang.org/x/sys/windows",

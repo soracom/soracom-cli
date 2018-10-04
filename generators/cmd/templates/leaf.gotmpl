@@ -2,7 +2,9 @@ package cmd
 
 import (
 {{if .BodyExists }}
+{{if not .IsBodyArray }}
   "encoding/json"
+{{end}}
   "io/ioutil"
 {{end}}
   "os"
@@ -44,6 +46,7 @@ func init() {
 {{- range .StringFlags}}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
 {{end}}
+
 {{- range .StringSliceFlags}}
   {{$cmdvar}}.Flags().StringSliceVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", []string{}, TRAPI("{{.ShortHelp}}"))
 {{end}}
@@ -122,7 +125,7 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
     return nil, err
   }
   {{end}}
-  
+
   return &apiParams{
     method: "{{.Method}}",
     path: buildPathFor{{$suffix}}("{{.Path}}"),
@@ -193,6 +196,7 @@ func buildQueryFor{{$suffix}}() string {
 }
 
 {{if .BodyExists }}
+{{if not .IsBodyArray }}
 func buildBodyFor{{$suffix}}() (string, error) {
   var result map[string]interface{}
 
@@ -262,4 +266,33 @@ func buildBodyFor{{$suffix}}() (string, error) {
   }
   return string(resultBytes), nil
 }
+{{else}}
+
+func buildBodyFor{{$suffix}}() (string, error) {
+  var b []byte
+  var err error
+
+  if {{$prefix}}Body != "" {
+    if strings.HasPrefix({{$prefix}}Body, "@") {
+      fname := strings.TrimPrefix({{$prefix}}Body, "@")
+      // #nosec
+      b, err = ioutil.ReadFile(fname)
+    } else if {{$prefix}}Body == "-" {
+      b, err = ioutil.ReadAll(os.Stdin)
+    } else {
+      b = []byte({{$prefix}}Body)
+    }
+
+    if err != nil {
+      return "", err
+    }
+  }
+
+  if b == nil {
+    b = []byte{}
+  }
+
+  return string(b), nil
+}
+{{end}}
 {{end}}

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"io/ioutil"
 
 	"os"
@@ -95,12 +94,10 @@ func buildQueryForLoraGatewaysPutTagsCmd() string {
 }
 
 func buildBodyForLoraGatewaysPutTagsCmd() (string, error) {
-	var result map[string]interface{}
+	var b []byte
+	var err error
 
 	if LoraGatewaysPutTagsCmdBody != "" {
-		var b []byte
-		var err error
-
 		if strings.HasPrefix(LoraGatewaysPutTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraGatewaysPutTagsCmdBody, "@")
 			// #nosec
@@ -114,20 +111,11 @@ func buildBodyForLoraGatewaysPutTagsCmd() (string, error) {
 		if err != nil {
 			return "", err
 		}
-
-		err = json.Unmarshal(b, &result)
-		if err != nil {
-			return "", err
-		}
 	}
 
-	if result == nil {
-		result = make(map[string]interface{})
+	if b == nil {
+		b = []byte{}
 	}
 
-	resultBytes, err := json.Marshal(result)
-	if err != nil {
-		return "", err
-	}
-	return string(resultBytes), nil
+	return string(b), nil
 }
