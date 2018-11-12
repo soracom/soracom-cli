@@ -11,12 +11,14 @@ var ConfigureSandboxAuthKeyID string
 var ConfigureSandboxAuthKey string
 var ConfigureSandboxEmail string
 var ConfigureSandboxPassword string
+var ConfigureSandboxRegisterPaymentMethod bool
 
 func init() {
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxAuthKeyID, "auth-key-id", "", TRCLI("cli.configure_sandbox.auth_key_id"))
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxAuthKey, "auth-key", "", TRCLI("cli.configure_sandbox.auth_key"))
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxEmail, "email", "", TRCLI("cli.configure_sandbox.email"))
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxPassword, "password", "", TRCLI("cli.configure_sandbox.password"))
+	ConfigureSandboxCmd.Flags().BoolVar(&ConfigureSandboxRegisterPaymentMethod, "register-payment-method", false, TRCLI("cli.configure_sandbox.register_payment_method"))
 	RootCmd.AddCommand(ConfigureSandboxCmd)
 }
 
@@ -42,13 +44,14 @@ var ConfigureSandboxCmd = &cobra.Command{
 			ct := getSpecifiedCoverageType()
 			ep := getSpecifiedSandboxEndpoint(ct)
 			p = &profile{
-				Sandbox:      true,
-				CoverageType: ct,
-				Endpoint:     &ep,
-				AuthKeyID:    &ConfigureSandboxAuthKeyID,
-				AuthKey:      &ConfigureSandboxAuthKey,
-				Email:        &ConfigureSandboxEmail,
-				Password:     &ConfigureSandboxPassword,
+				Sandbox:               true,
+				CoverageType:          ct,
+				Endpoint:              &ep,
+				AuthKeyID:             &ConfigureSandboxAuthKeyID,
+				AuthKey:               &ConfigureSandboxAuthKey,
+				Email:                 &ConfigureSandboxEmail,
+				Password:              &ConfigureSandboxPassword,
+				RegisterPaymentMethod: ConfigureSandboxRegisterPaymentMethod,
 			}
 		}
 

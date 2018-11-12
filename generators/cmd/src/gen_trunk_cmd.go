@@ -64,6 +64,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "files.go",
 		},
 		{
+			Use:                       "gadgets",
+			Short:                     "cli.gadgets.summary",
+			Long:                      "cli.gadgets.description",
+			CommandVariableName:       "GadgetsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "gadgets.go",
+		},
+		{
 			Use:                       "groups",
 			Short:                     "cli.groups.summary",
 			Long:                      "cli.groups.description",

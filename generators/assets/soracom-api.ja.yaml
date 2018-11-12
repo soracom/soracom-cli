@@ -1022,6 +1022,23 @@ paths:
         404:
           description: 指定されたSubscriberが存在しない
 
+  '/subscribers/msisdn/{msisdn}/send_sms':
+    post:
+      summary: Send SMS to Subscriber by MSISDN
+      description: MSISDNで指定されたサブスクライバー宛にSMSを送信する。
+      parameters:
+        - name: msisdn
+          description: SMS送信対象のサブスクライバーのMSISDN
+        - name: smsForwardingRequest
+          description: メッセージ本体とエンコーディングタイプからなるSMS送信リクエスト
+      responses:
+        202:
+          description: SMS送信を受け付け完了。メッセージに割り振られたIDを返す
+        400:
+          description: 指定されたサブスクライバーはSMS APIをサポートしていない
+        404:
+          description: 指定されたSubscriberが存在しない
+
   '/subscribers/{imsi}/report_local_info':
     post:
       summary: Triggers Subscriber to report SIM local info.
@@ -1650,6 +1667,171 @@ paths:
           description: 対象のタグの削除が完了
         404:
           description: 指定されたSigfox deviceあるいはタグが存在しない
+
+# Gaedgets
+  '/gadgets':
+    get:
+      summary: List Gadgets
+      description: 条件にマッチするGadgetのリストを返す。Gadgetの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: tag_name
+          description: 検索対象にするタグの名前(完全一致)
+        - name: tag_value
+          description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須
+        - name: tag_value_match_mode
+          description: タグの検索条件
+        - name: limit
+          description: 取得するGadgetの上限
+        - name: last_evaluated_key
+          description: 現ページで取得した最後のGadgetのID ({product_id}/{serial_number})。このパラメータを指定することで次のGadget以降のリストを取得できる
+      responses:
+        200:
+          description: 条件にマッチするGadgetのリスト
+
+  '/gadgets/{product_id}/{serial_number}':
+    get:
+      summary: Get Gadget
+      description: 指定されたGadgetの情報を返す。
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+      responses:
+        200:
+          description: 指定されたGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/register':
+    post:
+      summary: Register a Gadget.
+      description: Gadgetを登録する
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+        - name: registration_request
+          description: Gadgetの登録リクエスト
+      responses:
+        200:
+          description: Gadgetが正しく登録されました
+        404:
+          description: 指定されたGadgetが存在しません
+
+  '/gadgets/{product_id}/{serial_number}/terminate':
+    post:
+      summary: Terminate Gadget
+      description: 指定されたGadgetをTerminate
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/enable_termination':
+    post:
+      summary: Enable Termination of Gadget
+      description: 指定されたGadgetをTerminate可能に設定する
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/disable_termination':
+    post:
+      summary: Disable Termination of Gadget
+      description: 指定されたGadgetをTerminate不可能に設定する
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/set_group':
+    post:
+      summary: Set Group to Gadget
+      description: 指定されたGadgetの所属先Groupを指定あるいは上書き変更
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+        - name: group
+          description: Group（IDのみを含めばよい）
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/unset_group':
+    post:
+      summary: Unset Group to Gadget
+      description: 指定されたGadgetのGroup指定を解除
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しないか、GadgetはGroupに属していない
+
+  '/gadgets/{product_id}/{serial_number}/tags':
+    put:
+      summary: Bulk Insert or Update Gadget Tags
+      description: 指定されたGadgetのタグを追加・更新
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+        - name: tags
+          description: 追加・更新対象のタグの配列
+      responses:
+        200:
+          description: 更新後のGadgetの詳細情報
+        404:
+          description: 指定されたGadgetが存在しない
+
+  '/gadgets/{product_id}/{serial_number}/tags/{tag_name}':
+    delete:
+      summary: Delete Gadget Tag
+      description: 指定されたGadgetのタグを削除
+      parameters:
+        - name: product_id
+          description: 対象のGadgetのProduct ID
+        - name: serial_number
+          description: 対象のGadgetのSerial Number
+        - name: tag_name
+          description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent() したものを指定する）
+      responses:
+        204:
+          description: 対象のタグの削除が完了
+        404:
+          description: 指定されたGadgetあるいはタグが存在しない
 
 # Billing
   '/bills':

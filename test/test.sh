@@ -89,6 +89,7 @@ PHONE="03-1234-5678"
         --auth-key "$SORACOM_AUTHKEY_FOR_TEST" \
         --email "$EMAIL" \
         --password "$PASSWORD" \
+        --register-payment-method "true" \
         --profile soracom-cli-test
 }
 

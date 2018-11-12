@@ -30,6 +30,11 @@ cli:
   configure_sandbox:
     summary: Create configurations (profiles) for API Sandbox.
     description: Create configurations (profiles) for API Sandbox.
+    auth_key: AuthKey for the production environment. (Used to check if you have a valid account on the production environment)
+    auth_key_id: AuthKeyId for the production environment. (Used to check if you have a valid account on the production environment)
+    email: E-mail address for the user to be created on the sandbox environment.
+    password: Password for the user to be created on the sandbox environment.
+    register-payment-method: Register a virtual payment method for the user if specified.
     profile:
       prompt: "--- SORACOM CLI setup (Sandbox) ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
       prod_auth:
@@ -54,6 +59,9 @@ cli:
   files:
     summary: Get an exported file.
     description: Get an exported file.
+  gadgets:
+    summary: Manage gadgets.
+    description: Manage gadgets.
   groups:
     summary: List, create, update or delete groups.
     description: List, create, update or delete groups.

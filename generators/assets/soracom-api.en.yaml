@@ -2096,6 +2096,42 @@ paths:
         404:
           description: The specified subscriber does not exist.
 
+  '/subscribers/msisdn/{msisdn}/send_sms':
+    post:
+      summary: Send SMS to Subscriber by MSISDN
+      description: Send SMS to a subscriber specified with MSISDN.
+      operationId: sendSmsByMsisdn
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - subscribers send-sms-by-msisdn
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: msisdn
+          in: path
+          description: MSISDN of the target subscriber.
+          required: true
+          type: string
+        - name: smsForwardingRequest
+          in: body
+          description: SMS forwarding request that contains message body and its encoding type.
+          required: true
+          schema:
+            '$ref': '#/definitions/SmsForwardingRequest'
+      tags:
+        - Subscriber
+      responses:
+        202:
+          description: SMS forwarding report containing message ID.
+          schema:
+           '$ref': '#/definitions/SmsForwardingReport'
+        400:
+          description: The specified subscriber does not support SMS API.
+        404:
+          description: The specified subscriber does not exist.
+
   '/subscribers/{imsi}/report_local_info':
     post:
       summary: Triggers Subscriber to report SIM local info.
@@ -3493,6 +3529,376 @@ paths:
           description: Deletion of specified tag complete.
         404:
           description: The specified Sigfox device or the tag does not exist.
+
+# Gadgets
+  '/gadgets':
+    get:
+      summary: List gadgets.
+      description: Returns a list of gadgets that match certain criteria. If the total number of gadgets does not fit in one page, a URL for accessing the next page is returned in the 'Link' header of the response.
+      operationId: listGadgets
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets list
+      parameters:
+        - name: product_id
+          in: query
+          description: Product ID for filtering the search.
+          required: false
+          type: string
+        - name: tag_name
+          in: query
+          description: Tag name for filtering the search (exact match).
+          required: false
+          type: string
+        - name: tag_value
+          in: query
+          description: Tag search string for filtering the search. Required when `tag_name` has been specified.
+          required: false
+          type: string
+        - name: tag_value_match_mode
+          in: query
+          description: Tag match mode.
+          required: false
+          type: string
+          enum: [exact, prefix]
+          default: exact
+        - name: limit
+          in: query
+          description: Maximum number of gadgets to retrieve.
+          required: false
+          type: integer
+        - name: last_evaluated_key
+          in: query
+          description: The ID ({product_id}/{serial_number}) of the last gadget retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward.
+          required: false
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: A list of Gadgets.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/Gadget'
+
+  '/gadgets/{product_id}/{serial_number}':
+    get:
+      summary: Get gadget.
+      description: Returns information about the specified gadget.
+      operationId: getGadget
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets get
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/register':
+    post:
+      summary: Register a gadget.
+      description: Registers a gadget
+      operationId: registerGadget
+      consumes: [application/json]
+      produces: [application/json]
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets register
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+        - name: registration_request
+          in: body
+          description: Gadget registration request
+          schema:
+            '$ref': '#/definitions/GadgetRegistrationRequest'
+          required: true
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: Gadget successfully registered
+          schema:
+            '$ref': '#/definitions/Gadget'
+        404:
+          description: No such resource found.
+
+  '/gadgets/{product_id}/{serial_number}/terminate':
+    post:
+      summary: Terminate gadget.
+      description: Terminates the specified gadget
+      operationId: terminateGadget
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets terminate
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/enable_termination':
+    post:
+      summary: Enable Termination of gadget.
+      description: Enables termination of specified gadget.
+      operationId: enableTerminationOnGadget
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets enable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/disable_termination':
+    post:
+      summary: Disable Termination of gadget.
+      description: Disables termination of specified gadget.
+      operationId: disableTerminationOnGadget
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets disable-termination
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/set_group':
+    post:
+      summary: Set Group of gadget.
+      description: Sets or overwrites a group for the specified gadget.
+      operationId: setGadgetGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets set-group
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+        - name: group
+          in: body
+          description: Group (may include ID only).
+          schema:
+           '$ref': '#/definitions/Group'
+          required: true
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/unset_group':
+    post:
+      summary: Unset Group of gadget.
+      description: Removes the group configuration from the specified gadget.
+      operationId: unsetGadgetGroup
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets unset-group
+      consumes: [text/plain]
+      produces: [application/json]
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist or the gadget does not belong to a group.
+
+  '/gadgets/{product_id}/{serial_number}/tags':
+    put:
+      summary: Bulk Insert or Update gadget Tags.
+      description: Inserts/updates tags for the specified gadget.
+      operationId: putGadgetTags
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets put-tags
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+        - name: tags
+          in: body
+          description: Array of tags to be inserted/updated.
+          schema:
+            type: array
+            items:
+             '$ref': '#/definitions/TagUpdateRequest'
+
+          required: true
+      tags:
+        - Gadget
+      responses:
+        200:
+          description: The gadget's detailed information after the update.
+          schema:
+           '$ref': '#/definitions/Gadget'
+        404:
+          description: The specified gadget does not exist.
+
+  '/gadgets/{product_id}/{serial_number}/tags/{tag_name}':
+    delete:
+      summary: Delete gadget Tag.
+      description: Deletes a tag from the specified gadget.
+      operationId: deleteGadgetTag
+      x-sam-operationId: deleteTag
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - gadgets delete-tag
+      parameters:
+        - name: product_id
+          in: path
+          description: Product ID of the target gadget.
+          required: true
+          type: string
+        - name: serial_number
+          in: path
+          description: Serial Number of the target gadget.
+          required: true
+          type: string
+        - name: tag_name
+          in: path
+          description: Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)
+          type: string
+          required: true
+      tags:
+        - Gadget
+      responses:
+        204:
+          description: Deletion of specified tag complete.
+        404:
+          description: The specified gadget or the tag does not exist.
 
 # Billing
   '/bills':
@@ -8228,6 +8634,48 @@ definitions:
     properties:
       operatorId:
         type: string
+
+# Gadget
+  Gadget:
+    type: object
+    properties:
+      id:
+        type: string
+      product_id:
+        type: string
+      serial_number:
+        type: string
+      operatorId:
+        type: string
+      groupId:
+        type: string
+      lastModifiedTime:
+        type: string
+        format: date-time
+      terminationEnabled:
+        type: boolean
+        default: false
+      status:
+        type: string
+        enum:
+        - active
+        - terminated
+      attributes:
+        type: object
+      lastSeen:
+        type: object
+      tags:
+        type: object
+        additionalProperties:
+          type: string
+
+  GadgetRegistrationRequest:
+    type: object
+    properties:
+      tags:
+        type: object
+        additionalProperties:
+          type: string
 
   Device:
     type: object

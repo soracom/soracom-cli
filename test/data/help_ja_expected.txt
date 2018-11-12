@@ -15,6 +15,7 @@ Available Commands:
   devices            デバイスに関する操作を行います。
   event-handlers     イベントハンドラーに関する操作を行います。
   files              エクスポートされたファイルを取得します。
+  gadgets            ガジェットに関する操作を行います。
   groups             グループに関する操作を行います。
   help               Help about any command
   lagoon             Lagoon に関する操作を行います。

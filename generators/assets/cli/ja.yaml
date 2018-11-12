@@ -30,6 +30,11 @@ cli:
   configure_sandbox:
     summary: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
     description: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+    auth_key: 本番環境のアカウントの AuthKey（本番環境のアカウントを持っているかどうかを確認するために使われます）
+    auth_key_id: 本番環境のアカウントの AuthKeyId（本番環境のアカウントを持っているかどうかを確認するために使われます）
+    email: API Sandbox 環境に作られるユーザーのメールアドレス
+    password: API Sandbox 環境に作られるユーザーのパスワード
+    register-payment-method: 仮想の支払い方法を設定するかどうか
     profile:
       prompt: "--- SORACOM CLI セットアップ (Sandbox) ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
       prod_auth:
@@ -54,6 +59,9 @@ cli:
   files:
     summary: エクスポートされたファイルを取得します。
     description: エクスポートされたファイルを取得します。
+  gadgets:
+    summary: ガジェットに関する操作を行います。
+    description: ガジェットに関する操作を行います。
   groups:
     summary: グループに関する操作を行います。
     description: グループに関する操作を行います。

@@ -15,6 +15,7 @@ Available Commands:
   devices            Manage devices.
   event-handlers     List, create, update or delete event handlers.
   files              Get an exported file.
+  gadgets            Manage gadgets.
   groups             List, create, update or delete groups.
   help               Help about any command
   lagoon             Manage Lagoon settings.
