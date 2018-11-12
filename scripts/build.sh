@@ -26,6 +26,7 @@ check_command_available() {
 }
 
 set -e # aborting if any commands below exit with non-zero code
+export GO111MODULE=on
 
 VERSION=$1
 if [ -z "$1" ]; then
