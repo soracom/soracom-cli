@@ -138,6 +138,24 @@ PHONE="03-1234-5678"
         )"
 }
 
+: "Check if a subscriber is associated with the orer" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        orders list-subscribers \
+        --order-id "$order_id" \
+        --profile soracom-cli-test
+        )"
+    n="$( echo "$resp" | jq .orderedSubscriberList[].imsi | wc -l )"
+    test "$n" -eq 1
+}
+
+: "Register the subscriber" && {
+    resp="$( env SORACOM_VERBOSE=1 "${SORACOM_ENVS[@]}" "$SORACOM" \
+        orders register-subscribers \
+        --order-id "$order_id" \
+        --profile soracom-cli-test
+        )"
+}
+
 : "Check if a subscriber is registered" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         subscribers list \
