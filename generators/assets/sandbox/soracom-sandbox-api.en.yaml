@@ -134,6 +134,13 @@ paths:
       security:
         - api_key: []
         - api_token: []
+      parameters:
+        - in: body
+          name: createRequest
+          description: Create request
+          required: false
+          schema:
+            $ref: '#/definitions/sandboxCreateSubscriberRequest'
       responses:
         '200':
           description: OK
@@ -254,6 +261,11 @@ definitions:
       token: {type: string}
       userName: {type: string}
 
+  sandboxCreateSubscriberRequest:
+    properties:
+      subscription:
+        type: string
+
   sandboxCreateSubscriberResponse:
     properties:
       imsi:
@@ -280,6 +292,8 @@ definitions:
         type: integer
         format: int64
       status:
+        type: string
+      subscription:
         type: string
       tags:
         $ref: '#/definitions/Map'

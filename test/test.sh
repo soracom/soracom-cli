@@ -211,6 +211,31 @@ PHONE="03-1234-5678"
     test "$status" = "terminated"
 }
 
+: "Create a SIM" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        sandbox subscribers create \
+        --body '{"subscription":"plan-D"}' \
+        --profile soracom-cli-test
+        )"
+    imsi="$( echo "$resp" | jq -r .imsi)"
+    registrationSecret="$( echo "$resp" | jq -r .registrationSecret)"
+}
+
+: "Register the SIM" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers register \
+        --imsi "$imsi" \
+        --registration-secret "$registrationSecret" \
+        --profile soracom-cli-test
+}
+
+: "Suspend the SIM" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers suspend \
+        --imsi "$imsi" \
+        --profile soracom-cli-test
+}
+
 : "Create a group" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         groups create \
@@ -230,6 +255,7 @@ PHONE="03-1234-5678"
         )"
 
 }
+
 : "Checking english help text" && {
     help_en="$( env LC_ALL=en_US.UTF-8 "${SORACOM_ENVS[@]}" "$SORACOM" -h )"
     diff <( echo "$help_en" ) <( cat "$d/test/data/help_en_expected.txt" )
