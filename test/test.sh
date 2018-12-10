@@ -62,7 +62,7 @@ tear_down() {
 }
 
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
-: "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
+: "${SORACOM_ENDPOINT:=https://jp-standby.api-sandbox.soracom.io}"  # run test against standby (which may include new feature to be tested) by default
 SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=$SORACOM_DEBUG")
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
@@ -178,6 +178,13 @@ PHONE="03-1234-5678"
         subscribers update-speed-class \
         --imsi "$imsi" \
         --speed-class "s1.fast" \
+        --profile soracom-cli-test
+}
+
+: "Suspend the SIM" && {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers suspend \
+        --imsi "$imsi" \
         --profile soracom-cli-test
 }
 
