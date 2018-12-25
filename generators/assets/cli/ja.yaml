@@ -132,6 +132,9 @@ cli:
     beam:
       summary: Beam の統計情報に関する操作を行います。
       description: Beam の統計情報に関する操作を行います。
+    harvest:
+      summary: Harvest の利用統計情報を取得します。
+      description: Harvest の利用統計情報を取得します。
   subscribers:
     summary: サブスクライバー (SIM) に関する操作を行います。
     description: サブスクライバー (SIM) に関する操作を行います。
@@ -145,6 +148,12 @@ cli:
     auth-keys:
       summary: SAM ユーザーの認証キーに関する操作を行います。
       description: SAM ユーザーの認証キーに関する操作を行います。
+    default-permissions:
+      summary: SAM ユーザーのデフォルトパーミッションに関する操作を行います。
+      description: SAM ユーザーのデフォルトパーミッションに関する操作を行います。
+    mfa:
+      summary: SAM ユーザーの MFA に関する操作を行います。
+      description: SAM ユーザーの MFA に関する操作を行います。
     password:
       summary: SAM ユーザーのパスワードに関する操作を行います。
       description: SAM ユーザーのパスワードに関する操作を行います。

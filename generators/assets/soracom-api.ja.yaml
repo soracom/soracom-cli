@@ -641,6 +641,76 @@ paths:
         '200':
           description: OK
 
+  '/operators/{operator_id}/users/default_permissions':
+    get:
+      description: すべてのSAMユーザーに適用されるデフォルト権限を取得する。
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/GetDefaultPermissionsResponse'}
+        '403': {description: 許可されていません}
+        '404': {description: オペレーターが存在しません}
+    put:
+      description: すべてのSAMユーザーに適用されるデフォルト権限を更新する。
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/UpdateDefaultPermissionsRequest'}
+      responses:
+        '202': {description: 受理されました}
+        '400': {description: 不正なリクエストです}
+        '403': {description: 許可されていません}
+
+  '/operators/{operator_id}/users/{user_name}/mfa':
+    get:
+      description: SAMユーザーのMFAの使用状態を取得する
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      - {name: user_name, in: path, description: SAMユーザー名, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/MFAStatusOfUseResponse'}
+        '400': {description: 不正なリクエストです}
+    post:
+      description: SAMユーザーのMFAを有効にする。
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      - {name: user_name, in: path, description: SAMユーザー名, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/EnableMFAOTPResponse'}
+        '400': {description: 不正なリクエストです}
+    delete:
+      description: SAMユーザーのMFAを無効にする
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      - {name: user_name, in: path, description: SAMユーザー名, required: true, type: string}
+      responses:
+        '204': {description: MFAを無効にしました}
+        '400': {description: 不正なリクエストです}
+
+  '/operators/{operator_id}/users/{user_name}/mfa/verify':
+    post:
+      description: SAMユーザーのMFAを有効にした後にMFA OTPが正しく受理されるかを検証する
+      parameters:
+      - {name: operator_id, in: path, description: オペレーターID, required: true, type: string}
+      - {name: user_name, in: path, description: SAMユーザー名, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/MFAAuthenticationRequest'}
+      responses:
+        '204': {description: 検証に成功しました}
+        '400': {description: 不正なリクエストです}
+
 # subscribers
   '/subscribers':
     get:
@@ -2247,6 +2317,19 @@ paths:
         '200':
           description: OK.
 
+  '/stats/harvest/operators/{operator_id}':
+    get:
+      summary: Harvest の利用統計情報を取得します。
+      description: 指定された Operator の指定された年月における Harvest データの読み込みデータ通信量を byte 単位で取得します。
+      parameters:
+      - name: operator_id
+        description: operator ID
+      - name: year_month
+        description: 年月を YYYYMM 形式で指定します。
+      responses:
+        '200':
+          description: OK.
+
 # groups
   '/groups':
     get:
@@ -3261,6 +3344,11 @@ definitions:
     properties:
       permission:
         description: PermissionのJSON
+
+  UpdateDefaultPermissionsRequest:
+    required: [permissions]
+    properties:
+      permissions: {type: string, description: 権限のJSON文字列}
 
 #Billing API
   GetBillingHistoryResponse:

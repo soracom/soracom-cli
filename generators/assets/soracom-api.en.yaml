@@ -1234,7 +1234,117 @@ paths:
       responses:
         '200': {description: OK}
 
+  '/operators/{operator_id}/users/default_permissions':
+    get:
+      tags: [User]
+      summary: Get the default permissions
+      description: Get the default permissions rule that is applied to all of the SAM users
+      operationId: getDefaultPermissions
+      x-soracom-cli:
+        - users default-permissions get
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/GetDefaultPermissionsResponse'}
+        '403': {description: Not privileged}
+        '404': {description: Operator Not Found}
+    put:
+      tags: [User]
+      summary: Update the default permissions
+      description: Update the default permissions rule that is applied to all of the SAM
+      operationId: updateDefaultPermissions
+      x-soracom-cli:
+        - users default-permissions update
+      consumes: [application/json]
+      produces: [application/json;charset=UTF-8]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/UpdateDefaultPermissionsRequest'}
+      responses:
+        '202': {description: Accepted}
+        '400': {description: Bad Request}
+        '403': {description: Not privileged}
 
+  '/operators/{operator_id}/users/{user_name}/mfa':
+    get:
+      tags: [User]
+      summary: Get SAM user's MFA status
+      description: Get SAM user's MFA status
+      operationId: getUserMFAStatus
+      x-soracom-cli:
+        - users mfa get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - {name: user_name, in: path, description: SAM user name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/MFAStatusOfUseResponse'}
+        '400': {description: Bad request}
+    post:
+      tags: [User]
+      summary: Enable SAM user's MFA
+      description: Enable SAM user's MFA
+      operationId: enableUserMFA
+      x-soracom-cli:
+        - users mfa enable
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - {name: user_name, in: path, description: SAM user name, required: true, type: string}
+      responses:
+        '200':
+          description: OK
+          schema: {$ref: '#/definitions/EnableMFAOTPResponse'}
+        '400': {description: Bad request}
+    delete:
+      tags: [User]
+      summary: Revoke SAM user's MFA
+      description: Revoke SAM user's MFA
+      x-soracom-cli:
+        - users mfa revoke
+      operationId: revokeUserMFA
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - {name: user_name, in: path, description: SAM user name, required: true, type: string}
+      responses:
+        '204': {description: Revoked}
+        '400': {description: Bad request}
+
+  '/operators/{operator_id}/users/{user_name}/mfa/verify':
+    post:
+      tags: [User]
+      summary: Verify SAM user's MFA OTP code when MFA activation phase
+      description: Verify SAM user's MFA OTP code when MFA activation phase
+      operationId: verifyUserMFA
+      x-soracom-cli:
+        - users mfa verify
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - {name: operator_id, in: path, description: Operator ID, required: true, type: string}
+      - {name: user_name, in: path, description: SAM user name, required: true, type: string}
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema: {$ref: '#/definitions/MFAAuthenticationRequest'}
+      responses:
+        '204': {description: Verified}
+        '400': {description: Bad request}
 
 # subscribers
   '/subscribers':
@@ -4816,6 +4926,35 @@ paths:
           schema:
            '$ref': '#/definitions/FileExportResponse'
 
+  '/stats/harvest/operators/{operator_id}':
+    get:
+      tags: [Stats]
+      summary: Get 'Harvest usage report' for the specified operator.
+      description: Retrieves the SORACOM Harvest usage report for the operator.
+      operationId: getHarvestExportedDataStats
+      security:
+        - api_key: []
+        - api_token: []
+      x-soracom-cli:
+        - stats harvest get
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+        - name: operator_id
+          in: path
+          description: operator_id
+          required: true
+          type: string
+        - name: year_month
+          in: query
+          description: Year/Month in 'YYYYMM' format.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK.
+          schema: {'$ref': '#/definitions/HarvestExportedDataStatsResponse'}
+
 # groups
   '/groups':
     get:
@@ -7522,6 +7661,13 @@ definitions:
       backupCodes:
         type: array
         items: {type: string}
+  GetDefaultPermissionsResponse:
+    properties:
+      defaultPermissions: {type: string}
+  UpdateDefaultPermissionsRequest:
+    required: [permissions]
+    properties:
+      permissions: {type: string, description: JSON string of permissions}
 
   AttachRoleRequest:
     properties:
@@ -7929,6 +8075,11 @@ definitions:
       unixtime:
         type: integer
         format: int64
+
+  HarvestExportedDataStatsResponse:
+    properties:
+      yearMonth: {type: string, description: yearMonth}
+      exportedBytes:  {type: integer, description: exportedBytes}
 
   ExportRequest:
     properties:

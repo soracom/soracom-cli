@@ -153,6 +153,9 @@ cli:
     beam:
       summary: Show or export Beam statistics.
       description: Show or export Beam statistics.
+    harvest:
+      summary: Get usage report for Harvest.
+      description: Get usage report for Harvest.
   subscribers:
     summary: Manage subscribers.
     description: Manage subscribers.
@@ -166,12 +169,18 @@ cli:
     auth-keys:
       summary: List, create or delete SAM user's AuthKeys.
       description: List, create or delete SAM user's AuthKeys.
+    default-permissions:
+      summary: Show or update SAM user's default permissions.
+      description: Show or update SAM user's default permissions.
+    mfa:
+      summary: Manage SAM user's MFA.
+      description: Manage SAM user's MFA.
     password:
       summary: Create, update or delete SAM user's password.
       description: Create, update or delete SAM user's password.
     permissions:
-      summary: Show, create and update SAM user's permission.
-      description: Show, create and update SAM user's permission.
+      summary: Show, create and update SAM user's permissions.
+      description: Show, create and update SAM user's permissions.
   version:
     summary: Show version info.
     description: Show version info.

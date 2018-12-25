@@ -296,6 +296,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "stats_beam.go",
 		},
 		{
+			Use:                       "harvest",
+			Short:                     "cli.stats.harvest.summary",
+			Long:                      "cli.stats.harvest.description",
+			CommandVariableName:       "StatsHarvestCmd",
+			ParentCommandVariableName: "StatsCmd",
+			FileName:                  "stats_harvest.go",
+		},
+		{
 			Use:                       "subscribers",
 			Short:                     "cli.subscribers.summary",
 			Long:                      "cli.subscribers.description",
@@ -310,6 +318,22 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			CommandVariableName:       "UsersCmd",
 			ParentCommandVariableName: "RootCmd",
 			FileName:                  "users.go",
+		},
+		{
+			Use:                       "mfa",
+			Short:                     "cli.users.mfa.summary",
+			Long:                      "cli.users.mfa.description",
+			CommandVariableName:       "UsersMfaCmd",
+			ParentCommandVariableName: "UsersCmd",
+			FileName:                  "users_mfa.go",
+		},
+		{
+			Use:                       "default-permissions",
+			Short:                     "cli.users.default-permissions.summary",
+			Long:                      "cli.users.default-permissions.description",
+			CommandVariableName:       "UsersDefaultPermissionsCmd",
+			ParentCommandVariableName: "UsersCmd",
+			FileName:                  "users_default_permissions.go",
 		},
 		{
 			Use:                       "auth-keys",
