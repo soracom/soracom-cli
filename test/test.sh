@@ -73,14 +73,7 @@ ADDR1="赤坂1-2-3"
 FULL_NAME="ソラコム 太郎"
 PHONE="03-1234-5678"
 
-: "Extract binary" && {
-    if [ "$OS" == "darwin" ]; then
-        SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
-    elif [ "$OS" == "linux" ]; then
-        tar xvzf "$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}.tar.gz" -C "$d/soracom/dist/$VERSION"
-        SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}/soracom"
-    fi
-}
+SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 
 : "Create an account on the sandbox" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" \
