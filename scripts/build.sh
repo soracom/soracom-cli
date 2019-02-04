@@ -95,9 +95,11 @@ git config --global http.https://gopkg.in.followRedirects true
 
     # non-zipped versions for homebrew
     echo "Building artifacts for homebrew (no zip) ..."
-    goxc -bc="darwin" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION" -tasks-=archive-zip,rmbin
+    goxc -bc="darwin linux" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION" -tasks-=archive-zip,rmbin
     mv "dist/$VERSION/darwin_386/soracom"   "dist/$VERSION/soracom_${VERSION}_darwin_386"
     mv "dist/$VERSION/darwin_amd64/soracom" "dist/$VERSION/soracom_${VERSION}_darwin_amd64"
+    mv "dist/$VERSION/linux_386/soracom"   "dist/$VERSION/soracom_${VERSION}_linux_386"
+    mv "dist/$VERSION/linux_amd64/soracom" "dist/$VERSION/soracom_${VERSION}_linux_amd64"
     rmdir "dist/$VERSION/darwin_386"
     rmdir "dist/$VERSION/darwin_amd64"
 
