@@ -68,6 +68,15 @@ cli:
   lagoon:
     summary: Manage Lagoon settings.
     description: Manage Lagoon settings.
+    dashboards:
+      summary: Manage Lagoon dashboards.
+      description: Manage Lagoon dashboards.
+    license-packs:
+      summary: Manage Lagoon license packs.
+      description: Manage Lagoon license packs.
+    users:
+      summary: Manage Lagoon users.
+      description: Manage lagoon users.
   logs:
     summary: List logs.
     description: List logs.

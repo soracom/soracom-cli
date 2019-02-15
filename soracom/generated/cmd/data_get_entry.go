@@ -82,15 +82,13 @@ func buildPathForDataGetEntryCmd(path string) string {
 
 	path = strings.Replace(path, "{"+"resource_type"+"}", DataGetEntryCmdResourceType, -1)
 
+	path = strings.Replace(path, "{"+"time"+"}", sprintf("%d", DataGetEntryCmdTime), -1)
+
 	return path
 }
 
 func buildQueryForDataGetEntryCmd() string {
 	result := []string{}
-
-	if DataGetEntryCmdTime != 0 {
-		result = append(result, sprintf("%s=%d", "time", DataGetEntryCmdTime))
-	}
 
 	return strings.Join(result, "&")
 }

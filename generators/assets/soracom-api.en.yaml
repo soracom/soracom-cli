@@ -6367,9 +6367,11 @@ paths:
         '202':
           description: Updating resource is accepted
         '400':
-          description: Resource is not writable
+          description: Specified Resource does not support write (Including case of connection error such as offline device)
         '404':
           description: Resource is not found
+        '500':
+          description: Error response from the device. (It includes the case where the LwM2M response message is error from the device, and the error message from the device is included in the response 'message'.)
 
   "/devices/{device_id}/{object}/{instance}/{resource}/execute":
     post:
@@ -6923,10 +6925,12 @@ paths:
           description: OK
           schema:
             type: array
-            $ref: '#/definitions/LagoonUser'
+            items:
+              '$ref': '#/definitions/LagoonUser'
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon list-users
+        - lagoon users list
     post:
       tags: [Lagoon]
       summary: Create a SORACOM Lagoon user
@@ -6950,6 +6954,7 @@ paths:
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon create-user
+        - lagoon users create
 
   '/lagoon/users/{lagoon_user_id}':
     delete:
@@ -6973,6 +6978,7 @@ paths:
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon delete-user
+        - lagoon users delete
 
   '/lagoon/users/{lagoon_user_id}/permission':
     put:
@@ -7001,6 +7007,7 @@ paths:
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon update-user-permission
+        - lagoon users update-permission
 
   '/lagoon/users/{lagoon_user_id}/password':
     put:
@@ -7029,6 +7036,7 @@ paths:
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon update-user-password
+        - lagoon users update-password
 
   '/lagoon/users/{lagoon_user_id}/email':
     put:
@@ -7057,6 +7065,115 @@ paths:
         '400': {description: Bad request}
       x-soracom-cli:
         - lagoon update-user-email
+        - lagoon users update-email
+
+  '/lagoon/dashboards/{dashboard_id}/permissions':
+    put:
+      tags: [Lagoon]
+      summary: Update permissions for a dashboard of SORACOM Lagoon
+      description: Update permissions for a dashboard of SORACOM Lagoon
+      operationId: updateLagoonDashboardPermissions
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - name: dashboard_id
+        in: path
+        description: dashboard_id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: req
+        description: req
+        required: true
+        schema: {$ref: '#/definitions/LagoonDashboardPermissionsUpdatingRequest'}
+      responses:
+        '204': {description: Updated}
+        '400': {description: Bad request}
+        '403': {description: Unauthorized operation}
+      x-soracom-cli:
+        - lagoon dashboards update-permissions
+
+  '/lagoon/dashboards/{dashboard_id}/permissions/init':
+    post:
+      tags: [Lagoon]
+      summary: Update permissions to the initial state for a dashboard of SORACOM Lagoon
+      description: Update permissions to the initial state for a dashboard of SORACOM Lagoon
+      operationId: initializeLagoonDashboardPermissions
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - name: dashboard_id
+        in: path
+        description: dashboard_id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        '204': {description: Updated}
+        '400': {description: Bad request}
+        '403': {description: Unauthorized operation}
+      x-soracom-cli:
+        - lagoon dashboards init-permissions
+
+  '/lagoon/license_packs':
+    get:
+      tags: [Lagoon]
+      summary: Get the status of active SORACOM Lagoon license packs
+      description: Get the status of active SORACOM Lagoon license packs
+      operationId: listLagoonLicensePackStatus
+      consumes: [application/json]
+      produces: [application/json]
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              '$ref': '#/definitions/LagoonLicensePackStatusResponse'
+        '400': {description: Bad request}
+      x-soracom-cli:
+        - lagoon license-packs list-status
+    put:
+      tags: [Lagoon]
+      summary: Update the quantities for license packs of SORACOM Lagoon
+      description: Update the quantities for license packs of SORACOM Lagoon
+      operationId: updateLagoonLicensePack
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: req
+        description: req
+        required: true
+        schema: {$ref: '#/definitions/LagoonLicensePacksUpdatingRequest'}
+      responses:
+        '204': {description: Updated}
+        '400': {description: Bad request}
+        '404': {description: Operator Not Found}
+      x-soracom-cli:
+        - lagoon license-packs update
+
+  '/lagoon/plan':
+    put:
+      tags: [Lagoon]
+      summary: Update the plan of SORACOM Lagoon
+      description: Update the plan of SORACOM Lagoon
+      operationId: updateLagoonPlan
+      consumes: [application/json]
+      produces: [application/json]
+      parameters:
+      - in: body
+        name: req
+        description: req
+        required: true
+        schema: {$ref: '#/definitions/LagoonPlanChangingRequest'}
+      responses:
+        '204': {description: Updated}
+        '400': {description: Bad request}
+        '404': {description: Operator Not Found}
+      x-soracom-cli:
+        - lagoon updated-plan
 
   '/data/{resource_type}/{resource_id}':
     get:
@@ -7176,7 +7293,7 @@ paths:
           required: true
           type: string
         - name: time
-          in: query
+          in: path
           description: Timestamp of the target data entry to get (unixtime in milliseconds).
           required: true
           type: integer
@@ -9023,6 +9140,9 @@ definitions:
       lastSeenAt:
         type: string
         description: The last login datetime.
+      lastSeenAtAge:
+        type: string
+        description: The last login datetime as age.
 
   LagoonUserCreationRequest:
     type: object
@@ -9070,3 +9190,46 @@ definitions:
     properties:
       userEmail:
         type: string
+
+  LagoonLicensePackStatusResponse:
+    type: object
+    properties:
+      licensePackName:
+        type: string
+      quantity:
+        type: integer
+        format: int32
+
+  LagoonPlanChangingRequest:
+    type: object
+    properties:
+      plan:
+        type: string
+        enum: [maker, pro, free]
+
+  LagoonLicensePacksUpdatingRequest:
+    type: object
+    properties:
+      licensePackQuantities:
+        type: array
+        items:
+          properties:
+            desiredQuantity:
+              type: integer
+              format: int32
+            licensePackName:
+              type: string
+
+  LagoonDashboardPermissionsUpdatingRequest:
+    type: object
+    properties:
+      permissions:
+        type: array
+        items:
+          properties:
+            permission:
+              type: string
+            userId:
+              type: integer
+              format: int64
+

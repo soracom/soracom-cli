@@ -2931,9 +2931,9 @@ paths:
         '200':
           description: 指定されたObject Instance下のResourceのリスト
         '400':
-          description: Object InstanceがRead操作をサポートしていません
+          description: 指定したResourceがReadをサポートしていません （デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
-          description: Object Instanceが見つかりません
+          description: 指定したResourceが見つかりません
 
   "/devices/{device_id}/{object}/{instance}/{resource}":
     get:
@@ -2954,9 +2954,9 @@ paths:
         '200':
           description: Resource
         '400':
-          description: ResourceはRead操作をサポートしていません
+          description: 指定したResourceがReadをサポートしていません （デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
-          description: Resourceが見つかりません
+          description: 指定したResourceが見つかりません
 
     put:
       summary: デバイスの Resource に値を Write します。
@@ -2976,9 +2976,11 @@ paths:
         '202':
           description: Resourceの更新を受け付けました
         '400':
-          description: ResourceはWrite操作をサポートしていません
+          description: 指定したResourceがWriteをサポートしていません （デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
-          description: Resourceが見つかりません
+          description: 指定したResourceが見つかりません
+        '500':
+          description: デバイスから更新エラーの応答がありました。(デバイスからLwM2M応答メッセージがエラーの場合が含まれます。デバイスからのエラーメッセージはレスポンスの `message` に含まれます。)
 
   "/devices/{device_id}/{object}/{instance}/{resource}/execute":
     post:
@@ -2999,7 +3001,7 @@ paths:
         '202':
           description: Resourceの実行を受け付けました
         '400':
-          description: ResourceはExecute操作をサポートしていません
+          description: ResourceはExecute操作をサポートしていません（デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
           description: Resourceが見つかりません
 
@@ -3022,7 +3024,7 @@ paths:
         '200':
           description: Resource の Observe を開始しました
         '400':
-          description: Resource は Read 操作をサポートしていません
+          description: Resource は Read 操作をサポートしていません（デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
           description: Resource が見つかりません
 
@@ -3062,7 +3064,7 @@ paths:
         '202':
           description: Observe を開始しました
         '400':
-          description: Resource に到達できません
+          description: Resource は Read 操作をサポートしていません（デバイスがオフラインなど接続エラーの場合を含みます）
         '404':
           description: Resource が見つかりません
 
@@ -3236,6 +3238,29 @@ paths:
       summary: SORACOM Lagoon のユーザーのメールアドレスを変更します。
       description: SORACOM Lagoon のユーザーのメールアドレスを変更します。
 
+  '/lagoon/dashboards/{dashboard_id}/permissions':
+    put:
+      summary: SORACOM Lagoonのダッシュボード権限更新
+      description: SORACOM Lagoonのダッシュボードの権限を更新します
+
+  '/lagoon/dashboards/{dashboard_id}/permissions/init':
+    post:
+      summary: SORACOM Lagoonのダッシュボードの権限初期化
+      description: SORACOM Lagoonのダッシュボードの権限を初期化します
+
+  '/lagoon/license_packs':
+    get:
+      summary: SORACOM Lagoonのライセンスパックのステータス取得
+      description: SORACOM Lagoonのライセンスパックのステータスを取得します
+    put:
+      summary: SORACOM Lagoonの追加ライセンスパック更新・変更
+      description: SORACOM Lagoonの追加ライセンスパックを更新・変更する
+
+  '/lagoon/plan':
+    put:
+      summary: SORACOM Lagoonのプラン変更
+      description: SORACOM Lagoonのプランを変更する
+
   '/data/{resource_type}/{resource_id}':
     get:
       summary: Get data sent from a resource
@@ -3277,7 +3302,7 @@ paths:
   '/data/{resource_type}/{resource_id}/{time}':
     get:
       summary: Gets a data entry
-      description: リソースIDとタイムスタンプで指定されたデータエントリを削除する。
+      description: リソースIDとタイムスタンプで指定されたデータエントリを取得する。
       parameters:
         - name: resource_type
           description: データ送信元リソースのType

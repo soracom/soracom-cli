@@ -68,6 +68,15 @@ cli:
   lagoon:
     summary: Lagoon に関する操作を行います。
     description: Lagoon に関する操作を行います。
+    dashboards:
+      summary: Lagoon のダッシュボードに関する操作を行います。
+      description: Lagoon のダッシュボードに関する操作を行います。
+    license-packs:
+      summary: Lagoon のライセンスパックに関する操作を行います。
+      description: Lagoon のライセンスパックに関する操作を行います。
+    users:
+      summary: Lagoon ユーザーに関する操作を行います。
+      description: Lagoon ユーザーに関する操作を行います。
   logs:
     summary: ログに関する操作を行います。
     description: ログに関する操作を行います。
