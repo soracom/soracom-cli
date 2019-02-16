@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd -P )"
 set -e
 
@@ -14,13 +14,15 @@ if [ "$uname_s" == "Darwin" ]; then
     OS=darwin
 elif [ "$uname_s" == "Linux" ]; then
     OS=linux
+elif [ "$uname_s" == "FreeBSD" ]; then
+    OS=freebsd
 else
     echo "Operating system $uname_s is not supported for a test environment"
     exit 1
 fi
 
 uname_m="$(uname -m)"
-if [ "$uname_m" == "x86_64" ]; then
+if [ "$uname_m" == "x86_64" ] || [ "$uname_m" == "amd64" ]; then
     ARCH=amd64
 else
     echo "Machine architecture $uname_m is not supported for a test environment"

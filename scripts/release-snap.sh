@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
 set -e
 

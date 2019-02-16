@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
 
 uname_s="$(uname -s)"
@@ -6,13 +6,15 @@ if [ "$uname_s" == "Darwin" ]; then
     OS=darwin
 elif [ "$uname_s" == "Linux" ]; then
     OS=linux
+elif [ "$uname_s" == "FreeBSD" ]; then
+    OS=freebsd
 else
     echo "Operating system $uname_s is not supported for a test environment"
     exit 1
 fi
 
 uname_m="$(uname -m)"
-if [ "$uname_m" == "x86_64" ]; then
+if [ "$uname_m" == "x86_64" ] || [ "$uname_m" == "amd64" ]; then
     ARCH=amd64
 else
     echo "Machine architecture $uname_m is not supported for a test environment"
@@ -30,7 +32,7 @@ pushd "$d/soracom" >/dev/null 2>&1
 popd >/dev/null 2>&1
 
 pushd "$d/soracom/dist/$VERSION/" >/dev/null 2>&1
-if [ "$OS" == "darwin" ]; then
+if [ "$OS" == "darwin" ] || [ "$OS" == "freebsd" ]; then
     unzip -o soracom_${VERSION}_${OS}_${ARCH}.zip
 elif [ "$OS" == "linux" ]; then
     tar xvzf soracom_${VERSION}_${OS}_${ARCH}.tar.gz

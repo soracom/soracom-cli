@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 d=$( cd "$( dirname "$0" )" || exit 1; cd ..; pwd -P )
 
 VERSION=$1
