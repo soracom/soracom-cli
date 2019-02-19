@@ -9,8 +9,6 @@ if [ -z "$1" ]; then
 fi
 
 
-OS=`uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-
 uname_m="$(uname -m)"
 if [ "$uname_m" == "x86_64" ] || [ "$uname_m" == "amd64" ]; then
     ARCH=amd64
@@ -64,6 +62,8 @@ CITY="港区"
 ADDR1="赤坂1-2-3"
 FULL_NAME="ソラコム 太郎"
 PHONE="03-1234-5678"
+
+OS=$( uname -s | tr '[:upper:]' '[:lower:]' )
 
 SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 

@@ -34,11 +34,11 @@ if [ -z "$1" ]; then
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
 
-uname_s=`uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 TARGETS=$2
 if [ -z "$2" ]; then
-    TARGETS="linux windows darwin"
-    if [ $uname_s != "linux" ] && [ $uname_s != "windows" ] && [ $uname_s != "darwin" ]; then
+    TARGETS="linux windows darwin freebsd"
+    uname_s=$( uname -s | tr '[:upper:]' '[:lower:]' )
+    if [[ "$TARGETS" != *"$uname_s"* ]]; then
         TARGETS="$TARGETS $uname_s"
     fi
 fi
@@ -100,12 +100,17 @@ git config --global http.https://gopkg.in.followRedirects true
     # non-zipped versions for homebrew and testing
     echo "Building artifacts for homebrew (no zip) ..."
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION" -tasks-=archive-zip,rmbin
-    for DISTFILE in dist/$VERSION/*/soracom;do
-       DISTOS=`echo $DISTFILE |awk -F '/' '{print $3}'`
-       mv "$DISTFILE" "dist/$VERSION/soracom_${VERSION}_${DISTOS}"
+    for distfile in dist/"$VERSION"/*/soracom; do
+       distos=$( echo "$distfile" | awk -F '/' '{print $3}' )
+       mv "$distfile" "dist/$VERSION/soracom_${VERSION}_${distos}"
     done
-    rmdir "dist/$VERSION/darwin_386"
-    rmdir "dist/$VERSION/darwin_amd64"
+    for distfile in dist/"$VERSION"/*/soracom.exe; do
+       distos=$( echo "$distfile" | awk -F '/' '{print $3}' )
+       mv "$distfile" "dist/$VERSION/soracom_${VERSION}_${distos}.exe"
+    done
+
+    # removing empty directories
+    find "dist/$VERSION" -type d -empty -delete
 
     popd > /dev/null
 }
