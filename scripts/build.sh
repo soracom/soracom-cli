@@ -34,9 +34,13 @@ if [ -z "$1" ]; then
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
 
+uname_s=`uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 TARGETS=$2
 if [ -z "$2" ]; then
-    TARGETS="linux windows darwin `uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`"
+    TARGETS="linux windows darwin"
+    if [ $uname_s != "linux" ] && [ $uname_s != "windows" ] && [ $uname_s != "darwin" ]; then
+        TARGETS="$TARGETS $uname_s"
+    fi
 fi
 
 # https://github.com/niemeyer/gopkg/issues/50
