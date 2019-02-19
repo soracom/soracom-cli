@@ -34,9 +34,13 @@ if [ -z "$1" ]; then
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
 
+uname_s=`uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 TARGETS=$2
 if [ -z "$2" ]; then
-    TARGETS="linux windows darwin freebsd"
+    TARGETS="linux windows darwin"
+    if [ $uname_s != "linux" ] && [ $uname_s != "windows" ] && [ $uname_s != "darwin" ]; then
+        TARGETS="$TARGETS $uname_s"
+    fi
 fi
 
 # https://github.com/niemeyer/gopkg/issues/50
@@ -96,12 +100,10 @@ git config --global http.https://gopkg.in.followRedirects true
     # non-zipped versions for homebrew and testing
     echo "Building artifacts for homebrew (no zip) ..."
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION" -tasks-=archive-zip,rmbin
-    mv "dist/$VERSION/darwin_386/soracom"    "dist/$VERSION/soracom_${VERSION}_darwin_386"
-    mv "dist/$VERSION/darwin_amd64/soracom"  "dist/$VERSION/soracom_${VERSION}_darwin_amd64"
-    mv "dist/$VERSION/linux_386/soracom"     "dist/$VERSION/soracom_${VERSION}_linux_386"
-    mv "dist/$VERSION/linux_amd64/soracom"   "dist/$VERSION/soracom_${VERSION}_linux_amd64"
-    mv "dist/$VERSION/freebsd_386/soracom"   "dist/$VERSION/soracom_${VERSION}_freebsd_386"
-    mv "dist/$VERSION/freebsd_amd64/soracom" "dist/$VERSION/soracom_${VERSION}_freebsd_amd64"
+    for DISTFILE in dist/$VERSION/*/soracom;do
+       DISTOS=`echo $DISTFILE |awk -F '/' '{print $3}'`
+       mv "$DISTFILE" "dist/$VERSION/soracom_${VERSION}_${DISTOS}"
+    done
     rmdir "dist/$VERSION/darwin_386"
     rmdir "dist/$VERSION/darwin_amd64"
 

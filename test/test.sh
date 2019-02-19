@@ -9,17 +9,7 @@ if [ -z "$1" ]; then
 fi
 
 
-uname_s="$(uname -s)"
-if [ "$uname_s" == "Darwin" ]; then
-    OS=darwin
-elif [ "$uname_s" == "Linux" ]; then
-    OS=linux
-elif [ "$uname_s" == "FreeBSD" ]; then
-    OS=freebsd
-else
-    echo "Operating system $uname_s is not supported for a test environment"
-    exit 1
-fi
+OS=`uname -s|sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 
 uname_m="$(uname -m)"
 if [ "$uname_m" == "x86_64" ] || [ "$uname_m" == "amd64" ]; then
