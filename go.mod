@@ -69,11 +69,11 @@ require (
 	golang.org/x/build v0.0.0-20190215225244-0261b66eb045 // indirect
 	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a
 	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/net v0.0.0-20190313220215-9f648a60d977
+	golang.org/x/net v0.0.0-20190318221613-d196dffd7c2b
 	golang.org/x/oauth2 v0.0.0-20190212230446-3e8b2be13635 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190312061237-fead79001313
-	golang.org/x/tools v0.0.0-20190314010720-1286b2016bb1 // indirect
+	golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca
+	golang.org/x/tools v0.0.0-20190319232107-3f1ed9edd1b4 // indirect
 	google.golang.org/genproto v0.0.0-20190215211957-bd968387e4aa // indirect
 	google.golang.org/grpc v1.18.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2

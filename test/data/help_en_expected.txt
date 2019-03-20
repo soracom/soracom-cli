@@ -30,7 +30,7 @@ Available Commands:
   payment-methods    Create or update payment methods.
   payment-statements List or export payment statements.
   products           List products.
-  query              Search resources.
+  query              Search resources such as subscribers or sigfox devices.
   roles              List, create, update or delete roles.
   sandbox            Sandbox related operations.
   shipping-addresses List, create, update or delete shipping addresses.

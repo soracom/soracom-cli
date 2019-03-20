@@ -8063,7 +8063,7 @@ paths:
       - application/json
       description: Search Sigfox devices by query terms. It returns partial match
         results. When this API permission is allowed, it grants the authority to search
-        and retrieve all SIMs that includes group information.
+        and retrieve all Sigfox devices that includes their group information.
       operationId: searchSigfoxDevices
       parameters:
       - collectionFormat: multi
@@ -8174,7 +8174,7 @@ paths:
       - application/json
       description: Search subscibers by query terms. It returns partial match results.  When
         this API permission is allowed, it grants the authority to search and retrieve
-        all SIMs that includes group information.
+        all SIMs that includes their group information.
       operationId: searchSubscribers
       parameters:
       - collectionFormat: multi

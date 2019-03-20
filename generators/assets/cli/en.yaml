@@ -118,8 +118,8 @@ cli:
     summary: List products.
     description: List products.
   query:
-    summary: Search resources.
-    description: Search resources.
+    summary: Search resources such as subscribers or sigfox devices.
+    description: Search resources such as subscribers or sigfox devices.
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.

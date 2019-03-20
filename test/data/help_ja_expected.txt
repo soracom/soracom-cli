@@ -30,7 +30,7 @@ Available Commands:
   payment-methods    お支払い方法に関する操作を行います。
   payment-statements 課金明細の一覧取得または出力を行います。
   products           商品一覧を取得します。
-  query              リソース（サブスクライバー）をいろいろな条件で検索します。
+  query              リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
   roles              ロールに関する操作を行います。
   sandbox            API サンドボックスに関する操作を行います。
   shipping-addresses 出荷先情報に関する操作を行います。
