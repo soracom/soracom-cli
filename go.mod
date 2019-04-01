@@ -67,13 +67,13 @@ require (
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
 	golang.org/x/build v0.0.0-20190215225244-0261b66eb045 // indirect
-	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a
+	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/net v0.0.0-20190318221613-d196dffd7c2b
+	golang.org/x/net v0.0.0-20190328230028-74de082e2cca
 	golang.org/x/oauth2 v0.0.0-20190212230446-3e8b2be13635 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca
-	golang.org/x/tools v0.0.0-20190319232107-3f1ed9edd1b4 // indirect
+	golang.org/x/sys v0.0.0-20190329044733-9eb1bfa1ce65
+	golang.org/x/tools v0.0.0-20190330180304-aef51cc3777c // indirect
 	google.golang.org/genproto v0.0.0-20190215211957-bd968387e4aa // indirect
 	google.golang.org/grpc v1.18.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2
