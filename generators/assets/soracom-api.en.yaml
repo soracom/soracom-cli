@@ -3396,6 +3396,65 @@ paths:
       - Device
       x-soracom-cli:
       - devices unobserve-resources
+  /devices/{device_id}/data:
+    get:
+      description: Returns a list of data entries sent from a device that match certain
+        criteria. If the total number of entries does not fit in one page, a URL for
+        accessing the next page is returned in the 'Link' header of the response.
+      operationId: getDataFromDevice
+      parameters:
+      - description: Device ID of the target subscriber that generated data entries.
+        in: path
+        name: device_id
+        required: true
+        type: string
+      - description: Start time for the data entries search range (unixtime in milliseconds).
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: End time for the data entries search range (unixtime in milliseconds).
+        in: query
+        name: to
+        required: false
+        type: integer
+      - default: desc
+        description: Sort order of the data entries. Either descending (latest data
+          entry first) or ascending (oldest data entry first).
+        enum:
+        - desc
+        - asc
+        in: query
+        name: sort
+        required: false
+        type: string
+      - description: Maximum number of data entries to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The value of `time` in the last log entry retrieved in the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next page onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: A list of data entries.
+          schema:
+            items:
+              $ref: '#/definitions/DataEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get data sent from a device.
+      tags:
+      - Device
+      x-soracom-cli:
+      - devices get-data
   /devices/{device_id}/set_group:
     post:
       description: Lets a device device join a group

@@ -3366,6 +3366,60 @@ paths:
       - Device
       x-soracom-cli:
       - devices unobserve-resources
+  /devices/{device_id}/data:
+    get:
+      description: 指定されたデバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
+      operationId: getDataFromDevice
+      parameters:
+      - description: データ取得対象のデバイスのID
+        in: path
+        name: device_id
+        required: true
+        type: string
+      - description: 取得対象の期間の始まり (unixtime ミリ秒単位)
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: 取得対象の期間の終わり (unixtime ミリ秒単位)
+        in: query
+        name: to
+        required: false
+        type: integer
+      - default: desc
+        description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+        enum:
+        - desc
+        - asc
+        in: query
+        name: sort
+        required: false
+        type: string
+      - description: 取得するデータエントリ数の上限
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: データエントリのリスト
+          schema:
+            items:
+              $ref: '#/definitions/DataEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: デバイスから送信されたデータを取得します。
+      tags:
+      - Device
+      x-soracom-cli:
+      - devices get-data
   /devices/{device_id}/set_group:
     post:
       description: デバイスをグループに参加させます。
