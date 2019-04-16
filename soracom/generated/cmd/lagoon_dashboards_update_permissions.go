@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,7 +81,7 @@ func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParam
 
 func buildPathForLagoonDashboardsUpdatePermissionsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"dashboard_id"+"}", sprintf("%d", LagoonDashboardsUpdatePermissionsCmdDashboardId), -1)
+	path = strings.Replace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsUpdatePermissionsCmdDashboardId)), -1)
 
 	return path
 }

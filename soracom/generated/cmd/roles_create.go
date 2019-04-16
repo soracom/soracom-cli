@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -104,9 +106,9 @@ func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForRolesCreateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", RolesCreateCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesCreateCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", RolesCreateCmdRoleId, -1)
+	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(RolesCreateCmdRoleId), -1)
 
 	return path
 }

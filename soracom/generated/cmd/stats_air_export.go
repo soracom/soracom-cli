@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -109,7 +111,7 @@ func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsAirExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", StatsAirExportCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsAirExportCmdOperatorId), -1)
 
 	return path
 }
@@ -118,7 +120,7 @@ func buildQueryForStatsAirExportCmd() string {
 	result := []string{}
 
 	if StatsAirExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", "export_mode", StatsAirExportCmdExportMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(StatsAirExportCmdExportMode)))
 	}
 
 	return strings.Join(result, "&")

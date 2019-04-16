@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,7 +81,7 @@ func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOrdersListSubscribersCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"order_id"+"}", OrdersListSubscribersCmdOrderId, -1)
+	path = strings.Replace(path, "{"+"order_id"+"}", url.PathEscape(OrdersListSubscribersCmdOrderId), -1)
 
 	return path
 }
@@ -88,11 +90,11 @@ func buildQueryForOrdersListSubscribersCmd() string {
 	result := []string{}
 
 	if OrdersListSubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", OrdersListSubscribersCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(OrdersListSubscribersCmdLastEvaluatedKey)))
 	}
 
 	if OrdersListSubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", OrdersListSubscribersCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", OrdersListSubscribersCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

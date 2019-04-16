@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersDeleteSessionCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersDeleteSessionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersDeleteSessionCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersDeleteSessionCmdImsi), -1)
 
 	return path
 }

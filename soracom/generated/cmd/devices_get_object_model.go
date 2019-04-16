@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectDevicesGetObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesGetObjectModelCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", DevicesGetObjectModelCmdModelId, -1)
+	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesGetObjectModelCmdModelId), -1)
 
 	return path
 }

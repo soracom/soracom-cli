@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -78,9 +80,9 @@ func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForShippingAddressesDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", ShippingAddressesDeleteCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesDeleteCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"shipping_address_id"+"}", ShippingAddressesDeleteCmdShippingAddressId, -1)
+	path = strings.Replace(path, "{"+"shipping_address_id"+"}", url.PathEscape(ShippingAddressesDeleteCmdShippingAddressId), -1)
 
 	return path
 }

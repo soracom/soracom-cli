@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -105,7 +107,7 @@ func collectVpgCreateVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 
 func buildPathForVpgCreateVpcPeeringConnectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgCreateVpcPeeringConnectionCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgCreateVpcPeeringConnectionCmdVpgId), -1)
 
 	return path
 }

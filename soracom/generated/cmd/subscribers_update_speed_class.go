@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, err
 
 func buildPathForSubscribersUpdateSpeedClassCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersUpdateSpeedClassCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUpdateSpeedClassCmdImsi), -1)
 
 	return path
 }

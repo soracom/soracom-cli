@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -100,13 +102,13 @@ func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesPutResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesPutResourceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesPutResourceCmdDeviceId), -1)
 
-	path = strings.Replace(path, "{"+"instance"+"}", DevicesPutResourceCmdInstance, -1)
+	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesPutResourceCmdInstance), -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", DevicesPutResourceCmdObject, -1)
+	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesPutResourceCmdObject), -1)
 
-	path = strings.Replace(path, "{"+"resource"+"}", DevicesPutResourceCmdResource, -1)
+	path = strings.Replace(path, "{"+"resource"+"}", url.PathEscape(DevicesPutResourceCmdResource), -1)
 
 	return path
 }

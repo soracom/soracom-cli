@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -83,11 +85,11 @@ func collectUsersDetachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersDetachRoleCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersDetachRoleCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersDetachRoleCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", UsersDetachRoleCmdRoleId, -1)
+	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(UsersDetachRoleCmdRoleId), -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", UsersDetachRoleCmdUserName, -1)
+	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersDetachRoleCmdUserName), -1)
 
 	return path
 }

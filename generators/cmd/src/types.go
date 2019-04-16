@@ -115,6 +115,8 @@ type commandArgs struct {
 	BasePath                  string
 	Path                      string
 	ContentType               string
+	PathParamsExist           bool
+	QueryParamsExist          bool
 	StringFlags               []stringFlag
 	StringSliceFlags          []stringFlag
 	IntegerFlags              []integerFlag

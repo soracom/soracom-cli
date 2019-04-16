@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesUnsetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesUnsetGroupCmdDeviceId), -1)
 
 	return path
 }

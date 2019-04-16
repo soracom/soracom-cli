@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLoraNetworkSetsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraNetworkSetsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", LoraNetworkSetsDeleteCmdNsId, -1)
+	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsDeleteCmdNsId), -1)
 
 	return path
 }

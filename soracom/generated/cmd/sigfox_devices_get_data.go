@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectSigfoxDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesGetDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesGetDataCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesGetDataCmdDeviceId), -1)
 
 	return path
 }
@@ -103,23 +105,23 @@ func buildQueryForSigfoxDevicesGetDataCmd() string {
 	result := []string{}
 
 	if SigfoxDevicesGetDataCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", SigfoxDevicesGetDataCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SigfoxDevicesGetDataCmdLastEvaluatedKey)))
 	}
 
 	if SigfoxDevicesGetDataCmdSort != "" {
-		result = append(result, sprintf("%s=%s", "sort", SigfoxDevicesGetDataCmdSort))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(SigfoxDevicesGetDataCmdSort)))
 	}
 
 	if SigfoxDevicesGetDataCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", SigfoxDevicesGetDataCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", SigfoxDevicesGetDataCmdFrom))))
 	}
 
 	if SigfoxDevicesGetDataCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", SigfoxDevicesGetDataCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SigfoxDevicesGetDataCmdLimit))))
 	}
 
 	if SigfoxDevicesGetDataCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", SigfoxDevicesGetDataCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", SigfoxDevicesGetDataCmdTo))))
 	}
 
 	return strings.Join(result, "&")

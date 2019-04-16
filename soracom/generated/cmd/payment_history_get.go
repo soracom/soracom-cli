@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForPaymentHistoryGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"payment_transaction_id"+"}", PaymentHistoryGetCmdPaymentTransactionId, -1)
+	path = strings.Replace(path, "{"+"payment_transaction_id"+"}", url.PathEscape(PaymentHistoryGetCmdPaymentTransactionId), -1)
 
 	return path
 }

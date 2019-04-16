@@ -58,6 +58,8 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			Method:                    strings.ToUpper(m.Method),
 			BasePath:                  apiDef.BasePath,
 			Path:                      m.Path,
+			PathParamsExist:           doPathParamsExist(m.Parameters),
+			QueryParamsExist:          doQueryParamsExist(m.Parameters),
 			StringFlags:               getStringFlags(m.Parameters, apiDef.StructDefs),
 			StringSliceFlags:          getStringSliceFlags(m.Parameters, apiDef.StructDefs),
 			IntegerFlags:              getIntegerFlags(m.Parameters, apiDef.StructDefs),
@@ -138,6 +140,24 @@ func isBodyArray(parameters []lib.APIParam) bool {
 	for _, param := range parameters {
 		if param.In == "body" {
 			return (param.Type == "array") || (param.Schema.Type == "array")
+		}
+	}
+	return false
+}
+
+func doPathParamsExist(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		if param.In == "path" {
+			return true
+		}
+	}
+	return false
+}
+
+func doQueryParamsExist(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		if param.In == "query" {
+			return true
 		}
 	}
 	return false

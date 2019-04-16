@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,7 +76,7 @@ func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForBillsExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"yyyyMM"+"}", BillsExportCmdYyyyMM, -1)
+	path = strings.Replace(path, "{"+"yyyyMM"+"}", url.PathEscape(BillsExportCmdYyyyMM), -1)
 
 	return path
 }
@@ -83,7 +85,7 @@ func buildQueryForBillsExportCmd() string {
 	result := []string{}
 
 	if BillsExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", "export_mode", BillsExportCmdExportMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(BillsExportCmdExportMode)))
 	}
 
 	return strings.Join(result, "&")

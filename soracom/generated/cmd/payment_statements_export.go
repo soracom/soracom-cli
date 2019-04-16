@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,7 +76,7 @@ func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForPaymentStatementsExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"payment_statement_id"+"}", PaymentStatementsExportCmdPaymentStatementId, -1)
+	path = strings.Replace(path, "{"+"payment_statement_id"+"}", url.PathEscape(PaymentStatementsExportCmdPaymentStatementId), -1)
 
 	return path
 }
@@ -83,7 +85,7 @@ func buildQueryForPaymentStatementsExportCmd() string {
 	result := []string{}
 
 	if PaymentStatementsExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", "export_mode", PaymentStatementsExportCmdExportMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(PaymentStatementsExportCmdExportMode)))
 	}
 
 	return strings.Join(result, "&")

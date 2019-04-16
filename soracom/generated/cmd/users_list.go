@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -73,7 +75,7 @@ func collectUsersListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersListCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersListCmdOperatorId), -1)
 
 	return path
 }

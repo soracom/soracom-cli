@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForGroupsListCmd() string {
 	result := []string{}
 
 	if GroupsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", GroupsListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GroupsListCmdLastEvaluatedKey)))
 	}
 
 	if GroupsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", GroupsListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(GroupsListCmdTagName)))
 	}
 
 	if GroupsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", GroupsListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(GroupsListCmdTagValue)))
 	}
 
 	if GroupsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", GroupsListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(GroupsListCmdTagValueMatchMode)))
 	}
 
 	if GroupsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", GroupsListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GroupsListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

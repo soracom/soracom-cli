@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForLoraNetworkSetsListCmd() string {
 	result := []string{}
 
 	if LoraNetworkSetsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LoraNetworkSetsListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraNetworkSetsListCmdLastEvaluatedKey)))
 	}
 
 	if LoraNetworkSetsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", LoraNetworkSetsListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraNetworkSetsListCmdTagName)))
 	}
 
 	if LoraNetworkSetsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", LoraNetworkSetsListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraNetworkSetsListCmdTagValue)))
 	}
 
 	if LoraNetworkSetsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", LoraNetworkSetsListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraNetworkSetsListCmdTagValueMatchMode)))
 	}
 
 	if LoraNetworkSetsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LoraNetworkSetsListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraNetworkSetsListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -105,7 +107,7 @@ func collectLoraDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", LoraDevicesSetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesSetGroupCmdDeviceId), -1)
 
 	return path
 }

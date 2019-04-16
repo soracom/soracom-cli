@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectGadgetsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGadgetsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", GadgetsGetCmdProductId, -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsGetCmdProductId), -1)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", GadgetsGetCmdSerialNumber, -1)
+	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsGetCmdSerialNumber), -1)
 
 	return path
 }

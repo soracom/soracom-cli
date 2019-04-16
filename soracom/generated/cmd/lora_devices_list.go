@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForLoraDevicesListCmd() string {
 	result := []string{}
 
 	if LoraDevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LoraDevicesListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraDevicesListCmdLastEvaluatedKey)))
 	}
 
 	if LoraDevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", LoraDevicesListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraDevicesListCmdTagName)))
 	}
 
 	if LoraDevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", LoraDevicesListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraDevicesListCmdTagValue)))
 	}
 
 	if LoraDevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", LoraDevicesListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraDevicesListCmdTagValueMatchMode)))
 	}
 
 	if LoraDevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LoraDevicesListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraDevicesListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

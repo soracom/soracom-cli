@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -73,7 +75,7 @@ func collectOperatorAuthKeysGenerateCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForOperatorAuthKeysGenerateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorAuthKeysGenerateCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorAuthKeysGenerateCmdOperatorId), -1)
 
 	return path
 }

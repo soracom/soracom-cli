@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -85,7 +87,7 @@ func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", EventHandlersUpdateCmdHandlerId, -1)
+	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersUpdateCmdHandlerId), -1)
 
 	return path
 }

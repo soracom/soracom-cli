@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -76,7 +78,7 @@ func buildQueryForBillsExportLatestCmd() string {
 	result := []string{}
 
 	if BillsExportLatestCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", "export_mode", BillsExportLatestCmdExportMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(BillsExportLatestCmdExportMode)))
 	}
 
 	return strings.Join(result, "&")

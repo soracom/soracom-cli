@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -100,7 +102,7 @@ func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgSetRedirectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgSetRedirectionCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgSetRedirectionCmdVpgId), -1)
 
 	return path
 }

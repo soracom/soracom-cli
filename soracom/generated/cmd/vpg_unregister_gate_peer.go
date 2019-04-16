@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgUnregisterGatePeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"outer_ip_address"+"}", VpgUnregisterGatePeerCmdOuterIpAddress, -1)
+	path = strings.Replace(path, "{"+"outer_ip_address"+"}", url.PathEscape(VpgUnregisterGatePeerCmdOuterIpAddress), -1)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgUnregisterGatePeerCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgUnregisterGatePeerCmdVpgId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForFilesGetExportedCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"exported_file_id"+"}", FilesGetExportedCmdExportedFileId, -1)
+	path = strings.Replace(path, "{"+"exported_file_id"+"}", url.PathEscape(FilesGetExportedCmdExportedFileId), -1)
 
 	return path
 }

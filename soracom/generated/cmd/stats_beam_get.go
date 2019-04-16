@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -84,7 +86,7 @@ func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsBeamGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", StatsBeamGetCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(StatsBeamGetCmdImsi), -1)
 
 	return path
 }
@@ -93,15 +95,15 @@ func buildQueryForStatsBeamGetCmd() string {
 	result := []string{}
 
 	if StatsBeamGetCmdPeriod != "" {
-		result = append(result, sprintf("%s=%s", "period", StatsBeamGetCmdPeriod))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("period"), url.QueryEscape(StatsBeamGetCmdPeriod)))
 	}
 
 	if StatsBeamGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", StatsBeamGetCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", StatsBeamGetCmdFrom))))
 	}
 
 	if StatsBeamGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", StatsBeamGetCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", StatsBeamGetCmdTo))))
 	}
 
 	return strings.Join(result, "&")

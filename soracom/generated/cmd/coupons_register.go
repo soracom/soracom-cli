@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForCouponsRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"coupon_code"+"}", CouponsRegisterCmdCouponCode, -1)
+	path = strings.Replace(path, "{"+"coupon_code"+"}", url.PathEscape(CouponsRegisterCmdCouponCode), -1)
 
 	return path
 }

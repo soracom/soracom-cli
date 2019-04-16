@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForOperatorGenerateApiTokenCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorGenerateApiTokenCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorGenerateApiTokenCmdOperatorId), -1)
 
 	return path
 }

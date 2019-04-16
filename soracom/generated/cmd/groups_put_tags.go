@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -83,7 +85,7 @@ func collectGroupsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsPutTagsCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsPutTagsCmdGroupId), -1)
 
 	return path
 }

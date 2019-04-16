@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -63,7 +65,7 @@ func collectLagoonDashboardsInitPermissionsCmdParams(ac *apiClient) (*apiParams,
 
 func buildPathForLagoonDashboardsInitPermissionsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"dashboard_id"+"}", sprintf("%d", LagoonDashboardsInitPermissionsCmdDashboardId), -1)
+	path = strings.Replace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsInitPermissionsCmdDashboardId)), -1)
 
 	return path
 }

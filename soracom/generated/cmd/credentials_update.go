@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectCredentialsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForCredentialsUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"credentials_id"+"}", CredentialsUpdateCmdCredentialsId, -1)
+	path = strings.Replace(path, "{"+"credentials_id"+"}", url.PathEscape(CredentialsUpdateCmdCredentialsId), -1)
 
 	return path
 }

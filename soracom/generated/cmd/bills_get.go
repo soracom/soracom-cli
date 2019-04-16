@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectBillsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForBillsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"yyyyMM"+"}", BillsGetCmdYyyyMM, -1)
+	path = strings.Replace(path, "{"+"yyyyMM"+"}", url.PathEscape(BillsGetCmdYyyyMM), -1)
 
 	return path
 }

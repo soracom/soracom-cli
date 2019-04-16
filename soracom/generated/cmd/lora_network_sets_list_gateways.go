@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,7 +81,7 @@ func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, err
 
 func buildPathForLoraNetworkSetsListGatewaysCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", LoraNetworkSetsListGatewaysCmdNsId, -1)
+	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsListGatewaysCmdNsId), -1)
 
 	return path
 }
@@ -88,11 +90,11 @@ func buildQueryForLoraNetworkSetsListGatewaysCmd() string {
 	result := []string{}
 
 	if LoraNetworkSetsListGatewaysCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LoraNetworkSetsListGatewaysCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraNetworkSetsListGatewaysCmdLastEvaluatedKey)))
 	}
 
 	if LoraNetworkSetsListGatewaysCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LoraNetworkSetsListGatewaysCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraNetworkSetsListGatewaysCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

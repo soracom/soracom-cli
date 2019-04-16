@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersGetDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersGetDataCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersGetDataCmdImsi), -1)
 
 	return path
 }
@@ -103,23 +105,23 @@ func buildQueryForSubscribersGetDataCmd() string {
 	result := []string{}
 
 	if SubscribersGetDataCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersGetDataCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersGetDataCmdLastEvaluatedKey)))
 	}
 
 	if SubscribersGetDataCmdSort != "" {
-		result = append(result, sprintf("%s=%s", "sort", SubscribersGetDataCmdSort))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(SubscribersGetDataCmdSort)))
 	}
 
 	if SubscribersGetDataCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", SubscribersGetDataCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdFrom))))
 	}
 
 	if SubscribersGetDataCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", SubscribersGetDataCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdLimit))))
 	}
 
 	if SubscribersGetDataCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", SubscribersGetDataCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdTo))))
 	}
 
 	return strings.Join(result, "&")

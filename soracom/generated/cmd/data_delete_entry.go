@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,9 +81,9 @@ func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataDeleteEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", DataDeleteEntryCmdResourceId, -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataDeleteEntryCmdResourceId), -1)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", DataDeleteEntryCmdResourceType, -1)
+	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataDeleteEntryCmdResourceType), -1)
 
 	return path
 }
@@ -90,7 +92,7 @@ func buildQueryForDataDeleteEntryCmd() string {
 	result := []string{}
 
 	if DataDeleteEntryCmdTime != 0 {
-		result = append(result, sprintf("%s=%d", "time", DataDeleteEntryCmdTime))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("time"), url.QueryEscape(sprintf("%d", DataDeleteEntryCmdTime))))
 	}
 
 	return strings.Join(result, "&")

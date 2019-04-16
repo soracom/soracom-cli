@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectOperatorVerifyMfaOtpCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorVerifyMfaOtpCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorVerifyMfaOtpCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorVerifyMfaOtpCmdOperatorId), -1)
 
 	return path
 }

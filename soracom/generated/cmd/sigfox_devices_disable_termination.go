@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSigfoxDevicesDisableTerminationCmdParams(ac *apiClient) (*apiParams,
 
 func buildPathForSigfoxDevicesDisableTerminationCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesDisableTerminationCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesDisableTerminationCmdDeviceId), -1)
 
 	return path
 }

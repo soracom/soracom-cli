@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectVpgTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgTerminateCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgTerminateCmdVpgId), -1)
 
 	return path
 }

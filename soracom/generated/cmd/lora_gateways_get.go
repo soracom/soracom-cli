@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLoraGatewaysGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraGatewaysGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", LoraGatewaysGetCmdGatewayId, -1)
+	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysGetCmdGatewayId), -1)
 
 	return path
 }

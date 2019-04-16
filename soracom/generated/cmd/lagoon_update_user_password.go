@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -100,7 +102,7 @@ func collectLagoonUpdateUserPasswordCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForLagoonUpdateUserPasswordCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", sprintf("%d", LagoonUpdateUserPasswordCmdLagoonUserId), -1)
+	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonUpdateUserPasswordCmdLagoonUserId)), -1)
 
 	return path
 }

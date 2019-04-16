@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForSigfoxDevicesListCmd() string {
 	result := []string{}
 
 	if SigfoxDevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", SigfoxDevicesListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SigfoxDevicesListCmdLastEvaluatedKey)))
 	}
 
 	if SigfoxDevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", SigfoxDevicesListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(SigfoxDevicesListCmdTagName)))
 	}
 
 	if SigfoxDevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", SigfoxDevicesListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(SigfoxDevicesListCmdTagValue)))
 	}
 
 	if SigfoxDevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", SigfoxDevicesListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(SigfoxDevicesListCmdTagValueMatchMode)))
 	}
 
 	if SigfoxDevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", SigfoxDevicesListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SigfoxDevicesListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

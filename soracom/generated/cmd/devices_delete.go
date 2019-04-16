@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectDevicesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesDeleteCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesDeleteCmdDeviceId), -1)
 
 	return path
 }

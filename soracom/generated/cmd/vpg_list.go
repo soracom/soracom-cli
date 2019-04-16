@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForVpgListCmd() string {
 	result := []string{}
 
 	if VpgListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", VpgListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(VpgListCmdLastEvaluatedKey)))
 	}
 
 	if VpgListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", VpgListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(VpgListCmdTagName)))
 	}
 
 	if VpgListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", VpgListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(VpgListCmdTagValue)))
 	}
 
 	if VpgListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", VpgListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(VpgListCmdTagValueMatchMode)))
 	}
 
 	if VpgListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", VpgListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", VpgListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectGroupsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsDeleteCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsDeleteCmdGroupId), -1)
 
 	return path
 }

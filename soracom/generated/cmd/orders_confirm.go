@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectOrdersConfirmCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOrdersConfirmCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"order_id"+"}", OrdersConfirmCmdOrderId, -1)
+	path = strings.Replace(path, "{"+"order_id"+"}", url.PathEscape(OrdersConfirmCmdOrderId), -1)
 
 	return path
 }

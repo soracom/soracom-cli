@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersUnignoreCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", EventHandlersUnignoreCmdHandlerId, -1)
+	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersUnignoreCmdHandlerId), -1)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", EventHandlersUnignoreCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(EventHandlersUnignoreCmdImsi), -1)
 
 	return path
 }

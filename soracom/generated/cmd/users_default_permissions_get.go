@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -67,7 +69,7 @@ func collectUsersDefaultPermissionsGetCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForUsersDefaultPermissionsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersDefaultPermissionsGetCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersDefaultPermissionsGetCmdOperatorId), -1)
 
 	return path
 }

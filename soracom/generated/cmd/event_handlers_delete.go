@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectEventHandlersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", EventHandlersDeleteCmdHandlerId, -1)
+	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersDeleteCmdHandlerId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgDeleteMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ipaddr"+"}", VpgDeleteMirroringPeerCmdIpaddr, -1)
+	path = strings.Replace(path, "{"+"ipaddr"+"}", url.PathEscape(VpgDeleteMirroringPeerCmdIpaddr), -1)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgDeleteMirroringPeerCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteMirroringPeerCmdVpgId), -1)
 
 	return path
 }

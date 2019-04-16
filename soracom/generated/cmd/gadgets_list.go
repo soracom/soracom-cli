@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -101,27 +103,27 @@ func buildQueryForGadgetsListCmd() string {
 	result := []string{}
 
 	if GadgetsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", GadgetsListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GadgetsListCmdLastEvaluatedKey)))
 	}
 
 	if GadgetsListCmdProductId != "" {
-		result = append(result, sprintf("%s=%s", "product_id", GadgetsListCmdProductId))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("product_id"), url.QueryEscape(GadgetsListCmdProductId)))
 	}
 
 	if GadgetsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", GadgetsListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(GadgetsListCmdTagName)))
 	}
 
 	if GadgetsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", GadgetsListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(GadgetsListCmdTagValue)))
 	}
 
 	if GadgetsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", GadgetsListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(GadgetsListCmdTagValueMatchMode)))
 	}
 
 	if GadgetsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", GadgetsListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GadgetsListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

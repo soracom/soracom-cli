@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -121,57 +123,57 @@ func buildQueryForQuerySubscribersCmd() string {
 	result := []string{}
 
 	if QuerySubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", QuerySubscribersCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(QuerySubscribersCmdLastEvaluatedKey)))
 	}
 
 	if QuerySubscribersCmdSearchType != "" {
-		result = append(result, sprintf("%s=%s", "search_type", QuerySubscribersCmdSearchType))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("search_type"), url.QueryEscape(QuerySubscribersCmdSearchType)))
 	}
 
 	for _, s := range QuerySubscribersCmdGroup {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "group", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("group"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdIccid {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "iccid", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("iccid"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdImsi {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "imsi", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("imsi"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdMsisdn {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "msisdn", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("msisdn"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdName {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "name", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("name"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdSerialNumber {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "serial_number", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("serial_number"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdTag {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "tag", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("tag"), url.QueryEscape(s)))
 		}
 	}
 
 	if QuerySubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", QuerySubscribersCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", QuerySubscribersCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectDevicesSetObjectModelScopeCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForDevicesSetObjectModelScopeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", DevicesSetObjectModelScopeCmdModelId, -1)
+	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesSetObjectModelScopeCmdModelId), -1)
 
 	return path
 }

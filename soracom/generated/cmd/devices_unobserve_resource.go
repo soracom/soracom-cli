@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -84,13 +86,13 @@ func collectDevicesUnobserveResourceCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForDevicesUnobserveResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesUnobserveResourceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesUnobserveResourceCmdDeviceId), -1)
 
-	path = strings.Replace(path, "{"+"instance"+"}", DevicesUnobserveResourceCmdInstance, -1)
+	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesUnobserveResourceCmdInstance), -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", DevicesUnobserveResourceCmdObject, -1)
+	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesUnobserveResourceCmdObject), -1)
 
-	path = strings.Replace(path, "{"+"resource"+"}", DevicesUnobserveResourceCmdResource, -1)
+	path = strings.Replace(path, "{"+"resource"+"}", url.PathEscape(DevicesUnobserveResourceCmdResource), -1)
 
 	return path
 }

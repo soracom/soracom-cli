@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,11 +81,11 @@ func collectDataGetEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", DataGetEntryCmdResourceId, -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataGetEntryCmdResourceId), -1)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", DataGetEntryCmdResourceType, -1)
+	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataGetEntryCmdResourceType), -1)
 
-	path = strings.Replace(path, "{"+"time"+"}", sprintf("%d", DataGetEntryCmdTime), -1)
+	path = strings.Replace(path, "{"+"time"+"}", url.PathEscape(sprintf("%d", DataGetEntryCmdTime)), -1)
 
 	return path
 }

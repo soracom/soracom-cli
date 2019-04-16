@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLoraGatewaysUnsetNetworkSetCmdParams(ac *apiClient) (*apiParams, err
 
 func buildPathForLoraGatewaysUnsetNetworkSetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", LoraGatewaysUnsetNetworkSetCmdGatewayId, -1)
+	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysUnsetNetworkSetCmdGatewayId), -1)
 
 	return path
 }

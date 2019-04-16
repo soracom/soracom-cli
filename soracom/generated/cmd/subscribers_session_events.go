@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -89,7 +91,7 @@ func collectSubscribersSessionEventsCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersSessionEventsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersSessionEventsCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSessionEventsCmdImsi), -1)
 
 	return path
 }
@@ -98,19 +100,19 @@ func buildQueryForSubscribersSessionEventsCmd() string {
 	result := []string{}
 
 	if SubscribersSessionEventsCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersSessionEventsCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersSessionEventsCmdLastEvaluatedKey)))
 	}
 
 	if SubscribersSessionEventsCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", SubscribersSessionEventsCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdFrom))))
 	}
 
 	if SubscribersSessionEventsCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", SubscribersSessionEventsCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdLimit))))
 	}
 
 	if SubscribersSessionEventsCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", SubscribersSessionEventsCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdTo))))
 	}
 
 	return strings.Join(result, "&")

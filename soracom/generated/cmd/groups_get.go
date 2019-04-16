@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectGroupsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsGetCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsGetCmdGroupId), -1)
 
 	return path
 }

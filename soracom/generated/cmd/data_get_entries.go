@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -99,9 +101,9 @@ func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetEntriesCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", DataGetEntriesCmdResourceId, -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataGetEntriesCmdResourceId), -1)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", DataGetEntriesCmdResourceType, -1)
+	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataGetEntriesCmdResourceType), -1)
 
 	return path
 }
@@ -110,23 +112,23 @@ func buildQueryForDataGetEntriesCmd() string {
 	result := []string{}
 
 	if DataGetEntriesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", DataGetEntriesCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataGetEntriesCmdLastEvaluatedKey)))
 	}
 
 	if DataGetEntriesCmdSort != "" {
-		result = append(result, sprintf("%s=%s", "sort", DataGetEntriesCmdSort))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(DataGetEntriesCmdSort)))
 	}
 
 	if DataGetEntriesCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", DataGetEntriesCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdFrom))))
 	}
 
 	if DataGetEntriesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", DataGetEntriesCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdLimit))))
 	}
 
 	if DataGetEntriesCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", DataGetEntriesCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdTo))))
 	}
 
 	return strings.Join(result, "&")

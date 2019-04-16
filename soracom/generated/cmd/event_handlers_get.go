@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectEventHandlersGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", EventHandlersGetCmdHandlerId, -1)
+	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersGetCmdHandlerId), -1)
 
 	return path
 }

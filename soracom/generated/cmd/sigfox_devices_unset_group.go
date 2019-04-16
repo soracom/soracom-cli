@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSigfoxDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForSigfoxDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesUnsetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesUnsetGroupCmdDeviceId), -1)
 
 	return path
 }

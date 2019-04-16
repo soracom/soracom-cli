@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 
 func buildPathForVpgDeleteVpcPeeringConnectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"pcx_id"+"}", VpgDeleteVpcPeeringConnectionCmdPcxId, -1)
+	path = strings.Replace(path, "{"+"pcx_id"+"}", url.PathEscape(VpgDeleteVpcPeeringConnectionCmdPcxId), -1)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgDeleteVpcPeeringConnectionCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteVpcPeeringConnectionCmdVpgId), -1)
 
 	return path
 }

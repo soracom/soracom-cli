@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLagoonDeleteUserCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLagoonDeleteUserCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", sprintf("%d", LagoonDeleteUserCmdLagoonUserId), -1)
+	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonDeleteUserCmdLagoonUserId)), -1)
 
 	return path
 }

@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectLoraNetworkSetsAddPermissionCmdParams(ac *apiClient) (*apiParams, er
 
 func buildPathForLoraNetworkSetsAddPermissionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", LoraNetworkSetsAddPermissionCmdNsId, -1)
+	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsAddPermissionCmdNsId), -1)
 
 	return path
 }

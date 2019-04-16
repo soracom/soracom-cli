@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -73,7 +75,7 @@ func collectOperatorRevokeMfaCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorRevokeMfaCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorRevokeMfaCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorRevokeMfaCmdOperatorId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -106,31 +108,31 @@ func buildQueryForLogsGetCmd() string {
 	result := []string{}
 
 	if LogsGetCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LogsGetCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LogsGetCmdLastEvaluatedKey)))
 	}
 
 	if LogsGetCmdResourceId != "" {
-		result = append(result, sprintf("%s=%s", "resource_id", LogsGetCmdResourceId))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_id"), url.QueryEscape(LogsGetCmdResourceId)))
 	}
 
 	if LogsGetCmdResourceType != "" {
-		result = append(result, sprintf("%s=%s", "resource_type", LogsGetCmdResourceType))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_type"), url.QueryEscape(LogsGetCmdResourceType)))
 	}
 
 	if LogsGetCmdService != "" {
-		result = append(result, sprintf("%s=%s", "service", LogsGetCmdService))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("service"), url.QueryEscape(LogsGetCmdService)))
 	}
 
 	if LogsGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", LogsGetCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", LogsGetCmdFrom))))
 	}
 
 	if LogsGetCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LogsGetCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LogsGetCmdLimit))))
 	}
 
 	if LogsGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", LogsGetCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", LogsGetCmdTo))))
 	}
 
 	return strings.Join(result, "&")

@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectSubscribersSendSmsByMsisdnCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForSubscribersSendSmsByMsisdnCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"msisdn"+"}", SubscribersSendSmsByMsisdnCmdMsisdn, -1)
+	path = strings.Replace(path, "{"+"msisdn"+"}", url.PathEscape(SubscribersSendSmsByMsisdnCmdMsisdn), -1)
 
 	return path
 }

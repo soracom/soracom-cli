@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSigfoxDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesGetCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesGetCmdDeviceId), -1)
 
 	return path
 }

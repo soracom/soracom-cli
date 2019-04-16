@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectEventHandlersListForSubscriberCmdParams(ac *apiClient) (*apiParams, 
 
 func buildPathForEventHandlersListForSubscriberCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", EventHandlersListForSubscriberCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(EventHandlersListForSubscriberCmdImsi), -1)
 
 	return path
 }

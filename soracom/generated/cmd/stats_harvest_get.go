@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -78,7 +80,7 @@ func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsHarvestGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", StatsHarvestGetCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsHarvestGetCmdOperatorId), -1)
 
 	return path
 }
@@ -87,7 +89,7 @@ func buildQueryForStatsHarvestGetCmd() string {
 	result := []string{}
 
 	if StatsHarvestGetCmdYearMonth != "" {
-		result = append(result, sprintf("%s=%s", "year_month", StatsHarvestGetCmdYearMonth))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("year_month"), url.QueryEscape(StatsHarvestGetCmdYearMonth)))
 	}
 
 	return strings.Join(result, "&")

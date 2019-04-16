@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -144,9 +146,9 @@ func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForShippingAddressesUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", ShippingAddressesUpdateCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesUpdateCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"shipping_address_id"+"}", ShippingAddressesUpdateCmdShippingAddressId, -1)
+	path = strings.Replace(path, "{"+"shipping_address_id"+"}", url.PathEscape(ShippingAddressesUpdateCmdShippingAddressId), -1)
 
 	return path
 }

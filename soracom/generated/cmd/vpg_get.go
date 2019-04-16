@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectVpgGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgGetCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgGetCmdVpgId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLoraDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", LoraDevicesTerminateCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesTerminateCmdDeviceId), -1)
 
 	return path
 }

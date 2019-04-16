@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -79,7 +81,7 @@ func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsListSubscribersCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsListSubscribersCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsListSubscribersCmdGroupId), -1)
 
 	return path
 }
@@ -88,11 +90,11 @@ func buildQueryForGroupsListSubscribersCmd() string {
 	result := []string{}
 
 	if GroupsListSubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", GroupsListSubscribersCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GroupsListSubscribersCmdLastEvaluatedKey)))
 	}
 
 	if GroupsListSubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", GroupsListSubscribersCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GroupsListSubscribersCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

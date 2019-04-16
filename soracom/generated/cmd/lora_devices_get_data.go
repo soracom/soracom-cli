@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesGetDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", LoraDevicesGetDataCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesGetDataCmdDeviceId), -1)
 
 	return path
 }
@@ -103,23 +105,23 @@ func buildQueryForLoraDevicesGetDataCmd() string {
 	result := []string{}
 
 	if LoraDevicesGetDataCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LoraDevicesGetDataCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraDevicesGetDataCmdLastEvaluatedKey)))
 	}
 
 	if LoraDevicesGetDataCmdSort != "" {
-		result = append(result, sprintf("%s=%s", "sort", LoraDevicesGetDataCmdSort))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(LoraDevicesGetDataCmdSort)))
 	}
 
 	if LoraDevicesGetDataCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", LoraDevicesGetDataCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", LoraDevicesGetDataCmdFrom))))
 	}
 
 	if LoraDevicesGetDataCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LoraDevicesGetDataCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraDevicesGetDataCmdLimit))))
 	}
 
 	if LoraDevicesGetDataCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", LoraDevicesGetDataCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", LoraDevicesGetDataCmdTo))))
 	}
 
 	return strings.Join(result, "&")

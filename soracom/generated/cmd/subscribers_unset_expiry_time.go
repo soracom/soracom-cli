@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersUnsetExpiryTimeCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForSubscribersUnsetExpiryTimeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersUnsetExpiryTimeCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUnsetExpiryTimeCmdImsi), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForDevicesListCmd() string {
 	result := []string{}
 
 	if DevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", DevicesListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DevicesListCmdLastEvaluatedKey)))
 	}
 
 	if DevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", DevicesListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(DevicesListCmdTagName)))
 	}
 
 	if DevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", DevicesListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(DevicesListCmdTagValue)))
 	}
 
 	if DevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", DevicesListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(DevicesListCmdTagValueMatchMode)))
 	}
 
 	if DevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", DevicesListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DevicesListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

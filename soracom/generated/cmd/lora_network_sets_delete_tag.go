@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectLoraNetworkSetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForLoraNetworkSetsDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", LoraNetworkSetsDeleteTagCmdNsId, -1)
+	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsDeleteTagCmdNsId), -1)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", LoraNetworkSetsDeleteTagCmdTagName, -1)
+	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(LoraNetworkSetsDeleteTagCmdTagName), -1)
 
 	return path
 }

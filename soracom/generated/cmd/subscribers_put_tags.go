@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -83,7 +85,7 @@ func collectSubscribersPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersPutTagsCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersPutTagsCmdImsi), -1)
 
 	return path
 }

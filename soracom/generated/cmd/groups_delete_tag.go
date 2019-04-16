@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectGroupsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsDeleteTagCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsDeleteTagCmdGroupId), -1)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", GroupsDeleteTagCmdTagName, -1)
+	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(GroupsDeleteTagCmdTagName), -1)
 
 	return path
 }

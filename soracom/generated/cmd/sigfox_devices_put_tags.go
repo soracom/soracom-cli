@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -83,7 +85,7 @@ func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesPutTagsCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesPutTagsCmdDeviceId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -86,15 +88,15 @@ func buildQueryForDataListSourceResourcesCmd() string {
 	result := []string{}
 
 	if DataListSourceResourcesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", DataListSourceResourcesCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataListSourceResourcesCmdLastEvaluatedKey)))
 	}
 
 	if DataListSourceResourcesCmdResourceType != "" {
-		result = append(result, sprintf("%s=%s", "resource_type", DataListSourceResourcesCmdResourceType))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_type"), url.QueryEscape(DataListSourceResourcesCmdResourceType)))
 	}
 
 	if DataListSourceResourcesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", DataListSourceResourcesCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataListSourceResourcesCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

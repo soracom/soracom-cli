@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesPutDeviceTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesPutDeviceTagsCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesPutDeviceTagsCmdDeviceId), -1)
 
 	return path
 }

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -73,7 +75,7 @@ func collectSandboxOperatorsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSandboxOperatorsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", SandboxOperatorsDeleteCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(SandboxOperatorsDeleteCmdOperatorId), -1)
 
 	return path
 }

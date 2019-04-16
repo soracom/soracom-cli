@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -99,9 +101,9 @@ func collectUsersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersUpdateCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersUpdateCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", UsersUpdateCmdUserName, -1)
+	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersUpdateCmdUserName), -1)
 
 	return path
 }

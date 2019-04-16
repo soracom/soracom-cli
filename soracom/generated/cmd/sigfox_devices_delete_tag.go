@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectSigfoxDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesDeleteTagCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesDeleteTagCmdDeviceId), -1)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", SigfoxDevicesDeleteTagCmdTagName, -1)
+	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(SigfoxDevicesDeleteTagCmdTagName), -1)
 
 	return path
 }

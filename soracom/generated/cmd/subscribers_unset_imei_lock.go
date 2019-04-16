@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersUnsetImeiLockCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersUnsetImeiLockCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUnsetImeiLockCmdImsi), -1)
 
 	return path
 }

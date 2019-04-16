@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersActivateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersActivateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersActivateCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersActivateCmdImsi), -1)
 
 	return path
 }

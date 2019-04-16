@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -88,9 +90,9 @@ func collectGadgetsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGadgetsPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", GadgetsPutTagsCmdProductId, -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsPutTagsCmdProductId), -1)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", GadgetsPutTagsCmdSerialNumber, -1)
+	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsPutTagsCmdSerialNumber), -1)
 
 	return path
 }

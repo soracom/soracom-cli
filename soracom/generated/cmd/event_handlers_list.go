@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -76,7 +78,7 @@ func buildQueryForEventHandlersListCmd() string {
 	result := []string{}
 
 	if EventHandlersListCmdTarget != "" {
-		result = append(result, sprintf("%s=%s", "target", EventHandlersListCmdTarget))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("target"), url.QueryEscape(EventHandlersListCmdTarget)))
 	}
 
 	return strings.Join(result, "&")

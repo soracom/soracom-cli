@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,9 +92,9 @@ func collectGadgetsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGadgetsRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", GadgetsRegisterCmdProductId, -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsRegisterCmdProductId), -1)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", GadgetsRegisterCmdSerialNumber, -1)
+	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsRegisterCmdSerialNumber), -1)
 
 	return path
 }

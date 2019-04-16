@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -119,13 +120,18 @@ type apiParams struct {
 	noVersionCheck bool
 }
 
+// params.path and params.query must be escaped before calling this func
 func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
-	url := ac.endpoint + ac.basePath + params.path
+	urlString := ac.endpoint + ac.basePath + params.path
 	if params.query != "" {
-		url += "?" + params.query
+		urlString += "?" + params.query
 	}
-	//fmt.Printf("url == %v\n", url)
-	req, err := http.NewRequest(params.method, url, strings.NewReader(params.body))
+	u, err := url.Parse(urlString)
+	if err != nil {
+		return nil, "", err
+	}
+
+	req, err := http.NewRequest(params.method, u.String(), strings.NewReader(params.body))
 	if err != nil {
 		return nil, "", err
 	}

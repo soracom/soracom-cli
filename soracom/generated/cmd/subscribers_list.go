@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -111,35 +113,35 @@ func buildQueryForSubscribersListCmd() string {
 	result := []string{}
 
 	if SubscribersListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", SubscribersListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersListCmdLastEvaluatedKey)))
 	}
 
 	if SubscribersListCmdSerialNumberFilter != "" {
-		result = append(result, sprintf("%s=%s", "serial_number_filter", SubscribersListCmdSerialNumberFilter))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("serial_number_filter"), url.QueryEscape(SubscribersListCmdSerialNumberFilter)))
 	}
 
 	if SubscribersListCmdSpeedClassFilter != "" {
-		result = append(result, sprintf("%s=%s", "speed_class_filter", SubscribersListCmdSpeedClassFilter))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("speed_class_filter"), url.QueryEscape(SubscribersListCmdSpeedClassFilter)))
 	}
 
 	if SubscribersListCmdStatusFilter != "" {
-		result = append(result, sprintf("%s=%s", "status_filter", SubscribersListCmdStatusFilter))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("status_filter"), url.QueryEscape(SubscribersListCmdStatusFilter)))
 	}
 
 	if SubscribersListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", SubscribersListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(SubscribersListCmdTagName)))
 	}
 
 	if SubscribersListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", SubscribersListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(SubscribersListCmdTagValue)))
 	}
 
 	if SubscribersListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", SubscribersListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(SubscribersListCmdTagValueMatchMode)))
 	}
 
 	if SubscribersListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", SubscribersListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

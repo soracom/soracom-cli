@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectSandboxStatsAirInsertCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSandboxStatsAirInsertCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SandboxStatsAirInsertCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SandboxStatsAirInsertCmdImsi), -1)
 
 	return path
 }

@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectLoraDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesSendDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", LoraDevicesSendDataCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesSendDataCmdDeviceId), -1)
 
 	return path
 }

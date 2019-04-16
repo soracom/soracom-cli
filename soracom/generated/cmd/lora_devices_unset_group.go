@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectLoraDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", LoraDevicesUnsetGroupCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesUnsetGroupCmdDeviceId), -1)
 
 	return path
 }

@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -83,7 +85,7 @@ func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraGatewaysPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", LoraGatewaysPutTagsCmdGatewayId, -1)
+	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysPutTagsCmdGatewayId), -1)
 
 	return path
 }

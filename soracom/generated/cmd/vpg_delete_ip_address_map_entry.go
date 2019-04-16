@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,9 +76,9 @@ func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForVpgDeleteIpAddressMapEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"key"+"}", VpgDeleteIpAddressMapEntryCmdKey, -1)
+	path = strings.Replace(path, "{"+"key"+"}", url.PathEscape(VpgDeleteIpAddressMapEntryCmdKey), -1)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgDeleteIpAddressMapEntryCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteIpAddressMapEntryCmdVpgId), -1)
 
 	return path
 }

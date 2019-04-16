@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -96,23 +98,23 @@ func buildQueryForLoraGatewaysListCmd() string {
 	result := []string{}
 
 	if LoraGatewaysListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", LoraGatewaysListCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraGatewaysListCmdLastEvaluatedKey)))
 	}
 
 	if LoraGatewaysListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", "tag_name", LoraGatewaysListCmdTagName))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraGatewaysListCmdTagName)))
 	}
 
 	if LoraGatewaysListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", "tag_value", LoraGatewaysListCmdTagValue))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraGatewaysListCmdTagValue)))
 	}
 
 	if LoraGatewaysListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", "tag_value_match_mode", LoraGatewaysListCmdTagValueMatchMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraGatewaysListCmdTagValueMatchMode)))
 	}
 
 	if LoraGatewaysListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", LoraGatewaysListCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraGatewaysListCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

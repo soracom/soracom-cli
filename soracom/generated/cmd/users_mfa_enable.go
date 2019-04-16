@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -72,9 +74,9 @@ func collectUsersMfaEnableCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersMfaEnableCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersMfaEnableCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersMfaEnableCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", UsersMfaEnableCmdUserName, -1)
+	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersMfaEnableCmdUserName), -1)
 
 	return path
 }

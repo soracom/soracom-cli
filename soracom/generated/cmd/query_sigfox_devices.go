@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -116,47 +118,47 @@ func buildQueryForQuerySigfoxDevicesCmd() string {
 	result := []string{}
 
 	if QuerySigfoxDevicesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", QuerySigfoxDevicesCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(QuerySigfoxDevicesCmdLastEvaluatedKey)))
 	}
 
 	if QuerySigfoxDevicesCmdRegistration != "" {
-		result = append(result, sprintf("%s=%s", "registration", QuerySigfoxDevicesCmdRegistration))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("registration"), url.QueryEscape(QuerySigfoxDevicesCmdRegistration)))
 	}
 
 	if QuerySigfoxDevicesCmdSearchType != "" {
-		result = append(result, sprintf("%s=%s", "search_type", QuerySigfoxDevicesCmdSearchType))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("search_type"), url.QueryEscape(QuerySigfoxDevicesCmdSearchType)))
 	}
 
 	if QuerySigfoxDevicesCmdStatus != "" {
-		result = append(result, sprintf("%s=%s", "status", QuerySigfoxDevicesCmdStatus))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("status"), url.QueryEscape(QuerySigfoxDevicesCmdStatus)))
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdDeviceId {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "deviceId", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("deviceId"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdGroup {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "group", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("group"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdName {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "name", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("name"), url.QueryEscape(s)))
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdTag {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", "tag", s))
+			result = append(result, sprintf("%s=%s", url.QueryEscape("tag"), url.QueryEscape(s)))
 		}
 	}
 
 	if QuerySigfoxDevicesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", QuerySigfoxDevicesCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", QuerySigfoxDevicesCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

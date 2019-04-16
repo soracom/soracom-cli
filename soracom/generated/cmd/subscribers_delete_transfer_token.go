@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersDeleteTransferTokenCmdParams(ac *apiClient) (*apiParams, 
 
 func buildPathForSubscribersDeleteTransferTokenCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"token"+"}", SubscribersDeleteTransferTokenCmdToken, -1)
+	path = strings.Replace(path, "{"+"token"+"}", url.PathEscape(SubscribersDeleteTransferTokenCmdToken), -1)
 
 	return path
 }

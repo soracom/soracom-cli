@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -89,13 +91,13 @@ func collectDevicesObserveResourceCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesObserveResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesObserveResourceCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesObserveResourceCmdDeviceId), -1)
 
-	path = strings.Replace(path, "{"+"instance"+"}", DevicesObserveResourceCmdInstance, -1)
+	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesObserveResourceCmdInstance), -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", DevicesObserveResourceCmdObject, -1)
+	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesObserveResourceCmdObject), -1)
 
-	path = strings.Replace(path, "{"+"resource"+"}", DevicesObserveResourceCmdResource, -1)
+	path = strings.Replace(path, "{"+"resource"+"}", url.PathEscape(DevicesObserveResourceCmdResource), -1)
 
 	return path
 }
@@ -104,7 +106,7 @@ func buildQueryForDevicesObserveResourceCmd() string {
 	result := []string{}
 
 	if DevicesObserveResourceCmdModel != false {
-		result = append(result, sprintf("%s=%t", "model", DevicesObserveResourceCmdModel))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("model"), url.QueryEscape(sprintf("%t", DevicesObserveResourceCmdModel))))
 	}
 
 	return strings.Join(result, "&")

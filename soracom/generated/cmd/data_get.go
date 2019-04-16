@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -94,7 +96,7 @@ func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", DataGetCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(DataGetCmdImsi), -1)
 
 	return path
 }
@@ -103,23 +105,23 @@ func buildQueryForDataGetCmd() string {
 	result := []string{}
 
 	if DataGetCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", DataGetCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataGetCmdLastEvaluatedKey)))
 	}
 
 	if DataGetCmdSort != "" {
-		result = append(result, sprintf("%s=%s", "sort", DataGetCmdSort))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(DataGetCmdSort)))
 	}
 
 	if DataGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", DataGetCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", DataGetCmdFrom))))
 	}
 
 	if DataGetCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", DataGetCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataGetCmdLimit))))
 	}
 
 	if DataGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", DataGetCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", DataGetCmdTo))))
 	}
 
 	return strings.Join(result, "&")

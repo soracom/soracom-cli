@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -109,7 +111,7 @@ func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsBeamExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", StatsBeamExportCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsBeamExportCmdOperatorId), -1)
 
 	return path
 }
@@ -118,7 +120,7 @@ func buildQueryForStatsBeamExportCmd() string {
 	result := []string{}
 
 	if StatsBeamExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", "export_mode", StatsBeamExportCmdExportMode))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(StatsBeamExportCmdExportMode)))
 	}
 
 	return strings.Join(result, "&")

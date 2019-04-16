@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectSigfoxDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesSendDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", SigfoxDevicesSendDataCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesSendDataCmdDeviceId), -1)
 
 	return path
 }

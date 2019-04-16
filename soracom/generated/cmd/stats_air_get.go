@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -84,7 +86,7 @@ func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsAirGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", StatsAirGetCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(StatsAirGetCmdImsi), -1)
 
 	return path
 }
@@ -93,15 +95,15 @@ func buildQueryForStatsAirGetCmd() string {
 	result := []string{}
 
 	if StatsAirGetCmdPeriod != "" {
-		result = append(result, sprintf("%s=%s", "period", StatsAirGetCmdPeriod))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("period"), url.QueryEscape(StatsAirGetCmdPeriod)))
 	}
 
 	if StatsAirGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%d", "from", StatsAirGetCmdFrom))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", StatsAirGetCmdFrom))))
 	}
 
 	if StatsAirGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%d", "to", StatsAirGetCmdTo))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", StatsAirGetCmdTo))))
 	}
 
 	return strings.Join(result, "&")

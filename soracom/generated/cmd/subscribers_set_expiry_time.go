@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersSetExpiryTimeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersSetExpiryTimeCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSetExpiryTimeCmdImsi), -1)
 
 	return path
 }

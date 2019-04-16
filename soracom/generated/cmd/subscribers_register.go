@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersRegisterCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersRegisterCmdImsi), -1)
 
 	return path
 }

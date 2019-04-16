@@ -4,6 +4,8 @@ package cmd
 import (
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -88,9 +90,9 @@ func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsPutConfigCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", GroupsPutConfigCmdGroupId, -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsPutConfigCmdGroupId), -1)
 
-	path = strings.Replace(path, "{"+"namespace"+"}", GroupsPutConfigCmdNamespace, -1)
+	path = strings.Replace(path, "{"+"namespace"+"}", url.PathEscape(GroupsPutConfigCmdNamespace), -1)
 
 	return path
 }

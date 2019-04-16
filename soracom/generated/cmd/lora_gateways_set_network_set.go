@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -90,7 +92,7 @@ func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error
 
 func buildPathForLoraGatewaysSetNetworkSetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", LoraGatewaysSetNetworkSetCmdGatewayId, -1)
+	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysSetNetworkSetCmdGatewayId), -1)
 
 	return path
 }

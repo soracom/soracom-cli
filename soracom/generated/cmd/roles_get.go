@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -78,9 +80,9 @@ func collectRolesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForRolesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", RolesGetCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesGetCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", RolesGetCmdRoleId, -1)
+	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(RolesGetCmdRoleId), -1)
 
 	return path
 }

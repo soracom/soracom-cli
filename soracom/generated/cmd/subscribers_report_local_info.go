@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -69,7 +71,7 @@ func collectSubscribersReportLocalInfoCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForSubscribersReportLocalInfoCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", SubscribersReportLocalInfoCmdImsi, -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersReportLocalInfoCmdImsi), -1)
 
 	return path
 }

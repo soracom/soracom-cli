@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgRegisterGatePeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgRegisterGatePeerCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgRegisterGatePeerCmdVpgId), -1)
 
 	return path
 }

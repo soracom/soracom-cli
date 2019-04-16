@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -105,7 +107,7 @@ func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgCreateMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgCreateMirroringPeerCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgCreateMirroringPeerCmdVpgId), -1)
 
 	return path
 }

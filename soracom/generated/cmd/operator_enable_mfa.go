@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -73,7 +75,7 @@ func collectOperatorEnableMfaCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorEnableMfaCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", OperatorEnableMfaCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorEnableMfaCmdOperatorId), -1)
 
 	return path
 }

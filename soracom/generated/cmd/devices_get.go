@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -74,7 +76,7 @@ func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", DevicesGetCmdDeviceId, -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesGetCmdDeviceId), -1)
 
 	return path
 }
@@ -83,7 +85,7 @@ func buildQueryForDevicesGetCmd() string {
 	result := []string{}
 
 	if DevicesGetCmdModel != false {
-		result = append(result, sprintf("%s=%t", "model", DevicesGetCmdModel))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("model"), url.QueryEscape(sprintf("%t", DevicesGetCmdModel))))
 	}
 
 	return strings.Join(result, "&")

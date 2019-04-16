@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -81,11 +83,11 @@ func buildQueryForDevicesListObjectModelsCmd() string {
 	result := []string{}
 
 	if DevicesListObjectModelsCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", "last_evaluated_key", DevicesListObjectModelsCmdLastEvaluatedKey))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DevicesListObjectModelsCmdLastEvaluatedKey)))
 	}
 
 	if DevicesListObjectModelsCmdLimit != 0 {
-		result = append(result, sprintf("%s=%d", "limit", DevicesListObjectModelsCmdLimit))
+		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DevicesListObjectModelsCmdLimit))))
 	}
 
 	return strings.Join(result, "&")

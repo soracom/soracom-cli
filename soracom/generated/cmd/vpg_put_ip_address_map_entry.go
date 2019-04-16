@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -95,7 +97,7 @@ func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForVpgPutIpAddressMapEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", VpgPutIpAddressMapEntryCmdVpgId, -1)
+	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgPutIpAddressMapEntryCmdVpgId), -1)
 
 	return path
 }

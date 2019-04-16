@@ -6,6 +6,8 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
+
 	"os"
 	"strings"
 
@@ -93,9 +95,9 @@ func collectUsersMfaVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersMfaVerifyCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", UsersMfaVerifyCmdOperatorId, -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersMfaVerifyCmdOperatorId), -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", UsersMfaVerifyCmdUserName, -1)
+	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersMfaVerifyCmdUserName), -1)
 
 	return path
 }
