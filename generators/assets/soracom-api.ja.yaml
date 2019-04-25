@@ -916,6 +916,57 @@ definitions:
         type: string
     required:
     - permission
+  GetVolumeDiscountResponse:
+    properties:
+      contractDateTime:
+        description: 契約日時
+        example: yyyyMMddHHmmss
+        type: string
+      contractId:
+        description: 契約ID
+        type: string
+      contractTermMonth:
+        description: 契約月数
+        format: int32
+        type: integer
+      endDate:
+        description: 適用終了日
+        example: yyyyMMdd
+        type: string
+      initialCost:
+        description: 初期費用
+        format: double
+        type: number
+      quantity:
+        description: 数量
+        format: int32
+        type: integer
+      startDate:
+        description: 適用開始日
+        example: yyyyMMdd
+        type: string
+      status:
+        description: ステータス
+        enum:
+        - active
+        - expired
+        type: string
+      unitPrice:
+        description: 単価
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: お支払い方法
+        enum:
+        - PREPAYMENT
+        - MONTHLY
+        type: string
+      volumeDiscountType:
+        description: 料金計算方法
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
   Group:
     properties:
       configuration:
@@ -1232,6 +1283,13 @@ definitions:
     properties:
       operatorId:
         type: string
+  ListVolumeDiscountResponse:
+    properties:
+      volumeDiscountList:
+        description: 契約済み長期利用割引リスト
+        items:
+          $ref: '#/definitions/GetVolumeDiscountResponse'
+        type: array
   LogEntry:
     properties:
       body:
@@ -2375,7 +2433,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: List coupons
+      summary: List coupons.
       tags:
       - Payment
       x-soracom-cli:
@@ -2387,7 +2445,7 @@ paths:
       description: クーポンを登録します。
       operationId: registerCoupon
       parameters:
-      - description: coupon_code
+      - description: クーポンコード
         in: path
         name: coupon_code
         required: true
@@ -2399,10 +2457,12 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/CouponResponse'
+        "400":
+          description: クーポンコードが無効であるか、クーポンコードの登録上限に達しています。
       security:
       - api_key: []
       - api_token: []
-      summary: Register Coupon
+      summary: Register Coupon.
       tags:
       - Payment
       x-soracom-cli:
@@ -7778,10 +7838,10 @@ paths:
     get:
       consumes:
       - application/json
-      description: 課金処理の結果を返します
+      description: 課金処理の結果を返します。
       operationId: getPaymentTransaction
       parameters:
-      - description: payment_transaction_id
+      - description: 課金処理ID
         in: path
         name: payment_transaction_id
         required: true
@@ -7793,10 +7853,14 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/GetPaymentTransactionResult'
+        "400":
+          description: 無効な課金処理IDです。
+        "404":
+          description: 課金処理の結果が見つかりません。
       security:
       - api_key: []
       - api_token: []
-      summary: Get payment transaction result
+      summary: Get payment transaction result.
       tags:
       - Payment
       x-soracom-cli:
@@ -7805,7 +7869,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: 現在の支払い方法を返します。propertiesに詳細情報が入っています
+      description: 現在の支払い方法を返します。propertiesに詳細情報が入っています。
       operationId: getPaymentMethod
       produces:
       - application/json;charset=UTF-8
@@ -7814,10 +7878,12 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/GetPaymentMethodResult'
+        "404":
+          description: 支払い方法が見つかりません。
       security:
       - api_key: []
       - api_token: []
-      summary: Get payment method information
+      summary: Get payment method information.
       tags:
       - Payment
       x-soracom-cli:
@@ -7835,42 +7901,16 @@ paths:
           description: OK.
           schema:
             type: object
+        "404":
+          description: 支払い方法が見つかりません。
       security:
       - api_key: []
       - api_token: []
-      summary: Activate payment method
+      summary: Activate payment method.
       tags:
       - Payment
       x-soracom-cli:
       - payment-methods reactivate-current
-  /payment_methods/webpay:
-    post:
-      consumes:
-      - application/json
-      description: WebPayでの支払い用のカード情報を登録します
-      operationId: registerWebPayPaymentMethod
-      parameters:
-      - description: creditCard
-        in: body
-        name: creditCard
-        required: true
-        schema:
-          $ref: '#/definitions/CreditCard'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK.
-          schema:
-            type: object
-      security:
-      - api_key: []
-      - api_token: []
-      summary: Register credit card information for WebPay
-      tags:
-      - Payment
-      x-soracom-cli:
-      - payment-methods webpay register
   /payment_statements:
     get:
       consumes:
@@ -7899,12 +7939,12 @@ paths:
       description: 課金明細を出力します。
       operationId: exportPaymentStatement
       parameters:
-      - description: payment_statement_id
+      - description: 課金明細ID
         in: path
         name: payment_statement_id
         required: true
         type: string
-      - description: export_mode (async, sync)
+      - description: 出力モード (非同期, 同期)
         enum:
         - async
         - sync
@@ -7919,6 +7959,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/FileExportResponse'
+        "400":
+          description: 無効な課金明細IDです。
       security:
       - api_key: []
       - api_token: []
@@ -7940,6 +7982,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/RegisterPayerInformationModel'
+        "400":
+          description: 支払い者情報が見つかりません。
       security:
       - api_key: []
       - api_token: []
@@ -7964,7 +8008,9 @@ paths:
       - application/json;charset=UTF-8
       responses:
         "201":
-          description: Created
+          description: Created.
+        "400":
+          description: 無効な支払い者情報です。
       security:
       - api_key: []
       - api_token: []
@@ -10436,6 +10482,56 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg delete-vpc-peering-connection
+  /volume_discounts:
+    get:
+      consumes:
+      - application/json
+      description: 契約済みの長期利用割引リストを返します。
+      operationId: listVolumeDiscounts
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/ListVolumeDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List long term discounts.
+      tags:
+      - Payment
+      x-soracom-cli:
+      - volume-discounts list
+  /volume_discounts/{contract_id}:
+    get:
+      consumes:
+      - application/json
+      description: 契約済みの長期利用割引を返します。
+      operationId: getVolumeDiscount
+      parameters:
+      - description: contract_id
+        in: path
+        name: contract_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/GetVolumeDiscountResponse'
+        "400":
+          description: 長期利用割引が見つかりません。
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get long term discount.
+      tags:
+      - Payment
+      x-soracom-cli:
+      - volume-discounts get
 produces:
 - application/json
 schemes:

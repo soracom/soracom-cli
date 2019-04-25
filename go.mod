@@ -13,7 +13,7 @@ require (
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/coreos/go-systemd v0.0.0-20190212144455-93d5ec2c7f76 // indirect
 	github.com/debber/debber-v0.3 v0.0.0-20160226200915-cf10fd052975 // indirect
-	github.com/elazarl/goproxy v0.0.0-20190410145444-c548f45dcf1d
+	github.com/elazarl/goproxy v0.0.0-20190421051319-9d40249d3c2f
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/dep v0.5.0 // indirect
@@ -67,13 +67,13 @@ require (
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
 	golang.org/x/build v0.0.0-20190215225244-0261b66eb045 // indirect
-	golang.org/x/crypto v0.0.0-20190411191339-88737f569e3a
+	golang.org/x/crypto v0.0.0-20190422183909-d864b10871cd
 	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/net v0.0.0-20190415214537-1da14a5a36f2
+	golang.org/x/net v0.0.0-20190424024845-afe8014c977f
 	golang.org/x/oauth2 v0.0.0-20190212230446-3e8b2be13635 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190415145633-3fd5a3612ccd
-	golang.org/x/tools v0.0.0-20190415205951-2e9de471ebd3 // indirect
+	golang.org/x/sys v0.0.0-20190422165155-953cdadca894
+	golang.org/x/tools v0.0.0-20190424031103-cb2dda6eabdf // indirect
 	google.golang.org/genproto v0.0.0-20190215211957-bd968387e4aa // indirect
 	google.golang.org/grpc v1.18.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2

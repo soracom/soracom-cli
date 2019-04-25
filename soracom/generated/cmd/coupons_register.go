@@ -14,7 +14,7 @@ import (
 var CouponsRegisterCmdCouponCode string
 
 func init() {
-	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TRAPI("coupon_code"))
+	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TRAPI("Coupon code"))
 
 	CouponsCmd.AddCommand(CouponsRegisterCmd)
 }

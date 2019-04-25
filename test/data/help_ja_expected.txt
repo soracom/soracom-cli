@@ -40,6 +40,7 @@ Available Commands:
   unconfigure        コマンド実行環境（プロファイル）を削除します。
   users              SAM ユーザーに関する操作を行います。
   version            バージョン情報を表示します。
+  volume-discounts   ボリュームディスカウント（長期利用割引）に関する操作を行います。
   vpg                VPG に関する操作を行います。
 
 Flags:

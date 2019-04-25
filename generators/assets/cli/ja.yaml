@@ -172,6 +172,9 @@ cli:
   version:
     summary: バージョン情報を表示します。
     description: バージョン情報を表示します。
+  volume-discounts:
+    summary: ボリュームディスカウント（長期利用割引）に関する操作を行います。
+    description: ボリュームディスカウント（長期利用割引）に関する操作を行います。
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。

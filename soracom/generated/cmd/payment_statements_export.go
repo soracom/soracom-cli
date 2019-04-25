@@ -17,9 +17,9 @@ var PaymentStatementsExportCmdExportMode string
 var PaymentStatementsExportCmdPaymentStatementId string
 
 func init() {
-	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
+	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TRAPI("Export mode (async, sync)"))
 
-	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("payment_statement_id"))
+	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("Payment statement ID"))
 
 	PaymentStatementsCmd.AddCommand(PaymentStatementsExportCmd)
 }

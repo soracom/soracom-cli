@@ -193,6 +193,9 @@ cli:
   version:
     summary: Show version info.
     description: Show version info.
+  volume-discounts:
+    summary: Manage volume discounts (long-term discounts).
+    description: Manage volume discounts (long-term discounts).
   vpg:
     summary: List, create, update or delete VPGs.
     description: List, create, update or delete VPGs.

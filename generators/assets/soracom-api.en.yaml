@@ -198,21 +198,21 @@ definitions:
   CouponResponse:
     properties:
       amount:
-        description: クーポン額
+        description: Amount
         format: double
         type: number
       balance:
-        description: 残高
+        description: Balance
         format: double
         type: number
       billItemName:
-        description: 対象課金アイテム
+        description: Item
         type: string
       couponCode:
-        description: クーポンコード
+        description: Coupon code
         type: string
       expiryYearMonth:
-        description: 有効期限
+        description: Expiry month
         example: yyyyMM
         type: string
   CreateAndUpdateCredentialsModel:
@@ -802,7 +802,7 @@ definitions:
   GetPaymentMethodResult:
     properties:
       errorCode:
-        description: エラーコード（支払い情報が無効な場合のみ）
+        description: Error code (only if payment information is invalid)
         enum:
         - success
         - processing
@@ -821,33 +821,33 @@ definitions:
         - processing_error
         type: string
       errorMessage:
-        description: エラーメッセージ（支払い情報が無効な場合のみ
+        description: Error message (only if payment information is invalid)
         type: string
       properties:
-        description: 支払い情報
+        description: Payment information
         type: string
       providerType:
-        description: 課金プロバイダ種別
+        description: Provider type
         enum:
         - WebPay
         type: string
       updateDate:
-        description: 登録日
+        description: Update date
         example: yyyyMMddHHmmss
         type: string
   GetPaymentTransactionResult:
     properties:
       amount:
         $ref: '#/definitions/PaymentAmount'
-        description: 課金額
+        description: Amount
       description:
         $ref: '#/definitions/PaymentDescription'
-        description: 課金内容詳細
+        description: Description
       message:
-        description: メッセージ
+        description: Message
         type: string
       messageCode:
-        description: メッセージコード
+        description: Message code
         enum:
         - success
         - processing
@@ -866,7 +866,7 @@ definitions:
         - processing_error
         type: string
       status:
-        description: ステータス
+        description: Status
         enum:
         - success
         - error
@@ -916,6 +916,57 @@ definitions:
         type: string
     required:
     - permission
+  GetVolumeDiscountResponse:
+    properties:
+      contractDateTime:
+        description: Contract date time
+        example: yyyyMMddHHmmss
+        type: string
+      contractId:
+        description: ID
+        type: string
+      contractTermMonth:
+        description: Discount term
+        format: int32
+        type: integer
+      endDate:
+        description: End date
+        example: yyyyMMdd
+        type: string
+      initialCost:
+        description: Initial cost
+        format: double
+        type: number
+      quantity:
+        description: Number of SIMs
+        format: int32
+        type: integer
+      startDate:
+        description: Start date
+        example: yyyyMMdd
+        type: string
+      status:
+        description: Status
+        enum:
+        - active
+        - expired
+        type: string
+      unitPrice:
+        description: Unit price
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: Payment type
+        enum:
+        - PREPAYMENT
+        - MONTHLY
+        type: string
+      volumeDiscountType:
+        description: Type
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
   Group:
     properties:
       configuration:
@@ -1175,7 +1226,7 @@ definitions:
   ListCouponResponse:
     properties:
       couponList:
-        description: クーポンリスト
+        description: Coupons
         items:
           $ref: '#/definitions/CouponResponse'
         type: array
@@ -1196,7 +1247,7 @@ definitions:
   ListPaymentStatementResponse:
     properties:
       paymentStatementsList:
-        description: 課金明細リスト
+        description: Payment statements
         items:
           $ref: '#/definitions/PaymentStatementResponse'
         type: array
@@ -1232,6 +1283,13 @@ definitions:
     properties:
       operatorId:
         type: string
+  ListVolumeDiscountResponse:
+    properties:
+      volumeDiscountList:
+        description: Contracted long term discounts
+        items:
+          $ref: '#/definitions/GetVolumeDiscountResponse'
+        type: array
   LogEntry:
     properties:
       body:
@@ -1478,24 +1536,24 @@ definitions:
   PaymentStatementResponse:
     properties:
       amount:
-        description: 金額
+        description: Amount
         format: double
         type: number
       paymentDateTime:
-        description: 課金日時
+        description: Payment date time
         format: int64
         type: integer
       paymentInstrument:
-        description: 支払情報
+        description: Payment instrument
         type: string
       paymentMethod:
-        description: 支払方法
+        description: Payment method
         type: string
       paymentStatementId:
-        description: 課金明細ID
+        description: Payment statement ID
         type: string
       paymentStatementInfo:
-        description: 支払内容
+        description: Payment statement information
         type: string
   ProductModel:
     properties:
@@ -1573,13 +1631,13 @@ definitions:
   RegisterPayerInformationModel:
     properties:
       companyName:
-        description: 企業名
+        description: Company name
         type: string
       department:
-        description: 部署
+        description: Department
         type: string
       fullName:
-        description: 氏名
+        description: Full name
         type: string
   RegisterSubscribersRequest:
     properties:
@@ -2405,7 +2463,7 @@ paths:
       description: Registers a coupon.
       operationId: registerCoupon
       parameters:
-      - description: coupon_code
+      - description: Coupon code
         in: path
         name: coupon_code
         required: true
@@ -2417,6 +2475,9 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/CouponResponse'
+        "400":
+          description: The coupon code is invalid or the coupon code registration
+            limit has been reached.
       security:
       - api_key: []
       - api_token: []
@@ -7902,7 +7963,7 @@ paths:
       description: Returns result of a payment transaction.
       operationId: getPaymentTransaction
       parameters:
-      - description: payment_transaction_id
+      - description: Payment transaction ID
         in: path
         name: payment_transaction_id
         required: true
@@ -7914,6 +7975,10 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/GetPaymentTransactionResult'
+        "400":
+          description: Invalid payment transaction ID.
+        "404":
+          description: Payment transaction result not found.
       security:
       - api_key: []
       - api_token: []
@@ -7936,10 +8001,12 @@ paths:
           description: OK.
           schema:
             $ref: '#/definitions/GetPaymentMethodResult'
+        "404":
+          description: Payment method not found.
       security:
       - api_key: []
       - api_token: []
-      summary: Get payment method information
+      summary: Get payment method information.
       tags:
       - Payment
       x-soracom-cli:
@@ -7957,6 +8024,8 @@ paths:
           description: OK.
           schema:
             type: object
+        "404":
+          description: Payment method not found.
       security:
       - api_key: []
       - api_token: []
@@ -7965,34 +8034,6 @@ paths:
       - Payment
       x-soracom-cli:
       - payment-methods reactivate-current
-  /payment_methods/webpay:
-    post:
-      consumes:
-      - application/json
-      description: Registers credit card information for WebPay payments.
-      operationId: registerWebPayPaymentMethod
-      parameters:
-      - description: creditCard
-        in: body
-        name: creditCard
-        required: true
-        schema:
-          $ref: '#/definitions/CreditCard'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK.
-          schema:
-            type: object
-      security:
-      - api_key: []
-      - api_token: []
-      summary: Register credit card information for WebPay.
-      tags:
-      - Payment
-      x-soracom-cli:
-      - payment-methods webpay register
   /payment_statements:
     get:
       consumes:
@@ -8021,12 +8062,12 @@ paths:
       description: Export payment statement.
       operationId: exportPaymentStatement
       parameters:
-      - description: payment_statement_id
+      - description: Payment statement ID
         in: path
         name: payment_statement_id
         required: true
         type: string
-      - description: export_mode (async, sync)
+      - description: Export mode (async, sync)
         enum:
         - async
         - sync
@@ -8041,6 +8082,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/FileExportResponse'
+        "400":
+          description: Invalid payment statement ID.
       security:
       - api_key: []
       - api_token: []
@@ -8062,6 +8105,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/RegisterPayerInformationModel'
+        "400":
+          description: Payer information not found.
       security:
       - api_key: []
       - api_token: []
@@ -8086,7 +8131,9 @@ paths:
       - application/json;charset=UTF-8
       responses:
         "201":
-          description: Created
+          description: Created.
+        "400":
+          description: Invalid payer information.
       security:
       - api_key: []
       - api_token: []
@@ -10629,6 +10676,56 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg delete-vpc-peering-connection
+  /volume_discounts:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of contracted long term discounts.
+      operationId: listVolumeDiscounts
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/ListVolumeDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List long term discounts.
+      tags:
+      - Payment
+      x-soracom-cli:
+      - volume-discounts list
+  /volume_discounts/{contract_id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns contracted long term discount.
+      operationId: getVolumeDiscount
+      parameters:
+      - description: contract_id
+        in: path
+        name: contract_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/GetVolumeDiscountResponse'
+        "400":
+          description: Long term discount not found.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get long term discount.
+      tags:
+      - Payment
+      x-soracom-cli:
+      - volume-discounts get
 produces:
 - application/json
 schemes:
