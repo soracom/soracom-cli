@@ -242,20 +242,16 @@ func splitVersionString(ver string) []string {
 }
 
 func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response, error) {
-	var err error
 	backoffSeconds := []int{10, 10, 20, 30, 50}
 	for _, wait := range backoffSeconds {
-		var res *http.Response
-		res, err = ac.httpClient.Do(req)
+		res, err := ac.httpClient.Do(req)
 		if err == nil && !retryableError(res.StatusCode) {
 			return res, nil
 		}
 		if err != nil && res != nil && res.Body != nil {
 			defer func() {
-				// #nosec G104
-				res.Body.Close()
-				// #nosec G104
 				io.Copy(ioutil.Discard, res.Body)
+				res.Body.Close()
 			}()
 		}
 
