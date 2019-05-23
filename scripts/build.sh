@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 d=$( cd "$(dirname "$0" )"; cd ..; pwd -P )
 
 : "Check if shell scripts are healthy" && {
@@ -83,7 +84,7 @@ git config --global http.https://gopkg.in.followRedirects true
     echo "Building artifacts ..."
     go generate
     go get -u github.com/bearmini/go-acl # required to specify some dependencies explicitly as they are imported only in windows builds
-    go get -u golang.org/x/sys/windows
+    GOOS=windows go get -u golang.org/x/sys/windows
     gofmt -s -w .
     goxc -bc="$TARGETS" -d=dist/ -pv=$VERSION -build-ldflags="-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION"
 
