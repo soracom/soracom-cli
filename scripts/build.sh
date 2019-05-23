@@ -49,10 +49,6 @@ EOS
 : "Check if required commands for build are available" && {
   check_command_available go
   check_command_available git
-
-  command -v dep > /dev/null 2>&1 || {
-    go get -u github.com/golang/dep/cmd/dep
-  }
 }
 
 set -e # aborting if any commands below exit with non-zero code
@@ -82,14 +78,8 @@ ARCHTECTURES="amd64 $I386 $ARM"
 git config --global http.https://gopkg.in.followRedirects true
 
 : "Install dependencies" && {
-    echo "Installing build dependencies ..."
-    go get -u golang.org/x/tools/cmd/goimports
-    go get -u github.com/jessevdk/go-assets
-    go get -u github.com/jessevdk/go-assets-builder
-    go get -u github.com/elazarl/goproxy
-
-    echo "Installing runtime dependencies ..."
-    go get -u github.com/inconshreveable/mousetrap # required by spf13/cobra (only for windows env)
+    echo "Installing dependencies ..."
+    go mod vendor
 }
 
 : "Test generator's library" && {
@@ -116,8 +106,6 @@ git config --global http.https://gopkg.in.followRedirects true
     pushd "$d/soracom" > /dev/null
     echo "Building artifacts ..."
     go generate
-    go get -u github.com/bearmini/go-acl # required to specify some dependencies explicitly as they are imported only in windows builds
-    GOOS="$WINDOWS" go get -u golang.org/x/sys/windows
     gofmt -s -w .
 
     mkdir -p "dist/$VERSION/.tmp"
