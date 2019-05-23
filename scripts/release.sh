@@ -9,7 +9,6 @@ if [ -z "$1" ]; then
 fi
 
 pushd "$d/soracom" >/dev/null 2>&1
-rm -f "$d/soracom/dist/$VERSION/downloads.md"
 ghr --prerelease --replace -u soracom -r soracom-cli "v$VERSION" "$d/soracom/dist/$VERSION/"
 popd >/dev/null 2>&1
 

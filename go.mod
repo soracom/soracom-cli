@@ -26,7 +26,7 @@ require (
 	github.com/gorilla/mux v1.7.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.7.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
 	github.com/jessevdk/go-assets-builder v0.0.0-20130903091706-b8483521738f // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
@@ -34,7 +34,6 @@ require (
 	github.com/kennygrant/sanitize v1.2.4
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/laher/argo v0.0.0-20140722103944-11d91c83cc0f // indirect
-	github.com/laher/goxc v0.18.1 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/nightlyone/lockfile v0.0.0-20180618180623-0ad87eef1443 // indirect
@@ -62,19 +61,19 @@ require (
 	github.com/shurcooL/webdavfs v0.0.0-20181215192745-5988b2d638f6 // indirect
 	github.com/sirupsen/logrus v1.3.0 // indirect
 	github.com/spf13/cobra v0.0.3
-	github.com/spf13/pflag v1.0.3
+	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
 	go.opencensus.io v0.19.0 // indirect
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
 	golang.org/x/build v0.0.0-20190215225244-0261b66eb045 // indirect
-	golang.org/x/crypto v0.0.0-20190424203555-c05e17bb3b2d
+	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f
 	golang.org/x/exp v0.0.0-20190212162250-21964bba6549 // indirect
-	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
+	golang.org/x/net v0.0.0-20190522155817-f3200d17e092 // indirect
 	golang.org/x/oauth2 v0.0.0-20190212230446-3e8b2be13635 // indirect
 	golang.org/x/perf v0.0.0-20190124201629-844a5f5b46f4 // indirect
-	golang.org/x/sys v0.0.0-20190424175732-18eb32c0e2f0
-	golang.org/x/text v0.3.1 // indirect
-	golang.org/x/tools v0.0.0-20190425001055-9e44c1c40307 // indirect
+	golang.org/x/sys v0.0.0-20190523142557-0e01d883c5c5
+	golang.org/x/text v0.3.2 // indirect
+	golang.org/x/tools v0.0.0-20190523174634-38d8bcfa38af // indirect
 	google.golang.org/genproto v0.0.0-20190215211957-bd968387e4aa // indirect
 	google.golang.org/grpc v1.18.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2
