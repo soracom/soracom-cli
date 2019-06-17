@@ -178,7 +178,7 @@ func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
 
 	if ac.verbose {
 		dumpHTTPResponse(res)
-		fmt.Println("==========")
+		printfStderr("==========\n")
 	}
 
 	if res.StatusCode >= http.StatusBadRequest {
@@ -302,19 +302,19 @@ func (ac *apiClient) SetVerbose(verbose bool) {
 func dumpHTTPRequest(req *http.Request) {
 	dump, err := httputil.DumpRequest(req, true)
 	if err != nil {
-		fmt.Println(err)
+		printfStderr("%s\n", err)
 		return
 	}
-	fmt.Println(string(dump))
+	printfStderr("%s\n", string(dump))
 }
 
 func dumpHTTPResponse(resp *http.Response) {
 	dump, err := httputil.DumpResponse(resp, true)
 	if err != nil {
-		fmt.Println(err)
+		printfStderr("%s\n", err)
 		return
 	}
-	fmt.Println(string(dump))
+	printfStderr("%s\n", string(dump))
 }
 
 func printfStderr(format string, args ...interface{}) {
