@@ -49,6 +49,7 @@ EOS
 : "Check if required commands for build are available" && {
   check_command_available go
   check_command_available git
+  check_command_available dpkg-deb
 }
 
 set -e # aborting if any commands below exit with non-zero code
