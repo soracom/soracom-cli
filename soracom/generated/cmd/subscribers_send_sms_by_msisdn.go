@@ -29,6 +29,8 @@ var SubscribersSendSmsByMsisdnCmdBody string
 func init() {
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdMsisdn, "msisdn", "", TRAPI("MSISDN of the target subscriber."))
 
+	SubscribersSendSmsByMsisdnCmd.MarkFlagRequired("msisdn")
+
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdPayload, "payload", "", TRAPI(""))
 
 	SubscribersSendSmsByMsisdnCmd.Flags().Int64Var(&SubscribersSendSmsByMsisdnCmdEncodingType, "encoding-type", 0, TRAPI(""))
@@ -76,6 +78,7 @@ var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectSubscribersSendSmsByMsisdnCmdParams(ac *apiClient) (*apiParams, erro
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersSendSmsByMsisdnCmd("/subscribers/msisdn/{msisdn}/send_sms"),
 		query:       buildQueryForSubscribersSendSmsByMsisdnCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersSendSmsByMsisdnCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"msisdn"+"}", url.PathEscape(SubscribersSendSmsByMsisdnCmdMsisdn), -1)
+	escapedMsisdn := url.PathEscape(SubscribersSendSmsByMsisdnCmdMsisdn)
+
+	path = strings.Replace(path, "{"+"msisdn"+"}", escapedMsisdn, -1)
 
 	return path
 }

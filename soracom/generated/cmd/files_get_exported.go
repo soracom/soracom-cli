@@ -16,6 +16,8 @@ var FilesGetExportedCmdExportedFileId string
 func init() {
 	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TRAPI("file export id"))
 
+	FilesGetExportedCmd.MarkFlagRequired("exported-file-id")
+
 	FilesCmd.AddCommand(FilesGetExportedCmd)
 }
 
@@ -57,6 +59,7 @@ var FilesGetExportedCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForFilesGetExportedCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"exported_file_id"+"}", url.PathEscape(FilesGetExportedCmdExportedFileId), -1)
+	escapedExportedFileId := url.PathEscape(FilesGetExportedCmdExportedFileId)
+
+	path = strings.Replace(path, "{"+"exported_file_id"+"}", escapedExportedFileId, -1)
 
 	return path
 }

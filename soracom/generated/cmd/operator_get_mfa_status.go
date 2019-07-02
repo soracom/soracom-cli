@@ -57,6 +57,7 @@ var OperatorGetMfaStatusCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectOperatorGetMfaStatusCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorGetMfaStatusCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorGetMfaStatusCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorGetMfaStatusCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

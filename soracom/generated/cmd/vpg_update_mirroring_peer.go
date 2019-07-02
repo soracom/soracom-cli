@@ -24,7 +24,11 @@ var VpgUpdateMirroringPeerCmdBody string
 func init() {
 	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("Mirroring peer IP address"))
 
+	VpgUpdateMirroringPeerCmd.MarkFlagRequired("ipaddr")
+
 	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
+
+	VpgUpdateMirroringPeerCmd.MarkFlagRequired("vpg-id")
 
 	VpgUpdateMirroringPeerCmd.Flags().StringVar(&VpgUpdateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -69,6 +73,7 @@ var VpgUpdateMirroringPeerCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -79,20 +84,26 @@ func collectVpgUpdateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForVpgUpdateMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}"),
 		query:       buildQueryForVpgUpdateMirroringPeerCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgUpdateMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ipaddr"+"}", url.PathEscape(VpgUpdateMirroringPeerCmdIpaddr), -1)
+	escapedIpaddr := url.PathEscape(VpgUpdateMirroringPeerCmdIpaddr)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgUpdateMirroringPeerCmdVpgId), -1)
+	path = strings.Replace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
+
+	escapedVpgId := url.PathEscape(VpgUpdateMirroringPeerCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var VpgUnsetInspectionCmdVpgId string
 func init() {
 	VpgUnsetInspectionCmd.Flags().StringVar(&VpgUnsetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
+	VpgUnsetInspectionCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgUnsetInspectionCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgUnsetInspectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgUnsetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgUnsetInspectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgUnsetInspectionCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgUnsetInspectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

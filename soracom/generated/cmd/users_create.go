@@ -33,6 +33,8 @@ func init() {
 
 	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersCreateCmd.MarkFlagRequired("user-name")
+
 	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersCmd.AddCommand(UsersCreateCmd)
@@ -76,6 +78,7 @@ var UsersCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -90,20 +93,26 @@ func collectUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForUsersCreateCmd("/operators/{operator_id}/users/{user_name}"),
 		query:       buildQueryForUsersCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForUsersCreateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersCreateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersCreateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersCreateCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersCreateCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

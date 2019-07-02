@@ -21,6 +21,8 @@ func init() {
 
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TRAPI("yyyyMM"))
 
+	BillsExportCmd.MarkFlagRequired("yyyy-mm")
+
 	BillsCmd.AddCommand(BillsExportCmd)
 }
 
@@ -62,6 +64,7 @@ var BillsExportCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,7 +79,9 @@ func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForBillsExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"yyyyMM"+"}", url.PathEscape(BillsExportCmdYyyyMM), -1)
+	escapedYyyyMM := url.PathEscape(BillsExportCmdYyyyMM)
+
+	path = strings.Replace(path, "{"+"yyyyMM"+"}", escapedYyyyMM, -1)
 
 	return path
 }

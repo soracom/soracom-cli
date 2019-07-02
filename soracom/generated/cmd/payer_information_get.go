@@ -51,6 +51,7 @@ var PayerInformationGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

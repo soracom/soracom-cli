@@ -51,6 +51,7 @@ var CouponsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

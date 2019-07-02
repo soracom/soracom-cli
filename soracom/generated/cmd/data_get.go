@@ -31,6 +31,8 @@ var DataGetCmdTo int64
 func init() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
+	DataGetCmd.MarkFlagRequired("imsi")
+
 	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
@@ -82,6 +84,7 @@ var DataGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,7 +99,9 @@ func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(DataGetCmdImsi), -1)
+	escapedImsi := url.PathEscape(DataGetCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

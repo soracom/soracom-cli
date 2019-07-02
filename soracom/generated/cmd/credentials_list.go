@@ -51,6 +51,7 @@ var CredentialsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

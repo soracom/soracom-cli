@@ -21,6 +21,8 @@ func init() {
 
 	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("role_id"))
 
+	RolesGetCmd.MarkFlagRequired("role-id")
+
 	RolesCmd.AddCommand(RolesGetCmd)
 }
 
@@ -62,6 +64,7 @@ var RolesGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectRolesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForRolesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesGetCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(RolesGetCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(RolesGetCmdRoleId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedRoleId := url.PathEscape(RolesGetCmdRoleId)
+
+	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	return path
 }

@@ -29,6 +29,8 @@ var SubscribersSendSmsCmdBody string
 func init() {
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSendSmsCmd.MarkFlagRequired("imsi")
+
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdPayload, "payload", "", TRAPI(""))
 
 	SubscribersSendSmsCmd.Flags().Int64Var(&SubscribersSendSmsCmdEncodingType, "encoding-type", 0, TRAPI(""))
@@ -76,6 +78,7 @@ var SubscribersSendSmsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectSubscribersSendSmsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersSendSmsCmd("/subscribers/{imsi}/send_sms"),
 		query:       buildQueryForSubscribersSendSmsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersSendSmsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSendSmsCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSendSmsCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

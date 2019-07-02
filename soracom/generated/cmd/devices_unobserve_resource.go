@@ -25,11 +25,19 @@ var DevicesUnobserveResourceCmdResource string
 func init() {
 	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
+	DevicesUnobserveResourceCmd.MarkFlagRequired("device-id")
+
 	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
+
+	DevicesUnobserveResourceCmd.MarkFlagRequired("instance")
 
 	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdObject, "object", "", TRAPI("Object ID"))
 
+	DevicesUnobserveResourceCmd.MarkFlagRequired("object")
+
 	DevicesUnobserveResourceCmd.Flags().StringVar(&DevicesUnobserveResourceCmdResource, "resource", "", TRAPI("Resource ID"))
+
+	DevicesUnobserveResourceCmd.MarkFlagRequired("resource")
 
 	DevicesCmd.AddCommand(DevicesUnobserveResourceCmd)
 }
@@ -72,6 +80,7 @@ var DevicesUnobserveResourceCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,13 +95,21 @@ func collectDevicesUnobserveResourceCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForDevicesUnobserveResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesUnobserveResourceCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesUnobserveResourceCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesUnobserveResourceCmdInstance), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesUnobserveResourceCmdObject), -1)
+	escapedInstance := url.PathEscape(DevicesUnobserveResourceCmdInstance)
 
-	path = strings.Replace(path, "{"+"resource"+"}", url.PathEscape(DevicesUnobserveResourceCmdResource), -1)
+	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+
+	escapedObject := url.PathEscape(DevicesUnobserveResourceCmdObject)
+
+	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
+
+	escapedResource := url.PathEscape(DevicesUnobserveResourceCmdResource)
+
+	path = strings.Replace(path, "{"+"resource"+"}", escapedResource, -1)
 
 	return path
 }

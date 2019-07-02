@@ -22,9 +22,15 @@ var DataGetEntryCmdTime int64
 func init() {
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
+	DataGetEntryCmd.MarkFlagRequired("resource-id")
+
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
+	DataGetEntryCmd.MarkFlagRequired("resource-type")
+
 	DataGetEntryCmd.Flags().Int64Var(&DataGetEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to get (unixtime in milliseconds)."))
+
+	DataGetEntryCmd.MarkFlagRequired("time")
 
 	DataCmd.AddCommand(DataGetEntryCmd)
 }
@@ -67,6 +73,7 @@ var DataGetEntryCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,9 +88,13 @@ func collectDataGetEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataGetEntryCmdResourceId), -1)
+	escapedResourceId := url.PathEscape(DataGetEntryCmdResourceId)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataGetEntryCmdResourceType), -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
+
+	escapedResourceType := url.PathEscape(DataGetEntryCmdResourceType)
+
+	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
 	path = strings.Replace(path, "{"+"time"+"}", url.PathEscape(sprintf("%d", DataGetEntryCmdTime)), -1)
 

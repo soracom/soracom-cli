@@ -87,6 +87,7 @@ var LogsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

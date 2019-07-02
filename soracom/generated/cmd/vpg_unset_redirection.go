@@ -16,6 +16,8 @@ var VpgUnsetRedirectionCmdVpgId string
 func init() {
 	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
+	VpgUnsetRedirectionCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgUnsetRedirectionCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgUnsetRedirectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgUnsetRedirectionCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgUnsetRedirectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

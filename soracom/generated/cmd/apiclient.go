@@ -320,6 +320,6 @@ func dumpHTTPResponse(resp *http.Response) {
 func printfStderr(format string, args ...interface{}) {
 	_, err := fmt.Fprintf(os.Stderr, format, args...)
 	if err != nil {
-		fmt.Printf("err: %+v\n", err)
+		//fmt.Printf("err: %+v\n", err) // this messes up stdout
 	}
 }

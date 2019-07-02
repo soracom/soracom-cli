@@ -16,6 +16,8 @@ var CredentialsDeleteCmdCredentialsId string
 func init() {
 	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TRAPI("Credentials ID"))
 
+	CredentialsDeleteCmd.MarkFlagRequired("credentials-id")
+
 	CredentialsCmd.AddCommand(CredentialsDeleteCmd)
 }
 
@@ -57,6 +59,7 @@ var CredentialsDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectCredentialsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForCredentialsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"credentials_id"+"}", url.PathEscape(CredentialsDeleteCmdCredentialsId), -1)
+	escapedCredentialsId := url.PathEscape(CredentialsDeleteCmdCredentialsId)
+
+	path = strings.Replace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
 
 	return path
 }

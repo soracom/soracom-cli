@@ -62,6 +62,7 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

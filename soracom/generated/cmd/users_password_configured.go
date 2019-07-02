@@ -21,6 +21,8 @@ func init() {
 
 	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersPasswordConfiguredCmd.MarkFlagRequired("user-name")
+
 	UsersPasswordCmd.AddCommand(UsersPasswordConfiguredCmd)
 }
 
@@ -62,6 +64,7 @@ var UsersPasswordConfiguredCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectUsersPasswordConfiguredCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForUsersPasswordConfiguredCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersPasswordConfiguredCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersPasswordConfiguredCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersPasswordConfiguredCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersPasswordConfiguredCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

@@ -62,6 +62,7 @@ var StatsHarvestGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,7 +81,9 @@ func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsHarvestGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsHarvestGetCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(StatsHarvestGetCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

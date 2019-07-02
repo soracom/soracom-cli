@@ -21,6 +21,8 @@ var LoraGatewaysPutTagsCmdBody string
 func init() {
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
+	LoraGatewaysPutTagsCmd.MarkFlagRequired("gateway-id")
+
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysPutTagsCmd)
@@ -64,6 +66,7 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,18 +77,22 @@ func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLoraGatewaysPutTagsCmd("/lora_gateways/{gateway_id}/tags"),
 		query:       buildQueryForLoraGatewaysPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraGatewaysPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysPutTagsCmdGatewayId), -1)
+	escapedGatewayId := url.PathEscape(LoraGatewaysPutTagsCmdGatewayId)
+
+	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }

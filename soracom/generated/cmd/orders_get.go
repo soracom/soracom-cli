@@ -16,6 +16,8 @@ var OrdersGetCmdOrderId string
 func init() {
 	OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TRAPI("order_id"))
 
+	OrdersGetCmd.MarkFlagRequired("order-id")
+
 	OrdersCmd.AddCommand(OrdersGetCmd)
 }
 
@@ -57,6 +59,7 @@ var OrdersGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectOrdersGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOrdersGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"order_id"+"}", url.PathEscape(OrdersGetCmdOrderId), -1)
+	escapedOrderId := url.PathEscape(OrdersGetCmdOrderId)
+
+	path = strings.Replace(path, "{"+"order_id"+"}", escapedOrderId, -1)
 
 	return path
 }

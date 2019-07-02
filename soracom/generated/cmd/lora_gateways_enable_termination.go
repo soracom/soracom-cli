@@ -16,6 +16,8 @@ var LoraGatewaysEnableTerminationCmdGatewayId string
 func init() {
 	LoraGatewaysEnableTerminationCmd.Flags().StringVar(&LoraGatewaysEnableTerminationCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
+	LoraGatewaysEnableTerminationCmd.MarkFlagRequired("gateway-id")
+
 	LoraGatewaysCmd.AddCommand(LoraGatewaysEnableTerminationCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraGatewaysEnableTerminationCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraGatewaysEnableTerminationCmdParams(ac *apiClient) (*apiParams, e
 
 func buildPathForLoraGatewaysEnableTerminationCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysEnableTerminationCmdGatewayId), -1)
+	escapedGatewayId := url.PathEscape(LoraGatewaysEnableTerminationCmdGatewayId)
+
+	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }

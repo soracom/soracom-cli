@@ -16,6 +16,8 @@ var DevicesPutDeviceTagsCmdDeviceId string
 func init() {
 	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
+	DevicesPutDeviceTagsCmd.MarkFlagRequired("device-id")
+
 	DevicesCmd.AddCommand(DevicesPutDeviceTagsCmd)
 }
 
@@ -57,6 +59,7 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesPutDeviceTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesPutDeviceTagsCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesPutDeviceTagsCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

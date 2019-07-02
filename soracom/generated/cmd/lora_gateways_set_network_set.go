@@ -26,6 +26,8 @@ var LoraGatewaysSetNetworkSetCmdBody string
 func init() {
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
+	LoraGatewaysSetNetworkSetCmd.MarkFlagRequired("gateway-id")
+
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraGatewaysSetNetworkSetCmd("/lora_gateways/{gateway_id}/set_network_set"),
 		query:       buildQueryForLoraGatewaysSetNetworkSetCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraGatewaysSetNetworkSetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysSetNetworkSetCmdGatewayId), -1)
+	escapedGatewayId := url.PathEscape(LoraGatewaysSetNetworkSetCmdGatewayId)
+
+	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }

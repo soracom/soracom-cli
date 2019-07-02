@@ -26,6 +26,8 @@ var VpgSetInspectionCmdBody string
 func init() {
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
+	VpgSetInspectionCmd.MarkFlagRequired("vpg-id")
+
 	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var VpgSetInspectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgSetInspectionCmd("/virtual_private_gateways/{vpg_id}/junction/set_inspection"),
 		query:       buildQueryForVpgSetInspectionCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgSetInspectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgSetInspectionCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgSetInspectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

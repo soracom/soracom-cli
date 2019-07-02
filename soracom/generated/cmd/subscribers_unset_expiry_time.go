@@ -16,6 +16,8 @@ var SubscribersUnsetExpiryTimeCmdImsi string
 func init() {
 	SubscribersUnsetExpiryTimeCmd.Flags().StringVar(&SubscribersUnsetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersUnsetExpiryTimeCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersUnsetExpiryTimeCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersUnsetExpiryTimeCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersUnsetExpiryTimeCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForSubscribersUnsetExpiryTimeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUnsetExpiryTimeCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersUnsetExpiryTimeCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

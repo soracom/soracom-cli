@@ -50,6 +50,8 @@ func init() {
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
 
+	DevicesUpdateObjectModelCmd.MarkFlagRequired("model-id")
+
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdObjectId, "object-id", "", TRAPI(""))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdObjectName, "object-name", "", TRAPI(""))
@@ -101,6 +103,7 @@ var DevicesUpdateObjectModelCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -111,18 +114,22 @@ func collectDevicesUpdateObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDevicesUpdateObjectModelCmd("/device_object_models/{model_id}"),
 		query:       buildQueryForDevicesUpdateObjectModelCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForDevicesUpdateObjectModelCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesUpdateObjectModelCmdModelId), -1)
+	escapedModelId := url.PathEscape(DevicesUpdateObjectModelCmdModelId)
+
+	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }

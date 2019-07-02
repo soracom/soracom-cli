@@ -79,6 +79,7 @@ var LoraNetworkSetsCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -89,11 +90,13 @@ func collectLoraNetworkSetsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraNetworkSetsCreateCmd("/lora_network_sets"),
 		query:       buildQueryForLoraNetworkSetsCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

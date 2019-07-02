@@ -21,6 +21,8 @@ func init() {
 
 	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
+	ShippingAddressesDeleteCmd.MarkFlagRequired("shipping-address-id")
+
 	ShippingAddressesCmd.AddCommand(ShippingAddressesDeleteCmd)
 }
 
@@ -62,6 +64,7 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForShippingAddressesDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesDeleteCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(ShippingAddressesDeleteCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"shipping_address_id"+"}", url.PathEscape(ShippingAddressesDeleteCmdShippingAddressId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedShippingAddressId := url.PathEscape(ShippingAddressesDeleteCmdShippingAddressId)
+
+	path = strings.Replace(path, "{"+"shipping_address_id"+"}", escapedShippingAddressId, -1)
 
 	return path
 }

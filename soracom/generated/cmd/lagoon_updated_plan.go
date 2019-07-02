@@ -58,6 +58,7 @@ var LagoonUpdatedPlanCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -68,11 +69,13 @@ func collectLagoonUpdatedPlanCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLagoonUpdatedPlanCmd("/lagoon/plan"),
 		query:       buildQueryForLagoonUpdatedPlanCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

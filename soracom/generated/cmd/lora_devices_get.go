@@ -16,6 +16,8 @@ var LoraDevicesGetCmdDeviceId string
 func init() {
 	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesGetCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesCmd.AddCommand(LoraDevicesGetCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraDevicesGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesGetCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesGetCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

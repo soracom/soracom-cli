@@ -9,8 +9,14 @@ cli:
     body:
       short_help: JSON string or @filename for API request body.
   completion:
-    summary: Generate script for bash completion.
-    description: Generate script for bash completion.
+    summary: Generate script for bash or zsh completion.
+    description: Generate script for bash or zsh completion.
+    bash:
+      summary: Generate script for bash completion.
+      description: Generate script for bash completion.
+    zsh:
+      summary: Generate script for zsh completion.
+      description: Generate script for zsh completion.
   configure:
     summary: Show, create or update configurations (profiles).
     description: Show, create or update configurations (profiles).
@@ -57,8 +63,8 @@ cli:
     summary: List, create, update or delete event handlers.
     description: List, create, update or delete event handlers.
   files:
-    summary: Get an exported file.
-    description: Get an exported file.
+    summary: Manage files on Harvest Files.
+    description: Manage files on Harvest Files.
   gadgets:
     summary: Manage gadgets.
     description: Manage gadgets.
@@ -114,6 +120,9 @@ cli:
   payment-statements:
     summary: List or export payment statements.
     description: List or export payment statements.
+  port-mappings:
+    summary: Manage port mappings for on-demand remote access.
+    description: Manage port mappings for on-demand remote access.
   products:
     summary: List products.
     description: List products.

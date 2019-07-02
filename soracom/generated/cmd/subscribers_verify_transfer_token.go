@@ -21,6 +21,8 @@ var SubscribersVerifyTransferTokenCmdBody string
 func init() {
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI(""))
 
+	SubscribersVerifyTransferTokenCmd.MarkFlagRequired("token")
+
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
@@ -64,6 +66,7 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,11 +77,13 @@ func collectSubscribersVerifyTransferTokenCmdParams(ac *apiClient) (*apiParams, 
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersVerifyTransferTokenCmd("/subscribers/transfer_token/verify"),
 		query:       buildQueryForSubscribersVerifyTransferTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

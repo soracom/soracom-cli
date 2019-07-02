@@ -26,7 +26,11 @@ var SubscribersUpdateSpeedClassCmdBody string
 func init() {
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersUpdateSpeedClassCmd.MarkFlagRequired("imsi")
+
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI(""))
+
+	SubscribersUpdateSpeedClassCmd.MarkFlagRequired("speed-class")
 
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -71,6 +75,7 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +86,22 @@ func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, err
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersUpdateSpeedClassCmd("/subscribers/{imsi}/update_speed_class"),
 		query:       buildQueryForSubscribersUpdateSpeedClassCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersUpdateSpeedClassCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUpdateSpeedClassCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersUpdateSpeedClassCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

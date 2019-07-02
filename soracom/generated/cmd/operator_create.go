@@ -24,7 +24,11 @@ var OperatorCreateCmdBody string
 func init() {
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TRAPI(""))
 
+	OperatorCreateCmd.MarkFlagRequired("email")
+
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TRAPI(""))
+
+	OperatorCreateCmd.MarkFlagRequired("password")
 
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -69,6 +73,7 @@ var OperatorCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -79,11 +84,13 @@ func collectOperatorCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorCreateCmd("/operators"),
 		query:       buildQueryForOperatorCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

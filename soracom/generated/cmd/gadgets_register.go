@@ -26,7 +26,11 @@ var GadgetsRegisterCmdBody string
 func init() {
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
+	GadgetsRegisterCmd.MarkFlagRequired("product-id")
+
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+
+	GadgetsRegisterCmd.MarkFlagRequired("serial-number")
 
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -71,6 +75,7 @@ var GadgetsRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,20 +86,26 @@ func collectGadgetsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForGadgetsRegisterCmd("/gadgets/{product_id}/{serial_number}/register"),
 		query:       buildQueryForGadgetsRegisterCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForGadgetsRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsRegisterCmdProductId), -1)
+	escapedProductId := url.PathEscape(GadgetsRegisterCmdProductId)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsRegisterCmdSerialNumber), -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+
+	escapedSerialNumber := url.PathEscape(GadgetsRegisterCmdSerialNumber)
+
+	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }

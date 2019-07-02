@@ -16,6 +16,8 @@ var VolumeDiscountsGetCmdContractId string
 func init() {
 	VolumeDiscountsGetCmd.Flags().StringVar(&VolumeDiscountsGetCmdContractId, "contract-id", "", TRAPI("contract_id"))
 
+	VolumeDiscountsGetCmd.MarkFlagRequired("contract-id")
+
 	VolumeDiscountsCmd.AddCommand(VolumeDiscountsGetCmd)
 }
 
@@ -57,6 +59,7 @@ var VolumeDiscountsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVolumeDiscountsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVolumeDiscountsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"contract_id"+"}", url.PathEscape(VolumeDiscountsGetCmdContractId), -1)
+	escapedContractId := url.PathEscape(VolumeDiscountsGetCmdContractId)
+
+	path = strings.Replace(path, "{"+"contract_id"+"}", escapedContractId, -1)
 
 	return path
 }

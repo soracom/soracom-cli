@@ -16,6 +16,8 @@ var SubscribersSetToStandbyCmdImsi string
 func init() {
 	SubscribersSetToStandbyCmd.Flags().StringVar(&SubscribersSetToStandbyCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSetToStandbyCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersSetToStandbyCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersSetToStandbyCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersSetToStandbyCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForSubscribersSetToStandbyCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSetToStandbyCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSetToStandbyCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

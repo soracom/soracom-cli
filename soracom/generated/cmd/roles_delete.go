@@ -21,6 +21,8 @@ func init() {
 
 	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TRAPI("role_id"))
 
+	RolesDeleteCmd.MarkFlagRequired("role-id")
+
 	RolesCmd.AddCommand(RolesDeleteCmd)
 }
 
@@ -62,6 +64,7 @@ var RolesDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectRolesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForRolesDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesDeleteCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(RolesDeleteCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(RolesDeleteCmdRoleId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedRoleId := url.PathEscape(RolesDeleteCmdRoleId)
+
+	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	return path
 }

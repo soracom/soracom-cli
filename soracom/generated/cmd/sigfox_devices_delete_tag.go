@@ -19,7 +19,11 @@ var SigfoxDevicesDeleteTagCmdTagName string
 func init() {
 	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target Sigfox device."))
 
+	SigfoxDevicesDeleteTagCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	SigfoxDevicesDeleteTagCmd.MarkFlagRequired("tag-name")
 
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesDeleteTagCmd)
 }
@@ -62,6 +66,7 @@ var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectSigfoxDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesDeleteTagCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesDeleteTagCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(SigfoxDevicesDeleteTagCmdTagName), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+
+	escapedTagName := url.PathEscape(SigfoxDevicesDeleteTagCmdTagName)
+
+	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }

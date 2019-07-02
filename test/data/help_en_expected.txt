@@ -6,7 +6,7 @@ Usage:
 Available Commands:
   auth               Performs authentication to access to the SORACOM API.
   bills              Show or export billing info.
-  completion         Generate script for bash completion.
+  completion         Generate script for bash or zsh completion.
   configure          Show, create or update configurations (profiles).
   configure-sandbox  Create configurations (profiles) for API Sandbox.
   coupons            List or register coupons.
@@ -14,7 +14,7 @@ Available Commands:
   data               Get stored data from subscribers.
   devices            Manage devices.
   event-handlers     List, create, update or delete event handlers.
-  files              Get an exported file.
+  files              Manage files on Harvest Files.
   gadgets            Manage gadgets.
   groups             List, create, update or delete groups.
   help               Help about any command
@@ -29,6 +29,7 @@ Available Commands:
   payment-history    List payment history.
   payment-methods    Create or update payment methods.
   payment-statements List or export payment statements.
+  port-mappings      Manage port mappings for on-demand remote access.
   products           List products.
   query              Search resources such as subscribers or sigfox devices.
   roles              List, create, update or delete roles.

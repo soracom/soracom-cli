@@ -26,6 +26,8 @@ var SandboxStatsAirInsertCmdBody string
 func init() {
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
 
+	SandboxStatsAirInsertCmd.MarkFlagRequired("imsi")
+
 	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI(""))
 
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var SandboxStatsAirInsertCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectSandboxStatsAirInsertCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSandboxStatsAirInsertCmd("/sandbox/stats/air/subscribers/{imsi}"),
 		query:       buildQueryForSandboxStatsAirInsertCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSandboxStatsAirInsertCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SandboxStatsAirInsertCmdImsi), -1)
+	escapedImsi := url.PathEscape(SandboxStatsAirInsertCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

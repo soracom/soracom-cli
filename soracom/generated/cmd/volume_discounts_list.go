@@ -51,6 +51,7 @@ var VolumeDiscountsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

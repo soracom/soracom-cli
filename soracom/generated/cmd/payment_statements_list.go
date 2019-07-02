@@ -51,6 +51,7 @@ var PaymentStatementsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

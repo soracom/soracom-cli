@@ -54,20 +54,26 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			RequireAuth:               m.Security != nil,
 			RequireOperatorID:         isOperatorIDRequired(m.Parameters, apiDef.StructDefs),
 			BodyExists:                doesRequestBodyExist(m.Parameters),
-			IsBodyArray:               isBodyArray(m.Parameters),
+			SendBodyRaw:               isBodyArray(m.Parameters) || isBodyBinary(m.Parameters),
+			ResponseBodyRaw:           isResponseBodyRaw(m),
 			Method:                    strings.ToUpper(m.Method),
 			BasePath:                  apiDef.BasePath,
 			Path:                      m.Path,
 			PathParamsExist:           doPathParamsExist(m.Parameters),
 			QueryParamsExist:          doQueryParamsExist(m.Parameters),
-			StringFlags:               getStringFlags(m.Parameters, apiDef.StructDefs),
+			StringFlags:               getStringFlags(m, m.Parameters, apiDef.StructDefs),
 			StringSliceFlags:          getStringSliceFlags(m.Parameters, apiDef.StructDefs),
 			IntegerFlags:              getIntegerFlags(m.Parameters, apiDef.StructDefs),
 			FloatFlags:                getFloatFlags(m.Parameters, apiDef.StructDefs),
 			BoolFlags:                 getBoolFlags(m.Parameters, apiDef.StructDefs),
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
-			a.ContentType = "application/json"
+			if doesContentTypeParamExist(m.Parameters) {
+				a.ContentTypeFromArg = true
+				a.ContentTypeVarName = getContentTypeVarName(a.StringFlags)
+			} else {
+				a.ContentType = "application/json"
+			}
 		}
 
 		err = tmpl.Execute(f, a)
@@ -145,6 +151,22 @@ func isBodyArray(parameters []lib.APIParam) bool {
 	return false
 }
 
+func isBodyBinary(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		if param.In == "body" {
+			return (param.Schema.Type == "string") && (param.Schema.Format == "binary")
+		}
+	}
+	return false
+}
+
+func isResponseBodyRaw(m lib.APIMethod) bool {
+	if strings.ToUpper(m.Method) == "GET" && m.Path == "/files/{scope}/{path}" {
+		return true
+	}
+	return false
+}
+
 func doPathParamsExist(parameters []lib.APIParam) bool {
 	for _, param := range parameters {
 		if param.In == "path" {
@@ -163,21 +185,40 @@ func doQueryParamsExist(parameters []lib.APIParam) bool {
 	return false
 }
 
-func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.StructDef) []stringFlag {
+func doesContentTypeParamExist(parameters []lib.APIParam) bool {
+	for _, param := range parameters {
+		if param.Name == "content-type" {
+			return true
+		}
+	}
+	return false
+}
+
+func getContentTypeVarName(stringFlags []stringFlag) string {
+	for _, sf := range stringFlags {
+		if sf.Name == "content-type" {
+			return sf.VarName
+		}
+	}
+	return ""
+}
+
+func getStringFlags(m lib.APIMethod, parameters []lib.APIParam, definitions map[string]lib.StructDef) []stringFlag {
 	result := []stringFlag{}
 	for _, param := range parameters {
 		switch param.In {
-		case "path", "query":
+		case "path", "query", "header":
 			if param.Type != "string" {
 				continue
 			}
 			f := stringFlag{
-				VarName:      lib.TitleCase(param.Name),
-				LongOption:   lib.OptionCase(param.Name),
-				DefaultValue: "",
-				ShortHelp:    trimTemplate(param.Description),
-				Name:         param.Name,
-				In:           param.In,
+				VarName:                lib.TitleCase(param.Name),
+				LongOption:             lib.OptionCase(param.Name),
+				DefaultValue:           "",
+				ShortHelp:              trimTemplate(param.Description),
+				Name:                   param.Name,
+				In:                     param.In,
+				HarvestFilesPathEscape: isHarvestFilesPathEscapeRequired(m, param),
 			}
 			if param.Name != "operator_id" {
 				f.Required = param.Required
@@ -198,6 +239,15 @@ func getStringFlags(parameters []lib.APIParam, definitions map[string]lib.Struct
 
 	sort.Sort(stringFlagsByName(result))
 	return result
+}
+
+func isHarvestFilesPathEscapeRequired(m lib.APIMethod, param lib.APIParam) bool {
+	if m.Path == "/files/{scope}/{path}" || m.Path == "/files/{scope}/{path}/" {
+		if param.Name == "path" {
+			return true
+		}
+	}
+	return false
 }
 
 func isOperatorIDRequired(parameters []lib.APIParam, definitions map[string]lib.StructDef) bool {
@@ -242,7 +292,7 @@ func getStringSliceFlags(parameters []lib.APIParam, definitions map[string]lib.S
 			f.In = param.In
 			f.Required = param.Required
 			result = append(result, f)
-		case "path", "body":
+		case "path", "body", "header":
 			continue
 		default:
 			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.In)
@@ -278,7 +328,7 @@ func getIntegerFlags(parameters []lib.APIParam, definitions map[string]lib.Struc
 	result := []integerFlag{}
 	for _, param := range parameters {
 		switch param.In {
-		case "path", "query":
+		case "path", "query", "header":
 			if param.Type != "integer" {
 				continue
 			}
@@ -334,7 +384,7 @@ func getFloatFlags(parameters []lib.APIParam, definitions map[string]lib.StructD
 	result := []floatFlag{}
 	for _, param := range parameters {
 		switch param.In {
-		case "path", "query":
+		case "path", "query", "header":
 			if param.Type != "number" {
 				continue
 			}
@@ -390,7 +440,7 @@ func getBoolFlags(parameters []lib.APIParam, definitions map[string]lib.StructDe
 	result := []boolFlag{}
 	for _, param := range parameters {
 		switch param.In {
-		case "path", "query":
+		case "path", "query", "header":
 			if param.Type != "boolean" {
 				continue
 			}

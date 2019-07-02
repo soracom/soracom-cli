@@ -24,6 +24,8 @@ func init() {
 
 	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdOrderId, "order-id", "", TRAPI("order_id"))
 
+	OrdersListSubscribersCmd.MarkFlagRequired("order-id")
+
 	OrdersListSubscribersCmd.Flags().Int64Var(&OrdersListSubscribersCmdLimit, "limit", 0, TRAPI("Max number of subscribers in a response."))
 
 	OrdersCmd.AddCommand(OrdersListSubscribersCmd)
@@ -67,6 +69,7 @@ var OrdersListSubscribersCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,7 +84,9 @@ func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOrdersListSubscribersCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"order_id"+"}", url.PathEscape(OrdersListSubscribersCmdOrderId), -1)
+	escapedOrderId := url.PathEscape(OrdersListSubscribersCmdOrderId)
+
+	path = strings.Replace(path, "{"+"order_id"+"}", escapedOrderId, -1)
 
 	return path
 }

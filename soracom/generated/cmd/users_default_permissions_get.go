@@ -51,6 +51,7 @@ var UsersDefaultPermissionsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -69,7 +70,9 @@ func collectUsersDefaultPermissionsGetCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForUsersDefaultPermissionsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersDefaultPermissionsGetCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersDefaultPermissionsGetCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

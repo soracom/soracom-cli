@@ -86,6 +86,7 @@ var StatsBeamExportCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -100,18 +101,22 @@ func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForStatsBeamExportCmd("/stats/beam/operators/{operator_id}/export"),
 		query:       buildQueryForStatsBeamExportCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForStatsBeamExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsBeamExportCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(StatsBeamExportCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

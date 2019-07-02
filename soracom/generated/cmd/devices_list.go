@@ -77,6 +77,7 @@ var DevicesListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

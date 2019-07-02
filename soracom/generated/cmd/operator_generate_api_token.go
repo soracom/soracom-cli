@@ -71,6 +71,7 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -85,18 +86,22 @@ func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorGenerateApiTokenCmd("/operators/{operator_id}/token"),
 		query:       buildQueryForOperatorGenerateApiTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForOperatorGenerateApiTokenCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorGenerateApiTokenCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorGenerateApiTokenCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

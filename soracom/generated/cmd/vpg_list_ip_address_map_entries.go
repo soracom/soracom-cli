@@ -16,6 +16,8 @@ var VpgListIpAddressMapEntriesCmdVpgId string
 func init() {
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgListIpAddressMapEntriesCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForVpgListIpAddressMapEntriesCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgListIpAddressMapEntriesCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgListIpAddressMapEntriesCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

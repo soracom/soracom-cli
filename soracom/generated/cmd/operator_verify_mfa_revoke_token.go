@@ -73,6 +73,7 @@ var OperatorVerifyMfaRevokeTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -83,11 +84,13 @@ func collectOperatorVerifyMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, er
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorVerifyMfaRevokeTokenCmd("/operators/mfa_revoke_token/verify"),
 		query:       buildQueryForOperatorVerifyMfaRevokeTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

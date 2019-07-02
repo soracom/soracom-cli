@@ -16,6 +16,8 @@ var VpgListGatePeersCmdVpgId string
 func init() {
 	VpgListGatePeersCmd.Flags().StringVar(&VpgListGatePeersCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgListGatePeersCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgListGatePeersCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgListGatePeersCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgListGatePeersCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgListGatePeersCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgListGatePeersCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgListGatePeersCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

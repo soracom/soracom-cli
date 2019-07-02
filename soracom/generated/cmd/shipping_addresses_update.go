@@ -62,6 +62,8 @@ func init() {
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TRAPI(""))
 
+	ShippingAddressesUpdateCmd.MarkFlagRequired("city")
+
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TRAPI(""))
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TRAPI(""))
@@ -74,9 +76,15 @@ func init() {
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
+	ShippingAddressesUpdateCmd.MarkFlagRequired("shipping-address-id")
+
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TRAPI(""))
 
+	ShippingAddressesUpdateCmd.MarkFlagRequired("state")
+
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TRAPI(""))
+
+	ShippingAddressesUpdateCmd.MarkFlagRequired("zip-code")
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -121,6 +129,7 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -135,20 +144,26 @@ func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) 
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForShippingAddressesUpdateCmd("/operators/{operator_id}/shipping_addresses/{shipping_address_id}"),
 		query:       buildQueryForShippingAddressesUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForShippingAddressesUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesUpdateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(ShippingAddressesUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"shipping_address_id"+"}", url.PathEscape(ShippingAddressesUpdateCmdShippingAddressId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedShippingAddressId := url.PathEscape(ShippingAddressesUpdateCmdShippingAddressId)
+
+	path = strings.Replace(path, "{"+"shipping_address_id"+"}", escapedShippingAddressId, -1)
 
 	return path
 }

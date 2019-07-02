@@ -23,6 +23,8 @@ var EventHandlersUpdateCmdBody string
 func init() {
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
+	EventHandlersUpdateCmd.MarkFlagRequired("handler-id")
+
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	EventHandlersCmd.AddCommand(EventHandlersUpdateCmd)
@@ -66,6 +68,7 @@ var EventHandlersUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,18 +79,22 @@ func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForEventHandlersUpdateCmd("/event_handlers/{handler_id}"),
 		query:       buildQueryForEventHandlersUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForEventHandlersUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersUpdateCmdHandlerId), -1)
+	escapedHandlerId := url.PathEscape(EventHandlersUpdateCmdHandlerId)
+
+	path = strings.Replace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
 
 	return path
 }

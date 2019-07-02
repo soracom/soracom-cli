@@ -86,6 +86,7 @@ var StatsAirExportCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -100,18 +101,22 @@ func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForStatsAirExportCmd("/stats/air/operators/{operator_id}/export"),
 		query:       buildQueryForStatsAirExportCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForStatsAirExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(StatsAirExportCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(StatsAirExportCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

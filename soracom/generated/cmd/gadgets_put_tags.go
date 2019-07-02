@@ -24,7 +24,11 @@ var GadgetsPutTagsCmdBody string
 func init() {
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
+	GadgetsPutTagsCmd.MarkFlagRequired("product-id")
+
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+
+	GadgetsPutTagsCmd.MarkFlagRequired("serial-number")
 
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -69,6 +73,7 @@ var GadgetsPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -79,20 +84,26 @@ func collectGadgetsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForGadgetsPutTagsCmd("/gadgets/{product_id}/{serial_number}/tags"),
 		query:       buildQueryForGadgetsPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForGadgetsPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsPutTagsCmdProductId), -1)
+	escapedProductId := url.PathEscape(GadgetsPutTagsCmdProductId)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsPutTagsCmdSerialNumber), -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+
+	escapedSerialNumber := url.PathEscape(GadgetsPutTagsCmdSerialNumber)
+
+	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }

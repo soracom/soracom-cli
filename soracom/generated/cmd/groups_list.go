@@ -77,6 +77,7 @@ var GroupsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

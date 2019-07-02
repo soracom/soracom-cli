@@ -26,6 +26,8 @@ func init() {
 
 	SandboxOrdersShipCmd.Flags().StringVar(&SandboxOrdersShipCmdOrderId, "order-id", "", TRAPI(""))
 
+	SandboxOrdersShipCmd.MarkFlagRequired("order-id")
+
 	SandboxOrdersShipCmd.Flags().StringVar(&SandboxOrdersShipCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SandboxOrdersCmd.AddCommand(SandboxOrdersShipCmd)
@@ -69,6 +71,7 @@ var SandboxOrdersShipCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -83,11 +86,13 @@ func collectSandboxOrdersShipCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSandboxOrdersShipCmd("/sandbox/orders/ship"),
 		query:       buildQueryForSandboxOrdersShipCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

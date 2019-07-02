@@ -92,6 +92,7 @@ var SubscribersListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

@@ -21,6 +21,8 @@ var SubscribersPutTagsCmdBody string
 func init() {
 	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersPutTagsCmd.MarkFlagRequired("imsi")
+
 	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersPutTagsCmd)
@@ -64,6 +66,7 @@ var SubscribersPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,18 +77,22 @@ func collectSubscribersPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForSubscribersPutTagsCmd("/subscribers/{imsi}/tags"),
 		query:       buildQueryForSubscribersPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersPutTagsCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersPutTagsCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

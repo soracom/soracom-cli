@@ -129,6 +129,7 @@ var DevicesCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -139,11 +140,13 @@ func collectDevicesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDevicesCreateCmd("/devices"),
 		query:       buildQueryForDevicesCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

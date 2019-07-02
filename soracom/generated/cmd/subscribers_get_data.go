@@ -31,6 +31,8 @@ var SubscribersGetDataCmdTo int64
 func init() {
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
+	SubscribersGetDataCmd.MarkFlagRequired("imsi")
+
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
@@ -82,6 +84,7 @@ var SubscribersGetDataCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,7 +99,9 @@ func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersGetDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersGetDataCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersGetDataCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

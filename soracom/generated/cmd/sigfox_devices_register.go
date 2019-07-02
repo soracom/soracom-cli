@@ -26,6 +26,8 @@ var SigfoxDevicesRegisterCmdBody string
 func init() {
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target sigfox device to register"))
 
+	SigfoxDevicesRegisterCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var SigfoxDevicesRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectSigfoxDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSigfoxDevicesRegisterCmd("/sigfox_devices/{device_id}/register"),
 		query:       buildQueryForSigfoxDevicesRegisterCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSigfoxDevicesRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesRegisterCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesRegisterCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

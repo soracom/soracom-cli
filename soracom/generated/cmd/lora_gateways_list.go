@@ -77,6 +77,7 @@ var LoraGatewaysListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

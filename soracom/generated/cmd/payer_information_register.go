@@ -74,6 +74,7 @@ var PayerInformationRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -84,11 +85,13 @@ func collectPayerInformationRegisterCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForPayerInformationRegisterCmd("/payment_statements/payer_information"),
 		query:       buildQueryForPayerInformationRegisterCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

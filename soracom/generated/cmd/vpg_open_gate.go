@@ -29,6 +29,8 @@ var VpgOpenGateCmdBody string
 func init() {
 	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgOpenGateCmd.MarkFlagRequired("vpg-id")
+
 	VpgOpenGateCmd.Flags().Int64Var(&VpgOpenGateCmdVxlanId, "vxlan-id", 0, TRAPI(""))
 
 	VpgOpenGateCmd.Flags().BoolVar(&VpgOpenGateCmdPrivacySeparatorEnabled, "privacy-separator-enabled", false, TRAPI(""))
@@ -76,6 +78,7 @@ var VpgOpenGateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectVpgOpenGateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgOpenGateCmd("/virtual_private_gateways/{vpg_id}/gate/open"),
 		query:       buildQueryForVpgOpenGateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgOpenGateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgOpenGateCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgOpenGateCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

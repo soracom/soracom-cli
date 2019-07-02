@@ -74,6 +74,7 @@ var LagoonUsersCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -84,11 +85,13 @@ func collectLagoonUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLagoonUsersCreateCmd("/lagoon/users"),
 		query:       buildQueryForLagoonUsersCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

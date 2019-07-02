@@ -28,6 +28,8 @@ func init() {
 
 	LagoonUsersUpdateEmailCmd.Flags().Int64Var(&LagoonUsersUpdateEmailCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
+	LagoonUsersUpdateEmailCmd.MarkFlagRequired("lagoon-user-id")
+
 	LagoonUsersUpdateEmailCmd.Flags().StringVar(&LagoonUsersUpdateEmailCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LagoonUsersCmd.AddCommand(LagoonUsersUpdateEmailCmd)
@@ -71,6 +73,7 @@ var LagoonUsersUpdateEmailCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,11 +84,13 @@ func collectLagoonUsersUpdateEmailCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLagoonUsersUpdateEmailCmd("/lagoon/users/{lagoon_user_id}/email"),
 		query:       buildQueryForLagoonUsersUpdateEmailCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

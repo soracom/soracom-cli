@@ -22,9 +22,15 @@ var DataDeleteEntryCmdTime int64
 func init() {
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
+	DataDeleteEntryCmd.MarkFlagRequired("resource-id")
+
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
+	DataDeleteEntryCmd.MarkFlagRequired("resource-type")
+
 	DataDeleteEntryCmd.Flags().Int64Var(&DataDeleteEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to delete (unixtime in milliseconds)."))
+
+	DataDeleteEntryCmd.MarkFlagRequired("time")
 
 	DataCmd.AddCommand(DataDeleteEntryCmd)
 }
@@ -67,6 +73,7 @@ var DataDeleteEntryCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,9 +88,13 @@ func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataDeleteEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataDeleteEntryCmdResourceId), -1)
+	escapedResourceId := url.PathEscape(DataDeleteEntryCmdResourceId)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataDeleteEntryCmdResourceType), -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
+
+	escapedResourceType := url.PathEscape(DataDeleteEntryCmdResourceType)
+
+	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
 	return path
 }

@@ -29,9 +29,15 @@ var VpgPutIpAddressMapEntryCmdBody string
 func init() {
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI(""))
 
+	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("ip-address")
+
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI(""))
 
+	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("key")
+
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("vpg-id")
 
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -76,6 +82,7 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +93,22 @@ func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) 
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgPutIpAddressMapEntryCmd("/virtual_private_gateways/{vpg_id}/ip_address_map"),
 		query:       buildQueryForVpgPutIpAddressMapEntryCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgPutIpAddressMapEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgPutIpAddressMapEntryCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgPutIpAddressMapEntryCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

@@ -24,7 +24,11 @@ var AuthVerifyPasswordResetTokenCmdBody string
 func init() {
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdPassword, "password", "", TRAPI(""))
 
+	AuthVerifyPasswordResetTokenCmd.MarkFlagRequired("password")
+
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdToken, "token", "", TRAPI(""))
+
+	AuthVerifyPasswordResetTokenCmd.MarkFlagRequired("token")
 
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -63,6 +67,7 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -73,11 +78,13 @@ func collectAuthVerifyPasswordResetTokenCmdParams(ac *apiClient) (*apiParams, er
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForAuthVerifyPasswordResetTokenCmd("/auth/password_reset_token/verify"),
 		query:       buildQueryForAuthVerifyPasswordResetTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

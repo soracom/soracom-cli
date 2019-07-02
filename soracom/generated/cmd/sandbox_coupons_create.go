@@ -74,6 +74,7 @@ var SandboxCouponsCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -84,11 +85,13 @@ func collectSandboxCouponsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSandboxCouponsCreateCmd("/sandbox/coupons/create"),
 		query:       buildQueryForSandboxCouponsCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

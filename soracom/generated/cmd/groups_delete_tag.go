@@ -19,7 +19,11 @@ var GroupsDeleteTagCmdTagName string
 func init() {
 	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
+	GroupsDeleteTagCmd.MarkFlagRequired("group-id")
+
 	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	GroupsDeleteTagCmd.MarkFlagRequired("tag-name")
 
 	GroupsCmd.AddCommand(GroupsDeleteTagCmd)
 }
@@ -62,6 +66,7 @@ var GroupsDeleteTagCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectGroupsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsDeleteTagCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsDeleteTagCmdGroupId)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(GroupsDeleteTagCmdTagName), -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
+
+	escapedTagName := url.PathEscape(GroupsDeleteTagCmdTagName)
+
+	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }

@@ -28,6 +28,8 @@ func init() {
 
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSetGroupCmd.MarkFlagRequired("imsi")
+
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSetGroupCmd)
@@ -71,6 +73,7 @@ var SubscribersSetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectSubscribersSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersSetGroupCmd("/subscribers/{imsi}/set_group"),
 		query:       buildQueryForSubscribersSetGroupCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSetGroupCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSetGroupCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

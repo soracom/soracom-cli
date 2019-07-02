@@ -30,11 +30,19 @@ var SandboxInitCmdBody string
 func init() {
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKey, "auth-key", "", TRAPI(""))
 
+	SandboxInitCmd.MarkFlagRequired("auth-key")
+
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
+
+	SandboxInitCmd.MarkFlagRequired("auth-key-id")
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdEmail, "email", "", TRAPI(""))
 
+	SandboxInitCmd.MarkFlagRequired("email")
+
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdPassword, "password", "", TRAPI(""))
+
+	SandboxInitCmd.MarkFlagRequired("password")
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -73,6 +81,7 @@ var SandboxInitCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -83,11 +92,13 @@ func collectSandboxInitCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSandboxInitCmd("/sandbox/init"),
 		query:       buildQueryForSandboxInitCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

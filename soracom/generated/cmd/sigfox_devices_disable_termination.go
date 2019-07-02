@@ -16,6 +16,8 @@ var SigfoxDevicesDisableTerminationCmdDeviceId string
 func init() {
 	SigfoxDevicesDisableTerminationCmd.Flags().StringVar(&SigfoxDevicesDisableTerminationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
+	SigfoxDevicesDisableTerminationCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesDisableTerminationCmd)
 }
 
@@ -57,6 +59,7 @@ var SigfoxDevicesDisableTerminationCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSigfoxDevicesDisableTerminationCmdParams(ac *apiClient) (*apiParams,
 
 func buildPathForSigfoxDevicesDisableTerminationCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesDisableTerminationCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesDisableTerminationCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

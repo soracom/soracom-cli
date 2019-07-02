@@ -31,7 +31,11 @@ func init() {
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI(""))
 
+	VpgRegisterGatePeerCmd.MarkFlagRequired("outer-ip-address")
+
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgRegisterGatePeerCmd.MarkFlagRequired("vpg-id")
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -76,6 +80,7 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +91,22 @@ func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgRegisterGatePeerCmd("/virtual_private_gateways/{vpg_id}/gate/peers"),
 		query:       buildQueryForVpgRegisterGatePeerCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgRegisterGatePeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgRegisterGatePeerCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgRegisterGatePeerCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

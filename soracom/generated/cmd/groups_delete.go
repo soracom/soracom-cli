@@ -16,6 +16,8 @@ var GroupsDeleteCmdGroupId string
 func init() {
 	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
+	GroupsDeleteCmd.MarkFlagRequired("group-id")
+
 	GroupsCmd.AddCommand(GroupsDeleteCmd)
 }
 
@@ -57,6 +59,7 @@ var GroupsDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectGroupsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsDeleteCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsDeleteCmdGroupId)
+
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	return path
 }

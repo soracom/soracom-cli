@@ -16,6 +16,8 @@ var SubscribersDeactivateCmdImsi string
 func init() {
 	SubscribersDeactivateCmd.Flags().StringVar(&SubscribersDeactivateCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersDeactivateCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersDeactivateCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersDeactivateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersDeactivateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersDeactivateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersDeactivateCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersDeactivateCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

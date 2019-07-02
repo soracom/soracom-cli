@@ -59,6 +59,8 @@ func init() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCity, "city", "", TRAPI(""))
 
+	ShippingAddressesCreateCmd.MarkFlagRequired("city")
+
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCompanyName, "company-name", "", TRAPI(""))
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdDepartment, "department", "", TRAPI(""))
@@ -71,7 +73,11 @@ func init() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdState, "state", "", TRAPI(""))
 
+	ShippingAddressesCreateCmd.MarkFlagRequired("state")
+
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdZipCode, "zip-code", "", TRAPI(""))
+
+	ShippingAddressesCreateCmd.MarkFlagRequired("zip-code")
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -116,6 +122,7 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -130,18 +137,22 @@ func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) 
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForShippingAddressesCreateCmd("/operators/{operator_id}/shipping_addresses"),
 		query:       buildQueryForShippingAddressesCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForShippingAddressesCreateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesCreateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(ShippingAddressesCreateCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

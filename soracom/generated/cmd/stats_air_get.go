@@ -25,11 +25,19 @@ var StatsAirGetCmdTo int64
 func init() {
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
+	StatsAirGetCmd.MarkFlagRequired("imsi")
+
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+
+	StatsAirGetCmd.MarkFlagRequired("period")
 
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
+	StatsAirGetCmd.MarkFlagRequired("from")
+
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsAirGetCmd.MarkFlagRequired("to")
 
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
@@ -72,6 +80,7 @@ var StatsAirGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,7 +95,9 @@ func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsAirGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(StatsAirGetCmdImsi), -1)
+	escapedImsi := url.PathEscape(StatsAirGetCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var LagoonDeleteUserCmdLagoonUserId int64
 func init() {
 	LagoonDeleteUserCmd.Flags().Int64Var(&LagoonDeleteUserCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
+	LagoonDeleteUserCmd.MarkFlagRequired("lagoon-user-id")
+
 	LagoonCmd.AddCommand(LagoonDeleteUserCmd)
 }
 
@@ -57,6 +59,7 @@ var LagoonDeleteUserCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

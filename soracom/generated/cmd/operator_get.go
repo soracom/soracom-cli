@@ -57,6 +57,7 @@ var OperatorGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectOperatorGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorGetCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorGetCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

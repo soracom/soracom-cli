@@ -71,6 +71,7 @@ var OperatorVerifyMfaOtpCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -85,18 +86,22 @@ func collectOperatorVerifyMfaOtpCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorVerifyMfaOtpCmd("/operators/{operator_id}/mfa/verify"),
 		query:       buildQueryForOperatorVerifyMfaOtpCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForOperatorVerifyMfaOtpCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorVerifyMfaOtpCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorVerifyMfaOtpCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

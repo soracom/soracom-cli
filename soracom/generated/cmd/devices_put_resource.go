@@ -32,11 +32,19 @@ var DevicesPutResourceCmdBody string
 func init() {
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
+	DevicesPutResourceCmd.MarkFlagRequired("device-id")
+
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
+
+	DevicesPutResourceCmd.MarkFlagRequired("instance")
 
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdObject, "object", "", TRAPI("Object ID"))
 
+	DevicesPutResourceCmd.MarkFlagRequired("object")
+
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdResource, "resource", "", TRAPI("Resource ID"))
+
+	DevicesPutResourceCmd.MarkFlagRequired("resource")
 
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -81,6 +89,7 @@ var DevicesPutResourceCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -91,24 +100,34 @@ func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForDevicesPutResourceCmd("/devices/{device_id}/{object}/{instance}/{resource}"),
 		query:       buildQueryForDevicesPutResourceCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForDevicesPutResourceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesPutResourceCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesPutResourceCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesPutResourceCmdInstance), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesPutResourceCmdObject), -1)
+	escapedInstance := url.PathEscape(DevicesPutResourceCmdInstance)
 
-	path = strings.Replace(path, "{"+"resource"+"}", url.PathEscape(DevicesPutResourceCmdResource), -1)
+	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+
+	escapedObject := url.PathEscape(DevicesPutResourceCmdObject)
+
+	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
+
+	escapedResource := url.PathEscape(DevicesPutResourceCmdResource)
+
+	path = strings.Replace(path, "{"+"resource"+"}", escapedResource, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var LoraGatewaysUnsetNetworkSetCmdGatewayId string
 func init() {
 	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
+	LoraGatewaysUnsetNetworkSetCmd.MarkFlagRequired("gateway-id")
+
 	LoraGatewaysCmd.AddCommand(LoraGatewaysUnsetNetworkSetCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraGatewaysUnsetNetworkSetCmdParams(ac *apiClient) (*apiParams, err
 
 func buildPathForLoraGatewaysUnsetNetworkSetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysUnsetNetworkSetCmdGatewayId), -1)
+	escapedGatewayId := url.PathEscape(LoraGatewaysUnsetNetworkSetCmdGatewayId)
+
+	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }

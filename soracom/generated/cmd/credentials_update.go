@@ -29,6 +29,8 @@ var CredentialsUpdateCmdBody string
 func init() {
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TRAPI("credentials_id"))
 
+	CredentialsUpdateCmd.MarkFlagRequired("credentials-id")
+
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TRAPI(""))
 
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", TRAPI(""))
@@ -76,6 +78,7 @@ var CredentialsUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectCredentialsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForCredentialsUpdateCmd("/credentials/{credentials_id}"),
 		query:       buildQueryForCredentialsUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForCredentialsUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"credentials_id"+"}", url.PathEscape(CredentialsUpdateCmdCredentialsId), -1)
+	escapedCredentialsId := url.PathEscape(CredentialsUpdateCmdCredentialsId)
+
+	path = strings.Replace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var SubscribersUnsetGroupCmdImsi string
 func init() {
 	SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersUnsetGroupCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersUnsetGroupCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersUnsetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUnsetGroupCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersUnsetGroupCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

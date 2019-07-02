@@ -25,9 +25,15 @@ var DevicesGetInstanceCmdModel bool
 func init() {
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
+	DevicesGetInstanceCmd.MarkFlagRequired("device-id")
+
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdInstance, "instance", "", TRAPI("Instance ID"))
 
+	DevicesGetInstanceCmd.MarkFlagRequired("instance")
+
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdObject, "object", "", TRAPI("Object ID"))
+
+	DevicesGetInstanceCmd.MarkFlagRequired("object")
 
 	DevicesGetInstanceCmd.Flags().BoolVar(&DevicesGetInstanceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
@@ -72,6 +78,7 @@ var DevicesGetInstanceCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,11 +93,17 @@ func collectDevicesGetInstanceCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesGetInstanceCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesGetInstanceCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesGetInstanceCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesGetInstanceCmdInstance), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesGetInstanceCmdObject), -1)
+	escapedInstance := url.PathEscape(DevicesGetInstanceCmdInstance)
+
+	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+
+	escapedObject := url.PathEscape(DevicesGetInstanceCmdObject)
+
+	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
 
 	return path
 }

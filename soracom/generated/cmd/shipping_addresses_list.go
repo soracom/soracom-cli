@@ -57,6 +57,7 @@ var ShippingAddressesListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectShippingAddressesListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForShippingAddressesListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(ShippingAddressesListCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(ShippingAddressesListCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var EventHandlersGetCmdHandlerId string
 func init() {
 	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
+	EventHandlersGetCmd.MarkFlagRequired("handler-id")
+
 	EventHandlersCmd.AddCommand(EventHandlersGetCmd)
 }
 
@@ -57,6 +59,7 @@ var EventHandlersGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectEventHandlersGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersGetCmdHandlerId), -1)
+	escapedHandlerId := url.PathEscape(EventHandlersGetCmdHandlerId)
+
+	path = strings.Replace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
 
 	return path
 }

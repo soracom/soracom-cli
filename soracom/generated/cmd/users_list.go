@@ -57,6 +57,7 @@ var UsersListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectUsersListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersListCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersListCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

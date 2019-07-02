@@ -21,6 +21,8 @@ func init() {
 
 	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersDeleteCmd.MarkFlagRequired("user-name")
+
 	UsersCmd.AddCommand(UsersDeleteCmd)
 }
 
@@ -62,6 +64,7 @@ var UsersDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectUsersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersDeleteCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersDeleteCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersDeleteCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersDeleteCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

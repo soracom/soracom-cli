@@ -400,6 +400,14 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			FileName:                  "logs.go",
 		},
 		{
+			Use:                       "port-mappings",
+			Short:                     "cli.port-mappings.summary",
+			Long:                      "cli.port-mappings.description",
+			CommandVariableName:       "PortMappingsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "port_mappings.go",
+		},
+		{
 			Use:                       "query",
 			Short:                     "cli.query.summary",
 			Long:                      "cli.query.description",

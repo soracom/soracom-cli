@@ -21,6 +21,8 @@ var AuthIssuePasswordResetTokenCmdBody string
 func init() {
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TRAPI(""))
 
+	AuthIssuePasswordResetTokenCmd.MarkFlagRequired("email")
+
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	AuthCmd.AddCommand(AuthIssuePasswordResetTokenCmd)
@@ -58,6 +60,7 @@ var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -68,11 +71,13 @@ func collectAuthIssuePasswordResetTokenCmdParams(ac *apiClient) (*apiParams, err
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForAuthIssuePasswordResetTokenCmd("/auth/password_reset_token/issue"),
 		query:       buildQueryForAuthIssuePasswordResetTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

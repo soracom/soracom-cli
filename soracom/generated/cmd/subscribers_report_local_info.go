@@ -16,6 +16,8 @@ var SubscribersReportLocalInfoCmdImsi string
 func init() {
 	SubscribersReportLocalInfoCmd.Flags().StringVar(&SubscribersReportLocalInfoCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersReportLocalInfoCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersReportLocalInfoCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersReportLocalInfoCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersReportLocalInfoCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForSubscribersReportLocalInfoCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersReportLocalInfoCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersReportLocalInfoCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

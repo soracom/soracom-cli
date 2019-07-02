@@ -35,6 +35,8 @@ var LoraDevicesSetGroupCmdBody string
 func init() {
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesSetGroupCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
@@ -86,6 +88,7 @@ var LoraDevicesSetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,18 +99,22 @@ func collectLoraDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraDevicesSetGroupCmd("/lora_devices/{device_id}/set_group"),
 		query:       buildQueryForLoraDevicesSetGroupCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraDevicesSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesSetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesSetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

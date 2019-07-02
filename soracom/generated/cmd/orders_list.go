@@ -51,6 +51,7 @@ var OrdersListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

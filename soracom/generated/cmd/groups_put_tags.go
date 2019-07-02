@@ -21,6 +21,8 @@ var GroupsPutTagsCmdBody string
 func init() {
 	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
+	GroupsPutTagsCmd.MarkFlagRequired("group-id")
+
 	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	GroupsCmd.AddCommand(GroupsPutTagsCmd)
@@ -64,6 +66,7 @@ var GroupsPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,18 +77,22 @@ func collectGroupsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForGroupsPutTagsCmd("/groups/{group_id}/tags"),
 		query:       buildQueryForGroupsPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForGroupsPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsPutTagsCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsPutTagsCmdGroupId)
+
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	return path
 }

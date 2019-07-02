@@ -16,6 +16,8 @@ var CouponsRegisterCmdCouponCode string
 func init() {
 	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TRAPI("Coupon code"))
 
+	CouponsRegisterCmd.MarkFlagRequired("coupon-code")
+
 	CouponsCmd.AddCommand(CouponsRegisterCmd)
 }
 
@@ -57,6 +59,7 @@ var CouponsRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForCouponsRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"coupon_code"+"}", url.PathEscape(CouponsRegisterCmdCouponCode), -1)
+	escapedCouponCode := url.PathEscape(CouponsRegisterCmdCouponCode)
+
+	path = strings.Replace(path, "{"+"coupon_code"+"}", escapedCouponCode, -1)
 
 	return path
 }

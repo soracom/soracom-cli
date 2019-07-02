@@ -16,6 +16,8 @@ var EventHandlersListForSubscriberCmdImsi string
 func init() {
 	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("imsi"))
 
+	EventHandlersListForSubscriberCmd.MarkFlagRequired("imsi")
+
 	EventHandlersCmd.AddCommand(EventHandlersListForSubscriberCmd)
 }
 
@@ -57,6 +59,7 @@ var EventHandlersListForSubscriberCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectEventHandlersListForSubscriberCmdParams(ac *apiClient) (*apiParams, 
 
 func buildPathForEventHandlersListForSubscriberCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(EventHandlersListForSubscriberCmdImsi), -1)
+	escapedImsi := url.PathEscape(EventHandlersListForSubscriberCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

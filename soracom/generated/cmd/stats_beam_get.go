@@ -25,11 +25,19 @@ var StatsBeamGetCmdTo int64
 func init() {
 	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
+	StatsBeamGetCmd.MarkFlagRequired("imsi")
+
 	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+
+	StatsBeamGetCmd.MarkFlagRequired("period")
 
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
+	StatsBeamGetCmd.MarkFlagRequired("from")
+
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsBeamGetCmd.MarkFlagRequired("to")
 
 	StatsBeamCmd.AddCommand(StatsBeamGetCmd)
 }
@@ -72,6 +80,7 @@ var StatsBeamGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,7 +95,9 @@ func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsBeamGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(StatsBeamGetCmdImsi), -1)
+	escapedImsi := url.PathEscape(StatsBeamGetCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

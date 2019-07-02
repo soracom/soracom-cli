@@ -51,6 +51,7 @@ var LagoonTerminateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

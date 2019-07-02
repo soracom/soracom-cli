@@ -51,6 +51,7 @@ var PaymentMethodsGetCurrentCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

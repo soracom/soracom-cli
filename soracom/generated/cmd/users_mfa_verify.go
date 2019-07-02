@@ -33,6 +33,8 @@ func init() {
 
 	UsersMfaVerifyCmd.Flags().StringVar(&UsersMfaVerifyCmdUserName, "user-name", "", TRAPI("SAM user name"))
 
+	UsersMfaVerifyCmd.MarkFlagRequired("user-name")
+
 	UsersMfaVerifyCmd.Flags().StringVar(&UsersMfaVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersMfaCmd.AddCommand(UsersMfaVerifyCmd)
@@ -70,6 +72,7 @@ var UsersMfaVerifyCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -84,20 +87,26 @@ func collectUsersMfaVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForUsersMfaVerifyCmd("/operators/{operator_id}/users/{user_name}/mfa/verify"),
 		query:       buildQueryForUsersMfaVerifyCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForUsersMfaVerifyCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersMfaVerifyCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersMfaVerifyCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersMfaVerifyCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersMfaVerifyCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

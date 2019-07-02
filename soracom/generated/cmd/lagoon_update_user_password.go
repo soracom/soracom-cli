@@ -38,6 +38,8 @@ func init() {
 
 	LagoonUpdateUserPasswordCmd.Flags().Int64Var(&LagoonUpdateUserPasswordCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
+	LagoonUpdateUserPasswordCmd.MarkFlagRequired("lagoon-user-id")
+
 	LagoonUpdateUserPasswordCmd.Flags().StringVar(&LagoonUpdateUserPasswordCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LagoonCmd.AddCommand(LagoonUpdateUserPasswordCmd)
@@ -81,6 +83,7 @@ var LagoonUpdateUserPasswordCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -91,11 +94,13 @@ func collectLagoonUpdateUserPasswordCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLagoonUpdateUserPasswordCmd("/lagoon/users/{lagoon_user_id}/password"),
 		query:       buildQueryForLagoonUpdateUserPasswordCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

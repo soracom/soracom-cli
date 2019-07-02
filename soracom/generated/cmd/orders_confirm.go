@@ -16,6 +16,8 @@ var OrdersConfirmCmdOrderId string
 func init() {
 	OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TRAPI("order_id"))
 
+	OrdersConfirmCmd.MarkFlagRequired("order-id")
+
 	OrdersCmd.AddCommand(OrdersConfirmCmd)
 }
 
@@ -57,6 +59,7 @@ var OrdersConfirmCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectOrdersConfirmCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOrdersConfirmCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"order_id"+"}", url.PathEscape(OrdersConfirmCmdOrderId), -1)
+	escapedOrderId := url.PathEscape(OrdersConfirmCmdOrderId)
+
+	path = strings.Replace(path, "{"+"order_id"+"}", escapedOrderId, -1)
 
 	return path
 }

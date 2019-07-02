@@ -77,6 +77,7 @@ var SigfoxDevicesListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

@@ -28,6 +28,8 @@ var SubscribersSessionEventsCmdTo int64
 func init() {
 	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSessionEventsCmd.MarkFlagRequired("imsi")
+
 	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
 
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (unixtime)."))
@@ -77,6 +79,7 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -91,7 +94,9 @@ func collectSubscribersSessionEventsCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersSessionEventsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSessionEventsCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSessionEventsCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

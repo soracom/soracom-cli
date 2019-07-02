@@ -57,6 +57,7 @@ var SandboxOperatorsDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectSandboxOperatorsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSandboxOperatorsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(SandboxOperatorsDeleteCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(SandboxOperatorsDeleteCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

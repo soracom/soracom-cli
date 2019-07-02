@@ -31,7 +31,11 @@ func init() {
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSetExpiryTimeCmd.MarkFlagRequired("imsi")
+
 	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI(""))
+
+	SubscribersSetExpiryTimeCmd.MarkFlagRequired("expiry-time")
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -76,6 +80,7 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +91,22 @@ func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersSetExpiryTimeCmd("/subscribers/{imsi}/set_expiry_time"),
 		query:       buildQueryForSubscribersSetExpiryTimeCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersSetExpiryTimeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSetExpiryTimeCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSetExpiryTimeCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

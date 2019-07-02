@@ -23,6 +23,8 @@ var LagoonDashboardsUpdatePermissionsCmdBody string
 func init() {
 	LagoonDashboardsUpdatePermissionsCmd.Flags().Int64Var(&LagoonDashboardsUpdatePermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
 
+	LagoonDashboardsUpdatePermissionsCmd.MarkFlagRequired("dashboard-id")
+
 	LagoonDashboardsUpdatePermissionsCmd.Flags().StringVar(&LagoonDashboardsUpdatePermissionsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsUpdatePermissionsCmd)
@@ -60,6 +62,7 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -70,11 +73,13 @@ func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParam
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLagoonDashboardsUpdatePermissionsCmd("/lagoon/dashboards/{dashboard_id}/permissions"),
 		query:       buildQueryForLagoonDashboardsUpdatePermissionsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

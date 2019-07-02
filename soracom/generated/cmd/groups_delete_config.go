@@ -22,9 +22,15 @@ var GroupsDeleteConfigCmdNamespace string
 func init() {
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
+	GroupsDeleteConfigCmd.MarkFlagRequired("group-id")
+
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TRAPI("Parameter name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
+	GroupsDeleteConfigCmd.MarkFlagRequired("name")
+
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TRAPI("Namespace of target parameters."))
+
+	GroupsDeleteConfigCmd.MarkFlagRequired("namespace")
 
 	GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
 }
@@ -67,6 +73,7 @@ var GroupsDeleteConfigCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,11 +88,17 @@ func collectGroupsDeleteConfigCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsDeleteConfigCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsDeleteConfigCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsDeleteConfigCmdGroupId)
 
-	path = strings.Replace(path, "{"+"name"+"}", url.PathEscape(GroupsDeleteConfigCmdName), -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
-	path = strings.Replace(path, "{"+"namespace"+"}", url.PathEscape(GroupsDeleteConfigCmdNamespace), -1)
+	escapedName := url.PathEscape(GroupsDeleteConfigCmdName)
+
+	path = strings.Replace(path, "{"+"name"+"}", escapedName, -1)
+
+	escapedNamespace := url.PathEscape(GroupsDeleteConfigCmdNamespace)
+
+	path = strings.Replace(path, "{"+"namespace"+"}", escapedNamespace, -1)
 
 	return path
 }

@@ -16,6 +16,8 @@ var VpgCloseGateCmdVpgId string
 func init() {
 	VpgCloseGateCmd.Flags().StringVar(&VpgCloseGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgCloseGateCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgCloseGateCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgCloseGateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgCloseGateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgCloseGateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgCloseGateCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgCloseGateCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

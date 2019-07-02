@@ -54,6 +54,7 @@ var LagoonLicensePacksUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -64,11 +65,13 @@ func collectLagoonLicensePacksUpdateCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLagoonLicensePacksUpdateCmd("/lagoon/license_packs"),
 		query:       buildQueryForLagoonLicensePacksUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

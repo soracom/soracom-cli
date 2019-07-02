@@ -22,6 +22,8 @@ var GroupsListSubscribersCmdLimit int64
 func init() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
+	GroupsListSubscribersCmd.MarkFlagRequired("group-id")
+
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
@@ -67,6 +69,7 @@ var GroupsListSubscribersCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,7 +84,9 @@ func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsListSubscribersCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsListSubscribersCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsListSubscribersCmdGroupId)
+
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	return path
 }

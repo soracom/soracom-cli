@@ -67,6 +67,7 @@ var DataListSourceResourcesCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

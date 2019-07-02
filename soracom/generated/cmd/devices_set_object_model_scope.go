@@ -26,6 +26,8 @@ var DevicesSetObjectModelScopeCmdBody string
 func init() {
 	DevicesSetObjectModelScopeCmd.Flags().StringVar(&DevicesSetObjectModelScopeCmdModelId, "model-id", "", TRAPI("Target device object model ID"))
 
+	DevicesSetObjectModelScopeCmd.MarkFlagRequired("model-id")
+
 	DevicesSetObjectModelScopeCmd.Flags().StringVar(&DevicesSetObjectModelScopeCmdScope, "scope", "", TRAPI(""))
 
 	DevicesSetObjectModelScopeCmd.Flags().StringVar(&DevicesSetObjectModelScopeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var DevicesSetObjectModelScopeCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectDevicesSetObjectModelScopeCmdParams(ac *apiClient) (*apiParams, erro
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDevicesSetObjectModelScopeCmd("/device_object_models/{model_id}/set_scope"),
 		query:       buildQueryForDevicesSetObjectModelScopeCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForDevicesSetObjectModelScopeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesSetObjectModelScopeCmdModelId), -1)
+	escapedModelId := url.PathEscape(DevicesSetObjectModelScopeCmdModelId)
+
+	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }

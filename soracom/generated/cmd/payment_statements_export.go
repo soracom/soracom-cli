@@ -21,6 +21,8 @@ func init() {
 
 	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("Payment statement ID"))
 
+	PaymentStatementsExportCmd.MarkFlagRequired("payment-statement-id")
+
 	PaymentStatementsCmd.AddCommand(PaymentStatementsExportCmd)
 }
 
@@ -62,6 +64,7 @@ var PaymentStatementsExportCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,7 +79,9 @@ func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForPaymentStatementsExportCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"payment_statement_id"+"}", url.PathEscape(PaymentStatementsExportCmdPaymentStatementId), -1)
+	escapedPaymentStatementId := url.PathEscape(PaymentStatementsExportCmdPaymentStatementId)
+
+	path = strings.Replace(path, "{"+"payment_statement_id"+"}", escapedPaymentStatementId, -1)
 
 	return path
 }

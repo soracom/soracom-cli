@@ -19,7 +19,11 @@ var LoraDevicesDeleteTagCmdTagName string
 func init() {
 	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target LoRa device."))
 
+	LoraDevicesDeleteTagCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	LoraDevicesDeleteTagCmd.MarkFlagRequired("tag-name")
 
 	LoraDevicesCmd.AddCommand(LoraDevicesDeleteTagCmd)
 }
@@ -62,6 +66,7 @@ var LoraDevicesDeleteTagCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectLoraDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesDeleteTagCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesDeleteTagCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(LoraDevicesDeleteTagCmdTagName), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+
+	escapedTagName := url.PathEscape(LoraDevicesDeleteTagCmdTagName)
+
+	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }

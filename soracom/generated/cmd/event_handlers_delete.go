@@ -16,6 +16,8 @@ var EventHandlersDeleteCmdHandlerId string
 func init() {
 	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
+	EventHandlersDeleteCmd.MarkFlagRequired("handler-id")
+
 	EventHandlersCmd.AddCommand(EventHandlersDeleteCmd)
 }
 
@@ -57,6 +59,7 @@ var EventHandlersDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectEventHandlersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersDeleteCmdHandlerId), -1)
+	escapedHandlerId := url.PathEscape(EventHandlersDeleteCmdHandlerId)
+
+	path = strings.Replace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
 
 	return path
 }

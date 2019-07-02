@@ -21,6 +21,8 @@ func init() {
 
 	UsersMfaRevokeCmd.Flags().StringVar(&UsersMfaRevokeCmdUserName, "user-name", "", TRAPI("SAM user name"))
 
+	UsersMfaRevokeCmd.MarkFlagRequired("user-name")
+
 	UsersMfaCmd.AddCommand(UsersMfaRevokeCmd)
 }
 
@@ -56,6 +58,7 @@ var UsersMfaRevokeCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,9 +77,13 @@ func collectUsersMfaRevokeCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersMfaRevokeCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersMfaRevokeCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersMfaRevokeCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersMfaRevokeCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersMfaRevokeCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

@@ -63,6 +63,7 @@ var OperatorIssueMfaRevokeTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -73,11 +74,13 @@ func collectOperatorIssueMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, err
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorIssueMfaRevokeTokenCmd("/operators/mfa_revoke_token/issue"),
 		query:       buildQueryForOperatorIssueMfaRevokeTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

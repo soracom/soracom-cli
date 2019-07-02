@@ -25,9 +25,15 @@ var DevicesObserveResourcesCmdModel bool
 func init() {
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
+	DevicesObserveResourcesCmd.MarkFlagRequired("device-id")
+
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdInstance, "instance", "", TRAPI("Instance ID"))
 
+	DevicesObserveResourcesCmd.MarkFlagRequired("instance")
+
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdObject, "object", "", TRAPI("Object ID"))
+
+	DevicesObserveResourcesCmd.MarkFlagRequired("object")
 
 	DevicesObserveResourcesCmd.Flags().BoolVar(&DevicesObserveResourcesCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
@@ -72,6 +78,7 @@ var DevicesObserveResourcesCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,11 +93,17 @@ func collectDevicesObserveResourcesCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForDevicesObserveResourcesCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesObserveResourcesCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesObserveResourcesCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"instance"+"}", url.PathEscape(DevicesObserveResourcesCmdInstance), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
-	path = strings.Replace(path, "{"+"object"+"}", url.PathEscape(DevicesObserveResourcesCmdObject), -1)
+	escapedInstance := url.PathEscape(DevicesObserveResourcesCmdInstance)
+
+	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+
+	escapedObject := url.PathEscape(DevicesObserveResourcesCmdObject)
+
+	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
 
 	return path
 }

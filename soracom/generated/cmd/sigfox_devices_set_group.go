@@ -35,6 +35,8 @@ var SigfoxDevicesSetGroupCmdBody string
 func init() {
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
+	SigfoxDevicesSetGroupCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
@@ -86,6 +88,7 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,18 +99,22 @@ func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSigfoxDevicesSetGroupCmd("/sigfox_devices/{device_id}/set_group"),
 		query:       buildQueryForSigfoxDevicesSetGroupCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSigfoxDevicesSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesSetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesSetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

@@ -36,6 +36,8 @@ func init() {
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
+	VpgSetRedirectionCmd.MarkFlagRequired("vpg-id")
+
 	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -81,6 +83,7 @@ var VpgSetRedirectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -91,18 +94,22 @@ func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgSetRedirectionCmd("/virtual_private_gateways/{vpg_id}/junction/set_redirection"),
 		query:       buildQueryForVpgSetRedirectionCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgSetRedirectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgSetRedirectionCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgSetRedirectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

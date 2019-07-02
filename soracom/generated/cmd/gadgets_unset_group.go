@@ -19,7 +19,11 @@ var GadgetsUnsetGroupCmdSerialNumber string
 func init() {
 	GadgetsUnsetGroupCmd.Flags().StringVar(&GadgetsUnsetGroupCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
+	GadgetsUnsetGroupCmd.MarkFlagRequired("product-id")
+
 	GadgetsUnsetGroupCmd.Flags().StringVar(&GadgetsUnsetGroupCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+
+	GadgetsUnsetGroupCmd.MarkFlagRequired("serial-number")
 
 	GadgetsCmd.AddCommand(GadgetsUnsetGroupCmd)
 }
@@ -62,6 +66,7 @@ var GadgetsUnsetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectGadgetsUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGadgetsUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsUnsetGroupCmdProductId), -1)
+	escapedProductId := url.PathEscape(GadgetsUnsetGroupCmdProductId)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsUnsetGroupCmdSerialNumber), -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+
+	escapedSerialNumber := url.PathEscape(GadgetsUnsetGroupCmdSerialNumber)
+
+	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }

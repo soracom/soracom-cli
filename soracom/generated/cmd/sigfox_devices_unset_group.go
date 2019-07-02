@@ -16,6 +16,8 @@ var SigfoxDevicesUnsetGroupCmdDeviceId string
 func init() {
 	SigfoxDevicesUnsetGroupCmd.Flags().StringVar(&SigfoxDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
+	SigfoxDevicesUnsetGroupCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesUnsetGroupCmd)
 }
 
@@ -57,6 +59,7 @@ var SigfoxDevicesUnsetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSigfoxDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) 
 
 func buildPathForSigfoxDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesUnsetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesUnsetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

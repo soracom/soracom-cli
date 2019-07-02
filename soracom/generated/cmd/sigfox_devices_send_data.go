@@ -28,6 +28,8 @@ func init() {
 
 	SigfoxDevicesSendDataCmd.Flags().StringVar(&SigfoxDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
 
+	SigfoxDevicesSendDataCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesSendDataCmd.Flags().StringVar(&SigfoxDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesSendDataCmd)
@@ -71,6 +73,7 @@ var SigfoxDevicesSendDataCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectSigfoxDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSigfoxDevicesSendDataCmd("/sigfox_devices/{device_id}/data"),
 		query:       buildQueryForSigfoxDevicesSendDataCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSigfoxDevicesSendDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesSendDataCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesSendDataCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

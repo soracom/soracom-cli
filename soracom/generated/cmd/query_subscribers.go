@@ -102,6 +102,7 @@ var QuerySubscribersCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

@@ -21,6 +21,8 @@ var SigfoxDevicesPutTagsCmdBody string
 func init() {
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
+	SigfoxDevicesPutTagsCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesPutTagsCmd)
@@ -64,6 +66,7 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,18 +77,22 @@ func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForSigfoxDevicesPutTagsCmd("/sigfox_devices/{device_id}/tags"),
 		query:       buildQueryForSigfoxDevicesPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSigfoxDevicesPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesPutTagsCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesPutTagsCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

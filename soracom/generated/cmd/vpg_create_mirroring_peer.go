@@ -41,6 +41,8 @@ func init() {
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
+	VpgCreateMirroringPeerCmd.MarkFlagRequired("vpg-id")
+
 	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -86,6 +88,7 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,18 +99,22 @@ func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgCreateMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers"),
 		query:       buildQueryForVpgCreateMirroringPeerCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgCreateMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgCreateMirroringPeerCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgCreateMirroringPeerCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

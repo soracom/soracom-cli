@@ -19,7 +19,11 @@ var SubscribersDeleteTagCmdTagName string
 func init() {
 	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersDeleteTagCmd.MarkFlagRequired("imsi")
+
 	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	SubscribersDeleteTagCmd.MarkFlagRequired("tag-name")
 
 	SubscribersCmd.AddCommand(SubscribersDeleteTagCmd)
 }
@@ -62,6 +66,7 @@ var SubscribersDeleteTagCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectSubscribersDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersDeleteTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersDeleteTagCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersDeleteTagCmdImsi)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(SubscribersDeleteTagCmdTagName), -1)
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+
+	escapedTagName := url.PathEscape(SubscribersDeleteTagCmdTagName)
+
+	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }

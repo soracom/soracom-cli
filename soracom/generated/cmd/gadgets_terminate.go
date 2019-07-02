@@ -19,7 +19,11 @@ var GadgetsTerminateCmdSerialNumber string
 func init() {
 	GadgetsTerminateCmd.Flags().StringVar(&GadgetsTerminateCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
+	GadgetsTerminateCmd.MarkFlagRequired("product-id")
+
 	GadgetsTerminateCmd.Flags().StringVar(&GadgetsTerminateCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+
+	GadgetsTerminateCmd.MarkFlagRequired("serial-number")
 
 	GadgetsCmd.AddCommand(GadgetsTerminateCmd)
 }
@@ -62,6 +66,7 @@ var GadgetsTerminateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectGadgetsTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGadgetsTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"product_id"+"}", url.PathEscape(GadgetsTerminateCmdProductId), -1)
+	escapedProductId := url.PathEscape(GadgetsTerminateCmdProductId)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", url.PathEscape(GadgetsTerminateCmdSerialNumber), -1)
+	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+
+	escapedSerialNumber := url.PathEscape(GadgetsTerminateCmdSerialNumber)
+
+	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }

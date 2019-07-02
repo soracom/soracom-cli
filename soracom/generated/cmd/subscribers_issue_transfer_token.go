@@ -24,7 +24,11 @@ var SubscribersIssueTransferTokenCmdBody string
 func init() {
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI(""))
 
+	SubscribersIssueTransferTokenCmd.MarkFlagRequired("transfer-destination-operator-email")
+
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI(""))
+
+	SubscribersIssueTransferTokenCmd.MarkFlagRequired("transfer-destination-operator-id")
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -69,6 +73,7 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -79,11 +84,13 @@ func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, e
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersIssueTransferTokenCmd("/subscribers/transfer_token/issue"),
 		query:       buildQueryForSubscribersIssueTransferTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

@@ -16,6 +16,8 @@ var VpgTerminateCmdVpgId string
 func init() {
 	VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgTerminateCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgTerminateCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgTerminateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgTerminateCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgTerminateCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

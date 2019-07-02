@@ -19,7 +19,11 @@ var VpgUnregisterGatePeerCmdVpgId string
 func init() {
 	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI("ID of the target node."))
 
+	VpgUnregisterGatePeerCmd.MarkFlagRequired("outer-ip-address")
+
 	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgUnregisterGatePeerCmd.MarkFlagRequired("vpg-id")
 
 	VpgCmd.AddCommand(VpgUnregisterGatePeerCmd)
 }
@@ -62,6 +66,7 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgUnregisterGatePeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"outer_ip_address"+"}", url.PathEscape(VpgUnregisterGatePeerCmdOuterIpAddress), -1)
+	escapedOuterIpAddress := url.PathEscape(VpgUnregisterGatePeerCmdOuterIpAddress)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgUnregisterGatePeerCmdVpgId), -1)
+	path = strings.Replace(path, "{"+"outer_ip_address"+"}", escapedOuterIpAddress, -1)
+
+	escapedVpgId := url.PathEscape(VpgUnregisterGatePeerCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

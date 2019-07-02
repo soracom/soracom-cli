@@ -24,6 +24,8 @@ func init() {
 
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
+	LoraNetworkSetsListGatewaysCmd.MarkFlagRequired("ns-id")
+
 	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa gateways to retrieve."))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListGatewaysCmd)
@@ -67,6 +69,7 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,7 +84,9 @@ func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, err
 
 func buildPathForLoraNetworkSetsListGatewaysCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsListGatewaysCmdNsId), -1)
+	escapedNsId := url.PathEscape(LoraNetworkSetsListGatewaysCmdNsId)
+
+	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }

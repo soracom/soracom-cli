@@ -16,6 +16,8 @@ var SigfoxDevicesGetCmdDeviceId string
 func init() {
 	SigfoxDevicesGetCmd.Flags().StringVar(&SigfoxDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
+	SigfoxDevicesGetCmd.MarkFlagRequired("device-id")
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesGetCmd)
 }
 
@@ -57,6 +59,7 @@ var SigfoxDevicesGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSigfoxDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSigfoxDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(SigfoxDevicesGetCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(SigfoxDevicesGetCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

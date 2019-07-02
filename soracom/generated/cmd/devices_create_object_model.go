@@ -94,6 +94,7 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -104,11 +105,13 @@ func collectDevicesCreateObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDevicesCreateObjectModelCmd("/device_object_models"),
 		query:       buildQueryForDevicesCreateObjectModelCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

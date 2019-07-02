@@ -22,9 +22,13 @@ var UsersAuthKeysGetCmdUserName string
 func init() {
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
+	UsersAuthKeysGetCmd.MarkFlagRequired("auth-key-id")
+
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", TRAPI("user_name"))
+
+	UsersAuthKeysGetCmd.MarkFlagRequired("user-name")
 
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGetCmd)
 }
@@ -67,6 +71,7 @@ var UsersAuthKeysGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -85,11 +90,17 @@ func collectUsersAuthKeysGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersAuthKeysGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"auth_key_id"+"}", url.PathEscape(UsersAuthKeysGetCmdAuthKeyId), -1)
+	escapedAuthKeyId := url.PathEscape(UsersAuthKeysGetCmdAuthKeyId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersAuthKeysGetCmdOperatorId), -1)
+	path = strings.Replace(path, "{"+"auth_key_id"+"}", escapedAuthKeyId, -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersAuthKeysGetCmdUserName), -1)
+	escapedOperatorId := url.PathEscape(UsersAuthKeysGetCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersAuthKeysGetCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

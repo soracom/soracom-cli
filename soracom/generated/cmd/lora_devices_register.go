@@ -29,6 +29,8 @@ var LoraDevicesRegisterCmdBody string
 func init() {
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesRegisterCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdGroupId, "group-id", "", TRAPI(""))
 
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
@@ -76,6 +78,7 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectLoraDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraDevicesRegisterCmd("/lora_devices/{device_id}/register"),
 		query:       buildQueryForLoraDevicesRegisterCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraDevicesRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesRegisterCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesRegisterCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

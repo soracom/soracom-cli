@@ -19,6 +19,8 @@ var DevicesGetCmdModel bool
 func init() {
 	DevicesGetCmd.Flags().StringVar(&DevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID"))
 
+	DevicesGetCmd.MarkFlagRequired("device-id")
+
 	DevicesGetCmd.Flags().BoolVar(&DevicesGetCmdModel, "model", false, TRAPI("Whether or not to add model information"))
 
 	DevicesCmd.AddCommand(DevicesGetCmd)
@@ -62,6 +64,7 @@ var DevicesGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,7 +79,9 @@ func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesGetCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesGetCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

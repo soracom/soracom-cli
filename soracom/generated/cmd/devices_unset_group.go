@@ -16,6 +16,8 @@ var DevicesUnsetGroupCmdDeviceId string
 func init() {
 	DevicesUnsetGroupCmd.Flags().StringVar(&DevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
+	DevicesUnsetGroupCmd.MarkFlagRequired("device-id")
+
 	DevicesCmd.AddCommand(DevicesUnsetGroupCmd)
 }
 
@@ -57,6 +59,7 @@ var DevicesUnsetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesUnsetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesUnsetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

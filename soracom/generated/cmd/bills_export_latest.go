@@ -57,6 +57,7 @@ var BillsExportLatestCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

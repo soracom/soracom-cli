@@ -16,6 +16,8 @@ var SubscribersUnsetImeiLockCmdImsi string
 func init() {
 	SubscribersUnsetImeiLockCmd.Flags().StringVar(&SubscribersUnsetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersUnsetImeiLockCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersUnsetImeiLockCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersUnsetImeiLockCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersUnsetImeiLockCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersUnsetImeiLockCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersUnsetImeiLockCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

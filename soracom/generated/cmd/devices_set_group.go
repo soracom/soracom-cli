@@ -23,6 +23,8 @@ var DevicesSetGroupCmdBody string
 func init() {
 	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
+	DevicesSetGroupCmd.MarkFlagRequired("device-id")
+
 	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesSetGroupCmd)
@@ -66,6 +68,7 @@ var DevicesSetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,18 +79,22 @@ func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDevicesSetGroupCmd("/devices/{device_id}/set_group"),
 		query:       buildQueryForDevicesSetGroupCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForDevicesSetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesSetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesSetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

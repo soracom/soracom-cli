@@ -3,7 +3,7 @@ package cmd
 
 import (
 {{if .BodyExists }}
-{{if not .IsBodyArray }}
+{{if not .SendBodyRaw }}
   "encoding/json"
 {{end}}
   "io/ioutil"
@@ -49,22 +49,39 @@ var {{$prefix}}Body string
 func init() {
 {{- range .StringFlags}}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
+  {{if .Required}}
+  {{if ne .VarName "OperatorId" }}
+  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
+  {{end}}
+  {{end}}
 {{end}}
 
 {{- range .StringSliceFlags}}
   {{$cmdvar}}.Flags().StringSliceVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", []string{}, TRAPI("{{.ShortHelp}}"))
+  {{if .Required}}
+  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
+  {{end}}
 {{end}}
 
 {{- range .IntegerFlags}}
   {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
+  {{if .Required}}
+  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
+  {{end}}
 {{end}}
 
 {{- range .FloatFlags}}
   {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
+  {{if .Required}}
+  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
+  {{end}}
 {{end}}
 
 {{- range .BoolFlags}}
   {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
+  {{if .Required}}
+  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
+  {{end}}
 {{end}}
 
 {{if .BodyExists }}
@@ -112,7 +129,12 @@ var {{ $cmdvar }} = &cobra.Command{
       return nil
     }
 
+    {{if not .ResponseBodyRaw}}
     return prettyPrintStringAsJSON(body)
+    {{else}}
+    _, err = os.Stdout.Write([]byte(body))
+    return err
+    {{end}}
   },
 }
 
@@ -128,13 +150,20 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   if err != nil {
     return nil, err
   }
+
+  {{if .ContentTypeFromArg }}
+  contentType := {{$prefix}}{{.ContentTypeVarName}}
+  {{else}}
+  contentType := "{{.ContentType}}"
+  {{end}}
+
   {{end}}
 
   return &apiParams{
     method: "{{.Method}}",
     path: buildPathFor{{$suffix}}("{{.Path}}"),
     query: buildQueryFor{{$suffix}}(),
-    {{if .BodyExists }}contentType: "{{.ContentType}}",{{end}}
+    {{if .BodyExists }}contentType: contentType,{{end}}
     {{if .BodyExists }}body: body,{{end}}
   }, nil
 }
@@ -142,7 +171,12 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
 func buildPathFor{{$suffix}}(path string) string {
   {{range .StringFlags}}
   {{if eq .In "path"}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", url.PathEscape({{$prefix}}{{.VarName}}), -1)
+  {{if .HarvestFilesPathEscape}}
+  escaped{{.VarName}} := harvestFilesPathEscape({{$prefix}}{{.VarName}})
+  {{else}}
+  escaped{{.VarName}} := url.PathEscape({{$prefix}}{{.VarName}})
+  {{end}}
+  path = strings.Replace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
   {{end}}
   {{end}}
   {{range .IntegerFlags}}
@@ -200,7 +234,7 @@ func buildQueryFor{{$suffix}}() string {
 }
 
 {{if .BodyExists }}
-{{if not .IsBodyArray }}
+{{if not .SendBodyRaw }}
 func buildBodyFor{{$suffix}}() (string, error) {
   var result map[string]interface{}
 

@@ -57,6 +57,7 @@ var RolesListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectRolesListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForRolesListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesListCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(RolesListCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

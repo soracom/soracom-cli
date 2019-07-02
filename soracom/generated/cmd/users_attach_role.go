@@ -33,6 +33,8 @@ func init() {
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersAttachRoleCmd.MarkFlagRequired("user-name")
+
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	UsersCmd.AddCommand(UsersAttachRoleCmd)
@@ -76,6 +78,7 @@ var UsersAttachRoleCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -90,20 +93,26 @@ func collectUsersAttachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForUsersAttachRoleCmd("/operators/{operator_id}/users/{user_name}/roles"),
 		query:       buildQueryForUsersAttachRoleCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForUsersAttachRoleCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersAttachRoleCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersAttachRoleCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersAttachRoleCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersAttachRoleCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

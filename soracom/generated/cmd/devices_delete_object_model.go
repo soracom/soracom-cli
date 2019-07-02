@@ -16,6 +16,8 @@ var DevicesDeleteObjectModelCmdModelId string
 func init() {
 	DevicesDeleteObjectModelCmd.Flags().StringVar(&DevicesDeleteObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
 
+	DevicesDeleteObjectModelCmd.MarkFlagRequired("model-id")
+
 	DevicesCmd.AddCommand(DevicesDeleteObjectModelCmd)
 }
 
@@ -57,6 +59,7 @@ var DevicesDeleteObjectModelCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectDevicesDeleteObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForDevicesDeleteObjectModelCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesDeleteObjectModelCmdModelId), -1)
+	escapedModelId := url.PathEscape(DevicesDeleteObjectModelCmdModelId)
+
+	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }

@@ -77,6 +77,7 @@ var LoraDevicesListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

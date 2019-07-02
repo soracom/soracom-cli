@@ -31,7 +31,11 @@ func init() {
 
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersRegisterCmd.MarkFlagRequired("imsi")
+
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
+
+	SubscribersRegisterCmd.MarkFlagRequired("registration-secret")
 
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -76,6 +80,7 @@ var SubscribersRegisterCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +91,22 @@ func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersRegisterCmd("/subscribers/{imsi}/register"),
 		query:       buildQueryForSubscribersRegisterCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersRegisterCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersRegisterCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersRegisterCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

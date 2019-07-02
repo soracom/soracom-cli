@@ -1,13 +1,14 @@
 package main
 
 type stringFlag struct {
-	VarName      string
-	LongOption   string
-	DefaultValue string
-	ShortHelp    string
-	In           string
-	Name         string
-	Required     bool
+	VarName                string
+	LongOption             string
+	DefaultValue           string
+	ShortHelp              string
+	In                     string
+	Name                   string
+	Required               bool
+	HarvestFilesPathEscape bool
 }
 
 type stringFlagsByName []stringFlag
@@ -110,11 +111,14 @@ type commandArgs struct {
 	RequireAuth               bool
 	RequireOperatorID         bool
 	BodyExists                bool
-	IsBodyArray               bool
+	SendBodyRaw               bool
+	ResponseBodyRaw           bool
 	Method                    string
 	BasePath                  string
 	Path                      string
 	ContentType               string
+	ContentTypeFromArg        bool
+	ContentTypeVarName        string
 	PathParamsExist           bool
 	QueryParamsExist          bool
 	StringFlags               []stringFlag

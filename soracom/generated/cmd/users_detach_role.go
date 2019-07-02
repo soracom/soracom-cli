@@ -24,7 +24,11 @@ func init() {
 
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("role_id"))
 
+	UsersDetachRoleCmd.MarkFlagRequired("role-id")
+
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
+
+	UsersDetachRoleCmd.MarkFlagRequired("user-name")
 
 	UsersCmd.AddCommand(UsersDetachRoleCmd)
 }
@@ -67,6 +71,7 @@ var UsersDetachRoleCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -85,11 +90,17 @@ func collectUsersDetachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersDetachRoleCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersDetachRoleCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersDetachRoleCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(UsersDetachRoleCmdRoleId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersDetachRoleCmdUserName), -1)
+	escapedRoleId := url.PathEscape(UsersDetachRoleCmdRoleId)
+
+	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
+
+	escapedUserName := url.PathEscape(UsersDetachRoleCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

@@ -57,6 +57,7 @@ var OperatorRevokeMfaCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectOperatorRevokeMfaCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorRevokeMfaCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorRevokeMfaCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorRevokeMfaCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

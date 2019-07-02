@@ -47,9 +47,10 @@ type APIParam struct {
 
 // APIParamSchema holds information about a Schema in an API parameter
 type APIParamSchema struct {
-	Type  string          `yaml:"type"`
-	Items *APIParamSchema `yaml:"items"`
-	Ref   string          `yaml:"$ref"`
+	Type   string          `yaml:"type"`
+	Format string          `yaml:"format"`
+	Items  *APIParamSchema `yaml:"items"`
+	Ref    string          `yaml:"$ref"`
 }
 
 // APIParamArrayItems holds information about array type of parameters

@@ -36,7 +36,11 @@ func init() {
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI(""))
 
+	UsersPermissionsUpdateCmd.MarkFlagRequired("permission")
+
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
+
+	UsersPermissionsUpdateCmd.MarkFlagRequired("user-name")
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -81,6 +85,7 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -95,20 +100,26 @@ func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForUsersPermissionsUpdateCmd("/operators/{operator_id}/users/{user_name}/permission"),
 		query:       buildQueryForUsersPermissionsUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForUsersPermissionsUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersPermissionsUpdateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersPermissionsUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersPermissionsUpdateCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersPermissionsUpdateCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

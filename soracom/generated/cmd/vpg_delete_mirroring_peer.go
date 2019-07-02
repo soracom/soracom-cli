@@ -19,7 +19,11 @@ var VpgDeleteMirroringPeerCmdVpgId string
 func init() {
 	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("IP address of mirroring peer"))
 
+	VpgDeleteMirroringPeerCmd.MarkFlagRequired("ipaddr")
+
 	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
+
+	VpgDeleteMirroringPeerCmd.MarkFlagRequired("vpg-id")
 
 	VpgCmd.AddCommand(VpgDeleteMirroringPeerCmd)
 }
@@ -62,6 +66,7 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgDeleteMirroringPeerCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ipaddr"+"}", url.PathEscape(VpgDeleteMirroringPeerCmdIpaddr), -1)
+	escapedIpaddr := url.PathEscape(VpgDeleteMirroringPeerCmdIpaddr)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteMirroringPeerCmdVpgId), -1)
+	path = strings.Replace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
+
+	escapedVpgId := url.PathEscape(VpgDeleteMirroringPeerCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

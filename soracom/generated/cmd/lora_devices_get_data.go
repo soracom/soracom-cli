@@ -31,6 +31,8 @@ var LoraDevicesGetDataCmdTo int64
 func init() {
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
+	LoraDevicesGetDataCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
@@ -82,6 +84,7 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,7 +99,9 @@ func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesGetDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesGetDataCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesGetDataCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

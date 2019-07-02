@@ -97,6 +97,7 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

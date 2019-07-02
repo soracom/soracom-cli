@@ -19,7 +19,11 @@ var VpgDeleteIpAddressMapEntryCmdVpgId string
 func init() {
 	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TRAPI("Target key to remove."))
 
+	VpgDeleteIpAddressMapEntryCmd.MarkFlagRequired("key")
+
 	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgDeleteIpAddressMapEntryCmd.MarkFlagRequired("vpg-id")
 
 	VpgCmd.AddCommand(VpgDeleteIpAddressMapEntryCmd)
 }
@@ -62,6 +66,7 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, erro
 
 func buildPathForVpgDeleteIpAddressMapEntryCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"key"+"}", url.PathEscape(VpgDeleteIpAddressMapEntryCmdKey), -1)
+	escapedKey := url.PathEscape(VpgDeleteIpAddressMapEntryCmdKey)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteIpAddressMapEntryCmdVpgId), -1)
+	path = strings.Replace(path, "{"+"key"+"}", escapedKey, -1)
+
+	escapedVpgId := url.PathEscape(VpgDeleteIpAddressMapEntryCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

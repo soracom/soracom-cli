@@ -24,7 +24,11 @@ var GroupsPutConfigCmdBody string
 func init() {
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
+	GroupsPutConfigCmd.MarkFlagRequired("group-id")
+
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("Target configuration."))
+
+	GroupsPutConfigCmd.MarkFlagRequired("namespace")
 
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -69,6 +73,7 @@ var GroupsPutConfigCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -79,20 +84,26 @@ func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForGroupsPutConfigCmd("/groups/{group_id}/configuration/{namespace}"),
 		query:       buildQueryForGroupsPutConfigCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForGroupsPutConfigCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsPutConfigCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsPutConfigCmdGroupId)
 
-	path = strings.Replace(path, "{"+"namespace"+"}", url.PathEscape(GroupsPutConfigCmdNamespace), -1)
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
+
+	escapedNamespace := url.PathEscape(GroupsPutConfigCmdNamespace)
+
+	path = strings.Replace(path, "{"+"namespace"+"}", escapedNamespace, -1)
 
 	return path
 }

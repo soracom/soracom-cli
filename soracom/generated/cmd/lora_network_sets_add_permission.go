@@ -26,6 +26,8 @@ var LoraNetworkSetsAddPermissionCmdBody string
 func init() {
 	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
+	LoraNetworkSetsAddPermissionCmd.MarkFlagRequired("ns-id")
+
 	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 
 	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -71,6 +73,7 @@ var LoraNetworkSetsAddPermissionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectLoraNetworkSetsAddPermissionCmdParams(ac *apiClient) (*apiParams, er
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraNetworkSetsAddPermissionCmd("/lora_network_sets/{ns_id}/add_permission"),
 		query:       buildQueryForLoraNetworkSetsAddPermissionCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraNetworkSetsAddPermissionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsAddPermissionCmdNsId), -1)
+	escapedNsId := url.PathEscape(LoraNetworkSetsAddPermissionCmdNsId)
+
+	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }

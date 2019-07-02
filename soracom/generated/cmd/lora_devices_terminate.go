@@ -16,6 +16,8 @@ var LoraDevicesTerminateCmdDeviceId string
 func init() {
 	LoraDevicesTerminateCmd.Flags().StringVar(&LoraDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesTerminateCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesCmd.AddCommand(LoraDevicesTerminateCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraDevicesTerminateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesTerminateCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesTerminateCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

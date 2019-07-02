@@ -16,6 +16,8 @@ var LoraDevicesUnsetGroupCmdDeviceId string
 func init() {
 	LoraDevicesUnsetGroupCmd.Flags().StringVar(&LoraDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesUnsetGroupCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesCmd.AddCommand(LoraDevicesUnsetGroupCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraDevicesUnsetGroupCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraDevicesUnsetGroupCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesUnsetGroupCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesUnsetGroupCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

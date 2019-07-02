@@ -16,6 +16,8 @@ var SubscribersDeleteSessionCmdImsi string
 func init() {
 	SubscribersDeleteSessionCmd.Flags().StringVar(&SubscribersDeleteSessionCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersDeleteSessionCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersDeleteSessionCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersDeleteSessionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersDeleteSessionCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForSubscribersDeleteSessionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersDeleteSessionCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersDeleteSessionCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

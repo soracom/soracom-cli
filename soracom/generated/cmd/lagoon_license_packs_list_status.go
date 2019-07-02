@@ -45,6 +45,7 @@ var LagoonLicensePacksListStatusCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

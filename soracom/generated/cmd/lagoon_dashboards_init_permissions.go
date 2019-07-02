@@ -16,6 +16,8 @@ var LagoonDashboardsInitPermissionsCmdDashboardId int64
 func init() {
 	LagoonDashboardsInitPermissionsCmd.Flags().Int64Var(&LagoonDashboardsInitPermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
 
+	LagoonDashboardsInitPermissionsCmd.MarkFlagRequired("dashboard-id")
+
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsInitPermissionsCmd)
 }
 
@@ -51,6 +53,7 @@ var LagoonDashboardsInitPermissionsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

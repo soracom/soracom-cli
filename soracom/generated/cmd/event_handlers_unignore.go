@@ -19,7 +19,11 @@ var EventHandlersUnignoreCmdImsi string
 func init() {
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
 
+	EventHandlersUnignoreCmd.MarkFlagRequired("handler-id")
+
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdImsi, "imsi", "", TRAPI("imsi"))
+
+	EventHandlersUnignoreCmd.MarkFlagRequired("imsi")
 
 	EventHandlersCmd.AddCommand(EventHandlersUnignoreCmd)
 }
@@ -62,6 +66,7 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForEventHandlersUnignoreCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", url.PathEscape(EventHandlersUnignoreCmdHandlerId), -1)
+	escapedHandlerId := url.PathEscape(EventHandlersUnignoreCmdHandlerId)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(EventHandlersUnignoreCmdImsi), -1)
+	path = strings.Replace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
+
+	escapedImsi := url.PathEscape(EventHandlersUnignoreCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

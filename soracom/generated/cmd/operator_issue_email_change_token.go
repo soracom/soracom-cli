@@ -21,6 +21,8 @@ var OperatorIssueEmailChangeTokenCmdBody string
 func init() {
 	OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdEmail, "email", "", TRAPI(""))
 
+	OperatorIssueEmailChangeTokenCmd.MarkFlagRequired("email")
+
 	OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorIssueEmailChangeTokenCmd)
@@ -64,6 +66,7 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,11 +77,13 @@ func collectOperatorIssueEmailChangeTokenCmdParams(ac *apiClient) (*apiParams, e
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorIssueEmailChangeTokenCmd("/operators/email_change_token/issue"),
 		query:       buildQueryForOperatorIssueEmailChangeTokenCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

@@ -16,6 +16,8 @@ var LoraGatewaysGetCmdGatewayId string
 func init() {
 	LoraGatewaysGetCmd.Flags().StringVar(&LoraGatewaysGetCmdGatewayId, "gateway-id", "", TRAPI("Gateway ID of the target LoRa gateway."))
 
+	LoraGatewaysGetCmd.MarkFlagRequired("gateway-id")
+
 	LoraGatewaysCmd.AddCommand(LoraGatewaysGetCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraGatewaysGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraGatewaysGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraGatewaysGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", url.PathEscape(LoraGatewaysGetCmdGatewayId), -1)
+	escapedGatewayId := url.PathEscape(LoraGatewaysGetCmdGatewayId)
+
+	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }

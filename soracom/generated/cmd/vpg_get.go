@@ -16,6 +16,8 @@ var VpgGetCmdVpgId string
 func init() {
 	VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgGetCmd.MarkFlagRequired("vpg-id")
+
 	VpgCmd.AddCommand(VpgGetCmd)
 }
 
@@ -57,6 +59,7 @@ var VpgGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectVpgGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForVpgGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgGetCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgGetCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

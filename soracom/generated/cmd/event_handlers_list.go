@@ -57,6 +57,7 @@ var EventHandlersListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

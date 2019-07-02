@@ -16,6 +16,8 @@ var GroupsGetCmdGroupId string
 func init() {
 	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
+	GroupsGetCmd.MarkFlagRequired("group-id")
+
 	GroupsCmd.AddCommand(GroupsGetCmd)
 }
 
@@ -57,6 +59,7 @@ var GroupsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectGroupsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForGroupsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"group_id"+"}", url.PathEscape(GroupsGetCmdGroupId), -1)
+	escapedGroupId := url.PathEscape(GroupsGetCmdGroupId)
+
+	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	return path
 }

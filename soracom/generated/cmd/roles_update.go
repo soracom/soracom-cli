@@ -36,7 +36,11 @@ func init() {
 
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TRAPI(""))
 
+	RolesUpdateCmd.MarkFlagRequired("permission")
+
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TRAPI("role_id"))
+
+	RolesUpdateCmd.MarkFlagRequired("role-id")
 
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -81,6 +85,7 @@ var RolesUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -95,20 +100,26 @@ func collectRolesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForRolesUpdateCmd("/operators/{operator_id}/roles/{role_id}"),
 		query:       buildQueryForRolesUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForRolesUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(RolesUpdateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(RolesUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", url.PathEscape(RolesUpdateCmdRoleId), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedRoleId := url.PathEscape(RolesUpdateCmdRoleId)
+
+	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	return path
 }

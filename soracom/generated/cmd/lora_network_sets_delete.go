@@ -16,6 +16,8 @@ var LoraNetworkSetsDeleteCmdNsId string
 func init() {
 	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
+	LoraNetworkSetsDeleteCmd.MarkFlagRequired("ns-id")
+
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsDeleteCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraNetworkSetsDeleteCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraNetworkSetsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraNetworkSetsDeleteCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsDeleteCmdNsId), -1)
+	escapedNsId := url.PathEscape(LoraNetworkSetsDeleteCmdNsId)
+
+	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }

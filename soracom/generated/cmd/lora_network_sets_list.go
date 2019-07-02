@@ -77,6 +77,7 @@ var LoraNetworkSetsListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

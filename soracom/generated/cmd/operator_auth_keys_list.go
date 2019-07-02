@@ -57,6 +57,7 @@ var OperatorAuthKeysListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -75,7 +76,9 @@ func collectOperatorAuthKeysListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForOperatorAuthKeysListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorAuthKeysListCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorAuthKeysListCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

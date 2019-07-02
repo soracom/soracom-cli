@@ -21,6 +21,8 @@ var OperatorVerifyCmdBody string
 func init() {
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TRAPI(""))
 
+	OperatorVerifyCmd.MarkFlagRequired("token")
+
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	OperatorCmd.AddCommand(OperatorVerifyCmd)
@@ -58,6 +60,7 @@ var OperatorVerifyCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -68,11 +71,13 @@ func collectOperatorVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorVerifyCmd("/operators/verify"),
 		query:       buildQueryForOperatorVerifyCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

@@ -16,6 +16,8 @@ var SubscribersDeleteTransferTokenCmdToken string
 func init() {
 	SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TRAPI("token"))
 
+	SubscribersDeleteTransferTokenCmd.MarkFlagRequired("token")
+
 	SubscribersCmd.AddCommand(SubscribersDeleteTransferTokenCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersDeleteTransferTokenCmdParams(ac *apiClient) (*apiParams, 
 
 func buildPathForSubscribersDeleteTransferTokenCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"token"+"}", url.PathEscape(SubscribersDeleteTransferTokenCmdToken), -1)
+	escapedToken := url.PathEscape(SubscribersDeleteTransferTokenCmdToken)
+
+	path = strings.Replace(path, "{"+"token"+"}", escapedToken, -1)
 
 	return path
 }

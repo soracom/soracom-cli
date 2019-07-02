@@ -18,7 +18,7 @@ The `soracom` command:
 
 - supports bash completion. Please write the following line in .bashrc etc
   ```
-  eval "$(soracom completion)"
+  eval "$(soracom completion bash)"
   ```
 
   if you are a macOS user, you probably need to either:
@@ -33,6 +33,11 @@ The `soracom` command:
   otherwise you might be getting the error like the following:
   ```
   -bash: __ltrim_colon_completions: command not found
+  ```
+
+- supports zsh completion. The generated completion script by running the following command should be put somewhere in your $fpath named `_soracom`
+  ```
+  soracom completion zsh
   ```
 
 # How to install

@@ -21,6 +21,8 @@ func init() {
 
 	UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersPermissionsGetCmd.MarkFlagRequired("user-name")
+
 	UsersPermissionsCmd.AddCommand(UsersPermissionsGetCmd)
 }
 
@@ -62,6 +64,7 @@ var UsersPermissionsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectUsersPermissionsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersPermissionsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersPermissionsGetCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersPermissionsGetCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersPermissionsGetCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersPermissionsGetCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

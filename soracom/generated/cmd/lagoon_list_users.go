@@ -51,6 +51,7 @@ var LagoonListUsersCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 

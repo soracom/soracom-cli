@@ -31,6 +31,8 @@ func init() {
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
 
+	LoraDevicesSendDataCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesSendDataCmd.Flags().Int64Var(&LoraDevicesSendDataCmdFPort, "f-port", 0, TRAPI(""))
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -76,6 +78,7 @@ var LoraDevicesSendDataCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -86,18 +89,22 @@ func collectLoraDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForLoraDevicesSendDataCmd("/lora_devices/{device_id}/data"),
 		query:       buildQueryForLoraDevicesSendDataCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraDevicesSendDataCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesSendDataCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesSendDataCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

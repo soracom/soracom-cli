@@ -19,7 +19,11 @@ var VpgDeleteVpcPeeringConnectionCmdVpgId string
 func init() {
 	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", TRAPI("VPC peering connection ID to be deleted."))
 
+	VpgDeleteVpcPeeringConnectionCmd.MarkFlagRequired("pcx-id")
+
 	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgDeleteVpcPeeringConnectionCmd.MarkFlagRequired("vpg-id")
 
 	VpgCmd.AddCommand(VpgDeleteVpcPeeringConnectionCmd)
 }
@@ -62,6 +66,7 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 
 func buildPathForVpgDeleteVpcPeeringConnectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"pcx_id"+"}", url.PathEscape(VpgDeleteVpcPeeringConnectionCmdPcxId), -1)
+	escapedPcxId := url.PathEscape(VpgDeleteVpcPeeringConnectionCmdPcxId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgDeleteVpcPeeringConnectionCmdVpgId), -1)
+	path = strings.Replace(path, "{"+"pcx_id"+"}", escapedPcxId, -1)
+
+	escapedVpgId := url.PathEscape(VpgDeleteVpcPeeringConnectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

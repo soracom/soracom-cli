@@ -21,6 +21,8 @@ var LoraDevicesPutTagsCmdBody string
 func init() {
 	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
+	LoraDevicesPutTagsCmd.MarkFlagRequired("device-id")
+
 	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesPutTagsCmd)
@@ -64,6 +66,7 @@ var LoraDevicesPutTagsCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,18 +77,22 @@ func collectLoraDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForLoraDevicesPutTagsCmd("/lora_devices/{device_id}/tags"),
 		query:       buildQueryForLoraDevicesPutTagsCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForLoraDevicesPutTagsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(LoraDevicesPutTagsCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(LoraDevicesPutTagsCmdDeviceId)
+
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }

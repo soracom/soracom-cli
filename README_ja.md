@@ -36,6 +36,11 @@ soracom コマンドは以下のような特徴を備えています。
   -bash: __ltrim_colon_completions: command not found
   ```
 
+- zsh completion（引数補完）に対応しています。以下のようなコマンドを実行して生成されるスクリプトを `_soracom` という名前で `$fpath` のどこかに配置してください。
+  ```
+  soracom completion zsh
+  ```
+
 # インストール方法
 
 ## macOS をお使いで、homebrew によりインストールする場合

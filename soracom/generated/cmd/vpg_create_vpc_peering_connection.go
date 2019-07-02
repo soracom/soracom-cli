@@ -43,6 +43,8 @@ func init() {
 
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
+	VpgCreateVpcPeeringConnectionCmd.MarkFlagRequired("vpg-id")
+
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	VpgCmd.AddCommand(VpgCreateVpcPeeringConnectionCmd)
@@ -86,6 +88,7 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -96,18 +99,22 @@ func collectVpgCreateVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForVpgCreateVpcPeeringConnectionCmd("/virtual_private_gateways/{vpg_id}/vpc_peering_connections"),
 		query:       buildQueryForVpgCreateVpcPeeringConnectionCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForVpgCreateVpcPeeringConnectionCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", url.PathEscape(VpgCreateVpcPeeringConnectionCmdVpgId), -1)
+	escapedVpgId := url.PathEscape(VpgCreateVpcPeeringConnectionCmdVpgId)
+
+	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }

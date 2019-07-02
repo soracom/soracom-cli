@@ -16,6 +16,8 @@ var LoraNetworkSetsGetCmdNsId string
 func init() {
 	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
+	LoraNetworkSetsGetCmd.MarkFlagRequired("ns-id")
+
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsGetCmd)
 }
 
@@ -57,6 +59,7 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectLoraNetworkSetsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLoraNetworkSetsGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", url.PathEscape(LoraNetworkSetsGetCmdNsId), -1)
+	escapedNsId := url.PathEscape(LoraNetworkSetsGetCmdNsId)
+
+	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }

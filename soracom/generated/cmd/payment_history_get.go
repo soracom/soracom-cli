@@ -16,6 +16,8 @@ var PaymentHistoryGetCmdPaymentTransactionId string
 func init() {
 	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TRAPI("Payment transaction ID"))
 
+	PaymentHistoryGetCmd.MarkFlagRequired("payment-transaction-id")
+
 	PaymentHistoryCmd.AddCommand(PaymentHistoryGetCmd)
 }
 
@@ -57,6 +59,7 @@ var PaymentHistoryGetCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForPaymentHistoryGetCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"payment_transaction_id"+"}", url.PathEscape(PaymentHistoryGetCmdPaymentTransactionId), -1)
+	escapedPaymentTransactionId := url.PathEscape(PaymentHistoryGetCmdPaymentTransactionId)
+
+	path = strings.Replace(path, "{"+"payment_transaction_id"+"}", escapedPaymentTransactionId, -1)
 
 	return path
 }

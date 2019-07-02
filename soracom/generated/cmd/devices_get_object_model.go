@@ -16,6 +16,8 @@ var DevicesGetObjectModelCmdModelId string
 func init() {
 	DevicesGetObjectModelCmd.Flags().StringVar(&DevicesGetObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
 
+	DevicesGetObjectModelCmd.MarkFlagRequired("model-id")
+
 	DevicesCmd.AddCommand(DevicesGetObjectModelCmd)
 }
 
@@ -57,6 +59,7 @@ var DevicesGetObjectModelCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectDevicesGetObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesGetObjectModelCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"model_id"+"}", url.PathEscape(DevicesGetObjectModelCmdModelId), -1)
+	escapedModelId := url.PathEscape(DevicesGetObjectModelCmdModelId)
+
+	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }

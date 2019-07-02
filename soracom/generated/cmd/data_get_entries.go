@@ -36,7 +36,11 @@ func init() {
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
+	DataGetEntriesCmd.MarkFlagRequired("resource-id")
+
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
+
+	DataGetEntriesCmd.MarkFlagRequired("resource-type")
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
@@ -87,6 +91,7 @@ var DataGetEntriesCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -101,9 +106,13 @@ func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetEntriesCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", url.PathEscape(DataGetEntriesCmdResourceId), -1)
+	escapedResourceId := url.PathEscape(DataGetEntriesCmdResourceId)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", url.PathEscape(DataGetEntriesCmdResourceType), -1)
+	path = strings.Replace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
+
+	escapedResourceType := url.PathEscape(DataGetEntriesCmdResourceType)
+
+	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
 	return path
 }

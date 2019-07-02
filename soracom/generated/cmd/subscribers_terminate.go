@@ -16,6 +16,8 @@ var SubscribersTerminateCmdImsi string
 func init() {
 	SubscribersTerminateCmd.Flags().StringVar(&SubscribersTerminateCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersTerminateCmd.MarkFlagRequired("imsi")
+
 	SubscribersCmd.AddCommand(SubscribersTerminateCmd)
 }
 
@@ -57,6 +59,7 @@ var SubscribersTerminateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectSubscribersTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForSubscribersTerminateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersTerminateCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersTerminateCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

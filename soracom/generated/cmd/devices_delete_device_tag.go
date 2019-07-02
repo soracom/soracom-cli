@@ -19,7 +19,11 @@ var DevicesDeleteDeviceTagCmdTagName string
 func init() {
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
+	DevicesDeleteDeviceTagCmd.MarkFlagRequired("device-id")
+
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdTagName, "tag-name", "", TRAPI("Name of tag to delete"))
+
+	DevicesDeleteDeviceTagCmd.MarkFlagRequired("tag-name")
 
 	DevicesCmd.AddCommand(DevicesDeleteDeviceTagCmd)
 }
@@ -62,6 +66,7 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -76,9 +81,13 @@ func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDevicesDeleteDeviceTagCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"device_id"+"}", url.PathEscape(DevicesDeleteDeviceTagCmdDeviceId), -1)
+	escapedDeviceId := url.PathEscape(DevicesDeleteDeviceTagCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", url.PathEscape(DevicesDeleteDeviceTagCmdTagName), -1)
+	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+
+	escapedTagName := url.PathEscape(DevicesDeleteDeviceTagCmdTagName)
+
+	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }

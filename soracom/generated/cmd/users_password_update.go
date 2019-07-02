@@ -32,11 +32,17 @@ var UsersPasswordUpdateCmdBody string
 func init() {
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", TRAPI(""))
 
+	UsersPasswordUpdateCmd.MarkFlagRequired("current-password")
+
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", TRAPI(""))
+
+	UsersPasswordUpdateCmd.MarkFlagRequired("new-password")
 
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
+
+	UsersPasswordUpdateCmd.MarkFlagRequired("user-name")
 
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -81,6 +87,7 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -95,20 +102,26 @@ func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForUsersPasswordUpdateCmd("/operators/{operator_id}/users/{user_name}/password"),
 		query:       buildQueryForUsersPasswordUpdateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForUsersPasswordUpdateCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersPasswordUpdateCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersPasswordUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersPasswordUpdateCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersPasswordUpdateCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

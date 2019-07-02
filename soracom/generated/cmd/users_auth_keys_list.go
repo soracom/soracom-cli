@@ -21,6 +21,8 @@ func init() {
 
 	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdUserName, "user-name", "", TRAPI("user_name"))
 
+	UsersAuthKeysListCmd.MarkFlagRequired("user-name")
+
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysListCmd)
 }
 
@@ -62,6 +64,7 @@ var UsersAuthKeysListCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -80,9 +83,13 @@ func collectUsersAuthKeysListCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForUsersAuthKeysListCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(UsersAuthKeysListCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(UsersAuthKeysListCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", url.PathEscape(UsersAuthKeysListCmdUserName), -1)
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+
+	escapedUserName := url.PathEscape(UsersAuthKeysListCmdUserName)
+
+	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }

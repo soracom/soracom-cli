@@ -28,6 +28,8 @@ func init() {
 
 	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
+	SubscribersSetImeiLockCmd.MarkFlagRequired("imsi")
+
 	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSetImeiLockCmd)
@@ -71,6 +73,7 @@ var SubscribersSetImeiLockCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -81,18 +84,22 @@ func collectSubscribersSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersSetImeiLockCmd("/subscribers/{imsi}/set_imei_lock"),
 		query:       buildQueryForSubscribersSetImeiLockCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForSubscribersSetImeiLockCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"imsi"+"}", url.PathEscape(SubscribersSetImeiLockCmdImsi), -1)
+	escapedImsi := url.PathEscape(SubscribersSetImeiLockCmdImsi)
+
+	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

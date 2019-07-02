@@ -64,6 +64,7 @@ var SandboxSubscribersCreateCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -74,11 +75,13 @@ func collectSandboxSubscribersCreateCmdParams(ac *apiClient) (*apiParams, error)
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSandboxSubscribersCreateCmd("/sandbox/subscribers/create"),
 		query:       buildQueryForSandboxSubscribersCreateCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }

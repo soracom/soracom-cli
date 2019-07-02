@@ -16,6 +16,8 @@ var BillsGetDailyCmdYyyyMM string
 func init() {
 	BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
 
+	BillsGetDailyCmd.MarkFlagRequired("yyyy-mm")
+
 	BillsCmd.AddCommand(BillsGetDailyCmd)
 }
 
@@ -57,6 +59,7 @@ var BillsGetDailyCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -71,7 +74,9 @@ func collectBillsGetDailyCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForBillsGetDailyCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"yyyyMM"+"}", url.PathEscape(BillsGetDailyCmdYyyyMM), -1)
+	escapedYyyyMM := url.PathEscape(BillsGetDailyCmdYyyyMM)
+
+	path = strings.Replace(path, "{"+"yyyyMM"+"}", escapedYyyyMM, -1)
 
 	return path
 }

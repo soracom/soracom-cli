@@ -29,7 +29,11 @@ var OperatorUpdatePasswordCmdBody string
 func init() {
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", TRAPI(""))
 
+	OperatorUpdatePasswordCmd.MarkFlagRequired("current-password")
+
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", TRAPI(""))
+
+	OperatorUpdatePasswordCmd.MarkFlagRequired("new-password")
 
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
@@ -76,6 +80,7 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 		}
 
 		return prettyPrintStringAsJSON(body)
+
 	},
 }
 
@@ -90,18 +95,22 @@ func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	contentType := "application/json"
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorUpdatePasswordCmd("/operators/{operator_id}/password"),
 		query:       buildQueryForOperatorUpdatePasswordCmd(),
-		contentType: "application/json",
+		contentType: contentType,
 		body:        body,
 	}, nil
 }
 
 func buildPathForOperatorUpdatePasswordCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", url.PathEscape(OperatorUpdatePasswordCmdOperatorId), -1)
+	escapedOperatorId := url.PathEscape(OperatorUpdatePasswordCmdOperatorId)
+
+	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }

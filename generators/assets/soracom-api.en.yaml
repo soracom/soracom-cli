@@ -262,7 +262,7 @@ definitions:
       targetOperatorId:
         type: string
       targetTag:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
     required:
     - actionConfigList
     - ruleConfig
@@ -270,7 +270,7 @@ definitions:
   CreateGroupRequest:
     properties:
       tags:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
   CreateOrUpdateRoleRequest:
     properties:
       description:
@@ -280,6 +280,18 @@ definitions:
         type: string
     required:
     - permission
+  CreatePortMappingRequest:
+    properties:
+      destination:
+        $ref: '#/definitions/PortMappingDestination'
+      duration:
+        type: number
+      source:
+        $ref: '#/definitions/PortMappingSource'
+      tlsRequired:
+        type: boolean
+    required:
+    - destination
   CreateRoleResponse:
     properties:
       roleId:
@@ -554,7 +566,7 @@ definitions:
       targetOperatorId:
         type: string
       targetTag:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
     required:
     - actionConfigList
     - handlerId
@@ -588,6 +600,32 @@ definitions:
         - minutes
         type: string
       to:
+        format: int64
+        type: integer
+  FileEntry:
+    properties:
+      contentLength:
+        description: Content length of the file
+        format: int64
+        type: integer
+      contentType:
+        description: Content type of the file
+        type: string
+      createdTime:
+        description: Created time of the file
+        format: int64
+        type: integer
+      etag:
+        description: Etag of the file
+        type: string
+      filename:
+        description: File name
+        type: string
+      isDirectory:
+        description: Whether the entry is directory or not
+        type: boolean
+      lastModifiedTime:
+        description: Last modified time of the file
         format: int64
         type: integer
   FileExportResponse:
@@ -900,7 +938,9 @@ definitions:
       zipCode:
         type: string
     required:
+    - addressLine1
     - city
+    - phoneNumber
     - shippingAddressId
     - shippingArea
     - state
@@ -982,7 +1022,7 @@ definitions:
       operatorId:
         type: string
       tags:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
   GroupConfigurationUpdateRequest:
     properties:
       key:
@@ -1555,6 +1595,37 @@ definitions:
       paymentStatementInfo:
         description: Payment statement information
         type: string
+  PortMapping:
+    properties:
+      destination:
+        $ref: '#/definitions/PortMappingDestination'
+      duration:
+        type: number
+      endpoint:
+        type: string
+      hostname:
+        type: string
+      ipAddress:
+        type: string
+      port:
+        type: number
+      source:
+        $ref: '#/definitions/PortMappingSource'
+      tlsRequired:
+        type: boolean
+  PortMappingDestination:
+    properties:
+      imsi:
+        type: string
+      port:
+        type: number
+    required:
+    - imsi
+    - port
+  PortMappingSource:
+    properties:
+      ipRanges:
+        type: array
   ProductModel:
     properties:
       count:
@@ -1821,7 +1892,7 @@ definitions:
       groupId:
         type: string
       tags:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
   SetImeiLockRequest:
     properties:
       imei:
@@ -2000,7 +2071,7 @@ definitions:
       status:
         type: string
       tags:
-        $ref: '#/definitions/Map'
+        $ref: '#/definitions/TagSet'
       terminationEnabled:
         type: boolean
   SupportTokenResponse:
@@ -2009,11 +2080,12 @@ definitions:
         type: string
     required:
     - token
-  Tag:
+  TagSet:
     additionalProperties:
       type: string
     example:
-      location: tokyo
+      tagName1: tagValue1
+      tagName2: tagValue2...
     type: object
   TagUpdateRequest:
     properties:
@@ -2024,6 +2096,14 @@ definitions:
     required:
     - tagName
     - tagValue
+    type: object
+  TrafficVolumeRanking:
+    properties:
+      imsi:
+        type: string
+      trafficVolume:
+        format: int64
+        type: integer
     type: object
   UpdateDefaultPermissionsRequest:
     properties:
@@ -2146,7 +2226,7 @@ definitions:
       status:
         type: string
       tags:
-        $ref: '#/definitions/Tag'
+        $ref: '#/definitions/TagSet'
       type:
         enum:
         - 12
@@ -3603,6 +3683,8 @@ paths:
       - devices delete-device-tag
   /devices/{device_id}/unset_group:
     post:
+      consumes:
+      - text/plain
       description: Lets a device leave from a group
       operationId: unsetDeviceGroup
       parameters:
@@ -3611,6 +3693,8 @@ paths:
         name: device_id
         required: true
         type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: Device updated
@@ -3868,6 +3952,218 @@ paths:
       - EventHandler
       x-soracom-cli:
       - event-handlers list-for-subscriber
+  /files/{scope}/{path}:
+    delete:
+      description: Deletes the specified file in the scope. Only `private` scope is
+        allowed for the operation.
+      operationId: deleteFile
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        in: path
+        name: scope
+        required: true
+        type: string
+      - description: Target path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        204:
+          description: The scpecified file is successfully deleted
+        404:
+          description: No such file
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete specified file in the scope.
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files delete
+    get:
+      description: Redirects the client to URL for the link to download the file specified
+        by the scope and the path. By issuing HTTP GET request to the link returned
+        in the response, the client is able to download the file.
+      operationId: getFile
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        - public
+        in: path
+        name: scope
+        required: true
+        type: string
+      - description: Target path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        302:
+          description: Client is redirected to the link to download the file.
+        404:
+          description: No such file
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Download file specified by the path and the scope
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files get
+    head:
+      description: Gets metadata of the file specified by the path and the scope.
+      operationId: getFileMetadata
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        - public
+        in: path
+        name: scope
+        required: true
+        type: string
+      - description: Target path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: Metadata of the file
+          schema:
+            $ref: '#/definitions/FileEntry'
+        404:
+          description: No such file
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get the metadata of the file specified by the path and the scope
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files get-metadata
+    put:
+      description: Uploads the file to the specified path in the scope. Only `private`
+        scope is allowed for the operation.
+      operationId: putFile
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        in: path
+        name: scope
+        required: true
+        type: string
+      - description: Target path
+        in: path
+        name: path
+        required: true
+        type: string
+      - description: Content of the file to upload
+        in: body
+        name: body
+        required: true
+        schema:
+          format: binary
+          type: string
+      - description: Content type of the file to upload
+        in: header
+        name: content-type
+        type: string
+      responses:
+        200:
+          description: File is successfully updated with the content
+        201:
+          description: File is successfully created
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Upload file to the path in the scope.
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files put
+  /files/{scope}/{path}/:
+    delete:
+      description: Deletes the specified directory in the scope. Only `private` scope
+        is allowed for the operation.
+      operationId: deleteDirectory
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        in: path
+        name: scope
+        required: true
+        type: string
+      - description: Target directory path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        204:
+          description: The scpeified directory is successfully deleted
+        400:
+          description: The specified directory is not empty
+        404:
+          description: No such directory
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete specified directory in the scope.
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files delete-directory
+    get:
+      description: Returns a list of files entries under the path in the scope. If
+        the total number of entries does not fit in one page, a URL for accessing
+        the next page is returned in the 'Link' header of the response.
+      operationId: listFiles
+      parameters:
+      - default: private
+        description: Scope of the request
+        enum:
+        - private
+        - public
+        in: path
+        name: scope
+        required: true
+        type: string
+      - default: /
+        description: Target path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: A list of file entries.
+          schema:
+            items:
+              $ref: '#/definitions/FileEntry'
+            type: array
+        404:
+          description: No such directory
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List files and directories on the path in the scope
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files list
   /files/exported/{exported_file_id}:
     get:
       consumes:
@@ -4413,9 +4709,12 @@ paths:
         - SoracomAir
         - SoracomBeam
         - SoracomEndorse
+        - SoracomFunk
         - SoracomFunnel
         - SoracomHarvest
+        - SoracomHarvestFiles
         - SoracomKrypton
+        - UnifiedEndpoint
         in: path
         name: namespace
         required: true
@@ -4458,9 +4757,12 @@ paths:
         - SoracomAir
         - SoracomBeam
         - SoracomEndorse
+        - SoracomFunk
         - SoracomFunnel
         - SoracomHarvest
+        - SoracomHarvestFiles
         - SoracomKrypton
+        - UnifiedEndpoint
         in: path
         name: namespace
         required: true
@@ -6627,11 +6929,11 @@ paths:
         "200":
           description: OK.
           schema:
-            type: string
+            $ref: '#/definitions/GetShippingAddressResponse'
         "201":
           description: shippingAddreddId
           schema:
-            type: string
+            $ref: '#/definitions/GetShippingAddressResponse'
       security:
       - api_key: []
       - api_token: []
@@ -8142,6 +8444,114 @@ paths:
       - Payment
       x-soracom-cli:
       - payer-information register
+  /port_mappings:
+    get:
+      description: Returns a list of port mappings.
+      operationId: listPortMappings
+      parameters:
+      - description: Maximum number of results per response page.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The last Port Mapping ID retrieved on the current page. By specifying
+          this parameter, you can continue to retrieve the list from the next group
+          onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: A list of port mappings.
+          schema:
+            items:
+              $ref: '#/definitions/PortMapping'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List Port Mapping Entries.
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings list
+    post:
+      description: Create a new port mapping.
+      operationId: createPortMapping
+      parameters:
+      - description: Port mapping to be created.
+        in: body
+        name: Port mapping
+        required: true
+        schema:
+          $ref: '#/definitions/CreatePortMappingRequest'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/PortMapping'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create Port Mapping.
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings create
+  /port_mappings/{ip_address}/{port}:
+    delete:
+      description: Deletes the specified port mapping entry
+      operationId: deletePortMapping
+      parameters:
+      - description: IP address of the target port mapping entry
+        in: path
+        name: ip_address
+        required: true
+        type: string
+      - description: Port of the target port mapping entry
+        in: path
+        name: port
+        required: true
+        type: string
+      responses:
+        204:
+          description: Deletion of specified port mapping entry complete.
+        404:
+          description: The specified port mapping entry does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete PortMapping.
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings delete
+  /port_mappings/subscribers/{imsi}:
+    get:
+      description: Returns the port mapping entries for a subscriber.
+      operationId: listPortMappingsForSubscriber
+      parameters:
+      - description: Target subscriber IMSI.
+        in: path
+        name: imsi
+        required: true
+        type: string
+      responses:
+        200:
+          description: List of port mapping entries for the subscriber.
+          schema:
+            $ref: '#/definitions/PortMapping'
+        404:
+          description: The specified subscriber does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Port Mapping entries for a subscriber.
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings get
   /products:
     get:
       consumes:
@@ -8382,6 +8792,60 @@ paths:
       - Query
       x-soracom-cli:
       - query subscribers
+  /query/subscribers/traffic_volume/ranking:
+    get:
+      consumes:
+      - application/json
+      description: Search traffic volume ranking of subscribers
+      operationId: searchSubscriberTrafficVolumeRanking
+      parameters:
+      - description: 'The beginning point of searching range (unixtime: in milliseconds)'
+        format: int64
+        in: query
+        name: from
+        required: true
+        type: integer
+      - description: 'The end point of searching range (unixtime: in milliseconds)'
+        format: int64
+        in: query
+        name: to
+        required: true
+        type: integer
+      - default: 10
+        description: The maximum number of item to retrieve
+        format: int32
+        in: query
+        maximum: 500
+        name: limit
+        required: false
+        type: integer
+      - default: desc
+        description: The order of ranking
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/TrafficVolumeRanking'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Search traffic volume ranking of subscribers
+      tags:
+      - Query
+      x-soracom-cli:
+      - query subscribers traffic-volume-ranking
+      - query traffic-ranking
   /sigfox_devices:
     get:
       description: Returns a list of Sigfox devices that match certain criteria. If
