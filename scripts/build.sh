@@ -12,7 +12,7 @@ run_command_on_docker_container() {
   dir=$1
   cmd=$2
   #echo $cmd
-  docker run -it --rm \
+  docker run -i --rm \
     -e 'GO111MODULE=on' \
     -v "$d":/go/src/github.com/soracom/soracom-cli \
     -v "$GOPATH":/go \
