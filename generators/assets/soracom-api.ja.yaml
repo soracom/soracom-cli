@@ -1625,6 +1625,8 @@ definitions:
   PortMappingSource:
     properties:
       ipRanges:
+        items:
+          type: string
         type: array
   ProductModel:
     properties:
@@ -2750,7 +2752,7 @@ paths:
         required: true
         type: string
       - description: 削除対象のデータエントリのタイムスタンプ (unixtime ミリ秒単位)
-        in: query
+        in: path
         name: time
         required: true
         type: integer

@@ -1625,6 +1625,8 @@ definitions:
   PortMappingSource:
     properties:
       ipRanges:
+        items:
+          type: string
         type: array
   ProductModel:
     properties:
@@ -2777,7 +2779,7 @@ paths:
         required: true
         type: string
       - description: Timestamp of the target data entry to delete (unixtime in milliseconds).
-        in: query
+        in: path
         name: time
         required: true
         type: integer

@@ -179,6 +179,7 @@ func buildPathFor{{$suffix}}(path string) string {
   path = strings.Replace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
   {{end}}
   {{end}}
+
   {{range .IntegerFlags}}
   {{if eq .In "path"}}
   path = strings.Replace(path, "{" + "{{.Name}}" + "}", url.PathEscape(sprintf("%d", {{$prefix}}{{.VarName}})), -1)

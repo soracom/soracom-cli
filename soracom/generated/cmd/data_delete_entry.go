@@ -96,15 +96,13 @@ func buildPathForDataDeleteEntryCmd(path string) string {
 
 	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
+	path = strings.Replace(path, "{"+"time"+"}", url.PathEscape(sprintf("%d", DataDeleteEntryCmdTime)), -1)
+
 	return path
 }
 
 func buildQueryForDataDeleteEntryCmd() string {
 	result := []string{}
-
-	if DataDeleteEntryCmdTime != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("time"), url.QueryEscape(sprintf("%d", DataDeleteEntryCmdTime))))
-	}
 
 	return strings.Join(result, "&")
 }

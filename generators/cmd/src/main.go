@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"go/format"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -14,6 +16,13 @@ import (
 )
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatalf("%#v\n", err)
+	}
+}
+
+func run() error {
 	outputDir := flag.String("o", "", "output directory")
 	apiDefFile := flag.String("a", "", "API definition YAML file")
 	apiSandboxDefFile := flag.String("s", "", "API Sandbox definition YAML file")
@@ -22,64 +31,46 @@ func main() {
 	flag.Parse()
 
 	if outputDir == nil || *outputDir == "" {
-		fmt.Println("-o <output dir> is required")
-		os.Exit(1)
+		return errors.New("-o <output dir> is required")
 	}
 
 	if apiDefFile == nil || *apiDefFile == "" {
-		fmt.Println("-a <api definition file> is required")
-		os.Exit(1)
+		return errors.New("-a <api definition file> is required")
 	}
 
 	if apiSandboxDefFile == nil || *apiSandboxDefFile == "" {
-		fmt.Println("-s <api sandbox definition file> is required")
-		os.Exit(1)
+		return errors.New("-s <api sandbox definition file> is required")
 	}
 
 	if templateDir == nil || *templateDir == "" {
-		fmt.Println("-t <template dir> is required")
-		os.Exit(1)
+		return errors.New("-t <template dir> is required")
 	}
 
 	if predefinedDir == nil || *predefinedDir == "" {
-		fmt.Println("-p <predefined command files dir> is required")
-		os.Exit(1)
+		return errors.New("-p <predefined command files dir> is required")
 	}
 
-	err := run(*apiDefFile, *apiSandboxDefFile, *templateDir, *predefinedDir, *outputDir)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
-
-func run(apiDefFile, apiSandboxDefFile, templateDir, predefinedDir, outputDir string) error {
-	err := cleanOutputDir(outputDir)
+	err := cleanOutputDir(*outputDir)
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(outputDir, 0700)
+	err = os.MkdirAll(*outputDir, 0700)
 	if err != nil {
 		return err
 	}
 
-	apiDef, err := lib.LoadAPIDef(apiDefFile)
+	apiDef, err := lib.LoadAPIDef(*apiDefFile)
 	if err != nil {
 		return err
 	}
 
-	apiSandboxDef, err := lib.LoadAPIDef(apiSandboxDefFile)
+	apiSandboxDef, err := lib.LoadAPIDef(*apiSandboxDefFile)
 	if err != nil {
 		return err
 	}
 
-	err = generateCommands(apiDef, apiSandboxDef, templateDir, predefinedDir, outputDir)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return generateCommands(apiDef, apiSandboxDef, *templateDir, *predefinedDir, *outputDir)
 }
 
 func generateCommands(apiDef, apiSandboxDef *lib.APIDefinitions, templateDir, predefinedDir, outputDir string) error {
