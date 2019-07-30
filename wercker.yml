@@ -2,6 +2,7 @@ box:
     id: golang
 
 build:
+  docker: true
   steps:
     - wercker/setup-go-workspace:
         package-dir: github.com/soracom/soracom-cli
@@ -12,7 +13,7 @@ build:
         name: install-dev-dependencies
         code: |
             apt-get update
-            apt-get install -y jq
+            apt-get install -y docker jq
 
     # Build the project
     - script:
