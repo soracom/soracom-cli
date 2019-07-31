@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-d=$( cd "$(dirname "$0" )"; cd ..; pwd -P )
+d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
 
 : 'Check if shell scripts are healthy' && {
   command -v shellcheck > /dev/null 2>&1 && {
@@ -12,15 +12,22 @@ run_command_on_docker_container() {
   dir=$1
   cmd=$2
   #echo $cmd
-  docker run -i --rm \
-    -e 'GO111MODULE=on' \
-    -v "$d":/go/src/github.com/soracom/soracom-cli \
-    -v "$GOPATH":/go \
-    -w "/go/src/github.com/soracom/soracom-cli/$dir" \
-    golang:1.12 bash -c "$cmd" || {
-    echo -e "${RED}Build failed.${RESET}"
-    exit 1
-  }
+  if [ -z "$WERCKER" ]; then
+    docker run -i --rm \
+      -e "GO111MODULE=on" \
+      -v "$d":/go/src/github.com/soracom/soracom-cli \
+      -v "$GOPATH":/go \
+      -w "/go/src/github.com/soracom/soracom-cli/$dir" \
+      golang:1.12 bash -x -c "$cmd" || {
+      echo -e "${RED}Build failed.${RESET}"
+      exit 1
+    }
+  else
+    # on wercker, it's already running on a docker container
+    set -x
+    cd "/go/src/github.com/soracom/soracom-cli/$dir" && GO111MODULE=on bash -c "$cmd"
+    set +x
+  fi
 }
 
 set -e # aborting if any commands below exit with non-zero code
@@ -50,6 +57,7 @@ fi
 }
 
 : "Test generator's library" && {
+    echo "Testing generator's library ..."
     run_command_on_docker_container 'generators/lib' 'go test'
 }
 
@@ -62,7 +70,7 @@ fi
     run_command_on_docker_container 'generators/cmd/src' 'go build -o generate-cmd'
 
     echo 'Generating source codes for soracom-cli by using the generator ...'
-    run_command_on_docker_container '' 'generators/cmd/src/generate-cmd -a "generators/assets/soracom-api.en.yaml"'' -s "generators/assets/sandbox/soracom-sandbox-api.en.yaml" -t "generators/cmd/templates" -p "generators/cmd/predefined" -o "soracom/generated/cmd/"'
+    run_command_on_docker_container '' 'generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/'
 }
 
 : 'Build soracom-cli executables' && {

@@ -1,5 +1,5 @@
 box:
-    id: golang
+    id: golang:1.12
 
 build:
   docker: true
@@ -13,7 +13,7 @@ build:
         name: install-dev-dependencies
         code: |
             apt update
-            apt install -y docker.io jq
+            apt install -y jq
 
     # Build the project
     - script:
