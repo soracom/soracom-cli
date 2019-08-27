@@ -7334,6 +7334,9 @@ paths:
           description: MFAを無効にしました
         "400":
           description: 不正なリクエストです
+      security:
+      - api_key: []
+      - api_token: []
       summary: Revoke SAM user's MFA
       tags:
       - User
@@ -7364,6 +7367,9 @@ paths:
             $ref: '#/definitions/MFAStatusOfUseResponse'
         "400":
           description: 不正なリクエストです
+      security:
+      - api_key: []
+      - api_token: []
       summary: Get SAM user's MFA status
       tags:
       - User
@@ -7394,6 +7400,9 @@ paths:
             $ref: '#/definitions/EnableMFAOTPResponse'
         "400":
           description: 不正なリクエストです
+      security:
+      - api_key: []
+      - api_token: []
       summary: Enable SAM user's MFA
       tags:
       - User
@@ -7429,6 +7438,9 @@ paths:
           description: 検証に成功しました
         "400":
           description: 不正なリクエストです
+      security:
+      - api_key: []
+      - api_token: []
       summary: Verify SAM user's MFA OTP code when MFA activation phase
       tags:
       - User
@@ -7765,6 +7777,9 @@ paths:
           description: 許可されていません
         "404":
           description: オペレーターが存在しません
+      security:
+      - api_key: []
+      - api_token: []
       summary: Get the default permissions
       tags:
       - User
@@ -7796,6 +7811,9 @@ paths:
           description: 不正なリクエストです
         "403":
           description: 許可されていません
+      security:
+      - api_key: []
+      - api_token: []
       summary: Update the default permissions
       tags:
       - User

@@ -7450,6 +7450,9 @@ paths:
           description: Revoked
         "400":
           description: Bad request
+      security:
+      - api_key: []
+      - api_token: []
       summary: Revoke SAM user's MFA
       tags:
       - User
@@ -7480,6 +7483,9 @@ paths:
             $ref: '#/definitions/MFAStatusOfUseResponse'
         "400":
           description: Bad request
+      security:
+      - api_key: []
+      - api_token: []
       summary: Get SAM user's MFA status
       tags:
       - User
@@ -7510,6 +7516,9 @@ paths:
             $ref: '#/definitions/EnableMFAOTPResponse'
         "400":
           description: Bad request
+      security:
+      - api_key: []
+      - api_token: []
       summary: Enable SAM user's MFA
       tags:
       - User
@@ -7545,6 +7554,9 @@ paths:
           description: Verified
         "400":
           description: Bad request
+      security:
+      - api_key: []
+      - api_token: []
       summary: Verify SAM user's MFA OTP code when MFA activation phase
       tags:
       - User
@@ -7882,6 +7894,9 @@ paths:
           description: Not privileged
         "404":
           description: Operator Not Found
+      security:
+      - api_key: []
+      - api_token: []
       summary: Get the default permissions
       tags:
       - User
@@ -7914,6 +7929,9 @@ paths:
           description: Bad Request
         "403":
           description: Not privileged
+      security:
+      - api_key: []
+      - api_token: []
       summary: Update the default permissions
       tags:
       - User

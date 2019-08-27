@@ -42,6 +42,12 @@ var UsersMfaRevokeCmd = &cobra.Command{
 			ac.SetVerbose(true)
 		}
 
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
 		param, err := collectUsersMfaRevokeCmdParams(ac)
 		if err != nil {
 			return err
