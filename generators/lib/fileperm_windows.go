@@ -37,7 +37,6 @@ func IsFilePermissionTooOpen(path string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	//fmt.Println(sidToString(currProcSID))
 
 	//fmt.Printf("dacl == %+v\n", dacl)
 	aces := dacl.GetACEList()
@@ -49,7 +48,6 @@ func IsFilePermissionTooOpen(path string) (bool, error) {
 		default:
 			return true, nil
 		}
-		//fmt.Println(sidToString(ace.GetSID()))
 		sid := ace.GetSID()
 		if !windows.EqualSid(sid, currProcSID) {
 			return true, nil
@@ -71,14 +69,6 @@ func GetCurrentProcessSID() (*windows.SID, error) {
 		return nil, err
 	}
 	return tu.User.Sid, nil
-}
-
-func sidToString(sid *windows.SID) string {
-	str, err := sid.String()
-	if err != nil {
-		return "<err: " + err.Error()
-	}
-	return str
 }
 
 func ProtectFile(path string) error {
