@@ -8,6 +8,7 @@ d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
   }
 }
 
+gopath=${GOPATH:-$HOME/go}
 run_command_on_docker_container() {
   dir=$1
   cmd=$2
@@ -16,7 +17,7 @@ run_command_on_docker_container() {
     docker run -i --rm \
       -e "GO111MODULE=on" \
       -v "$d":/go/src/github.com/soracom/soracom-cli \
-      -v "$GOPATH":/go \
+      -v "$gopath":/go \
       -w "/go/src/github.com/soracom/soracom-cli/$dir" \
       golang:1.12 bash -x -c "$cmd" || {
       echo -e "${RED}Build failed.${RESET}"
