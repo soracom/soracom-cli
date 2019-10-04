@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var LoraGatewaysListCmdTagValueMatchMode string
 // LoraGatewaysListCmdLimit holds value of 'limit' option
 var LoraGatewaysListCmdLimit int64
 
+// LoraGatewaysListCmdPaginate indicates to do pagination or not
+var LoraGatewaysListCmdPaginate bool
+
 func init() {
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+
+	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraGatewaysCmd.AddCommand(LoraGatewaysListCmd)
 }
@@ -66,7 +69,7 @@ var LoraGatewaysListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectLoraGatewaysListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraGatewaysListCmd("/lora_gateways"),
 		query:  buildQueryForLoraGatewaysListCmd(),
+
+		doPagination:                      LoraGatewaysListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForLoraGatewaysListCmd(path string) string {
 	return path
 }
 
-func buildQueryForLoraGatewaysListCmd() string {
-	result := []string{}
+func buildQueryForLoraGatewaysListCmd() url.Values {
+	result := url.Values{}
 
 	if LoraGatewaysListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraGatewaysListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", LoraGatewaysListCmdLastEvaluatedKey)
 	}
 
 	if LoraGatewaysListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraGatewaysListCmdTagName)))
+		result.Add("tag_name", LoraGatewaysListCmdTagName)
 	}
 
 	if LoraGatewaysListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraGatewaysListCmdTagValue)))
+		result.Add("tag_value", LoraGatewaysListCmdTagValue)
 	}
 
 	if LoraGatewaysListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraGatewaysListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", LoraGatewaysListCmdTagValueMatchMode)
 	}
 
 	if LoraGatewaysListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraGatewaysListCmdLimit))))
+		result.Add("limit", sprintf("%d", LoraGatewaysListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

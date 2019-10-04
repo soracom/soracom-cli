@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -67,7 +67,7 @@ var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -104,15 +104,15 @@ func buildPathForSubscribersSendSmsByMsisdnCmd(path string) string {
 
 	escapedMsisdn := url.PathEscape(SubscribersSendSmsByMsisdnCmdMsisdn)
 
-	path = strings.Replace(path, "{"+"msisdn"+"}", escapedMsisdn, -1)
+	path = strReplace(path, "{"+"msisdn"+"}", escapedMsisdn, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersSendSmsByMsisdnCmd() string {
-	result := []string{}
+func buildQueryForSubscribersSendSmsByMsisdnCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSubscribersSendSmsByMsisdnCmd() (string, error) {

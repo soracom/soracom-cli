@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var FilesListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForFilesListCmd(path string) string {
 
 	escapedPath := harvestFilesPathEscape(FilesListCmdPath)
 
-	path = strings.Replace(path, "{"+"path"+"}", escapedPath, -1)
+	path = strReplace(path, "{"+"path"+"}", escapedPath, -1)
 
 	escapedScope := url.PathEscape(FilesListCmdScope)
 
-	path = strings.Replace(path, "{"+"scope"+"}", escapedScope, -1)
+	path = strReplace(path, "{"+"scope"+"}", escapedScope, -1)
 
 	return path
 }
 
-func buildQueryForFilesListCmd() string {
-	result := []string{}
+func buildQueryForFilesListCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

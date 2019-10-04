@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var VolumeDiscountsGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForVolumeDiscountsGetCmd(path string) string {
 
 	escapedContractId := url.PathEscape(VolumeDiscountsGetCmdContractId)
 
-	path = strings.Replace(path, "{"+"contract_id"+"}", escapedContractId, -1)
+	path = strReplace(path, "{"+"contract_id"+"}", escapedContractId, -1)
 
 	return path
 }
 
-func buildQueryForVolumeDiscountsGetCmd() string {
-	result := []string{}
+func buildQueryForVolumeDiscountsGetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -69,7 +69,7 @@ var SubscribersRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -106,15 +106,15 @@ func buildPathForSubscribersRegisterCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersRegisterCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersRegisterCmd() string {
-	result := []string{}
+func buildQueryForSubscribersRegisterCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSubscribersRegisterCmd() (string, error) {

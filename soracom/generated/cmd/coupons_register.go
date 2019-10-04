@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var CouponsRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForCouponsRegisterCmd(path string) string {
 
 	escapedCouponCode := url.PathEscape(CouponsRegisterCmdCouponCode)
 
-	path = strings.Replace(path, "{"+"coupon_code"+"}", escapedCouponCode, -1)
+	path = strReplace(path, "{"+"coupon_code"+"}", escapedCouponCode, -1)
 
 	return path
 }
 
-func buildQueryForCouponsRegisterCmd() string {
-	result := []string{}
+func buildQueryForCouponsRegisterCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

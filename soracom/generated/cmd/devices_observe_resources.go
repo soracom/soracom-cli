@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -67,7 +65,7 @@ var DevicesObserveResourcesCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -95,25 +93,25 @@ func buildPathForDevicesObserveResourcesCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(DevicesObserveResourcesCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	escapedInstance := url.PathEscape(DevicesObserveResourcesCmdInstance)
 
-	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+	path = strReplace(path, "{"+"instance"+"}", escapedInstance, -1)
 
 	escapedObject := url.PathEscape(DevicesObserveResourcesCmdObject)
 
-	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
+	path = strReplace(path, "{"+"object"+"}", escapedObject, -1)
 
 	return path
 }
 
-func buildQueryForDevicesObserveResourcesCmd() string {
-	result := []string{}
+func buildQueryForDevicesObserveResourcesCmd() url.Values {
+	result := url.Values{}
 
 	if DevicesObserveResourcesCmdModel != false {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("model"), url.QueryEscape(sprintf("%t", DevicesObserveResourcesCmdModel))))
+		result.Add("model", sprintf("%t", DevicesObserveResourcesCmdModel))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

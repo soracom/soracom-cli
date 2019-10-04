@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -55,7 +55,7 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,15 +92,15 @@ func buildPathForLoraGatewaysPutTagsCmd(path string) string {
 
 	escapedGatewayId := url.PathEscape(LoraGatewaysPutTagsCmdGatewayId)
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
+	path = strReplace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }
 
-func buildQueryForLoraGatewaysPutTagsCmd() string {
-	result := []string{}
+func buildQueryForLoraGatewaysPutTagsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLoraGatewaysPutTagsCmd() (string, error) {

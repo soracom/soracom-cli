@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,12 +17,17 @@ var DataListSourceResourcesCmdResourceType string
 // DataListSourceResourcesCmdLimit holds value of 'limit' option
 var DataListSourceResourcesCmdLimit int64
 
+// DataListSourceResourcesCmdPaginate indicates to do pagination or not
+var DataListSourceResourcesCmdPaginate bool
+
 func init() {
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `resourceId` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
 	DataListSourceResourcesCmd.Flags().Int64Var(&DataListSourceResourcesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+
+	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataCmd.AddCommand(DataListSourceResourcesCmd)
 }
@@ -56,7 +59,7 @@ var DataListSourceResourcesCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -77,6 +80,10 @@ func collectDataListSourceResourcesCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForDataListSourceResourcesCmd("/data/resources"),
 		query:  buildQueryForDataListSourceResourcesCmd(),
+
+		doPagination:                      DataListSourceResourcesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -85,20 +92,20 @@ func buildPathForDataListSourceResourcesCmd(path string) string {
 	return path
 }
 
-func buildQueryForDataListSourceResourcesCmd() string {
-	result := []string{}
+func buildQueryForDataListSourceResourcesCmd() url.Values {
+	result := url.Values{}
 
 	if DataListSourceResourcesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataListSourceResourcesCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DataListSourceResourcesCmdLastEvaluatedKey)
 	}
 
 	if DataListSourceResourcesCmdResourceType != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_type"), url.QueryEscape(DataListSourceResourcesCmdResourceType)))
+		result.Add("resource_type", DataListSourceResourcesCmdResourceType)
 	}
 
 	if DataListSourceResourcesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataListSourceResourcesCmdLimit))))
+		result.Add("limit", sprintf("%d", DataListSourceResourcesCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

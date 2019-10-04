@@ -8,11 +8,11 @@ import (
 {{end}}
   "io/ioutil"
 {{end}}
-{{if or .PathParamsExist .QueryParamsExist }}
   "net/url"
-{{end}}
   "os"
+{{if .BodyExists}}
   "strings"
+{{end}}
 
   "github.com/spf13/cobra"
 )
@@ -41,6 +41,12 @@ var {{$prefix}}{{.VarName}} float64
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} bool
 {{end}}
+
+{{if .PaginationAvailable}}
+// {{$prefix}}Paginate indicates to do pagination or not
+var {{$prefix}}Paginate bool
+{{end}}
+
 {{if .BodyExists }}
 // {{$prefix}}Body holds contents of request body to be sent
 var {{$prefix}}Body string
@@ -84,6 +90,10 @@ func init() {
   {{end}}
 {{end}}
 
+{{if .PaginationAvailable}}
+  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}Paginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+{{end}}
+
 {{if .BodyExists }}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}Body, "body", "", TRCLI("cli.common_params.body.short_help"))
 {{end}}
@@ -119,7 +129,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return err
     }
 
-    _, body, err := ac.callAPI(param)
+    body, err := ac.callAPI(param)
     if err != nil {
       cmd.SilenceUsage = true
       return err
@@ -165,6 +175,11 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
     query: buildQueryFor{{$suffix}}(),
     {{if .BodyExists }}contentType: contentType,{{end}}
     {{if .BodyExists }}body: body,{{end}}
+    {{if .PaginationAvailable}}
+    doPagination: {{$prefix}}Paginate,
+    paginationKeyHeaderInResponse: "{{.PaginationKeyHeaderInResponse}}",
+    paginationRequestParameterInQuery: "{{.PaginationRequestParameterInQuery}}",
+    {{end}}
   }, nil
 }
 
@@ -176,24 +191,24 @@ func buildPathFor{{$suffix}}(path string) string {
   {{else}}
   escaped{{.VarName}} := url.PathEscape({{$prefix}}{{.VarName}})
   {{end}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
+  path = strReplace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
   {{end}}
   {{end}}
 
   {{range .IntegerFlags}}
   {{if eq .In "path"}}
-  path = strings.Replace(path, "{" + "{{.Name}}" + "}", url.PathEscape(sprintf("%d", {{$prefix}}{{.VarName}})), -1)
+  path = strReplace(path, "{" + "{{.Name}}" + "}", url.PathEscape(sprintf("%d", {{$prefix}}{{.VarName}})), -1)
   {{end}}
   {{end}}
   return path
 }
 
-func buildQueryFor{{$suffix}}() string {
-  result := []string{}
+func buildQueryFor{{$suffix}}() url.Values {
+  result := url.Values{}
   {{range .StringFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != "{{.DefaultValue}}" {
-    result = append(result, sprintf("%s=%s", url.QueryEscape("{{.Name}}"), url.QueryEscape({{$prefix}}{{.VarName}})))
+    result.Add("{{.Name}}", {{$prefix}}{{.VarName}})
   }
   {{end}}
   {{end}}
@@ -201,7 +216,7 @@ func buildQueryFor{{$suffix}}() string {
   {{if eq .In "query"}}
   for _, s := range {{$prefix}}{{.VarName}} {
     if s != "{{.DefaultValue}}" {
-      result = append(result, sprintf("%s=%s", url.QueryEscape("{{.Name}}"), url.QueryEscape(s)))
+      result.Add("{{.Name}}", s)
     }
   }
   {{end}}
@@ -210,7 +225,7 @@ func buildQueryFor{{$suffix}}() string {
   {{range .IntegerFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
-    result = append(result, sprintf("%s=%s", url.QueryEscape("{{.Name}}"), url.QueryEscape(sprintf("%d", {{$prefix}}{{.VarName}}))))
+    result.Add("{{.Name}}", sprintf("%d", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}
@@ -218,7 +233,7 @@ func buildQueryFor{{$suffix}}() string {
   {{range .FloatFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
-    result = append(result, sprintf("%s=%s", url.QueryEscape("{{.Name}}"), url.QueryEscape(sprintf("%f", {{$prefix}}{{.VarName}}))))
+    result.Add("{{.Name}}", sprintf("%f", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}
@@ -226,12 +241,12 @@ func buildQueryFor{{$suffix}}() string {
   {{range .BoolFlags}}
   {{if eq .In "query"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
-    result = append(result, sprintf("%s=%s", url.QueryEscape("{{.Name}}"), url.QueryEscape(sprintf("%t", {{$prefix}}{{.VarName}}))))
+    result.Add("{{.Name}}", sprintf("%t", {{$prefix}}{{.VarName}}))
   }
   {{end}}
   {{end}}
 
-  return strings.Join(result, "&")
+  return result
 }
 
 {{if .BodyExists }}

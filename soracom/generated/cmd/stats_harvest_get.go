@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -51,7 +49,7 @@ var StatsHarvestGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForStatsHarvestGetCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(StatsHarvestGetCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }
 
-func buildQueryForStatsHarvestGetCmd() string {
-	result := []string{}
+func buildQueryForStatsHarvestGetCmd() url.Values {
+	result := url.Values{}
 
 	if StatsHarvestGetCmdYearMonth != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("year_month"), url.QueryEscape(StatsHarvestGetCmdYearMonth)))
+		result.Add("year_month", StatsHarvestGetCmdYearMonth)
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

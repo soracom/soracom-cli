@@ -2,8 +2,8 @@
 package cmd
 
 import (
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -40,7 +40,7 @@ var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -69,8 +69,8 @@ func buildPathForPaymentMethodsReactivateCurrentCmd(path string) string {
 	return path
 }
 
-func buildQueryForPaymentMethodsReactivateCurrentCmd() string {
-	result := []string{}
+func buildQueryForPaymentMethodsReactivateCurrentCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

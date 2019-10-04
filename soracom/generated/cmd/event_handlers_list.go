@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +44,7 @@ var EventHandlersListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -75,12 +73,12 @@ func buildPathForEventHandlersListCmd(path string) string {
 	return path
 }
 
-func buildQueryForEventHandlersListCmd() string {
-	result := []string{}
+func buildQueryForEventHandlersListCmd() url.Values {
+	result := url.Values{}
 
 	if EventHandlersListCmdTarget != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("target"), url.QueryEscape(EventHandlersListCmdTarget)))
+		result.Add("target", EventHandlersListCmdTarget)
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

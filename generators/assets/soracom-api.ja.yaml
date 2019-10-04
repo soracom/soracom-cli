@@ -2730,6 +2730,11 @@ paths:
       - DataEntry
       x-soracom-cli:
       - data get-entries
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /data/{resource_type}/{resource_id}/{time}:
     delete:
       description: リソースIDとタイムスタンプで指定されたデータエントリを削除する。
@@ -2848,6 +2853,11 @@ paths:
       - DataEntry
       x-soracom-cli:
       - data list-source-resources
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /device_object_models:
     get:
       description: デバイスオブジェクトモデルのリストを返します。
@@ -2881,6 +2891,11 @@ paths:
       - DeviceObjectModel
       x-soracom-cli:
       - devices list-object-models
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json
@@ -3079,6 +3094,11 @@ paths:
       - Device
       x-soracom-cli:
       - devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json
@@ -3562,6 +3582,11 @@ paths:
       - Device
       x-soracom-cli:
       - devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /devices/{device_id}/set_group:
     post:
       description: デバイスをグループに参加させます。
@@ -4204,6 +4229,11 @@ paths:
       - Gadget
       x-soracom-cli:
       - gadgets list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /gadgets/{product_id}/{serial_number}:
     get:
       description: 指定されたGadgetの情報を返す。
@@ -4572,6 +4602,11 @@ paths:
       - Group
       x-soracom-cli:
       - groups list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Groupを新規作成する
       operationId: createGroup
@@ -4770,6 +4805,11 @@ paths:
       x-sam-operationId: listSubscribers
       x-soracom-cli:
       - groups list-subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /groups/{group_id}/tags:
     put:
       description: 指定されたConfiguratio Groupのタグを追加・更新
@@ -5276,6 +5316,11 @@ paths:
       - Log
       x-soracom-cli:
       - logs get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_devices:
     get:
       description: 条件にマッチするLoRa deviceのリストを返す。LoRa deviceの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
@@ -5325,6 +5370,11 @@ paths:
       - LoraDevice
       x-soracom-cli:
       - lora-devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_devices/{device_id}:
     get:
       description: 指定されたLoRa deviceの情報を返す。
@@ -5404,6 +5454,11 @@ paths:
       - LoraDevice
       x-soracom-cli:
       - lora-devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: 指定したデバイスにデータを送信する。データはLoRa Network Serverにセットされ、次に利用可能なデータ送信スロットを使って指定デバイスに送信される。未送信のデータがLoRa
         Network Serverにあった場合には、最新の受信データで上書きされる。 一定時間(2時間)受け取られなかった場合、デバイス受信時に新しいメッセージを受けた場合は、メッセージは破棄されます。
@@ -5734,6 +5789,11 @@ paths:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_gateways/{gateway_id}:
     get:
       description: 指定されたLoRa gatewayの情報を返す。
@@ -6033,6 +6093,11 @@ paths:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: LoRa network setを作成する
       operationId: createLoraNetworkSet
@@ -6184,6 +6249,11 @@ paths:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets list-gateways
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_network_sets/{ns_id}/revoke_permission:
     post:
       description: 指定されたLoRa network setの別のOperatorへの利用許可を取り消す
@@ -8368,6 +8438,11 @@ paths:
       - PortMapping
       x-soracom-cli:
       - port-mappings list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Create a new port mapping.
       operationId: createPortMapping
@@ -8573,6 +8648,11 @@ paths:
       - Query
       x-soracom-cli:
       - query sigfox-devices
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/subscribers:
     get:
       consumes:
@@ -8678,6 +8758,11 @@ paths:
       - Query
       x-soracom-cli:
       - query subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/subscribers/traffic_volume/ranking:
     get:
       consumes:
@@ -8781,6 +8866,11 @@ paths:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sigfox_devices/{device_id}:
     get:
       description: 指定されたSigfox deviceの情報を返す。
@@ -8860,6 +8950,11 @@ paths:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: 指定したデバイスにデータを送信する。データはサーバに保持され、次に当該デバイスがデータ送信リクエストを行った際に送信される。未送信のデータがサーバにあった場合には、最新のデータで上書きされる。
       operationId: sendDataToSigfoxDevice
@@ -9415,6 +9510,11 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}:
     get:
       description: 指定されたSubscriberの情報を返す。
@@ -9525,6 +9625,11 @@ paths:
       x-soracom-cli:
       - data get
       - subscribers get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}/deactivate:
     post:
       consumes:
@@ -9689,6 +9794,11 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers session-events
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}/register:
     post:
       consumes:
@@ -10347,6 +10457,11 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json

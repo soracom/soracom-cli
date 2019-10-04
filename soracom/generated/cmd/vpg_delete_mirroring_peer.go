@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForVpgDeleteMirroringPeerCmd(path string) string {
 
 	escapedIpaddr := url.PathEscape(VpgDeleteMirroringPeerCmdIpaddr)
 
-	path = strings.Replace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
+	path = strReplace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
 
 	escapedVpgId := url.PathEscape(VpgDeleteMirroringPeerCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgDeleteMirroringPeerCmd() string {
-	result := []string{}
+func buildQueryForVpgDeleteMirroringPeerCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

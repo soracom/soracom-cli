@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -65,7 +63,7 @@ var QuerySubscribersTrafficVolumeRankingCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -94,24 +92,24 @@ func buildPathForQuerySubscribersTrafficVolumeRankingCmd(path string) string {
 	return path
 }
 
-func buildQueryForQuerySubscribersTrafficVolumeRankingCmd() string {
-	result := []string{}
+func buildQueryForQuerySubscribersTrafficVolumeRankingCmd() url.Values {
+	result := url.Values{}
 
 	if QuerySubscribersTrafficVolumeRankingCmdOrder != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("order"), url.QueryEscape(QuerySubscribersTrafficVolumeRankingCmdOrder)))
+		result.Add("order", QuerySubscribersTrafficVolumeRankingCmdOrder)
 	}
 
 	if QuerySubscribersTrafficVolumeRankingCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdFrom))))
+		result.Add("from", sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdFrom))
 	}
 
 	if QuerySubscribersTrafficVolumeRankingCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdLimit))))
+		result.Add("limit", sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdLimit))
 	}
 
 	if QuerySubscribersTrafficVolumeRankingCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdTo))))
+		result.Add("to", sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

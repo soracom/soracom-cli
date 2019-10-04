@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -64,7 +64,7 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -101,15 +101,15 @@ func buildPathForSubscribersUpdateSpeedClassCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersUpdateSpeedClassCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersUpdateSpeedClassCmd() string {
-	result := []string{}
+func buildQueryForSubscribersUpdateSpeedClassCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSubscribersUpdateSpeedClassCmd() (string, error) {

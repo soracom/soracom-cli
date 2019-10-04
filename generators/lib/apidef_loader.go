@@ -29,8 +29,22 @@ type APIMethod struct {
 	OperationID string                   `yaml:"operationId"`
 	Security    []map[string]interface{} `yaml:"security"`
 	CLI         []string                 `yaml:"x-soracom-cli"`
+	Pagination  *Pagination              `yaml:"x-soracom-cli-pagination"`
 	Parameters  []APIParam               `yaml:"parameters"`
 	Responses   map[string]APIResponse   `yaml:"responses"`
+}
+
+type Pagination struct {
+	Response Response `yaml:"response"`
+	Request  Request  `yaml:"request"`
+}
+
+type Response struct {
+	Header string `yaml:"header"`
+}
+
+type Request struct {
+	Param string `yaml:"param"`
 }
 
 // APIParam holds information about an API parameter

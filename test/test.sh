@@ -97,11 +97,11 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
     shipping_address_id="$( echo "$resp" | jq -r .shippingAddressId )"
 }
 
-: "Create an order" && {
+: "Create an order: 3 SIM cards" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         orders create \
         --shipping-address-id "$shipping_address_id" \
-        --body '{"orderItemList":[{"productCode":"4573326590013","quantity":1}]}' \
+        --body '{"orderItemList":[{"productCode":"4573326590013","quantity":3}]}' \
         --profile soracom-cli-test
         )"
     order_id="$( echo "$resp" | jq -r .orderId )"
@@ -123,17 +123,17 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         )"
 }
 
-: "Check if a subscriber is associated with the orer" && {
+: "Check if subscribers are associated with the orer" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         orders list-subscribers \
         --order-id "$order_id" \
         --profile soracom-cli-test
         )"
     n="$( echo "$resp" | jq .orderedSubscriberList[].imsi | wc -l )"
-    test "$n" -eq 1
+    test "$n" -eq 3
 }
 
-: "Register the subscriber" && {
+: "Register the subscribers" && {
     resp="$( env SORACOM_VERBOSE=1 "${SORACOM_ENVS[@]}" "$SORACOM" \
         orders register-subscribers \
         --order-id "$order_id" \
@@ -141,17 +141,18 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         )"
 }
 
-: "Check if a subscriber is registered" && {
+: "Check if the subscribers are registered (uses '--fetch-all' option to test pagination)" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         subscribers list \
+        --fetch-all --limit 1 \
         --profile soracom-cli-test
         )"
     n="$( echo "$resp" | jq .[].imsi | wc -l )"
-    test "$n" -eq 1
-    imsi="$( echo "$resp" | jq -r .[].imsi )"
+    test "$n" -eq 3
+    imsi="$( echo "$resp" | jq -r .[0].imsi )"
 }
 
-: "Activate the SIM" && {
+: "Activate the first SIM" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" \
         subscribers activate \
         --imsi "$imsi" \
@@ -189,10 +190,11 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 
 : "Check if the SIM is terminated" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
-        subscribers list \
+        subscribers get \
+        --imsi "$imsi" \
         --profile soracom-cli-test
         )"
-    status="$( echo "$resp" | jq -r .[].status )"
+    status="$( echo "$resp" | jq -r .status )"
     test "$status" = "terminated"
 }
 

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForVpgUnregisterGatePeerCmd(path string) string {
 
 	escapedOuterIpAddress := url.PathEscape(VpgUnregisterGatePeerCmdOuterIpAddress)
 
-	path = strings.Replace(path, "{"+"outer_ip_address"+"}", escapedOuterIpAddress, -1)
+	path = strReplace(path, "{"+"outer_ip_address"+"}", escapedOuterIpAddress, -1)
 
 	escapedVpgId := url.PathEscape(VpgUnregisterGatePeerCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgUnregisterGatePeerCmd() string {
-	result := []string{}
+func buildQueryForVpgUnregisterGatePeerCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

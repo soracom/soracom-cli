@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -63,7 +65,7 @@ var LagoonUsersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -101,10 +103,10 @@ func buildPathForLagoonUsersCreateCmd(path string) string {
 	return path
 }
 
-func buildQueryForLagoonUsersCreateCmd() string {
-	result := []string{}
+func buildQueryForLagoonUsersCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLagoonUsersCreateCmd() (string, error) {

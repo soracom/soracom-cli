@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var CredentialsDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForCredentialsDeleteCmd(path string) string {
 
 	escapedCredentialsId := url.PathEscape(CredentialsDeleteCmdCredentialsId)
 
-	path = strings.Replace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
+	path = strReplace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
 
 	return path
 }
 
-func buildQueryForCredentialsDeleteCmd() string {
-	result := []string{}
+func buildQueryForCredentialsDeleteCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

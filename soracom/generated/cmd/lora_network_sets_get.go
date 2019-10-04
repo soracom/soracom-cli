@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForLoraNetworkSetsGetCmd(path string) string {
 
 	escapedNsId := url.PathEscape(LoraNetworkSetsGetCmdNsId)
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
+	path = strReplace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }
 
-func buildQueryForLoraNetworkSetsGetCmd() string {
-	result := []string{}
+func buildQueryForLoraNetworkSetsGetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

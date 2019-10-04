@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var LoraDevicesDisableTerminationCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForLoraDevicesDisableTerminationCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(LoraDevicesDisableTerminationCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForLoraDevicesDisableTerminationCmd() string {
-	result := []string{}
+func buildQueryForLoraDevicesDisableTerminationCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

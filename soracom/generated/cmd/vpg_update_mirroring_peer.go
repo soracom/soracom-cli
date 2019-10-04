@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var VpgUpdateMirroringPeerCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -99,19 +99,19 @@ func buildPathForVpgUpdateMirroringPeerCmd(path string) string {
 
 	escapedIpaddr := url.PathEscape(VpgUpdateMirroringPeerCmdIpaddr)
 
-	path = strings.Replace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
+	path = strReplace(path, "{"+"ipaddr"+"}", escapedIpaddr, -1)
 
 	escapedVpgId := url.PathEscape(VpgUpdateMirroringPeerCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgUpdateMirroringPeerCmd() string {
-	result := []string{}
+func buildQueryForVpgUpdateMirroringPeerCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForVpgUpdateMirroringPeerCmd() (string, error) {

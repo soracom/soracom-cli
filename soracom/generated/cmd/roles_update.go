@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -74,7 +74,7 @@ var RolesUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -115,19 +115,19 @@ func buildPathForRolesUpdateCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(RolesUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	escapedRoleId := url.PathEscape(RolesUpdateCmdRoleId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
+	path = strReplace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	return path
 }
 
-func buildQueryForRolesUpdateCmd() string {
-	result := []string{}
+func buildQueryForRolesUpdateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForRolesUpdateCmd() (string, error) {

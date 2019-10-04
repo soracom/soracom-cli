@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var LoraNetworkSetsListCmdTagValueMatchMode string
 // LoraNetworkSetsListCmdLimit holds value of 'limit' option
 var LoraNetworkSetsListCmdLimit int64
 
+// LoraNetworkSetsListCmdPaginate indicates to do pagination or not
+var LoraNetworkSetsListCmdPaginate bool
+
 func init() {
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last network set retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+
+	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListCmd)
 }
@@ -66,7 +69,7 @@ var LoraNetworkSetsListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectLoraNetworkSetsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraNetworkSetsListCmd("/lora_network_sets"),
 		query:  buildQueryForLoraNetworkSetsListCmd(),
+
+		doPagination:                      LoraNetworkSetsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForLoraNetworkSetsListCmd(path string) string {
 	return path
 }
 
-func buildQueryForLoraNetworkSetsListCmd() string {
-	result := []string{}
+func buildQueryForLoraNetworkSetsListCmd() url.Values {
+	result := url.Values{}
 
 	if LoraNetworkSetsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraNetworkSetsListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", LoraNetworkSetsListCmdLastEvaluatedKey)
 	}
 
 	if LoraNetworkSetsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraNetworkSetsListCmdTagName)))
+		result.Add("tag_name", LoraNetworkSetsListCmdTagName)
 	}
 
 	if LoraNetworkSetsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraNetworkSetsListCmdTagValue)))
+		result.Add("tag_value", LoraNetworkSetsListCmdTagValue)
 	}
 
 	if LoraNetworkSetsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraNetworkSetsListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", LoraNetworkSetsListCmdTagValueMatchMode)
 	}
 
 	if LoraNetworkSetsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraNetworkSetsListCmdLimit))))
+		result.Add("limit", sprintf("%d", LoraNetworkSetsListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

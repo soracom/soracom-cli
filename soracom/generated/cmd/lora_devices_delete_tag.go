@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var LoraDevicesDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForLoraDevicesDeleteTagCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(LoraDevicesDeleteTagCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	escapedTagName := url.PathEscape(LoraDevicesDeleteTagCmdTagName)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
+	path = strReplace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }
 
-func buildQueryForLoraDevicesDeleteTagCmd() string {
-	result := []string{}
+func buildQueryForLoraDevicesDeleteTagCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

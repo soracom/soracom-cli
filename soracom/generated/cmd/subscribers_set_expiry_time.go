@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -69,7 +69,7 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -106,15 +106,15 @@ func buildPathForSubscribersSetExpiryTimeCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersSetExpiryTimeCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersSetExpiryTimeCmd() string {
-	result := []string{}
+func buildQueryForSubscribersSetExpiryTimeCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {

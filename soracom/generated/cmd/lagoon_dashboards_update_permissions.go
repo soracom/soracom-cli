@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -51,7 +51,7 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -86,15 +86,15 @@ func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParam
 
 func buildPathForLagoonDashboardsUpdatePermissionsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsUpdatePermissionsCmdDashboardId)), -1)
+	path = strReplace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsUpdatePermissionsCmdDashboardId)), -1)
 
 	return path
 }
 
-func buildQueryForLagoonDashboardsUpdatePermissionsCmd() string {
-	result := []string{}
+func buildQueryForLagoonDashboardsUpdatePermissionsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLagoonDashboardsUpdatePermissionsCmd() (string, error) {

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -62,7 +60,7 @@ var DataGetEntryCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -90,19 +88,19 @@ func buildPathForDataGetEntryCmd(path string) string {
 
 	escapedResourceId := url.PathEscape(DataGetEntryCmdResourceId)
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
+	path = strReplace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
 
 	escapedResourceType := url.PathEscape(DataGetEntryCmdResourceType)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
+	path = strReplace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
-	path = strings.Replace(path, "{"+"time"+"}", url.PathEscape(sprintf("%d", DataGetEntryCmdTime)), -1)
+	path = strReplace(path, "{"+"time"+"}", url.PathEscape(sprintf("%d", DataGetEntryCmdTime)), -1)
 
 	return path
 }
 
-func buildQueryForDataGetEntryCmd() string {
-	result := []string{}
+func buildQueryForDataGetEntryCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

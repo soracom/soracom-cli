@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -69,7 +67,7 @@ var StatsAirGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -97,25 +95,25 @@ func buildPathForStatsAirGetCmd(path string) string {
 
 	escapedImsi := url.PathEscape(StatsAirGetCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForStatsAirGetCmd() string {
-	result := []string{}
+func buildQueryForStatsAirGetCmd() url.Values {
+	result := url.Values{}
 
 	if StatsAirGetCmdPeriod != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("period"), url.QueryEscape(StatsAirGetCmdPeriod)))
+		result.Add("period", StatsAirGetCmdPeriod)
 	}
 
 	if StatsAirGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", StatsAirGetCmdFrom))))
+		result.Add("from", sprintf("%d", StatsAirGetCmdFrom))
 	}
 
 	if StatsAirGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", StatsAirGetCmdTo))))
+		result.Add("to", sprintf("%d", StatsAirGetCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

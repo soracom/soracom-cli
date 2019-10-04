@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"errors"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // APIClient provides an access to SORACOM REST API
@@ -34,15 +36,9 @@ type apiError struct {
 	ResponseBody string
 }
 
-func newAPIError(resp *http.Response) *apiError {
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return &apiError{
-			ResponseBody: err.Error(),
-		}
-	}
+func newAPIError(respBody string) *apiError {
 	return &apiError{
-		ResponseBody: string(body),
+		ResponseBody: respBody,
 	}
 }
 
@@ -111,29 +107,123 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 }
 
 type apiParams struct {
-	method         string
-	path           string
-	query          string
-	contentType    string
-	body           string
-	noRetryOnError bool
-	noVersionCheck bool
+	method                            string
+	path                              string
+	query                             url.Values
+	contentType                       string
+	body                              string
+	noRetryOnError                    bool
+	noVersionCheck                    bool
+	doPagination                      bool
+	paginationKeyHeaderInResponse     string
+	paginationRequestParameterInQuery string
 }
 
 // params.path and params.query must be escaped before calling this func
-func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
-	urlString := ac.endpoint + ac.basePath + params.path
-	if params.query != "" {
-		urlString += "?" + params.query
-	}
-	u, err := url.Parse(urlString)
-	if err != nil {
-		return nil, "", err
+func (ac *apiClient) callAPI(params *apiParams) (string, error) {
+	var (
+		resBody       string
+		latestVersion string
+	)
+
+	for {
+		u, err := ac.constructURL(params)
+		if err != nil {
+			return "", err
+		}
+
+		req, err := ac.constructRequest(u, params)
+		if err != nil {
+			return "", err
+		}
+
+		if ac.verbose {
+			dumpHTTPRequest(req)
+		}
+
+		res, rb, err := ac.doRequest(req, params)
+		if err != nil {
+			return "", err
+		}
+		if ac.verbose && res != nil {
+			dumpHTTPResponse(res)
+		}
+
+		if res.StatusCode >= http.StatusBadRequest {
+			return "", newAPIError(rb)
+		}
+		latestVersion = res.Header.Get("x-soracom-cli-version")
+
+		if !params.doPagination {
+			resBody = rb
+			break
+		}
+
+		resBody, err = concatJSONArray(resBody, rb)
+		if err != nil {
+			return "", err
+		}
+
+		k, v := getPaginationKeyValue(res, params)
+		if k == "" || v == "" {
+			break
+		}
+
+		setPaginationKeyValue(params, v)
 	}
 
+	if ac.verbose {
+		printfStderr("==========\n")
+	}
+
+	if !params.noVersionCheck {
+		if isNewerThanCurrentVersion(latestVersion) {
+			printfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
+		}
+	}
+
+	return resBody, nil
+}
+
+// arr1 = "[1,2]"
+// arr2 = "[3]"
+// returns "[1,2,3]"
+func concatJSONArray(arr1, arr2 string) (string, error) {
+	if arr1 == "" {
+		return arr2, nil
+	}
+
+	a1 := make([]interface{}, 0)
+	a2 := make([]interface{}, 0)
+
+	err := json.Unmarshal([]byte(arr1), &a1)
+	if err != nil {
+		return "", err
+	}
+
+	err = json.Unmarshal([]byte(arr2), &a2)
+	if err != nil {
+		return "", err
+	}
+
+	a := append(a1, a2...)
+
+	b, err := json.Marshal(a)
+	return string(b), err
+}
+
+func (ac *apiClient) constructURL(params *apiParams) (*url.URL, error) {
+	urlString := ac.endpoint + ac.basePath + params.path
+	if params.query != nil {
+		urlString += "?" + params.query.Encode()
+	}
+	return url.Parse(urlString)
+}
+
+func (ac *apiClient) constructRequest(u *url.URL, params *apiParams) (*http.Request, error) {
 	req, err := http.NewRequest(params.method, u.String(), strings.NewReader(params.body))
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 	req.Header.Set("User-Agent", fmt.Sprintf("soracom-cli/%s", version))
 
@@ -153,11 +243,15 @@ func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
 		req.Header.Set("X-Soracom-Lang", ac.language)
 	}
 
-	if ac.verbose {
-		dumpHTTPRequest(req)
-	}
+	return req, nil
+}
 
-	var res *http.Response
+func (ac *apiClient) doRequest(req *http.Request, params *apiParams) (*http.Response, string, error) {
+	var (
+		res *http.Response
+		err error
+	)
+
 	if params.noRetryOnError {
 		res, err = ac.httpClient.Do(req)
 	} else {
@@ -176,27 +270,27 @@ func (ac *apiClient) callAPI(params *apiParams) (http.Header, string, error) {
 		io.Copy(ioutil.Discard, res.Body)
 	}()
 
-	if ac.verbose {
-		dumpHTTPResponse(res)
-		printfStderr("==========\n")
-	}
-
-	if res.StatusCode >= http.StatusBadRequest {
-		return nil, "", newAPIError(res)
-	}
-
-	if !params.noVersionCheck {
-		latestVersion := res.Header.Get("x-soracom-cli-version")
-		if isNewerThanCurrentVersion(latestVersion) {
-			printfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
-		}
-	}
-
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, "", err
 	}
-	return res.Header, bytes.NewBuffer(b).String(), nil
+	return res, bytes.NewBuffer(b).String(), nil
+}
+
+func getPaginationKeyValue(res *http.Response, params *apiParams) (string, string) {
+	k := params.paginationKeyHeaderInResponse
+	if k != "" {
+		v := res.Header.Get(k)
+		return k, v
+	}
+	return "", ""
+}
+
+func setPaginationKeyValue(params *apiParams, v string) {
+	k := params.paginationRequestParameterInQuery
+	if k != "" {
+		params.query.Set(k, v)
+	}
 }
 
 // version strings are in the form of "v1.22.333" or "v0.0.1"
@@ -302,16 +396,16 @@ func (ac *apiClient) SetVerbose(verbose bool) {
 func dumpHTTPRequest(req *http.Request) {
 	dump, err := httputil.DumpRequest(req, true)
 	if err != nil {
-		printfStderr("%s\n", err)
+		printfStderr("error while dumping http request header and body: %s\n", err)
 		return
 	}
 	printfStderr("%s\n", string(dump))
 }
 
 func dumpHTTPResponse(resp *http.Response) {
-	dump, err := httputil.DumpResponse(resp, true)
+	dump, err := httputil.DumpResponse(resp, false)
 	if err != nil {
-		printfStderr("%s\n", err)
+		printfStderr("error while dumping http response header: %s\n", err)
 		return
 	}
 	printfStderr("%s\n", string(dump))

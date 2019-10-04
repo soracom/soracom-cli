@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -28,6 +26,9 @@ var SubscribersGetDataCmdLimit int64
 // SubscribersGetDataCmdTo holds value of 'to' option
 var SubscribersGetDataCmdTo int64
 
+// SubscribersGetDataCmdPaginate indicates to do pagination or not
+var SubscribersGetDataCmdPaginate bool
+
 func init() {
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
@@ -42,6 +43,8 @@ func init() {
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersGetDataCmd)
 }
@@ -73,7 +76,7 @@ var SubscribersGetDataCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -94,6 +97,10 @@ func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSubscribersGetDataCmd("/subscribers/{imsi}/data"),
 		query:  buildQueryForSubscribersGetDataCmd(),
+
+		doPagination:                      SubscribersGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -101,33 +108,33 @@ func buildPathForSubscribersGetDataCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersGetDataCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersGetDataCmd() string {
-	result := []string{}
+func buildQueryForSubscribersGetDataCmd() url.Values {
+	result := url.Values{}
 
 	if SubscribersGetDataCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersGetDataCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", SubscribersGetDataCmdLastEvaluatedKey)
 	}
 
 	if SubscribersGetDataCmdSort != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(SubscribersGetDataCmdSort)))
+		result.Add("sort", SubscribersGetDataCmdSort)
 	}
 
 	if SubscribersGetDataCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdFrom))))
+		result.Add("from", sprintf("%d", SubscribersGetDataCmdFrom))
 	}
 
 	if SubscribersGetDataCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdLimit))))
+		result.Add("limit", sprintf("%d", SubscribersGetDataCmdLimit))
 	}
 
 	if SubscribersGetDataCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", SubscribersGetDataCmdTo))))
+		result.Add("to", sprintf("%d", SubscribersGetDataCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

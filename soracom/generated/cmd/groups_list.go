@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var GroupsListCmdTagValueMatchMode string
 // GroupsListCmdLimit holds value of 'limit' option
 var GroupsListCmdLimit int64
 
+// GroupsListCmdPaginate indicates to do pagination or not
+var GroupsListCmdPaginate bool
+
 func init() {
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	GroupsListCmd.Flags().BoolVar(&GroupsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
@@ -66,7 +69,7 @@ var GroupsListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectGroupsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGroupsListCmd("/groups"),
 		query:  buildQueryForGroupsListCmd(),
+
+		doPagination:                      GroupsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForGroupsListCmd(path string) string {
 	return path
 }
 
-func buildQueryForGroupsListCmd() string {
-	result := []string{}
+func buildQueryForGroupsListCmd() url.Values {
+	result := url.Values{}
 
 	if GroupsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GroupsListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", GroupsListCmdLastEvaluatedKey)
 	}
 
 	if GroupsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(GroupsListCmdTagName)))
+		result.Add("tag_name", GroupsListCmdTagName)
 	}
 
 	if GroupsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(GroupsListCmdTagValue)))
+		result.Add("tag_value", GroupsListCmdTagValue)
 	}
 
 	if GroupsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(GroupsListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", GroupsListCmdTagValueMatchMode)
 	}
 
 	if GroupsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GroupsListCmdLimit))))
+		result.Add("limit", sprintf("%d", GroupsListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

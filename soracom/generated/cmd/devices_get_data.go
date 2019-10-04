@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -28,6 +26,9 @@ var DevicesGetDataCmdLimit int64
 // DevicesGetDataCmdTo holds value of 'to' option
 var DevicesGetDataCmdTo int64
 
+// DevicesGetDataCmdPaginate indicates to do pagination or not
+var DevicesGetDataCmdPaginate bool
+
 func init() {
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
@@ -42,6 +43,8 @@ func init() {
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesCmd.AddCommand(DevicesGetDataCmd)
 }
@@ -73,7 +76,7 @@ var DevicesGetDataCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -94,6 +97,10 @@ func collectDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetDataCmd("/devices/{device_id}/data"),
 		query:  buildQueryForDevicesGetDataCmd(),
+
+		doPagination:                      DevicesGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -101,33 +108,33 @@ func buildPathForDevicesGetDataCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(DevicesGetDataCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForDevicesGetDataCmd() string {
-	result := []string{}
+func buildQueryForDevicesGetDataCmd() url.Values {
+	result := url.Values{}
 
 	if DevicesGetDataCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DevicesGetDataCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DevicesGetDataCmdLastEvaluatedKey)
 	}
 
 	if DevicesGetDataCmdSort != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(DevicesGetDataCmdSort)))
+		result.Add("sort", DevicesGetDataCmdSort)
 	}
 
 	if DevicesGetDataCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", DevicesGetDataCmdFrom))))
+		result.Add("from", sprintf("%d", DevicesGetDataCmdFrom))
 	}
 
 	if DevicesGetDataCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DevicesGetDataCmdLimit))))
+		result.Add("limit", sprintf("%d", DevicesGetDataCmdLimit))
 	}
 
 	if DevicesGetDataCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", DevicesGetDataCmdTo))))
+		result.Add("to", sprintf("%d", DevicesGetDataCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

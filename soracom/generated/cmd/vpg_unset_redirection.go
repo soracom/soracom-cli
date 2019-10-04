@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForVpgUnsetRedirectionCmd(path string) string {
 
 	escapedVpgId := url.PathEscape(VpgUnsetRedirectionCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgUnsetRedirectionCmd() string {
-	result := []string{}
+func buildQueryForVpgUnsetRedirectionCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

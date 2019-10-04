@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -58,7 +56,7 @@ var OrdersListSubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -86,21 +84,21 @@ func buildPathForOrdersListSubscribersCmd(path string) string {
 
 	escapedOrderId := url.PathEscape(OrdersListSubscribersCmdOrderId)
 
-	path = strings.Replace(path, "{"+"order_id"+"}", escapedOrderId, -1)
+	path = strReplace(path, "{"+"order_id"+"}", escapedOrderId, -1)
 
 	return path
 }
 
-func buildQueryForOrdersListSubscribersCmd() string {
-	result := []string{}
+func buildQueryForOrdersListSubscribersCmd() url.Values {
+	result := url.Values{}
 
 	if OrdersListSubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(OrdersListSubscribersCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", OrdersListSubscribersCmdLastEvaluatedKey)
 	}
 
 	if OrdersListSubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", OrdersListSubscribersCmdLimit))))
+		result.Add("limit", sprintf("%d", OrdersListSubscribersCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

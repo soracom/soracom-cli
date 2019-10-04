@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var PortMappingsDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForPortMappingsDeleteCmd(path string) string {
 
 	escapedIpAddress := url.PathEscape(PortMappingsDeleteCmdIpAddress)
 
-	path = strings.Replace(path, "{"+"ip_address"+"}", escapedIpAddress, -1)
+	path = strReplace(path, "{"+"ip_address"+"}", escapedIpAddress, -1)
 
 	escapedPort := url.PathEscape(PortMappingsDeleteCmdPort)
 
-	path = strings.Replace(path, "{"+"port"+"}", escapedPort, -1)
+	path = strReplace(path, "{"+"port"+"}", escapedPort, -1)
 
 	return path
 }
 
-func buildQueryForPortMappingsDeleteCmd() string {
-	result := []string{}
+func buildQueryForPortMappingsDeleteCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

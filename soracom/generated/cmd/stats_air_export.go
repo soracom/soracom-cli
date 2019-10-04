@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -75,7 +75,7 @@ var StatsAirExportCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -116,19 +116,19 @@ func buildPathForStatsAirExportCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(StatsAirExportCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }
 
-func buildQueryForStatsAirExportCmd() string {
-	result := []string{}
+func buildQueryForStatsAirExportCmd() url.Values {
+	result := url.Values{}
 
 	if StatsAirExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(StatsAirExportCmdExportMode)))
+		result.Add("export_mode", StatsAirExportCmdExportMode)
 	}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForStatsAirExportCmd() (string, error) {

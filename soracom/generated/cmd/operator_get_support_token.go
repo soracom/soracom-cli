@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +44,7 @@ var OperatorGetSupportTokenCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -78,13 +76,13 @@ func buildPathForOperatorGetSupportTokenCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(OperatorGetSupportTokenCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }
 
-func buildQueryForOperatorGetSupportTokenCmd() string {
-	result := []string{}
+func buildQueryForOperatorGetSupportTokenCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

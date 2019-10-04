@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -99,15 +99,15 @@ func buildPathForLoraGatewaysSetNetworkSetCmd(path string) string {
 
 	escapedGatewayId := url.PathEscape(LoraGatewaysSetNetworkSetCmdGatewayId)
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
+	path = strReplace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }
 
-func buildQueryForLoraGatewaysSetNetworkSetCmd() string {
-	result := []string{}
+func buildQueryForLoraGatewaysSetNetworkSetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLoraGatewaysSetNetworkSetCmd() (string, error) {

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -53,7 +51,7 @@ var UsersMfaGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -85,17 +83,17 @@ func buildPathForUsersMfaGetCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersMfaGetCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	escapedUserName := url.PathEscape(UsersMfaGetCmdUserName)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
+	path = strReplace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }
 
-func buildQueryForUsersMfaGetCmd() string {
-	result := []string{}
+func buildQueryForUsersMfaGetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

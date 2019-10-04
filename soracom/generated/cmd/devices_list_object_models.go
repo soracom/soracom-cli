@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -16,10 +14,15 @@ var DevicesListObjectModelsCmdLastEvaluatedKey string
 // DevicesListObjectModelsCmdLimit holds value of 'limit' option
 var DevicesListObjectModelsCmdLimit int64
 
+// DevicesListObjectModelsCmdPaginate indicates to do pagination or not
+var DevicesListObjectModelsCmdPaginate bool
+
 func init() {
 	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page"))
 
 	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", 0, TRAPI("Max number of device object models in a response"))
+
+	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesCmd.AddCommand(DevicesListObjectModelsCmd)
 }
@@ -51,7 +54,7 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -72,6 +75,10 @@ func collectDevicesListObjectModelsCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForDevicesListObjectModelsCmd("/device_object_models"),
 		query:  buildQueryForDevicesListObjectModelsCmd(),
+
+		doPagination:                      DevicesListObjectModelsCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -80,16 +87,16 @@ func buildPathForDevicesListObjectModelsCmd(path string) string {
 	return path
 }
 
-func buildQueryForDevicesListObjectModelsCmd() string {
-	result := []string{}
+func buildQueryForDevicesListObjectModelsCmd() url.Values {
+	result := url.Values{}
 
 	if DevicesListObjectModelsCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DevicesListObjectModelsCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DevicesListObjectModelsCmdLastEvaluatedKey)
 	}
 
 	if DevicesListObjectModelsCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DevicesListObjectModelsCmdLimit))))
+		result.Add("limit", sprintf("%d", DevicesListObjectModelsCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

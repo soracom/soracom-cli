@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForVpgDeleteIpAddressMapEntryCmd(path string) string {
 
 	escapedKey := url.PathEscape(VpgDeleteIpAddressMapEntryCmdKey)
 
-	path = strings.Replace(path, "{"+"key"+"}", escapedKey, -1)
+	path = strReplace(path, "{"+"key"+"}", escapedKey, -1)
 
 	escapedVpgId := url.PathEscape(VpgDeleteIpAddressMapEntryCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgDeleteIpAddressMapEntryCmd() string {
-	result := []string{}
+func buildQueryForVpgDeleteIpAddressMapEntryCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

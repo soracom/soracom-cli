@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -53,7 +51,7 @@ var OperatorAuthKeysDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -85,17 +83,17 @@ func buildPathForOperatorAuthKeysDeleteCmd(path string) string {
 
 	escapedAuthKeyId := url.PathEscape(OperatorAuthKeysDeleteCmdAuthKeyId)
 
-	path = strings.Replace(path, "{"+"auth_key_id"+"}", escapedAuthKeyId, -1)
+	path = strReplace(path, "{"+"auth_key_id"+"}", escapedAuthKeyId, -1)
 
 	escapedOperatorId := url.PathEscape(OperatorAuthKeysDeleteCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }
 
-func buildQueryForOperatorAuthKeysDeleteCmd() string {
-	result := []string{}
+func buildQueryForOperatorAuthKeysDeleteCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

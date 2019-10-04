@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var GroupsDeleteTagCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForGroupsDeleteTagCmd(path string) string {
 
 	escapedGroupId := url.PathEscape(GroupsDeleteTagCmdGroupId)
 
-	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
+	path = strReplace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	escapedTagName := url.PathEscape(GroupsDeleteTagCmdTagName)
 
-	path = strings.Replace(path, "{"+"tag_name"+"}", escapedTagName, -1)
+	path = strReplace(path, "{"+"tag_name"+"}", escapedTagName, -1)
 
 	return path
 }
 
-func buildQueryForGroupsDeleteTagCmd() string {
-	result := []string{}
+func buildQueryForGroupsDeleteTagCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

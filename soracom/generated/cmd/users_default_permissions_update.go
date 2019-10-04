@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var UsersDefaultPermissionsUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -103,15 +103,15 @@ func buildPathForUsersDefaultPermissionsUpdateCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersDefaultPermissionsUpdateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	return path
 }
 
-func buildQueryForUsersDefaultPermissionsUpdateCmd() string {
-	result := []string{}
+func buildQueryForUsersDefaultPermissionsUpdateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForUsersDefaultPermissionsUpdateCmd() (string, error) {

@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +64,7 @@ var OperatorVerifyMfaRevokeTokenCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -100,10 +102,10 @@ func buildPathForOperatorVerifyMfaRevokeTokenCmd(path string) string {
 	return path
 }
 
-func buildQueryForOperatorVerifyMfaRevokeTokenCmd() string {
-	result := []string{}
+func buildQueryForOperatorVerifyMfaRevokeTokenCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForOperatorVerifyMfaRevokeTokenCmd() (string, error) {

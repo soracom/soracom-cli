@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var GroupsPutConfigCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -99,19 +99,19 @@ func buildPathForGroupsPutConfigCmd(path string) string {
 
 	escapedGroupId := url.PathEscape(GroupsPutConfigCmdGroupId)
 
-	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
+	path = strReplace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	escapedNamespace := url.PathEscape(GroupsPutConfigCmdNamespace)
 
-	path = strings.Replace(path, "{"+"namespace"+"}", escapedNamespace, -1)
+	path = strReplace(path, "{"+"namespace"+"}", escapedNamespace, -1)
 
 	return path
 }
 
-func buildQueryForGroupsPutConfigCmd() string {
-	result := []string{}
+func buildQueryForGroupsPutConfigCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForGroupsPutConfigCmd() (string, error) {

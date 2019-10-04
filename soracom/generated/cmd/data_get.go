@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -28,6 +26,9 @@ var DataGetCmdLimit int64
 // DataGetCmdTo holds value of 'to' option
 var DataGetCmdTo int64
 
+// DataGetCmdPaginate indicates to do pagination or not
+var DataGetCmdPaginate bool
+
 func init() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
@@ -42,6 +43,8 @@ func init() {
 	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataCmd.AddCommand(DataGetCmd)
 }
@@ -73,7 +76,7 @@ var DataGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -94,6 +97,10 @@ func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDataGetCmd("/subscribers/{imsi}/data"),
 		query:  buildQueryForDataGetCmd(),
+
+		doPagination:                      DataGetCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -101,33 +108,33 @@ func buildPathForDataGetCmd(path string) string {
 
 	escapedImsi := url.PathEscape(DataGetCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForDataGetCmd() string {
-	result := []string{}
+func buildQueryForDataGetCmd() url.Values {
+	result := url.Values{}
 
 	if DataGetCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataGetCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DataGetCmdLastEvaluatedKey)
 	}
 
 	if DataGetCmdSort != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(DataGetCmdSort)))
+		result.Add("sort", DataGetCmdSort)
 	}
 
 	if DataGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", DataGetCmdFrom))))
+		result.Add("from", sprintf("%d", DataGetCmdFrom))
 	}
 
 	if DataGetCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataGetCmdLimit))))
+		result.Add("limit", sprintf("%d", DataGetCmdLimit))
 	}
 
 	if DataGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", DataGetCmdTo))))
+		result.Add("to", sprintf("%d", DataGetCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

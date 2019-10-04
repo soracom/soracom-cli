@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var SubscribersSessionEventsCmdLimit int64
 // SubscribersSessionEventsCmdTo holds value of 'to' option
 var SubscribersSessionEventsCmdTo int64
 
+// SubscribersSessionEventsCmdPaginate indicates to do pagination or not
+var SubscribersSessionEventsCmdPaginate bool
+
 func init() {
 	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
@@ -37,6 +38,8 @@ func init() {
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
+
+	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersSessionEventsCmd)
 }
@@ -68,7 +71,7 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -89,6 +92,10 @@ func collectSubscribersSessionEventsCmdParams(ac *apiClient) (*apiParams, error)
 		method: "GET",
 		path:   buildPathForSubscribersSessionEventsCmd("/subscribers/{imsi}/events/sessions"),
 		query:  buildQueryForSubscribersSessionEventsCmd(),
+
+		doPagination:                      SubscribersSessionEventsCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -96,29 +103,29 @@ func buildPathForSubscribersSessionEventsCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersSessionEventsCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersSessionEventsCmd() string {
-	result := []string{}
+func buildQueryForSubscribersSessionEventsCmd() url.Values {
+	result := url.Values{}
 
 	if SubscribersSessionEventsCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersSessionEventsCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", SubscribersSessionEventsCmdLastEvaluatedKey)
 	}
 
 	if SubscribersSessionEventsCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdFrom))))
+		result.Add("from", sprintf("%d", SubscribersSessionEventsCmdFrom))
 	}
 
 	if SubscribersSessionEventsCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdLimit))))
+		result.Add("limit", sprintf("%d", SubscribersSessionEventsCmdLimit))
 	}
 
 	if SubscribersSessionEventsCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", SubscribersSessionEventsCmdTo))))
+		result.Add("to", sprintf("%d", SubscribersSessionEventsCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

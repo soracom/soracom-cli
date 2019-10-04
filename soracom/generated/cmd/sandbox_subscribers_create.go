@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -53,7 +55,7 @@ var SandboxSubscribersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -91,10 +93,10 @@ func buildPathForSandboxSubscribersCreateCmd(path string) string {
 	return path
 }
 
-func buildQueryForSandboxSubscribersCreateCmd() string {
-	result := []string{}
+func buildQueryForSandboxSubscribersCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSandboxSubscribersCreateCmd() (string, error) {

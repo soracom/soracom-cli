@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var DevicesDeleteObjectModelCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForDevicesDeleteObjectModelCmd(path string) string {
 
 	escapedModelId := url.PathEscape(DevicesDeleteObjectModelCmdModelId)
 
-	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
+	path = strReplace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }
 
-func buildQueryForDevicesDeleteObjectModelCmd() string {
-	result := []string{}
+func buildQueryForDevicesDeleteObjectModelCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

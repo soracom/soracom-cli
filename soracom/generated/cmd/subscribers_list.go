@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -34,6 +32,9 @@ var SubscribersListCmdTagValueMatchMode string
 // SubscribersListCmdLimit holds value of 'limit' option
 var SubscribersListCmdLimit int64
 
+// SubscribersListCmdPaginate indicates to do pagination or not
+var SubscribersListCmdPaginate bool
+
 func init() {
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
@@ -50,6 +51,8 @@ func init() {
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve."))
+
+	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersCmd.AddCommand(SubscribersListCmd)
 }
@@ -81,7 +84,7 @@ var SubscribersListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -102,6 +105,10 @@ func collectSubscribersListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSubscribersListCmd("/subscribers"),
 		query:  buildQueryForSubscribersListCmd(),
+
+		doPagination:                      SubscribersListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -110,40 +117,40 @@ func buildPathForSubscribersListCmd(path string) string {
 	return path
 }
 
-func buildQueryForSubscribersListCmd() string {
-	result := []string{}
+func buildQueryForSubscribersListCmd() url.Values {
+	result := url.Values{}
 
 	if SubscribersListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SubscribersListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", SubscribersListCmdLastEvaluatedKey)
 	}
 
 	if SubscribersListCmdSerialNumberFilter != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("serial_number_filter"), url.QueryEscape(SubscribersListCmdSerialNumberFilter)))
+		result.Add("serial_number_filter", SubscribersListCmdSerialNumberFilter)
 	}
 
 	if SubscribersListCmdSpeedClassFilter != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("speed_class_filter"), url.QueryEscape(SubscribersListCmdSpeedClassFilter)))
+		result.Add("speed_class_filter", SubscribersListCmdSpeedClassFilter)
 	}
 
 	if SubscribersListCmdStatusFilter != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("status_filter"), url.QueryEscape(SubscribersListCmdStatusFilter)))
+		result.Add("status_filter", SubscribersListCmdStatusFilter)
 	}
 
 	if SubscribersListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(SubscribersListCmdTagName)))
+		result.Add("tag_name", SubscribersListCmdTagName)
 	}
 
 	if SubscribersListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(SubscribersListCmdTagValue)))
+		result.Add("tag_value", SubscribersListCmdTagValue)
 	}
 
 	if SubscribersListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(SubscribersListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", SubscribersListCmdTagValueMatchMode)
 	}
 
 	if SubscribersListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SubscribersListCmdLimit))))
+		result.Add("limit", sprintf("%d", SubscribersListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

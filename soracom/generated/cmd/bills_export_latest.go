@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +44,7 @@ var BillsExportLatestCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -75,12 +73,12 @@ func buildPathForBillsExportLatestCmd(path string) string {
 	return path
 }
 
-func buildQueryForBillsExportLatestCmd() string {
-	result := []string{}
+func buildQueryForBillsExportLatestCmd() url.Values {
+	result := url.Values{}
 
 	if BillsExportLatestCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(BillsExportLatestCmdExportMode)))
+		result.Add("export_mode", BillsExportLatestCmdExportMode)
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

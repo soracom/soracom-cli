@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -83,7 +85,7 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -121,10 +123,10 @@ func buildPathForDevicesCreateObjectModelCmd(path string) string {
 	return path
 }
 
-func buildQueryForDevicesCreateObjectModelCmd() string {
-	result := []string{}
+func buildQueryForDevicesCreateObjectModelCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForDevicesCreateObjectModelCmd() (string, error) {

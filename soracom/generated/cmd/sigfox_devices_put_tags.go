@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -55,7 +55,7 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,15 +92,15 @@ func buildPathForSigfoxDevicesPutTagsCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(SigfoxDevicesPutTagsCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForSigfoxDevicesPutTagsCmd() string {
-	result := []string{}
+func buildQueryForSigfoxDevicesPutTagsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSigfoxDevicesPutTagsCmd() (string, error) {

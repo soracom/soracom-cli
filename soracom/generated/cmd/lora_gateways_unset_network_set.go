@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForLoraGatewaysUnsetNetworkSetCmd(path string) string {
 
 	escapedGatewayId := url.PathEscape(LoraGatewaysUnsetNetworkSetCmdGatewayId)
 
-	path = strings.Replace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
+	path = strReplace(path, "{"+"gateway_id"+"}", escapedGatewayId, -1)
 
 	return path
 }
 
-func buildQueryForLoraGatewaysUnsetNetworkSetCmd() string {
-	result := []string{}
+func buildQueryForLoraGatewaysUnsetNetworkSetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

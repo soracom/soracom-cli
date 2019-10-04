@@ -8,6 +8,8 @@ cli:
   common_params:
     body:
       short_help: JSON string or @filename for API request body.
+    paginate:
+      short_help: Do pagination automatically.
   completion:
     summary: Generate script for bash or zsh completion.
     description: Generate script for bash or zsh completion.

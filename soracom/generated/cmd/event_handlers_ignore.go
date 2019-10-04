@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForEventHandlersIgnoreCmd(path string) string {
 
 	escapedHandlerId := url.PathEscape(EventHandlersIgnoreCmdHandlerId)
 
-	path = strings.Replace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
+	path = strReplace(path, "{"+"handler_id"+"}", escapedHandlerId, -1)
 
 	escapedImsi := url.PathEscape(EventHandlersIgnoreCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForEventHandlersIgnoreCmd() string {
-	result := []string{}
+func buildQueryForEventHandlersIgnoreCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

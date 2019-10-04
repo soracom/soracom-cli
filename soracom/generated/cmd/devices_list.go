@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var DevicesListCmdTagValueMatchMode string
 // DevicesListCmdLimit holds value of 'limit' option
 var DevicesListCmdLimit int64
 
+// DevicesListCmdPaginate indicates to do pagination or not
+var DevicesListCmdPaginate bool
+
 func init() {
 	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
 
@@ -35,6 +36,8 @@ func init() {
 	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag value match mode (exact | prefix)"))
 
 	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", 0, TRAPI("Max number of Devices in a response"))
+
+	DevicesListCmd.Flags().BoolVar(&DevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesCmd.AddCommand(DevicesListCmd)
 }
@@ -66,7 +69,7 @@ var DevicesListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesListCmd("/devices"),
 		query:  buildQueryForDevicesListCmd(),
+
+		doPagination:                      DevicesListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForDevicesListCmd(path string) string {
 	return path
 }
 
-func buildQueryForDevicesListCmd() string {
-	result := []string{}
+func buildQueryForDevicesListCmd() url.Values {
+	result := url.Values{}
 
 	if DevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DevicesListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DevicesListCmdLastEvaluatedKey)
 	}
 
 	if DevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(DevicesListCmdTagName)))
+		result.Add("tag_name", DevicesListCmdTagName)
 	}
 
 	if DevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(DevicesListCmdTagValue)))
+		result.Add("tag_value", DevicesListCmdTagValue)
 	}
 
 	if DevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(DevicesListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", DevicesListCmdTagValueMatchMode)
 	}
 
 	if DevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DevicesListCmdLimit))))
+		result.Add("limit", sprintf("%d", DevicesListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

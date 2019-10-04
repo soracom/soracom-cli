@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var VpgListCmdTagValueMatchMode string
 // VpgListCmdLimit holds value of 'limit' option
 var VpgListCmdLimit int64
 
+// VpgListCmdPaginate indicates to do pagination or not
+var VpgListCmdPaginate bool
+
 func init() {
 	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	VpgListCmd.Flags().BoolVar(&VpgListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	VpgCmd.AddCommand(VpgListCmd)
 }
@@ -66,7 +69,7 @@ var VpgListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectVpgListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForVpgListCmd("/virtual_private_gateways"),
 		query:  buildQueryForVpgListCmd(),
+
+		doPagination:                      VpgListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForVpgListCmd(path string) string {
 	return path
 }
 
-func buildQueryForVpgListCmd() string {
-	result := []string{}
+func buildQueryForVpgListCmd() url.Values {
+	result := url.Values{}
 
 	if VpgListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(VpgListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", VpgListCmdLastEvaluatedKey)
 	}
 
 	if VpgListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(VpgListCmdTagName)))
+		result.Add("tag_name", VpgListCmdTagName)
 	}
 
 	if VpgListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(VpgListCmdTagValue)))
+		result.Add("tag_value", VpgListCmdTagValue)
 	}
 
 	if VpgListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(VpgListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", VpgListCmdTagValueMatchMode)
 	}
 
 	if VpgListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", VpgListCmdLimit))))
+		result.Add("limit", sprintf("%d", VpgListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

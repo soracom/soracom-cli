@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -43,7 +45,7 @@ var LagoonLicensePacksUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -81,10 +83,10 @@ func buildPathForLagoonLicensePacksUpdateCmd(path string) string {
 	return path
 }
 
-func buildQueryForLagoonLicensePacksUpdateCmd() string {
-	result := []string{}
+func buildQueryForLagoonLicensePacksUpdateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLagoonLicensePacksUpdateCmd() (string, error) {

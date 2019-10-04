@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var LagoonDeleteUserCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -74,13 +72,13 @@ func collectLagoonDeleteUserCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForLagoonDeleteUserCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonDeleteUserCmdLagoonUserId)), -1)
+	path = strReplace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonDeleteUserCmdLagoonUserId)), -1)
 
 	return path
 }
 
-func buildQueryForLagoonDeleteUserCmd() string {
-	result := []string{}
+func buildQueryForLagoonDeleteUserCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

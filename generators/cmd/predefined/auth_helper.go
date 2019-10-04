@@ -49,13 +49,13 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	params := &apiParams{
 		method:         "POST",
 		path:           "/auth",
-		query:          "",
+		query:          map[string][]string{},
 		contentType:    "application/json",
 		body:           toJSON(areq),
 		noVersionCheck: true,
 	}
 
-	_, res, err := ac.callAPI(params)
+	res, err := ac.callAPI(params)
 	if err != nil {
 		return err
 	}

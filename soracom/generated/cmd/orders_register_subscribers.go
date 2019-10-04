@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForOrdersRegisterSubscribersCmd(path string) string {
 
 	escapedOrderId := url.PathEscape(OrdersRegisterSubscribersCmdOrderId)
 
-	path = strings.Replace(path, "{"+"order_id"+"}", escapedOrderId, -1)
+	path = strReplace(path, "{"+"order_id"+"}", escapedOrderId, -1)
 
 	return path
 }
 
-func buildQueryForOrdersRegisterSubscribersCmd() string {
-	result := []string{}
+func buildQueryForOrdersRegisterSubscribersCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

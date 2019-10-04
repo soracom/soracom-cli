@@ -8,6 +8,8 @@ cli:
   common_params:
     body:
       short_help: リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。
+    paginate:
+      short_help: 自動的にページネーションします。
   completion:
     summary: bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
     description: bash もしくは zsh 用の補完 (completion) スクリプトを生成します。

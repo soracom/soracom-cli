@@ -125,3 +125,64 @@ func TestVersionInt(t *testing.T) {
 		})
 	}
 }
+
+func TestConcatJSONArray(t *testing.T) {
+	var testData = []struct {
+		Name     string
+		Arr1     string
+		Arr2     string
+		Expected string
+	}{
+		{
+			Name:     "pattern 1",
+			Arr1:     "[1,2]",
+			Arr2:     "[3]",
+			Expected: "[1,2,3]",
+		},
+		{
+			Name:     "pattern 2",
+			Arr1:     "[]",
+			Arr2:     "[1]",
+			Expected: "[1]",
+		},
+		{
+			Name:     "pattern 3",
+			Arr1:     "[1]",
+			Arr2:     "[]",
+			Expected: "[1]",
+		},
+		{
+			Name:     "pattern 4",
+			Arr1:     "[]",
+			Arr2:     "[]",
+			Expected: "[]",
+		},
+		{
+			Name:     "pattern 5",
+			Arr1:     "",
+			Arr2:     "[]",
+			Expected: "[]",
+		},
+		{
+			Name:     "pattern 6",
+			Arr1:     "",
+			Arr2:     "[1]",
+			Expected: "[1]",
+		},
+	}
+
+	for _, data := range testData {
+		data := data // capture
+		t.Run(data.Name, func(t *testing.T) {
+			t.Parallel()
+
+			v, err := concatJSONArray(data.Arr1, data.Arr2)
+			if err != nil {
+				t.Fatalf("%+v\n", err)
+			}
+			if v != data.Expected {
+				t.Errorf("result of concatJSONArray() is unmatched with expected.\nArr1: %v\nArr2: %v\nExpected: %#08x\nActual:   %#08x", data.Arr1, data.Arr2, data.Expected, v)
+			}
+		})
+	}
+}

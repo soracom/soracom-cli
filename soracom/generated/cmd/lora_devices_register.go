@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -67,7 +67,7 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -104,15 +104,15 @@ func buildPathForLoraDevicesRegisterCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(LoraDevicesRegisterCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForLoraDevicesRegisterCmd() string {
-	result := []string{}
+func buildQueryForLoraDevicesRegisterCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLoraDevicesRegisterCmd() (string, error) {

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +17,9 @@ var GroupsListSubscribersCmdLastEvaluatedKey string
 // GroupsListSubscribersCmdLimit holds value of 'limit' option
 var GroupsListSubscribersCmdLimit int64
 
+// GroupsListSubscribersCmdPaginate indicates to do pagination or not
+var GroupsListSubscribersCmdPaginate bool
+
 func init() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
@@ -27,6 +28,8 @@ func init() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GroupsCmd.AddCommand(GroupsListSubscribersCmd)
 }
@@ -58,7 +61,7 @@ var GroupsListSubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -79,6 +82,10 @@ func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGroupsListSubscribersCmd("/groups/{group_id}/subscribers"),
 		query:  buildQueryForGroupsListSubscribersCmd(),
+
+		doPagination:                      GroupsListSubscribersCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -86,21 +93,21 @@ func buildPathForGroupsListSubscribersCmd(path string) string {
 
 	escapedGroupId := url.PathEscape(GroupsListSubscribersCmdGroupId)
 
-	path = strings.Replace(path, "{"+"group_id"+"}", escapedGroupId, -1)
+	path = strReplace(path, "{"+"group_id"+"}", escapedGroupId, -1)
 
 	return path
 }
 
-func buildQueryForGroupsListSubscribersCmd() string {
-	result := []string{}
+func buildQueryForGroupsListSubscribersCmd() url.Values {
+	result := url.Values{}
 
 	if GroupsListSubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GroupsListSubscribersCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", GroupsListSubscribersCmdLastEvaluatedKey)
 	}
 
 	if GroupsListSubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GroupsListSubscribersCmdLimit))))
+		result.Add("limit", sprintf("%d", GroupsListSubscribersCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

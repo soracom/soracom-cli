@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -65,7 +67,7 @@ var VpgCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -103,10 +105,10 @@ func buildPathForVpgCreateCmd(path string) string {
 	return path
 }
 
-func buildQueryForVpgCreateCmd() string {
-	result := []string{}
+func buildQueryForVpgCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForVpgCreateCmd() (string, error) {

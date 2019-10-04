@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -28,6 +26,9 @@ var GadgetsListCmdTagValueMatchMode string
 // GadgetsListCmdLimit holds value of 'limit' option
 var GadgetsListCmdLimit int64
 
+// GadgetsListCmdPaginate indicates to do pagination or not
+var GadgetsListCmdPaginate bool
+
 func init() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ({product_id}/{serial_number}) of the last gadget retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -40,6 +41,8 @@ func init() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of gadgets to retrieve."))
+
+	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GadgetsCmd.AddCommand(GadgetsListCmd)
 }
@@ -71,7 +74,7 @@ var GadgetsListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,6 +95,10 @@ func collectGadgetsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGadgetsListCmd("/gadgets"),
 		query:  buildQueryForGadgetsListCmd(),
+
+		doPagination:                      GadgetsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -100,32 +107,32 @@ func buildPathForGadgetsListCmd(path string) string {
 	return path
 }
 
-func buildQueryForGadgetsListCmd() string {
-	result := []string{}
+func buildQueryForGadgetsListCmd() url.Values {
+	result := url.Values{}
 
 	if GadgetsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(GadgetsListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", GadgetsListCmdLastEvaluatedKey)
 	}
 
 	if GadgetsListCmdProductId != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("product_id"), url.QueryEscape(GadgetsListCmdProductId)))
+		result.Add("product_id", GadgetsListCmdProductId)
 	}
 
 	if GadgetsListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(GadgetsListCmdTagName)))
+		result.Add("tag_name", GadgetsListCmdTagName)
 	}
 
 	if GadgetsListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(GadgetsListCmdTagValue)))
+		result.Add("tag_value", GadgetsListCmdTagValue)
 	}
 
 	if GadgetsListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(GadgetsListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", GadgetsListCmdTagValueMatchMode)
 	}
 
 	if GadgetsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", GadgetsListCmdLimit))))
+		result.Add("limit", sprintf("%d", GadgetsListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -60,7 +58,7 @@ var UsersDetachRoleCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,21 +90,21 @@ func buildPathForUsersDetachRoleCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersDetachRoleCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	escapedRoleId := url.PathEscape(UsersDetachRoleCmdRoleId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
+	path = strReplace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	escapedUserName := url.PathEscape(UsersDetachRoleCmdUserName)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
+	path = strReplace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }
 
-func buildQueryForUsersDetachRoleCmd() string {
-	result := []string{}
+func buildQueryForUsersDetachRoleCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

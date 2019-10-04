@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var LoraDevicesListCmdTagValueMatchMode string
 // LoraDevicesListCmdLimit holds value of 'limit' option
 var LoraDevicesListCmdLimit int64
 
+// LoraDevicesListCmdPaginate indicates to do pagination or not
+var LoraDevicesListCmdPaginate bool
+
 func init() {
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+
+	LoraDevicesListCmd.Flags().BoolVar(&LoraDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraDevicesCmd.AddCommand(LoraDevicesListCmd)
 }
@@ -66,7 +69,7 @@ var LoraDevicesListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectLoraDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraDevicesListCmd("/lora_devices"),
 		query:  buildQueryForLoraDevicesListCmd(),
+
+		doPagination:                      LoraDevicesListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForLoraDevicesListCmd(path string) string {
 	return path
 }
 
-func buildQueryForLoraDevicesListCmd() string {
-	result := []string{}
+func buildQueryForLoraDevicesListCmd() url.Values {
+	result := url.Values{}
 
 	if LoraDevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraDevicesListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", LoraDevicesListCmdLastEvaluatedKey)
 	}
 
 	if LoraDevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(LoraDevicesListCmdTagName)))
+		result.Add("tag_name", LoraDevicesListCmdTagName)
 	}
 
 	if LoraDevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(LoraDevicesListCmdTagValue)))
+		result.Add("tag_value", LoraDevicesListCmdTagValue)
 	}
 
 	if LoraDevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(LoraDevicesListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", LoraDevicesListCmdTagValueMatchMode)
 	}
 
 	if LoraDevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraDevicesListCmdLimit))))
+		result.Add("limit", sprintf("%d", LoraDevicesListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

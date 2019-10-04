@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -78,7 +78,7 @@ var DevicesExecuteResourceCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -115,27 +115,27 @@ func buildPathForDevicesExecuteResourceCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(DevicesExecuteResourceCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	escapedInstance := url.PathEscape(DevicesExecuteResourceCmdInstance)
 
-	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+	path = strReplace(path, "{"+"instance"+"}", escapedInstance, -1)
 
 	escapedObject := url.PathEscape(DevicesExecuteResourceCmdObject)
 
-	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
+	path = strReplace(path, "{"+"object"+"}", escapedObject, -1)
 
 	escapedResource := url.PathEscape(DevicesExecuteResourceCmdResource)
 
-	path = strings.Replace(path, "{"+"resource"+"}", escapedResource, -1)
+	path = strReplace(path, "{"+"resource"+"}", escapedResource, -1)
 
 	return path
 }
 
-func buildQueryForDevicesExecuteResourceCmd() string {
-	result := []string{}
+func buildQueryForDevicesExecuteResourceCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForDevicesExecuteResourceCmd() (string, error) {

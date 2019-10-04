@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -71,7 +71,7 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -108,15 +108,15 @@ func buildPathForVpgPutIpAddressMapEntryCmd(path string) string {
 
 	escapedVpgId := url.PathEscape(VpgPutIpAddressMapEntryCmdVpgId)
 
-	path = strings.Replace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
+	path = strReplace(path, "{"+"vpg_id"+"}", escapedVpgId, -1)
 
 	return path
 }
 
-func buildQueryForVpgPutIpAddressMapEntryCmd() string {
-	result := []string{}
+func buildQueryForVpgPutIpAddressMapEntryCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForVpgPutIpAddressMapEntryCmd() (string, error) {

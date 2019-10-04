@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -69,7 +67,7 @@ var StatsBeamGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -97,25 +95,25 @@ func buildPathForStatsBeamGetCmd(path string) string {
 
 	escapedImsi := url.PathEscape(StatsBeamGetCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForStatsBeamGetCmd() string {
-	result := []string{}
+func buildQueryForStatsBeamGetCmd() url.Values {
+	result := url.Values{}
 
 	if StatsBeamGetCmdPeriod != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("period"), url.QueryEscape(StatsBeamGetCmdPeriod)))
+		result.Add("period", StatsBeamGetCmdPeriod)
 	}
 
 	if StatsBeamGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", StatsBeamGetCmdFrom))))
+		result.Add("from", sprintf("%d", StatsBeamGetCmdFrom))
 	}
 
 	if StatsBeamGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", StatsBeamGetCmdTo))))
+		result.Add("to", sprintf("%d", StatsBeamGetCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

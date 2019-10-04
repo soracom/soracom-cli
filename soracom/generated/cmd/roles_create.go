@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -74,7 +74,7 @@ var RolesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -115,19 +115,19 @@ func buildPathForRolesCreateCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(RolesCreateCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	escapedRoleId := url.PathEscape(RolesCreateCmdRoleId)
 
-	path = strings.Replace(path, "{"+"role_id"+"}", escapedRoleId, -1)
+	path = strReplace(path, "{"+"role_id"+"}", escapedRoleId, -1)
 
 	return path
 }
 
-func buildQueryForRolesCreateCmd() string {
-	result := []string{}
+func buildQueryForRolesCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForRolesCreateCmd() (string, error) {

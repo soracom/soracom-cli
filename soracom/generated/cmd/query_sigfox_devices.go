@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -37,6 +35,9 @@ var QuerySigfoxDevicesCmdTag []string
 // QuerySigfoxDevicesCmdLimit holds value of 'limit' option
 var QuerySigfoxDevicesCmdLimit int64
 
+// QuerySigfoxDevicesCmdPaginate indicates to do pagination or not
+var QuerySigfoxDevicesCmdPaginate bool
+
 func init() {
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Sigfox device ID of the last Sigfox device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
@@ -55,6 +56,8 @@ func init() {
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
 	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+
+	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QueryCmd.AddCommand(QuerySigfoxDevicesCmd)
 }
@@ -86,7 +89,7 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -107,6 +110,10 @@ func collectQuerySigfoxDevicesCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQuerySigfoxDevicesCmd("/query/sigfox_devices"),
 		query:  buildQueryForQuerySigfoxDevicesCmd(),
+
+		doPagination:                      QuerySigfoxDevicesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -115,52 +122,52 @@ func buildPathForQuerySigfoxDevicesCmd(path string) string {
 	return path
 }
 
-func buildQueryForQuerySigfoxDevicesCmd() string {
-	result := []string{}
+func buildQueryForQuerySigfoxDevicesCmd() url.Values {
+	result := url.Values{}
 
 	if QuerySigfoxDevicesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(QuerySigfoxDevicesCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", QuerySigfoxDevicesCmdLastEvaluatedKey)
 	}
 
 	if QuerySigfoxDevicesCmdRegistration != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("registration"), url.QueryEscape(QuerySigfoxDevicesCmdRegistration)))
+		result.Add("registration", QuerySigfoxDevicesCmdRegistration)
 	}
 
 	if QuerySigfoxDevicesCmdSearchType != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("search_type"), url.QueryEscape(QuerySigfoxDevicesCmdSearchType)))
+		result.Add("search_type", QuerySigfoxDevicesCmdSearchType)
 	}
 
 	if QuerySigfoxDevicesCmdStatus != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("status"), url.QueryEscape(QuerySigfoxDevicesCmdStatus)))
+		result.Add("status", QuerySigfoxDevicesCmdStatus)
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdDeviceId {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("deviceId"), url.QueryEscape(s)))
+			result.Add("deviceId", s)
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdGroup {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("group"), url.QueryEscape(s)))
+			result.Add("group", s)
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdName {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("name"), url.QueryEscape(s)))
+			result.Add("name", s)
 		}
 	}
 
 	for _, s := range QuerySigfoxDevicesCmdTag {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("tag"), url.QueryEscape(s)))
+			result.Add("tag", s)
 		}
 	}
 
 	if QuerySigfoxDevicesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", QuerySigfoxDevicesCmdLimit))))
+		result.Add("limit", sprintf("%d", QuerySigfoxDevicesCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

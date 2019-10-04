@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -42,7 +40,7 @@ var LagoonDashboardsInitPermissionsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -68,13 +66,13 @@ func collectLagoonDashboardsInitPermissionsCmdParams(ac *apiClient) (*apiParams,
 
 func buildPathForLagoonDashboardsInitPermissionsCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsInitPermissionsCmdDashboardId)), -1)
+	path = strReplace(path, "{"+"dashboard_id"+"}", url.PathEscape(sprintf("%d", LagoonDashboardsInitPermissionsCmdDashboardId)), -1)
 
 	return path
 }
 
-func buildQueryForLagoonDashboardsInitPermissionsCmd() string {
-	result := []string{}
+func buildQueryForLagoonDashboardsInitPermissionsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -84,7 +84,7 @@ var GadgetsSetGroupCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -121,19 +121,19 @@ func buildPathForGadgetsSetGroupCmd(path string) string {
 
 	escapedProductId := url.PathEscape(GadgetsSetGroupCmdProductId)
 
-	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+	path = strReplace(path, "{"+"product_id"+"}", escapedProductId, -1)
 
 	escapedSerialNumber := url.PathEscape(GadgetsSetGroupCmdSerialNumber)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
+	path = strReplace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }
 
-func buildQueryForGadgetsSetGroupCmd() string {
-	result := []string{}
+func buildQueryForGadgetsSetGroupCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForGadgetsSetGroupCmd() (string, error) {

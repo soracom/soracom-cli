@@ -2757,6 +2757,11 @@ paths:
       - DataEntry
       x-soracom-cli:
       - data get-entries
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /data/{resource_type}/{resource_id}/{time}:
     delete:
       description: Deletes a data entry identified with resource ID and timestamp
@@ -2878,6 +2883,11 @@ paths:
       - DataEntry
       x-soracom-cli:
       - data list-source-resources
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /device_object_models:
     get:
       description: Returns a list of device object models
@@ -2911,6 +2921,11 @@ paths:
       - DeviceObjectModel
       x-soracom-cli:
       - devices list-object-models
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json
@@ -3109,6 +3124,11 @@ paths:
       - Device
       x-soracom-cli:
       - devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json
@@ -3598,6 +3618,11 @@ paths:
       - Device
       x-soracom-cli:
       - devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /devices/{device_id}/set_group:
     post:
       description: Lets a device device join a group
@@ -4253,6 +4278,11 @@ paths:
       - Gadget
       x-soracom-cli:
       - gadgets list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /gadgets/{product_id}/{serial_number}:
     get:
       description: Returns information about the specified gadget.
@@ -4626,6 +4656,11 @@ paths:
       - Group
       x-soracom-cli:
       - groups list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Create a new group.
       operationId: createGroup
@@ -4828,6 +4863,11 @@ paths:
       x-sam-operationId: listSubscribers
       x-soracom-cli:
       - groups list-subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /groups/{group_id}/tags:
     put:
       description: Adds/updates tags of specified configuration group.
@@ -5344,6 +5384,11 @@ paths:
       - Log
       x-soracom-cli:
       - logs get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_devices:
     get:
       description: Returns a list of LoRa devices that match certain criteria. If
@@ -5398,6 +5443,11 @@ paths:
       - LoraDevice
       x-soracom-cli:
       - lora-devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_devices/{device_id}:
     get:
       description: Returns information about the specified LoRa device.
@@ -5483,6 +5533,11 @@ paths:
       - LoraDevice
       x-soracom-cli:
       - lora-devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Sends data to the specified LoRa device. The data is sent to the
         LoRa network server, to be sent out to the device using the next available
@@ -5830,6 +5885,11 @@ paths:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_gateways/{gateway_id}:
     get:
       description: Returns information about the specified LoRa gateway.
@@ -6135,6 +6195,11 @@ paths:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Creates a specified LoRa network set
       operationId: createLoraNetworkSet
@@ -6290,6 +6355,11 @@ paths:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets list-gateways
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /lora_network_sets/{ns_id}/revoke_permission:
     post:
       description: Revokes a permission and removes an operator from the list of allowed
@@ -8496,6 +8566,11 @@ paths:
       - PortMapping
       x-soracom-cli:
       - port-mappings list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Create a new port mapping.
       operationId: createPortMapping
@@ -8704,6 +8779,11 @@ paths:
       - Query
       x-soracom-cli:
       - query sigfox-devices
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/subscribers:
     get:
       consumes:
@@ -8812,6 +8892,11 @@ paths:
       - Query
       x-soracom-cli:
       - query subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/subscribers/traffic_volume/ranking:
     get:
       consumes:
@@ -8920,6 +9005,11 @@ paths:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sigfox_devices/{device_id}:
     get:
       description: Returns information about the specified Sigfox device.
@@ -9005,6 +9095,11 @@ paths:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       description: Sends data to the specified Sigfox device. The data will be stored
         until the device sends a next uplink message. If another message destined
@@ -9585,6 +9680,11 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}:
     get:
       description: Returns information about the specified subscriber.
@@ -9701,6 +9801,11 @@ paths:
       x-soracom-cli:
       - data get
       - subscribers get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}/deactivate:
     post:
       consumes:
@@ -9870,6 +9975,11 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers session-events
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /subscribers/{imsi}/register:
     post:
       consumes:
@@ -10545,6 +10655,11 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
       - application/json

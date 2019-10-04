@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var FilesGetExportedCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForFilesGetExportedCmd(path string) string {
 
 	escapedExportedFileId := url.PathEscape(FilesGetExportedCmdExportedFileId)
 
-	path = strings.Replace(path, "{"+"exported_file_id"+"}", escapedExportedFileId, -1)
+	path = strReplace(path, "{"+"exported_file_id"+"}", escapedExportedFileId, -1)
 
 	return path
 }
 
-func buildQueryForFilesGetExportedCmd() string {
-	result := []string{}
+func buildQueryForFilesGetExportedCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

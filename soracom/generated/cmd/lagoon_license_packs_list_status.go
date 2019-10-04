@@ -2,8 +2,8 @@
 package cmd
 
 import (
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -34,7 +34,7 @@ var LagoonLicensePacksListStatusCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -63,8 +63,8 @@ func buildPathForLagoonLicensePacksListStatusCmd(path string) string {
 	return path
 }
 
-func buildQueryForLagoonLicensePacksListStatusCmd() string {
-	result := []string{}
+func buildQueryForLagoonLicensePacksListStatusCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

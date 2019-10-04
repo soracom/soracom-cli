@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -68,7 +70,7 @@ var LoraNetworkSetsCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -106,10 +108,10 @@ func buildPathForLoraNetworkSetsCreateCmd(path string) string {
 	return path
 }
 
-func buildQueryForLoraNetworkSetsCreateCmd() string {
-	result := []string{}
+func buildQueryForLoraNetworkSetsCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLoraNetworkSetsCreateCmd() (string, error) {

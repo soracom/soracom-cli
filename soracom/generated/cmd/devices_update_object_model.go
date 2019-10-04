@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -92,7 +92,7 @@ var DevicesUpdateObjectModelCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -129,15 +129,15 @@ func buildPathForDevicesUpdateObjectModelCmd(path string) string {
 
 	escapedModelId := url.PathEscape(DevicesUpdateObjectModelCmdModelId)
 
-	path = strings.Replace(path, "{"+"model_id"+"}", escapedModelId, -1)
+	path = strReplace(path, "{"+"model_id"+"}", escapedModelId, -1)
 
 	return path
 }
 
-func buildQueryForDevicesUpdateObjectModelCmd() string {
-	result := []string{}
+func buildQueryForDevicesUpdateObjectModelCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForDevicesUpdateObjectModelCmd() (string, error) {

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -16,10 +14,15 @@ var PortMappingsListCmdLastEvaluatedKey string
 // PortMappingsListCmdLimit holds value of 'limit' option
 var PortMappingsListCmdLimit int64
 
+// PortMappingsListCmdPaginate indicates to do pagination or not
+var PortMappingsListCmdPaginate bool
+
 func init() {
 	PortMappingsListCmd.Flags().StringVar(&PortMappingsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Port Mapping ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
 	PortMappingsListCmd.Flags().Int64Var(&PortMappingsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	PortMappingsCmd.AddCommand(PortMappingsListCmd)
 }
@@ -51,7 +54,7 @@ var PortMappingsListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -72,6 +75,10 @@ func collectPortMappingsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPortMappingsListCmd("/port_mappings"),
 		query:  buildQueryForPortMappingsListCmd(),
+
+		doPagination:                      PortMappingsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -80,16 +87,16 @@ func buildPathForPortMappingsListCmd(path string) string {
 	return path
 }
 
-func buildQueryForPortMappingsListCmd() string {
-	result := []string{}
+func buildQueryForPortMappingsListCmd() url.Values {
+	result := url.Values{}
 
 	if PortMappingsListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(PortMappingsListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", PortMappingsListCmdLastEvaluatedKey)
 	}
 
 	if PortMappingsListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", PortMappingsListCmdLimit))))
+		result.Add("limit", sprintf("%d", PortMappingsListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

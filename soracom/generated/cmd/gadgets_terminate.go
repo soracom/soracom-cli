@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var GadgetsTerminateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForGadgetsTerminateCmd(path string) string {
 
 	escapedProductId := url.PathEscape(GadgetsTerminateCmdProductId)
 
-	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+	path = strReplace(path, "{"+"product_id"+"}", escapedProductId, -1)
 
 	escapedSerialNumber := url.PathEscape(GadgetsTerminateCmdSerialNumber)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
+	path = strReplace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }
 
-func buildQueryForGadgetsTerminateCmd() string {
-	result := []string{}
+func buildQueryForGadgetsTerminateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

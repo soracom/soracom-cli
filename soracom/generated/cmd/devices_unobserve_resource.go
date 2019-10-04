@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -69,7 +67,7 @@ var DevicesUnobserveResourceCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -97,25 +95,25 @@ func buildPathForDevicesUnobserveResourceCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(DevicesUnobserveResourceCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	escapedInstance := url.PathEscape(DevicesUnobserveResourceCmdInstance)
 
-	path = strings.Replace(path, "{"+"instance"+"}", escapedInstance, -1)
+	path = strReplace(path, "{"+"instance"+"}", escapedInstance, -1)
 
 	escapedObject := url.PathEscape(DevicesUnobserveResourceCmdObject)
 
-	path = strings.Replace(path, "{"+"object"+"}", escapedObject, -1)
+	path = strReplace(path, "{"+"object"+"}", escapedObject, -1)
 
 	escapedResource := url.PathEscape(DevicesUnobserveResourceCmdResource)
 
-	path = strings.Replace(path, "{"+"resource"+"}", escapedResource, -1)
+	path = strReplace(path, "{"+"resource"+"}", escapedResource, -1)
 
 	return path
 }
 
-func buildQueryForDevicesUnobserveResourceCmd() string {
-	result := []string{}
+func buildQueryForDevicesUnobserveResourceCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

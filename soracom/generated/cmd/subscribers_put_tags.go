@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -55,7 +55,7 @@ var SubscribersPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,15 +92,15 @@ func buildPathForSubscribersPutTagsCmd(path string) string {
 
 	escapedImsi := url.PathEscape(SubscribersPutTagsCmdImsi)
 
-	path = strings.Replace(path, "{"+"imsi"+"}", escapedImsi, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersPutTagsCmd() string {
-	result := []string{}
+func buildQueryForSubscribersPutTagsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForSubscribersPutTagsCmd() (string, error) {

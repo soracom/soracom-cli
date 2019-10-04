@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -99,15 +99,15 @@ func buildPathForLoraNetworkSetsRevokePermissionCmd(path string) string {
 
 	escapedNsId := url.PathEscape(LoraNetworkSetsRevokePermissionCmdNsId)
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
+	path = strReplace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }
 
-func buildQueryForLoraNetworkSetsRevokePermissionCmd() string {
-	result := []string{}
+func buildQueryForLoraNetworkSetsRevokePermissionCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLoraNetworkSetsRevokePermissionCmd() (string, error) {

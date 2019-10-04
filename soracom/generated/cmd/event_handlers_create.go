@@ -6,7 +6,9 @@ import (
 
 	"io/ioutil"
 
+	"net/url"
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -80,7 +82,7 @@ var EventHandlersCreateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -118,10 +120,10 @@ func buildPathForEventHandlersCreateCmd(path string) string {
 	return path
 }
 
-func buildQueryForEventHandlersCreateCmd() string {
-	result := []string{}
+func buildQueryForEventHandlersCreateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForEventHandlersCreateCmd() (string, error) {

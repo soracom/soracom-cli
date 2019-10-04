@@ -18,7 +18,7 @@ import (
 func main() {
 	err := run()
 	if err != nil {
-		log.Fatalf("%#v\n", err)
+		log.Fatalf("%+v\n", err)
 	}
 }
 

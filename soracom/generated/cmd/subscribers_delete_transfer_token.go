@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForSubscribersDeleteTransferTokenCmd(path string) string {
 
 	escapedToken := url.PathEscape(SubscribersDeleteTransferTokenCmdToken)
 
-	path = strings.Replace(path, "{"+"token"+"}", escapedToken, -1)
+	path = strReplace(path, "{"+"token"+"}", escapedToken, -1)
 
 	return path
 }
 
-func buildQueryForSubscribersDeleteTransferTokenCmd() string {
-	result := []string{}
+func buildQueryForSubscribersDeleteTransferTokenCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

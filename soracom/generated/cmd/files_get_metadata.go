@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +53,7 @@ var FilesGetMetadataCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -83,17 +81,17 @@ func buildPathForFilesGetMetadataCmd(path string) string {
 
 	escapedPath := harvestFilesPathEscape(FilesGetMetadataCmdPath)
 
-	path = strings.Replace(path, "{"+"path"+"}", escapedPath, -1)
+	path = strReplace(path, "{"+"path"+"}", escapedPath, -1)
 
 	escapedScope := url.PathEscape(FilesGetMetadataCmdScope)
 
-	path = strings.Replace(path, "{"+"scope"+"}", escapedScope, -1)
+	path = strReplace(path, "{"+"scope"+"}", escapedScope, -1)
 
 	return path
 }
 
-func buildQueryForFilesGetMetadataCmd() string {
-	result := []string{}
+func buildQueryForFilesGetMetadataCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

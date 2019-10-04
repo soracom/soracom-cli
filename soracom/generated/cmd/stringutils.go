@@ -1,6 +1,9 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // it was difficult to use fmt.Sprintf() in template codes
 // because we need to import only if fmt.Sprintf() is called
@@ -10,4 +13,8 @@ import "fmt"
 
 func sprintf(format string, a ...interface{}) string {
 	return fmt.Sprintf(format, a...)
+}
+
+func strReplace(s, old, new string, n int) string {
+	return strings.Replace(s, old, new, n)
 }

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +23,9 @@ var SigfoxDevicesListCmdTagValueMatchMode string
 // SigfoxDevicesListCmdLimit holds value of 'limit' option
 var SigfoxDevicesListCmdLimit int64
 
+// SigfoxDevicesListCmdPaginate indicates to do pagination or not
+var SigfoxDevicesListCmdPaginate bool
+
 func init() {
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -35,6 +36,8 @@ func init() {
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
 
 	SigfoxDevicesListCmd.Flags().Int64Var(&SigfoxDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of Sigfox devices to retrieve."))
+
+	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesListCmd)
 }
@@ -66,7 +69,7 @@ var SigfoxDevicesListCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -87,6 +90,10 @@ func collectSigfoxDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSigfoxDevicesListCmd("/sigfox_devices"),
 		query:  buildQueryForSigfoxDevicesListCmd(),
+
+		doPagination:                      SigfoxDevicesListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -95,28 +102,28 @@ func buildPathForSigfoxDevicesListCmd(path string) string {
 	return path
 }
 
-func buildQueryForSigfoxDevicesListCmd() string {
-	result := []string{}
+func buildQueryForSigfoxDevicesListCmd() url.Values {
+	result := url.Values{}
 
 	if SigfoxDevicesListCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(SigfoxDevicesListCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", SigfoxDevicesListCmdLastEvaluatedKey)
 	}
 
 	if SigfoxDevicesListCmdTagName != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_name"), url.QueryEscape(SigfoxDevicesListCmdTagName)))
+		result.Add("tag_name", SigfoxDevicesListCmdTagName)
 	}
 
 	if SigfoxDevicesListCmdTagValue != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value"), url.QueryEscape(SigfoxDevicesListCmdTagValue)))
+		result.Add("tag_value", SigfoxDevicesListCmdTagValue)
 	}
 
 	if SigfoxDevicesListCmdTagValueMatchMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("tag_value_match_mode"), url.QueryEscape(SigfoxDevicesListCmdTagValueMatchMode)))
+		result.Add("tag_value_match_mode", SigfoxDevicesListCmdTagValueMatchMode)
 	}
 
 	if SigfoxDevicesListCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", SigfoxDevicesListCmdLimit))))
+		result.Add("limit", sprintf("%d", SigfoxDevicesListCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

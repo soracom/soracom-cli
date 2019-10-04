@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -72,7 +72,7 @@ var LagoonUpdateUserPasswordCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -107,15 +107,15 @@ func collectLagoonUpdateUserPasswordCmdParams(ac *apiClient) (*apiParams, error)
 
 func buildPathForLagoonUpdateUserPasswordCmd(path string) string {
 
-	path = strings.Replace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonUpdateUserPasswordCmdLagoonUserId)), -1)
+	path = strReplace(path, "{"+"lagoon_user_id"+"}", url.PathEscape(sprintf("%d", LagoonUpdateUserPasswordCmdLagoonUserId)), -1)
 
 	return path
 }
 
-func buildQueryForLagoonUpdateUserPasswordCmd() string {
-	result := []string{}
+func buildQueryForLagoonUpdateUserPasswordCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForLagoonUpdateUserPasswordCmd() (string, error) {

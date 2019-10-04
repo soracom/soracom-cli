@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -67,7 +67,7 @@ var CredentialsUpdateCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -104,15 +104,15 @@ func buildPathForCredentialsUpdateCmd(path string) string {
 
 	escapedCredentialsId := url.PathEscape(CredentialsUpdateCmdCredentialsId)
 
-	path = strings.Replace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
+	path = strReplace(path, "{"+"credentials_id"+"}", escapedCredentialsId, -1)
 
 	return path
 }
 
-func buildQueryForCredentialsUpdateCmd() string {
-	result := []string{}
+func buildQueryForCredentialsUpdateCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForCredentialsUpdateCmd() (string, error) {

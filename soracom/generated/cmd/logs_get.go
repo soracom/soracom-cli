@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -31,6 +29,9 @@ var LogsGetCmdLimit int64
 // LogsGetCmdTo holds value of 'to' option
 var LogsGetCmdTo int64
 
+// LogsGetCmdPaginate indicates to do pagination or not
+var LogsGetCmdPaginate bool
+
 func init() {
 	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -45,6 +46,8 @@ func init() {
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
 
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime)."))
+
+	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LogsCmd.AddCommand(LogsGetCmd)
 }
@@ -76,7 +79,7 @@ var LogsGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -97,6 +100,10 @@ func collectLogsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLogsGetCmd("/logs"),
 		query:  buildQueryForLogsGetCmd(),
+
+		doPagination:                      LogsGetCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -105,36 +112,36 @@ func buildPathForLogsGetCmd(path string) string {
 	return path
 }
 
-func buildQueryForLogsGetCmd() string {
-	result := []string{}
+func buildQueryForLogsGetCmd() url.Values {
+	result := url.Values{}
 
 	if LogsGetCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LogsGetCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", LogsGetCmdLastEvaluatedKey)
 	}
 
 	if LogsGetCmdResourceId != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_id"), url.QueryEscape(LogsGetCmdResourceId)))
+		result.Add("resource_id", LogsGetCmdResourceId)
 	}
 
 	if LogsGetCmdResourceType != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("resource_type"), url.QueryEscape(LogsGetCmdResourceType)))
+		result.Add("resource_type", LogsGetCmdResourceType)
 	}
 
 	if LogsGetCmdService != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("service"), url.QueryEscape(LogsGetCmdService)))
+		result.Add("service", LogsGetCmdService)
 	}
 
 	if LogsGetCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", LogsGetCmdFrom))))
+		result.Add("from", sprintf("%d", LogsGetCmdFrom))
 	}
 
 	if LogsGetCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LogsGetCmdLimit))))
+		result.Add("limit", sprintf("%d", LogsGetCmdLimit))
 	}
 
 	if LogsGetCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", LogsGetCmdTo))))
+		result.Add("to", sprintf("%d", LogsGetCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -60,7 +58,7 @@ var UsersAuthKeysDeleteCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -92,21 +90,21 @@ func buildPathForUsersAuthKeysDeleteCmd(path string) string {
 
 	escapedAuthKeyId := url.PathEscape(UsersAuthKeysDeleteCmdAuthKeyId)
 
-	path = strings.Replace(path, "{"+"auth_key_id"+"}", escapedAuthKeyId, -1)
+	path = strReplace(path, "{"+"auth_key_id"+"}", escapedAuthKeyId, -1)
 
 	escapedOperatorId := url.PathEscape(UsersAuthKeysDeleteCmdOperatorId)
 
-	path = strings.Replace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
 
 	escapedUserName := url.PathEscape(UsersAuthKeysDeleteCmdUserName)
 
-	path = strings.Replace(path, "{"+"user_name"+"}", escapedUserName, -1)
+	path = strReplace(path, "{"+"user_name"+"}", escapedUserName, -1)
 
 	return path
 }
 
-func buildQueryForUsersAuthKeysDeleteCmd() string {
-	result := []string{}
+func buildQueryForUsersAuthKeysDeleteCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

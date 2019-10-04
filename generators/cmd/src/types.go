@@ -101,29 +101,32 @@ func (s boolFlagsByName) Less(i, j int) bool {
 }
 
 type commandArgs struct {
-	Endpoint                  string
-	Use                       string
-	Short                     string
-	Long                      string
-	CommandVariableName       string
-	ParentCommandVariableName string
-	FileName                  string
-	RequireAuth               bool
-	RequireOperatorID         bool
-	BodyExists                bool
-	SendBodyRaw               bool
-	ResponseBodyRaw           bool
-	Method                    string
-	BasePath                  string
-	Path                      string
-	ContentType               string
-	ContentTypeFromArg        bool
-	ContentTypeVarName        string
-	PathParamsExist           bool
-	QueryParamsExist          bool
-	StringFlags               []stringFlag
-	StringSliceFlags          []stringFlag
-	IntegerFlags              []integerFlag
-	FloatFlags                []floatFlag
-	BoolFlags                 []boolFlag
+	Endpoint                          string
+	Use                               string
+	Short                             string
+	Long                              string
+	CommandVariableName               string
+	ParentCommandVariableName         string
+	FileName                          string
+	RequireAuth                       bool
+	RequireOperatorID                 bool
+	BodyExists                        bool
+	SendBodyRaw                       bool
+	ResponseBodyRaw                   bool
+	Method                            string
+	BasePath                          string
+	Path                              string
+	ContentType                       string
+	ContentTypeFromArg                bool
+	ContentTypeVarName                string
+	PathParamsExist                   bool
+	QueryParamsExist                  bool
+	StringFlags                       []stringFlag
+	StringSliceFlags                  []stringFlag
+	IntegerFlags                      []integerFlag
+	FloatFlags                        []floatFlag
+	BoolFlags                         []boolFlag
+	PaginationAvailable               bool
+	PaginationKeyHeaderInResponse     string
+	PaginationRequestParameterInQuery string
 }

@@ -100,7 +100,7 @@ func sandboxInit(profile *profile) (*authResult, error) {
 		body:           string(reqBodyBytes),
 	}
 
-	_, respBody, err := ac.callAPI(param)
+	respBody, err := ac.callAPI(param)
 
 	var ar authResult
 	err = json.Unmarshal([]byte(respBody), &ar)

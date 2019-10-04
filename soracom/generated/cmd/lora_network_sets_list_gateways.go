@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +17,9 @@ var LoraNetworkSetsListGatewaysCmdNsId string
 // LoraNetworkSetsListGatewaysCmdLimit holds value of 'limit' option
 var LoraNetworkSetsListGatewaysCmdLimit int64
 
+// LoraNetworkSetsListGatewaysCmdPaginate indicates to do pagination or not
+var LoraNetworkSetsListGatewaysCmdPaginate bool
+
 func init() {
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -27,6 +28,8 @@ func init() {
 	LoraNetworkSetsListGatewaysCmd.MarkFlagRequired("ns-id")
 
 	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa gateways to retrieve."))
+
+	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListGatewaysCmd)
 }
@@ -58,7 +61,7 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -79,6 +82,10 @@ func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, err
 		method: "GET",
 		path:   buildPathForLoraNetworkSetsListGatewaysCmd("/lora_network_sets/{ns_id}/gateways"),
 		query:  buildQueryForLoraNetworkSetsListGatewaysCmd(),
+
+		doPagination:                      LoraNetworkSetsListGatewaysCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -86,21 +93,21 @@ func buildPathForLoraNetworkSetsListGatewaysCmd(path string) string {
 
 	escapedNsId := url.PathEscape(LoraNetworkSetsListGatewaysCmdNsId)
 
-	path = strings.Replace(path, "{"+"ns_id"+"}", escapedNsId, -1)
+	path = strReplace(path, "{"+"ns_id"+"}", escapedNsId, -1)
 
 	return path
 }
 
-func buildQueryForLoraNetworkSetsListGatewaysCmd() string {
-	result := []string{}
+func buildQueryForLoraNetworkSetsListGatewaysCmd() url.Values {
+	result := url.Values{}
 
 	if LoraNetworkSetsListGatewaysCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(LoraNetworkSetsListGatewaysCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", LoraNetworkSetsListGatewaysCmdLastEvaluatedKey)
 	}
 
 	if LoraNetworkSetsListGatewaysCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", LoraNetworkSetsListGatewaysCmdLimit))))
+		result.Add("limit", sprintf("%d", LoraNetworkSetsListGatewaysCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

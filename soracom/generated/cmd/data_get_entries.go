@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -31,6 +29,9 @@ var DataGetEntriesCmdLimit int64
 // DataGetEntriesCmdTo holds value of 'to' option
 var DataGetEntriesCmdTo int64
 
+// DataGetEntriesCmdPaginate indicates to do pagination or not
+var DataGetEntriesCmdPaginate bool
+
 func init() {
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -49,6 +50,8 @@ func init() {
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataCmd.AddCommand(DataGetEntriesCmd)
 }
@@ -80,7 +83,7 @@ var DataGetEntriesCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -101,6 +104,10 @@ func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDataGetEntriesCmd("/data/{resource_type}/{resource_id}"),
 		query:  buildQueryForDataGetEntriesCmd(),
+
+		doPagination:                      DataGetEntriesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -108,37 +115,37 @@ func buildPathForDataGetEntriesCmd(path string) string {
 
 	escapedResourceId := url.PathEscape(DataGetEntriesCmdResourceId)
 
-	path = strings.Replace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
+	path = strReplace(path, "{"+"resource_id"+"}", escapedResourceId, -1)
 
 	escapedResourceType := url.PathEscape(DataGetEntriesCmdResourceType)
 
-	path = strings.Replace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
+	path = strReplace(path, "{"+"resource_type"+"}", escapedResourceType, -1)
 
 	return path
 }
 
-func buildQueryForDataGetEntriesCmd() string {
-	result := []string{}
+func buildQueryForDataGetEntriesCmd() url.Values {
+	result := url.Values{}
 
 	if DataGetEntriesCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(DataGetEntriesCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", DataGetEntriesCmdLastEvaluatedKey)
 	}
 
 	if DataGetEntriesCmdSort != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("sort"), url.QueryEscape(DataGetEntriesCmdSort)))
+		result.Add("sort", DataGetEntriesCmdSort)
 	}
 
 	if DataGetEntriesCmdFrom != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("from"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdFrom))))
+		result.Add("from", sprintf("%d", DataGetEntriesCmdFrom))
 	}
 
 	if DataGetEntriesCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdLimit))))
+		result.Add("limit", sprintf("%d", DataGetEntriesCmdLimit))
 	}
 
 	if DataGetEntriesCmdTo != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("to"), url.QueryEscape(sprintf("%d", DataGetEntriesCmdTo))))
+		result.Add("to", sprintf("%d", DataGetEntriesCmdTo))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

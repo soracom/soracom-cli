@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -40,6 +38,9 @@ var QuerySubscribersCmdTag []string
 // QuerySubscribersCmdLimit holds value of 'limit' option
 var QuerySubscribersCmdLimit int64
 
+// QuerySubscribersCmdPaginate indicates to do pagination or not
+var QuerySubscribersCmdPaginate bool
+
 func init() {
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
@@ -60,6 +61,8 @@ func init() {
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
 	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+
+	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QueryCmd.AddCommand(QuerySubscribersCmd)
 }
@@ -91,7 +94,7 @@ var QuerySubscribersCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -112,6 +115,10 @@ func collectQuerySubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQuerySubscribersCmd("/query/subscribers"),
 		query:  buildQueryForQuerySubscribersCmd(),
+
+		doPagination:                      QuerySubscribersCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 	}, nil
 }
 
@@ -120,62 +127,62 @@ func buildPathForQuerySubscribersCmd(path string) string {
 	return path
 }
 
-func buildQueryForQuerySubscribersCmd() string {
-	result := []string{}
+func buildQueryForQuerySubscribersCmd() url.Values {
+	result := url.Values{}
 
 	if QuerySubscribersCmdLastEvaluatedKey != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("last_evaluated_key"), url.QueryEscape(QuerySubscribersCmdLastEvaluatedKey)))
+		result.Add("last_evaluated_key", QuerySubscribersCmdLastEvaluatedKey)
 	}
 
 	if QuerySubscribersCmdSearchType != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("search_type"), url.QueryEscape(QuerySubscribersCmdSearchType)))
+		result.Add("search_type", QuerySubscribersCmdSearchType)
 	}
 
 	for _, s := range QuerySubscribersCmdGroup {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("group"), url.QueryEscape(s)))
+			result.Add("group", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdIccid {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("iccid"), url.QueryEscape(s)))
+			result.Add("iccid", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdImsi {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("imsi"), url.QueryEscape(s)))
+			result.Add("imsi", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdMsisdn {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("msisdn"), url.QueryEscape(s)))
+			result.Add("msisdn", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdName {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("name"), url.QueryEscape(s)))
+			result.Add("name", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdSerialNumber {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("serial_number"), url.QueryEscape(s)))
+			result.Add("serial_number", s)
 		}
 	}
 
 	for _, s := range QuerySubscribersCmdTag {
 		if s != "" {
-			result = append(result, sprintf("%s=%s", url.QueryEscape("tag"), url.QueryEscape(s)))
+			result.Add("tag", s)
 		}
 	}
 
 	if QuerySubscribersCmdLimit != 0 {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("limit"), url.QueryEscape(sprintf("%d", QuerySubscribersCmdLimit))))
+		result.Add("limit", sprintf("%d", QuerySubscribersCmdLimit))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

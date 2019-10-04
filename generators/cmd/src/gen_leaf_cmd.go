@@ -46,26 +46,29 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 		}()
 
 		a := commandArgs{
-			Use:                       getLast(commandName),
-			Short:                     m.Path + ":" + m.Method + ":summary",
-			Long:                      m.Path + ":" + m.Method + ":description",
-			CommandVariableName:       getCommandVariableName(commandName),
-			ParentCommandVariableName: getParentCommandVariableName(commandName),
-			RequireAuth:               m.Security != nil,
-			RequireOperatorID:         isOperatorIDRequired(m.Parameters, apiDef.StructDefs),
-			BodyExists:                doesRequestBodyExist(m.Parameters),
-			SendBodyRaw:               isBodyArray(m.Parameters) || isBodyBinary(m.Parameters),
-			ResponseBodyRaw:           isResponseBodyRaw(m),
-			Method:                    strings.ToUpper(m.Method),
-			BasePath:                  apiDef.BasePath,
-			Path:                      m.Path,
-			PathParamsExist:           doPathParamsExist(m.Parameters),
-			QueryParamsExist:          doQueryParamsExist(m.Parameters),
-			StringFlags:               getStringFlags(m, m.Parameters, apiDef.StructDefs),
-			StringSliceFlags:          getStringSliceFlags(m.Parameters, apiDef.StructDefs),
-			IntegerFlags:              getIntegerFlags(m.Parameters, apiDef.StructDefs),
-			FloatFlags:                getFloatFlags(m.Parameters, apiDef.StructDefs),
-			BoolFlags:                 getBoolFlags(m.Parameters, apiDef.StructDefs),
+			Use:                               getLast(commandName),
+			Short:                             m.Path + ":" + m.Method + ":summary",
+			Long:                              m.Path + ":" + m.Method + ":description",
+			CommandVariableName:               getCommandVariableName(commandName),
+			ParentCommandVariableName:         getParentCommandVariableName(commandName),
+			RequireAuth:                       m.Security != nil,
+			RequireOperatorID:                 isOperatorIDRequired(m.Parameters, apiDef.StructDefs),
+			BodyExists:                        doesRequestBodyExist(m.Parameters),
+			SendBodyRaw:                       isBodyArray(m.Parameters) || isBodyBinary(m.Parameters),
+			ResponseBodyRaw:                   isResponseBodyRaw(m),
+			Method:                            strings.ToUpper(m.Method),
+			BasePath:                          apiDef.BasePath,
+			Path:                              m.Path,
+			PathParamsExist:                   doPathParamsExist(m.Parameters),
+			QueryParamsExist:                  doQueryParamsExist(m.Parameters),
+			StringFlags:                       getStringFlags(m, m.Parameters, apiDef.StructDefs),
+			StringSliceFlags:                  getStringSliceFlags(m.Parameters, apiDef.StructDefs),
+			IntegerFlags:                      getIntegerFlags(m.Parameters, apiDef.StructDefs),
+			FloatFlags:                        getFloatFlags(m.Parameters, apiDef.StructDefs),
+			BoolFlags:                         getBoolFlags(m.Parameters, apiDef.StructDefs),
+			PaginationAvailable:               m.Pagination != nil,
+			PaginationKeyHeaderInResponse:     getPaginationKeyHeaderInResponse(m.Pagination),
+			PaginationRequestParameterInQuery: getPaginationRequestparameterInQuery(m.Pagination),
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
 			if doesContentTypeParamExist(m.Parameters) {
@@ -499,4 +502,20 @@ func getStructNameFromReference(ref string) string {
 		return strings.Replace(ref, defPrefix, "", 1)
 	}
 	return ref
+}
+
+func getPaginationKeyHeaderInResponse(p *lib.Pagination) string {
+	if p == nil {
+		return ""
+	}
+
+	return p.Response.Header
+}
+
+func getPaginationRequestparameterInQuery(p *lib.Pagination) string {
+	if p == nil {
+		return ""
+	}
+
+	return p.Request.Param
 }

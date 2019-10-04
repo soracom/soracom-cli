@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -53,7 +51,7 @@ var PaymentStatementsExportCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -81,17 +79,17 @@ func buildPathForPaymentStatementsExportCmd(path string) string {
 
 	escapedPaymentStatementId := url.PathEscape(PaymentStatementsExportCmdPaymentStatementId)
 
-	path = strings.Replace(path, "{"+"payment_statement_id"+"}", escapedPaymentStatementId, -1)
+	path = strReplace(path, "{"+"payment_statement_id"+"}", escapedPaymentStatementId, -1)
 
 	return path
 }
 
-func buildQueryForPaymentStatementsExportCmd() string {
-	result := []string{}
+func buildQueryForPaymentStatementsExportCmd() url.Values {
+	result := url.Values{}
 
 	if PaymentStatementsExportCmdExportMode != "" {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("export_mode"), url.QueryEscape(PaymentStatementsExportCmdExportMode)))
+		result.Add("export_mode", PaymentStatementsExportCmdExportMode)
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

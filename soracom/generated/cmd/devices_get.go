@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -53,7 +51,7 @@ var DevicesGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -81,17 +79,17 @@ func buildPathForDevicesGetCmd(path string) string {
 
 	escapedDeviceId := url.PathEscape(DevicesGetCmdDeviceId)
 
-	path = strings.Replace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
+	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForDevicesGetCmd() string {
-	result := []string{}
+func buildQueryForDevicesGetCmd() url.Values {
+	result := url.Values{}
 
 	if DevicesGetCmdModel != false {
-		result = append(result, sprintf("%s=%s", url.QueryEscape("model"), url.QueryEscape(sprintf("%t", DevicesGetCmdModel))))
+		result.Add("model", sprintf("%t", DevicesGetCmdModel))
 	}
 
-	return strings.Join(result, "&")
+	return result
 }

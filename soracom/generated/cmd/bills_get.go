@@ -3,9 +3,7 @@ package cmd
 
 import (
 	"net/url"
-
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +46,7 @@ var BillsGetCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -76,13 +74,13 @@ func buildPathForBillsGetCmd(path string) string {
 
 	escapedYyyyMM := url.PathEscape(BillsGetCmdYyyyMM)
 
-	path = strings.Replace(path, "{"+"yyyyMM"+"}", escapedYyyyMM, -1)
+	path = strReplace(path, "{"+"yyyyMM"+"}", escapedYyyyMM, -1)
 
 	return path
 }
 
-func buildQueryForBillsGetCmd() string {
-	result := []string{}
+func buildQueryForBillsGetCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }

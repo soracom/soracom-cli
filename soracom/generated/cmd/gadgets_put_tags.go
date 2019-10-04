@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 
 	"net/url"
-
 	"os"
+
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -62,7 +62,7 @@ var GadgetsPutTagsCmd = &cobra.Command{
 			return err
 		}
 
-		_, body, err := ac.callAPI(param)
+		body, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -99,19 +99,19 @@ func buildPathForGadgetsPutTagsCmd(path string) string {
 
 	escapedProductId := url.PathEscape(GadgetsPutTagsCmdProductId)
 
-	path = strings.Replace(path, "{"+"product_id"+"}", escapedProductId, -1)
+	path = strReplace(path, "{"+"product_id"+"}", escapedProductId, -1)
 
 	escapedSerialNumber := url.PathEscape(GadgetsPutTagsCmdSerialNumber)
 
-	path = strings.Replace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
+	path = strReplace(path, "{"+"serial_number"+"}", escapedSerialNumber, -1)
 
 	return path
 }
 
-func buildQueryForGadgetsPutTagsCmd() string {
-	result := []string{}
+func buildQueryForGadgetsPutTagsCmd() url.Values {
+	result := url.Values{}
 
-	return strings.Join(result, "&")
+	return result
 }
 
 func buildBodyForGadgetsPutTagsCmd() (string, error) {
