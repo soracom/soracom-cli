@@ -19,7 +19,7 @@ run_command_on_docker_container() {
       -v "$d":/go/src/github.com/soracom/soracom-cli \
       -v "$gopath":/go \
       -w "/go/src/github.com/soracom/soracom-cli/$dir" \
-      golang:1.12 bash -x -c "$cmd" || {
+      golang:1.13 bash -x -c "$cmd" || {
       echo -e "${RED}Build failed.${RESET}"
       exit 1
     }
