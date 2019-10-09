@@ -58,8 +58,9 @@ fi
 }
 
 : "Test generator's library" && {
-    echo "Testing generator's library ..."
-    run_command_on_docker_container 'generators/lib' 'go test'
+    echo "Testing generator's source ..."
+    run_command_on_docker_container 'generators/cmd/src' 'go test'
+    run_command_on_docker_container 'generators/lib'     'go test'
 }
 
 : 'Generate source code for soracom-cli' && {

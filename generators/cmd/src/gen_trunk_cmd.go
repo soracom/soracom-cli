@@ -1,461 +1,20 @@
 package main
 
-func generateTrunkCommands(templateDir, outputDir string) error {
+import (
+	"fmt"
+	"sort"
+	"strings"
+
+	"github.com/soracom/soracom-cli/generators/lib"
+)
+
+func generateTrunkCommands(apiDef *lib.APIDefinitions, templateDir, outputDir string) error {
 	subCommandTemplate, err := openTemplateFile(templateDir, "trunk.gotmpl")
 	if err != nil {
 		return err
 	}
 
-	argsSlice := []commandArgs{
-		{
-			Use:                       "audit-logs",
-			Short:                     "cli.audit-logs.summary",
-			Long:                      "cli.audit-logs.description",
-			CommandVariableName:       "AuditLogsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "audit_logs.go",
-		},
-		{
-			Use:                       "napter",
-			Short:                     "cli.audit-logs.napter.summary",
-			Long:                      "cli.audit-logs.napter.description",
-			CommandVariableName:       "AuditLogsNapterCmd",
-			ParentCommandVariableName: "AuditLogsCmd",
-			FileName:                  "audit_logs_napter.go",
-		},
-		{
-			Use:                       "bills",
-			Short:                     "cli.bills.summary",
-			Long:                      "cli.bills.description",
-			CommandVariableName:       "BillsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "bills.go",
-		},
-		{
-			Use:                       "coupons",
-			Short:                     "cli.coupons.summary",
-			Long:                      "cli.coupons.description",
-			CommandVariableName:       "CouponsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "coupons.go",
-		},
-		{
-			Use:                       "credentials",
-			Short:                     "cli.credentials.summary",
-			Long:                      "cli.credentials.description",
-			CommandVariableName:       "CredentialsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "credentials.go",
-		},
-		{
-			Use:                       "data",
-			Short:                     "cli.data.summary",
-			Long:                      "cli.data.description",
-			CommandVariableName:       "DataCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "data.go",
-		},
-		{
-			Use:                       "devices",
-			Short:                     "cli.devices.summary",
-			Long:                      "cli.devices.description",
-			CommandVariableName:       "DevicesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "devices.go",
-		},
-		{
-			Use:                       "event-handlers",
-			Short:                     "cli.event-handlers.summary",
-			Long:                      "cli.event-handlers.description",
-			CommandVariableName:       "EventHandlersCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "event_handlers.go",
-		},
-		{
-			Use:                       "files",
-			Short:                     "cli.files.summary",
-			Long:                      "cli.files.description",
-			CommandVariableName:       "FilesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "files.go",
-		},
-		{
-			Use:                       "gadgets",
-			Short:                     "cli.gadgets.summary",
-			Long:                      "cli.gadgets.description",
-			CommandVariableName:       "GadgetsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "gadgets.go",
-		},
-		{
-			Use:                       "groups",
-			Short:                     "cli.groups.summary",
-			Long:                      "cli.groups.description",
-			CommandVariableName:       "GroupsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "groups.go",
-		},
-		{
-			Use:                       "lagoon",
-			Short:                     "cli.lagoon.summary",
-			Long:                      "cli.lagoon.description",
-			CommandVariableName:       "LagoonCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "lagoon.go",
-		},
-		{
-			Use:                       "dashboards",
-			Short:                     "cli.lagoon.dashboards.summary",
-			Long:                      "cli.lagoon.dashboards.description",
-			CommandVariableName:       "LagoonDashboardsCmd",
-			ParentCommandVariableName: "LagoonCmd",
-			FileName:                  "lagoon_dashboards.go",
-		},
-		{
-			Use:                       "license-packs",
-			Short:                     "cli.lagoon.license-packs.summary",
-			Long:                      "cli.lagoon.license-packs.description",
-			CommandVariableName:       "LagoonLicensePacksCmd",
-			ParentCommandVariableName: "LagoonCmd",
-			FileName:                  "lagoon_license_packs.go",
-		},
-		{
-			Use:                       "users",
-			Short:                     "cli.lagoon.users.summary",
-			Long:                      "cli.lagoon.users.description",
-			CommandVariableName:       "LagoonUsersCmd",
-			ParentCommandVariableName: "LagoonCmd",
-			FileName:                  "lagoon_users.go",
-		},
-		{
-			Use:                       "lora-devices",
-			Short:                     "cli.lora-devices.summary",
-			Long:                      "cli.lora-devices.description",
-			CommandVariableName:       "LoraDevicesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "lora_devices.go",
-		},
-		{
-			Use:                       "lora-gateways",
-			Short:                     "cli.lora-gateways.summary",
-			Long:                      "cli.lora-gateways.description",
-			CommandVariableName:       "LoraGatewaysCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "lora_gateways.go",
-		},
-		{
-			Use:                       "lora-network-sets",
-			Short:                     "cli.lora-network-sets.summary",
-			Long:                      "cli.lora-network-sets.description",
-			CommandVariableName:       "LoraNetworkSetsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "lora_network_sets.go",
-		},
-		{
-			Use:                       "operator",
-			Short:                     "cli.operator.summary",
-			Long:                      "cli.operator.description",
-			CommandVariableName:       "OperatorCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "operator.go",
-		},
-		{
-			Use:                       "auth-keys",
-			Short:                     "cli.operator.auth-keys.summary",
-			Long:                      "cli.operator.auth-keys.description",
-			CommandVariableName:       "OperatorAuthKeysCmd",
-			ParentCommandVariableName: "OperatorCmd",
-			FileName:                  "operator_auth_keys.go",
-		},
-		{
-			Use:                       "orders",
-			Short:                     "cli.orders.summary",
-			Long:                      "cli.orders.description",
-			CommandVariableName:       "OrdersCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "orders.go",
-		},
-		{
-			Use:                       "payment-history",
-			Short:                     "cli.payment-history.summary",
-			Long:                      "cli.payment-history.description",
-			CommandVariableName:       "PaymentHistoryCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "payment_history.go",
-		},
-		{
-			Use:                       "payment-methods",
-			Short:                     "cli.payment-methods.summary",
-			Long:                      "cli.payment-methods.description",
-			CommandVariableName:       "PaymentMethodsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "payment_methods.go",
-		},
-		{
-			Use:                       "payment-statements",
-			Short:                     "cli.payment-statements.summary",
-			Long:                      "cli.payment-statements.description",
-			CommandVariableName:       "PaymentStatementsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "payment_statements.go",
-		},
-		{
-			Use:                       "payer-information",
-			Short:                     "cli.payer-information.summary",
-			Long:                      "cli.payer-information.description",
-			CommandVariableName:       "PayerInformationCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "payer_information.go",
-		},
-		{
-			Use:                       "webpay",
-			Short:                     "cli.payment-methods.webpay.summary",
-			Long:                      "cli.payment-methods.webpay.description",
-			CommandVariableName:       "PaymentMethodsWebpayCmd",
-			ParentCommandVariableName: "PaymentMethodsCmd",
-			FileName:                  "payment_methods_webpay.go",
-		},
-		{
-			Use:                       "products",
-			Short:                     "cli.products.summary",
-			Long:                      "cli.products.description",
-			CommandVariableName:       "ProductsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "products.go",
-		},
-		{
-			Use:                       "roles",
-			Short:                     "cli.roles.summary",
-			Long:                      "cli.roles.description",
-			CommandVariableName:       "RolesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "roles.go",
-		},
-		{
-			Use:                       "sandbox",
-			Short:                     "cli.sandbox.summary",
-			Long:                      "cli.sandbox.description",
-			CommandVariableName:       "SandboxCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "sandbox.go",
-		},
-		{
-			Use:                       "coupons",
-			Short:                     "cli.sandbox.coupons.summary",
-			Long:                      "cli.sandbox.coupons.description",
-			CommandVariableName:       "SandboxCouponsCmd",
-			ParentCommandVariableName: "SandboxCmd",
-			FileName:                  "sandbox_coupons.go",
-		},
-		{
-			Use:                       "operators",
-			Short:                     "cli.sandbox.operators.summary",
-			Long:                      "cli.sandbox.operators.description",
-			CommandVariableName:       "SandboxOperatorsCmd",
-			ParentCommandVariableName: "SandboxCmd",
-			FileName:                  "sandbox_operators.go",
-		},
-		{
-			Use:                       "orders",
-			Short:                     "cli.sandbox.orders.summary",
-			Long:                      "cli.sandbox.orders.description",
-			CommandVariableName:       "SandboxOrdersCmd",
-			ParentCommandVariableName: "SandboxCmd",
-			FileName:                  "sandbox_orders.go",
-		},
-		{
-			Use:                       "stats",
-			Short:                     "cli.sandbox.stats.summary",
-			Long:                      "cli.sandbox.stats.description",
-			CommandVariableName:       "SandboxStatsCmd",
-			ParentCommandVariableName: "SandboxCmd",
-			FileName:                  "sandbox_stats.go",
-		},
-		{
-			Use:                       "air",
-			Short:                     "cli.sandbox.stats.air.summary",
-			Long:                      "cli.sandbox.stats.air.description",
-			CommandVariableName:       "SandboxStatsAirCmd",
-			ParentCommandVariableName: "SandboxStatsCmd",
-			FileName:                  "sandbox_stats_air.go",
-		},
-		{
-			Use:                       "beam",
-			Short:                     "cli.sandbox.stats.beam.summary",
-			Long:                      "cli.sandbox.stats.beam.description",
-			CommandVariableName:       "SandboxStatsBeamCmd",
-			ParentCommandVariableName: "SandboxStatsCmd",
-			FileName:                  "sandbox_stats_beam.go",
-		},
-		{
-			Use:                       "subscribers",
-			Short:                     "cli.sandbox.subscribers.summary",
-			Long:                      "cli.sandbox.subscribers.description",
-			CommandVariableName:       "SandboxSubscribersCmd",
-			ParentCommandVariableName: "SandboxCmd",
-			FileName:                  "sandbox_subscribers.go",
-		},
-		{
-			Use:                       "shipping-addresses",
-			Short:                     "cli.shipping-addresses.summary",
-			Long:                      "cli.shipping-addresses.description",
-			CommandVariableName:       "ShippingAddressesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "shipping_addresses.go",
-		},
-		{
-			Use:                       "sigfox-devices",
-			Short:                     "cli.sigfox-devices.summary",
-			Long:                      "cli.sigfox-devices.description",
-			CommandVariableName:       "SigfoxDevicesCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "sigfox_devices.go",
-		},
-		{
-			Use:                       "stats",
-			Short:                     "cli.stats.summary",
-			Long:                      "cli.stats.description",
-			CommandVariableName:       "StatsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "stats.go",
-		},
-		{
-			Use:                       "air",
-			Short:                     "cli.stats.air.summary",
-			Long:                      "cli.stats.air.description",
-			CommandVariableName:       "StatsAirCmd",
-			ParentCommandVariableName: "StatsCmd",
-			FileName:                  "stats_air.go",
-		},
-		{
-			Use:                       "beam",
-			Short:                     "cli.stats.beam.summary",
-			Long:                      "cli.stats.beam.description",
-			CommandVariableName:       "StatsBeamCmd",
-			ParentCommandVariableName: "StatsCmd",
-			FileName:                  "stats_beam.go",
-		},
-		{
-			Use:                       "harvest",
-			Short:                     "cli.stats.harvest.summary",
-			Long:                      "cli.stats.harvest.description",
-			CommandVariableName:       "StatsHarvestCmd",
-			ParentCommandVariableName: "StatsCmd",
-			FileName:                  "stats_harvest.go",
-		},
-		{
-			Use:                       "napter",
-			Short:                     "cli.stats.napter.summary",
-			Long:                      "cli.stats.napter.description",
-			CommandVariableName:       "StatsNapterCmd",
-			ParentCommandVariableName: "StatsCmd",
-			FileName:                  "stats_napter.go",
-		},
-		{
-			Use:                       "audit-logs",
-			Short:                     "cli.stats.napter.audit-logs.summary",
-			Long:                      "cli.stats.napter.audit-logs.description",
-			CommandVariableName:       "StatsNapterAuditLogsCmd",
-			ParentCommandVariableName: "StatsNapterCmd",
-			FileName:                  "stats_napter_audit_logs.go",
-		},
-		{
-			Use:                       "subscribers",
-			Short:                     "cli.subscribers.summary",
-			Long:                      "cli.subscribers.description",
-			CommandVariableName:       "SubscribersCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "subscribers.go",
-		},
-		{
-			Use:                       "users",
-			Short:                     "cli.users.summary",
-			Long:                      "cli.users.description",
-			CommandVariableName:       "UsersCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "users.go",
-		},
-		{
-			Use:                       "mfa",
-			Short:                     "cli.users.mfa.summary",
-			Long:                      "cli.users.mfa.description",
-			CommandVariableName:       "UsersMfaCmd",
-			ParentCommandVariableName: "UsersCmd",
-			FileName:                  "users_mfa.go",
-		},
-		{
-			Use:                       "default-permissions",
-			Short:                     "cli.users.default-permissions.summary",
-			Long:                      "cli.users.default-permissions.description",
-			CommandVariableName:       "UsersDefaultPermissionsCmd",
-			ParentCommandVariableName: "UsersCmd",
-			FileName:                  "users_default_permissions.go",
-		},
-		{
-			Use:                       "auth-keys",
-			Short:                     "cli.users.auth-keys.summary",
-			Long:                      "cli.users.auth-keys.description",
-			CommandVariableName:       "UsersAuthKeysCmd",
-			ParentCommandVariableName: "UsersCmd",
-			FileName:                  "users_auth_keys.go",
-		},
-		{
-			Use:                       "password",
-			Short:                     "cli.users.password.summary",
-			Long:                      "cli.users.password.description",
-			CommandVariableName:       "UsersPasswordCmd",
-			ParentCommandVariableName: "UsersCmd",
-			FileName:                  "users_password.go",
-		},
-		{
-			Use:                       "permissions",
-			Short:                     "cli.users.permissions.summary",
-			Long:                      "cli.users.permissions.description",
-			CommandVariableName:       "UsersPermissionsCmd",
-			ParentCommandVariableName: "UsersCmd",
-			FileName:                  "users_permissions.go",
-		},
-		{
-			Use:                       "vpg",
-			Short:                     "cli.vpg.summary",
-			Long:                      "cli.vpg.description",
-			CommandVariableName:       "VpgCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "vpg.go",
-		},
-		{
-			Use:                       "logs",
-			Short:                     "cli.logs.summary",
-			Long:                      "cli.logs.description",
-			CommandVariableName:       "LogsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "logs.go",
-		},
-		{
-			Use:                       "port-mappings",
-			Short:                     "cli.port-mappings.summary",
-			Long:                      "cli.port-mappings.description",
-			CommandVariableName:       "PortMappingsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "port_mappings.go",
-		},
-		{
-			Use:                       "query",
-			Short:                     "cli.query.summary",
-			Long:                      "cli.query.description",
-			CommandVariableName:       "QueryCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "query.go",
-		},
-		{
-			Use:                       "volume-discounts",
-			Short:                     "cli.volume-discounts.summary",
-			Long:                      "cli.volume-discounts.description",
-			CommandVariableName:       "VolumeDiscountsCmd",
-			ParentCommandVariableName: "RootCmd",
-			FileName:                  "volume_discounts.go",
-		},
-	}
+	argsSlice := generateArgsForTrunkCommands(apiDef)
 
 	for _, args := range argsSlice {
 		f, err := openOutputFile(outputDir, args.FileName)
@@ -469,4 +28,55 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 	}
 
 	return nil
+}
+
+func generateArgsForTrunkCommands(apiDef *lib.APIDefinitions) []commandArgs {
+	trunkCommands := extractTrunkCommands(apiDef)
+
+	result := make([]commandArgs, 0)
+
+	for _, tc := range trunkCommands {
+		s := strings.Split(tc, " ")
+		ca := commandArgs{
+			Use:                       s[len(s)-1],
+			Short:                     fmt.Sprintf("cli.%s.summary", strings.Join(s, ".")),
+			Long:                      fmt.Sprintf("cli.%s.description", strings.Join(s, ".")),
+			CommandVariableName:       getCommandVariableName(strings.Join(s, " ")),
+			ParentCommandVariableName: getParentCommandVariableName(strings.Join(s, " ")),
+			FileName:                  fmt.Sprintf("%s.go", lib.SnakeCase(strings.Join(s, "-"))),
+		}
+		result = append(result, ca)
+	}
+
+	return result
+}
+
+func extractTrunkCommands(apiDef *lib.APIDefinitions) []string {
+	commands := map[string]interface{}{}
+
+	for _, m := range apiDef.Methods {
+		if m.CLI == nil || len(m.CLI) == 0 {
+			continue
+		}
+
+		for _, cli := range m.CLI {
+			s := strings.Split(cli, " ")
+			if len(s) <= 1 {
+				continue
+			}
+
+			for i := 1; i < len(s); i++ {
+				ss := s[:i]
+				commands[strings.Join(ss, " ")] = true
+			}
+		}
+	}
+
+	result := []string{}
+	for k := range commands {
+		result = append(result, k)
+	}
+
+	sort.Strings(result)
+	return result
 }

@@ -79,7 +79,12 @@ func generateCommands(apiDef, apiSandboxDef *lib.APIDefinitions, templateDir, pr
 		return err
 	}
 
-	err = generateTrunkCommands(templateDir, outputDir)
+	err = generateTrunkCommands(apiDef, templateDir, outputDir)
+	if err != nil {
+		return err
+	}
+
+	err = generateTrunkCommands(apiSandboxDef, templateDir, outputDir)
 	if err != nil {
 		return err
 	}
