@@ -1,4 +1,10 @@
 cli:
+  audit-logs:
+    summary: 監査ログを取得します。
+    description: 監査ログを取得します。
+    napter:
+      summary: Napter の監査ログを取得します。
+      description: Napter の監査ログを取得します。
   auth:
     summary: API アクセスの認証を行い、API キーと API トークンを発行します。
     description: "API アクセスの認証を行います。\nルートアカウントで認証する場合は --email と --password を指定してください。\n認証キーを用いて認証する場合は --auth-key-id と --auth-key を指定してください。\nSAM ユーザーで認証する場合は --operator-id, --user-name, --password をリクエストに含めてください。認証が成功すると、API キーや API トークンの情報が表示されます。"
@@ -155,6 +161,12 @@ cli:
     harvest:
       summary: Harvest の利用統計情報を取得します。
       description: Harvest の利用統計情報を取得します。
+    napter:
+      summary: Napter の利用統計情報を取得します。
+      description: Napter の利用統計情報を取得します。
+      audit-logs:
+        summary: Napter 監査ログの利用統計情報を取得します。
+        description: Napter 監査ログの利用統計情報を取得します。
   subscribers:
     summary: サブスクライバー (SIM) に関する操作を行います。
     description: サブスクライバー (SIM) に関する操作を行います。

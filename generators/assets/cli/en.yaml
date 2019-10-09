@@ -1,4 +1,10 @@
 cli:
+  audit-logs:
+    summary: Retrieve audit logs.
+    description: Retrieve audit logs.
+    napter:
+      summary: Retrieve audit logs for Napter.
+      description: Retrieve audit logs for Napter.
   auth:
     summary: Performs authentication and issue an API Key and an API Token if successful.
     description: "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
@@ -176,6 +182,12 @@ cli:
     harvest:
       summary: Get usage report for Harvest.
       description: Get usage report for Harvest.
+    napter:
+      summary: Get usage report for Napter.
+      description: Get usage report for Napter.
+      audit-logs:
+        summary: Get usage report for Napter audit logs.
+        description: Get usage report for Napter audit logs.
   subscribers:
     summary: Manage subscribers.
     description: Manage subscribers.

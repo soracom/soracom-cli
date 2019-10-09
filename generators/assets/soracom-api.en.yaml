@@ -1509,6 +1509,49 @@ definitions:
         description: 年月
         example: yyyyMM
         type: string
+  NapterAuditLogDirection:
+    properties:
+      destinationIPAddress:
+        type: string
+      destinationPort:
+        format: int64
+        type: integer
+      sourceIPAddress:
+        type: string
+      sourcePort:
+        format: int64
+        type: integer
+  NapterAuditLogEntry:
+    properties:
+      connectionId:
+        type: string
+      createdAt:
+        format: int64
+        type: integer
+      direction:
+        $ref: '#/definitions/NapterAuditLogDirection'
+      imsi:
+        type: string
+      isTLS:
+        type: boolean
+      operatorId:
+        type: string
+      type:
+        enum:
+        - ACCESS
+        - DENIED
+        - CONNECTED
+        - CLOSED
+        - REFUSED
+        type: string
+  NapterAuditLogsExportedDataStatsResponse:
+    properties:
+      exportedBytes:
+        description: exportedBytes
+        type: integer
+      yearMonth:
+        description: yearMonth
+        type: string
   ObjectInstance:
     properties:
       id:
@@ -1787,6 +1830,21 @@ definitions:
       updateDateTime:
         format: int64
         type: integer
+  RoutingFilterEntry:
+    properties:
+      action:
+        description: Whether to allow or deny the outbound packets with a destination
+          in the specified range
+        enum:
+        - allow
+        - deny
+        type: string
+      ipRange:
+        description: IPv4 address range in CIDR format, e.g. a.b.c.d/x
+        type: string
+    required:
+    - action
+    - ipRange
   RuleConfig:
     properties:
       properties:
@@ -2256,6 +2314,67 @@ info:
   title: SORACOM API
   version: VERSION_PLACEHOLDER
 paths:
+  /audit_logs/napter:
+    get:
+      description: Retrieve audit logs for Napter.
+      operationId: getNapterAuditLogs
+      parameters:
+      - description: Type of the target resource to query Napter audit log entries.
+        enum:
+        - Subscriber
+        in: query
+        name: resource_type
+        required: false
+        type: string
+      - description: Identity of the target resource to query log entries.
+        in: query
+        name: resource_id
+        required: false
+        type: string
+      - description: Start time for the log search range (unixtime millis).
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: End time for the log search range (unixtime millis).
+        in: query
+        name: to
+        required: false
+        type: integer
+      - description: Maximum number of log entries to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The value of `time` in the last log entry retrieved in the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next page onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: A list of Napter audit log entries.
+          schema:
+            items:
+              $ref: '#/definitions/NapterAuditLogEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Retrieve audit logs for Napter
+      tags:
+      - AuditLog
+      x-soracom-cli:
+      - audit-logs napter get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /auth:
     post:
       consumes:
@@ -9605,6 +9724,33 @@ paths:
       - Stats
       x-soracom-cli:
       - stats harvest get
+  /stats/napter/audit_logs:
+    get:
+      consumes:
+      - application/json
+      description: Get Napter audit logs' monthly exported data stats
+      operationId: getNapterAuditLogsExportedDataStats
+      parameters:
+      - description: Year/Month in 'YYYYMM' format.
+        in: query
+        name: year_month
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/NapterAuditLogsExportedDataStatsResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Napter audit logs' monthly exported data stats
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats napter audit-logs get
   /subscribers:
     get:
       description: Returns a list of subscribers that match certain criteria. If the
@@ -11183,6 +11329,43 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg unset-redirection
+  /virtual_private_gateways/{vpg_id}/set_routing_filter:
+    post:
+      consumes:
+      - application/json
+      description: Sets Virtual Private Gateway outbound routing filter.
+      operationId: setRoutingFilter
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: List of routing filter entries
+        in: body
+        name: routing_filter_entries
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/RoutingFilterEntry'
+          type: array
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The routing filter is successfully configured.
+        400:
+          description: Invalid argument is given
+        404:
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Sets Virtual Private Gateway outbound routing filter.
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg set-routing-filter
   /virtual_private_gateways/{vpg_id}/terminate:
     post:
       consumes:

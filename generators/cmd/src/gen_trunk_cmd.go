@@ -8,6 +8,22 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 
 	argsSlice := []commandArgs{
 		{
+			Use:                       "audit-logs",
+			Short:                     "cli.audit-logs.summary",
+			Long:                      "cli.audit-logs.description",
+			CommandVariableName:       "AuditLogsCmd",
+			ParentCommandVariableName: "RootCmd",
+			FileName:                  "audit_logs.go",
+		},
+		{
+			Use:                       "napter",
+			Short:                     "cli.audit-logs.napter.summary",
+			Long:                      "cli.audit-logs.napter.description",
+			CommandVariableName:       "AuditLogsNapterCmd",
+			ParentCommandVariableName: "AuditLogsCmd",
+			FileName:                  "audit_logs_napter.go",
+		},
+		{
 			Use:                       "bills",
 			Short:                     "cli.bills.summary",
 			Long:                      "cli.bills.description",
@@ -326,6 +342,22 @@ func generateTrunkCommands(templateDir, outputDir string) error {
 			CommandVariableName:       "StatsHarvestCmd",
 			ParentCommandVariableName: "StatsCmd",
 			FileName:                  "stats_harvest.go",
+		},
+		{
+			Use:                       "napter",
+			Short:                     "cli.stats.napter.summary",
+			Long:                      "cli.stats.napter.description",
+			CommandVariableName:       "StatsNapterCmd",
+			ParentCommandVariableName: "StatsCmd",
+			FileName:                  "stats_napter.go",
+		},
+		{
+			Use:                       "audit-logs",
+			Short:                     "cli.stats.napter.audit-logs.summary",
+			Long:                      "cli.stats.napter.audit-logs.description",
+			CommandVariableName:       "StatsNapterAuditLogsCmd",
+			ParentCommandVariableName: "StatsNapterCmd",
+			FileName:                  "stats_napter_audit_logs.go",
 		},
 		{
 			Use:                       "subscribers",

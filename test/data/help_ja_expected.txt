@@ -4,6 +4,7 @@ Usage:
   soracom [command]
 
 Available Commands:
+  audit-logs         監査ログを取得します。
   auth               API アクセスの認証を行い、API キーと API トークンを発行します。
   bills              課金に関する情報を確認したりファイルへのエクスポートを行います。
   completion         bash もしくは zsh 用の補完 (completion) スクリプトを生成します。

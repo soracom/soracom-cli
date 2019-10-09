@@ -4,6 +4,7 @@ Usage:
   soracom [command]
 
 Available Commands:
+  audit-logs         Retrieve audit logs.
   auth               Performs authentication to access to the SORACOM API.
   bills              Show or export billing info.
   completion         Generate script for bash or zsh completion.

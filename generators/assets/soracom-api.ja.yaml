@@ -1509,6 +1509,49 @@ definitions:
         description: 年月
         example: yyyyMM
         type: string
+  NapterAuditLogDirection:
+    properties:
+      destinationIPAddress:
+        type: string
+      destinationPort:
+        format: int64
+        type: integer
+      sourceIPAddress:
+        type: string
+      sourcePort:
+        format: int64
+        type: integer
+  NapterAuditLogEntry:
+    properties:
+      connectionId:
+        type: string
+      createdAt:
+        format: int64
+        type: integer
+      direction:
+        $ref: '#/definitions/NapterAuditLogDirection'
+      imsi:
+        type: string
+      isTLS:
+        type: boolean
+      operatorId:
+        type: string
+      type:
+        enum:
+        - ACCESS
+        - DENIED
+        - CONNECTED
+        - CLOSED
+        - REFUSED
+        type: string
+  NapterAuditLogsExportedDataStatsResponse:
+    properties:
+      exportedBytes:
+        description: exportedBytes
+        type: integer
+      yearMonth:
+        description: yearMonth
+        type: string
   ObjectInstance:
     properties:
       id:
@@ -1787,6 +1830,21 @@ definitions:
       updateDateTime:
         format: int64
         type: integer
+  RoutingFilterEntry:
+    properties:
+      action:
+        description: Whether to allow or deny the outbound packets with a destination
+          in the specified range
+        enum:
+        - allow
+        - deny
+        type: string
+      ipRange:
+        description: IPv4 address range in CIDR format, e.g. a.b.c.d/x
+        type: string
+    required:
+    - action
+    - ipRange
   RuleConfig:
     properties:
       properties:
@@ -2256,6 +2314,65 @@ info:
   title: SORACOM API
   version: VERSION_PLACEHOLDER
 paths:
+  /audit_logs/napter:
+    get:
+      description: SORACOM Napterの監査ログを新しいものから順に取得する
+      operationId: getNapterAuditLogs
+      parameters:
+      - description: ログ取得対象のリソースのタイプ
+        enum:
+        - Subscriber
+        in: query
+        name: resource_type
+        required: false
+        type: string
+      - description: ログ取得対象のリソースのID
+        in: query
+        name: resource_id
+        required: false
+        type: string
+      - description: ログ取得対象の期間の始まり (unixtime millis)
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: ログ取得対象の期間の終わり (unixtime millis)
+        in: query
+        name: to
+        required: false
+        type: integer
+      - description: 取得するログエントリ数の上限
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: 前ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Napter監査ログのエントリのリスト
+          schema:
+            items:
+              $ref: '#/definitions/NapterAuditLogEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM Napterの監査ログを取得する
+      tags:
+      - AuditLog
+      x-soracom-cli:
+      - audit-logs napter get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /auth:
     post:
       consumes:
@@ -9444,6 +9561,33 @@ paths:
       - Stats
       x-soracom-cli:
       - stats harvest get
+  /stats/napter/audit_logs:
+    get:
+      consumes:
+      - application/json
+      description: 指定された年月における Napter 監査ログの読み込みデータ通信量を byte 単位で取得する。
+      operationId: getNapterAuditLogsExportedDataStats
+      parameters:
+      - description: 年月を YYYYMM 形式で指定します。
+        in: query
+        name: year_month
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/NapterAuditLogsExportedDataStatsResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Napter 監査ログの月次読み込みデータ量を取得する。
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats napter audit-logs get
   /subscribers:
     get:
       description: 条件にマッチするSubscriberのリストを返す。Subscriberの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
@@ -10984,6 +11128,43 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg unset-redirection
+  /virtual_private_gateways/{vpg_id}/set_routing_filter:
+    post:
+      consumes:
+      - application/json
+      description: VPGのOutboundルーティングフィルタを設定する
+      operationId: setRoutingFilter
+      parameters:
+      - description: 対象のVPGのID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: ルーティングフィルタエントリのリスト
+        in: body
+        name: routing_filter_entries
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/RoutingFilterEntry'
+          type: array
+      produces:
+      - application/json
+      responses:
+        200:
+          description: ルーティングフィルタが正しく設定された
+        400:
+          description: 引数が不正
+        404:
+          description: 指定されたVPGは存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Sets Virtual Private Gateway outbound routing filter.
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg set-routing-filter
   /virtual_private_gateways/{vpg_id}/terminate:
     post:
       consumes:
