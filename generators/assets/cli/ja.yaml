@@ -170,6 +170,12 @@ cli:
   subscribers:
     summary: サブスクライバー (SIM) に関する操作を行います。
     description: サブスクライバー (SIM) に関する操作を行います。
+  test:
+    summary: soracom コマンド自身のテストや診断を行います。
+    description: soracom コマンド自身のテストや診断を行います。
+    _500:
+      summary: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。
+      description: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。環境変数 SORACOM_VERBOSE=1 を指定した状態で実行するとよいでしょう。
   unconfigure:
     summary: コマンド実行環境（プロファイル）を削除します。
     description: コマンド実行環境（プロファイル）を削除します。

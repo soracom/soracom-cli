@@ -191,6 +191,12 @@ cli:
   subscribers:
     summary: Manage subscribers.
     description: Manage subscribers.
+  test:
+    summary: Do diagnostics & testings.
+    description: Do diagnostics & testings.
+    _500:
+      summary: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
+      description: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
   unconfigure:
     summary: Remove configurations.
     description: Remove configurations.
