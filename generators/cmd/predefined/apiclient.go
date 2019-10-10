@@ -255,7 +255,7 @@ func (ac *apiClient) doRequest(req *http.Request, params *apiParams) (*http.Resp
 	if params.noRetryOnError {
 		res, err = ac.httpClient.Do(req)
 	} else {
-		res, err = ac.doHTTPRequestWithRetries(req)
+		res, err = ac.doHTTPRequestWithRetries(req, params)
 	}
 	if err != nil {
 		return nil, "", err
@@ -335,7 +335,7 @@ func splitVersionString(ver string) []string {
 	return result
 }
 
-func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response, error) {
+func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request, params *apiParams) (*http.Response, error) {
 	backoffSeconds := []int{10, 10, 20, 30, 50}
 	for _, wait := range backoffSeconds {
 		res, err := ac.httpClient.Do(req)
@@ -352,6 +352,7 @@ func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request) (*http.Response
 		ac.reportWaitingBeforeRetrying(res, err, wait)
 		time.Sleep(time.Duration(wait) * time.Second)
 		ac.reportRetrying()
+		req.Body = ioutil.NopCloser(strings.NewReader(params.body)) // reload body contents
 	}
 
 	return nil, errors.New("unable to receive successful response with some retires")
