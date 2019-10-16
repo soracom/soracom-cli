@@ -3,7 +3,9 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"strings"
 
+	"github.com/dvsekhvalnov/jose2go/base64url"
 	"github.com/spf13/cobra"
 )
 
@@ -23,10 +25,11 @@ type authResult struct {
 }
 
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
-	apiKey, apiToken, credentialsProvided := getProvidedCredentials()
+	apiKey, apiToken, operatorID, credentialsProvided := getProvidedCredentials()
 	if credentialsProvided {
 		ac.APIKey = apiKey
 		ac.Token = apiToken
+		ac.OperatorID = operatorID
 		return nil
 	}
 
@@ -73,8 +76,37 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func getProvidedCredentials() (string, string, bool) {
-	return providedAPIKey, providedAPIToken, (providedAPIKey != "" && providedAPIToken != "")
+func getProvidedCredentials() (string, string, string, bool) {
+	operatorID := extractOperatorIDFromAPIToken(providedAPIToken)
+	return providedAPIKey, providedAPIToken, operatorID, (providedAPIKey != "" && providedAPIToken != "")
+}
+
+type jwtPayload struct {
+	Operator jwtPayloadOperator `json:"operator"`
+}
+
+type jwtPayloadOperator struct {
+	OperatorID string `json:"operatorId"`
+}
+
+func extractOperatorIDFromAPIToken(apiToken string) string {
+	parts := strings.Split(apiToken, ".")
+	if len(parts) < 2 {
+		return ""
+	}
+
+	b64Decoded, err := base64url.Decode(parts[1])
+	if err != nil {
+		return ""
+	}
+
+	var jp jwtPayload
+	err = json.Unmarshal(b64Decoded, &jp)
+	if err != nil {
+		return ""
+	}
+
+	return jp.Operator.OperatorID
 }
 
 func toJSON(x interface{}) string {

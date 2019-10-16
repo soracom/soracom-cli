@@ -3,7 +3,8 @@ module github.com/soracom/soracom-cli
 require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/debber/debber-v0.3 v0.0.0-20160226200915-cf10fd052975 // indirect
-	github.com/elazarl/goproxy v0.0.0-20190911111923-ecfe977594f1
+	github.com/dvsekhvalnov/jose2go v0.0.0-20180829124132-7f401d37b68a
+	github.com/elazarl/goproxy v0.0.0-20191011121108-aa519ddbe484
 	github.com/elazarl/goproxy/ext v0.0.0-20190911111923-ecfe977594f1 // indirect
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
 	github.com/jessevdk/go-assets-builder v0.0.0-20130903091706-b8483521738f // indirect
@@ -17,8 +18,8 @@ require (
 	github.com/spf13/cobra v0.0.5
 	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad
 	golang.org/x/net v0.0.0-20190930134127-c5a3c61f89f3 // indirect
-	golang.org/x/sys v0.0.0-20191009170203-06d7bd2c5f4f
-	golang.org/x/tools v0.0.0-20191009213438-b090f1f24028 // indirect
+	golang.org/x/sys v0.0.0-20191010194322-b09406accb47
+	golang.org/x/tools v0.0.0-20191015211201-9c6d90b5a7d0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
