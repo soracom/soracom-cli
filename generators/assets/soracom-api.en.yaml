@@ -4293,6 +4293,12 @@ paths:
         name: path
         required: true
         type: string
+      - default: 10
+        description: Num of entries
+        in: query
+        name: limit
+        required: false
+        type: string
       responses:
         200:
           description: A list of file entries.
@@ -4851,6 +4857,45 @@ paths:
       x-soracom-cli:
       - groups get
   /groups/{group_id}/configuration/{namespace}:
+    delete:
+      description: Delete a namespace for the specified group.
+      operationId: deleteConfigurationNamespace
+      parameters:
+      - description: Target group.
+        in: path
+        name: group_id
+        required: true
+        type: string
+      - description: Namespace to be deleted.
+        enum:
+        - SoracomAir
+        - SoracomBeam
+        - SoracomEndorse
+        - SoracomFunk
+        - SoracomFunnel
+        - SoracomHarvest
+        - SoracomHarvestFiles
+        - SoracomKrypton
+        - UnifiedEndpoint
+        in: path
+        name: namespace
+        required: true
+        type: string
+      responses:
+        204:
+          description: The namespace was successfully deleted.
+        400:
+          description: The specified namespace does not exist.
+        404:
+          description: The specified group does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Group Configuration Namespace.
+      tags:
+      - Group
+      x-soracom-cli:
+      - groups delete-config-namespace
     put:
       description: Adds/updates parameters for the specified group.
       operationId: putConfigurationParameters

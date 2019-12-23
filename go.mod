@@ -16,10 +16,10 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v0.0.5
-	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad
+	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20190930134127-c5a3c61f89f3 // indirect
-	golang.org/x/sys v0.0.0-20191010194322-b09406accb47
-	golang.org/x/tools v0.0.0-20191015211201-9c6d90b5a7d0 // indirect
+	golang.org/x/sys v0.0.0-20191220220014-0732a990476f
+	golang.org/x/tools v0.0.0-20191220234730-f13409bbebaf // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )

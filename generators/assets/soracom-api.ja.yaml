@@ -4248,6 +4248,12 @@ paths:
         name: path
         required: true
         type: string
+      - default: 10
+        description: Num of entries
+        in: query
+        name: limit
+        required: false
+        type: string
       responses:
         200:
           description: ファイルエントリのリスト
@@ -4795,6 +4801,45 @@ paths:
       x-soracom-cli:
       - groups get
   /groups/{group_id}/configuration/{namespace}:
+    delete:
+      description: 指定されたGroupのネームスペースを削除
+      operationId: deleteConfigurationNamespace
+      parameters:
+      - description: 対象のGroup
+        in: path
+        name: group_id
+        required: true
+        type: string
+      - description: 削除対象のネームスペース
+        enum:
+        - SoracomAir
+        - SoracomBeam
+        - SoracomEndorse
+        - SoracomFunk
+        - SoracomFunnel
+        - SoracomHarvest
+        - SoracomHarvestFiles
+        - SoracomKrypton
+        - UnifiedEndpoint
+        in: path
+        name: namespace
+        required: true
+        type: string
+      responses:
+        204:
+          description: 指定されたネームスペースの削除完了
+        400:
+          description: The specified namespace does not exist.
+        404:
+          description: 指定されたGroupが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Group Configuration Namespace
+      tags:
+      - Group
+      x-soracom-cli:
+      - groups delete-config-namespace
     put:
       description: 指定されたGroupのパラメータを追加・更新
       operationId: putConfigurationParameters

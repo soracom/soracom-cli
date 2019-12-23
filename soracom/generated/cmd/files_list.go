@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// FilesListCmdLimit holds value of 'limit' option
+var FilesListCmdLimit string
+
 // FilesListCmdPath holds value of 'path' option
 var FilesListCmdPath string
 
@@ -15,6 +18,8 @@ var FilesListCmdPath string
 var FilesListCmdScope string
 
 func init() {
+	FilesListCmd.Flags().StringVar(&FilesListCmdLimit, "limit", "", TRAPI("Num of entries"))
+
 	FilesListCmd.Flags().StringVar(&FilesListCmdPath, "path", "", TRAPI("Target path"))
 
 	FilesListCmd.MarkFlagRequired("path")
@@ -92,6 +97,10 @@ func buildPathForFilesListCmd(path string) string {
 
 func buildQueryForFilesListCmd() url.Values {
 	result := url.Values{}
+
+	if FilesListCmdLimit != "" {
+		result.Add("limit", FilesListCmdLimit)
+	}
 
 	return result
 }
