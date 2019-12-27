@@ -24,7 +24,7 @@ The `soracom` command:
   if you are a macOS user, you probably need to either:
   1. use `bash` version >= 4.0, or
   2. use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
-  
+
   ```
   if [ -f $(brew --prefix)/etc/bash_completion ]; then
     . $(brew --prefix)/etc/bash_completion
@@ -137,7 +137,7 @@ soracom configure-sandbox
 ```
 
 By answering to the questions prompted, a profile named `sandbox` will be created. By using the `sandbox` profile, you can issue commands to the API sandbox as follows.
- 
+
 ```
 soracom subscribers list --profile sandbox
 ```
@@ -243,4 +243,6 @@ VERSION=1.2.3                         # => specify a version number to be releas
 ./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
 ./scripts/build-snap.sh $VERSION
 ./scripts/release-snap.sh $VERSION
+./scripts/build-lambda-layer.sh $VERSION
+./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE $AWS_REGION  # => we should release to tamasui/ap-northeast-1 (for jp users) & soracom-sng/eu-central-1 (global users). maybe some US regions too?
 ```
