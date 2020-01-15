@@ -8,18 +8,23 @@ d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
   }
 }
 
+goversion=1.13
+docker pull "golang:$goversion"
 gopath=${GOPATH:-$HOME/go}
+
 run_command_on_docker_container() {
   dir=$1
   cmd=$2
   #echo $cmd
   if [ -z "$WERCKER" ]; then
     docker run -i --rm \
+      --user "$(id -u):$(id -g)" \
       -e "GO111MODULE=on" \
       -v "$d":/go/src/github.com/soracom/soracom-cli \
       -v "$gopath":/go \
+      -v /tmp/.cache:/.cache \
       -w "/go/src/github.com/soracom/soracom-cli/$dir" \
-      golang:1.13 bash -x -c "$cmd" || {
+      "golang:$goversion" bash -x -c "$cmd" || {
       echo -e "${RED}Build failed.${RESET}"
       exit 1
     }
@@ -47,6 +52,7 @@ if [ -z "$2" ]; then
         TARGETS="$TARGETS $uname_s"
     fi
 fi
+
 
 : 'Install dependencies' && {
     echo 'Installing build dependencies ...'

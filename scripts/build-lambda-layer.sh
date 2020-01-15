@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
 set -e
+set -x
 
 VERSION=$1
 if [ -z "$1" ]; then
@@ -9,9 +10,10 @@ if [ -z "$1" ]; then
 fi
 
 : "Generate layer.zip" && {
-  vd="$d/soracom/dist/$VERSION"
-  wd="$vd/lambda-layer"
+  wd="$d/soracom/dist/$VERSION/lambda-layer"
+  rm -rf "$wd"
   mkdir -p "$wd/bin"
-  cp "$vd/soracom_${VERSION}_linux_amd64" "$wd/bin"
+  curl -s -L "https://github.com/soracom/soracom-cli/releases/download/v${VERSION}/soracom_${VERSION}_linux_amd64" -o "$wd/bin/soracom"
+  chmod +x "$wd/bin/soracom"
   cd "$wd" && zip -r "layer_${VERSION}.zip" . && cd -
 }

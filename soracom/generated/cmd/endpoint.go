@@ -1,6 +1,8 @@
 package cmd
 
-import "os"
+import (
+	"os"
+)
 
 // API Endpoint Specification Precedence:
 // 1. SORACOM_ENDPOINT env var
@@ -14,12 +16,12 @@ func getSpecifiedEndpoint() string {
 		return e
 	}
 
+	ct := getSpecifiedCoverageType()
 	profile, err := getProfile()
 	if err != nil {
-		return ""
+		return getDefaultEndpointForCoverageType(ct)
 	}
 
-	ct := getSpecifiedCoverageType()
 	if ct != "" {
 		if profile.Sandbox {
 			return getDefaultSandboxEndpoint(ct)
@@ -34,6 +36,7 @@ func getSpecifiedEndpoint() string {
 	if profile.Sandbox {
 		return getDefaultSandboxEndpoint(profile.CoverageType)
 	}
+
 	return getDefaultEndpointForCoverageType(profile.CoverageType)
 }
 

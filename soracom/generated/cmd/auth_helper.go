@@ -33,20 +33,28 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	profile, err := getProfile()
-	if err != nil {
-		printfStderr("unable to load the profile.\n")
-		printfStderr("run `soracom configure` first.\n")
-		return err
-	}
+	var areq *authRequest
+	if providedAuthKeyID != "" && providedAuthKey != "" {
+		areq = &authRequest{
+			AuthKeyID: &providedAuthKeyID,
+			AuthKey:   &providedAuthKey,
+		}
+	} else {
+		profile, err := getProfile()
+		if err != nil {
+			printfStderr("unable to load the profile.\n")
+			printfStderr("run `soracom configure` first.\n")
+			return err
+		}
 
-	areq := &authRequest{
-		Email:      profile.Email,
-		Password:   profile.Password,
-		AuthKeyID:  profile.AuthKeyID,
-		AuthKey:    profile.AuthKey,
-		Username:   profile.Username,
-		OperatorID: profile.OperatorID,
+		areq = &authRequest{
+			Email:      profile.Email,
+			Password:   profile.Password,
+			AuthKeyID:  profile.AuthKeyID,
+			AuthKey:    profile.AuthKey,
+			Username:   profile.Username,
+			OperatorID: profile.OperatorID,
+		}
 	}
 
 	params := &apiParams{

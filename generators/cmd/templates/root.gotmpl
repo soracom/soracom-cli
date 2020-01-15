@@ -16,10 +16,14 @@ var specifiedProfileName string
 var specifiedCoverageType string
 var providedAPIKey string
 var providedAPIToken string
+var providedAuthKeyID string
+var providedAuthKey string
 
 func init() {
   RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", "Specify profile name")
   RootCmd.PersistentFlags().StringVar(&specifiedCoverageType, "coverage-type", "", "Specify coverage type, 'g' for Global, 'jp' for Japan")
   RootCmd.PersistentFlags().StringVar(&providedAPIKey, "api-key", "", "Specify API key otherwise soracom-cli performs authentication on behalf of you")
   RootCmd.PersistentFlags().StringVar(&providedAPIToken, "api-token", "", "Specify API token otherwise soracom-cli performs authentication on behalf of you")
+  RootCmd.PersistentFlags().StringVar(&providedAuthKeyID, "auth-key-id", "", "Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.")
+  RootCmd.PersistentFlags().StringVar(&providedAuthKey, "auth-key", "", "Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.")
 }
