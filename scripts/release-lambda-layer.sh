@@ -3,7 +3,7 @@ d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
 set -e
 
 usage() {
-  echo "Usage: $0 <version> <aws profile name>"
+  echo "Usage: $0 <version> [aws profile name]"
 }
 
 VERSION=$1
@@ -15,9 +15,7 @@ fi
 
 AWS_PROFILE=$2
 if [ -z "$AWS_PROFILE" ]; then
-  echo "AWS profile name must be specified. Abort."
-  usage
-  exit 1
+  AWS_PROFILE=soracom-dev  # 'soracom-dev' is for testing, as a safe default. if you want to go production, specify 'registry'
 fi
 
 
@@ -44,19 +42,26 @@ publish_layer() {
   aws lambda add-layer-version-permission \
     --layer-name "$layer_name" \
     --version-number "$layer_version" \
-    --statement-id publishToTheWorld \
+    --statement-id AllowGetLayerVersion\
     --principal '*' \
     --action lambda:GetLayerVersion \
     --profile "$AWS_PROFILE" \
     --region "$region"
-
 }
 
+should_skip() {
+  region=$1
+
+  if [ "$region" == "ap-east-1" ]; then
+    return 0
+  fi
+
+  return 1
+}
 
 layer_name="soracom-cli-${VERSION//./}"
 while read -r region; do
-  if [ "$region" != "ap-northeast-1" ]; then
-    echo "skipping region: $region"
+  if should_skip "$region"; then
     continue
   fi
 

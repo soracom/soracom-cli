@@ -244,5 +244,5 @@ VERSION=1.2.3                         # => specify a version number to be releas
 ./scripts/build-snap.sh $VERSION
 ./scripts/release-snap.sh $VERSION
 ./scripts/build-lambda-layer.sh $VERSION
-./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE $AWS_REGION  # => we should release to tamasui/ap-northeast-1 (for jp users) & soracom-sng/eu-central-1 (global users). maybe some US regions too?
+./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE   # => this command releases the layer to all regions (except ap-east-1)
 ```
