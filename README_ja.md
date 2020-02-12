@@ -138,7 +138,7 @@ soracom configure-sandbox
 ```
 表示される質問に従って入力していくと、デフォルトでは `sandbox` という名前のプロファイルが作成されます。
 その `sandbox` プロファイルを用いることで、以下のように API Sandbox に対してコマンドを発行することができます。
- 
+
 ```
 soracom subscribers list --profile sandbox
 ```
@@ -164,7 +164,7 @@ soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-
 
 ### Proxy 経由で API を呼び出したい場合
 
-HTTP_PROXY 環境変数に http://your-proxy-nme:port を設定した状態で soracom コマンドを実行してください。
+HTTP_PROXY 環境変数に `http://your-proxy-name:port` を設定した状態で soracom コマンドを実行してください。
 
 例）Linux/Mac の場合：
 Proxy サーバーのアドレスを 10.0.1.2、ポート番号を 8080 だとすると
