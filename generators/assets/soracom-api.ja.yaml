@@ -1543,6 +1543,9 @@ definitions:
         - CONNECTED
         - CLOSED
         - REFUSED
+        - CREATED
+        - DELETED
+        - EXPIRED
         type: string
   NapterAuditLogsExportedDataStatsResponse:
     properties:
@@ -3487,6 +3490,8 @@ paths:
       - devices execute-resource
   /devices/{device_id}/{object}/{instance}/{resource}/observe:
     post:
+      consumes:
+      - text/plain
       description: 指定されたデバイスの Resource の Observe を開始します。Observe を開始すると、デバイス側で値に変化があったらサーバー側に通知するようになります。
       operationId: observeDeviceResource
       parameters:
@@ -3746,6 +3751,14 @@ paths:
         name: device_id
         required: true
         type: string
+      - description: 追加・更新対象のタグの配列
+        in: body
+        name: tags
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/TagUpdateRequest'
+          type: array
       responses:
         "200":
           description: デバイスが更新された
@@ -4829,7 +4842,7 @@ paths:
         204:
           description: 指定されたネームスペースの削除完了
         400:
-          description: The specified namespace does not exist.
+          description: 指定されたネームスペースが存在しない
         404:
           description: 指定されたGroupが存在しない
       security:
@@ -8702,6 +8715,109 @@ paths:
       - Order
       x-soracom-cli:
       - products list
+  /query/devices:
+    get:
+      consumes:
+      - application/json
+      description: SORACOM Inventory デバイスをクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての
+        SORACOM Inventory デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
+      operationId: searchDevices
+      parameters:
+      - collectionFormat: multi
+        description: 検索したい SORACOM Inventory デバイスの名前
+        in: query
+        items:
+          type: string
+        name: name
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: 検索したいグループの名前
+        in: query
+        items:
+          type: string
+        name: group
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: 検索したい SORACOM Inventory デバイスの ID
+        in: query
+        items:
+          type: string
+        name: deviceId
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: 検索したいタグの値の文字列
+        in: query
+        items:
+          type: string
+        name: tag
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: 検索したい SORACOM Inventory デバイスの bootstrap 時の IMSI
+        in: query
+        items:
+          type: string
+        name: imsi
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: 検索したい SORACOM Inventory デバイスの bootstrap 時の IMEI
+        in: query
+        items:
+          type: string
+        name: imei
+        required: false
+        type: array
+      - default: 10
+        description: 取得する結果の上限数
+        format: int32
+        in: query
+        maximum: 100
+        name: limit
+        required: false
+        type: integer
+      - description: 現ページで取得した最後の SORACOM Inventory デバイスの ID。このパラメータを指定することで次の SORACOM
+          Inventory デバイス以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: and
+        description: 検索の種別 (AND 検索もしくは OR 検索)
+        enum:
+        - and
+        - or
+        in: query
+        name: search_type
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: 正常に検索結果を返却
+          schema:
+            items:
+              $ref: '#/definitions/Device'
+            type: array
+        "400":
+          description: 不正な検索クエリ
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM Inventory デバイスをクエリに応じて検索します。
+      tags:
+      - Query
+      x-soracom-cli:
+      - query devices
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/sigfox_devices:
     get:
       consumes:
