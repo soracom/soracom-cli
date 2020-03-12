@@ -1543,6 +1543,9 @@ definitions:
         - CONNECTED
         - CLOSED
         - REFUSED
+        - CREATED
+        - DELETED
+        - EXPIRED
         type: string
   NapterAuditLogsExportedDataStatsResponse:
     properties:
@@ -3521,6 +3524,8 @@ paths:
       - devices execute-resource
   /devices/{device_id}/{object}/{instance}/{resource}/observe:
     post:
+      consumes:
+      - text/plain
       description: Triggers observation of the specified resource of a device
       operationId: observeDeviceResource
       parameters:
@@ -3784,6 +3789,14 @@ paths:
         name: device_id
         required: true
         type: string
+      - description: Array of values for tags to be updated.
+        in: body
+        name: tags
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/TagUpdateRequest'
+          type: array
       responses:
         "200":
           description: Device updated
@@ -8832,6 +8845,112 @@ paths:
       - Order
       x-soracom-cli:
       - products list
+  /query/devices:
+    get:
+      consumes:
+      - application/json
+      description: Search SORACOM Inventory devices by query terms. It returns partial
+        match results. When this API permission is allowed, it grants the authority
+        to search and retrieve all SORACOM Inventory devices that includes their group
+        information.
+      operationId: searchDevices
+      parameters:
+      - collectionFormat: multi
+        description: Name to search
+        in: query
+        items:
+          type: string
+        name: name
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Group name to search
+        in: query
+        items:
+          type: string
+        name: group
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: SORACOM Inventory device ID to search
+        in: query
+        items:
+          type: string
+        name: deviceId
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: String of tag values to search
+        in: query
+        items:
+          type: string
+        name: tag
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: IMSI of the device that was used on bootstrapping
+        in: query
+        items:
+          type: string
+        name: imsi
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: IMEI of the device that was used on bootstrapping
+        in: query
+        items:
+          type: string
+        name: imei
+        required: false
+        type: array
+      - default: 10
+        description: The maximum number of item to retrieve
+        format: int32
+        in: query
+        maximum: 100
+        name: limit
+        required: false
+        type: integer
+      - description: The SORACOM Inventory device ID of the last Inventory device
+          retrieved on the current page. By specifying this parameter, you can continue
+          to retrieve the list from the next Inventory device onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: and
+        description: Type of the search ('AND searching' or 'OR searching')
+        enum:
+        - and
+        - or
+        in: query
+        name: search_type
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: Returns result of searching
+          schema:
+            items:
+              $ref: '#/definitions/Device'
+            type: array
+        "400":
+          description: Invalid search queries
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Search SORACOM Inventory devices by query
+      tags:
+      - Query
+      x-soracom-cli:
+      - query devices
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/sigfox_devices:
     get:
       consumes:

@@ -164,7 +164,7 @@ soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-
 
 ### Call API via proxy
 
-Set `http://your-proxy-nme:port` to HTTP_PROXY environment variable, then execute soracom command.
+Set `http://your-proxy-name:port` to HTTP_PROXY environment variable, then execute soracom command.
 
 e.g.) For Linux / Mac:
 Assume that the address of the proxy server is 10.0.1.2 and the port number is 8080

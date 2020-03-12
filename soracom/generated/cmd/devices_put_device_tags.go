@@ -2,8 +2,12 @@
 package cmd
 
 import (
+	"io/ioutil"
+
 	"net/url"
 	"os"
+
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -11,10 +15,15 @@ import (
 // DevicesPutDeviceTagsCmdDeviceId holds value of 'device_id' option
 var DevicesPutDeviceTagsCmdDeviceId string
 
+// DevicesPutDeviceTagsCmdBody holds contents of request body to be sent
+var DevicesPutDeviceTagsCmdBody string
+
 func init() {
 	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
 	DevicesPutDeviceTagsCmd.MarkFlagRequired("device-id")
+
+	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	DevicesCmd.AddCommand(DevicesPutDeviceTagsCmd)
 }
@@ -63,10 +72,19 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 
 func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
 
+	body, err := buildBodyForDevicesPutDeviceTagsCmd()
+	if err != nil {
+		return nil, err
+	}
+
+	contentType := "application/json"
+
 	return &apiParams{
-		method: "PUT",
-		path:   buildPathForDevicesPutDeviceTagsCmd("/devices/{device_id}/tags"),
-		query:  buildQueryForDevicesPutDeviceTagsCmd(),
+		method:      "PUT",
+		path:        buildPathForDevicesPutDeviceTagsCmd("/devices/{device_id}/tags"),
+		query:       buildQueryForDevicesPutDeviceTagsCmd(),
+		contentType: contentType,
+		body:        body,
 	}, nil
 }
 
@@ -83,4 +101,31 @@ func buildQueryForDevicesPutDeviceTagsCmd() url.Values {
 	result := url.Values{}
 
 	return result
+}
+
+func buildBodyForDevicesPutDeviceTagsCmd() (string, error) {
+	var b []byte
+	var err error
+
+	if DevicesPutDeviceTagsCmdBody != "" {
+		if strings.HasPrefix(DevicesPutDeviceTagsCmdBody, "@") {
+			fname := strings.TrimPrefix(DevicesPutDeviceTagsCmdBody, "@")
+			// #nosec
+			b, err = ioutil.ReadFile(fname)
+		} else if DevicesPutDeviceTagsCmdBody == "-" {
+			b, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			b = []byte(DevicesPutDeviceTagsCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if b == nil {
+		b = []byte{}
+	}
+
+	return string(b), nil
 }
