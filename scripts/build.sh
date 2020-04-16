@@ -53,14 +53,9 @@ if [ -z "$2" ]; then
     fi
 fi
 
-
 : 'Install dependencies' && {
     echo 'Installing build dependencies ...'
     run_command_on_docker_container '' 'go get -u golang.org/x/tools/cmd/goimports'
-    run_command_on_docker_container '' 'go get -u github.com/jessevdk/go-assets'
-    run_command_on_docker_container '' 'go get -u github.com/jessevdk/go-assets-builder'
-    run_command_on_docker_container '' 'go get -u github.com/laher/goxc'
-    run_command_on_docker_container '' 'go get -u github.com/elazarl/goproxy'
 }
 
 : "Test generator's library" && {
