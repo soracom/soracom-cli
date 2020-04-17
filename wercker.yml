@@ -1,5 +1,5 @@
 box:
-    id: golang:1.12
+    id: golang:1.14
 
 build:
   docker: true
@@ -29,9 +29,7 @@ build:
             ./test/test.sh
 
   after-steps:
-    - sherzberg/slack-notify:
-        subdomain: soracom
-        token: $SORACOM_CLI_WERCKER_SLACK_TOKEN
+    - slack-notifier:
+        url: $SLACK_URL
         channel: "#soracom-cli"
         username: wercker
-        icon_url: https://avatars3.githubusercontent.com/u/1695193?s=140
