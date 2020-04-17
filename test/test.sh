@@ -51,6 +51,12 @@ tear_down() {
     }
 }
 
+if [ -z "$SORACOM_AUTHKEY_ID_FOR_TEST" ] || [ -z "$SORACOM_AUTHKEY_FOR_TEST" ]; then
+    echo
+    echo "ERROR: Env vars SORACOM_AUTHKEY_ID_FOR_TEST and SORACOM_AUTHKEY_FOR_TEST are required to use the API sandbox."
+    exit 1
+fi
+
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
 : "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
 SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=$SORACOM_DEBUG")
