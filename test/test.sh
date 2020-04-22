@@ -246,7 +246,21 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         --body '[{"key":"useVpg","value":true}]' \
         --profile soracom-cli-test
         )"
+}
 
+: "Sleep 15 seconds to make sure all subscribers indexed in the searchlight (elasticsearch)" && {
+    sleep 15
+}
+
+: "Query subscribers" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        query subscribers \
+        --imsi '00101' \
+        --limit 10 \
+        --profile soracom-cli-test
+        )"
+    numSubs="$( echo "$resp" | jq -r .[].imsi | wc -l )"
+    test "$numSubs" -eq 4
 }
 
 : "Checking english help text" && {
