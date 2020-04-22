@@ -216,6 +216,8 @@ Here 1.2.3 is the version number. Please specify an appropriate number.
 If the build succeeds, then run the test:
 
 ```
+export SORACOM_AUTHKEY_ID_FOR_TEST=...   # set AuthKey ID & AuthKey of a Soracom operator (account) to use the API sandbox.
+export SORACOM_AUTHKEY_FOR_TEST=...
 ./test/test.sh
 ```
 
