@@ -13,7 +13,6 @@ var StatsNapterAuditLogsGetCmdYearMonth string
 
 func init() {
 	StatsNapterAuditLogsGetCmd.Flags().StringVar(&StatsNapterAuditLogsGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
-
 	StatsNapterAuditLogsCmd.AddCommand(StatsNapterAuditLogsGetCmd)
 }
 
@@ -32,7 +31,6 @@ var StatsNapterAuditLogsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,7 +51,6 @@ var StatsNapterAuditLogsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

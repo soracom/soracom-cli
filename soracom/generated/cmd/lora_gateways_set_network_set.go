@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var LoraGatewaysSetNetworkSetCmdBody string
 func init() {
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysSetNetworkSetCmd.MarkFlagRequired("gateway-id")
-
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysSetNetworkSetCmd)
 }
 
@@ -50,7 +49,6 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraGatewaysSetNetworkSetCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraGatewaysSetNetworkSetCmdGatewayId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

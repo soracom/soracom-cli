@@ -56,10 +56,9 @@ func init() {
 
 	AuthCmd.Flags().StringVar(&AuthCmdUserName, "user-name", "", TRAPI(""))
 
-	AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TRAPI(""))
+	AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 86400, TRAPI(""))
 
 	AuthCmd.Flags().StringVar(&AuthCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	RootCmd.AddCommand(AuthCmd)
 }
 
@@ -93,19 +92,16 @@ var AuthCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectAuthCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForAuthCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{
@@ -187,7 +183,7 @@ func buildBodyForAuthCmd() (string, error) {
 		result["userName"] = AuthCmdUserName
 	}
 
-	if AuthCmdTokenTimeoutSeconds != 0 {
+	if AuthCmdTokenTimeoutSeconds != 86400 {
 		result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
 	}
 

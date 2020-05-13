@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VpgGetCmdVpgId string
 
 func init() {
 	VpgGetCmd.Flags().StringVar(&VpgGetCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgGetCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgGetCmd)
 }
 
@@ -34,7 +33,6 @@ var VpgGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VpgGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgGetCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "GET",

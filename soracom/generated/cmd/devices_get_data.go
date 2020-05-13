@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -32,11 +34,9 @@ var DevicesGetDataCmdPaginate bool
 func init() {
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	DevicesGetDataCmd.MarkFlagRequired("device-id")
-
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -45,7 +45,6 @@ func init() {
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DevicesCmd.AddCommand(DevicesGetDataCmd)
 }
 
@@ -64,7 +63,6 @@ var DevicesGetDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,13 +83,15 @@ var DevicesGetDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesGetDataCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -120,7 +120,7 @@ func buildQueryForDevicesGetDataCmd() url.Values {
 		result.Add("last_evaluated_key", DevicesGetDataCmdLastEvaluatedKey)
 	}
 
-	if DevicesGetDataCmdSort != "" {
+	if DevicesGetDataCmdSort != "desc" {
 		result.Add("sort", DevicesGetDataCmdSort)
 	}
 

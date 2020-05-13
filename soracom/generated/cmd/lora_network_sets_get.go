@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraNetworkSetsGetCmdNsId string
 
 func init() {
 	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
-
-	LoraNetworkSetsGetCmd.MarkFlagRequired("ns-id")
-
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsGetCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraNetworkSetsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraNetworkSetsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraNetworkSetsGetCmdNsId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+	}
 
 	return &apiParams{
 		method: "GET",

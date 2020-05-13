@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -41,12 +43,9 @@ func init() {
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
-	VpgCreateMirroringPeerCmd.MarkFlagRequired("vpg-id")
-
 	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgCreateMirroringPeerCmd)
 }
 
@@ -65,7 +64,6 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -86,20 +84,25 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgCreateMirroringPeerCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgCreateMirroringPeerCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

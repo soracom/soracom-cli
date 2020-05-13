@@ -33,12 +33,11 @@ func init() {
 
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	SigfoxDevicesListCmd.Flags().Int64Var(&SigfoxDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of Sigfox devices to retrieve."))
 
 	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesListCmd)
 }
 
@@ -57,7 +56,6 @@ var SigfoxDevicesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var SigfoxDevicesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForSigfoxDevicesListCmd() url.Values {
 		result.Add("tag_value", SigfoxDevicesListCmdTagValue)
 	}
 
-	if SigfoxDevicesListCmdTagValueMatchMode != "" {
+	if SigfoxDevicesListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", SigfoxDevicesListCmdTagValueMatchMode)
 	}
 

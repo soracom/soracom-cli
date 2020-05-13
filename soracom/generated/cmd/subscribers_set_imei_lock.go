@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -28,10 +30,7 @@ func init() {
 
 	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetImeiLockCmd.MarkFlagRequired("imsi")
-
 	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersSetImeiLockCmd)
 }
 
@@ -50,7 +49,6 @@ var SubscribersSetImeiLockCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var SubscribersSetImeiLockCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersSetImeiLockCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersSetImeiLockCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

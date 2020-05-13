@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var EventHandlersGetCmdHandlerId string
 
 func init() {
 	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
-
-	EventHandlersGetCmd.MarkFlagRequired("handler-id")
-
 	EventHandlersCmd.AddCommand(EventHandlersGetCmd)
 }
 
@@ -34,7 +33,6 @@ var EventHandlersGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var EventHandlersGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if EventHandlersGetCmdHandlerId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	}
 
 	return &apiParams{
 		method: "GET",

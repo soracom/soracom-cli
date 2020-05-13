@@ -13,7 +13,6 @@ var SandboxOperatorsDeleteCmdOperatorId string
 
 func init() {
 	SandboxOperatorsDeleteCmd.Flags().StringVar(&SandboxOperatorsDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
-
 	SandboxOperatorsCmd.AddCommand(SandboxOperatorsDeleteCmd)
 }
 
@@ -32,7 +31,6 @@ var SandboxOperatorsDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var SandboxOperatorsDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxOperatorsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if SandboxOperatorsDeleteCmdOperatorId == "" {
 		SandboxOperatorsDeleteCmdOperatorId = ac.OperatorID
 	}

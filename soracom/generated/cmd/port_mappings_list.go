@@ -23,7 +23,6 @@ func init() {
 	PortMappingsListCmd.Flags().Int64Var(&PortMappingsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	PortMappingsCmd.AddCommand(PortMappingsListCmd)
 }
 
@@ -42,7 +41,6 @@ var PortMappingsListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -63,7 +61,6 @@ var PortMappingsListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

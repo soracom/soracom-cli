@@ -89,7 +89,6 @@ func init() {
 	DevicesCreateCmd.Flags().BoolVar(&DevicesCreateCmdOnline, "online", false, TRAPI(""))
 
 	DevicesCreateCmd.Flags().StringVar(&DevicesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesCreateCmd)
 }
 
@@ -108,7 +107,6 @@ var DevicesCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -129,19 +127,16 @@ var DevicesCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

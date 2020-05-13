@@ -33,12 +33,11 @@ func init() {
 
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListCmd)
 }
 
@@ -57,7 +56,6 @@ var LoraNetworkSetsListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var LoraNetworkSetsListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForLoraNetworkSetsListCmd() url.Values {
 		result.Add("tag_value", LoraNetworkSetsListCmdTagValue)
 	}
 
-	if LoraNetworkSetsListCmdTagValueMatchMode != "" {
+	if LoraNetworkSetsListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", LoraNetworkSetsListCmdTagValueMatchMode)
 	}
 

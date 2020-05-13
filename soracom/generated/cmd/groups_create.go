@@ -18,9 +18,7 @@ import (
 var GroupsCreateCmdBody string
 
 func init() {
-
 	GroupsCreateCmd.Flags().StringVar(&GroupsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GroupsCmd.AddCommand(GroupsCreateCmd)
 }
 
@@ -39,7 +37,6 @@ var GroupsCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,19 +57,16 @@ var GroupsCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGroupsCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

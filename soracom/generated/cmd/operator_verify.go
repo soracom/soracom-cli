@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var OperatorVerifyCmdBody string
 func init() {
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TRAPI(""))
 
-	OperatorVerifyCmd.MarkFlagRequired("token")
-
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorVerifyCmd)
 }
 
@@ -60,20 +59,25 @@ var OperatorVerifyCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorVerifyCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForOperatorVerifyCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if OperatorVerifyCmdToken == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "token")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

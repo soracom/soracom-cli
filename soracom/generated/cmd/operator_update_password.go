@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,16 +31,11 @@ var OperatorUpdatePasswordCmdBody string
 func init() {
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdCurrentPassword, "current-password", "", TRAPI(""))
 
-	OperatorUpdatePasswordCmd.MarkFlagRequired("current-password")
-
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdNewPassword, "new-password", "", TRAPI(""))
-
-	OperatorUpdatePasswordCmd.MarkFlagRequired("new-password")
 
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorUpdatePasswordCmd.Flags().StringVar(&OperatorUpdatePasswordCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorUpdatePasswordCmd)
 }
 
@@ -57,7 +54,6 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,14 +74,12 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if OperatorUpdatePasswordCmdOperatorId == "" {
 		OperatorUpdatePasswordCmdOperatorId = ac.OperatorID
 	}
@@ -94,8 +88,23 @@ func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if OperatorUpdatePasswordCmdCurrentPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "current-password")
+		}
+
+	}
+
+	if OperatorUpdatePasswordCmdNewPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "new-password")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

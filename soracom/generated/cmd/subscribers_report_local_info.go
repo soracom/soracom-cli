@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var SubscribersReportLocalInfoCmdImsi string
 
 func init() {
 	SubscribersReportLocalInfoCmd.Flags().StringVar(&SubscribersReportLocalInfoCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
-
-	SubscribersReportLocalInfoCmd.MarkFlagRequired("imsi")
-
 	SubscribersCmd.AddCommand(SubscribersReportLocalInfoCmd)
 }
 
@@ -34,7 +33,6 @@ var SubscribersReportLocalInfoCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var SubscribersReportLocalInfoCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersReportLocalInfoCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersReportLocalInfoCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "POST",

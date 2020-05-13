@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var SubscribersDeleteTagCmdTagName string
 func init() {
 	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersDeleteTagCmd.MarkFlagRequired("imsi")
-
 	SubscribersDeleteTagCmd.Flags().StringVar(&SubscribersDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
-
-	SubscribersDeleteTagCmd.MarkFlagRequired("tag-name")
-
 	SubscribersCmd.AddCommand(SubscribersDeleteTagCmd)
 }
 
@@ -41,7 +38,6 @@ var SubscribersDeleteTagCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var SubscribersDeleteTagCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersDeleteTagCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
+
+	if SubscribersDeleteTagCmdTagName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	}
 
 	return &apiParams{
 		method: "DELETE",

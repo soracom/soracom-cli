@@ -13,7 +13,6 @@ var OperatorAuthKeysGenerateCmdOperatorId string
 
 func init() {
 	OperatorAuthKeysGenerateCmd.Flags().StringVar(&OperatorAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
-
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysGenerateCmd)
 }
 
@@ -32,7 +31,6 @@ var OperatorAuthKeysGenerateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var OperatorAuthKeysGenerateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorAuthKeysGenerateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if OperatorAuthKeysGenerateCmdOperatorId == "" {
 		OperatorAuthKeysGenerateCmdOperatorId = ac.OperatorID
 	}

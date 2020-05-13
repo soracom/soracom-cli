@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -36,12 +38,9 @@ func init() {
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
-	VpgSetRedirectionCmd.MarkFlagRequired("vpg-id")
-
 	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgSetRedirectionCmd)
 }
 
@@ -60,7 +59,6 @@ var VpgSetRedirectionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -81,20 +79,25 @@ var VpgSetRedirectionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgSetRedirectionCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgSetRedirectionCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -54,7 +54,6 @@ func init() {
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdScope, "scope", "", TRAPI(""))
 
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesCreateObjectModelCmd)
 }
 
@@ -73,7 +72,6 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -94,19 +92,16 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesCreateObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesCreateObjectModelCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -42,18 +44,13 @@ func init() {
 
 	GadgetsSetGroupCmd.Flags().StringVar(&GadgetsSetGroupCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
-	GadgetsSetGroupCmd.MarkFlagRequired("product-id")
-
 	GadgetsSetGroupCmd.Flags().StringVar(&GadgetsSetGroupCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
-
-	GadgetsSetGroupCmd.MarkFlagRequired("serial-number")
 
 	GadgetsSetGroupCmd.Flags().Int64Var(&GadgetsSetGroupCmdCreatedTime, "created-time", 0, TRAPI(""))
 
 	GadgetsSetGroupCmd.Flags().Int64Var(&GadgetsSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
 
 	GadgetsSetGroupCmd.Flags().StringVar(&GadgetsSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GadgetsCmd.AddCommand(GadgetsSetGroupCmd)
 }
 
@@ -72,7 +69,6 @@ var GadgetsSetGroupCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -93,20 +89,33 @@ var GadgetsSetGroupCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGadgetsSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGadgetsSetGroupCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if GadgetsSetGroupCmdProductId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+		}
+
+	}
+
+	if GadgetsSetGroupCmdSerialNumber == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

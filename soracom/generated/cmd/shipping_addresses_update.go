@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -62,8 +64,6 @@ func init() {
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCity, "city", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.MarkFlagRequired("city")
-
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TRAPI(""))
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TRAPI(""))
@@ -76,18 +76,11 @@ func init() {
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 
-	ShippingAddressesUpdateCmd.MarkFlagRequired("shipping-address-id")
-
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdState, "state", "", TRAPI(""))
-
-	ShippingAddressesUpdateCmd.MarkFlagRequired("state")
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdZipCode, "zip-code", "", TRAPI(""))
 
-	ShippingAddressesUpdateCmd.MarkFlagRequired("zip-code")
-
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	ShippingAddressesCmd.AddCommand(ShippingAddressesUpdateCmd)
 }
 
@@ -106,7 +99,6 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -127,14 +119,12 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if ShippingAddressesUpdateCmdOperatorId == "" {
 		ShippingAddressesUpdateCmdOperatorId = ac.OperatorID
 	}
@@ -143,8 +133,39 @@ func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if ShippingAddressesUpdateCmdCity == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "city")
+		}
+
+	}
+
+	if ShippingAddressesUpdateCmdShippingAddressId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
+		}
+
+	}
+
+	if ShippingAddressesUpdateCmdState == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "state")
+		}
+
+	}
+
+	if ShippingAddressesUpdateCmdZipCode == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "zip-code")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

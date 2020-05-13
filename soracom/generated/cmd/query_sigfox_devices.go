@@ -41,11 +41,11 @@ var QuerySigfoxDevicesCmdPaginate bool
 func init() {
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Sigfox device ID of the last Sigfox device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
-	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdRegistration, "registration", "", TRAPI("Registration status of sigfox devices"))
+	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdRegistration, "registration", "and", TRAPI("Registration status of sigfox devices"))
 
-	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdSearchType, "search-type", "", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
 
-	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdStatus, "status", "", TRAPI("Status of sigfox devices"))
+	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdStatus, "status", "and", TRAPI("Status of sigfox devices"))
 
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdDeviceId, "device-id", []string{}, TRAPI("Sigfox device ID to search"))
 
@@ -55,10 +55,9 @@ func init() {
 
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
-	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	QueryCmd.AddCommand(QuerySigfoxDevicesCmd)
 }
 
@@ -77,7 +76,6 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -98,7 +96,6 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -129,15 +126,15 @@ func buildQueryForQuerySigfoxDevicesCmd() url.Values {
 		result.Add("last_evaluated_key", QuerySigfoxDevicesCmdLastEvaluatedKey)
 	}
 
-	if QuerySigfoxDevicesCmdRegistration != "" {
+	if QuerySigfoxDevicesCmdRegistration != "and" {
 		result.Add("registration", QuerySigfoxDevicesCmdRegistration)
 	}
 
-	if QuerySigfoxDevicesCmdSearchType != "" {
+	if QuerySigfoxDevicesCmdSearchType != "and" {
 		result.Add("search_type", QuerySigfoxDevicesCmdSearchType)
 	}
 
-	if QuerySigfoxDevicesCmdStatus != "" {
+	if QuerySigfoxDevicesCmdStatus != "and" {
 		result.Add("status", QuerySigfoxDevicesCmdStatus)
 	}
 
@@ -165,7 +162,7 @@ func buildQueryForQuerySigfoxDevicesCmd() url.Values {
 		}
 	}
 
-	if QuerySigfoxDevicesCmdLimit != 0 {
+	if QuerySigfoxDevicesCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QuerySigfoxDevicesCmdLimit))
 	}
 

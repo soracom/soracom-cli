@@ -48,7 +48,6 @@ func init() {
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime)."))
 
 	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LogsCmd.AddCommand(LogsGetCmd)
 }
 
@@ -67,7 +66,6 @@ var LogsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -88,7 +86,6 @@ var LogsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

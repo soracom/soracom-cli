@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var DevicesDeleteObjectModelCmdModelId string
 
 func init() {
 	DevicesDeleteObjectModelCmd.Flags().StringVar(&DevicesDeleteObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
-
-	DevicesDeleteObjectModelCmd.MarkFlagRequired("model-id")
-
 	DevicesCmd.AddCommand(DevicesDeleteObjectModelCmd)
 }
 
@@ -34,7 +33,6 @@ var DevicesDeleteObjectModelCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var DevicesDeleteObjectModelCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesDeleteObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesDeleteObjectModelCmdModelId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "model-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

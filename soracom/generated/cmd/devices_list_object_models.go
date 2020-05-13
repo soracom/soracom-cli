@@ -18,12 +18,11 @@ var DevicesListObjectModelsCmdLimit int64
 var DevicesListObjectModelsCmdPaginate bool
 
 func init() {
-	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page"))
+	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last device object model in the previous page"))
 
-	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", 0, TRAPI("Max number of device object models in a response"))
+	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", -1, TRAPI("Max number of device object models in a response"))
 
 	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DevicesCmd.AddCommand(DevicesListObjectModelsCmd)
 }
 
@@ -42,7 +41,6 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -63,7 +61,6 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -90,11 +87,11 @@ func buildPathForDevicesListObjectModelsCmd(path string) string {
 func buildQueryForDevicesListObjectModelsCmd() url.Values {
 	result := url.Values{}
 
-	if DevicesListObjectModelsCmdLastEvaluatedKey != "" {
+	if DevicesListObjectModelsCmdLastEvaluatedKey != "null" {
 		result.Add("last_evaluated_key", DevicesListObjectModelsCmdLastEvaluatedKey)
 	}
 
-	if DevicesListObjectModelsCmdLimit != 0 {
+	if DevicesListObjectModelsCmdLimit != -1 {
 		result.Add("limit", sprintf("%d", DevicesListObjectModelsCmdLimit))
 	}
 

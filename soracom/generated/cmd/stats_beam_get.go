@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -23,20 +25,11 @@ var StatsBeamGetCmdTo int64
 func init() {
 	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsBeamGetCmd.MarkFlagRequired("imsi")
-
 	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
-
-	StatsBeamGetCmd.MarkFlagRequired("period")
 
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
-	StatsBeamGetCmd.MarkFlagRequired("from")
-
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
-
-	StatsBeamGetCmd.MarkFlagRequired("to")
-
 	StatsBeamCmd.AddCommand(StatsBeamGetCmd)
 }
 
@@ -55,7 +48,6 @@ var StatsBeamGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,13 +68,27 @@ var StatsBeamGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if StatsBeamGetCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
+
+	if StatsBeamGetCmdPeriod == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "period")
+	}
+
+	if StatsBeamGetCmdFrom == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	}
+
+	if StatsBeamGetCmdTo == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	}
 
 	return &apiParams{
 		method: "GET",

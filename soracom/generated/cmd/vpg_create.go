@@ -27,16 +27,13 @@ var VpgCreateCmdUseInternetGateway bool
 var VpgCreateCmdBody string
 
 func init() {
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "", TRAPI(""))
+	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "10.128.0.0/9", TRAPI(""))
 
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "", TRAPI(""))
-
-	VpgCreateCmd.MarkFlagRequired("primary-service-name")
+	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "Canal", TRAPI(""))
 
 	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TRAPI(""))
 
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgCreateCmd)
 }
 
@@ -55,7 +52,6 @@ var VpgCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,19 +72,16 @@ var VpgCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{
@@ -142,11 +135,11 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if VpgCreateCmdDeviceSubnetCidrRange != "" {
+	if VpgCreateCmdDeviceSubnetCidrRange != "10.128.0.0/9" {
 		result["deviceSubnetCidrRange"] = VpgCreateCmdDeviceSubnetCidrRange
 	}
 
-	if VpgCreateCmdPrimaryServiceName != "" {
+	if VpgCreateCmdPrimaryServiceName != "Canal" {
 		result["primaryServiceName"] = VpgCreateCmdPrimaryServiceName
 	}
 

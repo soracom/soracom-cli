@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var DevicesPutDeviceTagsCmdBody string
 func init() {
 	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
-	DevicesPutDeviceTagsCmd.MarkFlagRequired("device-id")
-
 	DevicesPutDeviceTagsCmd.Flags().StringVar(&DevicesPutDeviceTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesPutDeviceTagsCmd)
 }
 
@@ -43,7 +42,6 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var DevicesPutDeviceTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesPutDeviceTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesPutDeviceTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if DevicesPutDeviceTagsCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

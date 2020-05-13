@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,10 +19,7 @@ var DevicesGetCmdModel bool
 func init() {
 	DevicesGetCmd.Flags().StringVar(&DevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID"))
 
-	DevicesGetCmd.MarkFlagRequired("device-id")
-
 	DevicesGetCmd.Flags().BoolVar(&DevicesGetCmdModel, "model", false, TRAPI("Whether or not to add model information"))
-
 	DevicesCmd.AddCommand(DevicesGetCmd)
 }
 
@@ -39,7 +38,6 @@ var DevicesGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,13 +58,15 @@ var DevicesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesGetCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "GET",

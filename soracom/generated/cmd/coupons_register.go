@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var CouponsRegisterCmdCouponCode string
 
 func init() {
 	CouponsRegisterCmd.Flags().StringVar(&CouponsRegisterCmdCouponCode, "coupon-code", "", TRAPI("Coupon code"))
-
-	CouponsRegisterCmd.MarkFlagRequired("coupon-code")
-
 	CouponsCmd.AddCommand(CouponsRegisterCmd)
 }
 
@@ -34,7 +33,6 @@ var CouponsRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var CouponsRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
+	if CouponsRegisterCmdCouponCode == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "coupon-code")
+	}
 
 	return &apiParams{
 		method: "POST",

@@ -13,7 +13,6 @@ var EventHandlersListCmdTarget string
 
 func init() {
 	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TRAPI("target"))
-
 	EventHandlersCmd.AddCommand(EventHandlersListCmd)
 }
 
@@ -32,7 +31,6 @@ var EventHandlersListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,7 +51,6 @@ var EventHandlersListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

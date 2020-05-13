@@ -18,7 +18,6 @@ func init() {
 	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
-
 	StatsHarvestCmd.AddCommand(StatsHarvestGetCmd)
 }
 
@@ -37,7 +36,6 @@ var StatsHarvestGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -58,14 +56,12 @@ var StatsHarvestGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if StatsHarvestGetCmdOperatorId == "" {
 		StatsHarvestGetCmdOperatorId = ac.OperatorID
 	}

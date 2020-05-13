@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
-
-	ShippingAddressesDeleteCmd.MarkFlagRequired("shipping-address-id")
-
 	ShippingAddressesCmd.AddCommand(ShippingAddressesDeleteCmd)
 }
 
@@ -39,7 +38,6 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,16 +58,18 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if ShippingAddressesDeleteCmdOperatorId == "" {
 		ShippingAddressesDeleteCmdOperatorId = ac.OperatorID
+	}
+
+	if ShippingAddressesDeleteCmdShippingAddressId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
 	}
 
 	return &apiParams{

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var VpgDeleteVpcPeeringConnectionCmdVpgId string
 func init() {
 	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdPcxId, "pcx-id", "", TRAPI("VPC peering connection ID to be deleted."))
 
-	VpgDeleteVpcPeeringConnectionCmd.MarkFlagRequired("pcx-id")
-
 	VpgDeleteVpcPeeringConnectionCmd.Flags().StringVar(&VpgDeleteVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgDeleteVpcPeeringConnectionCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgDeleteVpcPeeringConnectionCmd)
 }
 
@@ -41,7 +38,6 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgDeleteVpcPeeringConnectionCmdPcxId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "pcx-id")
+	}
+
+	if VpgDeleteVpcPeeringConnectionCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

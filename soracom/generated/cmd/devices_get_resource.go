@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -26,22 +28,13 @@ var DevicesGetResourceCmdModel bool
 func init() {
 	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesGetResourceCmd.MarkFlagRequired("device-id")
-
 	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
-
-	DevicesGetResourceCmd.MarkFlagRequired("instance")
 
 	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesGetResourceCmd.MarkFlagRequired("object")
-
 	DevicesGetResourceCmd.Flags().StringVar(&DevicesGetResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesGetResourceCmd.MarkFlagRequired("resource")
-
 	DevicesGetResourceCmd.Flags().BoolVar(&DevicesGetResourceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
-
 	DevicesCmd.AddCommand(DevicesGetResourceCmd)
 }
 
@@ -60,7 +53,6 @@ var DevicesGetResourceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -81,13 +73,27 @@ var DevicesGetResourceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesGetResourceCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesGetResourceCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
+
+	if DevicesGetResourceCmdInstance == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+	}
+
+	if DevicesGetResourceCmdObject == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+	}
+
+	if DevicesGetResourceCmdResource == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
+	}
 
 	return &apiParams{
 		method: "GET",

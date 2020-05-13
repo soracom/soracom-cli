@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var VpgOpenGateCmdBody string
 func init() {
 	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgOpenGateCmd.MarkFlagRequired("vpg-id")
-
-	VpgOpenGateCmd.Flags().Int64Var(&VpgOpenGateCmdVxlanId, "vxlan-id", 0, TRAPI(""))
+	VpgOpenGateCmd.Flags().Int64Var(&VpgOpenGateCmdVxlanId, "vxlan-id", 10, TRAPI(""))
 
 	VpgOpenGateCmd.Flags().BoolVar(&VpgOpenGateCmdPrivacySeparatorEnabled, "privacy-separator-enabled", false, TRAPI(""))
 
 	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgOpenGateCmd)
 }
 
@@ -55,7 +54,6 @@ var VpgOpenGateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var VpgOpenGateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgOpenGateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgOpenGateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgOpenGateCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
@@ -146,7 +149,7 @@ func buildBodyForVpgOpenGateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if VpgOpenGateCmdVxlanId != 0 {
+	if VpgOpenGateCmdVxlanId != 10 {
 		result["vxlanId"] = VpgOpenGateCmdVxlanId
 	}
 

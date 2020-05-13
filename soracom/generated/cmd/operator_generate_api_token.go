@@ -26,10 +26,9 @@ var OperatorGenerateApiTokenCmdBody string
 func init() {
 	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 0, TRAPI(""))
+	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 86400, TRAPI(""))
 
 	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorGenerateApiTokenCmd)
 }
 
@@ -48,7 +47,6 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -69,14 +67,12 @@ var OperatorGenerateApiTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if OperatorGenerateApiTokenCmdOperatorId == "" {
 		OperatorGenerateApiTokenCmdOperatorId = ac.OperatorID
 	}
@@ -85,7 +81,6 @@ func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error)
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{
@@ -143,7 +138,7 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 0 {
+	if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 86400 {
 		result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds
 	}
 

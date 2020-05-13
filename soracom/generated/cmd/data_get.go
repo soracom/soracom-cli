@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -32,11 +34,9 @@ var DataGetCmdPaginate bool
 func init() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	DataGetCmd.MarkFlagRequired("imsi")
-
 	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	DataGetCmd.Flags().Int64Var(&DataGetCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -45,7 +45,6 @@ func init() {
 	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DataCmd.AddCommand(DataGetCmd)
 }
 
@@ -64,7 +63,6 @@ var DataGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,13 +83,15 @@ var DataGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if DataGetCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -120,7 +120,7 @@ func buildQueryForDataGetCmd() url.Values {
 		result.Add("last_evaluated_key", DataGetCmdLastEvaluatedKey)
 	}
 
-	if DataGetCmdSort != "" {
+	if DataGetCmdSort != "desc" {
 		result.Add("sort", DataGetCmdSort)
 	}
 

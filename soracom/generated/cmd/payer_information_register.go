@@ -34,7 +34,6 @@ func init() {
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TRAPI(""))
 
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	PayerInformationCmd.AddCommand(PayerInformationRegisterCmd)
 }
 
@@ -53,7 +52,6 @@ var PayerInformationRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -74,19 +72,16 @@ var PayerInformationRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectPayerInformationRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForPayerInformationRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

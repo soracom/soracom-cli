@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -32,11 +34,9 @@ var SubscribersGetDataCmdPaginate bool
 func init() {
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	SubscribersGetDataCmd.MarkFlagRequired("imsi")
-
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -45,7 +45,6 @@ func init() {
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersGetDataCmd)
 }
 
@@ -64,7 +63,6 @@ var SubscribersGetDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,13 +83,15 @@ var SubscribersGetDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersGetDataCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -120,7 +120,7 @@ func buildQueryForSubscribersGetDataCmd() url.Values {
 		result.Add("last_evaluated_key", SubscribersGetDataCmdLastEvaluatedKey)
 	}
 
-	if SubscribersGetDataCmdSort != "" {
+	if SubscribersGetDataCmdSort != "desc" {
 		result.Add("sort", SubscribersGetDataCmdSort)
 	}
 

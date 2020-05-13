@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var SandboxStatsBeamInsertCmdBody string
 func init() {
 	SandboxStatsBeamInsertCmd.Flags().StringVar(&SandboxStatsBeamInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
 
-	SandboxStatsBeamInsertCmd.MarkFlagRequired("imsi")
-
 	SandboxStatsBeamInsertCmd.Flags().Int64Var(&SandboxStatsBeamInsertCmdUnixtime, "unixtime", 0, TRAPI(""))
 
 	SandboxStatsBeamInsertCmd.Flags().StringVar(&SandboxStatsBeamInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SandboxStatsBeamCmd.AddCommand(SandboxStatsBeamInsertCmd)
 }
 
@@ -50,7 +49,6 @@ var SandboxStatsBeamInsertCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var SandboxStatsBeamInsertCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxStatsBeamInsertCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSandboxStatsBeamInsertCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SandboxStatsBeamInsertCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

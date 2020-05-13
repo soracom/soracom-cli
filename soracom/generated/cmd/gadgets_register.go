@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,14 +28,9 @@ var GadgetsRegisterCmdBody string
 func init() {
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
-	GadgetsRegisterCmd.MarkFlagRequired("product-id")
-
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
 
-	GadgetsRegisterCmd.MarkFlagRequired("serial-number")
-
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GadgetsCmd.AddCommand(GadgetsRegisterCmd)
 }
 
@@ -52,7 +49,6 @@ var GadgetsRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -73,20 +69,33 @@ var GadgetsRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGadgetsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGadgetsRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if GadgetsRegisterCmdProductId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+		}
+
+	}
+
+	if GadgetsRegisterCmdSerialNumber == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

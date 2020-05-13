@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -36,14 +38,9 @@ func init() {
 
 	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TRAPI(""))
 
-	RolesCreateCmd.MarkFlagRequired("permission")
-
 	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	RolesCreateCmd.MarkFlagRequired("role-id")
-
 	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	RolesCmd.AddCommand(RolesCreateCmd)
 }
 
@@ -62,7 +59,6 @@ var RolesCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -83,14 +79,12 @@ var RolesCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if RolesCreateCmdOperatorId == "" {
 		RolesCreateCmdOperatorId = ac.OperatorID
 	}
@@ -99,8 +93,23 @@ func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if RolesCreateCmdPermission == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "permission")
+		}
+
+	}
+
+	if RolesCreateCmdRoleId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

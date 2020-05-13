@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -21,18 +23,13 @@ var QuerySubscribersTrafficVolumeRankingCmdLimit int64
 var QuerySubscribersTrafficVolumeRankingCmdTo int64
 
 func init() {
-	QuerySubscribersTrafficVolumeRankingCmd.Flags().StringVar(&QuerySubscribersTrafficVolumeRankingCmdOrder, "order", "", TRAPI("The order of ranking"))
+	QuerySubscribersTrafficVolumeRankingCmd.Flags().StringVar(&QuerySubscribersTrafficVolumeRankingCmdOrder, "order", "desc", TRAPI("The order of ranking"))
 
 	QuerySubscribersTrafficVolumeRankingCmd.Flags().Int64Var(&QuerySubscribersTrafficVolumeRankingCmdFrom, "from", 0, TRAPI("The beginning point of searching range (unixtime: in milliseconds)"))
 
-	QuerySubscribersTrafficVolumeRankingCmd.MarkFlagRequired("from")
-
-	QuerySubscribersTrafficVolumeRankingCmd.Flags().Int64Var(&QuerySubscribersTrafficVolumeRankingCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+	QuerySubscribersTrafficVolumeRankingCmd.Flags().Int64Var(&QuerySubscribersTrafficVolumeRankingCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySubscribersTrafficVolumeRankingCmd.Flags().Int64Var(&QuerySubscribersTrafficVolumeRankingCmdTo, "to", 0, TRAPI("The end point of searching range (unixtime: in milliseconds)"))
-
-	QuerySubscribersTrafficVolumeRankingCmd.MarkFlagRequired("to")
-
 	QuerySubscribersCmd.AddCommand(QuerySubscribersTrafficVolumeRankingCmd)
 }
 
@@ -51,7 +48,6 @@ var QuerySubscribersTrafficVolumeRankingCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -72,13 +68,20 @@ var QuerySubscribersTrafficVolumeRankingCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectQuerySubscribersTrafficVolumeRankingCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if QuerySubscribersTrafficVolumeRankingCmdFrom == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	}
+
+	if QuerySubscribersTrafficVolumeRankingCmdTo == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -95,7 +98,7 @@ func buildPathForQuerySubscribersTrafficVolumeRankingCmd(path string) string {
 func buildQueryForQuerySubscribersTrafficVolumeRankingCmd() url.Values {
 	result := url.Values{}
 
-	if QuerySubscribersTrafficVolumeRankingCmdOrder != "" {
+	if QuerySubscribersTrafficVolumeRankingCmdOrder != "desc" {
 		result.Add("order", QuerySubscribersTrafficVolumeRankingCmdOrder)
 	}
 
@@ -103,7 +106,7 @@ func buildQueryForQuerySubscribersTrafficVolumeRankingCmd() url.Values {
 		result.Add("from", sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdFrom))
 	}
 
-	if QuerySubscribersTrafficVolumeRankingCmdLimit != 0 {
+	if QuerySubscribersTrafficVolumeRankingCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QuerySubscribersTrafficVolumeRankingCmdLimit))
 	}
 

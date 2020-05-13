@@ -33,12 +33,11 @@ func init() {
 
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", TRAPI("Tag value of the groups."))
 
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsListCmd.Flags().BoolVar(&GroupsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
 
@@ -57,7 +56,6 @@ var GroupsListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var GroupsListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForGroupsListCmd() url.Values {
 		result.Add("tag_value", GroupsListCmdTagValue)
 	}
 
-	if GroupsListCmdTagValueMatchMode != "" {
+	if GroupsListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", GroupsListCmdTagValueMatchMode)
 	}
 

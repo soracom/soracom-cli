@@ -33,12 +33,11 @@ func init() {
 
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraDevicesListCmd.Flags().BoolVar(&LoraDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LoraDevicesCmd.AddCommand(LoraDevicesListCmd)
 }
 
@@ -57,7 +56,6 @@ var LoraDevicesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var LoraDevicesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForLoraDevicesListCmd() url.Values {
 		result.Add("tag_value", LoraDevicesListCmdTagValue)
 	}
 
-	if LoraDevicesListCmdTagValueMatchMode != "" {
+	if LoraDevicesListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", LoraDevicesListCmdTagValueMatchMode)
 	}
 

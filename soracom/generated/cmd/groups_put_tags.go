@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var GroupsPutTagsCmdBody string
 func init() {
 	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsPutTagsCmd.MarkFlagRequired("group-id")
-
 	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GroupsCmd.AddCommand(GroupsPutTagsCmd)
 }
 
@@ -43,7 +42,6 @@ var GroupsPutTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var GroupsPutTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGroupsPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if GroupsPutTagsCmdGroupId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

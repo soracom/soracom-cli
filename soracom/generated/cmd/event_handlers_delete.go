@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var EventHandlersDeleteCmdHandlerId string
 
 func init() {
 	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
-
-	EventHandlersDeleteCmd.MarkFlagRequired("handler-id")
-
 	EventHandlersCmd.AddCommand(EventHandlersDeleteCmd)
 }
 
@@ -34,7 +33,6 @@ var EventHandlersDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var EventHandlersDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	if EventHandlersDeleteCmdHandlerId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

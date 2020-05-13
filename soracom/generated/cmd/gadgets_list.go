@@ -38,12 +38,11 @@ func init() {
 
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of gadgets to retrieve."))
 
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	GadgetsCmd.AddCommand(GadgetsListCmd)
 }
 
@@ -62,7 +61,6 @@ var GadgetsListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -83,7 +81,6 @@ var GadgetsListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -126,7 +123,7 @@ func buildQueryForGadgetsListCmd() url.Values {
 		result.Add("tag_value", GadgetsListCmdTagValue)
 	}
 
-	if GadgetsListCmdTagValueMatchMode != "" {
+	if GadgetsListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", GadgetsListCmdTagValueMatchMode)
 	}
 

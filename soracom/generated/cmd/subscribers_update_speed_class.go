@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,14 +28,9 @@ var SubscribersUpdateSpeedClassCmdBody string
 func init() {
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersUpdateSpeedClassCmd.MarkFlagRequired("imsi")
-
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI(""))
 
-	SubscribersUpdateSpeedClassCmd.MarkFlagRequired("speed-class")
-
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersUpdateSpeedClassCmd)
 }
 
@@ -52,7 +49,6 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -73,20 +69,33 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersUpdateSpeedClassCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersUpdateSpeedClassCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
+
+	if SubscribersUpdateSpeedClassCmdSpeedClass == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "speed-class")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

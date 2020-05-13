@@ -66,6 +66,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			IntegerFlags:                      getIntegerFlags(m.Parameters, apiDef.StructDefs),
 			FloatFlags:                        getFloatFlags(m.Parameters, apiDef.StructDefs),
 			BoolFlags:                         getBoolFlags(m.Parameters, apiDef.StructDefs),
+			RequiredFlagExists:                doesRequiredFlagExist(m, m.Parameters, apiDef.StructDefs),
 			PaginationAvailable:               m.Pagination != nil,
 			PaginationKeyHeaderInResponse:     getPaginationKeyHeaderInResponse(m.Pagination),
 			PaginationRequestParameterInQuery: getPaginationRequestparameterInQuery(m.Pagination),
@@ -217,7 +218,8 @@ func getStringFlags(m lib.APIMethod, parameters []lib.APIParam, definitions map[
 			f := stringFlag{
 				VarName:                lib.TitleCase(param.Name),
 				LongOption:             lib.OptionCase(param.Name),
-				DefaultValue:           "",
+				DefaultValueSpecified:  param.Default != nil,
+				DefaultValue:           param.GetDefaultValueAsString(),
 				ShortHelp:              trimTemplate(param.Description),
 				Name:                   param.Name,
 				In:                     param.In,
@@ -289,7 +291,8 @@ func getStringSliceFlags(parameters []lib.APIParam, definitions map[string]lib.S
 			var f stringFlag
 			f.VarName = lib.TitleCase(param.Name)
 			f.LongOption = lib.OptionCase(param.Name)
-			f.DefaultValue = ""
+			f.DefaultValueSpecified = param.Default != nil
+			f.DefaultValue = param.GetDefaultValueAsString()
 			f.ShortHelp = trimTemplate(param.Description)
 			f.Name = param.Name
 			f.In = param.In
@@ -317,7 +320,8 @@ func getStringFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []st
 		var f stringFlag
 		f.VarName = lib.TitleCase(prop.Name)
 		f.LongOption = lib.OptionCase(prop.Name)
-		f.DefaultValue = ""
+		f.DefaultValueSpecified = prop.Default != nil
+		f.DefaultValue = prop.GetDefaultValueAsString()
 		f.ShortHelp = trimTemplate(prop.Description)
 		f.In = "body"
 		f.Name = prop.Name
@@ -338,7 +342,8 @@ func getIntegerFlags(parameters []lib.APIParam, definitions map[string]lib.Struc
 			var f integerFlag
 			f.VarName = lib.TitleCase(param.Name)
 			f.LongOption = lib.OptionCase(param.Name)
-			f.DefaultValue = 0
+			f.DefaultValueSpecified = param.Default != nil
+			f.DefaultValue = param.GetDefaultValueAsInt64()
 			f.ShortHelp = trimTemplate(param.Description)
 			f.Name = param.Name
 			f.In = param.In
@@ -372,7 +377,8 @@ func getIntegerFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []i
 		var f integerFlag
 		f.VarName = lib.TitleCase(prop.Name)
 		f.LongOption = lib.OptionCase(prop.Name)
-		f.DefaultValue = 0
+		f.DefaultValueSpecified = prop.Default != nil
+		f.DefaultValue = prop.GetDefaultValueAsInt64()
 		f.Format = prop.Format
 		f.ShortHelp = trimTemplate(prop.Description)
 		f.In = "body"
@@ -394,7 +400,8 @@ func getFloatFlags(parameters []lib.APIParam, definitions map[string]lib.StructD
 			var f floatFlag
 			f.VarName = lib.TitleCase(param.Name)
 			f.LongOption = lib.OptionCase(param.Name)
-			f.DefaultValue = 0.0
+			f.DefaultValueSpecified = param.Default != nil
+			f.DefaultValue = param.GetDefaultValueAsFloat()
 			f.ShortHelp = trimTemplate(param.Description)
 			f.Name = param.Name
 			f.In = param.In
@@ -428,7 +435,8 @@ func getFloatFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []flo
 		var f floatFlag
 		f.VarName = lib.TitleCase(prop.Name)
 		f.LongOption = lib.OptionCase(prop.Name)
-		f.DefaultValue = 0
+		f.DefaultValueSpecified = prop.Default != nil
+		f.DefaultValue = prop.GetDefaultValueAsFloat()
 		f.Format = prop.Format
 		f.ShortHelp = trimTemplate(prop.Description)
 		f.In = "body"
@@ -450,7 +458,8 @@ func getBoolFlags(parameters []lib.APIParam, definitions map[string]lib.StructDe
 			var f boolFlag
 			f.VarName = lib.TitleCase(param.Name)
 			f.LongOption = lib.OptionCase(param.Name)
-			f.DefaultValue = false
+			f.DefaultValueSpecified = param.Default != nil
+			f.DefaultValue = param.GetDefaultValueAsBool()
 			f.ShortHelp = trimTemplate(param.Description)
 			f.Name = param.Name
 			f.In = param.In
@@ -484,7 +493,8 @@ func getBoolFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []bool
 		var f boolFlag
 		f.VarName = lib.TitleCase(prop.Name)
 		f.LongOption = lib.OptionCase(prop.Name)
-		f.DefaultValue = false
+		f.DefaultValueSpecified = prop.Default != nil
+		f.DefaultValue = prop.GetDefaultValueAsBool()
 		f.Format = prop.Format
 		f.ShortHelp = trimTemplate(prop.Description)
 		f.In = "body"
@@ -493,6 +503,40 @@ func getBoolFlagsFromStruct(param lib.APIParam, definition lib.StructDef) []bool
 		result = append(result, f)
 	}
 	return result
+}
+
+func doesRequiredFlagExist(m lib.APIMethod, params []lib.APIParam, definitions map[string]lib.StructDef) bool {
+	for _, f := range getStringFlags(m, params, definitions) {
+		if f.Required && !f.DefaultValueSpecified {
+			return true
+		}
+	}
+
+	for _, f := range getStringSliceFlags(params, definitions) {
+		if f.Required && !f.DefaultValueSpecified {
+			return true
+		}
+	}
+
+	for _, f := range getIntegerFlags(params, definitions) {
+		if f.Required && !f.DefaultValueSpecified {
+			return true
+		}
+	}
+
+	for _, f := range getFloatFlags(params, definitions) {
+		if f.Required && !f.DefaultValueSpecified {
+			return true
+		}
+	}
+
+	for _, f := range getBoolFlags(params, definitions) {
+		if f.Required && !f.DefaultValueSpecified {
+			return true
+		}
+	}
+
+	return false
 }
 
 // convert "#/definitions/StructName" to "StructName"

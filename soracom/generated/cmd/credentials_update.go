@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var CredentialsUpdateCmdBody string
 func init() {
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TRAPI("credentials_id"))
 
-	CredentialsUpdateCmd.MarkFlagRequired("credentials-id")
-
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TRAPI(""))
 
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdType, "type", "", TRAPI(""))
 
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	CredentialsCmd.AddCommand(CredentialsUpdateCmd)
 }
 
@@ -55,7 +54,6 @@ var CredentialsUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var CredentialsUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectCredentialsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForCredentialsUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if CredentialsUpdateCmdCredentialsId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "credentials-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

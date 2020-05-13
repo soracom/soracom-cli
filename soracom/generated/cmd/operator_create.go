@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,14 +28,9 @@ var OperatorCreateCmdBody string
 func init() {
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TRAPI(""))
 
-	OperatorCreateCmd.MarkFlagRequired("email")
-
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TRAPI(""))
 
-	OperatorCreateCmd.MarkFlagRequired("password")
-
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorCreateCmd)
 }
 
@@ -52,7 +49,6 @@ var OperatorCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -73,20 +69,33 @@ var OperatorCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForOperatorCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if OperatorCreateCmdEmail == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
+		}
+
+	}
+
+	if OperatorCreateCmdPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "password")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -33,12 +33,11 @@ func init() {
 
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TRAPI("Tag value of the VPGs."))
 
-	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	VpgListCmd.Flags().BoolVar(&VpgListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	VpgCmd.AddCommand(VpgListCmd)
 }
 
@@ -57,7 +56,6 @@ var VpgListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var VpgListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForVpgListCmd() url.Values {
 		result.Add("tag_value", VpgListCmdTagValue)
 	}
 
-	if VpgListCmdTagValueMatchMode != "" {
+	if VpgListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", VpgListCmdTagValueMatchMode)
 	}
 

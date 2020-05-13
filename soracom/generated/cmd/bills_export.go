@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TRAPI("yyyyMM"))
-
-	BillsExportCmd.MarkFlagRequired("yyyy-mm")
-
 	BillsCmd.AddCommand(BillsExportCmd)
 }
 
@@ -39,7 +38,6 @@ var BillsExportCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,13 +58,16 @@ var BillsExportCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if BillsExportCmdYyyyMM == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "yyyy-mm")
+	}
 
 	return &apiParams{
 		method: "POST",

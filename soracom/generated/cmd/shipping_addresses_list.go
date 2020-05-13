@@ -13,7 +13,6 @@ var ShippingAddressesListCmdOperatorId string
 
 func init() {
 	ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
-
 	ShippingAddressesCmd.AddCommand(ShippingAddressesListCmd)
 }
 
@@ -32,7 +31,6 @@ var ShippingAddressesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var ShippingAddressesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectShippingAddressesListCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if ShippingAddressesListCmdOperatorId == "" {
 		ShippingAddressesListCmdOperatorId = ac.OperatorID
 	}

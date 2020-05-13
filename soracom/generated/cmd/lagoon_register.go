@@ -29,7 +29,6 @@ func init() {
 	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdUserPassword, "user-password", "", TRAPI(""))
 
 	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonCmd.AddCommand(LagoonRegisterCmd)
 }
 
@@ -48,7 +47,6 @@ var LagoonRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -69,19 +67,16 @@ var LagoonRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

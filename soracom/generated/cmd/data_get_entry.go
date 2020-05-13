@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -20,16 +22,9 @@ var DataGetEntryCmdTime int64
 func init() {
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
-	DataGetEntryCmd.MarkFlagRequired("resource-id")
-
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
-	DataGetEntryCmd.MarkFlagRequired("resource-type")
-
 	DataGetEntryCmd.Flags().Int64Var(&DataGetEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to get (unixtime in milliseconds)."))
-
-	DataGetEntryCmd.MarkFlagRequired("time")
-
 	DataCmd.AddCommand(DataGetEntryCmd)
 }
 
@@ -48,7 +43,6 @@ var DataGetEntryCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -69,13 +63,23 @@ var DataGetEntryCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDataGetEntryCmdParams(ac *apiClient) (*apiParams, error) {
+	if DataGetEntryCmdResourceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
+	}
+
+	if DataGetEntryCmdResourceType == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
+	}
+
+	if DataGetEntryCmdTime == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "time")
+	}
 
 	return &apiParams{
 		method: "GET",

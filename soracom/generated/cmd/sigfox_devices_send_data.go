@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -28,10 +30,7 @@ func init() {
 
 	SigfoxDevicesSendDataCmd.Flags().StringVar(&SigfoxDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
 
-	SigfoxDevicesSendDataCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesSendDataCmd.Flags().StringVar(&SigfoxDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesSendDataCmd)
 }
 
@@ -50,7 +49,6 @@ var SigfoxDevicesSendDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var SigfoxDevicesSendDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSigfoxDevicesSendDataCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SigfoxDevicesSendDataCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

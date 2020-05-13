@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -31,14 +33,9 @@ func init() {
 
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersRegisterCmd.MarkFlagRequired("imsi")
-
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
-	SubscribersRegisterCmd.MarkFlagRequired("registration-secret")
-
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersRegisterCmd)
 }
 
@@ -57,7 +54,6 @@ var SubscribersRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,20 +74,33 @@ var SubscribersRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersRegisterCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
+
+	if SubscribersRegisterCmdRegistrationSecret == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "registration-secret")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

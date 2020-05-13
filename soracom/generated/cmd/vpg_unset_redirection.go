@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VpgUnsetRedirectionCmdVpgId string
 
 func init() {
 	VpgUnsetRedirectionCmd.Flags().StringVar(&VpgUnsetRedirectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
-
-	VpgUnsetRedirectionCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgUnsetRedirectionCmd)
 }
 
@@ -34,7 +33,6 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgUnsetRedirectionCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "POST",

@@ -13,7 +13,6 @@ var BillsExportLatestCmdExportMode string
 
 func init() {
 	BillsExportLatestCmd.Flags().StringVar(&BillsExportLatestCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
-
 	BillsCmd.AddCommand(BillsExportLatestCmd)
 }
 
@@ -32,7 +31,6 @@ var BillsExportLatestCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,7 +51,6 @@ var BillsExportLatestCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

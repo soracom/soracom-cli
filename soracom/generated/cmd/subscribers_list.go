@@ -48,12 +48,11 @@ func init() {
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve."))
 
 	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersListCmd)
 }
 
@@ -72,7 +71,6 @@ var SubscribersListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -93,7 +91,6 @@ var SubscribersListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -144,7 +141,7 @@ func buildQueryForSubscribersListCmd() url.Values {
 		result.Add("tag_value", SubscribersListCmdTagValue)
 	}
 
-	if SubscribersListCmdTagValueMatchMode != "" {
+	if SubscribersListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", SubscribersListCmdTagValueMatchMode)
 	}
 

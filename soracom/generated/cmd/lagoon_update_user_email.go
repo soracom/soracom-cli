@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -28,10 +30,7 @@ func init() {
 
 	LagoonUpdateUserEmailCmd.Flags().Int64Var(&LagoonUpdateUserEmailCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
-	LagoonUpdateUserEmailCmd.MarkFlagRequired("lagoon-user-id")
-
 	LagoonUpdateUserEmailCmd.Flags().StringVar(&LagoonUpdateUserEmailCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonCmd.AddCommand(LagoonUpdateUserEmailCmd)
 }
 
@@ -50,7 +49,6 @@ var LagoonUpdateUserEmailCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var LagoonUpdateUserEmailCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonUpdateUserEmailCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonUpdateUserEmailCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LagoonUpdateUserEmailCmdLagoonUserId == 0 {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "lagoon-user-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,14 +28,9 @@ var AuthVerifyPasswordResetTokenCmdBody string
 func init() {
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdPassword, "password", "", TRAPI(""))
 
-	AuthVerifyPasswordResetTokenCmd.MarkFlagRequired("password")
-
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdToken, "token", "", TRAPI(""))
 
-	AuthVerifyPasswordResetTokenCmd.MarkFlagRequired("token")
-
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	AuthCmd.AddCommand(AuthVerifyPasswordResetTokenCmd)
 }
 
@@ -67,20 +64,33 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectAuthVerifyPasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForAuthVerifyPasswordResetTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if AuthVerifyPasswordResetTokenCmdPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "password")
+		}
+
+	}
+
+	if AuthVerifyPasswordResetTokenCmdToken == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "token")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

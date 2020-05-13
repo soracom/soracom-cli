@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -26,22 +28,13 @@ var DevicesObserveResourceCmdModel bool
 func init() {
 	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesObserveResourceCmd.MarkFlagRequired("device-id")
-
 	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
-
-	DevicesObserveResourceCmd.MarkFlagRequired("instance")
 
 	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesObserveResourceCmd.MarkFlagRequired("object")
-
 	DevicesObserveResourceCmd.Flags().StringVar(&DevicesObserveResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesObserveResourceCmd.MarkFlagRequired("resource")
-
 	DevicesObserveResourceCmd.Flags().BoolVar(&DevicesObserveResourceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
-
 	DevicesCmd.AddCommand(DevicesObserveResourceCmd)
 }
 
@@ -60,7 +53,6 @@ var DevicesObserveResourceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -81,13 +73,27 @@ var DevicesObserveResourceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesObserveResourceCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesObserveResourceCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
+
+	if DevicesObserveResourceCmdInstance == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+	}
+
+	if DevicesObserveResourceCmdObject == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+	}
+
+	if DevicesObserveResourceCmdResource == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
+	}
 
 	return &apiParams{
 		method: "POST",

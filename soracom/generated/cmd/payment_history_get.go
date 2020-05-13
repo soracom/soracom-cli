@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var PaymentHistoryGetCmdPaymentTransactionId string
 
 func init() {
 	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TRAPI("Payment transaction ID"))
-
-	PaymentHistoryGetCmd.MarkFlagRequired("payment-transaction-id")
-
 	PaymentHistoryCmd.AddCommand(PaymentHistoryGetCmd)
 }
 
@@ -34,7 +33,6 @@ var PaymentHistoryGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var PaymentHistoryGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if PaymentHistoryGetCmdPaymentTransactionId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "payment-transaction-id")
+	}
 
 	return &apiParams{
 		method: "GET",

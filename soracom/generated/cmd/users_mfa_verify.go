@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -33,10 +35,7 @@ func init() {
 
 	UsersMfaVerifyCmd.Flags().StringVar(&UsersMfaVerifyCmdUserName, "user-name", "", TRAPI("SAM user name"))
 
-	UsersMfaVerifyCmd.MarkFlagRequired("user-name")
-
 	UsersMfaVerifyCmd.Flags().StringVar(&UsersMfaVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	UsersMfaCmd.AddCommand(UsersMfaVerifyCmd)
 }
 
@@ -55,7 +54,6 @@ var UsersMfaVerifyCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,14 +74,12 @@ var UsersMfaVerifyCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersMfaVerifyCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersMfaVerifyCmdOperatorId == "" {
 		UsersMfaVerifyCmdOperatorId = ac.OperatorID
 	}
@@ -92,8 +88,15 @@ func collectUsersMfaVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if UsersMfaVerifyCmdUserName == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

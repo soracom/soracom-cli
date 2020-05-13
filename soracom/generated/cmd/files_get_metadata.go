@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var FilesGetMetadataCmdScope string
 func init() {
 	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdPath, "path", "", TRAPI("Target path"))
 
-	FilesGetMetadataCmd.MarkFlagRequired("path")
-
-	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdScope, "scope", "", TRAPI("Scope of the request"))
-
-	FilesGetMetadataCmd.MarkFlagRequired("scope")
-
+	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdScope, "scope", "private", TRAPI("Scope of the request"))
 	FilesCmd.AddCommand(FilesGetMetadataCmd)
 }
 
@@ -41,7 +38,6 @@ var FilesGetMetadataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,15 @@ var FilesGetMetadataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectFilesGetMetadataCmdParams(ac *apiClient) (*apiParams, error) {
+	if FilesGetMetadataCmdPath == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+	}
 
 	return &apiParams{
 		method: "HEAD",

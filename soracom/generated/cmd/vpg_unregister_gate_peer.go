@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var VpgUnregisterGatePeerCmdVpgId string
 func init() {
 	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI("ID of the target node."))
 
-	VpgUnregisterGatePeerCmd.MarkFlagRequired("outer-ip-address")
-
 	VpgUnregisterGatePeerCmd.Flags().StringVar(&VpgUnregisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgUnregisterGatePeerCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgUnregisterGatePeerCmd)
 }
 
@@ -41,7 +38,6 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgUnregisterGatePeerCmdOuterIpAddress == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "outer-ip-address")
+	}
+
+	if VpgUnregisterGatePeerCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

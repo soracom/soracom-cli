@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -50,8 +52,6 @@ func init() {
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
 
-	DevicesUpdateObjectModelCmd.MarkFlagRequired("model-id")
-
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdObjectId, "object-id", "", TRAPI(""))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdObjectName, "object-name", "", TRAPI(""))
@@ -61,7 +61,6 @@ func init() {
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdScope, "scope", "", TRAPI(""))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesUpdateObjectModelCmd)
 }
 
@@ -80,7 +79,6 @@ var DevicesUpdateObjectModelCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -101,20 +99,25 @@ var DevicesUpdateObjectModelCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesUpdateObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesUpdateObjectModelCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if DevicesUpdateObjectModelCmdModelId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "model-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

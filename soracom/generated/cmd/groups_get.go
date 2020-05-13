@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var GroupsGetCmdGroupId string
 
 func init() {
 	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TRAPI("Target group ID."))
-
-	GroupsGetCmd.MarkFlagRequired("group-id")
-
 	GroupsCmd.AddCommand(GroupsGetCmd)
 }
 
@@ -34,7 +33,6 @@ var GroupsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var GroupsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if GroupsGetCmdGroupId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	}
 
 	return &apiParams{
 		method: "GET",

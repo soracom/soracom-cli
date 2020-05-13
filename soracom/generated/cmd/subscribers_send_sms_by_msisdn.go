@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var SubscribersSendSmsByMsisdnCmdBody string
 func init() {
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdMsisdn, "msisdn", "", TRAPI("MSISDN of the target subscriber."))
 
-	SubscribersSendSmsByMsisdnCmd.MarkFlagRequired("msisdn")
-
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdPayload, "payload", "", TRAPI(""))
 
-	SubscribersSendSmsByMsisdnCmd.Flags().Int64Var(&SubscribersSendSmsByMsisdnCmdEncodingType, "encoding-type", 0, TRAPI(""))
+	SubscribersSendSmsByMsisdnCmd.Flags().Int64Var(&SubscribersSendSmsByMsisdnCmdEncodingType, "encoding-type", 2, TRAPI(""))
 
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersSendSmsByMsisdnCmd)
 }
 
@@ -55,7 +54,6 @@ var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersSendSmsByMsisdnCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersSendSmsByMsisdnCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersSendSmsByMsisdnCmdMsisdn == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "msisdn")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
@@ -150,7 +153,7 @@ func buildBodyForSubscribersSendSmsByMsisdnCmd() (string, error) {
 		result["payload"] = SubscribersSendSmsByMsisdnCmdPayload
 	}
 
-	if SubscribersSendSmsByMsisdnCmdEncodingType != 0 {
+	if SubscribersSendSmsByMsisdnCmdEncodingType != 2 {
 		result["encodingType"] = SubscribersSendSmsByMsisdnCmdEncodingType
 	}
 

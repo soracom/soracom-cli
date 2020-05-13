@@ -34,7 +34,6 @@ func init() {
 	SandboxCouponsCreateCmd.Flags().Int64Var(&SandboxCouponsCreateCmdAmount, "amount", 0, TRAPI(""))
 
 	SandboxCouponsCreateCmd.Flags().StringVar(&SandboxCouponsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SandboxCouponsCmd.AddCommand(SandboxCouponsCreateCmd)
 }
 
@@ -53,7 +52,6 @@ var SandboxCouponsCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -74,19 +72,16 @@ var SandboxCouponsCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxCouponsCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSandboxCouponsCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

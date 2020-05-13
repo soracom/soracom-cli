@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -32,22 +34,13 @@ var SandboxInitCmdBody string
 func init() {
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKey, "auth-key", "", TRAPI(""))
 
-	SandboxInitCmd.MarkFlagRequired("auth-key")
-
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
-
-	SandboxInitCmd.MarkFlagRequired("auth-key-id")
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdEmail, "email", "", TRAPI(""))
 
-	SandboxInitCmd.MarkFlagRequired("email")
-
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdPassword, "password", "", TRAPI(""))
 
-	SandboxInitCmd.MarkFlagRequired("password")
-
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SandboxCmd.AddCommand(SandboxInitCmd)
 }
 
@@ -81,20 +74,49 @@ var SandboxInitCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxInitCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSandboxInitCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SandboxInitCmdAuthKey == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key")
+		}
+
+	}
+
+	if SandboxInitCmdAuthKeyId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key-id")
+		}
+
+	}
+
+	if SandboxInitCmdEmail == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
+		}
+
+	}
+
+	if SandboxInitCmdPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "password")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
