@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var GroupsDeleteConfigNamespaceCmdNamespace string
 func init() {
 	GroupsDeleteConfigNamespaceCmd.Flags().StringVar(&GroupsDeleteConfigNamespaceCmdGroupId, "group-id", "", TRAPI("Target group."))
 
-	GroupsDeleteConfigNamespaceCmd.MarkFlagRequired("group-id")
-
 	GroupsDeleteConfigNamespaceCmd.Flags().StringVar(&GroupsDeleteConfigNamespaceCmdNamespace, "namespace", "", TRAPI("Namespace to be deleted."))
-
-	GroupsDeleteConfigNamespaceCmd.MarkFlagRequired("namespace")
-
 	GroupsCmd.AddCommand(GroupsDeleteConfigNamespaceCmd)
 }
 
@@ -41,7 +38,6 @@ var GroupsDeleteConfigNamespaceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var GroupsDeleteConfigNamespaceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsDeleteConfigNamespaceCmdParams(ac *apiClient) (*apiParams, error) {
+	if GroupsDeleteConfigNamespaceCmdGroupId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	}
+
+	if GroupsDeleteConfigNamespaceCmdNamespace == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "namespace")
+	}
 
 	return &apiParams{
 		method: "DELETE",

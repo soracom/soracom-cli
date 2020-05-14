@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -35,8 +37,6 @@ var LoraDevicesSetGroupCmdBody string
 func init() {
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
-	LoraDevicesSetGroupCmd.MarkFlagRequired("device-id")
-
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
@@ -46,7 +46,6 @@ func init() {
 	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
 
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraDevicesCmd.AddCommand(LoraDevicesSetGroupCmd)
 }
 
@@ -65,7 +64,6 @@ var LoraDevicesSetGroupCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -86,20 +84,25 @@ var LoraDevicesSetGroupCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraDevicesSetGroupCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraDevicesSetGroupCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -33,10 +35,7 @@ func init() {
 
 	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPasswordCreateCmd.MarkFlagRequired("user-name")
-
 	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	UsersPasswordCmd.AddCommand(UsersPasswordCreateCmd)
 }
 
@@ -55,7 +54,6 @@ var UsersPasswordCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,14 +74,12 @@ var UsersPasswordCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersPasswordCreateCmdOperatorId == "" {
 		UsersPasswordCreateCmdOperatorId = ac.OperatorID
 	}
@@ -92,8 +88,15 @@ func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if UsersPasswordCreateCmdUserName == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

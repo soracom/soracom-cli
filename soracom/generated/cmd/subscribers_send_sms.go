@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var SubscribersSendSmsCmdBody string
 func init() {
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSendSmsCmd.MarkFlagRequired("imsi")
-
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdPayload, "payload", "", TRAPI(""))
 
-	SubscribersSendSmsCmd.Flags().Int64Var(&SubscribersSendSmsCmdEncodingType, "encoding-type", 0, TRAPI(""))
+	SubscribersSendSmsCmd.Flags().Int64Var(&SubscribersSendSmsCmdEncodingType, "encoding-type", 2, TRAPI(""))
 
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersSendSmsCmd)
 }
 
@@ -55,7 +54,6 @@ var SubscribersSendSmsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var SubscribersSendSmsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersSendSmsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersSendSmsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersSendSmsCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
@@ -150,7 +153,7 @@ func buildBodyForSubscribersSendSmsCmd() (string, error) {
 		result["payload"] = SubscribersSendSmsCmdPayload
 	}
 
-	if SubscribersSendSmsCmdEncodingType != 0 {
+	if SubscribersSendSmsCmdEncodingType != 2 {
 		result["encodingType"] = SubscribersSendSmsCmdEncodingType
 	}
 

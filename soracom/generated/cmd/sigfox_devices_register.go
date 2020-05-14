@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var SigfoxDevicesRegisterCmdBody string
 func init() {
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target sigfox device to register"))
 
-	SigfoxDevicesRegisterCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesRegisterCmd)
 }
 
@@ -50,7 +49,6 @@ var SigfoxDevicesRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var SigfoxDevicesRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSigfoxDevicesRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SigfoxDevicesRegisterCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

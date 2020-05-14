@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
-
-	ShippingAddressesGetCmd.MarkFlagRequired("shipping-address-id")
-
 	ShippingAddressesCmd.AddCommand(ShippingAddressesGetCmd)
 }
 
@@ -39,7 +38,6 @@ var ShippingAddressesGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,16 +58,18 @@ var ShippingAddressesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectShippingAddressesGetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if ShippingAddressesGetCmdOperatorId == "" {
 		ShippingAddressesGetCmdOperatorId = ac.OperatorID
+	}
+
+	if ShippingAddressesGetCmdShippingAddressId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
 	}
 
 	return &apiParams{

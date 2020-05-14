@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var LagoonDashboardsUpdatePermissionsCmdBody string
 func init() {
 	LagoonDashboardsUpdatePermissionsCmd.Flags().Int64Var(&LagoonDashboardsUpdatePermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
 
-	LagoonDashboardsUpdatePermissionsCmd.MarkFlagRequired("dashboard-id")
-
 	LagoonDashboardsUpdatePermissionsCmd.Flags().StringVar(&LagoonDashboardsUpdatePermissionsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsUpdatePermissionsCmd)
 }
 
@@ -60,20 +59,25 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonDashboardsUpdatePermissionsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LagoonDashboardsUpdatePermissionsCmdDashboardId == 0 {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "dashboard-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

@@ -13,7 +13,6 @@ var UsersDefaultPermissionsGetCmdOperatorId string
 
 func init() {
 	UsersDefaultPermissionsGetCmd.Flags().StringVar(&UsersDefaultPermissionsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
-
 	UsersDefaultPermissionsCmd.AddCommand(UsersDefaultPermissionsGetCmd)
 }
 
@@ -32,7 +31,6 @@ var UsersDefaultPermissionsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var UsersDefaultPermissionsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersDefaultPermissionsGetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersDefaultPermissionsGetCmdOperatorId == "" {
 		UsersDefaultPermissionsGetCmdOperatorId = ac.OperatorID
 	}

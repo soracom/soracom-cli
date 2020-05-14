@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -59,8 +61,6 @@ func init() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCity, "city", "", TRAPI(""))
 
-	ShippingAddressesCreateCmd.MarkFlagRequired("city")
-
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCompanyName, "company-name", "", TRAPI(""))
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdDepartment, "department", "", TRAPI(""))
@@ -73,14 +73,9 @@ func init() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdState, "state", "", TRAPI(""))
 
-	ShippingAddressesCreateCmd.MarkFlagRequired("state")
-
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdZipCode, "zip-code", "", TRAPI(""))
 
-	ShippingAddressesCreateCmd.MarkFlagRequired("zip-code")
-
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	ShippingAddressesCmd.AddCommand(ShippingAddressesCreateCmd)
 }
 
@@ -99,7 +94,6 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -120,14 +114,12 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if ShippingAddressesCreateCmdOperatorId == "" {
 		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
 	}
@@ -136,8 +128,31 @@ func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if ShippingAddressesCreateCmdCity == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "city")
+		}
+
+	}
+
+	if ShippingAddressesCreateCmdState == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "state")
+		}
+
+	}
+
+	if ShippingAddressesCreateCmdZipCode == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "zip-code")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

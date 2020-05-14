@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var SubscribersGetCmdImsi string
 
 func init() {
 	SubscribersGetCmd.Flags().StringVar(&SubscribersGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
-
-	SubscribersGetCmd.MarkFlagRequired("imsi")
-
 	SubscribersCmd.AddCommand(SubscribersGetCmd)
 }
 
@@ -34,7 +33,6 @@ var SubscribersGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var SubscribersGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersGetCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "GET",

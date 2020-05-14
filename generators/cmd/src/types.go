@@ -3,6 +3,7 @@ package main
 type stringFlag struct {
 	VarName                string
 	LongOption             string
+	DefaultValueSpecified  bool
 	DefaultValue           string
 	ShortHelp              string
 	In                     string
@@ -26,14 +27,15 @@ func (s stringFlagsByName) Less(i, j int) bool {
 }
 
 type integerFlag struct {
-	VarName      string
-	LongOption   string
-	DefaultValue int64
-	Format       string
-	ShortHelp    string
-	In           string
-	Name         string
-	Required     bool
+	VarName               string
+	LongOption            string
+	DefaultValueSpecified bool
+	DefaultValue          int64
+	Format                string
+	ShortHelp             string
+	In                    string
+	Name                  string
+	Required              bool
 }
 
 type integerFlagsByName []integerFlag
@@ -51,14 +53,15 @@ func (s integerFlagsByName) Less(i, j int) bool {
 }
 
 type floatFlag struct {
-	VarName      string
-	LongOption   string
-	DefaultValue float64
-	Format       string
-	ShortHelp    string
-	In           string
-	Name         string
-	Required     bool
+	VarName               string
+	LongOption            string
+	DefaultValueSpecified bool
+	DefaultValue          float64
+	Format                string
+	ShortHelp             string
+	In                    string
+	Name                  string
+	Required              bool
 }
 
 type floatFlagsByName []floatFlag
@@ -76,14 +79,15 @@ func (s floatFlagsByName) Less(i, j int) bool {
 }
 
 type boolFlag struct {
-	VarName      string
-	LongOption   string
-	DefaultValue bool
-	Format       string
-	ShortHelp    string
-	In           string
-	Name         string
-	Required     bool
+	VarName               string
+	LongOption            string
+	DefaultValueSpecified bool
+	DefaultValue          bool
+	Format                string
+	ShortHelp             string
+	In                    string
+	Name                  string
+	Required              bool
 }
 
 type boolFlagsByName []boolFlag
@@ -126,6 +130,7 @@ type commandArgs struct {
 	IntegerFlags                      []integerFlag
 	FloatFlags                        []floatFlag
 	BoolFlags                         []boolFlag
+	RequiredFlagExists                bool
 	PaginationAvailable               bool
 	PaginationKeyHeaderInResponse     string
 	PaginationRequestParameterInQuery string

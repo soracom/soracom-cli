@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -36,14 +38,9 @@ func init() {
 
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TRAPI(""))
 
-	RolesUpdateCmd.MarkFlagRequired("permission")
-
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	RolesUpdateCmd.MarkFlagRequired("role-id")
-
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	RolesCmd.AddCommand(RolesUpdateCmd)
 }
 
@@ -62,7 +59,6 @@ var RolesUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -83,14 +79,12 @@ var RolesUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectRolesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if RolesUpdateCmdOperatorId == "" {
 		RolesUpdateCmdOperatorId = ac.OperatorID
 	}
@@ -99,8 +93,23 @@ func collectRolesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if RolesUpdateCmdPermission == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "permission")
+		}
+
+	}
+
+	if RolesUpdateCmdRoleId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

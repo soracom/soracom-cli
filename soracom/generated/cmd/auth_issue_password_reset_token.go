@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var AuthIssuePasswordResetTokenCmdBody string
 func init() {
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TRAPI(""))
 
-	AuthIssuePasswordResetTokenCmd.MarkFlagRequired("email")
-
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	AuthCmd.AddCommand(AuthIssuePasswordResetTokenCmd)
 }
 
@@ -60,20 +59,25 @@ var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectAuthIssuePasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForAuthIssuePasswordResetTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if AuthIssuePasswordResetTokenCmdEmail == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var LoraDevicesRegisterCmdBody string
 func init() {
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
 
-	LoraDevicesRegisterCmd.MarkFlagRequired("device-id")
-
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdGroupId, "group-id", "", TRAPI(""))
 
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraDevicesCmd.AddCommand(LoraDevicesRegisterCmd)
 }
 
@@ -55,7 +54,6 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var LoraDevicesRegisterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraDevicesRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraDevicesRegisterCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

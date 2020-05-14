@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var VpgDeleteIpAddressMapEntryCmdVpgId string
 func init() {
 	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TRAPI("Target key to remove."))
 
-	VpgDeleteIpAddressMapEntryCmd.MarkFlagRequired("key")
-
 	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgDeleteIpAddressMapEntryCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgDeleteIpAddressMapEntryCmd)
 }
 
@@ -41,7 +38,6 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgDeleteIpAddressMapEntryCmdKey == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "key")
+	}
+
+	if VpgDeleteIpAddressMapEntryCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

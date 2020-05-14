@@ -44,7 +44,6 @@ func init() {
 	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI(""))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	StatsBeamCmd.AddCommand(StatsBeamExportCmd)
 }
 
@@ -63,7 +62,6 @@ var StatsBeamExportCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -84,14 +82,12 @@ var StatsBeamExportCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if StatsBeamExportCmdOperatorId == "" {
 		StatsBeamExportCmdOperatorId = ac.OperatorID
 	}
@@ -100,7 +96,6 @@ func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

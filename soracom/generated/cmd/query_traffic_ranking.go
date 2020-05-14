@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -21,18 +23,13 @@ var QueryTrafficRankingCmdLimit int64
 var QueryTrafficRankingCmdTo int64
 
 func init() {
-	QueryTrafficRankingCmd.Flags().StringVar(&QueryTrafficRankingCmdOrder, "order", "", TRAPI("The order of ranking"))
+	QueryTrafficRankingCmd.Flags().StringVar(&QueryTrafficRankingCmdOrder, "order", "desc", TRAPI("The order of ranking"))
 
 	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdFrom, "from", 0, TRAPI("The beginning point of searching range (unixtime: in milliseconds)"))
 
-	QueryTrafficRankingCmd.MarkFlagRequired("from")
-
-	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdTo, "to", 0, TRAPI("The end point of searching range (unixtime: in milliseconds)"))
-
-	QueryTrafficRankingCmd.MarkFlagRequired("to")
-
 	QueryCmd.AddCommand(QueryTrafficRankingCmd)
 }
 
@@ -51,7 +48,6 @@ var QueryTrafficRankingCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -72,13 +68,20 @@ var QueryTrafficRankingCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectQueryTrafficRankingCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if QueryTrafficRankingCmdFrom == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	}
+
+	if QueryTrafficRankingCmdTo == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -95,7 +98,7 @@ func buildPathForQueryTrafficRankingCmd(path string) string {
 func buildQueryForQueryTrafficRankingCmd() url.Values {
 	result := url.Values{}
 
-	if QueryTrafficRankingCmdOrder != "" {
+	if QueryTrafficRankingCmdOrder != "desc" {
 		result.Add("order", QueryTrafficRankingCmdOrder)
 	}
 
@@ -103,7 +106,7 @@ func buildQueryForQueryTrafficRankingCmd() url.Values {
 		result.Add("from", sprintf("%d", QueryTrafficRankingCmdFrom))
 	}
 
-	if QueryTrafficRankingCmdLimit != 0 {
+	if QueryTrafficRankingCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QueryTrafficRankingCmdLimit))
 	}
 

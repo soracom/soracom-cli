@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -20,14 +22,9 @@ var UsersAuthKeysDeleteCmdUserName string
 func init() {
 	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	UsersAuthKeysDeleteCmd.MarkFlagRequired("auth-key-id")
-
 	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
-
-	UsersAuthKeysDeleteCmd.MarkFlagRequired("user-name")
-
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysDeleteCmd)
 }
 
@@ -46,7 +43,6 @@ var UsersAuthKeysDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -67,16 +63,22 @@ var UsersAuthKeysDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersAuthKeysDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersAuthKeysDeleteCmdOperatorId == "" {
 		UsersAuthKeysDeleteCmdOperatorId = ac.OperatorID
+	}
+
+	if UsersAuthKeysDeleteCmdAuthKeyId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key-id")
+	}
+
+	if UsersAuthKeysDeleteCmdUserName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
 	}
 
 	return &apiParams{

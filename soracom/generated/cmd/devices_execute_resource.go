@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -32,22 +34,13 @@ var DevicesExecuteResourceCmdBody string
 func init() {
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesExecuteResourceCmd.MarkFlagRequired("device-id")
-
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
-
-	DevicesExecuteResourceCmd.MarkFlagRequired("instance")
 
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesExecuteResourceCmd.MarkFlagRequired("object")
-
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesExecuteResourceCmd.MarkFlagRequired("resource")
-
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesExecuteResourceCmd)
 }
 
@@ -66,7 +59,6 @@ var DevicesExecuteResourceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -87,20 +79,49 @@ var DevicesExecuteResourceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesExecuteResourceCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesExecuteResourceCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if DevicesExecuteResourceCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
+
+	if DevicesExecuteResourceCmdInstance == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+		}
+
+	}
+
+	if DevicesExecuteResourceCmdObject == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+		}
+
+	}
+
+	if DevicesExecuteResourceCmdResource == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var SigfoxDevicesPutTagsCmdBody string
 func init() {
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
-	SigfoxDevicesPutTagsCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesPutTagsCmd)
 }
 
@@ -43,7 +42,6 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSigfoxDevicesPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SigfoxDevicesPutTagsCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

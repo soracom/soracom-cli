@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -32,11 +34,9 @@ var SigfoxDevicesGetDataCmdPaginate bool
 func init() {
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	SigfoxDevicesGetDataCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -45,7 +45,6 @@ func init() {
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesGetDataCmd)
 }
 
@@ -64,7 +63,6 @@ var SigfoxDevicesGetDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,13 +83,15 @@ var SigfoxDevicesGetDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
+	if SigfoxDevicesGetDataCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -120,7 +120,7 @@ func buildQueryForSigfoxDevicesGetDataCmd() url.Values {
 		result.Add("last_evaluated_key", SigfoxDevicesGetDataCmdLastEvaluatedKey)
 	}
 
-	if SigfoxDevicesGetDataCmdSort != "" {
+	if SigfoxDevicesGetDataCmdSort != "desc" {
 		result.Add("sort", SigfoxDevicesGetDataCmdSort)
 	}
 

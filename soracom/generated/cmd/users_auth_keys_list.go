@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdUserName, "user-name", "", TRAPI("user_name"))
-
-	UsersAuthKeysListCmd.MarkFlagRequired("user-name")
-
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysListCmd)
 }
 
@@ -39,7 +38,6 @@ var UsersAuthKeysListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,16 +58,18 @@ var UsersAuthKeysListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersAuthKeysListCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersAuthKeysListCmdOperatorId == "" {
 		UsersAuthKeysListCmdOperatorId = ac.OperatorID
+	}
+
+	if UsersAuthKeysListCmdUserName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
 	}
 
 	return &apiParams{

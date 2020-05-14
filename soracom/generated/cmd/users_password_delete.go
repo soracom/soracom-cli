@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
-
-	UsersPasswordDeleteCmd.MarkFlagRequired("user-name")
-
 	UsersPasswordCmd.AddCommand(UsersPasswordDeleteCmd)
 }
 
@@ -39,7 +38,6 @@ var UsersPasswordDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,16 +58,18 @@ var UsersPasswordDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersPasswordDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersPasswordDeleteCmdOperatorId == "" {
 		UsersPasswordDeleteCmdOperatorId = ac.OperatorID
+	}
+
+	if UsersPasswordDeleteCmdUserName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
 	}
 
 	return &apiParams{

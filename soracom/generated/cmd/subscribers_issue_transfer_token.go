@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,14 +28,9 @@ var SubscribersIssueTransferTokenCmdBody string
 func init() {
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI(""))
 
-	SubscribersIssueTransferTokenCmd.MarkFlagRequired("transfer-destination-operator-email")
-
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI(""))
 
-	SubscribersIssueTransferTokenCmd.MarkFlagRequired("transfer-destination-operator-id")
-
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
 }
 
@@ -52,7 +49,6 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -73,20 +69,33 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersIssueTransferTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "transfer-destination-operator-email")
+		}
+
+	}
+
+	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "transfer-destination-operator-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

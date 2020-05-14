@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var FilesDeleteDirectoryCmdScope string
 func init() {
 	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdPath, "path", "", TRAPI("Target directory path"))
 
-	FilesDeleteDirectoryCmd.MarkFlagRequired("path")
-
-	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdScope, "scope", "", TRAPI("Scope of the request"))
-
-	FilesDeleteDirectoryCmd.MarkFlagRequired("scope")
-
+	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdScope, "scope", "private", TRAPI("Scope of the request"))
 	FilesCmd.AddCommand(FilesDeleteDirectoryCmd)
 }
 
@@ -41,7 +38,6 @@ var FilesDeleteDirectoryCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,15 @@ var FilesDeleteDirectoryCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectFilesDeleteDirectoryCmdParams(ac *apiClient) (*apiParams, error) {
+	if FilesDeleteDirectoryCmdPath == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+	}
 
 	return &apiParams{
 		method: "DELETE",

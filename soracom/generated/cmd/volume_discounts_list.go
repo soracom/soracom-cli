@@ -9,7 +9,6 @@ import (
 )
 
 func init() {
-
 	VolumeDiscountsCmd.AddCommand(VolumeDiscountsListCmd)
 }
 
@@ -28,7 +27,6 @@ var VolumeDiscountsListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -49,7 +47,6 @@ var VolumeDiscountsListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

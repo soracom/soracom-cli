@@ -41,7 +41,7 @@ var QueryDevicesCmdPaginate bool
 func init() {
 	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
 
-	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
 
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdDeviceId, "device-id", []string{}, TRAPI("SORACOM Inventory device ID to search"))
 
@@ -55,10 +55,9 @@ func init() {
 
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
-	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	QueryCmd.AddCommand(QueryDevicesCmd)
 }
 
@@ -77,7 +76,6 @@ var QueryDevicesCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -98,7 +96,6 @@ var QueryDevicesCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -129,7 +126,7 @@ func buildQueryForQueryDevicesCmd() url.Values {
 		result.Add("last_evaluated_key", QueryDevicesCmdLastEvaluatedKey)
 	}
 
-	if QueryDevicesCmdSearchType != "" {
+	if QueryDevicesCmdSearchType != "and" {
 		result.Add("search_type", QueryDevicesCmdSearchType)
 	}
 
@@ -169,7 +166,7 @@ func buildQueryForQueryDevicesCmd() url.Values {
 		}
 	}
 
-	if QueryDevicesCmdLimit != 0 {
+	if QueryDevicesCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QueryDevicesCmdLimit))
 	}
 

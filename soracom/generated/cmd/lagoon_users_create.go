@@ -34,7 +34,6 @@ func init() {
 	LagoonUsersCreateCmd.Flags().StringVar(&LagoonUsersCreateCmdUserPassword, "user-password", "", TRAPI(""))
 
 	LagoonUsersCreateCmd.Flags().StringVar(&LagoonUsersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonUsersCmd.AddCommand(LagoonUsersCreateCmd)
 }
 
@@ -53,7 +52,6 @@ var LagoonUsersCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -74,19 +72,16 @@ var LagoonUsersCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonUsersCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var EventHandlersUnignoreCmdImsi string
 func init() {
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
 
-	EventHandlersUnignoreCmd.MarkFlagRequired("handler-id")
-
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdImsi, "imsi", "", TRAPI("imsi"))
-
-	EventHandlersUnignoreCmd.MarkFlagRequired("imsi")
-
 	EventHandlersCmd.AddCommand(EventHandlersUnignoreCmd)
 }
 
@@ -41,7 +38,6 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {
+	if EventHandlersUnignoreCmdHandlerId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	}
+
+	if EventHandlersUnignoreCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "DELETE",

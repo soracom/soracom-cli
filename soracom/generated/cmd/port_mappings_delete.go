@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var PortMappingsDeleteCmdPort string
 func init() {
 	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdIpAddress, "ip-address", "", TRAPI("IP address of the target port mapping entry"))
 
-	PortMappingsDeleteCmd.MarkFlagRequired("ip-address")
-
 	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdPort, "port", "", TRAPI("Port of the target port mapping entry"))
-
-	PortMappingsDeleteCmd.MarkFlagRequired("port")
-
 	PortMappingsCmd.AddCommand(PortMappingsDeleteCmd)
 }
 
@@ -41,7 +38,6 @@ var PortMappingsDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var PortMappingsDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectPortMappingsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	if PortMappingsDeleteCmdIpAddress == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "ip-address")
+	}
+
+	if PortMappingsDeleteCmdPort == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "port")
+	}
 
 	return &apiParams{
 		method: "DELETE",

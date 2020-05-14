@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,18 +31,11 @@ var VpgPutIpAddressMapEntryCmdBody string
 func init() {
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI(""))
 
-	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("ip-address")
-
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI(""))
-
-	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("key")
 
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgPutIpAddressMapEntryCmd.MarkFlagRequired("vpg-id")
-
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgPutIpAddressMapEntryCmd)
 }
 
@@ -59,7 +54,6 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -80,20 +74,41 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgPutIpAddressMapEntryCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgPutIpAddressMapEntryCmdIpAddress == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "ip-address")
+		}
+
+	}
+
+	if VpgPutIpAddressMapEntryCmdKey == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "key")
+		}
+
+	}
+
+	if VpgPutIpAddressMapEntryCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

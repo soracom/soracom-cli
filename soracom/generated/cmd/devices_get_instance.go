@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -23,18 +25,11 @@ var DevicesGetInstanceCmdModel bool
 func init() {
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesGetInstanceCmd.MarkFlagRequired("device-id")
-
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdInstance, "instance", "", TRAPI("Instance ID"))
-
-	DevicesGetInstanceCmd.MarkFlagRequired("instance")
 
 	DevicesGetInstanceCmd.Flags().StringVar(&DevicesGetInstanceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesGetInstanceCmd.MarkFlagRequired("object")
-
 	DevicesGetInstanceCmd.Flags().BoolVar(&DevicesGetInstanceCmdModel, "model", false, TRAPI("Whether or not to add model information"))
-
 	DevicesCmd.AddCommand(DevicesGetInstanceCmd)
 }
 
@@ -53,7 +48,6 @@ var DevicesGetInstanceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -74,13 +68,23 @@ var DevicesGetInstanceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesGetInstanceCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesGetInstanceCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
+
+	if DevicesGetInstanceCmdInstance == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+	}
+
+	if DevicesGetInstanceCmdObject == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+	}
 
 	return &apiParams{
 		method: "GET",

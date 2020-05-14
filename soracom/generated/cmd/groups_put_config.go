@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -24,14 +26,9 @@ var GroupsPutConfigCmdBody string
 func init() {
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
-	GroupsPutConfigCmd.MarkFlagRequired("group-id")
-
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("Target configuration."))
 
-	GroupsPutConfigCmd.MarkFlagRequired("namespace")
-
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GroupsCmd.AddCommand(GroupsPutConfigCmd)
 }
 
@@ -50,7 +47,6 @@ var GroupsPutConfigCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +67,33 @@ var GroupsPutConfigCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGroupsPutConfigCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if GroupsPutConfigCmdGroupId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+		}
+
+	}
+
+	if GroupsPutConfigCmdNamespace == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "namespace")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

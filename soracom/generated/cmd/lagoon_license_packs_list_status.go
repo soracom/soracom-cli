@@ -9,7 +9,6 @@ import (
 )
 
 func init() {
-
 	LagoonLicensePacksCmd.AddCommand(LagoonLicensePacksListStatusCmd)
 }
 
@@ -43,7 +42,6 @@ var LagoonLicensePacksListStatusCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

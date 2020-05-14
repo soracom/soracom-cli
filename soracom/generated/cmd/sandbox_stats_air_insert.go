@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var SandboxStatsAirInsertCmdBody string
 func init() {
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
 
-	SandboxStatsAirInsertCmd.MarkFlagRequired("imsi")
-
 	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI(""))
 
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SandboxStatsAirCmd.AddCommand(SandboxStatsAirInsertCmd)
 }
 
@@ -50,7 +49,6 @@ var SandboxStatsAirInsertCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var SandboxStatsAirInsertCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxStatsAirInsertCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSandboxStatsAirInsertCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SandboxStatsAirInsertCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

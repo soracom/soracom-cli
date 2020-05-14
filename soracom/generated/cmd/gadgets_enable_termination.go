@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var GadgetsEnableTerminationCmdSerialNumber string
 func init() {
 	GadgetsEnableTerminationCmd.Flags().StringVar(&GadgetsEnableTerminationCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
-	GadgetsEnableTerminationCmd.MarkFlagRequired("product-id")
-
 	GadgetsEnableTerminationCmd.Flags().StringVar(&GadgetsEnableTerminationCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
-
-	GadgetsEnableTerminationCmd.MarkFlagRequired("serial-number")
-
 	GadgetsCmd.AddCommand(GadgetsEnableTerminationCmd)
 }
 
@@ -41,7 +38,6 @@ var GadgetsEnableTerminationCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var GadgetsEnableTerminationCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGadgetsEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
+	if GadgetsEnableTerminationCmdProductId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+	}
+
+	if GadgetsEnableTerminationCmdSerialNumber == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+	}
 
 	return &apiParams{
 		method: "POST",

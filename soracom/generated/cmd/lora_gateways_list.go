@@ -33,12 +33,11 @@ func init() {
 
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
 
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag match mode."))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysListCmd)
 }
 
@@ -57,7 +56,6 @@ var LoraGatewaysListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var LoraGatewaysListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -117,7 +114,7 @@ func buildQueryForLoraGatewaysListCmd() url.Values {
 		result.Add("tag_value", LoraGatewaysListCmdTagValue)
 	}
 
-	if LoraGatewaysListCmdTagValueMatchMode != "" {
+	if LoraGatewaysListCmdTagValueMatchMode != "exact" {
 		result.Add("tag_value_match_mode", LoraGatewaysListCmdTagValueMatchMode)
 	}
 

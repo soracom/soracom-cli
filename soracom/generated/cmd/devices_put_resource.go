@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -32,22 +34,13 @@ var DevicesPutResourceCmdBody string
 func init() {
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
-	DevicesPutResourceCmd.MarkFlagRequired("device-id")
-
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
-
-	DevicesPutResourceCmd.MarkFlagRequired("instance")
 
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdObject, "object", "", TRAPI("Object ID"))
 
-	DevicesPutResourceCmd.MarkFlagRequired("object")
-
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
-	DevicesPutResourceCmd.MarkFlagRequired("resource")
-
 	DevicesPutResourceCmd.Flags().StringVar(&DevicesPutResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	DevicesCmd.AddCommand(DevicesPutResourceCmd)
 }
 
@@ -66,7 +59,6 @@ var DevicesPutResourceCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -87,20 +79,49 @@ var DevicesPutResourceCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesPutResourceCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForDevicesPutResourceCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if DevicesPutResourceCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
+
+	if DevicesPutResourceCmdInstance == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+		}
+
+	}
+
+	if DevicesPutResourceCmdObject == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+		}
+
+	}
+
+	if DevicesPutResourceCmdResource == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

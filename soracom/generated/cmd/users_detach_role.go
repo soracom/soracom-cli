@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -22,12 +24,7 @@ func init() {
 
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("role_id"))
 
-	UsersDetachRoleCmd.MarkFlagRequired("role-id")
-
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
-
-	UsersDetachRoleCmd.MarkFlagRequired("user-name")
-
 	UsersCmd.AddCommand(UsersDetachRoleCmd)
 }
 
@@ -46,7 +43,6 @@ var UsersDetachRoleCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -67,16 +63,22 @@ var UsersDetachRoleCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersDetachRoleCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersDetachRoleCmdOperatorId == "" {
 		UsersDetachRoleCmdOperatorId = ac.OperatorID
+	}
+
+	if UsersDetachRoleCmdRoleId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
+	}
+
+	if UsersDetachRoleCmdUserName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
 	}
 
 	return &apiParams{

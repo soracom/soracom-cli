@@ -20,14 +20,9 @@ var FilesListCmdScope string
 func init() {
 	FilesListCmd.Flags().StringVar(&FilesListCmdLimit, "limit", "", TRAPI("Num of entries"))
 
-	FilesListCmd.Flags().StringVar(&FilesListCmdPath, "path", "", TRAPI("Target path"))
+	FilesListCmd.Flags().StringVar(&FilesListCmdPath, "path", "/", TRAPI("Target path"))
 
-	FilesListCmd.MarkFlagRequired("path")
-
-	FilesListCmd.Flags().StringVar(&FilesListCmdScope, "scope", "", TRAPI("Scope of the request"))
-
-	FilesListCmd.MarkFlagRequired("scope")
-
+	FilesListCmd.Flags().StringVar(&FilesListCmdScope, "scope", "private", TRAPI("Scope of the request"))
 	FilesCmd.AddCommand(FilesListCmd)
 }
 
@@ -46,7 +41,6 @@ var FilesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -67,7 +61,6 @@ var FilesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

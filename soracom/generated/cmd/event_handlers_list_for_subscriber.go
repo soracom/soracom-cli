@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var EventHandlersListForSubscriberCmdImsi string
 
 func init() {
 	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("imsi"))
-
-	EventHandlersListForSubscriberCmd.MarkFlagRequired("imsi")
-
 	EventHandlersCmd.AddCommand(EventHandlersListForSubscriberCmd)
 }
 
@@ -34,7 +33,6 @@ var EventHandlersListForSubscriberCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var EventHandlersListForSubscriberCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersListForSubscriberCmdParams(ac *apiClient) (*apiParams, error) {
+	if EventHandlersListForSubscriberCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "GET",

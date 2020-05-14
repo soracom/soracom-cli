@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraNetworkSetsDeleteCmdNsId string
 
 func init() {
 	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
-
-	LoraNetworkSetsDeleteCmd.MarkFlagRequired("ns-id")
-
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsDeleteCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraNetworkSetsDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraNetworkSetsDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraNetworkSetsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraNetworkSetsDeleteCmdNsId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

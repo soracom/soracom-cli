@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var BillsGetCmdYyyyMM string
 
 func init() {
 	BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
-
-	BillsGetCmd.MarkFlagRequired("yyyy-mm")
-
 	BillsCmd.AddCommand(BillsGetCmd)
 }
 
@@ -34,7 +33,6 @@ var BillsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var BillsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectBillsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if BillsGetCmdYyyyMM == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "yyyy-mm")
+	}
 
 	return &apiParams{
 		method: "GET",

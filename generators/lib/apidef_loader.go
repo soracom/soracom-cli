@@ -55,8 +55,53 @@ type APIParam struct {
 	Description string             `yaml:"description"`
 	Type        string             `yaml:"type"`
 	Enum        []string           `yaml:"enum"`
+	Default     interface{}        `yaml:"default,omitempty"`
 	Schema      APIParamSchema     `yaml:"schema"`
 	Items       APIParamArrayItems `yaml:"items"`
+}
+
+func (p *APIParam) GetDefaultValueAsString() string {
+	if p.Default == nil {
+		return ""
+	}
+	s, ok := p.Default.(string)
+	if !ok {
+		return ""
+	}
+	return s
+}
+
+func (p *APIParam) GetDefaultValueAsInt64() int64 {
+	if p.Default == nil {
+		return 0
+	}
+	s, ok := p.Default.(int)
+	if !ok {
+		return 0
+	}
+	return int64(s)
+}
+
+func (p *APIParam) GetDefaultValueAsFloat() float64 {
+	if p.Default == nil {
+		return 0.0
+	}
+	s, ok := p.Default.(float64)
+	if !ok {
+		return 0.0
+	}
+	return s
+}
+
+func (p *APIParam) GetDefaultValueAsBool() bool {
+	if p.Default == nil {
+		return false
+	}
+	s, ok := p.Default.(bool)
+	if !ok {
+		return false
+	}
+	return s
 }
 
 // APIParamSchema holds information about a Schema in an API parameter
@@ -91,6 +136,51 @@ type StructProperty struct {
 	Format      string
 	Description string
 	Required    bool
+	Default     interface{}
+}
+
+func (p *StructProperty) GetDefaultValueAsString() string {
+	if p.Default == nil {
+		return ""
+	}
+	s, ok := p.Default.(string)
+	if !ok {
+		return ""
+	}
+	return s
+}
+
+func (p *StructProperty) GetDefaultValueAsInt64() int64 {
+	if p.Default == nil {
+		return 0
+	}
+	s, ok := p.Default.(int)
+	if !ok {
+		return 0
+	}
+	return int64(s)
+}
+
+func (p *StructProperty) GetDefaultValueAsFloat() float64 {
+	if p.Default == nil {
+		return 0.0
+	}
+	s, ok := p.Default.(float64)
+	if !ok {
+		return 0.0
+	}
+	return s
+}
+
+func (p *StructProperty) GetDefaultValueAsBool() bool {
+	if p.Default == nil {
+		return false
+	}
+	s, ok := p.Default.(bool)
+	if !ok {
+		return false
+	}
+	return s
 }
 
 // StructReference holds information about a reference from a property in API definition file
@@ -186,6 +276,10 @@ func loadStructDefs(data map[interface{}]interface{}) map[string]StructDef {
 			if p["format"] != nil {
 				sp.Format = p["format"].(string)
 				//fmt.Printf(" (%s)", sp.Format)
+			}
+
+			if p["default"] != nil {
+				sp.Default = p["default"]
 			}
 
 			if required[sp.Name] {

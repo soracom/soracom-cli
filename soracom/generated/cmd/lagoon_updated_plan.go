@@ -24,7 +24,6 @@ func init() {
 	LagoonUpdatedPlanCmd.Flags().StringVar(&LagoonUpdatedPlanCmdPlan, "plan", "", TRAPI(""))
 
 	LagoonUpdatedPlanCmd.Flags().StringVar(&LagoonUpdatedPlanCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonCmd.AddCommand(LagoonUpdatedPlanCmd)
 }
 
@@ -58,19 +57,16 @@ var LagoonUpdatedPlanCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonUpdatedPlanCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonUpdatedPlanCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

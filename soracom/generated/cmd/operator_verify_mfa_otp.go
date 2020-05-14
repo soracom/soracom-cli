@@ -29,7 +29,6 @@ func init() {
 	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorVerifyMfaOtpCmd)
 }
 
@@ -48,7 +47,6 @@ var OperatorVerifyMfaOtpCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -69,14 +67,12 @@ var OperatorVerifyMfaOtpCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorVerifyMfaOtpCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if OperatorVerifyMfaOtpCmdOperatorId == "" {
 		OperatorVerifyMfaOtpCmdOperatorId = ac.OperatorID
 	}
@@ -85,7 +81,6 @@ func collectOperatorVerifyMfaOtpCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

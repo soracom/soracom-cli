@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -31,12 +33,9 @@ func init() {
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdDeviceId, "device-id", "", TRAPI("ID of the recipient device."))
 
-	LoraDevicesSendDataCmd.MarkFlagRequired("device-id")
-
-	LoraDevicesSendDataCmd.Flags().Int64Var(&LoraDevicesSendDataCmdFPort, "f-port", 0, TRAPI(""))
+	LoraDevicesSendDataCmd.Flags().Int64Var(&LoraDevicesSendDataCmdFPort, "f-port", 2, TRAPI(""))
 
 	LoraDevicesSendDataCmd.Flags().StringVar(&LoraDevicesSendDataCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraDevicesCmd.AddCommand(LoraDevicesSendDataCmd)
 }
 
@@ -55,7 +54,6 @@ var LoraDevicesSendDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var LoraDevicesSendDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraDevicesSendDataCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraDevicesSendDataCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
@@ -150,7 +153,7 @@ func buildBodyForLoraDevicesSendDataCmd() (string, error) {
 		result["data"] = LoraDevicesSendDataCmdData
 	}
 
-	if LoraDevicesSendDataCmdFPort != 0 {
+	if LoraDevicesSendDataCmdFPort != 2 {
 		result["fPort"] = LoraDevicesSendDataCmdFPort
 	}
 

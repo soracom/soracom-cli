@@ -18,9 +18,7 @@ import (
 var LagoonLicensePacksUpdateCmdBody string
 
 func init() {
-
 	LagoonLicensePacksUpdateCmd.Flags().StringVar(&LagoonLicensePacksUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LagoonLicensePacksCmd.AddCommand(LagoonLicensePacksUpdateCmd)
 }
 
@@ -54,19 +52,16 @@ var LagoonLicensePacksUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonLicensePacksUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLagoonLicensePacksUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

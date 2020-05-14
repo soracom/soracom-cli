@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,11 @@ var CredentialsCreateCmdBody string
 func init() {
 	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TRAPI("credentials_id"))
 
-	CredentialsCreateCmd.MarkFlagRequired("credentials-id")
-
 	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", TRAPI(""))
 
 	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdType, "type", "", TRAPI(""))
 
 	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	CredentialsCmd.AddCommand(CredentialsCreateCmd)
 }
 
@@ -55,7 +54,6 @@ var CredentialsCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +74,25 @@ var CredentialsCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectCredentialsCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForCredentialsCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if CredentialsCreateCmdCredentialsId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "credentials-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

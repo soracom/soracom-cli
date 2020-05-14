@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var LoraGatewaysPutTagsCmdBody string
 func init() {
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysPutTagsCmd.MarkFlagRequired("gateway-id")
-
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysPutTagsCmd)
 }
 
@@ -43,7 +42,6 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraGatewaysPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraGatewaysPutTagsCmdGatewayId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -23,14 +25,11 @@ var GroupsListSubscribersCmdPaginate bool
 func init() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsListSubscribersCmd.MarkFlagRequired("group-id")
-
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	GroupsCmd.AddCommand(GroupsListSubscribersCmd)
 }
 
@@ -49,7 +48,6 @@ var GroupsListSubscribersCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -70,13 +68,15 @@ var GroupsListSubscribersCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
+	if GroupsListSubscribersCmdGroupId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	}
 
 	return &apiParams{
 		method: "GET",

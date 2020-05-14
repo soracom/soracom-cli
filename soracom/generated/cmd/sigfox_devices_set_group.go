@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -35,8 +37,6 @@ var SigfoxDevicesSetGroupCmdBody string
 func init() {
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
-	SigfoxDevicesSetGroupCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
@@ -46,7 +46,6 @@ func init() {
 	SigfoxDevicesSetGroupCmd.Flags().Int64Var(&SigfoxDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesSetGroupCmd)
 }
 
@@ -65,7 +64,6 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -86,20 +84,25 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSigfoxDevicesSetGroupCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SigfoxDevicesSetGroupCmdDeviceId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

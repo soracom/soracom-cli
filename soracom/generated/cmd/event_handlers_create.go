@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -42,8 +44,6 @@ func init() {
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TRAPI(""))
 
-	EventHandlersCreateCmd.MarkFlagRequired("status")
-
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TRAPI(""))
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TRAPI(""))
@@ -51,7 +51,6 @@ func init() {
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	EventHandlersCmd.AddCommand(EventHandlersCreateCmd)
 }
 
@@ -70,7 +69,6 @@ var EventHandlersCreateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -91,20 +89,25 @@ var EventHandlersCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersCreateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForEventHandlersCreateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if EventHandlersCreateCmdStatus == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "status")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

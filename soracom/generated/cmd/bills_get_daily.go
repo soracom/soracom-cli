@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var BillsGetDailyCmdYyyyMM string
 
 func init() {
 	BillsGetDailyCmd.Flags().StringVar(&BillsGetDailyCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
-
-	BillsGetDailyCmd.MarkFlagRequired("yyyy-mm")
-
 	BillsCmd.AddCommand(BillsGetDailyCmd)
 }
 
@@ -34,7 +33,6 @@ var BillsGetDailyCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var BillsGetDailyCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectBillsGetDailyCmdParams(ac *apiClient) (*apiParams, error) {
+	if BillsGetDailyCmdYyyyMM == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "yyyy-mm")
+	}
 
 	return &apiParams{
 		method: "GET",

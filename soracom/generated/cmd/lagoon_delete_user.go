@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LagoonDeleteUserCmdLagoonUserId int64
 
 func init() {
 	LagoonDeleteUserCmd.Flags().Int64Var(&LagoonDeleteUserCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
-
-	LagoonDeleteUserCmd.MarkFlagRequired("lagoon-user-id")
-
 	LagoonCmd.AddCommand(LagoonDeleteUserCmd)
 }
 
@@ -34,7 +33,6 @@ var LagoonDeleteUserCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LagoonDeleteUserCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLagoonDeleteUserCmdParams(ac *apiClient) (*apiParams, error) {
+	if LagoonDeleteUserCmdLagoonUserId == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "lagoon-user-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VolumeDiscountsGetCmdContractId string
 
 func init() {
 	VolumeDiscountsGetCmd.Flags().StringVar(&VolumeDiscountsGetCmdContractId, "contract-id", "", TRAPI("contract_id"))
-
-	VolumeDiscountsGetCmd.MarkFlagRequired("contract-id")
-
 	VolumeDiscountsCmd.AddCommand(VolumeDiscountsGetCmd)
 }
 
@@ -34,7 +33,6 @@ var VolumeDiscountsGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VolumeDiscountsGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVolumeDiscountsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if VolumeDiscountsGetCmdContractId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "contract-id")
+	}
 
 	return &apiParams{
 		method: "GET",

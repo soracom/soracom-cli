@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraGatewaysTerminateCmdGatewayId string
 
 func init() {
 	LoraGatewaysTerminateCmd.Flags().StringVar(&LoraGatewaysTerminateCmdGatewayId, "gateway-id", "", TRAPI("Device ID of the target LoRa gateway."))
-
-	LoraGatewaysTerminateCmd.MarkFlagRequired("gateway-id")
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysTerminateCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraGatewaysTerminateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraGatewaysTerminateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraGatewaysTerminateCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraGatewaysTerminateCmdGatewayId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	}
 
 	return &apiParams{
 		method: "POST",

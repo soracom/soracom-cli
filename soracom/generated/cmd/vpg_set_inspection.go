@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var VpgSetInspectionCmdBody string
 func init() {
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
-	VpgSetInspectionCmd.MarkFlagRequired("vpg-id")
-
 	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgSetInspectionCmd)
 }
 
@@ -50,7 +49,6 @@ var VpgSetInspectionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var VpgSetInspectionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgSetInspectionCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgSetInspectionCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

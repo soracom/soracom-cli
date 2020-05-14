@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -29,14 +31,9 @@ func init() {
 
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdPath, "path", "", TRAPI("Target path"))
 
-	FilesPutCmd.MarkFlagRequired("path")
-
-	FilesPutCmd.Flags().StringVar(&FilesPutCmdScope, "scope", "", TRAPI("Scope of the request"))
-
-	FilesPutCmd.MarkFlagRequired("scope")
+	FilesPutCmd.Flags().StringVar(&FilesPutCmdScope, "scope", "private", TRAPI("Scope of the request"))
 
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	FilesCmd.AddCommand(FilesPutCmd)
 }
 
@@ -55,7 +52,6 @@ var FilesPutCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,20 +72,25 @@ var FilesPutCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectFilesPutCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForFilesPutCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := FilesPutCmdContentType
+
+	if FilesPutCmdPath == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

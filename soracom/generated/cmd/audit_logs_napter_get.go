@@ -43,7 +43,6 @@ func init() {
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime millis)."))
 
 	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	AuditLogsNapterCmd.AddCommand(AuditLogsNapterGetCmd)
 }
 
@@ -62,7 +61,6 @@ var AuditLogsNapterGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -83,7 +81,6 @@ var AuditLogsNapterGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

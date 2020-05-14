@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -25,12 +27,9 @@ func init() {
 
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsListGatewaysCmd.MarkFlagRequired("ns-id")
-
 	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa gateways to retrieve."))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListGatewaysCmd)
 }
 
@@ -49,7 +48,6 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -70,13 +68,16 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if LoraNetworkSetsListGatewaysCmdNsId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+	}
 
 	return &apiParams{
 		method: "GET",

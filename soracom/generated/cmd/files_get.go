@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var FilesGetCmdScope string
 func init() {
 	FilesGetCmd.Flags().StringVar(&FilesGetCmdPath, "path", "", TRAPI("Target path"))
 
-	FilesGetCmd.MarkFlagRequired("path")
-
-	FilesGetCmd.Flags().StringVar(&FilesGetCmdScope, "scope", "", TRAPI("Scope of the request"))
-
-	FilesGetCmd.MarkFlagRequired("scope")
-
+	FilesGetCmd.Flags().StringVar(&FilesGetCmdScope, "scope", "private", TRAPI("Scope of the request"))
 	FilesCmd.AddCommand(FilesGetCmd)
 }
 
@@ -41,7 +38,6 @@ var FilesGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,7 +58,6 @@ var FilesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		_, err = os.Stdout.Write([]byte(body))
 		return err
 
@@ -70,6 +65,9 @@ var FilesGetCmd = &cobra.Command{
 }
 
 func collectFilesGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if FilesGetCmdPath == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+	}
 
 	return &apiParams{
 		method: "GET",

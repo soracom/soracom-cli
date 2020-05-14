@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -20,16 +22,9 @@ var DataDeleteEntryCmdTime int64
 func init() {
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
-	DataDeleteEntryCmd.MarkFlagRequired("resource-id")
-
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
-	DataDeleteEntryCmd.MarkFlagRequired("resource-type")
-
 	DataDeleteEntryCmd.Flags().Int64Var(&DataDeleteEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to delete (unixtime in milliseconds)."))
-
-	DataDeleteEntryCmd.MarkFlagRequired("time")
-
 	DataCmd.AddCommand(DataDeleteEntryCmd)
 }
 
@@ -48,7 +43,6 @@ var DataDeleteEntryCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -69,13 +63,23 @@ var DataDeleteEntryCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {
+	if DataDeleteEntryCmdResourceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
+	}
+
+	if DataDeleteEntryCmdResourceType == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
+	}
+
+	if DataDeleteEntryCmdTime == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "time")
+	}
 
 	return &apiParams{
 		method: "DELETE",

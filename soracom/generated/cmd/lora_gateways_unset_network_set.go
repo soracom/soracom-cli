@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraGatewaysUnsetNetworkSetCmdGatewayId string
 
 func init() {
 	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
-
-	LoraGatewaysUnsetNetworkSetCmd.MarkFlagRequired("gateway-id")
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysUnsetNetworkSetCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraGatewaysUnsetNetworkSetCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraGatewaysUnsetNetworkSetCmdGatewayId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	}
 
 	return &apiParams{
 		method: "POST",

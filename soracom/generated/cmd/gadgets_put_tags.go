@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -24,14 +26,9 @@ var GadgetsPutTagsCmdBody string
 func init() {
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
-	GadgetsPutTagsCmd.MarkFlagRequired("product-id")
-
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
 
-	GadgetsPutTagsCmd.MarkFlagRequired("serial-number")
-
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	GadgetsCmd.AddCommand(GadgetsPutTagsCmd)
 }
 
@@ -50,7 +47,6 @@ var GadgetsPutTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +67,33 @@ var GadgetsPutTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGadgetsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForGadgetsPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if GadgetsPutTagsCmdProductId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+		}
+
+	}
+
+	if GadgetsPutTagsCmdSerialNumber == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

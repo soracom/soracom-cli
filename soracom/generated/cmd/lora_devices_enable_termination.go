@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraDevicesEnableTerminationCmdDeviceId string
 
 func init() {
 	LoraDevicesEnableTerminationCmd.Flags().StringVar(&LoraDevicesEnableTerminationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
-
-	LoraDevicesEnableTerminationCmd.MarkFlagRequired("device-id")
-
 	LoraDevicesCmd.AddCommand(LoraDevicesEnableTerminationCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraDevicesEnableTerminationCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraDevicesEnableTerminationCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraDevicesEnableTerminationCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "POST",

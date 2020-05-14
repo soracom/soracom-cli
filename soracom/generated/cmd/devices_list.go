@@ -27,18 +27,17 @@ var DevicesListCmdLimit int64
 var DevicesListCmdPaginate bool
 
 func init() {
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last Device in the previous page"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "", TRAPI("Tag name"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "null", TRAPI("Tag name"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "", TRAPI("Tag value"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "null", TRAPI("Tag value"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag value match mode (exact | prefix)"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "null", TRAPI("Tag value match mode (exact | prefix)"))
 
-	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", 0, TRAPI("Max number of Devices in a response"))
+	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", -1, TRAPI("Max number of Devices in a response"))
 
 	DevicesListCmd.Flags().BoolVar(&DevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DevicesCmd.AddCommand(DevicesListCmd)
 }
 
@@ -57,7 +56,6 @@ var DevicesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,7 +76,6 @@ var DevicesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -105,23 +102,23 @@ func buildPathForDevicesListCmd(path string) string {
 func buildQueryForDevicesListCmd() url.Values {
 	result := url.Values{}
 
-	if DevicesListCmdLastEvaluatedKey != "" {
+	if DevicesListCmdLastEvaluatedKey != "null" {
 		result.Add("last_evaluated_key", DevicesListCmdLastEvaluatedKey)
 	}
 
-	if DevicesListCmdTagName != "" {
+	if DevicesListCmdTagName != "null" {
 		result.Add("tag_name", DevicesListCmdTagName)
 	}
 
-	if DevicesListCmdTagValue != "" {
+	if DevicesListCmdTagValue != "null" {
 		result.Add("tag_value", DevicesListCmdTagValue)
 	}
 
-	if DevicesListCmdTagValueMatchMode != "" {
+	if DevicesListCmdTagValueMatchMode != "null" {
 		result.Add("tag_value_match_mode", DevicesListCmdTagValueMatchMode)
 	}
 
-	if DevicesListCmdLimit != 0 {
+	if DevicesListCmdLimit != -1 {
 		result.Add("limit", sprintf("%d", DevicesListCmdLimit))
 	}
 

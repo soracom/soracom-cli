@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -23,20 +25,11 @@ var StatsAirGetCmdTo int64
 func init() {
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsAirGetCmd.MarkFlagRequired("imsi")
-
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
-
-	StatsAirGetCmd.MarkFlagRequired("period")
 
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
-	StatsAirGetCmd.MarkFlagRequired("from")
-
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
-
-	StatsAirGetCmd.MarkFlagRequired("to")
-
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
 
@@ -55,7 +48,6 @@ var StatsAirGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -76,13 +68,27 @@ var StatsAirGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if StatsAirGetCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
+
+	if StatsAirGetCmdPeriod == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "period")
+	}
+
+	if StatsAirGetCmdFrom == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	}
+
+	if StatsAirGetCmdTo == 0 {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	}
 
 	return &apiParams{
 		method: "GET",

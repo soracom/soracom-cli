@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TRAPI("Export mode (async, sync)"))
 
 	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("Payment statement ID"))
-
-	PaymentStatementsExportCmd.MarkFlagRequired("payment-statement-id")
-
 	PaymentStatementsCmd.AddCommand(PaymentStatementsExportCmd)
 }
 
@@ -39,7 +38,6 @@ var PaymentStatementsExportCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,13 +58,16 @@ var PaymentStatementsExportCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if PaymentStatementsExportCmdPaymentStatementId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "payment-statement-id")
+	}
 
 	return &apiParams{
 		method: "POST",

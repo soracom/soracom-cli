@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var SubscribersDeleteSessionCmdImsi string
 
 func init() {
 	SubscribersDeleteSessionCmd.Flags().StringVar(&SubscribersDeleteSessionCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
-
-	SubscribersDeleteSessionCmd.MarkFlagRequired("imsi")
-
 	SubscribersCmd.AddCommand(SubscribersDeleteSessionCmd)
 }
 
@@ -34,7 +33,6 @@ var SubscribersDeleteSessionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var SubscribersDeleteSessionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersDeleteSessionCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersDeleteSessionCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "POST",

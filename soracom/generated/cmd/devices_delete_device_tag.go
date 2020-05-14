@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var DevicesDeleteDeviceTagCmdTagName string
 func init() {
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
-	DevicesDeleteDeviceTagCmd.MarkFlagRequired("device-id")
-
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdTagName, "tag-name", "", TRAPI("Name of tag to delete"))
-
-	DevicesDeleteDeviceTagCmd.MarkFlagRequired("tag-name")
-
 	DevicesCmd.AddCommand(DevicesDeleteDeviceTagCmd)
 }
 
@@ -41,7 +38,6 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
+	if DevicesDeleteDeviceTagCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
+
+	if DevicesDeleteDeviceTagCmdTagName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	}
 
 	return &apiParams{
 		method: "DELETE",

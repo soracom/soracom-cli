@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -26,12 +28,9 @@ var LoraNetworkSetsRevokePermissionCmdBody string
 func init() {
 	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
 
-	LoraNetworkSetsRevokePermissionCmd.MarkFlagRequired("ns-id")
-
 	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 
 	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsRevokePermissionCmd)
 }
 
@@ -50,7 +49,6 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,20 +69,25 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraNetworkSetsRevokePermissionCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForLoraNetworkSetsRevokePermissionCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if LoraNetworkSetsRevokePermissionCmdNsId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

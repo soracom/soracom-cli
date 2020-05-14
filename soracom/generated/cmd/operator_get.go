@@ -13,7 +13,6 @@ var OperatorGetCmdOperatorId string
 
 func init() {
 	OperatorGetCmd.Flags().StringVar(&OperatorGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
-
 	OperatorCmd.AddCommand(OperatorGetCmd)
 }
 
@@ -32,7 +31,6 @@ var OperatorGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var OperatorGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorGetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if OperatorGetCmdOperatorId == "" {
 		OperatorGetCmdOperatorId = ac.OperatorID
 	}

@@ -6,6 +6,11 @@ import (
 {{if not .SendBodyRaw }}
   "encoding/json"
 {{end}}
+{{end}}
+{{if .RequiredFlagExists}}
+  "fmt"
+{{end}}
+{{if .BodyExists }}
   "io/ioutil"
 {{end}}
   "net/url"
@@ -17,37 +22,38 @@ import (
   "github.com/spf13/cobra"
 )
 
-{{$prefix := .CommandVariableName}}
-{{$suffix := .CommandVariableName}}
-{{$cmdvar := .CommandVariableName}}
+{{- $prefix := .CommandVariableName -}}
+{{- $suffix := .CommandVariableName -}}
+{{- $cmdvar := .CommandVariableName -}}
+{{- $bodyExists := .BodyExists -}}
 
-{{range .StringFlags}}
+{{- range .StringFlags}}
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} string
 {{end}}
-{{range .StringSliceFlags}}
+{{- range .StringSliceFlags}}
 // {{$prefix}}{{.VarName}} holds multiple values of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} []string
 {{end}}
-{{range .IntegerFlags}}
+{{- range .IntegerFlags}}
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} int64
 {{end}}
-{{range .FloatFlags}}
+{{- range .FloatFlags}}
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} float64
 {{end}}
-{{range .BoolFlags}}
+{{- range .BoolFlags}}
 // {{$prefix}}{{.VarName}} holds value of '{{.Name}}' option
 var {{$prefix}}{{.VarName}} bool
 {{end}}
 
-{{if .PaginationAvailable}}
+{{- if .PaginationAvailable}}
 // {{$prefix}}Paginate indicates to do pagination or not
 var {{$prefix}}Paginate bool
 {{end}}
 
-{{if .BodyExists }}
+{{- if .BodyExists }}
 // {{$prefix}}Body holds contents of request body to be sent
 var {{$prefix}}Body string
 {{end}}
@@ -55,50 +61,33 @@ var {{$prefix}}Body string
 func init() {
 {{- range .StringFlags}}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
-  {{if .Required}}
-  {{if ne .VarName "OperatorId" }}
-  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
-  {{end}}
-  {{end}}
 {{end}}
 
 {{- range .StringSliceFlags}}
   {{$cmdvar}}.Flags().StringSliceVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", []string{}, TRAPI("{{.ShortHelp}}"))
-  {{if .Required}}
-  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
-  {{end}}
 {{end}}
 
 {{- range .IntegerFlags}}
   {{$cmdvar}}.Flags().Int64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
-  {{if .Required}}
-  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
-  {{end}}
 {{end}}
 
 {{- range .FloatFlags}}
   {{$cmdvar}}.Flags().Float64Var(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
-  {{if .Required}}
-  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
-  {{end}}
 {{end}}
 
 {{- range .BoolFlags}}
   {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", {{.DefaultValue}}, TRAPI("{{.ShortHelp}}"))
-  {{if .Required}}
-  {{$cmdvar}}.MarkFlagRequired("{{.LongOption}}")
-  {{end}}
 {{end}}
 
-{{if .PaginationAvailable}}
+{{- if .PaginationAvailable}}
   {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}Paginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 {{end}}
 
-{{if .BodyExists }}
+{{- if .BodyExists }}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}Body, "body", "", TRCLI("cli.common_params.body.short_help"))
 {{end}}
 
-  {{.ParentCommandVariableName}}.AddCommand({{$cmdvar}})
+  {{- .ParentCommandVariableName}}.AddCommand({{$cmdvar}})
 }
 
 // {{.CommandVariableName}} defines '{{.Use}}' subcommand
@@ -117,13 +106,14 @@ var {{ $cmdvar }} = &cobra.Command{
       ac.SetVerbose(true)
     }
 
-    {{if .RequireAuth}}
+    {{- if .RequireAuth}}
     err := authHelper(ac, cmd, args)
     if err != nil {
       cmd.SilenceUsage = true
       return err
     }
     {{end}}
+
     param, err := collect{{$cmdvar}}Params(ac)
     if err != nil {
       return err
@@ -139,7 +129,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return nil
     }
 
-    {{if not .ResponseBodyRaw}}
+    {{- if not .ResponseBodyRaw}}
     return prettyPrintStringAsJSON(body)
     {{else}}
     _, err = os.Stdout.Write([]byte(body))
@@ -149,24 +139,107 @@ var {{ $cmdvar }} = &cobra.Command{
 }
 
 func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
-  {{if .RequireOperatorID }}
+  {{- if .RequireOperatorID }}
   if {{$prefix}}OperatorId == "" {
     {{$prefix}}OperatorId = ac.OperatorID
   }
   {{end}}
 
-  {{if .BodyExists }}
+  {{- if .BodyExists }}
   body, err := buildBodyFor{{$suffix}}()
   if err != nil {
     return nil, err
   }
 
-  {{if .ContentTypeFromArg }}
+  {{- if .ContentTypeFromArg }}
   contentType := {{$prefix}}{{.ContentTypeVarName}}
   {{else}}
   contentType := "{{.ContentType}}"
   {{end}}
 
+  {{end}}
+
+  {{- /* check if all required parameters are supplied */ -}}
+  {{- range .StringFlags}}
+  {{- if .Required}}
+  {{- if ne .VarName "OperatorId" }}
+  {{- if not .DefaultValueSpecified }}
+  if {{$prefix}}{{.VarName}} == "" {
+    {{- if $bodyExists}}
+    if body == "" {
+    {{end}}
+    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+    {{- if $bodyExists}}
+    }
+    {{end}}
+  }
+  {{end}}
+  {{end}}
+  {{end}}
+  {{end}}
+
+  {{- range .StringSliceFlags}}
+  {{- if .Required}}
+  {{- if not .DefaultValueSpecified }}
+  if len({{$prefix}}{{.VarName}}) == 0 {
+    {{- if $bodyExists}}
+    if body == "" {
+    {{end}}
+    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+    {{- if $bodyExists}}
+    }
+    {{end}}
+  }
+  {{end}}
+  {{end}}
+  {{end}}
+
+  {{- range .IntegerFlags}}
+  {{- if .Required}}
+  {{- if not .DefaultValueSpecified }}
+  if {{$prefix}}{{.VarName}} == 0 {
+    {{- if $bodyExists}}
+    if body == "" {
+    {{end}}
+    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+    {{- if $bodyExists}}
+    }
+    {{end}}
+  }
+  {{end}}
+  {{end}}
+  {{end}}
+
+  {{- range .FloatFlags}}
+  {{- if .Required}}
+  {{- if not .DefaultValueSpecified }}
+  if {{$prefix}}{{.VarName}} == 0.0 {
+    {{- if $bodyExists}}
+    if body == "" {
+    {{end}}
+    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+    {{- if $bodyExists}}
+    }
+    {{end}}
+  }
+  {{end}}
+  {{end}}
+  {{end}}
+
+  {{- range .BoolFlags}}
+  {{- if .Required}}
+  {{- if not .DefaultValueSpecified }}
+  if {{$prefix}}{{.VarName}} == false {
+    {{- if $bodyExists}}
+    if body == "" {
+    {{end}}
+    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+    {{- if $bodyExists}}
+    }
+    {{end}}
+  }
+  {{end}}
+  {{end}}
   {{end}}
 
   return &apiParams{

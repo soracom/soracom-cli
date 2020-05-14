@@ -44,7 +44,7 @@ var QuerySubscribersCmdPaginate bool
 func init() {
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdGroup, "group", []string{}, TRAPI("Group name to search"))
 
@@ -60,10 +60,9 @@ func init() {
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
-	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 0, TRAPI("The maximum number of item to retrieve"))
+	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	QueryCmd.AddCommand(QuerySubscribersCmd)
 }
 
@@ -82,7 +81,6 @@ var QuerySubscribersCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -103,7 +101,6 @@ var QuerySubscribersCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
@@ -134,7 +131,7 @@ func buildQueryForQuerySubscribersCmd() url.Values {
 		result.Add("last_evaluated_key", QuerySubscribersCmdLastEvaluatedKey)
 	}
 
-	if QuerySubscribersCmdSearchType != "" {
+	if QuerySubscribersCmdSearchType != "and" {
 		result.Add("search_type", QuerySubscribersCmdSearchType)
 	}
 
@@ -180,7 +177,7 @@ func buildQueryForQuerySubscribersCmd() url.Values {
 		}
 	}
 
-	if QuerySubscribersCmdLimit != 0 {
+	if QuerySubscribersCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QuerySubscribersCmdLimit))
 	}
 

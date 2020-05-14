@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var GroupsDeleteTagCmdTagName string
 func init() {
 	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsDeleteTagCmd.MarkFlagRequired("group-id")
-
 	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
-
-	GroupsDeleteTagCmd.MarkFlagRequired("tag-name")
-
 	GroupsCmd.AddCommand(GroupsDeleteTagCmd)
 }
 
@@ -41,7 +38,6 @@ var GroupsDeleteTagCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var GroupsDeleteTagCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGroupsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
+	if GroupsDeleteTagCmdGroupId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	}
+
+	if GroupsDeleteTagCmdTagName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	}
 
 	return &apiParams{
 		method: "DELETE",

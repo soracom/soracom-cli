@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var VpgSetRoutingFilterCmdBody string
 func init() {
 	VpgSetRoutingFilterCmd.Flags().StringVar(&VpgSetRoutingFilterCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgSetRoutingFilterCmd.MarkFlagRequired("vpg-id")
-
 	VpgSetRoutingFilterCmd.Flags().StringVar(&VpgSetRoutingFilterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgSetRoutingFilterCmd)
 }
 
@@ -43,7 +42,6 @@ var VpgSetRoutingFilterCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var VpgSetRoutingFilterCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgSetRoutingFilterCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgSetRoutingFilterCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgSetRoutingFilterCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

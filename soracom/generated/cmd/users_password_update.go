@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -32,20 +34,13 @@ var UsersPasswordUpdateCmdBody string
 func init() {
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdCurrentPassword, "current-password", "", TRAPI(""))
 
-	UsersPasswordUpdateCmd.MarkFlagRequired("current-password")
-
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdNewPassword, "new-password", "", TRAPI(""))
-
-	UsersPasswordUpdateCmd.MarkFlagRequired("new-password")
 
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPasswordUpdateCmd.MarkFlagRequired("user-name")
-
 	UsersPasswordUpdateCmd.Flags().StringVar(&UsersPasswordUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	UsersPasswordCmd.AddCommand(UsersPasswordUpdateCmd)
 }
 
@@ -64,7 +59,6 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,14 +79,12 @@ var UsersPasswordUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersPasswordUpdateCmdOperatorId == "" {
 		UsersPasswordUpdateCmdOperatorId = ac.OperatorID
 	}
@@ -101,8 +93,31 @@ func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if UsersPasswordUpdateCmdCurrentPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "current-password")
+		}
+
+	}
+
+	if UsersPasswordUpdateCmdNewPassword == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "new-password")
+		}
+
+	}
+
+	if UsersPasswordUpdateCmdUserName == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

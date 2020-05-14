@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var CredentialsDeleteCmdCredentialsId string
 
 func init() {
 	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TRAPI("Credentials ID"))
-
-	CredentialsDeleteCmd.MarkFlagRequired("credentials-id")
-
 	CredentialsCmd.AddCommand(CredentialsDeleteCmd)
 }
 
@@ -34,7 +33,6 @@ var CredentialsDeleteCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var CredentialsDeleteCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectCredentialsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	if CredentialsDeleteCmdCredentialsId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "credentials-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

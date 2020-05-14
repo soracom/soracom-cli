@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var EventHandlersIgnoreCmdImsi string
 func init() {
 	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
 
-	EventHandlersIgnoreCmd.MarkFlagRequired("handler-id")
-
 	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TRAPI("imsi"))
-
-	EventHandlersIgnoreCmd.MarkFlagRequired("imsi")
-
 	EventHandlersCmd.AddCommand(EventHandlersIgnoreCmd)
 }
 
@@ -41,7 +38,6 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersIgnoreCmdParams(ac *apiClient) (*apiParams, error) {
+	if EventHandlersIgnoreCmdHandlerId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	}
+
+	if EventHandlersIgnoreCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "POST",

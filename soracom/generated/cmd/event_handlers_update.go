@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var EventHandlersUpdateCmdBody string
 func init() {
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
 
-	EventHandlersUpdateCmd.MarkFlagRequired("handler-id")
-
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	EventHandlersCmd.AddCommand(EventHandlersUpdateCmd)
 }
 
@@ -45,7 +44,6 @@ var EventHandlersUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -66,20 +64,25 @@ var EventHandlersUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForEventHandlersUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if EventHandlersUpdateCmdHandlerId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

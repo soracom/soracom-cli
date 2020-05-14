@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var SubscribersUnsetImeiLockCmdImsi string
 
 func init() {
 	SubscribersUnsetImeiLockCmd.Flags().StringVar(&SubscribersUnsetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
-
-	SubscribersUnsetImeiLockCmd.MarkFlagRequired("imsi")
-
 	SubscribersCmd.AddCommand(SubscribersUnsetImeiLockCmd)
 }
 
@@ -34,7 +33,6 @@ var SubscribersUnsetImeiLockCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var SubscribersUnsetImeiLockCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
+	if SubscribersUnsetImeiLockCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	}
 
 	return &apiParams{
 		method: "POST",

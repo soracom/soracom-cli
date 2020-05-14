@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var SigfoxDevicesTerminateCmdDeviceId string
 
 func init() {
 	SigfoxDevicesTerminateCmd.Flags().StringVar(&SigfoxDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
-
-	SigfoxDevicesTerminateCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesTerminateCmd)
 }
 
@@ -34,7 +33,6 @@ var SigfoxDevicesTerminateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var SigfoxDevicesTerminateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
+	if SigfoxDevicesTerminateCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "POST",

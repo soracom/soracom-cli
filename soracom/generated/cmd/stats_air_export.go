@@ -44,7 +44,6 @@ func init() {
 	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdTo, "to", 0, TRAPI(""))
 
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	StatsAirCmd.AddCommand(StatsAirExportCmd)
 }
 
@@ -63,7 +62,6 @@ var StatsAirExportCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -84,14 +82,12 @@ var StatsAirExportCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if StatsAirExportCmdOperatorId == "" {
 		StatsAirExportCmdOperatorId = ac.OperatorID
 	}
@@ -100,7 +96,6 @@ func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

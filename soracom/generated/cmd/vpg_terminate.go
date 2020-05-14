@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VpgTerminateCmdVpgId string
 
 func init() {
 	VpgTerminateCmd.Flags().StringVar(&VpgTerminateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgTerminateCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgTerminateCmd)
 }
 
@@ -34,7 +33,6 @@ var VpgTerminateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VpgTerminateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgTerminateCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgTerminateCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "POST",

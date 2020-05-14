@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var OperatorIssueEmailChangeTokenCmdBody string
 func init() {
 	OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdEmail, "email", "", TRAPI(""))
 
-	OperatorIssueEmailChangeTokenCmd.MarkFlagRequired("email")
-
 	OperatorIssueEmailChangeTokenCmd.Flags().StringVar(&OperatorIssueEmailChangeTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorIssueEmailChangeTokenCmd)
 }
 
@@ -45,7 +44,6 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -66,20 +64,25 @@ var OperatorIssueEmailChangeTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorIssueEmailChangeTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForOperatorIssueEmailChangeTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if OperatorIssueEmailChangeTokenCmdEmail == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

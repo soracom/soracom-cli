@@ -13,7 +13,6 @@ var RolesListCmdOperatorId string
 
 func init() {
 	RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
-
 	RolesCmd.AddCommand(RolesListCmd)
 }
 
@@ -32,7 +31,6 @@ var RolesListCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -53,14 +51,12 @@ var RolesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectRolesListCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if RolesListCmdOperatorId == "" {
 		RolesListCmdOperatorId = ac.OperatorID
 	}

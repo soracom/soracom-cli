@@ -28,7 +28,6 @@ func init() {
 	DataListSourceResourcesCmd.Flags().Int64Var(&DataListSourceResourcesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DataCmd.AddCommand(DataListSourceResourcesCmd)
 }
 
@@ -47,7 +46,6 @@ var DataListSourceResourcesCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -68,7 +66,6 @@ var DataListSourceResourcesCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},

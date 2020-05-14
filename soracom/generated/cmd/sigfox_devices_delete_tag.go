@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var SigfoxDevicesDeleteTagCmdTagName string
 func init() {
 	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target Sigfox device."))
 
-	SigfoxDevicesDeleteTagCmd.MarkFlagRequired("device-id")
-
 	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
-
-	SigfoxDevicesDeleteTagCmd.MarkFlagRequired("tag-name")
-
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesDeleteTagCmd)
 }
 
@@ -41,7 +38,6 @@ var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSigfoxDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
+	if SigfoxDevicesDeleteTagCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
+
+	if SigfoxDevicesDeleteTagCmdTagName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	}
 
 	return &apiParams{
 		method: "DELETE",

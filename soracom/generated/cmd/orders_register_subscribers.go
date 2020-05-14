@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var OrdersRegisterSubscribersCmdOrderId string
 
 func init() {
 	OrdersRegisterSubscribersCmd.Flags().StringVar(&OrdersRegisterSubscribersCmdOrderId, "order-id", "", TRAPI("order_id"))
-
-	OrdersRegisterSubscribersCmd.MarkFlagRequired("order-id")
-
 	OrdersCmd.AddCommand(OrdersRegisterSubscribersCmd)
 }
 
@@ -34,7 +33,6 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var OrdersRegisterSubscribersCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOrdersRegisterSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
+	if OrdersRegisterSubscribersCmdOrderId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "order-id")
+	}
 
 	return &apiParams{
 		method: "POST",

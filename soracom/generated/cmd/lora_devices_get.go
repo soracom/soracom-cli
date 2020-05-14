@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var LoraDevicesGetCmdDeviceId string
 
 func init() {
 	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
-
-	LoraDevicesGetCmd.MarkFlagRequired("device-id")
-
 	LoraDevicesCmd.AddCommand(LoraDevicesGetCmd)
 }
 
@@ -34,7 +33,6 @@ var LoraDevicesGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var LoraDevicesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraDevicesGetCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "GET",

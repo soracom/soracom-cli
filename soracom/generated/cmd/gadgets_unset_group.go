@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var GadgetsUnsetGroupCmdSerialNumber string
 func init() {
 	GadgetsUnsetGroupCmd.Flags().StringVar(&GadgetsUnsetGroupCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
-	GadgetsUnsetGroupCmd.MarkFlagRequired("product-id")
-
 	GadgetsUnsetGroupCmd.Flags().StringVar(&GadgetsUnsetGroupCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
-
-	GadgetsUnsetGroupCmd.MarkFlagRequired("serial-number")
-
 	GadgetsCmd.AddCommand(GadgetsUnsetGroupCmd)
 }
 
@@ -41,7 +38,6 @@ var GadgetsUnsetGroupCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var GadgetsUnsetGroupCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectGadgetsUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
+	if GadgetsUnsetGroupCmdProductId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+	}
+
+	if GadgetsUnsetGroupCmdSerialNumber == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+	}
 
 	return &apiParams{
 		method: "POST",

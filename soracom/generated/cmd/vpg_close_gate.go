@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VpgCloseGateCmdVpgId string
 
 func init() {
 	VpgCloseGateCmd.Flags().StringVar(&VpgCloseGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgCloseGateCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgCloseGateCmd)
 }
 
@@ -34,7 +33,6 @@ var VpgCloseGateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VpgCloseGateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgCloseGateCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgCloseGateCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "POST",

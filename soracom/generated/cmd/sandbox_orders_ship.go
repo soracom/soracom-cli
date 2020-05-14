@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -28,10 +30,7 @@ func init() {
 
 	SandboxOrdersShipCmd.Flags().StringVar(&SandboxOrdersShipCmdOrderId, "order-id", "", TRAPI(""))
 
-	SandboxOrdersShipCmd.MarkFlagRequired("order-id")
-
 	SandboxOrdersShipCmd.Flags().StringVar(&SandboxOrdersShipCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SandboxOrdersCmd.AddCommand(SandboxOrdersShipCmd)
 }
 
@@ -50,7 +49,6 @@ var SandboxOrdersShipCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -71,14 +69,12 @@ var SandboxOrdersShipCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSandboxOrdersShipCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if SandboxOrdersShipCmdOperatorId == "" {
 		SandboxOrdersShipCmdOperatorId = ac.OperatorID
 	}
@@ -87,8 +83,15 @@ func collectSandboxOrdersShipCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SandboxOrdersShipCmdOrderId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "order-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -37,13 +39,9 @@ func init() {
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
-	DataGetEntriesCmd.MarkFlagRequired("resource-id")
-
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
-	DataGetEntriesCmd.MarkFlagRequired("resource-type")
-
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -52,7 +50,6 @@ func init() {
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	DataCmd.AddCommand(DataGetEntriesCmd)
 }
 
@@ -71,7 +68,6 @@ var DataGetEntriesCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -92,13 +88,20 @@ var DataGetEntriesCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
+
+	if DataGetEntriesCmdResourceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
+	}
+
+	if DataGetEntriesCmdResourceType == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -131,7 +134,7 @@ func buildQueryForDataGetEntriesCmd() url.Values {
 		result.Add("last_evaluated_key", DataGetEntriesCmdLastEvaluatedKey)
 	}
 
-	if DataGetEntriesCmdSort != "" {
+	if DataGetEntriesCmdSort != "desc" {
 		result.Add("sort", DataGetEntriesCmdSort)
 	}
 

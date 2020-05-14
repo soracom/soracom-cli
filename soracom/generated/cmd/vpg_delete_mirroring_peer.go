@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var VpgDeleteMirroringPeerCmdVpgId string
 func init() {
 	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdIpaddr, "ipaddr", "", TRAPI("IP address of mirroring peer"))
 
-	VpgDeleteMirroringPeerCmd.MarkFlagRequired("ipaddr")
-
 	VpgDeleteMirroringPeerCmd.Flags().StringVar(&VpgDeleteMirroringPeerCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
-
-	VpgDeleteMirroringPeerCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgDeleteMirroringPeerCmd)
 }
 
@@ -41,7 +38,6 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgDeleteMirroringPeerCmdIpaddr == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "ipaddr")
+	}
+
+	if VpgDeleteMirroringPeerCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "DELETE",

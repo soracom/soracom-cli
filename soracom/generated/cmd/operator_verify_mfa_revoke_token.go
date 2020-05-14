@@ -39,7 +39,6 @@ func init() {
 	OperatorVerifyMfaRevokeTokenCmd.Flags().StringVar(&OperatorVerifyMfaRevokeTokenCmdToken, "token", "", TRAPI(""))
 
 	OperatorVerifyMfaRevokeTokenCmd.Flags().StringVar(&OperatorVerifyMfaRevokeTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	OperatorCmd.AddCommand(OperatorVerifyMfaRevokeTokenCmd)
 }
 
@@ -73,19 +72,16 @@ var OperatorVerifyMfaRevokeTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectOperatorVerifyMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForOperatorVerifyMfaRevokeTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
 
 	return &apiParams{

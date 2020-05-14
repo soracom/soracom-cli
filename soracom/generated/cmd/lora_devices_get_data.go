@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -32,11 +34,9 @@ var LoraDevicesGetDataCmdPaginate bool
 func init() {
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	LoraDevicesGetDataCmd.MarkFlagRequired("device-id")
-
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdSort, "sort", "", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
 
@@ -45,7 +45,6 @@ func init() {
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
-
 	LoraDevicesCmd.AddCommand(LoraDevicesGetDataCmd)
 }
 
@@ -64,7 +63,6 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -85,13 +83,15 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraDevicesGetDataCmdDeviceId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	}
 
 	return &apiParams{
 		method: "GET",
@@ -120,7 +120,7 @@ func buildQueryForLoraDevicesGetDataCmd() url.Values {
 		result.Add("last_evaluated_key", LoraDevicesGetDataCmdLastEvaluatedKey)
 	}
 
-	if LoraDevicesGetDataCmdSort != "" {
+	if LoraDevicesGetDataCmdSort != "desc" {
 		result.Add("sort", LoraDevicesGetDataCmdSort)
 	}
 

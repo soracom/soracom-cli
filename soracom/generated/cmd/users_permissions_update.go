@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -36,14 +38,9 @@ func init() {
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI(""))
 
-	UsersPermissionsUpdateCmd.MarkFlagRequired("permission")
-
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 
-	UsersPermissionsUpdateCmd.MarkFlagRequired("user-name")
-
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	UsersPermissionsCmd.AddCommand(UsersPermissionsUpdateCmd)
 }
 
@@ -62,7 +59,6 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -83,14 +79,12 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if UsersPermissionsUpdateCmdOperatorId == "" {
 		UsersPermissionsUpdateCmdOperatorId = ac.OperatorID
 	}
@@ -99,8 +93,23 @@ func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if UsersPermissionsUpdateCmdPermission == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "permission")
+		}
+
+	}
+
+	if UsersPermissionsUpdateCmdUserName == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

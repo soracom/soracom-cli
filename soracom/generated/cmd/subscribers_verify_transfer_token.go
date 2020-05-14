@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -23,10 +25,7 @@ var SubscribersVerifyTransferTokenCmdBody string
 func init() {
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI(""))
 
-	SubscribersVerifyTransferTokenCmd.MarkFlagRequired("token")
-
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)
 }
 
@@ -45,7 +44,6 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -66,20 +64,25 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersVerifyTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersVerifyTransferTokenCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersVerifyTransferTokenCmdToken == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "token")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -17,12 +19,7 @@ var LoraGatewaysDeleteTagCmdTagName string
 func init() {
 	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
-	LoraGatewaysDeleteTagCmd.MarkFlagRequired("gateway-id")
-
 	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdTagName, "tag-name", "", TRAPI("Name of tag to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
-
-	LoraGatewaysDeleteTagCmd.MarkFlagRequired("tag-name")
-
 	LoraGatewaysCmd.AddCommand(LoraGatewaysDeleteTagCmd)
 }
 
@@ -41,7 +38,6 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -62,13 +58,19 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectLoraGatewaysDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
+	if LoraGatewaysDeleteTagCmdGatewayId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	}
+
+	if LoraGatewaysDeleteTagCmdTagName == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	}
 
 	return &apiParams{
 		method: "DELETE",

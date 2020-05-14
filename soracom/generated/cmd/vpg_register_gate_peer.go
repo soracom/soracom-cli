@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -31,14 +33,9 @@ func init() {
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI(""))
 
-	VpgRegisterGatePeerCmd.MarkFlagRequired("outer-ip-address")
-
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgRegisterGatePeerCmd.MarkFlagRequired("vpg-id")
-
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	VpgCmd.AddCommand(VpgRegisterGatePeerCmd)
 }
 
@@ -57,7 +54,6 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -78,20 +74,33 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForVpgRegisterGatePeerCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if VpgRegisterGatePeerCmdOuterIpAddress == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "outer-ip-address")
+		}
+
+	}
+
+	if VpgRegisterGatePeerCmdVpgId == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",

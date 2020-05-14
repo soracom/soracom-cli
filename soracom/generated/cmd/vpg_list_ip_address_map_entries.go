@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -13,9 +15,6 @@ var VpgListIpAddressMapEntriesCmdVpgId string
 
 func init() {
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
-
-	VpgListIpAddressMapEntriesCmd.MarkFlagRequired("vpg-id")
-
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
 
@@ -34,7 +33,6 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -55,13 +53,15 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, error) {
+	if VpgListIpAddressMapEntriesCmdVpgId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	}
 
 	return &apiParams{
 		method: "GET",

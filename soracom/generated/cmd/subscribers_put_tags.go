@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -21,10 +23,7 @@ var SubscribersPutTagsCmdBody string
 func init() {
 	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersPutTagsCmd.MarkFlagRequired("imsi")
-
 	SubscribersPutTagsCmd.Flags().StringVar(&SubscribersPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
-
 	SubscribersCmd.AddCommand(SubscribersPutTagsCmd)
 }
 
@@ -43,7 +42,6 @@ var SubscribersPutTagsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -64,20 +62,25 @@ var SubscribersPutTagsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectSubscribersPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-
 	body, err := buildBodyForSubscribersPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
-
 	contentType := "application/json"
+
+	if SubscribersPutTagsCmdImsi == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "PUT",

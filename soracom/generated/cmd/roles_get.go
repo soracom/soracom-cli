@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -18,9 +20,6 @@ func init() {
 	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("role_id"))
-
-	RolesGetCmd.MarkFlagRequired("role-id")
-
 	RolesCmd.AddCommand(RolesGetCmd)
 }
 
@@ -39,7 +38,6 @@ var RolesGetCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
-
 		err := authHelper(ac, cmd, args)
 		if err != nil {
 			cmd.SilenceUsage = true
@@ -60,16 +58,18 @@ var RolesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-
 		return prettyPrintStringAsJSON(body)
 
 	},
 }
 
 func collectRolesGetCmdParams(ac *apiClient) (*apiParams, error) {
-
 	if RolesGetCmdOperatorId == "" {
 		RolesGetCmdOperatorId = ac.OperatorID
+	}
+
+	if RolesGetCmdRoleId == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
 	}
 
 	return &apiParams{
