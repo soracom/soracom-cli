@@ -27,7 +27,7 @@ type profile struct {
 	Username              *string `json:"username,omitempty"`
 	OperatorID            *string `json:"operatorId,omitempty"`
 	Endpoint              *string `json:"endpoint,omitempty"`
-	RegisterPaymentMethod bool `json:"registerPaymentMethod"`
+	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
 }
 
 type authInfo struct {
@@ -250,7 +250,7 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	}, nil
 }
 
-func collectSandboxProfileInfo(profileName string) (*profile, error) {
+func collectSandboxProfileInfo(profileName string, registerPaymentMethod bool) (*profile, error) {
 	profDir, err := getProfileDir()
 	if err != nil {
 		return nil, err
@@ -274,12 +274,13 @@ func collectSandboxProfileInfo(profileName string) (*profile, error) {
 	}
 
 	return &profile{
-		Sandbox:      true,
-		CoverageType: ct,
-		Email:        sa.Email,
-		Password:     sa.Password,
-		AuthKeyID:    ai.AuthKeyID,
-		AuthKey:      ai.AuthKey,
+		Sandbox:               true,
+		CoverageType:          ct,
+		Email:                 sa.Email,
+		Password:              sa.Password,
+		AuthKeyID:             ai.AuthKeyID,
+		AuthKey:               ai.AuthKey,
+		RegisterPaymentMethod: registerPaymentMethod,
 	}, nil
 }
 
