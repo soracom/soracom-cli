@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -164,8 +165,7 @@ func saveProfile(profileName string, prof *profile) error {
 	if _, err := os.Stat(path); err == nil {
 		// prompt if overwrites or not when already exist
 		fmt.Printf(TRCLI("cli.configure.profile.overwrite"), profileName)
-		var s string
-		_, err := fmt.Scanf("%s\n", &s)
+		s, err := readLine()
 		if err != nil {
 			return err
 		}
@@ -199,8 +199,7 @@ func saveProfile(profileName string, prof *profile) error {
 
 func confirmDeleteProfile(profileName string) bool {
 	fmt.Printf(TRCLI("cli.unconfigure.prompt"), profileName)
-	var s string
-	_, err := fmt.Scanf("%s\n", &s)
+	s, err := readLine()
 	if err != nil {
 		return false
 	}
@@ -416,4 +415,14 @@ func collectSandboxAccountInfo() (*authInfo, error) {
 	}
 	fmt.Println()
 	return &authInfo{Email: &email, Password: &password}, nil
+}
+
+func readLine() (string, error) {
+	reader := bufio.NewReader(os.Stdin)
+	s, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(s), nil
 }
