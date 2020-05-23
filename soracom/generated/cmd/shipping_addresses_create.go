@@ -31,8 +31,14 @@ var ShippingAddressesCreateCmdCity string
 // ShippingAddressesCreateCmdCompanyName holds value of 'companyName' option
 var ShippingAddressesCreateCmdCompanyName string
 
+// ShippingAddressesCreateCmdCountryCode holds value of 'countryCode' option
+var ShippingAddressesCreateCmdCountryCode string
+
 // ShippingAddressesCreateCmdDepartment holds value of 'department' option
 var ShippingAddressesCreateCmdDepartment string
+
+// ShippingAddressesCreateCmdEmail holds value of 'email' option
+var ShippingAddressesCreateCmdEmail string
 
 // ShippingAddressesCreateCmdFullName holds value of 'fullName' option
 var ShippingAddressesCreateCmdFullName string
@@ -63,7 +69,11 @@ func init() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCompanyName, "company-name", "", TRAPI(""))
 
+	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdCountryCode, "country-code", "", TRAPI(""))
+
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdDepartment, "department", "", TRAPI(""))
+
+	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdEmail, "email", "", TRAPI(""))
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdFullName, "full-name", "", TRAPI(""))
 
@@ -129,6 +139,14 @@ func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) 
 		return nil, err
 	}
 	contentType := "application/json"
+
+	if ShippingAddressesCreateCmdAddressLine1 == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "address-line1")
+		}
+
+	}
 
 	if ShippingAddressesCreateCmdCity == "" {
 		if body == "" {
@@ -229,8 +247,16 @@ func buildBodyForShippingAddressesCreateCmd() (string, error) {
 		result["companyName"] = ShippingAddressesCreateCmdCompanyName
 	}
 
+	if ShippingAddressesCreateCmdCountryCode != "" {
+		result["countryCode"] = ShippingAddressesCreateCmdCountryCode
+	}
+
 	if ShippingAddressesCreateCmdDepartment != "" {
 		result["department"] = ShippingAddressesCreateCmdDepartment
+	}
+
+	if ShippingAddressesCreateCmdEmail != "" {
+		result["email"] = ShippingAddressesCreateCmdEmail
 	}
 
 	if ShippingAddressesCreateCmdFullName != "" {

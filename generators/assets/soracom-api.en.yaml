@@ -1986,7 +1986,11 @@ definitions:
         type: string
       companyName:
         type: string
+      countryCode:
+        type: string
       department:
+        type: string
+      email:
         type: string
       fullName:
         type: string
@@ -1997,6 +2001,7 @@ definitions:
       zipCode:
         type: string
     required:
+    - addressLine1
     - city
     - state
     - zipCode
@@ -6776,6 +6781,37 @@ paths:
       - Operator
       x-soracom-cli:
       - operator auth-keys delete
+  /operators/{operator_id}/coverage_type/{coverage_type}:
+    post:
+      description: Add a coverage type to the specified operator.
+      operationId: addCoverageType
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: Coverage type
+        in: path
+        name: coverage_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully added the specified coverage type.
+        "400":
+          description: Caller is not a root operator / Specified coverage type is
+            not available / Coverage type alread signed up.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Add coverage type.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator add-coverage-type
   /operators/{operator_id}/mfa:
     delete:
       consumes:

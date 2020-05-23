@@ -18,7 +18,7 @@ func init() {
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxAuthKey, "auth-key", "", TRCLI("cli.configure_sandbox.auth_key"))
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxEmail, "email", "", TRCLI("cli.configure_sandbox.email"))
 	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxPassword, "password", "", TRCLI("cli.configure_sandbox.password"))
-	ConfigureSandboxCmd.Flags().BoolVar(&ConfigureSandboxRegisterPaymentMethod, "register-payment-method", false, TRCLI("cli.configure_sandbox.register_payment_method"))
+	ConfigureSandboxCmd.Flags().BoolVar(&ConfigureSandboxRegisterPaymentMethod, "register-payment-method", true, TRCLI("cli.configure_sandbox.register_payment_method"))
 	RootCmd.AddCommand(ConfigureSandboxCmd)
 }
 
@@ -33,7 +33,7 @@ var ConfigureSandboxCmd = &cobra.Command{
 		var p *profile
 		var err error
 		if ConfigureSandboxAuthKeyID == "" || ConfigureSandboxAuthKey == "" || ConfigureSandboxEmail == "" || ConfigureSandboxPassword == "" {
-			p, err = collectSandboxProfileInfo(pn)
+			p, err = collectSandboxProfileInfo(pn, ConfigureSandboxRegisterPaymentMethod)
 			if err != nil {
 				cmd.SilenceUsage = true
 				return err

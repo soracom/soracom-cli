@@ -28,6 +28,9 @@ var SandboxInitCmdEmail string
 // SandboxInitCmdPassword holds value of 'password' option
 var SandboxInitCmdPassword string
 
+// SandboxInitCmdRegisterPaymentMethod holds value of 'registerPaymentMethod' option
+var SandboxInitCmdRegisterPaymentMethod bool
+
 // SandboxInitCmdBody holds contents of request body to be sent
 var SandboxInitCmdBody string
 
@@ -39,6 +42,8 @@ func init() {
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdEmail, "email", "", TRAPI(""))
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdPassword, "password", "", TRAPI(""))
+
+	SandboxInitCmd.Flags().BoolVar(&SandboxInitCmdRegisterPaymentMethod, "register-payment-method", true, TRAPI(""))
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SandboxCmd.AddCommand(SandboxInitCmd)
@@ -183,6 +188,10 @@ func buildBodyForSandboxInitCmd() (string, error) {
 
 	if SandboxInitCmdPassword != "" {
 		result["password"] = SandboxInitCmdPassword
+	}
+
+	if SandboxInitCmdRegisterPaymentMethod != true {
+		result["registerPaymentMethod"] = SandboxInitCmdRegisterPaymentMethod
 	}
 
 	resultBytes, err := json.Marshal(result)

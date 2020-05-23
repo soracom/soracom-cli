@@ -49,7 +49,7 @@ paths:
       operationId: sandboxGetSignupToken
       consumes: [application/json]
       produces: [application/json]
-      x-soraocm-cli:
+      x-soracom-cli:
         - sandbox operators get-signup-token
       parameters:
         - in: body
@@ -248,6 +248,13 @@ definitions:
         type: string
       authKey:
         type: string
+      coverageTypes:
+        type: array
+        items:
+          type: string
+      registerPaymentMethod:
+        type: boolean
+        default: true
     required:
       - email
       - password
@@ -296,11 +303,11 @@ definitions:
       subscription:
         type: string
       tags:
-        $ref: '#/definitions/Map'
+        $ref: '#/definitions/TagSet'
       operatorId:
         type: string
 
-  Map:
+  TagSet:
     type: object
     additionalProperties:
       type: string

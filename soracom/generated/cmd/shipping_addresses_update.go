@@ -31,8 +31,14 @@ var ShippingAddressesUpdateCmdCity string
 // ShippingAddressesUpdateCmdCompanyName holds value of 'companyName' option
 var ShippingAddressesUpdateCmdCompanyName string
 
+// ShippingAddressesUpdateCmdCountryCode holds value of 'countryCode' option
+var ShippingAddressesUpdateCmdCountryCode string
+
 // ShippingAddressesUpdateCmdDepartment holds value of 'department' option
 var ShippingAddressesUpdateCmdDepartment string
+
+// ShippingAddressesUpdateCmdEmail holds value of 'email' option
+var ShippingAddressesUpdateCmdEmail string
 
 // ShippingAddressesUpdateCmdFullName holds value of 'fullName' option
 var ShippingAddressesUpdateCmdFullName string
@@ -66,7 +72,11 @@ func init() {
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCompanyName, "company-name", "", TRAPI(""))
 
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdCountryCode, "country-code", "", TRAPI(""))
+
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdDepartment, "department", "", TRAPI(""))
+
+	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdEmail, "email", "", TRAPI(""))
 
 	ShippingAddressesUpdateCmd.Flags().StringVar(&ShippingAddressesUpdateCmdFullName, "full-name", "", TRAPI(""))
 
@@ -134,6 +144,14 @@ func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) 
 		return nil, err
 	}
 	contentType := "application/json"
+
+	if ShippingAddressesUpdateCmdAddressLine1 == "" {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "address-line1")
+		}
+
+	}
 
 	if ShippingAddressesUpdateCmdCity == "" {
 		if body == "" {
@@ -246,8 +264,16 @@ func buildBodyForShippingAddressesUpdateCmd() (string, error) {
 		result["companyName"] = ShippingAddressesUpdateCmdCompanyName
 	}
 
+	if ShippingAddressesUpdateCmdCountryCode != "" {
+		result["countryCode"] = ShippingAddressesUpdateCmdCountryCode
+	}
+
 	if ShippingAddressesUpdateCmdDepartment != "" {
 		result["department"] = ShippingAddressesUpdateCmdDepartment
+	}
+
+	if ShippingAddressesUpdateCmdEmail != "" {
+		result["email"] = ShippingAddressesUpdateCmdEmail
 	}
 
 	if ShippingAddressesUpdateCmdFullName != "" {
