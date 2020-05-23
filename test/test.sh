@@ -80,7 +80,6 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         --auth-key "$SORACOM_AUTHKEY_FOR_TEST" \
         --email "$EMAIL" \
         --password "$PASSWORD" \
-        --register-payment-method "true" \
         --profile soracom-cli-test
 }
 
@@ -101,6 +100,24 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         --profile soracom-cli-test
         )"
     shipping_address_id="$( echo "$resp" | jq -r .shippingAddressId )"
+}
+
+: "Add coverage type 'g'" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        operator add-coverage-type \
+        --coverage-type g \
+        --profile soracom-cli-test
+    )"
+    echo "$resp"
+}
+
+: "Get current payment method for coverage type 'g'" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        payment-methods get-current \
+        --coverage-type g \
+        --profile soracom-cli-test
+    )"
+    echo "$resp"
 }
 
 : "Create an order: 3 SIM cards" && {
