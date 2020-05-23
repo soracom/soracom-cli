@@ -9,6 +9,10 @@ if [ ! -f "$fen" ] || [ ! -f "$fja" ]; then
   exit 1
 fi
 
+set -x
 cp "$d/../soracom-api/build/soracom-api.en.yaml" "$d/generators/assets/"
 cp "$d/../soracom-api/build/soracom-api.ja.yaml" "$d/generators/assets/"
 
+cp "$d/../soracom-api/apidef/sandbox/soracom-sandbox-api.en.yaml" "$d/generators/assets/sandbox/"
+cp "$d/../soracom-api/build/soracom-sandbox-api.ja.yaml"          "$d/generators/assets/sandbox/"
+set +x
