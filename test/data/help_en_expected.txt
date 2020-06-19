@@ -53,5 +53,6 @@ Flags:
       --coverage-type string   Specify coverage type, 'g' for Global, 'jp' for Japan
   -h, --help                   help for soracom
       --profile string         Specify profile name
+      --raw-output             Specify soracom-cli to output raw JSON response from the API endpoint instead of formatting
 
 Use "soracom [command] --help" for more information about a command.
