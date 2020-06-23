@@ -129,12 +129,16 @@ var {{ $cmdvar }} = &cobra.Command{
       return nil
     }
 
-    {{- if not .ResponseBodyRaw}}
-    return prettyPrintStringAsJSON(body)
-    {{else}}
-    _, err = os.Stdout.Write([]byte(body))
-    return err
+    {{- if .ResponseBodyRaw}}
+    rawOutput = true
     {{end}}
+
+    if rawOutput {
+      _, err = os.Stdout.Write([]byte(body))
+    } else {
+      return prettyPrintStringAsJSON(body)
+    }
+    return err
   },
 }
 
