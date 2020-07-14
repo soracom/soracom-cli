@@ -37,6 +37,8 @@ Available Commands:
   sandbox            Sandbox related operations.
   shipping-addresses List, create, update or delete shipping addresses.
   sigfox-devices     Manage Sigfox devices.
+  sims               Manage SIMs.
+  soralets           Manage Soralets for Orbit.
   stats              Show or export statistics.
   subscribers        Manage subscribers.
   unconfigure        Remove configurations.
@@ -53,6 +55,6 @@ Flags:
       --coverage-type string   Specify coverage type, 'g' for Global, 'jp' for Japan
   -h, --help                   help for soracom
       --profile string         Specify profile name
-      --raw-output             Specify soracom-cli to output raw JSON response from the API endpoint instead of formatting
+      --raw-output             Specify soracom-cli to output raw response from the API endpoint
 
 Use "soracom [command] --help" for more information about a command.

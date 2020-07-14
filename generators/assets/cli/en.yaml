@@ -164,18 +164,27 @@ cli:
     subscribers:
       summary: Create virtual subscribers in sandbox.
       description: Create virtual subscribers in sandbox.
-  sigfox-devices:
-    summary: Manage Sigfox devices.
-    description: Manage Sigfox devices.
   shipping-addresses:
     summary: List, create, update or delete shipping addresses.
     description: List, create, update or delete shipping addresses.
+  sigfox-devices:
+    summary: Manage Sigfox devices.
+    description: Manage Sigfox devices.
+  sims:
+    summary: Manage SIMs.
+    description: Manage SIMs.
+  soralets:
+    summary: Manage Soralets for Orbit.
+    description: Manage Soralets for Orbit.
   stats:
     summary: Show or export statistics.
     description: Show or export statistics.
     air:
       summary: Show or export Air statistics.
       description: Show or export Air statistics.
+      sims:
+        summary: Show or export Air statistics by SIM ID.
+        description: Show or export Air statistics by SIM ID.
     beam:
       summary: Show or export Beam statistics.
       description: Show or export Beam statistics.

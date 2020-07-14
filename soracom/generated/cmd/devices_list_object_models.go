@@ -18,7 +18,7 @@ var DevicesListObjectModelsCmdLimit int64
 var DevicesListObjectModelsCmdPaginate bool
 
 func init() {
-	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last device object model in the previous page"))
+	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page"))
 
 	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", -1, TRAPI("Max number of device object models in a response"))
 
@@ -61,8 +61,13 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 
@@ -87,7 +92,7 @@ func buildPathForDevicesListObjectModelsCmd(path string) string {
 func buildQueryForDevicesListObjectModelsCmd() url.Values {
 	result := url.Values{}
 
-	if DevicesListObjectModelsCmdLastEvaluatedKey != "null" {
+	if DevicesListObjectModelsCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", DevicesListObjectModelsCmdLastEvaluatedKey)
 	}
 

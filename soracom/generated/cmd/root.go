@@ -18,6 +18,7 @@ var providedAPIKey string
 var providedAPIToken string
 var providedAuthKeyID string
 var providedAuthKey string
+var rawOutput bool
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", "Specify profile name")
@@ -26,4 +27,5 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&providedAPIToken, "api-token", "", "Specify API token otherwise soracom-cli performs authentication on behalf of you")
 	RootCmd.PersistentFlags().StringVar(&providedAuthKeyID, "auth-key-id", "", "Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.")
 	RootCmd.PersistentFlags().StringVar(&providedAuthKey, "auth-key", "", "Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.")
+	RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, "Specify soracom-cli to output raw response from the API endpoint")
 }

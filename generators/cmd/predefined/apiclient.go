@@ -229,6 +229,9 @@ func (ac *apiClient) constructRequest(u *url.URL, params *apiParams) (*http.Requ
 
 	if params.contentType != "" {
 		req.Header.Set("Content-Type", params.contentType)
+		if params.contentType == "application/octet-stream" {
+			req.Header.Set("Content-Length", fmt.Sprintf("%d", len(params.body)))
+		}
 	}
 
 	if ac.APIKey != "" {
@@ -367,6 +370,7 @@ func (ac *apiClient) reportWaitingBeforeRetrying(res *http.Response, err error, 
 		printfStderr("%+v\n", err)
 	} else {
 		printfStderr("http status code == %d\n", res.StatusCode)
+		dumpHTTPResponse(res)
 	}
 	printfStderr("wait for %d seconds ...\n", wait)
 }
@@ -395,7 +399,8 @@ func (ac *apiClient) SetVerbose(verbose bool) {
 }
 
 func dumpHTTPRequest(req *http.Request) {
-	dump, err := httputil.DumpRequest(req, true)
+	dumpBody := req.Header.Get("Content-Type") != "application/octet-stream"
+	dump, err := httputil.DumpRequest(req, dumpBody)
 	if err != nil {
 		printfStderr("error while dumping http request header and body: %s\n", err)
 		return

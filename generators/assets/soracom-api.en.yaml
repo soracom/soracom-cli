@@ -33,6 +33,8 @@ definitions:
         - ExecuteWebRequestAction
         - SendMailAction
         - SendMailToOperatorAction
+        - ActivationAction
+        - DeactivationAction
         type: string
     required:
     - properties
@@ -40,33 +42,28 @@ definitions:
   ActionConfigProperty:
     properties:
       accessKey:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       body:
-        description: ExecuteWebRequestAction の時のみ有効(任意)
+        description: Only for ExecuteWebRequestAction (Optional)
         type: string
       contentType:
-        description: ExecuteWebRequestAction の時のみ有効
+        description: Only for ExecuteWebRequestAction
         type: string
       endpoint:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       executionDateTimeConst:
-        enum:
-        - IMMEDIATELY
-        - BEGINNING_OF_NEXT_MONTH
-        - BEGINNING_OF_NEXT_DAY
-        - AFTER_ONE_DAY
-        - NEVER
-        type: string
+        description: Run in the minutes after the timing of executionDateTimeConst
+        type: integer
       functionName:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       headers:
-        description: ExecuteWebRequestAction の時のみ有効(任意)
+        description: Only for ExecuteWebRequestAction (Optional)
         type: object
       httpMethod:
-        description: ExecuteWebRequestAction の時のみ有効
+        description: Only for ExecuteWebRequestAction
         enum:
         - GET
         - POST
@@ -74,28 +71,28 @@ definitions:
         - DELETE
         type: string
       message:
-        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+        description: Only for SendMailAction, SendMailToOperatorAction
         type: string
       parameter1:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       parameter2:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       parameter3:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       parameter4:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       parameter5:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       secretAccessKey:
-        description: InvokeAWSLambdaAction の時のみ有効
+        description: Only for InvokeAWSLambdaAction
         type: string
       speedClass:
-        description: ChangeSpeedClassAction の時のみ有効
+        description: Only for ChangeSpeedClassAction
         enum:
         - s1.minimum
         - s1.slow
@@ -103,13 +100,13 @@ definitions:
         - s1.fast
         type: string
       title:
-        description: SendMailAction, SendMailToOperatorAction の時のみ有効
+        description: Only for SendMailAction, SendMailToOperatorAction
         type: string
       to:
-        description: SendMailAction の時のみ有効
+        description: Only for SendMailAction
         type: string
       url:
-        description: 接続先URLとパラメーター ExecuteWebRequestAction の時のみ有効
+        description: Access URL and parameters. Only for ExecuteWebRequestAction
         type: string
     required:
     - executionDateTimeConst
@@ -187,6 +184,39 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  CompanyInformationModel:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      building:
+        type: string
+      city:
+        type: string
+      companyName:
+        type: string
+      contactPersonName:
+        type: string
+      countryCode:
+        type: string
+      department:
+        type: string
+      phoneNumber:
+        type: string
+      state:
+        type: string
+      vatIdentificationNumber:
+        type: string
+      zipCode:
+        type: string
+    required:
+    - companyName
+    - countryCode
+    - zipCode
+    - department
+    - contactPersonName
+    - phoneNumber
   Config:
     properties:
       properties:
@@ -194,6 +224,18 @@ definitions:
           type: string
         type: object
       type:
+        type: string
+  ContractUpdatedResponse:
+    properties:
+      contractDetail:
+        type: object
+      contractName:
+        type: string
+  ContractUpdatingRequest:
+    properties:
+      contractDetail:
+        type: object
+      contractName:
         type: string
   CouponResponse:
     properties:
@@ -261,8 +303,8 @@ definitions:
         type: string
       targetOperatorId:
         type: string
-      targetTag:
-        $ref: '#/definitions/TagSet'
+      targetSimId:
+        type: string
     required:
     - actionConfigList
     - ruleConfig
@@ -296,6 +338,14 @@ definitions:
     properties:
       roleId:
         type: string
+  CreateSoraletRequest:
+    properties:
+      description:
+        type: string
+      soraletId:
+        type: string
+    required:
+    - soraletId
   CreateUserPasswordRequest:
     properties:
       password:
@@ -309,16 +359,17 @@ definitions:
       deviceSubnetCidrRange:
         default: 10.128.0.0/9
         type: string
-      primaryServiceName:
-        default: Canal
+      type:
         enum:
-        - Canal
-        - Gate
-        type: string
+        - 12
+        - 13
+        - 14
+        - 15
+        type: integer
       useInternetGateway:
         type: boolean
     required:
-    - primaryServiceName
+    - type
   CreateVpcPeeringConnectionRequest:
     properties:
       destinationCidrBlock:
@@ -565,14 +616,44 @@ definitions:
         type: string
       targetOperatorId:
         type: string
-      targetTag:
-        $ref: '#/definitions/TagSet'
+      targetSimId:
+        type: string
     required:
     - actionConfigList
     - handlerId
     - ruleConfig
     - status
     - name
+  ExecuteSoraletRequest:
+    properties:
+      contentType:
+        type: string
+      direction:
+        enum:
+        - uplink
+        - downlink
+        type: string
+      encodingType:
+        enum:
+        - text
+        - binary
+        type: string
+      payload:
+        type: string
+      source:
+        additionalProperties:
+          $ref: '#/definitions/SoraletDataSource'
+        type: object
+      userdata:
+        type: string
+      version:
+        type: string
+    required:
+    - version
+    - direction
+    - contentType
+    - payload
+    - source
   ExpiryTime:
     properties:
       expiryAction:
@@ -1044,6 +1125,28 @@ definitions:
     properties:
       imei:
         type: string
+  IndividualInformationModel:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      building:
+        type: string
+      city:
+        type: string
+      countryCode:
+        type: string
+      fullName:
+        type: string
+      phoneNumber:
+        type: string
+      state:
+        type: string
+      zipCode:
+        type: string
+    required:
+    - fullName
   IpAddressMapEntry:
     properties:
       ipAddress:
@@ -1131,6 +1234,34 @@ definitions:
         type: boolean
       gateway:
         type: string
+    type: object
+  LagoonDashboardPermissionsResponse:
+    properties:
+      dashboardId:
+        format: int64
+        type: number
+      dashboardTitle:
+        type: string
+      permissions:
+        items:
+          properties:
+            dashboardId:
+              format: int64
+              type: number
+            dashboardTitle:
+              type: string
+            permissionName:
+              enum:
+              - View
+              - Edit
+              - Admin
+              type: string
+            userEmail:
+              type: string
+            userId:
+              format: int64
+              type: number
+        type: array
     type: object
   LagoonDashboardPermissionsUpdatingRequest:
     properties:
@@ -1603,6 +1734,50 @@ definitions:
       serialNumber:
         description: serialNumber
         type: string
+  PacketCaptureSession:
+    properties:
+      createdTime:
+        format: date-time
+        type: string
+      duration:
+        format: int32
+        type: integer
+      endedTime:
+        format: date-time
+        type: string
+      failedReason:
+        type: string
+      prefix:
+        type: string
+      startedTime:
+        format: date-time
+        type: string
+      status:
+        enum:
+        - REQUESTED
+        - ACCEPTED
+        - CAPTURING
+        - POST_PROCESSING
+        - DONE
+        - FAILED
+        type: string
+      url:
+        format: uri
+        type: string
+    type: object
+  PacketCaptureSessionRequest:
+    properties:
+      duration:
+        format: int32
+        maximum: 86400
+        minimum: 30
+        type: integer
+      prefix:
+        pattern: ^[0-9A-Za-z_\-]{0,100}$
+        type: string
+    required:
+    - duration
+    type: object
   PaymentAmount:
     properties:
       taxAmount:
@@ -1641,6 +1816,12 @@ definitions:
       paymentStatementInfo:
         description: Payment statement information
         type: string
+  Placement:
+    properties:
+      region:
+        default: eu-central-1
+        type: string
+    type: object
   PortMapping:
     properties:
       destination:
@@ -1758,6 +1939,18 @@ definitions:
       fullName:
         description: Full name
         type: string
+  RegisterSimRequest:
+    properties:
+      groupId:
+        type: string
+      registrationSecret:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/TagUpdateRequest'
+        type: array
+    required:
+    - registrationSecret
   RegisterSubscribersRequest:
     properties:
       groupId:
@@ -1854,14 +2047,22 @@ definitions:
         $ref: '#/definitions/RuleConfigProperty'
       type:
         enum:
-        - DailyTrafficRule
-        - MonthlyTrafficRule
-        - CumulativeTrafficRule
+        - SubscriberDailyTrafficRule
+        - SubscriberMonthlyTrafficRule
+        - SubscriberCumulativeTrafficRule
+        - SubscriberFirstTrafficRule
         - DailyTotalTrafficRule
         - MonthlyTotalTrafficRule
         - SubscriberStatusAttributeRule
         - SubscriberSpeedClassAttributeRule
         - SubscriberExpiredRule
+        - SimDailyTotalTrafficRule
+        - SimMonthlyTotalTrafficRule
+        - SimCumulativeTotalTrafficRule
+        - SimStatusAttributeRule
+        - SimSpeedClassAttributeRule
+        - SimExpiredRule
+        - SimSubscriptionStatusRule
         type: string
     required:
     - properties
@@ -1876,10 +2077,21 @@ definitions:
         - AFTER_ONE_DAY
         - NEVER
         type: string
+      inactiveTimeoutOffsetMinutes:
+        type: integer
       limitTotalTrafficMegaByte:
         type: integer
+      runOnceAmongTarget:
+        type: boolean
+      targetOtaStatus:
+        description: Only for SimSubscriptionStatusRule
+        enum:
+        - started
+        - finished
+        - failed
+        type: string
       targetSpeedClass:
-        description: SubscriberSpeedClassAttributeRule の時のみ有効
+        description: Only for SubscriberSpeedClassAttributeRule, SimSpeedClassAttributeRule
         enum:
         - s1.minimum
         - s1.slow
@@ -1887,7 +2099,7 @@ definitions:
         - s1.fast
         type: string
       targetStatus:
-        description: SubscriberStatusAttributeRule の時のみ有効
+        description: Only for SubscriberStatusAttributeRule, SimStatusAttributeRule
         enum:
         - ready
         - active
@@ -2076,6 +2288,41 @@ definitions:
           type: string
         type: object
     type: object
+  Sim:
+    properties:
+      createdTime:
+        format: int64
+        type: integer
+      groupId:
+        type: string
+      lastModifiedTime:
+        format: int64
+        type: integer
+      operatorId:
+        type: string
+      otaSerialNumber:
+        type: string
+      profiles:
+        additionalProperties:
+          $ref: '#/definitions/SimProfile'
+        type: object
+      simId:
+        type: string
+      speedClass:
+        type: string
+      type:
+        enum:
+        - uicc
+        - euicc
+        type: string
+  SimProfile:
+    properties:
+      iccid:
+        type: string
+      subscribers:
+        additionalProperties:
+          $ref: '#/definitions/Subscriber'
+        type: object
   SmsForwardingReport:
     properties:
       messageId:
@@ -2095,6 +2342,54 @@ definitions:
   SoracomBeamStats:
     properties:
       count:
+        format: int64
+        type: integer
+  Soralet:
+    properties:
+      createdAt:
+        format: int64
+        type: integer
+      description:
+        type: string
+      soraletId:
+        type: string
+      updatedAt:
+        format: int64
+        type: integer
+  SoraletDataSource:
+    properties:
+      resourceId:
+        type: string
+      resourceType:
+        type: string
+    required:
+    - resourceType
+    - resourceId
+  SoraletLog:
+    properties:
+      createdAt:
+        format: int64
+        type: integer
+      message:
+        type: string
+      soraletId:
+        type: string
+      version:
+        format: int64
+        type: integer
+  SoraletVersion:
+    properties:
+      createdAt:
+        format: int64
+        type: integer
+      hash:
+        type: string
+      size:
+        format: int64
+        type: integer
+      soraletId:
+        type: string
+      version:
         format: int64
         type: integer
   Subscriber:
@@ -2284,13 +2579,8 @@ definitions:
         type: integer
       operatorId:
         type: string
-      primaryServiceName:
-        enum:
-        - Canal
-        - Direct
-        - Door
-        - Gate
-        type: string
+      placement:
+        $ref: '#/definitions/Placement'
       status:
         type: string
       tags:
@@ -2299,6 +2589,8 @@ definitions:
         enum:
         - 12
         - 13
+        - 14
+        - 15
         type: integer
       useInternetGateway:
         type: boolean
@@ -3020,8 +3312,7 @@ paths:
       description: Returns a list of device object models
       operationId: listDeviceObjectModels
       parameters:
-      - default: "null"
-        description: ID of the last device object model in the previous page
+      - description: ID of the last device object model in the previous page
         in: query
         name: last_evaluated_key
         required: false
@@ -3205,26 +3496,22 @@ paths:
       description: Returns a list of Devices
       operationId: listDevices
       parameters:
-      - default: "null"
-        description: Tag name
+      - description: Tag name
         in: query
         name: tag_name
         required: false
         type: string
-      - default: "null"
-        description: Tag value
+      - description: Tag value
         in: query
         name: tag_value
         required: false
         type: string
-      - default: "null"
-        description: Tag value match mode (exact | prefix)
+      - description: Tag value match mode (exact | prefix)
         in: query
         name: tag_value_match_mode
         required: false
         type: string
-      - default: "null"
-        description: ID of the last Device in the previous page
+      - description: ID of the last Device in the previous page
         in: query
         name: last_evaluated_key
         required: false
@@ -3885,7 +4172,7 @@ paths:
         enum:
         - operator
         - imsi
-        - tag
+        - sim
         - group
         in: query
         name: target
@@ -3911,7 +4198,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new event handler. Please see also https://dev.soracom.io/en/docs/event_handler/
+      description: Creates a new event handler. Please see also https://developers.soracom.io/en/docs/air/event-handler/
       operationId: createEventHandler
       parameters:
       - description: event handler settings
@@ -3993,7 +4280,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Updates the specified event handler. Please see also https://dev.soracom.io/en/docs/event_handler/
+      description: Updates the specified event handler. Please see also https://developers.soracom.io/en/docs/air/event-handler/
       operationId: updateEventHandler
       parameters:
       - description: handler ID
@@ -5177,6 +5464,51 @@ paths:
       - Lagoon
       x-soracom-cli:
       - lagoon dashboards init-permissions
+  /lagoon/dashboards/permission:
+    get:
+      consumes:
+      - application/json
+      description: List permissions for all SORACOM Lagoon dashboards
+      operationId: listLagoonDashboardsPermissions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/LagoonDashboardPermissionsResponse'
+            type: array
+        "400":
+          description: Bad request
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List permissions for all SORACOM Lagoon dashboards
+      tags:
+      - Lagoon
+      x-soracom-cli:
+      - lagoon dashboards list-permissions
+  /lagoon/image/link:
+    get:
+      consumes:
+      - application/json
+      description: Get a custom icon image link of SORACOM Lagoon
+      operationId: getImageLink
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad request
+      summary: Get a custom icon image link of SORACOM Lagoon
+      tags:
+      - Lagoon
+      x-soracom-cli:
+      - lagoon get-image-link
   /lagoon/license_packs:
     get:
       consumes:
@@ -6781,17 +7113,169 @@ paths:
       - Operator
       x-soracom-cli:
       - operator auth-keys delete
-  /operators/{operator_id}/coverage_type/{coverage_type}:
-    post:
-      description: Add a coverage type to the specified operator.
-      operationId: addCoverageType
+  /operators/{operator_id}/company_information:
+    get:
+      consumes:
+      - application/json
+      description: Gets the operator's company information.
+      operationId: getCompanyInformation
       parameters:
-      - description: Operator ID
+      - description: operator_id
         in: path
         name: operator_id
         required: true
         type: string
-      - description: Coverage type
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/CompanyInformationModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get company information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator get-company-information
+    post:
+      consumes:
+      - application/json
+      description: Creates the operator's company information.
+      operationId: createCompanyInformation
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyInformationModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create company information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator create-company-information
+    put:
+      consumes:
+      - application/json
+      description: Updates the operator's company information.
+      operationId: updateCompanyInformation
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyInformationModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Update company information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator update-company-information
+  /operators/{operator_id}/contracts:
+    post:
+      consumes:
+      - application/json
+      description: Adds the operator's contract.
+      operationId: addOperatorContract
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ContractUpdatingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/ContractUpdatedResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Add Operator Contract.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator add-contract
+  /operators/{operator_id}/contracts/{contract_name}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the operator's contract.
+      operationId: deleteOperatorContract
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: contract_name
+        in: path
+        name: contract_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Operator Contract.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator delete-contract
+  /operators/{operator_id}/coverage_type/{coverage_type}:
+    post:
+      consumes:
+      - application/json
+      description: Adds the operator's coverage type.
+      operationId: addCoverageType
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: coverage_type
         in: path
         name: coverage_type
         required: true
@@ -6800,10 +7284,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: Successfully added the specified coverage type.
-        "400":
-          description: Caller is not a root operator / Specified coverage type is
-            not available / Coverage type alread signed up.
+          description: Created.
       security:
       - api_key: []
       - api_token: []
@@ -6812,6 +7293,93 @@ paths:
       - Operator
       x-soracom-cli:
       - operator add-coverage-type
+  /operators/{operator_id}/individual_information:
+    get:
+      consumes:
+      - application/json
+      description: Gets the operator's individual information.
+      operationId: getIndividualInformation
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/IndividualInformationModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get individual information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator get-individual-information
+    post:
+      consumes:
+      - application/json
+      description: Creates the operator's individual information.
+      operationId: createIndividualInformation
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/IndividualInformationModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create individual information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator create-individual-information
+    put:
+      consumes:
+      - application/json
+      description: Updates the operator's individual information.
+      operationId: updateIndividualInformation
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/IndividualInformationModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Update individual information.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator update-individual-information
   /operators/{operator_id}/mfa:
     delete:
       consumes:
@@ -9103,13 +9671,155 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+  /query/sims:
+    get:
+      consumes:
+      - application/json
+      description: Search SIMs by query terms. It returns partial match results. When
+        this API permission is allowed, it grants the authority to search and retrieve
+        all SIMs that includes their group information.
+      operationId: searchSims
+      parameters:
+      - collectionFormat: multi
+        description: Name to search
+        in: query
+        items:
+          type: string
+        name: name
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Group name to search
+        in: query
+        items:
+          type: string
+        name: group
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Identifier of the SIM to search
+        in: query
+        items:
+          type: string
+        name: sim_id
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: IMSI to search
+        in: query
+        items:
+          type: string
+        name: imsi
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: MSISDN to search
+        in: query
+        items:
+          type: string
+        name: msisdn
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: ICCID to search
+        in: query
+        items:
+          type: string
+        name: iccid
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Serial number to search
+        in: query
+        items:
+          type: string
+        name: serial_number
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: String of tag values to search
+        in: query
+        items:
+          type: string
+        name: tag
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Bundles type to search
+        in: query
+        items:
+          type: string
+        name: bundles
+        required: false
+        type: array
+      - default: NA
+        description: Status of the session to search (ONLINE or OFFLINE)
+        enum:
+        - NA
+        - ONLINE
+        - OFFLINE
+        format: string
+        in: query
+        name: session_status
+        required: false
+        type: string
+      - default: 10
+        description: The maximum number of item to retrieve
+        format: int32
+        in: query
+        maximum: 100
+        name: limit
+        required: false
+        type: integer
+      - description: The SIM ID of the last SIM retrieved on the current page. By
+          specifying this parameter, you can continue to retrieve the list from the
+          next SIM onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: and
+        description: Type of the search ('AND searching' or 'OR searching')
+        enum:
+        - and
+        - or
+        in: query
+        name: search_type
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: Returns result of searching
+          schema:
+            items:
+              $ref: '#/definitions/Sim'
+            type: array
+        "400":
+          description: Invalid search queries
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Search SIMs by query terms
+      tags:
+      - Query
+      x-soracom-cli:
+      - query sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/subscribers:
     get:
       consumes:
       - application/json
-      description: Search subscibers by query terms. It returns partial match results.  When
+      deprecated: true
+      description: '(DEPRECATED: please consider to use `/query/sims` API instead)
+        Search subscibers by query terms. It returns partial match results.  When
         this API permission is allowed, it grants the authority to search and retrieve
-        all SIMs that includes their group information.
+        all SIMs that includes their group information.'
       operationId: searchSubscribers
       parameters:
       - collectionFormat: multi
@@ -9206,7 +9916,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: Search subscribers by query terms
+      summary: (DEPRECATED) Search subscribers by query terms
       tags:
       - Query
       x-soracom-cli:
@@ -9704,6 +10414,1188 @@ paths:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices unset-group
+  /sims:
+    get:
+      description: Returns a list of SIMs that match certain criteria. If the total
+        number of SIMs does not fit in one page, a URL for accessing the next page
+        is returned in the 'Link' header of the response.
+      operationId: listSims
+      parameters:
+      - description: Maximum number of SIMs to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The ID of the last SIM retrieved on the current page. By specifying
+          this parameter, you can continue to retrieve the list from the next SIM
+          onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: A list of SIMs.
+          schema:
+            items:
+              $ref: '#/definitions/Sim'
+            type: array
+        404:
+          description: No such SIM found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List SIMs.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims list
+  /sims/{sim_id}:
+    get:
+      description: Obtain a SIM record identified by the sim_id
+      operationId: getSim
+      parameters:
+      - description: Id of the target SIM
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      responses:
+        200:
+          description: A SIM identified by sim_id
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: No such SIM found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get a SIM identified by sim_id
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get
+  /sims/{sim_id}/activate:
+    post:
+      consumes:
+      - text/plain
+      description: Change status of specified SIM to active.
+      operationId: activateSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Activate SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims activate
+  /sims/{sim_id}/data:
+    get:
+      description: Returns a list of data entries sent from a SIM that match certain
+        criteria. If the total number of entries does not fit in one page, a URL for
+        accessing the next page is returned in the 'Link' header of the response.
+      operationId: getDataFromSim
+      parameters:
+      - description: Sim Id of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Start time for the data entries search range (unixtime in milliseconds).
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: End time for the data entries search range (unixtime in milliseconds).
+        in: query
+        name: to
+        required: false
+        type: integer
+      - default: desc
+        description: Sort order of the data entries. Either descending (latest data
+          entry first) or ascending (oldest data entry first).
+        enum:
+        - desc
+        - asc
+        in: query
+        name: sort
+        required: false
+        type: string
+      - description: Maximum number of data entries to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The value of `time` in the last log entry retrieved in the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next page onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: A list of data entries.
+          schema:
+            items:
+              $ref: '#/definitions/DataEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get data sent from a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - data get
+      - sims get-data
+  /sims/{sim_id}/deactivate:
+    post:
+      consumes:
+      - text/plain
+      description: Change status of specified SIM to inactive.
+      operationId: deactivateSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Deactivate SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims deactivate
+  /sims/{sim_id}/delete_session:
+    post:
+      consumes:
+      - text/plain
+      description: Deletes session for the specified SIM.
+      operationId: deleteSimSession
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims delete-session
+  /sims/{sim_id}/disable_termination:
+    post:
+      consumes:
+      - text/plain
+      description: Disables termination of the specified SIM.
+      operationId: disableSimTermination
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Disable termination of the SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims disable-termination
+  /sims/{sim_id}/enable_termination:
+    post:
+      consumes:
+      - text/plain
+      description: Enables termination of specified SIM.
+      operationId: enableSimTermination
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Enable termination of the SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims enable-termination
+  /sims/{sim_id}/events/sessions:
+    get:
+      description: Returns the history of session creation, change, and deletion events
+        occurred on the target SIM in the last 14 days. If the total number of events
+        does not fit in one page, a URL for accessing the next page is returned in
+        the `Link` header of the response.
+      operationId: listSimSessionEvents
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Start time for the events search range (unixtime).
+        in: query
+        name: from
+        required: false
+        type: integer
+      - description: End time for the events search range (unixtime).
+        in: query
+        name: to
+        required: false
+        type: integer
+      - description: Maximum number of events to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The time stamp of the last event retrieved on the current page.
+          By specifying this parameter, you can continue to retrieve the list from
+          the next event onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      responses:
+        200:
+          description: A list of session events
+          schema:
+            items:
+              $ref: '#/definitions/SessionEvent'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List Session Events.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims session-events
+  /sims/{sim_id}/profiles/{iccid}/add_subscription:
+    post:
+      description: |
+        This API is used to trigger the OTA update of a new subscription container to a SIM profile.
+      operationId: addSubscription
+      parameters:
+      - description: Id of the target SIM
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Iccid of the target profile
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - in: body
+        name: subscriptionParameters
+        schema:
+          properties:
+            enable:
+              description: "A flag to indicate if it should cause a switch to the\nsubscription
+                after the download has finished. If it is set to true, \nthe downloaded
+                subscriber will be enabled immediately.\n"
+              type: boolean
+            subscription:
+              description: Name of the sbscription plan
+              type: string
+          required:
+          - subscription
+          type: object
+      responses:
+        200:
+          description: The updated SIM profile
+          schema:
+            $ref: '#/definitions/SimProfile'
+        404:
+          description: No such profile or subscriber found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Adds a new subscription container to a SIM profile
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims add-subscription
+  /sims/{sim_id}/register:
+    post:
+      consumes:
+      - application/json
+      description: Registers a SIM to an operator.
+      operationId: registerSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: A SIM registration request
+        in: body
+        name: register_sim_request
+        required: true
+        schema:
+          $ref: '#/definitions/RegisterSimRequest'
+      produces:
+      - application/json
+      responses:
+        201:
+          description: Sim registration complete.
+          schema:
+            $ref: '#/definitions/Sim'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Register SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims register
+  /sims/{sim_id}/report_local_info:
+    post:
+      consumes:
+      - plain/text
+      description: Triggers SIM to report SIM local info.
+      operationId: reportSimLocalInfo
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        202:
+          description: The local info reporting has successfully been triggered. The
+            subscriber information is asynchronously updated when the SIM reports
+            the information back.
+          schema:
+            $ref: '#/definitions/Subscriber'
+        400:
+          description: The specified SIM active subscriber does not support local
+            info reporting feature.
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Triggers SIM to report SIM local info.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims report-local-info
+  /sims/{sim_id}/send_sms:
+    post:
+      consumes:
+      - application/json
+      description: Send SMS to the specified SIM.
+      operationId: sendSmsToSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: SMS forwarding request that contains message body and its encoding
+          type.
+        in: body
+        name: smsForwardingRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SmsForwardingRequest'
+      produces:
+      - application/json
+      responses:
+        202:
+          description: SMS forwarding report containing message ID.
+          schema:
+            $ref: '#/definitions/SmsForwardingReport'
+        400:
+          description: The specified SIM does not support SMS API.
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Send SMS to SIM
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims send-sms
+  /sims/{sim_id}/set_expiry_time:
+    post:
+      consumes:
+      - application/json
+      description: Updates expiry time of the specified SIM.
+      operationId: setSimExpiryTime
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 'Expiry time after the update (unixtime: in milliseconds).'
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ExpiryTime'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Update expiry time of SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims set-expiry-time
+  /sims/{sim_id}/set_group:
+    post:
+      consumes:
+      - application/json
+      description: Sets or overwrites a group for the specified SIM.
+      operationId: setSimGroup
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Group (may include ID only).
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/SetGroupRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Set Group id of a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims set-group
+  /sims/{sim_id}/set_imei_lock:
+    post:
+      consumes:
+      - application/json
+      description: Set IMEI that the SIM should be locked to.
+      operationId: setSimImeiLock
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: IMEI lock configuration for the SIM. (IMEI can be left blank
+          for locking to the current IMEI of an online SIM.)
+        in: body
+        name: imeiLock
+        required: false
+        schema:
+          $ref: '#/definitions/SetImeiLockRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        400:
+          description: Invalid IMEI string or SIM is offline and IMEI not specified.
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Set IMEI lock configuration for the SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims set-imei-lock
+  /sims/{sim_id}/set_to_standby:
+    post:
+      consumes:
+      - text/plain
+      description: Set the specified SIM to standby mode.
+      operationId: setSimToStandby
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        400:
+          description: The specified SIM does not support standby mode.
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Set SIM to standby mode.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims set-to-standby
+  /sims/{sim_id}/suspend:
+    post:
+      consumes:
+      - text/plain
+      description: Suspends the specified SIM
+      operationId: suspendSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Suspend SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims suspend
+  /sims/{sim_id}/tags:
+    put:
+      description: Inserts/updates tags for the specified SIM.
+      operationId: putSimTags
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Array of tags to be inserted/updated.
+        in: body
+        name: tags
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/TagUpdateRequest'
+          type: array
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Bulk insert or update SIM tags.
+      tags:
+      - Sim
+      x-sam-operationId: putTags
+      x-soracom-cli:
+      - sims put-tags
+  /sims/{sim_id}/tags/{tag_name}:
+    delete:
+      description: Deletes a tag from the specified SIM.
+      operationId: deleteSimTag
+      parameters:
+      - description: Sim Id of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Tag name to be deleted. (This will be part of a URL path, so
+          it needs to be percent-encoded. In JavaScript, specify the name after it
+          has been encoded using encodeURIComponent().)
+        in: path
+        name: tag_name
+        required: true
+        type: string
+      responses:
+        204:
+          description: Deletion of specified tag complete.
+        404:
+          description: The specified subscriber or the tag does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete SIM tag.
+      tags:
+      - Sim
+      x-sam-operationId: deleteTag
+      x-soracom-cli:
+      - sims delete-tag
+  /sims/{sim_id}/terminate:
+    post:
+      consumes:
+      - text/plain
+      description: Terminates the specified SIM.
+      operationId: terminateSim
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Terminate SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims terminate
+  /sims/{sim_id}/unset_expiry_time:
+    post:
+      consumes:
+      - text/plain
+      description: Deletes expiry time of specified SIM and changes it to indefinite.
+      operationId: unsetSimExpiryTime
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        204:
+          description: Change of specified SIM's expiry time to indefinite complete.
+        404:
+          description: The specified SIM does not exist or the SIM does not have an
+            expiry time.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete expiry time of the SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims unset-expiry-time
+  /sims/{sim_id}/unset_group:
+    post:
+      consumes:
+      - text/plain
+      description: Removes the group configuration from the specified SIM.
+      operationId: unsetSimGroup
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist or the SIM does not belong
+            to a group.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Unset Group to SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims unset-group
+  /sims/{sim_id}/unset_imei_lock:
+    post:
+      consumes:
+      - text/plain
+      description: Remove any existing IMEI lock configuration for the SIM.
+      operationId: unsetSimImeiLock
+      parameters:
+      - description: Sim Id of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Unset IMEI lock configuration for SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims unset-imei-lock
+  /sims/{sim_id}/update_speed_class:
+    post:
+      consumes:
+      - application/json
+      description: Changes the speed class of the specified SIM.
+      operationId: updateSimSpeedClass
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: speed_class
+        in: body
+        name: speed_class
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateSpeedClassRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: The SIM's detailed information after the update.
+          schema:
+            $ref: '#/definitions/Sim'
+        404:
+          description: The specified SIM does not exist.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Update SIM speed class.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims update-speed-class
+  /soralets:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of Soralets.
+      operationId: listSoralets
+      parameters:
+      - description: The maximum number of items in a response
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The identifier of the last Soralet retrieved on the current page.
+          By specifying this parameter, you can continue to retrieve the list from
+          the next Soralet onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/Soralet'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List Soralets.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      consumes:
+      - application/json
+      description: Create a Soralet.
+      operationId: createSoralet
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateSoraletRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Successfully created a new Soralet.
+        "400":
+          description: The specified Soralet already exists or the specified soralet_id
+            was invalid.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create a Soralet.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets create
+  /soralets/{soralet_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the specified Soralet.
+      operationId: deleteSoralet
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "204":
+          description: Successfully deleted the specified Soralet.
+        "404":
+          description: The specified Soralet is not found.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Soralet.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets delete
+    get:
+      consumes:
+      - application/json
+      description: Returns a Soralet.
+      operationId: getSoralet
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/Soralet'
+        "404":
+          description: The specified Soralet is not found.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get a Soralet.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets get
+  /soralets/{soralet_id}/logs:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of log messages from the specified Soralet.
+      operationId: getSoraletLogs
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      - description: The maximum number of items in a response.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The identifier of the last log message retrieved on the current
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next log message onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/SoraletLog'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get log messages from Soralet.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets get-logs
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /soralets/{soralet_id}/test:
+    post:
+      consumes:
+      - application/json
+      description: Execute the specified Soralet with the specified arguments.
+      operationId: testSoralet
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ExecuteSoraletRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/SoraletLog'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Execute Soralet with arguments.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets test
+      - soralets exec
+  /soralets/{soralet_id}/versions:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of Soralet versions.
+      operationId: listSoraletVersions
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      - description: The maximum number of items in a response.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The identifier of the last version retrieved on the current page.
+          By specifying this parameter, you can continue to retrieve the list from
+          the next version onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/Soralet'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List versions of Soralet.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets list-versions
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      consumes:
+      - application/json
+      description: Upload code and create a new version.
+      operationId: uploadSoraletCode
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      - description: Content type of the file to upload
+        in: header
+        name: content-type
+        type: string
+      - description: Content of the file to upload
+        in: body
+        name: body
+        required: true
+        schema:
+          format: binary
+          type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Successfully created a new version.
+          schema:
+            $ref: '#/definitions/SoraletVersion'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Upload code and create a new version.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets upload
+  /soralets/{soralet_id}/versions/{version}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the specified Soralet version.
+      operationId: deleteSoraletVersion
+      parameters:
+      - description: The identifier of Soralet.
+        in: path
+        name: soralet_id
+        required: true
+        type: string
+      - description: Soralet version.
+        in: path
+        name: version
+        required: true
+        type: integer
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "204":
+          description: Successfully deleted the specified Soralet version.
+        "404":
+          description: The specified Soralet version is not found.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete a Soralet version.
+      tags:
+      - Soralet
+      x-soracom-cli:
+      - soralets delete-version
   /stats/air/operators/{operator_id}/export:
     post:
       consumes:
@@ -9748,6 +11640,55 @@ paths:
       - Stats
       x-soracom-cli:
       - stats air export
+  /stats/air/sims/{simId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the usage report for the SIM specified by the simId.
+      operationId: getAirStatsOfSim
+      parameters:
+      - description: SIM ID
+        in: path
+        name: simId
+        required: true
+        type: string
+      - description: Start time in unixtime for the aggregate data.
+        in: query
+        name: from
+        required: true
+        type: integer
+      - description: End time in unixtime for the aggregate data.
+        in: query
+        name: to
+        required: true
+        type: integer
+      - description: Units of aggregate data. For minutes, the interval is around
+          5 minutes.
+        enum:
+        - month
+        - day
+        - minutes
+        in: query
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/AirStatsResponse'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Air Usage Report of SIM.
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats air sims get
   /stats/air/subscribers/{imsi}:
     get:
       consumes:
@@ -11529,6 +13470,158 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg unset-redirection
+  /virtual_private_gateways/{vpg_id}/packet_capture_sessions:
+    get:
+      consumes:
+      - application/json
+      description: List packet capture sessins associated with the VPG
+      operationId: listPacketCaptureSessions
+      parameters:
+      - description: VPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - default: "null"
+        description: ID of the last group in the previous page
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: 10
+        description: Max number of results in a response
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of packet capture sessions associated with the VPG
+          schema:
+            items:
+              $ref: '#/definitions/PacketCaptureSession'
+            type: array
+        "400":
+          description: Failed to list packet capture sessions associated with the
+            VPG
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List Packet Capture Sessions
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg list-packet-capture-sessions
+    post:
+      consumes:
+      - application/json
+      description: Create a packet capture sessins associated the VPG
+      operationId: createPacketCaptureSession
+      parameters:
+      - description: VPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: A packet capture session request
+        in: body
+        name: packet_capture_session_request
+        required: true
+        schema:
+          $ref: '#/definitions/PacketCaptureSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created a new packet capture sessions associated with the VPG
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: Failed to create a packet capture sessions associated with
+            the VPG
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create Packet Capture Session
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg create-packet-capture-session
+  /virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a packet capture sessins associated the VPG
+      operationId: deletePacketCaptureSession
+      parameters:
+      - description: VPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted the packet capture sessions associated with the VPG
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: Faield to delete the packet capture sessions associated with
+            the VPG was not found
+        "404":
+          description: The packet capture sessions associated with the VPG was not
+            found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Packet Capture Session
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg delete-packet-capture-session
+    get:
+      consumes:
+      - application/json
+      description: Get a packet capture sessins associated the VPG
+      operationId: getPacketCaptureSession
+      parameters:
+      - description: VPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The packet capture sessions associated with the VPG
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "404":
+          description: The packet capture sessions associated with the VPG was not
+            found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Packet Capture Session
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg get-packet-capture-session
   /virtual_private_gateways/{vpg_id}/set_routing_filter:
     post:
       consumes:

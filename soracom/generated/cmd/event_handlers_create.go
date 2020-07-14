@@ -34,6 +34,9 @@ var EventHandlersCreateCmdTargetImsi string
 // EventHandlersCreateCmdTargetOperatorId holds value of 'targetOperatorId' option
 var EventHandlersCreateCmdTargetOperatorId string
 
+// EventHandlersCreateCmdTargetSimId holds value of 'targetSimId' option
+var EventHandlersCreateCmdTargetSimId string
+
 // EventHandlersCreateCmdBody holds contents of request body to be sent
 var EventHandlersCreateCmdBody string
 
@@ -49,6 +52,8 @@ func init() {
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TRAPI(""))
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
+
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetSimId, "target-sim-id", "", TRAPI(""))
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	EventHandlersCmd.AddCommand(EventHandlersCreateCmd)
@@ -89,8 +94,13 @@ var EventHandlersCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 
@@ -182,6 +192,10 @@ func buildBodyForEventHandlersCreateCmd() (string, error) {
 
 	if EventHandlersCreateCmdTargetOperatorId != "" {
 		result["targetOperatorId"] = EventHandlersCreateCmdTargetOperatorId
+	}
+
+	if EventHandlersCreateCmdTargetSimId != "" {
+		result["targetSimId"] = EventHandlersCreateCmdTargetSimId
 	}
 
 	resultBytes, err := json.Marshal(result)

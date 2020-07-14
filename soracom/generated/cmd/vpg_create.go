@@ -4,6 +4,8 @@ package cmd
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"io/ioutil"
 
 	"net/url"
@@ -17,8 +19,8 @@ import (
 // VpgCreateCmdDeviceSubnetCidrRange holds value of 'deviceSubnetCidrRange' option
 var VpgCreateCmdDeviceSubnetCidrRange string
 
-// VpgCreateCmdPrimaryServiceName holds value of 'primaryServiceName' option
-var VpgCreateCmdPrimaryServiceName string
+// VpgCreateCmdType holds value of 'type' option
+var VpgCreateCmdType int64
 
 // VpgCreateCmdUseInternetGateway holds value of 'useInternetGateway' option
 var VpgCreateCmdUseInternetGateway bool
@@ -29,7 +31,7 @@ var VpgCreateCmdBody string
 func init() {
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "10.128.0.0/9", TRAPI(""))
 
-	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdPrimaryServiceName, "primary-service-name", "Canal", TRAPI(""))
+	VpgCreateCmd.Flags().Int64Var(&VpgCreateCmdType, "type", 0, TRAPI(""))
 
 	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TRAPI(""))
 
@@ -72,8 +74,13 @@ var VpgCreateCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 
@@ -83,6 +90,14 @@ func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 	contentType := "application/json"
+
+	if VpgCreateCmdType == 0 {
+		if body == "" {
+
+			return nil, fmt.Errorf("required parameter '%s' is not specified", "type")
+		}
+
+	}
 
 	return &apiParams{
 		method:      "POST",
@@ -139,8 +154,8 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result["deviceSubnetCidrRange"] = VpgCreateCmdDeviceSubnetCidrRange
 	}
 
-	if VpgCreateCmdPrimaryServiceName != "Canal" {
-		result["primaryServiceName"] = VpgCreateCmdPrimaryServiceName
+	if VpgCreateCmdType != 0 {
+		result["type"] = VpgCreateCmdType
 	}
 
 	if VpgCreateCmdUseInternetGateway != false {

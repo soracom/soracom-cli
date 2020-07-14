@@ -79,8 +79,13 @@ var SandboxInitCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 

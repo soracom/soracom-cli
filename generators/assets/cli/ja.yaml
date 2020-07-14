@@ -149,12 +149,21 @@ cli:
   sigfox-devices:
     summary: Sigfox デバイスに関する操作を行います。
     description: Sigfox デバイスに関する操作を行います。
+  sims:
+    summary: SIM に関する操作を行います。
+    description: SIM に関する操作を行います。
+  soralets:
+    summary: Orbit の Soralet に関する操作を行います。
+    description: Orbit の Soralet に関する操作を行います。
   stats:
     summary: 統計情報に関する操作を行います。
     description: 統計情報に関する操作を行います。
     air:
       summary: Air の統計情報に関する操作を行います。
       description: Air の統計情報に関する操作を行います。
+      sims:
+        summary: SIM ID で Air の統計情報に関する操作を行います。
+        description: SIM ID で Air の統計情報に関する操作を行います。
     beam:
       summary: Beam の統計情報に関する操作を行います。
       description: Beam の統計情報に関する操作を行います。

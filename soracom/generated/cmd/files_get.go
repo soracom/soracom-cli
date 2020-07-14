@@ -58,9 +58,14 @@ var FilesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		_, err = os.Stdout.Write([]byte(body))
-		return err
+		rawOutput = true
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 

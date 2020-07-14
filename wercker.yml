@@ -1,5 +1,6 @@
 box:
     id: golang:1.14
+    id: golang:1.13
 
 build:
   docker: true

@@ -17,9 +17,9 @@ var OperatorAddCoverageTypeCmdCoverageType string
 var OperatorAddCoverageTypeCmdOperatorId string
 
 func init() {
-	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdCoverageType, "coverage-type", "", TRAPI("Coverage type"))
+	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdCoverageType, "coverage-type", "", TRAPI("coverage_type"))
 
-	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 	OperatorCmd.AddCommand(OperatorAddCoverageTypeCmd)
 }
 
@@ -58,8 +58,13 @@ var OperatorAddCoverageTypeCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 

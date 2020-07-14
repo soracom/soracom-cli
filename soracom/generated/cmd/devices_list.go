@@ -27,13 +27,13 @@ var DevicesListCmdLimit int64
 var DevicesListCmdPaginate bool
 
 func init() {
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last Device in the previous page"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "null", TRAPI("Tag name"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "", TRAPI("Tag name"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "null", TRAPI("Tag value"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValue, "tag-value", "", TRAPI("Tag value"))
 
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "null", TRAPI("Tag value match mode (exact | prefix)"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag value match mode (exact | prefix)"))
 
 	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", -1, TRAPI("Max number of Devices in a response"))
 
@@ -76,8 +76,13 @@ var DevicesListCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
-		return prettyPrintStringAsJSON(body)
 
+		if rawOutput {
+			_, err = os.Stdout.Write([]byte(body))
+		} else {
+			return prettyPrintStringAsJSON(body)
+		}
+		return err
 	},
 }
 
@@ -102,19 +107,19 @@ func buildPathForDevicesListCmd(path string) string {
 func buildQueryForDevicesListCmd() url.Values {
 	result := url.Values{}
 
-	if DevicesListCmdLastEvaluatedKey != "null" {
+	if DevicesListCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", DevicesListCmdLastEvaluatedKey)
 	}
 
-	if DevicesListCmdTagName != "null" {
+	if DevicesListCmdTagName != "" {
 		result.Add("tag_name", DevicesListCmdTagName)
 	}
 
-	if DevicesListCmdTagValue != "null" {
+	if DevicesListCmdTagValue != "" {
 		result.Add("tag_value", DevicesListCmdTagValue)
 	}
 
-	if DevicesListCmdTagValueMatchMode != "null" {
+	if DevicesListCmdTagValueMatchMode != "" {
 		result.Add("tag_value_match_mode", DevicesListCmdTagValueMatchMode)
 	}
 
