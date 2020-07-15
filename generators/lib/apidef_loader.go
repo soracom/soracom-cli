@@ -32,6 +32,7 @@ type APIMethod struct {
 	Pagination  *Pagination              `yaml:"x-soracom-cli-pagination"`
 	Parameters  []APIParam               `yaml:"parameters"`
 	Responses   map[string]APIResponse   `yaml:"responses"`
+	Deprecated  bool                     `yaml:"deprecated"`
 }
 
 type Pagination struct {

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"net/url"
 	"os"
 
@@ -72,6 +74,10 @@ var QuerySubscribersCmd = &cobra.Command{
 	Short: TRAPI("/query/subscribers:get:summary"),
 	Long:  TRAPI(`/query/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if _, err := os.Stderr.Write([]byte(fmt.Sprintf("[warn] "+TRCLI("cli.deprecated-api"), "/query/subscribers") + "\n")); err != nil {
+			return err
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

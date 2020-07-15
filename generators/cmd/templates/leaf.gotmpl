@@ -7,7 +7,7 @@ import (
   "encoding/json"
 {{end}}
 {{end}}
-{{if .RequiredFlagExists}}
+{{if or (.RequiredFlagExists) (.Deprecated) }}
   "fmt"
 {{end}}
 {{if .BodyExists }}
@@ -96,6 +96,12 @@ var {{ $cmdvar }} = &cobra.Command{
   Short: TRAPI("{{.Short}}"),
   Long: TRAPI(`{{.Long}}`),
   RunE: func(cmd *cobra.Command, args []string) error {
+    {{- if .Deprecated}}
+    if _, err := os.Stderr.Write([]byte(fmt.Sprintf("[warn] "+TRCLI("cli.deprecated-api"), "{{.Path}}")+"\n")); err != nil {
+      return err
+    }
+
+    {{end}}
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
