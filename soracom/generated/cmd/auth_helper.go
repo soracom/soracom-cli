@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/dvsekhvalnov/jose2go/base64url"
+	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -42,8 +43,8 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	} else {
 		profile, err := getProfile()
 		if err != nil {
-			printfStderr("unable to load the profile.\n")
-			printfStderr("run `soracom configure` first.\n")
+			lib.PrintfStderr("unable to load the profile.\n")
+			lib.PrintfStderr("run `soracom configure` first.\n")
 			return err
 		}
 
