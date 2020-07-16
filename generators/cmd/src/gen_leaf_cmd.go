@@ -71,6 +71,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			PaginationKeyHeaderInResponse:     getPaginationKeyHeaderInResponse(m.Pagination),
 			PaginationRequestParameterInQuery: getPaginationRequestparameterInQuery(m.Pagination),
 			Deprecated:                        m.Deprecated,
+			AlternativeCommand:                m.AlternativeCommand,
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
 			if doesContentTypeParamExist(m.Parameters) {

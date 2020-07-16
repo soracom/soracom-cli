@@ -100,7 +100,10 @@ var {{ $cmdvar }} = &cobra.Command{
   Long: TRAPI(`{{.Long}}`),
   RunE: func(cmd *cobra.Command, args []string) error {
     {{- if .Deprecated}}
-    lib.WarnfStderr(TRCLI("cli.deprecated-api")+"\n", "{{.Path}}")
+    lib.WarnfStderr(TRCLI("cli.deprecated-api")+"\n")
+    {{- if ne .AlternativeCommand ""}}
+    lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "{{.AlternativeCommand}}")
+    {{end}}
 
     {{end}}
     opt := &apiClientOptions{
