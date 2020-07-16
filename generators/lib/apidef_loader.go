@@ -20,18 +20,20 @@ type APIDefinitions struct {
 
 // APIMethod holds information about an API method
 type APIMethod struct {
-	Path        string
-	Method      string
-	Use         string
-	Tags        []string                 `yaml:"tags"`
-	Summary     string                   `yaml:"summary"`
-	Description string                   `yaml:"description"`
-	OperationID string                   `yaml:"operationId"`
-	Security    []map[string]interface{} `yaml:"security"`
-	CLI         []string                 `yaml:"x-soracom-cli"`
-	Pagination  *Pagination              `yaml:"x-soracom-cli-pagination"`
-	Parameters  []APIParam               `yaml:"parameters"`
-	Responses   map[string]APIResponse   `yaml:"responses"`
+	Path               string
+	Method             string
+	Use                string
+	Tags               []string                 `yaml:"tags"`
+	Summary            string                   `yaml:"summary"`
+	Description        string                   `yaml:"description"`
+	OperationID        string                   `yaml:"operationId"`
+	Security           []map[string]interface{} `yaml:"security"`
+	CLI                []string                 `yaml:"x-soracom-cli"`
+	Pagination         *Pagination              `yaml:"x-soracom-cli-pagination"`
+	Parameters         []APIParam               `yaml:"parameters"`
+	Responses          map[string]APIResponse   `yaml:"responses"`
+	Deprecated         bool                     `yaml:"deprecated"`
+	AlternativeCommand string                   `yaml:"x-soracom-alternative-cli"`
 }
 
 type Pagination struct {

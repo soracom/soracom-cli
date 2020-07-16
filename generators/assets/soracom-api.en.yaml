@@ -9926,6 +9926,7 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+      x-soracom-alternative-cli: query sims
   /query/subscribers/traffic_volume/ranking:
     get:
       consumes:

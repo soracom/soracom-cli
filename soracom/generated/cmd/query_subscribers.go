@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/soracom/soracom-cli/generators/lib"
+
 	"github.com/spf13/cobra"
 )
 
@@ -72,6 +74,9 @@ var QuerySubscribersCmd = &cobra.Command{
 	Short: TRAPI("/query/subscribers:get:summary"),
 	Long:  TRAPI(`/query/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+		lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

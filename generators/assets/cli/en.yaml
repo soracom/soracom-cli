@@ -237,3 +237,5 @@ cli:
   vpg:
     summary: List, create, update or delete VPGs.
     description: List, create, update or delete VPGs.
+  deprecated-api: Deprecated API calling.
+  alternative-api-suggestion: "Please consider to use the alternative API (command: `%s`)."

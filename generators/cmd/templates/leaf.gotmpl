@@ -7,7 +7,7 @@ import (
   "encoding/json"
 {{end}}
 {{end}}
-{{if .RequiredFlagExists}}
+{{if .RequiredFlagExists }}
   "fmt"
 {{end}}
 {{if .BodyExists }}
@@ -19,6 +19,9 @@ import (
   "strings"
 {{end}}
 
+{{if .Deprecated }}
+  "github.com/soracom/soracom-cli/generators/lib"
+{{end}}
   "github.com/spf13/cobra"
 )
 
@@ -96,6 +99,13 @@ var {{ $cmdvar }} = &cobra.Command{
   Short: TRAPI("{{.Short}}"),
   Long: TRAPI(`{{.Long}}`),
   RunE: func(cmd *cobra.Command, args []string) error {
+    {{- if .Deprecated}}
+    lib.WarnfStderr(TRCLI("cli.deprecated-api")+"\n")
+    {{- if ne .AlternativeCommand ""}}
+    lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "{{.AlternativeCommand}}")
+    {{end}}
+
+    {{end}}
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
