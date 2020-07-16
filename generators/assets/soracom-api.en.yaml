@@ -11282,6 +11282,15 @@ paths:
       description: Returns a list of Soralets.
       operationId: listSoralets
       parameters:
+      - default: asc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
+        type: string
       - description: The maximum number of items in a response
         in: query
         name: limit
@@ -11411,6 +11420,15 @@ paths:
         name: soralet_id
         required: true
         type: string
+      - default: desc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
+        type: string
       - description: The maximum number of items in a response.
         in: query
         name: limit
@@ -11492,6 +11510,15 @@ paths:
         in: path
         name: soralet_id
         required: true
+        type: string
+      - default: desc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
         type: string
       - description: The maximum number of items in a response.
         in: query

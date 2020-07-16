@@ -16,6 +16,9 @@ var SoraletsGetLogsCmdLastEvaluatedKey string
 // SoraletsGetLogsCmdSoraletId holds value of 'soralet_id' option
 var SoraletsGetLogsCmdSoraletId string
 
+// SoraletsGetLogsCmdSort holds value of 'sort' option
+var SoraletsGetLogsCmdSort string
+
 // SoraletsGetLogsCmdLimit holds value of 'limit' option
 var SoraletsGetLogsCmdLimit int64
 
@@ -26,6 +29,8 @@ func init() {
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last log message retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next log message onward."))
 
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
+
+	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSort, "sort", "desc", TRAPI("Sort order"))
 
 	SoraletsGetLogsCmd.Flags().Int64Var(&SoraletsGetLogsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 
@@ -109,6 +114,10 @@ func buildQueryForSoraletsGetLogsCmd() url.Values {
 
 	if SoraletsGetLogsCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", SoraletsGetLogsCmdLastEvaluatedKey)
+	}
+
+	if SoraletsGetLogsCmdSort != "desc" {
+		result.Add("sort", SoraletsGetLogsCmdSort)
 	}
 
 	if SoraletsGetLogsCmdLimit != 0 {

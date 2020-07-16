@@ -11098,6 +11098,15 @@ paths:
       description: Soralet の一覧を取得します。
       operationId: listSoralets
       parameters:
+      - default: asc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
+        type: string
       - description: 一度のレスポンスに含まれる項目数の最大値
         in: query
         name: limit
@@ -11224,6 +11233,15 @@ paths:
         name: soralet_id
         required: true
         type: string
+      - default: desc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
+        type: string
       - description: 一度のレスポンスに含まれる項目数の最大値
         in: query
         name: limit
@@ -11303,6 +11321,15 @@ paths:
         in: path
         name: soralet_id
         required: true
+        type: string
+      - default: desc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort
+        required: false
         type: string
       - description: 一度のレスポンスに含まれる項目数の最大値
         in: query
