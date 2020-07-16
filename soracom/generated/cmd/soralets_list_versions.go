@@ -16,6 +16,9 @@ var SoraletsListVersionsCmdLastEvaluatedKey string
 // SoraletsListVersionsCmdSoraletId holds value of 'soralet_id' option
 var SoraletsListVersionsCmdSoraletId string
 
+// SoraletsListVersionsCmdSort holds value of 'sort' option
+var SoraletsListVersionsCmdSort string
+
 // SoraletsListVersionsCmdLimit holds value of 'limit' option
 var SoraletsListVersionsCmdLimit int64
 
@@ -26,6 +29,8 @@ func init() {
 	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last version retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next version onward."))
 
 	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
+
+	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSort, "sort", "desc", TRAPI("Sort order"))
 
 	SoraletsListVersionsCmd.Flags().Int64Var(&SoraletsListVersionsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 
@@ -109,6 +114,10 @@ func buildQueryForSoraletsListVersionsCmd() url.Values {
 
 	if SoraletsListVersionsCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", SoraletsListVersionsCmdLastEvaluatedKey)
+	}
+
+	if SoraletsListVersionsCmdSort != "desc" {
+		result.Add("sort", SoraletsListVersionsCmdSort)
 	}
 
 	if SoraletsListVersionsCmdLimit != 0 {

@@ -11,6 +11,9 @@ import (
 // SoraletsListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var SoraletsListCmdLastEvaluatedKey string
 
+// SoraletsListCmdSort holds value of 'sort' option
+var SoraletsListCmdSort string
+
 // SoraletsListCmdLimit holds value of 'limit' option
 var SoraletsListCmdLimit int64
 
@@ -19,6 +22,8 @@ var SoraletsListCmdPaginate bool
 
 func init() {
 	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last Soralet retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Soralet onward."))
+
+	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdSort, "sort", "asc", TRAPI("Sort order"))
 
 	SoraletsListCmd.Flags().Int64Var(&SoraletsListCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response"))
 
@@ -94,6 +99,10 @@ func buildQueryForSoraletsListCmd() url.Values {
 
 	if SoraletsListCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", SoraletsListCmdLastEvaluatedKey)
+	}
+
+	if SoraletsListCmdSort != "asc" {
+		result.Add("sort", SoraletsListCmdSort)
 	}
 
 	if SoraletsListCmdLimit != 0 {
