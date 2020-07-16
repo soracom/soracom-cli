@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/soracom/soracom-cli/generators/lib"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -66,20 +67,20 @@ func loadCLIResources() map[string]languageResourceMap {
 func loadLanguageResourceFile(resourceFileName string) languageResourceMap {
 	f, err := Assets.Open(resourceFileName)
 	if err != nil {
-		fmt.Printf("warning: unable to load CLI language resource '%s'\n", resourceFileName)
+		lib.WarnfStderr("unable to load CLI language resource '%s'\n", resourceFileName)
 		return nil
 	}
 
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		fmt.Printf("warning: unable to read API language resource '%s'\n", resourceFileName)
+		lib.WarnfStderr("unable to read API language resource '%s'\n", resourceFileName)
 		return nil
 	}
 
 	var data map[interface{}]interface{}
 	err = yaml.Unmarshal(b, &data)
 	if err != nil {
-		fmt.Printf("warning: unable to parse CLI language resource '%s'\n", resourceFileName)
+		lib.WarnfStderr("unable to parse CLI language resource '%s'\n", resourceFileName)
 		fmt.Println(err)
 	}
 	return data

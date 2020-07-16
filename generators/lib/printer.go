@@ -11,3 +11,7 @@ func PrintfStderr(format string, args ...interface{}) {
 		//fmt.Printf("err: %+v\n", err) // this messes up stdout
 	}
 }
+
+func WarnfStderr(format string, args ...interface{}) {
+	PrintfStderr("WARN: "+format, args...)
+}

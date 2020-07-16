@@ -125,7 +125,7 @@ func loadProfile(profileName string) (*profile, error) {
 			return nil, errors.New(msg)
 		}
 		// only warn on windows
-		lib.PrintfStderr("WARN: " + msg + "\n")
+		lib.WarnfStderr(msg + "\n")
 	}
 
 	// #nosec
