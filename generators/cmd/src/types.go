@@ -134,4 +134,6 @@ type commandArgs struct {
 	PaginationAvailable               bool
 	PaginationKeyHeaderInResponse     string
 	PaginationRequestParameterInQuery string
+	Deprecated                        bool
+	AlternativeCommand                string
 }

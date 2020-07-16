@@ -216,3 +216,5 @@ cli:
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。
+  deprecated-api: 非推奨の API 呼び出しです。
+  alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"

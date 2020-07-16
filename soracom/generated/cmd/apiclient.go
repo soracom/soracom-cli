@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/soracom/soracom-cli/generators/lib"
 )
 
 // APIClient provides an access to SORACOM REST API
@@ -173,12 +174,12 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	}
 
 	if ac.verbose {
-		printfStderr("==========\n")
+		lib.PrintfStderr("==========\n")
 	}
 
 	if !params.noVersionCheck {
 		if isNewerThanCurrentVersion(latestVersion) {
-			printfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
+			lib.PrintfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
 		}
 	}
 
@@ -365,21 +366,21 @@ func (ac *apiClient) reportWaitingBeforeRetrying(res *http.Response, err error, 
 	if !ac.verbose {
 		return
 	}
-	printfStderr("error detected. ")
+	lib.PrintfStderr("error detected. ")
 	if err != nil {
-		printfStderr("%+v\n", err)
+		lib.PrintfStderr("%+v\n", err)
 	} else {
-		printfStderr("http status code == %d\n", res.StatusCode)
+		lib.PrintfStderr("http status code == %d\n", res.StatusCode)
 		dumpHTTPResponse(res)
 	}
-	printfStderr("wait for %d seconds ...\n", wait)
+	lib.PrintfStderr("wait for %d seconds ...\n", wait)
 }
 
 func (ac *apiClient) reportRetrying() {
 	if !ac.verbose {
 		return
 	}
-	printfStderr("trying it again\n")
+	lib.PrintfStderr("trying it again\n")
 }
 
 func retryableError(httpStatus int) bool {
@@ -402,24 +403,17 @@ func dumpHTTPRequest(req *http.Request) {
 	dumpBody := req.Header.Get("Content-Type") != "application/octet-stream"
 	dump, err := httputil.DumpRequest(req, dumpBody)
 	if err != nil {
-		printfStderr("error while dumping http request header and body: %s\n", err)
+		lib.PrintfStderr("error while dumping http request header and body: %s\n", err)
 		return
 	}
-	printfStderr("%s\n", string(dump))
+	lib.PrintfStderr("%s\n", string(dump))
 }
 
 func dumpHTTPResponse(resp *http.Response) {
 	dump, err := httputil.DumpResponse(resp, false)
 	if err != nil {
-		printfStderr("error while dumping http response header: %s\n", err)
+		lib.PrintfStderr("error while dumping http response header: %s\n", err)
 		return
 	}
-	printfStderr("%s\n", string(dump))
-}
-
-func printfStderr(format string, args ...interface{}) {
-	_, err := fmt.Fprintf(os.Stderr, format, args...)
-	if err != nil {
-		//fmt.Printf("err: %+v\n", err) // this messes up stdout
-	}
+	lib.PrintfStderr("%s\n", string(dump))
 }
