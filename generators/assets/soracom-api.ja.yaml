@@ -9776,6 +9776,7 @@ paths:
       summary: (非推奨) Subscriber をクエリに応じて検索します。
       tags:
       - Query
+      x-soracom-alternative-cli: query sims
       x-soracom-cli:
       - query subscribers
       x-soracom-cli-pagination:
