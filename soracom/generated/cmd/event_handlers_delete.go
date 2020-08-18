@@ -72,6 +72,8 @@ func collectEventHandlersDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForEventHandlersDeleteCmd("/event_handlers/{handler_id}"),
 		query:  buildQueryForEventHandlersDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

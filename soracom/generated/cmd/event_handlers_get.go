@@ -72,6 +72,8 @@ func collectEventHandlersGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForEventHandlersGetCmd("/event_handlers/{handler_id}"),
 		query:  buildQueryForEventHandlersGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

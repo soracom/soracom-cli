@@ -77,6 +77,8 @@ func collectDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetCmd("/devices/{device_id}"),
 		query:  buildQueryForDevicesGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

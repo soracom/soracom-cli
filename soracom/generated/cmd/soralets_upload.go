@@ -98,6 +98,8 @@ func collectSoraletsUploadCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSoraletsUploadCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -81,6 +81,8 @@ func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForVpgDeleteMirroringPeerCmd("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}"),
 		query:  buildQueryForVpgDeleteMirroringPeerCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

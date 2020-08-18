@@ -72,6 +72,8 @@ func collectSimsSetToStandbyCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsSetToStandbyCmd("/sims/{sim_id}/set_to_standby"),
 		query:  buildQueryForSimsSetToStandbyCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -100,6 +100,8 @@ func collectSimsSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsSetImeiLockCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

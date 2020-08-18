@@ -54,6 +54,7 @@ Flags:
       --auth-key-id string     Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.
       --coverage-type string   Specify coverage type, 'g' for Global, 'jp' for Japan
   -h, --help                   help for soracom
+      --no-retry-on-error      Specify soracom-cli not to retry even if the API endpoint returns an error
       --profile string         Specify profile name
       --raw-output             Specify soracom-cli to output raw response from the API endpoint
 

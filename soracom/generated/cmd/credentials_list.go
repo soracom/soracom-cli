@@ -63,6 +63,8 @@ func collectCredentialsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForCredentialsListCmd("/credentials"),
 		query:  buildQueryForCredentialsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

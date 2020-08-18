@@ -72,6 +72,8 @@ func collectDevicesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForDevicesDeleteCmd("/devices/{device_id}"),
 		query:  buildQueryForDevicesDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

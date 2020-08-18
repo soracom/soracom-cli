@@ -72,6 +72,8 @@ func collectSubscribersUnsetExpiryTimeCmdParams(ac *apiClient) (*apiParams, erro
 		method: "POST",
 		path:   buildPathForSubscribersUnsetExpiryTimeCmd("/subscribers/{imsi}/unset_expiry_time"),
 		query:  buildQueryForSubscribersUnsetExpiryTimeCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

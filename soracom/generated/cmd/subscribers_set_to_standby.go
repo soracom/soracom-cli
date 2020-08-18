@@ -72,6 +72,8 @@ func collectSubscribersSetToStandbyCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "POST",
 		path:   buildPathForSubscribersSetToStandbyCmd("/subscribers/{imsi}/set_to_standby"),
 		query:  buildQueryForSubscribersSetToStandbyCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

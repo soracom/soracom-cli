@@ -121,6 +121,8 @@ func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) 
 		query:       buildQueryForVpgPutIpAddressMapEntryCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

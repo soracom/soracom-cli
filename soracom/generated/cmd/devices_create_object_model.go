@@ -115,6 +115,8 @@ func collectDevicesCreateObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForDevicesCreateObjectModelCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -93,6 +93,8 @@ func collectVpgSetRoutingFilterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgSetRoutingFilterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

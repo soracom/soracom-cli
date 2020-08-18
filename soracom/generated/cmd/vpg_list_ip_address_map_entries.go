@@ -72,6 +72,8 @@ func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, erro
 		method: "GET",
 		path:   buildPathForVpgListIpAddressMapEntriesCmd("/virtual_private_gateways/{vpg_id}/ip_address_map"),
 		query:  buildQueryForVpgListIpAddressMapEntriesCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

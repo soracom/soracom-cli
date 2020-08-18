@@ -113,6 +113,8 @@ func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSubscribersRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

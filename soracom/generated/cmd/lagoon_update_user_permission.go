@@ -100,6 +100,8 @@ func collectLagoonUpdateUserPermissionCmdParams(ac *apiClient) (*apiParams, erro
 		query:       buildQueryForLagoonUpdateUserPermissionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

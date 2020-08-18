@@ -130,6 +130,8 @@ func collectDevicesUpdateObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForDevicesUpdateObjectModelCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

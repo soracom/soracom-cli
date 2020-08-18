@@ -81,6 +81,8 @@ func collectOperatorAddCoverageTypeCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "POST",
 		path:   buildPathForOperatorAddCoverageTypeCmd("/operators/{operator_id}/coverage_type/{coverage_type}"),
 		query:  buildQueryForOperatorAddCoverageTypeCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

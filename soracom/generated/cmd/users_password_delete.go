@@ -81,6 +81,8 @@ func collectUsersPasswordDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForUsersPasswordDeleteCmd("/operators/{operator_id}/users/{user_name}/password"),
 		query:  buildQueryForUsersPasswordDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

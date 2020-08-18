@@ -72,6 +72,8 @@ func collectVpgUnsetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForVpgUnsetInspectionCmd("/virtual_private_gateways/{vpg_id}/junction/unset_inspection"),
 		query:  buildQueryForVpgUnsetInspectionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

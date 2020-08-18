@@ -72,6 +72,8 @@ func collectVpgTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForVpgTerminateCmd("/virtual_private_gateways/{vpg_id}/terminate"),
 		query:  buildQueryForVpgTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

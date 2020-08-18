@@ -106,6 +106,8 @@ func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      LoraDevicesGetDataCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

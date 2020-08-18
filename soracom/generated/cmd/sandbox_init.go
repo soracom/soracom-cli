@@ -134,6 +134,8 @@ func collectSandboxInitCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSandboxInitCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

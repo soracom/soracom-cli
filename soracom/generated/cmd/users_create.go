@@ -109,6 +109,8 @@ func collectUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

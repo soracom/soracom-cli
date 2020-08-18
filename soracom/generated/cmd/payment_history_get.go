@@ -72,6 +72,8 @@ func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPaymentHistoryGetCmd("/payment_history/transactions/{payment_transaction_id}"),
 		query:  buildQueryForPaymentHistoryGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

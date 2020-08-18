@@ -105,6 +105,8 @@ func collectLoraDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraDevicesRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

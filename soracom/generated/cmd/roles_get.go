@@ -81,6 +81,8 @@ func collectRolesGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForRolesGetCmd("/operators/{operator_id}/roles/{role_id}"),
 		query:  buildQueryForRolesGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

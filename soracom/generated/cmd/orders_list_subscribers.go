@@ -83,6 +83,8 @@ func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForOrdersListSubscribersCmd("/orders/{order_id}/subscribers"),
 		query:  buildQueryForOrdersListSubscribersCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

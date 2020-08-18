@@ -72,6 +72,8 @@ func collectLoraGatewaysDisableTerminationCmdParams(ac *apiClient) (*apiParams, 
 		method: "POST",
 		path:   buildPathForLoraGatewaysDisableTerminationCmd("/lora_gateways/{gateway_id}/disable_termination"),
 		query:  buildQueryForLoraGatewaysDisableTerminationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

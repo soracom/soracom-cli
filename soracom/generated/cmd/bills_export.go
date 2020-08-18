@@ -78,6 +78,8 @@ func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForBillsExportCmd("/bills/{yyyyMM}/export"),
 		query:  buildQueryForBillsExportCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

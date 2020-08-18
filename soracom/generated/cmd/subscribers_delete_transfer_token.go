@@ -72,6 +72,8 @@ func collectSubscribersDeleteTransferTokenCmdParams(ac *apiClient) (*apiParams, 
 		method: "DELETE",
 		path:   buildPathForSubscribersDeleteTransferTokenCmd("/subscribers/transfer_token/{token}"),
 		query:  buildQueryForSubscribersDeleteTransferTokenCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

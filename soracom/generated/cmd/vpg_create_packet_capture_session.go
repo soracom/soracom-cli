@@ -113,6 +113,8 @@ func collectVpgCreatePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, e
 		query:       buildQueryForVpgCreatePacketCaptureSessionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

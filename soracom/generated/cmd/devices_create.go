@@ -150,6 +150,8 @@ func collectDevicesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForDevicesCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

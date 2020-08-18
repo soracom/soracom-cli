@@ -81,6 +81,8 @@ func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 		method: "DELETE",
 		path:   buildPathForVpgDeleteVpcPeeringConnectionCmd("/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}"),
 		query:  buildQueryForVpgDeleteVpcPeeringConnectionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

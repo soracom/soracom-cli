@@ -81,6 +81,8 @@ func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, erro
 		method: "DELETE",
 		path:   buildPathForVpgDeleteIpAddressMapEntryCmd("/virtual_private_gateways/{vpg_id}/ip_address_map/{key}"),
 		query:  buildQueryForVpgDeleteIpAddressMapEntryCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

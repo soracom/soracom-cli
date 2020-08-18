@@ -70,6 +70,8 @@ func collectOperatorGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForOperatorGetCmd("/operators/{operator_id}"),
 		query:  buildQueryForOperatorGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

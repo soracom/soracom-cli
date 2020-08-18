@@ -90,6 +90,8 @@ func collectLagoonRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLagoonRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

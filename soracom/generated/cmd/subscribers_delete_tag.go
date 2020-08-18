@@ -81,6 +81,8 @@ func collectSubscribersDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSubscribersDeleteTagCmd("/subscribers/{imsi}/tags/{tag_name}"),
 		query:  buildQueryForSubscribersDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

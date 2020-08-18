@@ -105,6 +105,8 @@ func collectSubscribersSendSmsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSubscribersSendSmsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

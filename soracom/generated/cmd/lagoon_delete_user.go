@@ -72,6 +72,8 @@ func collectLagoonDeleteUserCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForLagoonDeleteUserCmd("/lagoon/users/{lagoon_user_id}"),
 		query:  buildQueryForLagoonDeleteUserCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

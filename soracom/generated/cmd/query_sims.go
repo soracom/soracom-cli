@@ -136,6 +136,8 @@ func collectQuerySimsCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      QuerySimsCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

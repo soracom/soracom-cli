@@ -115,6 +115,8 @@ func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSigfoxDevicesSetGroupCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

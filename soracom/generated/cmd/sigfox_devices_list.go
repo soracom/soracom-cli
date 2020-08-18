@@ -96,6 +96,8 @@ func collectSigfoxDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      SigfoxDevicesListCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

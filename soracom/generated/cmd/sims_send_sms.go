@@ -105,6 +105,8 @@ func collectSimsSendSmsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsSendSmsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

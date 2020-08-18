@@ -109,6 +109,8 @@ func collectUsersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

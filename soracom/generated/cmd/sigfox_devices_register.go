@@ -100,6 +100,8 @@ func collectSigfoxDevicesRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSigfoxDevicesRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

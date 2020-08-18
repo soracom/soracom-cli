@@ -108,6 +108,8 @@ func collectSimsUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsUpdateSpeedClassCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

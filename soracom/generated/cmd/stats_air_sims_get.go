@@ -99,6 +99,8 @@ func collectStatsAirSimsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForStatsAirSimsGetCmd("/stats/air/sims/{simId}"),
 		query:  buildQueryForStatsAirSimsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

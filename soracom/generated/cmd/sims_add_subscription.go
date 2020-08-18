@@ -108,6 +108,8 @@ func collectSimsAddSubscriptionCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsAddSubscriptionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

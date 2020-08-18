@@ -81,6 +81,8 @@ func collectRolesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForRolesDeleteCmd("/operators/{operator_id}/roles/{role_id}"),
 		query:  buildQueryForRolesDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -80,6 +80,8 @@ func collectGroupsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGroupsCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

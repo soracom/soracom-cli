@@ -72,6 +72,8 @@ func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForFilesGetExportedCmd("/files/exported/{exported_file_id}"),
 		query:  buildQueryForFilesGetExportedCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

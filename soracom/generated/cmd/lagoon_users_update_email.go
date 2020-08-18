@@ -100,6 +100,8 @@ func collectLagoonUsersUpdateEmailCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLagoonUsersUpdateEmailCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

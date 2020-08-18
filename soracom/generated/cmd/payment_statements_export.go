@@ -78,6 +78,8 @@ func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "POST",
 		path:   buildPathForPaymentStatementsExportCmd("/payment_statements/{payment_statement_id}/export"),
 		query:  buildQueryForPaymentStatementsExportCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

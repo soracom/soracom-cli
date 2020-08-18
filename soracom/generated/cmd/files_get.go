@@ -78,6 +78,8 @@ func collectFilesGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForFilesGetCmd("/files/{scope}/{path}"),
 		query:  buildQueryForFilesGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

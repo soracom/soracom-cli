@@ -93,6 +93,8 @@ func collectLoraDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraDevicesPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -96,6 +96,8 @@ func collectLoraGatewaysListCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      LoraGatewaysListCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -90,6 +90,8 @@ func collectUsersAuthKeysDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForUsersAuthKeysDeleteCmd("/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}"),
 		query:  buildQueryForUsersAuthKeysDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

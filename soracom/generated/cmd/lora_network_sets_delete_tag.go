@@ -81,6 +81,8 @@ func collectLoraNetworkSetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error)
 		method: "DELETE",
 		path:   buildPathForLoraNetworkSetsDeleteTagCmd("/lora_network_sets/{ns_id}/tags/{tag_name}"),
 		query:  buildQueryForLoraNetworkSetsDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

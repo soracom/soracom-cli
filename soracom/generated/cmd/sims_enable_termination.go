@@ -72,6 +72,8 @@ func collectSimsEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsEnableTerminationCmd("/sims/{sim_id}/enable_termination"),
 		query:  buildQueryForSimsEnableTerminationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

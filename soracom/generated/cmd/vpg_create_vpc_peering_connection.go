@@ -115,6 +115,8 @@ func collectVpgCreateVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, e
 		query:       buildQueryForVpgCreateVpcPeeringConnectionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

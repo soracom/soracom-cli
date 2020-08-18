@@ -72,6 +72,8 @@ func collectSimsUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsUnsetGroupCmd("/sims/{sim_id}/unset_group"),
 		query:  buildQueryForSimsUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

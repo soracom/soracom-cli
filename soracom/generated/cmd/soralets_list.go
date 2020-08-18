@@ -86,6 +86,8 @@ func collectSoraletsListCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      SoraletsListCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

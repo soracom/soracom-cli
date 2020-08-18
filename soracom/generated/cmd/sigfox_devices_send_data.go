@@ -100,6 +100,8 @@ func collectSigfoxDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSigfoxDevicesSendDataCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

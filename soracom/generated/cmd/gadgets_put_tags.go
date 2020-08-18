@@ -106,6 +106,8 @@ func collectGadgetsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGadgetsPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -109,6 +109,8 @@ func collectUsersAttachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersAttachRoleCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

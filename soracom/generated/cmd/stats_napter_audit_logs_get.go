@@ -67,6 +67,8 @@ func collectStatsNapterAuditLogsGetCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForStatsNapterAuditLogsGetCmd("/stats/napter/audit_logs"),
 		query:  buildQueryForStatsNapterAuditLogsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

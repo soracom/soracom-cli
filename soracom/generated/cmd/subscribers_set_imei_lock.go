@@ -100,6 +100,8 @@ func collectSubscribersSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSubscribersSetImeiLockCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

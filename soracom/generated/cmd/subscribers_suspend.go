@@ -72,6 +72,8 @@ func collectSubscribersSuspendCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSubscribersSuspendCmd("/subscribers/{imsi}/suspend"),
 		query:  buildQueryForSubscribersSuspendCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

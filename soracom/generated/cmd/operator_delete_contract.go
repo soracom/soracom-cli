@@ -81,6 +81,8 @@ func collectOperatorDeleteContractCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForOperatorDeleteContractCmd("/operators/{operator_id}/contracts/{contract_name}"),
 		query:  buildQueryForOperatorDeleteContractCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

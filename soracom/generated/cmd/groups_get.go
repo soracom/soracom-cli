@@ -72,6 +72,8 @@ func collectGroupsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGroupsGetCmd("/groups/{group_id}"),
 		query:  buildQueryForGroupsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

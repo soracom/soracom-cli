@@ -94,6 +94,8 @@ func collectOperatorVerifyMfaOtpCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOperatorVerifyMfaOtpCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

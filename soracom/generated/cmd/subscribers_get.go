@@ -72,6 +72,8 @@ func collectSubscribersGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSubscribersGetCmd("/subscribers/{imsi}"),
 		query:  buildQueryForSubscribersGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

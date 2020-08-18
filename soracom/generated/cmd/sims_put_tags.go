@@ -93,6 +93,8 @@ func collectSimsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

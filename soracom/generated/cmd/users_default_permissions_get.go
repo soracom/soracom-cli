@@ -70,6 +70,8 @@ func collectUsersDefaultPermissionsGetCmdParams(ac *apiClient) (*apiParams, erro
 		method: "GET",
 		path:   buildPathForUsersDefaultPermissionsGetCmd("/operators/{operator_id}/users/default_permissions"),
 		query:  buildQueryForUsersDefaultPermissionsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

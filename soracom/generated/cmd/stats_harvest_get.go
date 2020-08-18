@@ -75,6 +75,8 @@ func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForStatsHarvestGetCmd("/stats/harvest/operators/{operator_id}"),
 		query:  buildQueryForStatsHarvestGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

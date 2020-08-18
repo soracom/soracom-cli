@@ -113,6 +113,8 @@ func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgRegisterGatePeerCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

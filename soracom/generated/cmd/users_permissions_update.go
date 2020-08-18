@@ -122,6 +122,8 @@ func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersPermissionsUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

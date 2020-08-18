@@ -72,6 +72,8 @@ func collectSimsUnsetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsUnsetExpiryTimeCmd("/sims/{sim_id}/unset_expiry_time"),
 		query:  buildQueryForSimsUnsetExpiryTimeCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

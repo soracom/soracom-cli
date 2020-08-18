@@ -58,6 +58,8 @@ func collectLagoonGetImageLinkCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLagoonGetImageLinkCmd("/lagoon/image/link"),
 		query:  buildQueryForLagoonGetImageLinkCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

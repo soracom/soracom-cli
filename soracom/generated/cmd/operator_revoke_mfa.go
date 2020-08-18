@@ -70,6 +70,8 @@ func collectOperatorRevokeMfaCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForOperatorRevokeMfaCmd("/operators/{operator_id}/mfa"),
 		query:  buildQueryForOperatorRevokeMfaCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

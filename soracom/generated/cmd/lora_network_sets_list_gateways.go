@@ -92,6 +92,8 @@ func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, err
 		doPagination:                      LoraNetworkSetsListGatewaysCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

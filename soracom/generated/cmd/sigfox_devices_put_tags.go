@@ -93,6 +93,8 @@ func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSigfoxDevicesPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

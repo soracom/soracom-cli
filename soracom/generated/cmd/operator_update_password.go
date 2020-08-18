@@ -117,6 +117,8 @@ func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOperatorUpdatePasswordCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

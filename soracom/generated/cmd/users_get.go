@@ -81,6 +81,8 @@ func collectUsersGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForUsersGetCmd("/operators/{operator_id}/users/{user_name}"),
 		query:  buildQueryForUsersGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

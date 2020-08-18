@@ -72,6 +72,8 @@ func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForCouponsRegisterCmd("/coupons/{coupon_code}/register"),
 		query:  buildQueryForCouponsRegisterCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

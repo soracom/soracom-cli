@@ -105,6 +105,8 @@ func collectCredentialsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForCredentialsCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

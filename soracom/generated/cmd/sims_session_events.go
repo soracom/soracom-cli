@@ -93,6 +93,8 @@ func collectSimsSessionEventsCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsSessionEventsCmd("/sims/{sim_id}/events/sessions"),
 		query:  buildQueryForSimsSessionEventsCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

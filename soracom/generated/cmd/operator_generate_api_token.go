@@ -94,6 +94,8 @@ func collectOperatorGenerateApiTokenCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForOperatorGenerateApiTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -90,6 +90,8 @@ func collectUsersDetachRoleCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForUsersDetachRoleCmd("/operators/{operator_id}/users/{user_name}/roles/{role_id}"),
 		query:  buildQueryForUsersDetachRoleCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

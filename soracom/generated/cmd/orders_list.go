@@ -63,6 +63,8 @@ func collectOrdersListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForOrdersListCmd("/orders"),
 		query:  buildQueryForOrdersListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

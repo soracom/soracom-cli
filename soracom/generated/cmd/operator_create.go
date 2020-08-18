@@ -108,6 +108,8 @@ func collectOperatorCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOperatorCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

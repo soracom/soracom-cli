@@ -93,6 +93,8 @@ func collectGroupsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGroupsPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

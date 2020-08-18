@@ -95,6 +95,8 @@ func collectDevicesGetInstanceCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetInstanceCmd("/devices/{device_id}/{object}/{instance}"),
 		query:  buildQueryForDevicesGetInstanceCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

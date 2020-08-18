@@ -95,6 +95,8 @@ func collectSubscribersVerifyTransferTokenCmdParams(ac *apiClient) (*apiParams, 
 		query:       buildQueryForSubscribersVerifyTransferTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

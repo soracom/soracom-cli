@@ -100,6 +100,8 @@ func collectDevicesSetObjectModelScopeCmdParams(ac *apiClient) (*apiParams, erro
 		query:       buildQueryForDevicesSetObjectModelScopeCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

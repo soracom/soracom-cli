@@ -90,6 +90,8 @@ func collectDataGetEntryCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDataGetEntryCmd("/data/{resource_type}/{resource_id}/{time}"),
 		query:  buildQueryForDataGetEntryCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

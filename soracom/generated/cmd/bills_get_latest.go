@@ -63,6 +63,8 @@ func collectBillsGetLatestCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForBillsGetLatestCmd("/bills/latest"),
 		query:  buildQueryForBillsGetLatestCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -63,6 +63,8 @@ func collectPaymentStatementsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPaymentStatementsListCmd("/payment_statements"),
 		query:  buildQueryForPaymentStatementsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

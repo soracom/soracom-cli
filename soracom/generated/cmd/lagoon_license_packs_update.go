@@ -75,6 +75,8 @@ func collectLagoonLicensePacksUpdateCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForLagoonLicensePacksUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

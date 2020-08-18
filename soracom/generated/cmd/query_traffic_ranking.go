@@ -92,6 +92,8 @@ func collectQueryTrafficRankingCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQueryTrafficRankingCmd("/query/subscribers/traffic_volume/ranking"),
 		query:  buildQueryForQueryTrafficRankingCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

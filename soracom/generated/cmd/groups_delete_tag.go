@@ -81,6 +81,8 @@ func collectGroupsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForGroupsDeleteTagCmd("/groups/{group_id}/tags/{tag_name}"),
 		query:  buildQueryForGroupsDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

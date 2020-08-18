@@ -72,6 +72,8 @@ func collectSubscribersDeactivateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSubscribersDeactivateCmd("/subscribers/{imsi}/deactivate"),
 		query:  buildQueryForSubscribersDeactivateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

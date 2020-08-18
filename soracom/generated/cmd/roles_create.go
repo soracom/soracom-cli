@@ -122,6 +122,8 @@ func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForRolesCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

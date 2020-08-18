@@ -63,6 +63,8 @@ func collectBillsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForBillsListCmd("/bills"),
 		query:  buildQueryForBillsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -81,6 +81,8 @@ func collectPortMappingsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForPortMappingsDeleteCmd("/port_mappings/{ip_address}/{port}"),
 		query:  buildQueryForPortMappingsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

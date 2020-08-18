@@ -81,6 +81,8 @@ func collectGadgetsUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForGadgetsUnsetGroupCmd("/gadgets/{product_id}/{serial_number}/unset_group"),
 		query:  buildQueryForGadgetsUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -70,6 +70,8 @@ func collectSandboxOperatorsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSandboxOperatorsDeleteCmd("/sandbox/operators/{operator_id}"),
 		query:  buildQueryForSandboxOperatorsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

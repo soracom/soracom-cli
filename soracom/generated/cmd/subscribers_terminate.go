@@ -72,6 +72,8 @@ func collectSubscribersTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSubscribersTerminateCmd("/subscribers/{imsi}/terminate"),
 		query:  buildQueryForSubscribersTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

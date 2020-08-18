@@ -72,6 +72,8 @@ func collectDevicesDeleteObjectModelCmdParams(ac *apiClient) (*apiParams, error)
 		method: "DELETE",
 		path:   buildPathForDevicesDeleteObjectModelCmd("/device_object_models/{model_id}"),
 		query:  buildQueryForDevicesDeleteObjectModelCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

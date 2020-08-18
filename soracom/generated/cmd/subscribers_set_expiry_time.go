@@ -113,6 +113,8 @@ func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForSubscribersSetExpiryTimeCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

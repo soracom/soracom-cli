@@ -72,6 +72,8 @@ func collectLoraNetworkSetsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraNetworkSetsGetCmd("/lora_network_sets/{ns_id}"),
 		query:  buildQueryForLoraNetworkSetsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

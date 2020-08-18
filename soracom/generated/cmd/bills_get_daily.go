@@ -72,6 +72,8 @@ func collectBillsGetDailyCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForBillsGetDailyCmd("/bills/{yyyyMM}/daily"),
 		query:  buildQueryForBillsGetDailyCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

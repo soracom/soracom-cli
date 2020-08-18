@@ -81,6 +81,8 @@ func collectOperatorAuthKeysDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForOperatorAuthKeysDeleteCmd("/operators/{operator_id}/auth_keys/{auth_key_id}"),
 		query:  buildQueryForOperatorAuthKeysDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

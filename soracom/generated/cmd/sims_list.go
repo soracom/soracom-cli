@@ -72,6 +72,8 @@ func collectSimsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsListCmd("/sims"),
 		query:  buildQueryForSimsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

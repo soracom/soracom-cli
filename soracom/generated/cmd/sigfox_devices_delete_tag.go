@@ -81,6 +81,8 @@ func collectSigfoxDevicesDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSigfoxDevicesDeleteTagCmd("/sigfox_devices/{device_id}/tags/{tag_name}"),
 		query:  buildQueryForSigfoxDevicesDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

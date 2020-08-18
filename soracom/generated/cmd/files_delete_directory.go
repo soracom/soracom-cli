@@ -77,6 +77,8 @@ func collectFilesDeleteDirectoryCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForFilesDeleteDirectoryCmd("/files/{scope}/{path}/"),
 		query:  buildQueryForFilesDeleteDirectoryCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

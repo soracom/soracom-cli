@@ -72,6 +72,8 @@ func collectEventHandlersListForSubscriberCmdParams(ac *apiClient) (*apiParams, 
 		method: "GET",
 		path:   buildPathForEventHandlersListForSubscriberCmd("/event_handlers/subscribers/{imsi}"),
 		query:  buildQueryForEventHandlersListForSubscriberCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

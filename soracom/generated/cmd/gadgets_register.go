@@ -108,6 +108,8 @@ func collectGadgetsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGadgetsRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSigfoxDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "POST",
 		path:   buildPathForSigfoxDevicesUnsetGroupCmd("/sigfox_devices/{device_id}/unset_group"),
 		query:  buildQueryForSigfoxDevicesUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

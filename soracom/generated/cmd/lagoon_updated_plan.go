@@ -80,6 +80,8 @@ func collectLagoonUpdatedPlanCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLagoonUpdatedPlanCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

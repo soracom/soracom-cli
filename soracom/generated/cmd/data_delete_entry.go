@@ -90,6 +90,8 @@ func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForDataDeleteEntryCmd("/data/{resource_type}/{resource_id}/{time}"),
 		query:  buildQueryForDataDeleteEntryCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

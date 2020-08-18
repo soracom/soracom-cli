@@ -196,6 +196,8 @@ func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) 
 		query:       buildQueryForShippingAddressesUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

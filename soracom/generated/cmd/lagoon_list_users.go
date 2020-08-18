@@ -63,6 +63,8 @@ func collectLagoonListUsersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLagoonListUsersCmd("/lagoon/users"),
 		query:  buildQueryForLagoonListUsersCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

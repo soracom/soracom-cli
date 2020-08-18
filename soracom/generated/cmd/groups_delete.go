@@ -72,6 +72,8 @@ func collectGroupsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForGroupsDeleteCmd("/groups/{group_id}"),
 		query:  buildQueryForGroupsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

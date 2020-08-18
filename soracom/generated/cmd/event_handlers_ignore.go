@@ -81,6 +81,8 @@ func collectEventHandlersIgnoreCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForEventHandlersIgnoreCmd("/event_handlers/{handler_id}/subscribers/{imsi}/ignore"),
 		query:  buildQueryForEventHandlersIgnoreCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -144,6 +144,8 @@ func collectOperatorCreateIndividualInformationCmdParams(ac *apiClient) (*apiPar
 		query:       buildQueryForOperatorCreateIndividualInformationCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

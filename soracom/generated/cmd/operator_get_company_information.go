@@ -70,6 +70,8 @@ func collectOperatorGetCompanyInformationCmdParams(ac *apiClient) (*apiParams, e
 		method: "GET",
 		path:   buildPathForOperatorGetCompanyInformationCmd("/operators/{operator_id}/company_information"),
 		query:  buildQueryForOperatorGetCompanyInformationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -85,6 +85,8 @@ func collectOrdersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOrdersCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

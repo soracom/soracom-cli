@@ -113,6 +113,8 @@ func collectSimsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

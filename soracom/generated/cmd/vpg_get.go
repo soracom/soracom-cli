@@ -72,6 +72,8 @@ func collectVpgGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForVpgGetCmd("/virtual_private_gateways/{vpg_id}"),
 		query:  buildQueryForVpgGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

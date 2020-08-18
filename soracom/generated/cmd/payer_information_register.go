@@ -95,6 +95,8 @@ func collectPayerInformationRegisterCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForPayerInformationRegisterCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

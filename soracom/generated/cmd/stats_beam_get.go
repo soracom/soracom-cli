@@ -99,6 +99,8 @@ func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForStatsBeamGetCmd("/stats/beam/subscribers/{imsi}"),
 		query:  buildQueryForStatsBeamGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

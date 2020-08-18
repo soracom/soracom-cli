@@ -199,6 +199,8 @@ func collectOperatorUpdateCompanyInformationCmdParams(ac *apiClient) (*apiParams
 		query:       buildQueryForOperatorUpdateCompanyInformationCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -81,6 +81,8 @@ func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "DELETE",
 		path:   buildPathForShippingAddressesDeleteCmd("/operators/{operator_id}/shipping_addresses/{shipping_address_id}"),
 		query:  buildQueryForShippingAddressesDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

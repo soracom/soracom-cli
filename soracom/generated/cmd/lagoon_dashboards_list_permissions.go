@@ -63,6 +63,8 @@ func collectLagoonDashboardsListPermissionsCmdParams(ac *apiClient) (*apiParams,
 		method: "GET",
 		path:   buildPathForLagoonDashboardsListPermissionsCmd("/lagoon/dashboards/permission"),
 		query:  buildQueryForLagoonDashboardsListPermissionsCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

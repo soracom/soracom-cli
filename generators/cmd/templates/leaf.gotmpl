@@ -267,6 +267,7 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
     paginationKeyHeaderInResponse: "{{.PaginationKeyHeaderInResponse}}",
     paginationRequestParameterInQuery: "{{.PaginationRequestParameterInQuery}}",
     {{end}}
+    noRetryOnError: noRetryOnError,
   }, nil
 }
 

@@ -116,6 +116,8 @@ func collectQueryDevicesCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      QueryDevicesCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -100,6 +100,8 @@ func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error
 		query:       buildQueryForLoraGatewaysSetNetworkSetCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

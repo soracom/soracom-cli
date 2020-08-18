@@ -115,6 +115,8 @@ func collectAuthCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForAuthCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

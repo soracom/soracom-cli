@@ -81,6 +81,8 @@ func collectVpgDeletePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, e
 		method: "DELETE",
 		path:   buildPathForVpgDeletePacketCaptureSessionCmd("/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}"),
 		query:  buildQueryForVpgDeletePacketCaptureSessionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

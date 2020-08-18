@@ -110,6 +110,8 @@ func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgSetRedirectionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

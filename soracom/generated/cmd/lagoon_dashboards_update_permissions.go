@@ -90,6 +90,8 @@ func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParam
 		query:       buildQueryForLagoonDashboardsUpdatePermissionsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSigfoxDevicesDisableTerminationCmdParams(ac *apiClient) (*apiParams,
 		method: "POST",
 		path:   buildPathForSigfoxDevicesDisableTerminationCmd("/sigfox_devices/{device_id}/disable_termination"),
 		query:  buildQueryForSigfoxDevicesDisableTerminationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

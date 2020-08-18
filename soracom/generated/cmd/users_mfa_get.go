@@ -81,6 +81,8 @@ func collectUsersMfaGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForUsersMfaGetCmd("/operators/{operator_id}/users/{user_name}/mfa"),
 		query:  buildQueryForUsersMfaGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSimsTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsTerminateCmd("/sims/{sim_id}/terminate"),
 		query:  buildQueryForSimsTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

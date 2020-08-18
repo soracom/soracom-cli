@@ -72,6 +72,8 @@ func collectSoraletsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSoraletsDeleteCmd("/soralets/{soralet_id}"),
 		query:  buildQueryForSoraletsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

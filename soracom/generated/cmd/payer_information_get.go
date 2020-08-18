@@ -63,6 +63,8 @@ func collectPayerInformationGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPayerInformationGetCmd("/payment_statements/payer_information"),
 		query:  buildQueryForPayerInformationGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

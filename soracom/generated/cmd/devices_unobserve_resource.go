@@ -99,6 +99,8 @@ func collectDevicesUnobserveResourceCmdParams(ac *apiClient) (*apiParams, error)
 		method: "POST",
 		path:   buildPathForDevicesUnobserveResourceCmd("/devices/{device_id}/{object}/{instance}/{resource}/unobserve"),
 		query:  buildQueryForDevicesUnobserveResourceCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

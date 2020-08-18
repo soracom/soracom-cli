@@ -72,6 +72,8 @@ func collectSimsSuspendCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsSuspendCmd("/sims/{sim_id}/suspend"),
 		query:  buildQueryForSimsSuspendCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSimsDeleteSessionCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsDeleteSessionCmd("/sims/{sim_id}/delete_session"),
 		query:  buildQueryForSimsDeleteSessionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -108,6 +108,8 @@ func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, err
 		query:       buildQueryForSubscribersUpdateSpeedClassCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

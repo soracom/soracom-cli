@@ -109,6 +109,8 @@ func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForStatsAirExportCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

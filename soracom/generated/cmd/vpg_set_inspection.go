@@ -100,6 +100,8 @@ func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgSetInspectionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

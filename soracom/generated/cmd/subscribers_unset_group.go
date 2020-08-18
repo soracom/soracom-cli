@@ -72,6 +72,8 @@ func collectSubscribersUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSubscribersUnsetGroupCmd("/subscribers/{imsi}/unset_group"),
 		query:  buildQueryForSubscribersUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

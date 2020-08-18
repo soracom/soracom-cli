@@ -72,6 +72,8 @@ func collectSubscribersUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error)
 		method: "POST",
 		path:   buildPathForSubscribersUnsetImeiLockCmd("/subscribers/{imsi}/unset_imei_lock"),
 		query:  buildQueryForSubscribersUnsetImeiLockCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

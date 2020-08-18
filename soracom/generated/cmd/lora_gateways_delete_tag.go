@@ -81,6 +81,8 @@ func collectLoraGatewaysDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForLoraGatewaysDeleteTagCmd("/lora_gateways/{gateway_id}/tags/{tag_name}"),
 		query:  buildQueryForLoraGatewaysDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

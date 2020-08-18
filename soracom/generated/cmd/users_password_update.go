@@ -130,6 +130,8 @@ func collectUsersPasswordUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersPasswordUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

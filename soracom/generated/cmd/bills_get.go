@@ -72,6 +72,8 @@ func collectBillsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForBillsGetCmd("/bills/{yyyyMM}"),
 		query:  buildQueryForBillsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

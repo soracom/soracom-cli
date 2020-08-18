@@ -104,6 +104,8 @@ func collectSandboxOrdersShipCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSandboxOrdersShipCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

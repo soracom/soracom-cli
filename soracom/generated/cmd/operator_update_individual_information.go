@@ -144,6 +144,8 @@ func collectOperatorUpdateIndividualInformationCmdParams(ac *apiClient) (*apiPar
 		query:       buildQueryForOperatorUpdateIndividualInformationCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -85,6 +85,8 @@ func collectSandboxSubscribersCreateCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForSandboxSubscribersCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

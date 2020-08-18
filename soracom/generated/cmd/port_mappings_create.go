@@ -90,6 +90,8 @@ func collectPortMappingsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForPortMappingsCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

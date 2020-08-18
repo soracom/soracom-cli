@@ -72,6 +72,8 @@ func collectVpgCloseGateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForVpgCloseGateCmd("/virtual_private_gateways/{vpg_id}/gate/close"),
 		query:  buildQueryForVpgCloseGateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

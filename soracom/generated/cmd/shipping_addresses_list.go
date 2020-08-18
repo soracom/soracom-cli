@@ -70,6 +70,8 @@ func collectShippingAddressesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForShippingAddressesListCmd("/operators/{operator_id}/shipping_addresses"),
 		query:  buildQueryForShippingAddressesListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

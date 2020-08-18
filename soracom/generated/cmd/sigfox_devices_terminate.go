@@ -72,6 +72,8 @@ func collectSigfoxDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSigfoxDevicesTerminateCmd("/sigfox_devices/{device_id}/terminate"),
 		query:  buildQueryForSigfoxDevicesTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

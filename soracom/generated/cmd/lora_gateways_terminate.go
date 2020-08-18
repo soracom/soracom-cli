@@ -72,6 +72,8 @@ func collectLoraGatewaysTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForLoraGatewaysTerminateCmd("/lora_gateways/{gateway_id}/terminate"),
 		query:  buildQueryForLoraGatewaysTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

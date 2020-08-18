@@ -72,6 +72,8 @@ func collectLoraDevicesEnableTerminationCmdParams(ac *apiClient) (*apiParams, er
 		method: "POST",
 		path:   buildPathForLoraDevicesEnableTerminationCmd("/lora_devices/{device_id}/enable_termination"),
 		query:  buildQueryForLoraDevicesEnableTerminationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

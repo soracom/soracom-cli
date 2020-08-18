@@ -70,6 +70,8 @@ func collectOperatorGetSupportTokenCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "POST",
 		path:   buildPathForOperatorGetSupportTokenCmd("/operators/{operator_id}/support/token"),
 		query:  buildQueryForOperatorGetSupportTokenCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

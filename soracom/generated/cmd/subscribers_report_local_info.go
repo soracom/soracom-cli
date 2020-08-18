@@ -72,6 +72,8 @@ func collectSubscribersReportLocalInfoCmdParams(ac *apiClient) (*apiParams, erro
 		method: "POST",
 		path:   buildPathForSubscribersReportLocalInfoCmd("/subscribers/{imsi}/report_local_info"),
 		query:  buildQueryForSubscribersReportLocalInfoCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

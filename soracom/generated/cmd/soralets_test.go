@@ -157,6 +157,8 @@ func collectSoraletsTestCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSoraletsTestCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSimsUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsUnsetImeiLockCmd("/sims/{sim_id}/unset_imei_lock"),
 		query:  buildQueryForSimsUnsetImeiLockCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

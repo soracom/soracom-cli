@@ -81,6 +81,8 @@ func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForVpgUnregisterGatePeerCmd("/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}"),
 		query:  buildQueryForVpgUnregisterGatePeerCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

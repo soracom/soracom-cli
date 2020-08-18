@@ -72,6 +72,8 @@ func collectSimsDeactivateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsDeactivateCmd("/sims/{sim_id}/deactivate"),
 		query:  buildQueryForSimsDeactivateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

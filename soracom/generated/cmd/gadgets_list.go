@@ -101,6 +101,8 @@ func collectGadgetsListCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      GadgetsListCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectOrdersRegisterSubscribersCmdParams(ac *apiClient) (*apiParams, error
 		method: "POST",
 		path:   buildPathForOrdersRegisterSubscribersCmd("/orders/{order_id}/subscribers/register"),
 		query:  buildQueryForOrdersRegisterSubscribersCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

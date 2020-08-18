@@ -134,6 +134,8 @@ func collectDevicesExecuteResourceCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForDevicesExecuteResourceCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

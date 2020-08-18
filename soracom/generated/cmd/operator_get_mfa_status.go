@@ -70,6 +70,8 @@ func collectOperatorGetMfaStatusCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForOperatorGetMfaStatusCmd("/operators/{operator_id}/mfa"),
 		query:  buildQueryForOperatorGetMfaStatusCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

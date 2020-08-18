@@ -115,6 +115,8 @@ func collectLoraDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraDevicesSetGroupCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

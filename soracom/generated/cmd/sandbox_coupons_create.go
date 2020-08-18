@@ -95,6 +95,8 @@ func collectSandboxCouponsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSandboxCouponsCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

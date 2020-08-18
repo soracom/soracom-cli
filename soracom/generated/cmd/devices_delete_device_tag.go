@@ -81,6 +81,8 @@ func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForDevicesDeleteDeviceTagCmd("/devices/{device_id}/tags/{tag_name}"),
 		query:  buildQueryForDevicesDeleteDeviceTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

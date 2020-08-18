@@ -94,6 +94,8 @@ func collectOperatorAddContractCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOperatorAddContractCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

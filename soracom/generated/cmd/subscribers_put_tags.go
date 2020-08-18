@@ -93,6 +93,8 @@ func collectSubscribersPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSubscribersPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -91,6 +91,8 @@ func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		doPagination:                      GroupsListSubscribersCmdPaginate,
 		paginationKeyHeaderInResponse:     "x-soracom-next-key",
 		paginationRequestParameterInQuery: "last_evaluated_key",
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

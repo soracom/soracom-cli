@@ -72,6 +72,8 @@ func collectLoraGatewaysGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraGatewaysGetCmd("/lora_gateways/{gateway_id}"),
 		query:  buildQueryForLoraGatewaysGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

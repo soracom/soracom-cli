@@ -105,6 +105,8 @@ func collectLoraDevicesSendDataCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraDevicesSendDataCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

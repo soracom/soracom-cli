@@ -72,6 +72,8 @@ func collectLoraNetworkSetsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForLoraNetworkSetsDeleteCmd("/lora_network_sets/{ns_id}"),
 		query:  buildQueryForLoraNetworkSetsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

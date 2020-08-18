@@ -72,6 +72,8 @@ func collectOrdersConfirmCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "PUT",
 		path:   buildPathForOrdersConfirmCmd("/orders/{order_id}/confirm"),
 		query:  buildQueryForOrdersConfirmCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

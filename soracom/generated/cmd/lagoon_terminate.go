@@ -63,6 +63,8 @@ func collectLagoonTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForLagoonTerminateCmd("/lagoon/terminate"),
 		query:  buildQueryForLagoonTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

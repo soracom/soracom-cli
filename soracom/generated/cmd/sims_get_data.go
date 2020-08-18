@@ -98,6 +98,8 @@ func collectSimsGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsGetDataCmd("/sims/{sim_id}/data"),
 		query:  buildQueryForSimsGetDataCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -93,6 +93,8 @@ func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraGatewaysPutTagsCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

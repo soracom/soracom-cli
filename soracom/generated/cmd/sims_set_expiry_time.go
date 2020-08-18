@@ -113,6 +113,8 @@ func collectSimsSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSimsSetExpiryTimeCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

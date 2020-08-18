@@ -63,6 +63,8 @@ func collectPaymentMethodsGetCurrentCmdParams(ac *apiClient) (*apiParams, error)
 		method: "GET",
 		path:   buildPathForPaymentMethodsGetCurrentCmd("/payment_methods/current"),
 		query:  buildQueryForPaymentMethodsGetCurrentCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -58,6 +58,8 @@ func collectLagoonLicensePacksListStatusCmdParams(ac *apiClient) (*apiParams, er
 		method: "GET",
 		path:   buildPathForLagoonLicensePacksListStatusCmd("/lagoon/license_packs"),
 		query:  buildQueryForLagoonLicensePacksListStatusCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

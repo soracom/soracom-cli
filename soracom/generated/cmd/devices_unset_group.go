@@ -72,6 +72,8 @@ func collectDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForDevicesUnsetGroupCmd("/devices/{device_id}/unset_group"),
 		query:  buildQueryForDevicesUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

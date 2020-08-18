@@ -81,6 +81,8 @@ func collectGadgetsTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForGadgetsTerminateCmd("/gadgets/{product_id}/{serial_number}/terminate"),
 		query:  buildQueryForGadgetsTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectLoraDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraDevicesGetCmd("/lora_devices/{device_id}"),
 		query:  buildQueryForLoraDevicesGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

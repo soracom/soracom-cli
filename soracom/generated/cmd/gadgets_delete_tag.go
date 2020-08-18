@@ -90,6 +90,8 @@ func collectGadgetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForGadgetsDeleteTagCmd("/gadgets/{product_id}/{serial_number}/tags/{tag_name}"),
 		query:  buildQueryForGadgetsDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

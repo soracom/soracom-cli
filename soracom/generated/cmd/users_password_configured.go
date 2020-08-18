@@ -81,6 +81,8 @@ func collectUsersPasswordConfiguredCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForUsersPasswordConfiguredCmd("/operators/{operator_id}/users/{user_name}/password"),
 		query:  buildQueryForUsersPasswordConfiguredCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

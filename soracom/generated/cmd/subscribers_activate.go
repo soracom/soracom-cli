@@ -72,6 +72,8 @@ func collectSubscribersActivateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSubscribersActivateCmd("/subscribers/{imsi}/activate"),
 		query:  buildQueryForSubscribersActivateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

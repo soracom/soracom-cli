@@ -108,6 +108,8 @@ func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, e
 		query:       buildQueryForSubscribersIssueTransferTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -85,6 +85,8 @@ func collectOperatorIssueMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, err
 		query:       buildQueryForOperatorIssueMfaRevokeTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -81,6 +81,8 @@ func collectGroupsDeleteConfigNamespaceCmdParams(ac *apiClient) (*apiParams, err
 		method: "DELETE",
 		path:   buildPathForGroupsDeleteConfigNamespaceCmd("/groups/{group_id}/configuration/{namespace}"),
 		query:  buildQueryForGroupsDeleteConfigNamespaceCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

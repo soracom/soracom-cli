@@ -81,6 +81,8 @@ func collectSoraletsDeleteVersionCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSoraletsDeleteVersionCmd("/soralets/{soralet_id}/versions/{version}"),
 		query:  buildQueryForSoraletsDeleteVersionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

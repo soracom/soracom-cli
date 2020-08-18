@@ -100,6 +100,8 @@ func collectSandboxStatsAirInsertCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSandboxStatsAirInsertCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

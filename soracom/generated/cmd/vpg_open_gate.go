@@ -105,6 +105,8 @@ func collectVpgOpenGateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgOpenGateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

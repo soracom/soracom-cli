@@ -109,6 +109,8 @@ func collectUsersMfaVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersMfaVerifyCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

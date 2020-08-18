@@ -109,6 +109,8 @@ func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForUsersPasswordCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

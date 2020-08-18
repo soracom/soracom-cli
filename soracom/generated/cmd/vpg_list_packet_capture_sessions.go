@@ -83,6 +83,8 @@ func collectVpgListPacketCaptureSessionsCmdParams(ac *apiClient) (*apiParams, er
 		method: "GET",
 		path:   buildPathForVpgListPacketCaptureSessionsCmd("/virtual_private_gateways/{vpg_id}/packet_capture_sessions"),
 		query:  buildQueryForVpgListPacketCaptureSessionsCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

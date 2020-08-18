@@ -104,6 +104,8 @@ func collectDevicesGetResourceCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetResourceCmd("/devices/{device_id}/{object}/{instance}/{resource}"),
 		query:  buildQueryForDevicesGetResourceCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

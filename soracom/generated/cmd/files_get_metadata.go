@@ -77,6 +77,8 @@ func collectFilesGetMetadataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "HEAD",
 		path:   buildPathForFilesGetMetadataCmd("/files/{scope}/{path}"),
 		query:  buildQueryForFilesGetMetadataCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

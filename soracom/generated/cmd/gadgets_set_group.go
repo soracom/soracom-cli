@@ -128,6 +128,8 @@ func collectGadgetsSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGadgetsSetGroupCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

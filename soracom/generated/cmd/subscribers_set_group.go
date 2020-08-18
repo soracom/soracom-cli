@@ -100,6 +100,8 @@ func collectSubscribersSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForSubscribersSetGroupCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

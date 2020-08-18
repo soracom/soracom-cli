@@ -81,6 +81,8 @@ func collectSimsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForSimsDeleteTagCmd("/sims/{sim_id}/tags/{tag_name}"),
 		query:  buildQueryForSimsDeleteTagCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectLoraGatewaysUnsetNetworkSetCmdParams(ac *apiClient) (*apiParams, err
 		method: "POST",
 		path:   buildPathForLoraGatewaysUnsetNetworkSetCmd("/lora_gateways/{gateway_id}/unset_network_set"),
 		query:  buildQueryForLoraGatewaysUnsetNetworkSetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -81,6 +81,8 @@ func collectGadgetsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGadgetsGetCmd("/gadgets/{product_id}/{serial_number}"),
 		query:  buildQueryForGadgetsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

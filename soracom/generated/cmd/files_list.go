@@ -77,6 +77,8 @@ func collectFilesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForFilesListCmd("/files/{scope}/{path}/"),
 		query:  buildQueryForFilesListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

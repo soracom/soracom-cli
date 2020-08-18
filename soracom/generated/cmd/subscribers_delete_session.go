@@ -72,6 +72,8 @@ func collectSubscribersDeleteSessionCmdParams(ac *apiClient) (*apiParams, error)
 		method: "POST",
 		path:   buildPathForSubscribersDeleteSessionCmd("/subscribers/{imsi}/delete_session"),
 		query:  buildQueryForSubscribersDeleteSessionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

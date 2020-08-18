@@ -72,6 +72,8 @@ func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForVpgUnsetRedirectionCmd("/virtual_private_gateways/{vpg_id}/junction/unset_redirection"),
 		query:  buildQueryForVpgUnsetRedirectionCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

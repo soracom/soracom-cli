@@ -81,6 +81,8 @@ func collectUsersAuthKeysGenerateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForUsersAuthKeysGenerateCmd("/operators/{operator_id}/users/{user_name}/auth_keys"),
 		query:  buildQueryForUsersAuthKeysGenerateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

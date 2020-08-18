@@ -103,6 +103,8 @@ func collectAuthVerifyPasswordResetTokenCmdParams(ac *apiClient) (*apiParams, er
 		query:       buildQueryForAuthVerifyPasswordResetTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

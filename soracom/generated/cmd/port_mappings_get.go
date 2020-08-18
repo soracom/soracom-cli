@@ -72,6 +72,8 @@ func collectPortMappingsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPortMappingsGetCmd("/port_mappings/subscribers/{imsi}"),
 		query:  buildQueryForPortMappingsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

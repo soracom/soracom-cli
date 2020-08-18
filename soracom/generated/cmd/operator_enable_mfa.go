@@ -70,6 +70,8 @@ func collectOperatorEnableMfaCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForOperatorEnableMfaCmd("/operators/{operator_id}/mfa"),
 		query:  buildQueryForOperatorEnableMfaCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

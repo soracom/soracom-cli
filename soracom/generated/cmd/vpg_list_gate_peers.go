@@ -72,6 +72,8 @@ func collectVpgListGatePeersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForVpgListGatePeersCmd("/virtual_private_gateways/{vpg_id}/gate/peers"),
 		query:  buildQueryForVpgListGatePeersCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

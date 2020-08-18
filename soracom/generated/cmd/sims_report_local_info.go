@@ -72,6 +72,8 @@ func collectSimsReportLocalInfoCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsReportLocalInfoCmd("/sims/{sim_id}/report_local_info"),
 		query:  buildQueryForSimsReportLocalInfoCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

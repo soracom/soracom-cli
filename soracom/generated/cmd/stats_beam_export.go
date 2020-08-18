@@ -109,6 +109,8 @@ func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForStatsBeamExportCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

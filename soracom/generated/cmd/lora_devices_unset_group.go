@@ -72,6 +72,8 @@ func collectLoraDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForLoraDevicesUnsetGroupCmd("/lora_devices/{device_id}/unset_group"),
 		query:  buildQueryForLoraDevicesUnsetGroupCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

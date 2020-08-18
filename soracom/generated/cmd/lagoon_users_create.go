@@ -95,6 +95,8 @@ func collectLagoonUsersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLagoonUsersCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

@@ -72,6 +72,8 @@ func collectSigfoxDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSigfoxDevicesGetCmd("/sigfox_devices/{device_id}"),
 		query:  buildQueryForSigfoxDevicesGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

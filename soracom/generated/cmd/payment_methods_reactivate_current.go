@@ -63,6 +63,8 @@ func collectPaymentMethodsReactivateCurrentCmdParams(ac *apiClient) (*apiParams,
 		method: "POST",
 		path:   buildPathForPaymentMethodsReactivateCurrentCmd("/payment_methods/current/activate"),
 		query:  buildQueryForPaymentMethodsReactivateCurrentCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

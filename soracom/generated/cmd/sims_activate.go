@@ -72,6 +72,8 @@ func collectSimsActivateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForSimsActivateCmd("/sims/{sim_id}/activate"),
 		query:  buildQueryForSimsActivateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

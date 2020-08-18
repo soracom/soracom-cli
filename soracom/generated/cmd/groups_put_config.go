@@ -106,6 +106,8 @@ func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForGroupsPutConfigCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

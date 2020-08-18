@@ -72,6 +72,8 @@ func collectSubscribersEnableTerminationCmdParams(ac *apiClient) (*apiParams, er
 		method: "POST",
 		path:   buildPathForSubscribersEnableTerminationCmd("/subscribers/{imsi}/enable_termination"),
 		query:  buildQueryForSubscribersEnableTerminationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

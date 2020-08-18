@@ -72,6 +72,8 @@ func collectCredentialsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForCredentialsDeleteCmd("/credentials/{credentials_id}"),
 		query:  buildQueryForCredentialsDeleteCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

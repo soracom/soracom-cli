@@ -100,6 +100,8 @@ func collectSandboxOperatorsGetSignupTokenCmdParams(ac *apiClient) (*apiParams, 
 		query:       buildQueryForSandboxOperatorsGetSignupTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

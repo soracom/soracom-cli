@@ -63,6 +63,8 @@ func collectVolumeDiscountsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForVolumeDiscountsListCmd("/volume_discounts"),
 		query:  buildQueryForVolumeDiscountsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

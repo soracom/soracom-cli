@@ -90,6 +90,8 @@ func collectAuthIssuePasswordResetTokenCmdParams(ac *apiClient) (*apiParams, err
 		query:       buildQueryForAuthIssuePasswordResetTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

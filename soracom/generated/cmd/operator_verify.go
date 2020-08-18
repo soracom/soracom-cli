@@ -90,6 +90,8 @@ func collectOperatorVerifyCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForOperatorVerifyCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

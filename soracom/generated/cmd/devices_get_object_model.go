@@ -72,6 +72,8 @@ func collectDevicesGetObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetObjectModelCmd("/device_object_models/{model_id}"),
 		query:  buildQueryForDevicesGetObjectModelCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

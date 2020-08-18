@@ -115,6 +115,8 @@ func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgCreateMirroringPeerCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

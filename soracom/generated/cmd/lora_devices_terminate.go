@@ -72,6 +72,8 @@ func collectLoraDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForLoraDevicesTerminateCmd("/lora_devices/{device_id}/terminate"),
 		query:  buildQueryForLoraDevicesTerminateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

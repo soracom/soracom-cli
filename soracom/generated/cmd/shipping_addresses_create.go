@@ -183,6 +183,8 @@ func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) 
 		query:       buildQueryForShippingAddressesCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

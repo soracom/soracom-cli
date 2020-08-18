@@ -95,6 +95,8 @@ func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForEventHandlersUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

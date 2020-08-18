@@ -70,6 +70,8 @@ func collectOperatorAuthKeysGenerateCmdParams(ac *apiClient) (*apiParams, error)
 		method: "POST",
 		path:   buildPathForOperatorAuthKeysGenerateCmd("/operators/{operator_id}/auth_keys"),
 		query:  buildQueryForOperatorAuthKeysGenerateCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

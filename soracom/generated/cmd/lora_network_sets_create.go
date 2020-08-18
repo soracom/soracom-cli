@@ -100,6 +100,8 @@ func collectLoraNetworkSetsCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForLoraNetworkSetsCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

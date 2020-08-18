@@ -105,6 +105,8 @@ func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForVpgCreateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

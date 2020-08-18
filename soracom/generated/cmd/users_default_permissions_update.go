@@ -104,6 +104,8 @@ func collectUsersDefaultPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, e
 		query:       buildQueryForUsersDefaultPermissionsUpdateCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

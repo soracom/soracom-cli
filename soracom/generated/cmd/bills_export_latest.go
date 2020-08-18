@@ -67,6 +67,8 @@ func collectBillsExportLatestCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "POST",
 		path:   buildPathForBillsExportLatestCmd("/bills/latest/export"),
 		query:  buildQueryForBillsExportLatestCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

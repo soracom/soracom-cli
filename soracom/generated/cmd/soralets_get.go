@@ -72,6 +72,8 @@ func collectSoraletsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSoraletsGetCmd("/soralets/{soralet_id}"),
 		query:  buildQueryForSoraletsGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

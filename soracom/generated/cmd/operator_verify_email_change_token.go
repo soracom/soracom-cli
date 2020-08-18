@@ -95,6 +95,8 @@ func collectOperatorVerifyEmailChangeTokenCmdParams(ac *apiClient) (*apiParams, 
 		query:       buildQueryForOperatorVerifyEmailChangeTokenCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

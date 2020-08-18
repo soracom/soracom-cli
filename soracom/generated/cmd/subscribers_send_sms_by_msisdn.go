@@ -105,6 +105,8 @@ func collectSubscribersSendSmsByMsisdnCmdParams(ac *apiClient) (*apiParams, erro
 		query:       buildQueryForSubscribersSendSmsByMsisdnCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

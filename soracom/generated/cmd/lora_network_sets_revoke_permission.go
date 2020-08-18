@@ -100,6 +100,8 @@ func collectLoraNetworkSetsRevokePermissionCmdParams(ac *apiClient) (*apiParams,
 		query:       buildQueryForLoraNetworkSetsRevokePermissionCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

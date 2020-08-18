@@ -70,6 +70,8 @@ func collectOperatorGetIndividualInformationCmdParams(ac *apiClient) (*apiParams
 		method: "GET",
 		path:   buildPathForOperatorGetIndividualInformationCmd("/operators/{operator_id}/individual_information"),
 		query:  buildQueryForOperatorGetIndividualInformationCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

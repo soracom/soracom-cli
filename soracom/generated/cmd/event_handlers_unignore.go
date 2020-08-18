@@ -81,6 +81,8 @@ func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForEventHandlersUnignoreCmd("/event_handlers/{handler_id}/subscribers/{imsi}/ignore"),
 		query:  buildQueryForEventHandlersUnignoreCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

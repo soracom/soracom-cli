@@ -72,6 +72,8 @@ func collectOrdersCancelCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "PUT",
 		path:   buildPathForOrdersCancelCmd("/orders/{order_id}/cancel"),
 		query:  buildQueryForOrdersCancelCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

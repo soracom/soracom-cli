@@ -110,6 +110,8 @@ func collectLagoonUpdateUserPasswordCmdParams(ac *apiClient) (*apiParams, error)
 		query:       buildQueryForLagoonUpdateUserPasswordCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

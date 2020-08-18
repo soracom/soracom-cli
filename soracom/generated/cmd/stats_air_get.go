@@ -99,6 +99,8 @@ func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForStatsAirGetCmd("/stats/air/subscribers/{imsi}"),
 		query:  buildQueryForStatsAirGetCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

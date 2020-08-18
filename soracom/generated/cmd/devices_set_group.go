@@ -95,6 +95,8 @@ func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
 		query:       buildQueryForDevicesSetGroupCmd(),
 		contentType: contentType,
 		body:        body,
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

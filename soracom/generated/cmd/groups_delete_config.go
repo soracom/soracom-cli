@@ -90,6 +90,8 @@ func collectGroupsDeleteConfigCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "DELETE",
 		path:   buildPathForGroupsDeleteConfigCmd("/groups/{group_id}/configuration/{namespace}/{name}"),
 		query:  buildQueryForGroupsDeleteConfigCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

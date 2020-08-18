@@ -63,6 +63,8 @@ func collectCouponsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForCouponsListCmd("/coupons"),
 		query:  buildQueryForCouponsListCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 

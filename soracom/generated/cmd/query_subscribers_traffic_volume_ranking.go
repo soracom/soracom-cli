@@ -92,6 +92,8 @@ func collectQuerySubscribersTrafficVolumeRankingCmdParams(ac *apiClient) (*apiPa
 		method: "GET",
 		path:   buildPathForQuerySubscribersTrafficVolumeRankingCmd("/query/subscribers/traffic_volume/ranking"),
 		query:  buildQueryForQuerySubscribersTrafficVolumeRankingCmd(),
+
+		noRetryOnError: noRetryOnError,
 	}, nil
 }
 
