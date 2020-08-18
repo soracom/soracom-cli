@@ -8,7 +8,7 @@ d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
   }
 }
 
-goversion=1.14
+goversion=1.15
 docker pull "golang:$goversion"
 gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
@@ -46,7 +46,7 @@ fi
 
 TARGETS=$2
 if [ -z "$2" ]; then
-    TARGETS='linux windows darwin freebsd'
+    TARGETS='linux windows darwin,!386 freebsd'
     uname_s="$( uname -s | tr '[:upper:]' '[:lower:]' )"
     if [[ "$TARGETS" != *"$uname_s"* ]]; then
         TARGETS="$TARGETS $uname_s"
