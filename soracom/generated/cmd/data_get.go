@@ -10,11 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// DataGetCmdImsi holds value of 'imsi' option
+var DataGetCmdImsi string
+
 // DataGetCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var DataGetCmdLastEvaluatedKey string
-
-// DataGetCmdSimId holds value of 'sim_id' option
-var DataGetCmdSimId string
 
 // DataGetCmdSort holds value of 'sort' option
 var DataGetCmdSort string
@@ -28,10 +28,13 @@ var DataGetCmdLimit int64
 // DataGetCmdTo holds value of 'to' option
 var DataGetCmdTo int64
 
-func init() {
-	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+// DataGetCmdPaginate indicates to do pagination or not
+var DataGetCmdPaginate bool
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
+func init() {
+	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
+
+	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
@@ -40,14 +43,16 @@ func init() {
 	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	DataCmd.AddCommand(DataGetCmd)
 }
 
 // DataGetCmd defines 'get' subcommand
 var DataGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TRAPI("/sims/{sim_id}/data:get:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/data:get:description`),
+	Short: TRAPI("/subscribers/{imsi}/data:get:summary"),
+	Long:  TRAPI(`/subscribers/{imsi}/data:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -89,15 +94,18 @@ var DataGetCmd = &cobra.Command{
 }
 
 func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
-
-	if DataGetCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	if DataGetCmdImsi == "" {
+		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
 	}
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForDataGetCmd("/sims/{sim_id}/data"),
+		path:   buildPathForDataGetCmd("/subscribers/{imsi}/data"),
 		query:  buildQueryForDataGetCmd(),
+
+		doPagination:                      DataGetCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil
@@ -105,9 +113,9 @@ func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForDataGetCmd(path string) string {
 
-	escapedSimId := url.PathEscape(DataGetCmdSimId)
+	escapedImsi := url.PathEscape(DataGetCmdImsi)
 
-	path = strReplace(path, "{"+"sim_id"+"}", escapedSimId, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }

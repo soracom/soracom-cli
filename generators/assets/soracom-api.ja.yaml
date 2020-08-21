@@ -10393,7 +10393,6 @@ paths:
       tags:
       - Sim
       x-soracom-cli:
-      - data get
       - sims get-data
   /sims/{sim_id}/deactivate:
     post:
