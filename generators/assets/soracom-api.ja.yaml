@@ -10285,6 +10285,11 @@ paths:
       - Sim
       x-soracom-cli:
       - sims list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sims/{sim_id}:
     get:
       description: 指定されたSIMの情報を返す。
