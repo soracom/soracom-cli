@@ -696,8 +696,14 @@ definitions:
         description: ファイルの作成時刻
         format: int64
         type: integer
+      directory:
+        description: 親ディレクトリ名
+        type: string
       etag:
         description: ファイルのETag
+        type: string
+      filePath:
+        description: ファイルの絶対パス
         type: string
       filename:
         description: ファイル名
@@ -4363,6 +4369,62 @@ paths:
       - EventHandler
       x-soracom-cli:
       - event-handlers list-for-subscriber
+  /files:
+    get:
+      consumes:
+      - application/json
+      description: scope と prefix にマッチしたファイルエントリの一覧をファイルエントリを filePath の UTF-8 バイトでソートされた順
+        (昇順) で返却します。 prefix がマッチするファイルエントリが無ければ空のリストが返却されます。
+      operationId: findFiles
+      parameters:
+      - description: リクエストのスコープ
+        enum:
+        - private
+        - public
+        in: query
+        name: scope
+        required: true
+        type: string
+      - description: ファイルパスにマッチさせるプレフィックス
+        in: query
+        name: prefix
+        required: true
+        type: string
+      - default: 10
+        description: 返却するファイルエントリ数の上限
+        in: query
+        name: limit
+        required: false
+        type: string
+      - description: 現ページで取得した最後のファイルエントリの filePath 。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        200:
+          description: プレフィックにマッチしたエントリエントリのリスト。 prefix がマッチするファイルエントリが無ければ空のリスト。
+          schema:
+            items:
+              $ref: '#/definitions/FileEntry'
+            type: array
+        404:
+          description: 指定された scope が存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: scope と prefix にマッチするファイルを探します。
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files find
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /files/{scope}/{path}:
     delete:
       description: scope と path で指定されたファイルを削除します。`private` スコープのみが許可されます。
@@ -4534,7 +4596,8 @@ paths:
       x-soracom-cli:
       - files delete-directory
     get:
-      description: scope と path で指定された配下のファイルエントリのリストを返却します。エントリの総数が １ ページに収まらない場合、次のページへアクセスするための
+      description: scope と path で指定された配下のファイルエントリのリストを返却します。この操作はディレクトリにのみ有効で、与えられた
+        path に対応するファイルエントリがディレクトリでない場合エラーが返されます。エントリの総数が １ ページに収まらない場合、次のページへアクセスするための
         URL が Link ヘッダに含まれます。
       operationId: listFiles
       parameters:
@@ -4554,9 +4617,14 @@ paths:
         required: true
         type: string
       - default: 10
-        description: Num of entries
+        description: 返却するファイルエントリ数の上限
         in: query
         name: limit
+        required: false
+        type: string
+      - description: 現ページで取得した最後のファイルエントリの filename 。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
         required: false
         type: string
       responses:
@@ -4576,6 +4644,11 @@ paths:
       - FileEntry
       x-soracom-cli:
       - files list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /files/exported/{exported_file_id}:
     get:
       consumes:
