@@ -696,8 +696,14 @@ definitions:
         description: Created time of the file
         format: int64
         type: integer
+      directory:
+        description: Parent directory name
+        type: string
       etag:
         description: Etag of the file
+        type: string
+      filePath:
+        description: Absolute path of the file
         type: string
       filename:
         description: File name
@@ -4403,6 +4409,67 @@ paths:
       - EventHandler
       x-soracom-cli:
       - event-handlers list-for-subscriber
+  /files:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of file entries which beginnings of their file paths
+        are matched with the `prefix` query string in the ascending sorted UTF-8 bytes
+        order of their file paths. An empty list is returned if the prefix does not
+        match with any paths of file entries.
+      operationId: findFiles
+      parameters:
+      - description: Scope of the request
+        enum:
+        - private
+        - public
+        in: query
+        name: scope
+        required: true
+        type: string
+      - description: Prefix to match with file path
+        in: query
+        name: prefix
+        required: true
+        type: string
+      - default: 10
+        description: Num of entries
+        in: query
+        name: limit
+        required: false
+        type: string
+      - description: The filePath of the last file entry retrieved on the current
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next file entry onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        200:
+          description: List of file entries found with query parameters, which can
+            be empty if the prefix does not match with any paths of file entries.
+          schema:
+            items:
+              $ref: '#/definitions/FileEntry'
+            type: array
+        404:
+          description: The specified scope does not exist
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Find files with prefix query parameter in the scope
+      tags:
+      - FileEntry
+      x-soracom-cli:
+      - files find
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /files/{scope}/{path}:
     delete:
       description: Deletes the specified file in the scope. Only `private` scope is
@@ -4578,9 +4645,11 @@ paths:
       x-soracom-cli:
       - files delete-directory
     get:
-      description: Returns a list of files entries under the path in the scope. If
-        the total number of entries does not fit in one page, a URL for accessing
-        the next page is returned in the 'Link' header of the response.
+      description: Returns a list of file entries under the path in the scope. This
+        operation works only for directories and an error will be retrurned if the
+        file entry corresponds to the given path is not a directory. If the total
+        number of entries does not fit in one page, a URL for accessing the next page
+        is returned in the 'Link' header of the response.
       operationId: listFiles
       parameters:
       - default: private
@@ -4604,6 +4673,13 @@ paths:
         name: limit
         required: false
         type: string
+      - description: The filename  of the last file entry retrieved on the current
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next file entry onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
       responses:
         200:
           description: A list of file entries.
@@ -4621,6 +4697,11 @@ paths:
       - FileEntry
       x-soracom-cli:
       - files list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /files/exported/{exported_file_id}:
     get:
       consumes:
