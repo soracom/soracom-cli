@@ -1,5 +1,5 @@
 box:
-    id: golang:1.14
+  id: golang
 
 build:
   docker: true
@@ -12,21 +12,21 @@ build:
     - script:
         name: install-dev-dependencies
         code: |
-            apt update
-            apt install -y jq
+          apt update
+          apt install -y jq
 
     # Build the project
     - script:
         name: build
         code: |
-            ./scripts/build.sh
-            cp -r ./soracom/ $WERCKER_OUTPUT_DIR
+          ./scripts/build.sh
+          cp -r ./soracom/ $WERCKER_OUTPUT_DIR
 
     # Test the project
     - script:
         name: test
         code: |
-            ./test/test.sh
+          ./test/test.sh
 
   after-steps:
     - slack-notifier:
