@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// FilesListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
+var FilesListCmdLastEvaluatedKey string
+
 // FilesListCmdLimit holds value of 'limit' option
 var FilesListCmdLimit string
 
@@ -17,12 +20,19 @@ var FilesListCmdPath string
 // FilesListCmdScope holds value of 'scope' option
 var FilesListCmdScope string
 
+// FilesListCmdPaginate indicates to do pagination or not
+var FilesListCmdPaginate bool
+
 func init() {
+	FilesListCmd.Flags().StringVar(&FilesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filename  of the last file entry retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
+
 	FilesListCmd.Flags().StringVar(&FilesListCmdLimit, "limit", "", TRAPI("Num of entries"))
 
 	FilesListCmd.Flags().StringVar(&FilesListCmdPath, "path", "/", TRAPI("Target path"))
 
 	FilesListCmd.Flags().StringVar(&FilesListCmdScope, "scope", "private", TRAPI("Scope of the request"))
+
+	FilesListCmd.Flags().BoolVar(&FilesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	FilesCmd.AddCommand(FilesListCmd)
 }
 
@@ -78,6 +88,10 @@ func collectFilesListCmdParams(ac *apiClient) (*apiParams, error) {
 		path:   buildPathForFilesListCmd("/files/{scope}/{path}/"),
 		query:  buildQueryForFilesListCmd(),
 
+		doPagination:                      FilesListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
+
 		noRetryOnError: noRetryOnError,
 	}, nil
 }
@@ -97,6 +111,10 @@ func buildPathForFilesListCmd(path string) string {
 
 func buildQueryForFilesListCmd() url.Values {
 	result := url.Values{}
+
+	if FilesListCmdLastEvaluatedKey != "" {
+		result.Add("last_evaluated_key", FilesListCmdLastEvaluatedKey)
+	}
 
 	if FilesListCmdLimit != "" {
 		result.Add("limit", FilesListCmdLimit)
