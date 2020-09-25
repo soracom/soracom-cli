@@ -148,7 +148,7 @@ func loadProfile(profileName string) (*profile, error) {
 	return &p, nil
 }
 
-func saveProfile(profileName string, prof *profile) error {
+func saveProfile(profileName string, prof *profile, overwrite bool) error {
 	dir, err := getProfileDir()
 	if err != nil {
 		return err
@@ -162,7 +162,7 @@ func saveProfile(profileName string, prof *profile) error {
 	}
 
 	// check if profile file already exists
-	if _, err := os.Stat(path); err == nil {
+	if _, err := os.Stat(path); err == nil && !overwrite {
 		// prompt if overwrites or not when already exist
 		fmt.Printf(TRCLI("cli.configure.profile.overwrite"), profileName)
 		s, err := readLine()

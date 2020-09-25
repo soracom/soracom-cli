@@ -11,6 +11,9 @@ cli:
   bills:
     summary: 課金に関する情報を確認したりファイルへのエクスポートを行います。
     description: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+  cell-locations:
+    summary: 基地局の位置情報を取得します。
+    description: 基地局の位置情報を取得します。
   common_params:
     body:
       short_help: リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。

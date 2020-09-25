@@ -184,6 +184,42 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  CellLocation:
+    properties:
+      avg_strength:
+        description: セルで観測された平均の信号強度。dBm 単位の整数値。
+        format: int32
+        type: integer
+      created:
+        description: このレコードが最初に作られたときのタイムスタンプ。
+        format: date-time
+        type: string
+      exact:
+        description: セルの位置情報が測定値から推定されたもので今後予告なく変わる可能性のあるもの (`0`) か、信頼できる情報源から得られた確定した情報か
+          (`1`)。
+        format: int32
+        type: integer
+      lat:
+        description: 推定座標の緯度
+        format: double
+        type: number
+      lon:
+        description: 推定座標の経度
+        format: double
+        type: number
+      range:
+        description: 基地局のエリアの範囲（推定座標からの半径。メートル単位）。測定値から推定された値の場合と、信頼できる情報源から得た値の場合がある。
+        format: int32
+        type: integer
+      samples:
+        description: 推定座標、範囲、平均信号強度を計算するために使われた測定値の総数。
+        format: int32
+        type: integer
+      updated:
+        description: このレコードが最後に更新されたときのタイムスタンプ。
+        format: date-time
+        type: string
+    type: object
   CompanyInformationModel:
     properties:
       addressLine1:
@@ -2922,6 +2958,62 @@ paths:
       - Billing
       x-soracom-cli:
       - bills export-latest
+  /cell_locations:
+    get:
+      consumes:
+      - application/json
+      description: セル ID などの基地局情報から、その基地局の位置情報（緯度経度）を取得します。 3G の場合は MCC, MNC, LAC,
+        CID を指定してください。CID がなくてもおおよその位置を取得することができますが、精度は高くありません。 LTE (4G) の場合は MCC,
+        MNC, TAC, ECID を指定してください。 基地局情報から位置情報への変換には外部のオープンなデータベースを利用していますので、情報が存在していなかったり誤っている場合もあります。
+      operationId: getCellLocation
+      parameters:
+      - description: MCC (Mobile Country Code) - 国コード
+        in: query
+        name: mcc
+        required: true
+        type: string
+      - description: MNC (Mobile Network Code) - ネットワークコード
+        in: query
+        name: mnc
+        required: true
+        type: string
+      - description: LAC (Location Area Code) - エリアコード（3G 用）
+        in: query
+        name: lac
+        required: false
+        type: string
+      - description: CID (Cell ID) - セル ID（3G 用）
+        in: query
+        name: cid
+        required: false
+        type: string
+      - description: TAC (Tracking Area Code) - エリアコード（LTE 用）
+        in: query
+        name: tac
+        required: false
+        type: string
+      - description: ECID (Enhanced Cell ID) - セル ID（LTE 用）
+        in: query
+        name: ecid
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 基地局の位置情報
+          schema:
+            $ref: '#/definitions/CellLocation'
+        "404":
+          description: 指定された基地局の位置情報が見つからない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: 基地局の位置情報を取得します.
+      tags:
+      - CellLocation
+      x-soracom-cli:
+      - cell-locations get
   /coupons:
     get:
       consumes:

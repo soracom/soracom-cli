@@ -11,6 +11,9 @@ cli:
   bills:
     summary: Show or export billing info.
     description: Show billing info for specified period, or export the billing info to a file
+  cell-locations:
+    summary: Retrieves cell tower location information.
+    description: Retrieves cell tower location information.
   common_params:
     body:
       short_help: JSON string or @filename for API request body.

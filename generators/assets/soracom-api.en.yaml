@@ -184,6 +184,47 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  CellLocation:
+    properties:
+      avg_strength:
+        description: Average signal strength from all observations for the cell network.
+          This is an integer value, in dBm.
+        format: int32
+        type: integer
+      created:
+        description: Timestamp of the time when this record was first created.
+        format: date-time
+        type: string
+      exact:
+        description: Whether or not this cell is a position estimate based on observations
+          subject to change in the future (`0`) or an exact location entered from
+          a knowledgeable source (`1`).
+        format: int32
+        type: integer
+      lat:
+        description: Latitude
+        format: double
+        type: number
+      lon:
+        description: Longitude
+        format: double
+        type: number
+      range:
+        description: Estimate of radio range, in meters. This is an estimate on how
+          large each cell area is, as a radius around the estimated position and is
+          based on the observations or a knowledgeable source.
+        format: int32
+        type: integer
+      samples:
+        description: Total number of observations used to calculate the estimated
+          position, range and avg_strength.
+        format: int32
+        type: integer
+      updated:
+        description: Timestamp of the time when this record was most recently modified.
+        format: date-time
+        type: string
+    type: object
   CompanyInformationModel:
     properties:
       addressLine1:
@@ -2942,6 +2983,66 @@ paths:
       - Billing
       x-soracom-cli:
       - bills export-latest
+  /cell_locations:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves location information (latitude / longitude) for a cell
+        tower which is identified by Cell ID etc. Please specify MCC, MNC, LAC and
+        CID when the access radio technology is 3G. It is possible to retrieve location
+        information without CID, but the location information will be low accuracy.
+        For LTE (4G), please specify MCC, MNC, TAC and ECID. As it is based on an
+        open database to convert cell information into location information, the location
+        information does not exist or might be incorrect.
+      operationId: getCellLocation
+      parameters:
+      - description: MCC - Mobile Country Code
+        in: query
+        name: mcc
+        required: true
+        type: string
+      - description: MNC - Mobile Network Code
+        in: query
+        name: mnc
+        required: true
+        type: string
+      - description: LAC - Location Area Code (for 3G)
+        in: query
+        name: lac
+        required: false
+        type: string
+      - description: CID - Cell ID (for 3G)
+        in: query
+        name: cid
+        required: false
+        type: string
+      - description: TAC - Tracking Area Code (for 4G)
+        in: query
+        name: tac
+        required: false
+        type: string
+      - description: ECID - Enhanced Cell ID (for 4G)
+        in: query
+        name: ecid
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Location information for the cell tower
+          schema:
+            $ref: '#/definitions/CellLocation'
+        "404":
+          description: Location information is not found for the cell tower
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get location information for a cell tower.
+      tags:
+      - CellLocation
+      x-soracom-cli:
+      - cell-locations get
   /coupons:
     get:
       consumes:
