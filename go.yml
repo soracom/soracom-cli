@@ -1,0 +1,61 @@
+name: Go
+
+on: push
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Install goimports
+        run: go get golang.org/x/tools/cmd/goimports
+
+      - name: Install go-assets-builder
+        run: go get github.com/jessevdk/go-assets-builder
+
+      - name: Generate
+        run: go generate -v ./generagors/cmd/src/
+
+      - name: Format
+        run: goimports -w ./generators/
+
+      - name: Test
+        run: go test ./generators/cmd/src
+
+      - name: Test
+        run: go test ./generators/lib
+
+      - name: Build the generator
+        run: go build -o generate-cmd ./generators/cmd/src
+
+      - name: Run the generator
+        run: ./generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
+
+      - name: Generate
+        run: go generate -v ./soracom/ && ls ./soracom/ && ls ./soracom/generated/ && ls ./soracom/generated/cmd && ls ./soracom/generated/cmd/i18n_data.go
+
+      #- name: Install a dependency which is required only for windows
+      #run: go get -u github.com/bearmini/go-acl
+
+      - name: Format
+        run: goimports -w ./soracom/
+
+      - name: Build - Linux amd64
+        run: GOOS=linux GOARCH=amd64 go build -o soracom/dist/ghactions/soracom-$GOOS-$GOARCH ./soracom
+
+      - name: Build - Darwin amd64
+        run: GOOS=darwin GOARCH=amd64 go build -o soracom/dist/ghactions/soracom-$GOOS-$GOARCH ./soracom
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: soracom/dist/ghactions/
