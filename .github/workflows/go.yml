@@ -49,11 +49,16 @@ jobs:
       - name: Format
         run: goimports -w ./soracom/
 
-      - name: Build - Linux amd64
-        run: GOOS=linux GOARCH=amd64 go build -o soracom/dist/ghactions/soracom-$GOOS-$GOARCH ./soracom
-
-      - name: Build - Darwin amd64
-        run: GOOS=darwin GOARCH=amd64 go build -o soracom/dist/ghactions/soracom-$GOOS-$GOARCH ./soracom
+      - name: Build
+        run: |
+          GOOS=linux   GOARCH=amd64 go build -o soracom/dist/ghactions/linux-amd64/soracom   ./soracom
+          GOOS=linux   GOARCH=386   go build -o soracom/dist/ghactions/linux-386/soracom     ./soracom
+          GOOS=linux   GOARCH=arm   go build -o soracom/dist/ghactions/linux-arm/soracom     ./soracom
+          GOOS=darwin  GOARCH=amd64 go build -o soracom/dist/ghactions/darwin-amd64/soracom  ./soracom
+          GOOS=windows GOARCH=amd64 go build -o soracom/dist/ghactions/windows-amd64/soracom ./soracom
+          GOOS=windows GOARCH=386   go build -o soracom/dist/ghactions/windows-386/soracom   ./soracom
+          GOOS=freebsd GOARCH=amd64 go build -o soracom/dist/ghactions/freebsd-amd64/soracom ./soracom
+          GOOS=freebsd GOARCH=386   go build -o soracom/dist/ghactions/freebsd-386/soracom   ./soracom
 
       - uses: actions/upload-artifact@v2
         with:
