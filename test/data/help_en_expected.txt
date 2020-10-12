@@ -7,6 +7,7 @@ Available Commands:
   audit-logs         Retrieve audit logs.
   auth               Performs authentication to access to the SORACOM API.
   bills              Show or export billing info.
+  cell-locations     Retrieves cell tower location information.
   completion         Generate script for bash or zsh completion.
   configure          Show, create or update configurations (profiles).
   configure-sandbox  Create configurations (profiles) for API Sandbox.
