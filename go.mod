@@ -13,7 +13,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200925080053-05aa5d4ee321 // indirect
-	golang.org/x/sys v0.0.0-20201005172224-997123666555
+	golang.org/x/sys v0.0.0-20201013064817-56aa3af1a10a
 	gopkg.in/yaml.v2 v2.3.0
 )
 

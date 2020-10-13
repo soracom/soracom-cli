@@ -184,6 +184,24 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  CellIdentifier:
+    properties:
+      cid:
+        type: string
+      ecid:
+        type: string
+      identifier:
+        description: optionally link the result to the request
+        type: string
+      lac:
+        type: string
+      mcc:
+        type: string
+      mnc:
+        type: string
+      tac:
+        type: string
+    type: object
   CellLocation:
     properties:
       avg_strength:
@@ -3043,6 +3061,38 @@ paths:
       - CellLocation
       x-soracom-cli:
       - cell-locations get
+    post:
+      consumes:
+      - application/json
+      description: Retrieves a list of location information (latitude / longitude)
+        for multiple cell towers which are identified by Cell IDs etc.
+      operationId: batchGetCellLocations
+      parameters:
+      - description: List of cell identifiers.
+        in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/CellIdentifier'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of location information for the specified cell towers
+          schema:
+            items:
+              $ref: '#/definitions/CellLocation'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List location information for multiple cell towers.
+      tags:
+      - CellLocation
+      x-soracom-cli:
+      - cell-locations batch-get
   /coupons:
     get:
       consumes:

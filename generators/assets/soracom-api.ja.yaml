@@ -184,6 +184,24 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  CellIdentifier:
+    properties:
+      cid:
+        type: string
+      ecid:
+        type: string
+      identifier:
+        description: リクエストとそれに対する結果を結びつけるための識別子。オプショナルです。
+        type: string
+      lac:
+        type: string
+      mcc:
+        type: string
+      mnc:
+        type: string
+      tac:
+        type: string
+    type: object
   CellLocation:
     properties:
       avg_strength:
@@ -3009,11 +3027,44 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: 基地局の位置情報を取得します.
+      summary: 基地局の位置情報を取得します。
       tags:
       - CellLocation
       x-soracom-cli:
       - cell-locations get
+    post:
+      consumes:
+      - application/json
+      description: 基地局情報のリストから、それらの基地局の位置情報（緯度経度）のリストを取得します。 3G の場合は MCC, MNC, LAC,
+        CID を指定してください。CID がなくてもおおよその位置を取得することができますが、精度は高くありません。 LTE (4G) の場合は MCC,
+        MNC, TAC, ECID を指定してください。 基地局情報から位置情報への変換には外部のオープンなデータベースを利用していますので、情報が存在していなかったり誤っている場合もあります。
+      operationId: batchGetCellLocations
+      parameters:
+      - description: 基地局情報のリスト
+        in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/CellIdentifier'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 指定された基地局に対応する位置情報のリスト
+          schema:
+            items:
+              $ref: '#/definitions/CellLocation'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: 複数の基地局の位置情報を一度に取得します。
+      tags:
+      - CellLocation
+      x-soracom-cli:
+      - cell-locations batch-get
   /coupons:
     get:
       consumes:
