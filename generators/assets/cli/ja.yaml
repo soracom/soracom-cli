@@ -70,6 +70,9 @@ cli:
   devices:
     summary: デバイスに関する操作を行います。
     description: デバイスに関する操作を行います。
+  emails:
+    summary: メールアドレスに関する操作を行います。
+    description: メールアドレスに関する操作を行います。
   event-handlers:
     summary: イベントハンドラーに関する操作を行います。
     description: イベントハンドラーに関する操作を行います。
@@ -182,6 +185,9 @@ cli:
   subscribers:
     summary: サブスクライバー (SIM) に関する操作を行います。
     description: サブスクライバー (SIM) に関する操作を行います。
+  system-notifications:
+    summary: システム通知に関する操作を行います。
+    description: システム通知に関する操作を行います。
   test:
     summary: soracom コマンド自身のテストや診断を行います。
     description: soracom コマンド自身のテストや診断を行います。
