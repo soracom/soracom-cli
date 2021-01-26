@@ -386,10 +386,13 @@ definitions:
       destination:
         $ref: '#/definitions/PortMappingDestination'
       duration:
+        description: Specify the duration, in seconds, that remote access should be
+          enabled.
         type: number
       source:
         $ref: '#/definitions/PortMappingSource'
       tlsRequired:
+        description: Specify whether access uses TLS.
         type: boolean
     required:
     - destination
@@ -593,6 +596,21 @@ definitions:
       scope:
         type: string
     type: object
+  EmailsModel:
+    properties:
+      createDateTime:
+        format: int64
+        type: integer
+      email:
+        type: string
+      emailId:
+        type: string
+      updateDateTime:
+        format: int64
+        type: integer
+      verification:
+        description: Whether the email address was verified by token.
+        type: boolean
   EnableMFAOTPResponse:
     properties:
       totpUri:
@@ -713,6 +731,17 @@ definitions:
     - contentType
     - payload
     - source
+  ExecuteSoraletResponse:
+    properties:
+      body:
+        type: string
+      contentType:
+        type: string
+      encodingType:
+        type: string
+      resultCode:
+        format: int32
+        type: integer
   ExpiryTime:
     properties:
       expiryAction:
@@ -1225,6 +1254,16 @@ definitions:
         - customerGatePeer
         - gatePeer
         type: string
+  IssueAddEmailTokenRequest:
+    properties:
+      email:
+        type: string
+      password:
+        description: Password of the operator
+        type: string
+    required:
+    - email
+    - password
   IssueEmailChangeTokenRequest:
     properties:
       email:
@@ -1892,24 +1931,33 @@ definitions:
       destination:
         $ref: '#/definitions/PortMappingDestination'
       duration:
+        description: The duration that remote access is enabled, in seconds.
         type: number
       endpoint:
+        description: SORACOM Napter endpoint (IP address and port number) for remote
+          access.
         type: string
       hostname:
+        description: SORACOM Napter hostname for remote access.
         type: string
       ipAddress:
+        description: SORACOM Napter IP Address for remote access.
         type: string
       port:
+        description: SORACOM Napter port number for remote access.
         type: number
       source:
         $ref: '#/definitions/PortMappingSource'
       tlsRequired:
+        description: Indicates TLS is required.
         type: boolean
   PortMappingDestination:
     properties:
       imsi:
+        description: The target IMSI of the subscriber.
         type: string
       port:
+        description: The port on your device used for access.
         type: number
     required:
     - imsi
@@ -1917,6 +1965,8 @@ definitions:
   PortMappingSource:
     properties:
       ipRanges:
+        description: The range of IP addresses in CIDR notation which will be allowed
+          to access the port mapping.
         items:
           type: string
         type: array
@@ -2242,6 +2292,17 @@ definitions:
       networkSetId:
         type: string
     type: object
+  SetSystemNotificationsRequest:
+    properties:
+      emailIdList:
+        items:
+          type: string
+        type: array
+      password:
+        description: Password of the operator. This is necessary when type is primary.
+        type: string
+    required:
+    - emailIdList
   SetUserPermissionRequest:
     properties:
       description:
@@ -2411,14 +2472,16 @@ definitions:
         type: integer
   Soralet:
     properties:
-      createdAt:
+      createdTime:
         format: int64
         type: integer
       description:
         type: string
+      operatorId:
+        type: string
       soraletId:
         type: string
-      updatedAt:
+      updatedTime:
         format: int64
         type: integer
   SoraletDataSource:
@@ -2432,10 +2495,12 @@ definitions:
     - resourceId
   SoraletLog:
     properties:
-      createdAt:
+      createdTime:
         format: int64
         type: integer
       message:
+        type: string
+      operatorId:
         type: string
       soraletId:
         type: string
@@ -2444,15 +2509,19 @@ definitions:
         type: integer
   SoraletVersion:
     properties:
-      createdAt:
+      createdTime:
         format: int64
         type: integer
       hash:
+        type: string
+      operatorId:
         type: string
       size:
         format: int64
         type: integer
       soraletId:
+        type: string
+      srn:
         type: string
       version:
         format: int64
@@ -2508,6 +2577,18 @@ definitions:
         type: string
     required:
     - token
+  SystemNotificationsModel:
+    properties:
+      emailIdList:
+        items:
+          type: string
+        type: array
+      type:
+        description: primary / recovery / billing
+        type: string
+      updateDateTime:
+        format: int64
+        type: integer
   TagSet:
     additionalProperties:
       type: string
@@ -2595,6 +2676,12 @@ definitions:
         type: integer
       userName:
         type: string
+  VerifyAddEmailTokenRequest:
+    properties:
+      token:
+        type: string
+    required:
+    - token
   VerifyEmailChangeTokenRequest:
     properties:
       token:
@@ -3893,14 +3980,19 @@ paths:
         name: resource
         required: true
         type: string
-      - description: Value(s) to write to the resource
+      - description: Value(s) to write to the resource. This value accepts LwM2M basic
+          data types. You have to use the property name `values` (instead of `value`)
+          with an array value if the resource model is multiple-mode.
         in: body
         name: value
         required: true
         schema:
           properties:
             value:
-              type: string
+              type:
+              - string
+              - number
+              - boolean
           type: object
       responses:
         "202":
@@ -7525,6 +7617,133 @@ paths:
       - Operator
       x-soracom-cli:
       - operator add-coverage-type
+  /operators/{operator_id}/emails:
+    get:
+      description: Returns a list of email addresses.
+      operationId: listEmails
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/EmailsModel'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List email addresses
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails list
+  /operators/{operator_id}/emails/{email_id}:
+    delete:
+      description: Deletes an email address.
+      operationId: deleteEmail
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: email_id
+        in: path
+        name: email_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails delete
+    get:
+      description: Returns an email address.
+      operationId: getEmail
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: email_id
+        in: path
+        name: email_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/EmailsModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails get
+  /operators/add_email_token/issue:
+    post:
+      consumes:
+      - application/json
+      description: Sends an email with a one-time token for adding an e-mail address.
+      operationId: issueAddEmailToken
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/IssueAddEmailTokenRequest'
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Issue a token to add an email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails issue-add-email-token
+  /operators/add_email_token/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the token for adding email address.
+      operationId: verifyAddEmailToken
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/VerifyAddEmailTokenRequest'
+      responses:
+        "200":
+          description: OK
+      summary: Verify a token to add an email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails verify-add-email-token
   /operators/{operator_id}/individual_information:
     get:
       consumes:
@@ -8154,6 +8373,135 @@ paths:
       - Operator
       x-soracom-cli:
       - operator get-support-token
+  /operators/{operator_id}/system_notifications:
+    get:
+      description: Returns a list of system notifications.
+      operationId: listSystemNotifications
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            items:
+              $ref: '#/definitions/SystemNotificationsModel'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List system notifications
+      tags:
+      - SystemNotification
+      x-soracom-cli:
+      - system-notifications list
+  /operators/{operator_id}/system_notifications/{type}:
+    delete:
+      description: Deletes a system notification.
+      operationId: deleteSystemNotification
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: system notification type
+        enum:
+        - billing
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete system notification
+      tags:
+      - SystemNotification
+      x-soracom-cli:
+      - system-notifications delete
+    get:
+      description: Returns a system notification.
+      operationId: getSystemNotification
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: system notification type
+        enum:
+        - primary
+        - recovery
+        - billing
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/SystemNotificationsModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get system notification
+      tags:
+      - SystemNotification
+      x-soracom-cli:
+      - system-notifications get
+    post:
+      consumes:
+      - application/json
+      description: Sets a system notification.
+      operationId: setSystemNotification
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        type: string
+      - description: system notification type
+        enum:
+        - primary
+        - recovery
+        - billing
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/SetSystemNotificationsRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/SystemNotificationsModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Set system notification
+      tags:
+      - SystemNotification
+      x-soracom-cli:
+      - system-notifications set
   /operators/{operator_id}/token:
     post:
       consumes:
@@ -11725,9 +12073,7 @@ paths:
         "200":
           description: OK.
           schema:
-            items:
-              $ref: '#/definitions/SoraletLog'
-            type: array
+            $ref: '#/definitions/ExecuteSoraletResponse'
       security:
       - api_key: []
       - api_token: []
@@ -11777,7 +12123,7 @@ paths:
           description: OK.
           schema:
             items:
-              $ref: '#/definitions/Soralet'
+              $ref: '#/definitions/SoraletVersion'
             type: array
       security:
       - api_key: []
