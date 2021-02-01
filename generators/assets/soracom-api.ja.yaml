@@ -184,6 +184,46 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  Cell:
+    properties:
+      ci:
+        description: The Cell Identity (for 2G and 3G networks), a 16 bit value represented
+          in decimal form as an integer. (See 3GPP TS 23.003 4.3)
+        type: integer
+      eci:
+        description: The E-UTRAN Cell Identifer (for LTE networks), a 28 bit value
+          represented in decimal form as a long. (See 3GPP TS 23.003 19.6)
+        type: integer
+      lac:
+        description: The Location Area Code (for 2G and 3G networks), a 16 bit value
+          represented in decimal form as an integer. (See 3GPP TS 23.003 4.1)
+        type: integer
+      mcc:
+        description: The Mobile Country Code, a 3 digit number.
+        type: integer
+      mnc:
+        description: The Mobile Network Code, a 2 or 3 digit number. If the value
+          returned is only 1 digit in length, then you should prepend the value with
+          a leading zero.
+        type: integer
+      rac:
+        description: The Routing Area Code (for 2G and 3G networks), an 8 bit value
+          represented in decimal form as an integer. (See 3GPP TS 23.003 4.2)
+        type: integer
+      radioType:
+        description: The Radio Access Technology or type of network that the device
+          is connected to. Possible values are "gsm" for 2G or 3G networks, or "lte"
+          for LTE networks. Unfortunately, it is not possible to differentiate 2G
+          from 3G, or LTE from LTE Cat-M1.
+        type: string
+      sac:
+        description: The Service Area Code (for 2G and 3G networks), a 16 bit value
+          represented in decimal form as an integer. (See 3GPP TS 23.003 12.5)
+        type: integer
+      tac:
+        description: The Tracking Area Code (for LTE networks), a 16 bit value represented
+          in decimal form as an integer. (See 3GPP TS 23.003 19.4.2.3)
+        type: integer
   CellIdentifier:
     properties:
       cid:
@@ -603,7 +643,7 @@ definitions:
       updateDateTime:
         format: int64
         type: integer
-      verification:
+      verified:
         description: メールアドレス宛てに送られたトークンを用いて認証済みかどうか
         type: boolean
   EnableMFAOTPResponse:
@@ -748,6 +788,8 @@ definitions:
         - terminate
         type: string
       expiryTime:
+        description: The timestamp (in Unix milliseconds) of a date and time set using
+          the Expiration function. If no Expiration function is set, null is returned.
         format: int64
         type: integer
     required:
@@ -1177,6 +1219,18 @@ definitions:
         - SORACOM_AIR_BASIC_CHARGE
         - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
         type: string
+  GlobalSimAppletPLMNRecord:
+    properties:
+      containerId:
+        format: int64
+        type: integer
+      mcc:
+        type: string
+      mnc:
+        type: string
+    required:
+    - mcc
+    - containerId
   Group:
     properties:
       configuration:
@@ -1211,6 +1265,10 @@ definitions:
         description: yearMonth
         type: string
   ImeiLock:
+    description: The IMEI of a modem or device that is allowed to use the subscriber/SIM,
+      which is set using the IMEI Lock function. When enabled, the value returned
+      is a string of length 15, which contain the IMEI number. If IMEI Lock is not
+      enabled, null is returned.
     properties:
       imei:
         type: string
@@ -1252,9 +1310,10 @@ definitions:
   IssueAddEmailTokenRequest:
     properties:
       email:
+        description: 追加するメールアドレス
         type: string
       password:
-        description: オペレータのパスワード
+        description: オペレーターのパスワード
         type: string
     required:
     - email
@@ -1716,6 +1775,12 @@ definitions:
     additionalProperties:
       type: string
     type: object
+  MappingEntries:
+    properties:
+      mappingEntries:
+        items:
+          $ref: '#/definitions/GlobalSimAppletPLMNRecord'
+        type: array
   MonthlyBill:
     properties:
       amount:
@@ -1965,6 +2030,36 @@ definitions:
         items:
           type: string
         type: array
+  PreviousSessionStatus:
+    properties:
+      cell:
+        $ref: '#/definitions/Cell'
+      createdTime:
+        description: The time when the previous session was created.
+        format: int64
+        type: integer
+      deletedTime:
+        description: Thetime when the previous session was deleted.
+        format: int64
+        type: integer
+      dnsServers:
+        description: Array of IP address of the DNS servers.
+        items:
+          type: string
+        type: array
+      gatewayPrivateIpAddress:
+        type: string
+      gatewayPublicIpAddress:
+        type: string
+      imei:
+        description: The IMEI of the device using the SIM.
+        type: string
+      ueIpAddress:
+        description: The IP address of the device.
+        type: string
+      vpgId:
+        description: The Virtual Private Gateway IP address configured.
+        type: string
   ProductModel:
     properties:
       count:
@@ -2222,33 +2317,49 @@ definitions:
   SessionEvent:
     properties:
       apn:
+        description: The Access Point Name confirured.
         type: string
       dns0:
+        description: First IP address of DNS servers.
         type: string
       dns1:
+        description: Second IP address of DNS servers.
         type: string
       event:
+        description: The type of behavior for the event. Possible values are "Created"
+          indicates the device created a new session, "Modified" indicates that an
+          existing connection was modified, "Deleted" indicates a network connection
+          was closed.
         type: string
       gatewayPrivateIpAddress:
         type: string
       gatewayPublicIpAddress:
         type: string
       imei:
+        description: The IMEI of the device using the SIM.
         type: string
       imsi:
+        description: The IMSI of the SIM.
         type: string
       operatorId:
+        description: The operator ID of the session event.
         type: string
       time:
+        description: The timestamp of the session event.
         format: int64
         type: integer
       ueIpAddress:
+        description: The IP address of the device.
         type: string
       vpgId:
+        description: The Virtual Private Gateway IP address configured.
         type: string
   SessionStatus:
     properties:
+      cell:
+        $ref: '#/definitions/Cell'
       dnsServers:
+        description: Array of IP address of the DNS servers.
         items:
           type: string
         type: array
@@ -2257,15 +2368,19 @@ definitions:
       gatewayPublicIpAddress:
         type: string
       imei:
+        description: The IMEI of the device using the SIM.
         type: string
       lastUpdatedAt:
         format: int64
         type: integer
       online:
+        description: Whether or not the SIM is online.
         type: boolean
       ueIpAddress:
+        description: The IP address of the device.
         type: string
       vpgId:
+        description: The Virtual Private Gateway IP address configured.
         type: string
   SetDeviceObjectModelScopeRequest:
     properties:
@@ -2524,48 +2639,137 @@ definitions:
   Subscriber:
     properties:
       apn:
+        description: The Access Point Name confirured.
         type: string
+      bundles:
+        items:
+          type: string
+        type: array
       createdAt:
+        description: The timestamp that the SIM was created.
         format: int64
         type: integer
       expiredAt:
+        description: The timestamp of a date and time where the SIM was expired.
+        format: int64
+        type: integer
+      expiredTime:
+        description: The timestamp of a date and time where the SIM was expired.
         format: int64
         type: integer
       expiryAction:
+        enum:
+        - doNothing
+        - deleteSession
+        - deactivate
+        - suspend
+        - terminate
         type: string
       groupId:
+        description: The SIM group ID where the SIM belongs to.
         type: string
       iccid:
+        description: The ICCID of the SIM.
         type: string
       imeiLock:
         $ref: '#/definitions/ImeiLock'
       imsi:
+        description: The IMSI of the SIM.
         type: string
       ipAddress:
         type: string
       lastModifiedAt:
+        description: The timestamp when the SIM information was modified.
+        format: int64
+        type: integer
+      lastPortMappingCreatedTime:
+        description: The timestamp (in Unix milliseconds) of the last instance where
+          the Napter On-Demand Remote Access service was used with the subscriber.
+          If Napter has never been used with the subscriber, null is returned.
         format: int64
         type: integer
       moduleType:
+        description: The form factor of the physical SIM. Possible values are "mini"
+          for 2FF SIM card, "micro" for 3FF SIM card, "nano" for 4FF SIM card, "trio"
+          for a Universal 3-in-1 (2FF/3FF/4FF) SIM card, or "embedded" for MFF2 or
+          Embedded SIM (eSIM).
         type: string
       msisdn:
+        description: The MSISDN of the SIM.
         type: string
       operatorId:
+        description: The Operator ID of the SIM.
         type: string
       plan:
+        description: Whether or not the subscription supports SMS functionality. 0
+          = SMS not supported; 1 = SMS supported.
+        type: integer
+      previousSession:
+        $ref: '#/definitions/PreviousSessionStatus'
+      registeredTime:
+        description: The timestamp (in Unix milliseconds) that the subscriber was
+          manually registered to your account. When purchasing SIMs directly through
+          the User Console, SIMs will automatically be registered to your account,
+          and null is returned.
+        format: int64
         type: integer
       serialNumber:
+        description: The serial number of the SIM.
         type: string
       sessionStatus:
         $ref: '#/definitions/SessionStatus'
+      simId:
+        description: The SIM ID of the SIM.
+        type: string
       speedClass:
+        description: The speed class of the SIM.
         type: string
       status:
+        description: The subscription status of the subscriber. Possible values are
+          "ready", "active", "inactive", "standby", "suspended", or "terminated".
+        type: string
+      subscription:
+        description: The name of the subscription for the SIM.
         type: string
       tags:
         $ref: '#/definitions/TagSet'
       terminationEnabled:
         type: boolean
+      type:
+        description: The speed class of the SIM.
+        type: string
+  SubscriptionContainer:
+    properties:
+      containerId:
+        format: int64
+        type: integer
+      downloaded:
+        type: boolean
+      subscriber:
+        additionalProperties:
+          $ref: '#/definitions/Subscriber'
+        type: object
+  SubscriptionContainerStatus:
+    properties:
+      containers:
+        items:
+          $ref: '#/definitions/SubscriptionContainer'
+        type: array
+      countryMapping:
+        additionalProperties:
+          properties:
+            mappingRecord:
+              properties:
+                containerId:
+                  format: int64
+                  type: integer
+                subscription:
+                  type: string
+              type: object
+            plmnCode:
+              type: string
+          type: object
+        type: object
   SupportTokenResponse:
     properties:
       token:
@@ -2587,6 +2791,12 @@ definitions:
   TagSet:
     additionalProperties:
       type: string
+    description: An object which always contains at least one property "name" with
+      a string value. If you give a subscriber/SIM a name, the name will be returned
+      as the value of the "name" property. If the subscriber/SIM does not have a name,
+      an empty string "" is returned. In addition, if you create any custom tags for
+      the subscriber/SIM, each custom tag will appear as additional properties in
+      the object.
     example:
       tagName1: tagValue1
       tagName2: tagValue2...
@@ -2674,6 +2884,7 @@ definitions:
   VerifyAddEmailTokenRequest:
     properties:
       token:
+        description: メールで送信されたトークン
         type: string
     required:
     - token
@@ -2981,7 +3192,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。
+      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscriberごと,課金項目ごとの利用額が含まれます。
       operationId: exportBilling
       parameters:
       - description: yyyyMM
@@ -3037,7 +3248,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 直近月の利用額明細を返します。この明細には、日ごと,Subscrierごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。
+      description: 直近月の利用額明細を返します。この明細には、日ごと,Subscriberごと,課金項目ごとの利用額が含まれます。このAPIで取得した金額は請求確定前の金額になります。
       operationId: exportLatestBilling
       parameters:
       - description: export_mode (async, sync)
@@ -7530,7 +7741,7 @@ paths:
         required: true
         type: string
       responses:
-        "200":
+        "204":
           description: OK
       security:
       - api_key: []
@@ -7569,51 +7780,6 @@ paths:
       - Email
       x-soracom-cli:
       - emails get
-  /operators/add_email_token/issue:
-    post:
-      consumes:
-      - application/json
-      description: メールアドレス追加用のワンタイムトークンをメールで送付する。
-      operationId: issueAddEmailToken
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/IssueAddEmailTokenRequest'
-      responses:
-        "200":
-          description: OK
-      security:
-      - api_key: []
-      - api_token: []
-      summary: Issue a token to add an email address
-      tags:
-      - Email
-      x-soracom-cli:
-      - emails issue-add-email-token
-  /operators/add_email_token/verify:
-    post:
-      consumes:
-      - application/json
-      description: メールアドレス追加用のトークンを確認して、メールアドレスを追加する。
-      operationId: verifyAddEmailToken
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/VerifyAddEmailTokenRequest'
-      responses:
-        "200":
-          description: OK
-      summary: Verify a token to add an email address
-      tags:
-      - Email
-      x-soracom-cli:
-      - emails verify-add-email-token
   /operators/{operator_id}/individual_information:
     get:
       consumes:
@@ -8286,7 +8452,7 @@ paths:
         required: true
         type: string
       responses:
-        "200":
+        "204":
           description: OK
       security:
       - api_key: []
@@ -8359,7 +8525,7 @@ paths:
       - application/json;charset=UTF-8
       responses:
         "200":
-          description: OK.
+          description: OK
           schema:
             $ref: '#/definitions/SystemNotificationsModel'
       security:
@@ -9231,6 +9397,51 @@ paths:
       - User
       x-soracom-cli:
       - users default-permissions update
+  /operators/add_email_token/issue:
+    post:
+      consumes:
+      - application/json
+      description: メールアドレス追加用のワンタイムトークンをメールで送付する。
+      operationId: issueAddEmailToken
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/IssueAddEmailTokenRequest'
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Issue a token to add an email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails issue-add-email-token
+  /operators/add_email_token/verify:
+    post:
+      consumes:
+      - application/json
+      description: メールアドレス追加用のトークンを確認して、メールアドレスを追加する。
+      operationId: verifyAddEmailToken
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/VerifyAddEmailTokenRequest'
+      responses:
+        "200":
+          description: OK
+      summary: Verify a token to add an email address
+      tags:
+      - Email
+      x-soracom-cli:
+      - emails verify-add-email-token
   /operators/email_change_token/issue:
     post:
       consumes:
@@ -10833,7 +11044,7 @@ paths:
         type: string
       responses:
         200:
-          description: A list of subscibers
+          description: A list of subscribers
           schema:
             items:
               $ref: '#/definitions/Sim'
@@ -11172,6 +11383,156 @@ paths:
       - Sim
       x-soracom-cli:
       - sims add-subscription
+  /sims/{sim_id}/profiles/{iccid}/subscription_containers:
+    get:
+      description: Returns a schema listing subscription containers and containing
+        a map of PLMN codes to subscription containers
+      operationId: listSubscriptionContainers
+      parameters:
+      - description: Sim Id of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Iccid of the target profile
+        in: path
+        name: iccid
+        required: true
+        type: string
+      responses:
+        200:
+          description: A schema listing subscription containers and containing a map
+            of PLMN codes to subscription containers.
+          schema:
+            $ref: '#/definitions/SubscriptionContainerStatus'
+        400:
+          description: Missing parameter
+        404:
+          description: No such profile or sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get subscription container status.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims list-subscription-containers
+  /sims/{sim_id}/profiles/{iccid}/subscription_containers/{containerId}/enable:
+    post:
+      description: Causes the identified container to become the active one on the
+        Sim.
+      operationId: enableSubscriptionContainer
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Iccid of the target profile
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: Identifier of the target container
+        in: path
+        name: containerId
+        required: true
+        type: string
+      responses:
+        200:
+          description: A schema listing subscription containers and containing a map
+            of PLMN codes to subscription containers.
+          schema:
+            $ref: '#/definitions/SubscriptionContainerStatus'
+        404:
+          description: No such profile or sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Enables a subscription container.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims enable-subscription-container
+  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:
+    put:
+      description: Inserts/updates Country (and optionally network) to subscription
+        container mapping entries in the mapping table.
+      operationId: putSubscriptionContainerCountryMappingEntries
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Iccid of the target profile
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: collection of country (and optionally network) to subscription
+          container mapping entries
+        in: body
+        name: mappingEntries
+        required: true
+        schema:
+          $ref: '#/definitions/MappingEntries'
+      responses:
+        200:
+          description: A schema listing subscription containers and containing a map
+            of PLMN codes to subscription containers.
+          schema:
+            $ref: '#/definitions/SubscriptionContainerStatus'
+        400:
+          description: Missing parameter
+        404:
+          description: No such profile or sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Updates subscription container country mapping entries.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims put-country-mapping-entries
+  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:
+    delete:
+      description: Delete subscription container country mapping entries
+      operationId: deleteSubscriptionContainerCountryMappingEntry
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Iccid of the target profile
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: mobile country code
+        in: path
+        name: mcc
+        required: true
+        type: string
+      responses:
+        200:
+          description: A schema listing subscription containers and containing a map
+            of PLMN codes to subscription containers.
+          schema:
+            $ref: '#/definitions/SubscriptionContainerStatus'
+        400:
+          description: Missing parameter
+        404:
+          description: No such profile or sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete subscription container mapping entries
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims delete-country-mapping-entry
   /sims/{sim_id}/register:
     post:
       consumes:
@@ -12339,7 +12700,7 @@ paths:
         type: string
       responses:
         200:
-          description: A list of subscibers
+          description: A list of subscribers
           schema:
             items:
               $ref: '#/definitions/Subscriber'
@@ -12412,6 +12773,40 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers activate
+  /subscribers/{imsi}/bundles:
+    put:
+      description: 指定したSubscriberにバンドルを設定する。
+      operationId: putBundles
+      parameters:
+      - description: 対象のSubscriberのIMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      - description: 設定するバンドルの配列
+        in: body
+        name: bundles
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        200:
+          description: 更新後のSubscriberの詳細情報
+          schema:
+            $ref: '#/definitions/Subscriber'
+        404:
+          description: 指定されたSubscriberが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Set Bundles to Subscriber.
+      tags:
+      - Subscriber
+      x-sam-operationId: putBundles
+      x-soracom-cli:
+      - subscribers put-bundles
   /subscribers/{imsi}/data:
     get:
       description: 指定されたサブスクライバーから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
