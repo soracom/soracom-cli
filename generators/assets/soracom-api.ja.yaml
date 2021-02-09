@@ -2457,7 +2457,7 @@ definitions:
     description: 発送料
     properties:
       shippingArea:
-        description: 発送先エリア
+        description: (日本カバレッジのみ) 発送先エリア
         enum:
         - hokkaido
         - kita_tohoku

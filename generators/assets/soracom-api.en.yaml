@@ -372,12 +372,12 @@ definitions:
   CreateEstimatedOrderRequest:
     properties:
       orderItemList:
-        description: 発注商品リスト
+        description: Order item list
         items:
           $ref: '#/definitions/OrderItemModel'
         type: array
       shippingAddressId:
-        description: 商品発送先ID
+        description: Shipping address ID
         type: string
   CreateEventHandlerRequest:
     properties:
@@ -668,44 +668,44 @@ definitions:
     properties:
       product:
         $ref: '#/definitions/ProductModel'
-        description: 商品
+        description: Product
       productAmount:
-        description: 商品金額
+        description: Product amount
         format: double
         type: number
       quantity:
-        description: 購入数
+        description: Quantity
         format: int32
         type: integer
   EstimatedOrderModel:
     properties:
       email:
-        description: メールアドレス
+        description: Email address
         type: string
       orderId:
-        description: 発注ID
+        description: Order ID
         type: string
       orderItemList:
-        description: 発注商品リスト
+        description: Order item list
         items:
           $ref: '#/definitions/EstimatedOrderItemModel'
         type: array
       shippingAddress:
         $ref: '#/definitions/ShippingAddressModel'
-        description: 発送先
+        description: Shipping address
       shippingAddressId:
-        description: 商品発送先ID
+        description: Shipping address ID
         type: string
       shippingCost:
-        description: 配送料
+        description: Shipping cost
         format: double
         type: number
       taxAmount:
-        description: 消費税
+        description: Tax amount
         format: double
         type: number
       totalAmount:
-        description: 合計金額
+        description: Total amount
         format: double
         type: number
   EventHandlerModel:
@@ -1007,22 +1007,22 @@ definitions:
   GetOrderResponse:
     properties:
       email:
-        description: メールアドレス
+        description: Email address
         type: string
       orderDateTime:
-        description: 発注日時
+        description: Order date and time
         example: yyyyMMddHHmmss
         type: string
       orderId:
-        description: 発注ID
+        description: Order ID
         type: string
       orderItemList:
-        description: 発注商品リスト
+        description: Order item list
         items:
           $ref: '#/definitions/EstimatedOrderItemModel'
         type: array
       orderStatus:
-        description: 発注ステータス
+        description: Order status
         enum:
         - ordering
         - ordered
@@ -1035,23 +1035,23 @@ definitions:
         type: string
       shippingAddress:
         $ref: '#/definitions/ShippingAddressModel'
-        description: 発送先
+        description: Shipping address
       shippingAddressId:
-        description: 商品発送先ID
+        description: Shipping address ID
         type: string
       shippingCost:
-        description: 配送料
+        description: Shipping cost
         format: double
         type: number
       shippingLabelNumber:
-        description: 宅配便送り状番号
+        description: Shipping label number
         type: string
       taxAmount:
-        description: 消費税
+        description: Tax amount
         format: double
         type: number
       totalAmount:
-        description: 合計金額
+        description: Total amount
         format: double
         type: number
   GetPaymentMethodResult:
@@ -1567,14 +1567,14 @@ definitions:
   ListOrderResponse:
     properties:
       orderList:
-        description: 発注リスト
+        description: List of confirmed orders
         items:
           $ref: '#/definitions/GetOrderResponse'
         type: array
   ListOrderedSubscriberResponse:
     properties:
       orderedSubscriberList:
-        description: 発注したSIMのリスト
+        description: List of ordered SIMs
         items:
           $ref: '#/definitions/OrderedSubscriber'
         type: array
@@ -1886,10 +1886,10 @@ definitions:
   OrderItemModel:
     properties:
       productCode:
-        description: 商品コード
+        description: Product code
         type: string
       quantity:
-        description: 購入数
+        description: Quantity
         format: int32
         type: integer
   OrderedSubscriber:
@@ -2068,28 +2068,28 @@ definitions:
   ProductModel:
     properties:
       count:
-        description: 商品販売個数
+        description: Count
         format: double
         type: number
       maxQuantity:
-        description: 最大購入数量
+        description: Max quantity
         format: int32
         type: integer
       price:
-        description: 商品販売個数ごとの価格
+        description: Price
         format: double
         type: number
       productCode:
-        description: 商品コード
+        description: Product code
         type: string
       productInfoURL:
-        description: 商品説明ページURL
+        description: URL of product page
         type: string
       productName:
-        description: 商品名
+        description: Product name
         type: string
       productType:
-        description: 商品種別
+        description: Product type
         enum:
         - sim
         - network_module
@@ -2097,7 +2097,7 @@ definitions:
       properties:
         additionalProperties:
           type: string
-        description: 商品プロパティ
+        description: Properties
         type: object
   PutIpAddressMapEntryRequest:
     properties:
@@ -2459,10 +2459,10 @@ definitions:
     - state
     - zipCode
   ShippingCostModel:
-    description: 発送料
+    description: Shipping cost
     properties:
       shippingArea:
-        description: 発送先エリア
+        description: (Japan coverage only) Shipping area
         enum:
         - hokkaido
         - kita_tohoku
@@ -2478,14 +2478,14 @@ definitions:
         - okinawa
         type: string
       shippingAreaName:
-        description: 発送先エリア名称
+        description: Shipping Area name
         type: string
       shippingCost:
-        description: 送料
+        description: Shipping Cost
         format: double
         type: number
       size:
-        description: 発送サイズ
+        description: Size
         format: int32
         type: integer
   SigfoxData:
