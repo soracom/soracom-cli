@@ -4,49 +4,51 @@ Usage:
   soracom [command]
 
 Available Commands:
-  audit-logs         監査ログを取得します。
-  auth               API アクセスの認証を行い、API キーと API トークンを発行します。
-  bills              課金に関する情報を確認したりファイルへのエクスポートを行います。
-  cell-locations     基地局の位置情報を取得します。
-  completion         bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
-  configure          コマンド実行環境（プロファイル）の設定や表示を行います。
-  configure-sandbox  API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
-  coupons            登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
-  credentials        認証情報に関する操作を行います。
-  data               SIM からアップロードされて格納されているデータを取得します。
-  devices            デバイスに関する操作を行います。
-  event-handlers     イベントハンドラーに関する操作を行います。
-  files              Harvest Files のファイルを管理します。
-  gadgets            ガジェットに関する操作を行います。
-  groups             グループに関する操作を行います。
-  help               Help about any command
-  lagoon             Lagoon に関する操作を行います。
-  logs               ログに関する操作を行います。
-  lora-devices       LoRa device に関する操作を行います。
-  lora-gateways      LoRa gateway に関する操作を行います。
-  lora-network-sets  LoRa network set に関する操作を行います。
-  operator           オペレーターに関する操作を行います。
-  orders             商品の注文に関する操作を行います。
-  payer-information  課金明細に出力する支払い者情報を取得または設定します。
-  payment-history    お支払い履歴を取得します。
-  payment-methods    お支払い方法に関する操作を行います。
-  payment-statements 課金明細の一覧取得または出力を行います。
-  port-mappings      オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
-  products           商品一覧を取得します。
-  query              リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
-  roles              ロールに関する操作を行います。
-  sandbox            API サンドボックスに関する操作を行います。
-  shipping-addresses 出荷先情報に関する操作を行います。
-  sigfox-devices     Sigfox デバイスに関する操作を行います。
-  sims               SIM に関する操作を行います。
-  soralets           Orbit の Soralet に関する操作を行います。
-  stats              統計情報に関する操作を行います。
-  subscribers        サブスクライバー (SIM) に関する操作を行います。
-  unconfigure        コマンド実行環境（プロファイル）を削除します。
-  users              SAM ユーザーに関する操作を行います。
-  version            バージョン情報を表示します。
-  volume-discounts   ボリュームディスカウント（長期利用割引）に関する操作を行います。
-  vpg                VPG に関する操作を行います。
+  audit-logs           監査ログを取得します。
+  auth                 API アクセスの認証を行い、API キーと API トークンを発行します。
+  bills                課金に関する情報を確認したりファイルへのエクスポートを行います。
+  cell-locations       基地局の位置情報を取得します。
+  completion           bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
+  configure            コマンド実行環境（プロファイル）の設定や表示を行います。
+  configure-sandbox    API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+  coupons              登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+  credentials          認証情報に関する操作を行います。
+  data                 SIM からアップロードされて格納されているデータを取得します。
+  devices              デバイスに関する操作を行います。
+  emails               メールアドレスに関する操作を行います。
+  event-handlers       イベントハンドラーに関する操作を行います。
+  files                Harvest Files のファイルを管理します。
+  gadgets              ガジェットに関する操作を行います。
+  groups               グループに関する操作を行います。
+  help                 Help about any command
+  lagoon               Lagoon に関する操作を行います。
+  logs                 ログに関する操作を行います。
+  lora-devices         LoRa device に関する操作を行います。
+  lora-gateways        LoRa gateway に関する操作を行います。
+  lora-network-sets    LoRa network set に関する操作を行います。
+  operator             オペレーターに関する操作を行います。
+  orders               商品の注文に関する操作を行います。
+  payer-information    課金明細に出力する支払い者情報を取得または設定します。
+  payment-history      お支払い履歴を取得します。
+  payment-methods      お支払い方法に関する操作を行います。
+  payment-statements   課金明細の一覧取得または出力を行います。
+  port-mappings        オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
+  products             商品一覧を取得します。
+  query                リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
+  roles                ロールに関する操作を行います。
+  sandbox              API サンドボックスに関する操作を行います。
+  shipping-addresses   出荷先情報に関する操作を行います。
+  sigfox-devices       Sigfox デバイスに関する操作を行います。
+  sims                 SIM に関する操作を行います。
+  soralets             Orbit の Soralet に関する操作を行います。
+  stats                統計情報に関する操作を行います。
+  subscribers          サブスクライバー (SIM) に関する操作を行います。
+  system-notifications システム通知に関する操作を行います。
+  unconfigure          コマンド実行環境（プロファイル）を削除します。
+  users                SAM ユーザーに関する操作を行います。
+  version              バージョン情報を表示します。
+  volume-discounts     ボリュームディスカウント（長期利用割引）に関する操作を行います。
+  vpg                  VPG に関する操作を行います。
 
 Flags:
       --api-key string         Specify API key otherwise soracom-cli performs authentication on behalf of you
