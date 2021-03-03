@@ -1,5 +1,28 @@
 basePath: /v1
 definitions:
+  APIAuditLogEntry:
+    properties:
+      apiKind:
+        description: The kind of the API (e.g. `/v1/auth`).
+        type: string
+      operatorId:
+        description: The operator ID that called the API.
+        type: string
+      remoteIpAddress:
+        description: The IP address of the caller.
+        type: string
+      requestPath:
+        description: The request path that has been called.
+        type: string
+      requestedTimeEpochMs:
+        description: The timestamp of the API call. This can be used as the `last_evaluated_key`
+          request parameter, for pagination.
+        format: int64
+        type: integer
+      userName:
+        description: The SAM username that called the API, if this parameter is empty,
+          it means the caller user is the root user.
+        type: string
   APICallError:
     properties:
       errorMessage:
@@ -173,6 +196,37 @@ definitions:
         type: string
       userName:
         type: string
+  AvailableLongTermDiscountModel:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: Contract months
+        format: int32
+        type: integer
+      unitPrice:
+        description: Unit price
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: Payment type
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: Long term discount type
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
+  AvailableLongTermDiscountResponse:
+    properties:
+      availableLongTermDiscounts:
+        description: List of available long term discounts
+        items:
+          $ref: '#/definitions/AvailableLongTermDiscountModel'
+        type: array
   BeamStatsResponse:
     properties:
       beamStatsMap:
@@ -356,6 +410,9 @@ definitions:
         description: Expiry month
         example: yyyyMM
         type: string
+      orderId:
+        description: Order ID
+        type: string
   CreateAndUpdateCredentialsModel:
     properties:
       credentials:
@@ -369,6 +426,14 @@ definitions:
         - psk
         - x509
         type: string
+  CreateEstimatedCouponRequest:
+    properties:
+      amount:
+        description: Amount
+        format: double
+        type: number
+    required:
+    - amount
   CreateEstimatedOrderRequest:
     properties:
       orderItemList:
@@ -379,6 +444,39 @@ definitions:
       shippingAddressId:
         description: Shipping address ID
         type: string
+  CreateEstimatedVolumeDiscountRequest:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: Contract months
+        format: int32
+        type: integer
+      quantity:
+        description: Quantity
+        format: int32
+        type: integer
+      startDate:
+        description: Start date
+        example: yyyyMMdd
+        type: string
+      volumeDiscountPaymentType:
+        description: Payment type
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: Long term discount type
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
+    required:
+    - volumeDiscountType
+    - volumeDiscountPaymentType
+    - contractTermMonth
+    - quantity
   CreateEventHandlerRequest:
     properties:
       actionConfigList:
@@ -664,6 +762,33 @@ definitions:
         type: string
       message:
         type: string
+  EstimatedCouponModel:
+    properties:
+      amount:
+        description: Amount
+        format: double
+        type: number
+      currency:
+        description: Currency
+        enum:
+        - JPY
+        - USD
+        type: string
+      expiryYearMonth:
+        description: Expiry month
+        example: yyyyMM
+        type: string
+      orderId:
+        description: Order ID
+        type: string
+      taxAmount:
+        description: Tax amount
+        format: double
+        type: number
+      totalAmount:
+        description: Total amount
+        format: double
+        type: number
   EstimatedOrderItemModel:
     properties:
       product:
@@ -708,6 +833,28 @@ definitions:
         description: Total amount
         format: double
         type: number
+  EstimatedVolumeDiscountModel:
+    properties:
+      currency:
+        description: Currency
+        enum:
+        - JPY
+        - USD
+        type: string
+      orderId:
+        description: Order ID
+        type: string
+      taxAmount:
+        description: Tax amount
+        format: double
+        type: number
+      totalAmount:
+        description: Total amount
+        format: double
+        type: number
+      volumeDiscount:
+        $ref: '#/definitions/VolumeDiscountModel'
+        description: Long term discount
   EventHandlerModel:
     properties:
       actionConfigList:
@@ -1180,10 +1327,11 @@ definitions:
         example: yyyyMMddHHmmss
         type: string
       contractId:
-        description: ID
+        description: Contract ID
         type: string
       contractTermMonth:
-        description: Discount term
+        default: 12
+        description: Contract months
         format: int32
         type: integer
       endDate:
@@ -1195,7 +1343,7 @@ definitions:
         format: double
         type: number
       quantity:
-        description: Number of SIMs
+        description: Quantity
         format: int32
         type: integer
       startDate:
@@ -1215,12 +1363,13 @@ definitions:
       volumeDiscountPaymentType:
         description: Payment type
         enum:
-        - PREPAYMENT
         - MONTHLY
+        - PREPAYMENT
         type: string
       volumeDiscountType:
-        description: Type
+        description: Long term discount type
         enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
         - SORACOM_AIR_BASIC_CHARGE
         - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
         type: string
@@ -2961,6 +3110,46 @@ definitions:
         $ref: '#/definitions/Map'
       vpcPeeringConnections:
         $ref: '#/definitions/Map'
+  VolumeDiscountModel:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: Contract months
+        format: int32
+        type: integer
+      endDate:
+        description: End date
+        example: yyyyMMdd
+        type: string
+      initialCost:
+        description: Initial cost
+        format: double
+        type: number
+      quantity:
+        description: Quantity
+        format: int32
+        type: integer
+      startDate:
+        description: Start date
+        example: yyyyMMdd
+        type: string
+      unitPrice:
+        description: Unit price
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: Payment type
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: Long term discount type
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
   VpcPeeringConnection:
     properties:
       destinationCidrBlock:
@@ -2977,6 +3166,60 @@ info:
   title: SORACOM API
   version: VERSION_PLACEHOLDER
 paths:
+  /audit_logs/api:
+    get:
+      description: Retrieve audit logs for API calls.
+      operationId: getApiAuditLogs
+      parameters:
+      - description: Filter item for audit log retrieval by API kind (e.g. `/v1/auth`).
+        in: query
+        name: api_kind
+        required: false
+        type: string
+      - description: Start time for the log search range (unixtime milliseconds).
+        in: query
+        name: from_epoch_ms
+        required: false
+        type: integer
+      - description: End time for the log search range (unixtime milliseconds).
+        in: query
+        name: to_epoch_ms
+        required: false
+        type: integer
+      - description: Maximum number of log entries to retrieve.
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: The value of `requestedTimeEpochMs` in the last log entry retrieved
+          in the previous page. By specifying this parameter, you can continue to
+          retrieve the list from the next page onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: A list of API audit log entries.
+          schema:
+            items:
+              $ref: '#/definitions/APIAuditLogEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Retrieve audit logs for API calls
+      tags:
+      - AuditLog
+      x-soracom-cli:
+      - audit-logs api get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /audit_logs/napter:
     get:
       description: Retrieve audit logs for Napter.
@@ -2994,12 +3237,12 @@ paths:
         name: resource_id
         required: false
         type: string
-      - description: Start time for the log search range (unixtime millis).
+      - description: Start time for the log search range (unixtime milliseconds).
         in: query
         name: from
         required: false
         type: integer
-      - description: End time for the log search range (unixtime millis).
+      - description: End time for the log search range (unixtime milliseconds).
         in: query
         name: to
         required: false
@@ -3412,6 +3655,34 @@ paths:
       - Payment
       x-soracom-cli:
       - coupons list
+    post:
+      consumes:
+      - application/json
+      description: Creates a new coupon quotation. If the orderId is put in /confirm,
+        the order is complete.
+      operationId: createCouponQuotation
+      parameters:
+      - description: Coupon details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateEstimatedCouponRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/EstimatedCouponModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create coupon quotation.
+      tags:
+      - Order
+      x-soracom-cli:
+      - coupons create
   /coupons/{coupon_code}/register:
     post:
       consumes:
@@ -3442,6 +3713,34 @@ paths:
       - Payment
       x-soracom-cli:
       - coupons register
+  /coupons/{order_id}/confirm:
+    put:
+      consumes:
+      - application/json
+      description: Performs a credit limit and confirms the order if no problems are
+        encountered.
+      operationId: confirmCouponOrder
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/CouponResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Confirm coupon order.
+      tags:
+      - Order
+      x-soracom-cli:
+      - coupons confirm
   /credentials:
     get:
       consumes:
@@ -14778,6 +15077,35 @@ paths:
       - Payment
       x-soracom-cli:
       - volume-discounts list
+    post:
+      consumes:
+      - application/json
+      description: Creates a new long term discount quotation. If the orderId is put
+        in /confirm, the order is complete. (Currently, long term discount is only
+        applied to plan-D, plan-K)
+      operationId: createVolumeDiscountQuotation
+      parameters:
+      - description: Long term discount contract details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateEstimatedVolumeDiscountRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/EstimatedVolumeDiscountModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create long term discount quotation.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts create
   /volume_discounts/{contract_id}:
     get:
       consumes:
@@ -14807,6 +15135,55 @@ paths:
       - Payment
       x-soracom-cli:
       - volume-discounts get
+  /volume_discounts/{order_id}/confirm:
+    put:
+      consumes:
+      - application/json
+      description: Performs a credit limit and confirms the order if no problems are
+        encountered.
+      operationId: confirmVolumeDiscountOrder
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/GetVolumeDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Confirm long term discount order.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts confirm
+  /volume_discounts/available_discounts:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of available long term discounts.
+      operationId: listAvailableDiscounts
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/AvailableLongTermDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List available long term discounts.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts available-discounts
 produces:
 - application/json
 schemes:
