@@ -1,5 +1,26 @@
 basePath: /v1
 definitions:
+  APIAuditLogEntry:
+    properties:
+      apiKind:
+        description: 'API種別 (例: `/v1/auth`)。'
+        type: string
+      operatorId:
+        description: APIを呼び出したオペレーターID。
+        type: string
+      remoteIpAddress:
+        description: APIの呼び出し元IPアドレス。
+        type: string
+      requestPath:
+        description: リクエストされたAPIのパス。
+        type: string
+      requestedTimeEpochMs:
+        description: APIが呼び出された時刻。この値はページネーションのために `last_evaluated_key` リクエストパラメーターに利用することができます。
+        format: int64
+        type: integer
+      userName:
+        description: APIを呼び出したSAMユーザー名。もしこの値が空の場合は呼び出しユーザーはrootユーザーです。
+        type: string
   APICallError:
     properties:
       errorMessage:
@@ -173,6 +194,37 @@ definitions:
         type: string
       userName:
         type: string
+  AvailableLongTermDiscountModel:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: 契約月数
+        format: int32
+        type: integer
+      unitPrice:
+        description: 単価
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: お支払い方法
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: 料金計算方法
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
+  AvailableLongTermDiscountResponse:
+    properties:
+      availableLongTermDiscounts:
+        description: 購入可能な長期利用割引のリスト
+        items:
+          $ref: '#/definitions/AvailableLongTermDiscountModel'
+        type: array
   BeamStatsResponse:
     properties:
       beamStatsMap:
@@ -351,6 +403,9 @@ definitions:
         description: 有効期限
         example: yyyyMM
         type: string
+      orderId:
+        description: 発注ID
+        type: string
   CreateAndUpdateCredentialsModel:
     properties:
       credentials:
@@ -364,6 +419,14 @@ definitions:
         - psk
         - x509
         type: string
+  CreateEstimatedCouponRequest:
+    properties:
+      amount:
+        description: クーポン額
+        format: double
+        type: number
+    required:
+    - amount
   CreateEstimatedOrderRequest:
     properties:
       orderItemList:
@@ -374,6 +437,39 @@ definitions:
       shippingAddressId:
         description: 商品発送先ID
         type: string
+  CreateEstimatedVolumeDiscountRequest:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: 契約月数
+        format: int32
+        type: integer
+      quantity:
+        description: 数量
+        format: int32
+        type: integer
+      startDate:
+        description: 適用開始日
+        example: yyyyMMdd
+        type: string
+      volumeDiscountPaymentType:
+        description: お支払い方法
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: 料金計算方法
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
+    required:
+    - volumeDiscountType
+    - volumeDiscountPaymentType
+    - contractTermMonth
+    - quantity
   CreateEventHandlerRequest:
     properties:
       actionConfigList:
@@ -659,6 +755,33 @@ definitions:
         type: string
       message:
         type: string
+  EstimatedCouponModel:
+    properties:
+      amount:
+        description: クーポン額
+        format: double
+        type: number
+      currency:
+        description: 通貨
+        enum:
+        - JPY
+        - USD
+        type: string
+      expiryYearMonth:
+        description: 有効期限
+        example: yyyyMM
+        type: string
+      orderId:
+        description: 発注ID
+        type: string
+      taxAmount:
+        description: 消費税
+        format: double
+        type: number
+      totalAmount:
+        description: 合計金額
+        format: double
+        type: number
   EstimatedOrderItemModel:
     properties:
       product:
@@ -703,6 +826,28 @@ definitions:
         description: 合計金額
         format: double
         type: number
+  EstimatedVolumeDiscountModel:
+    properties:
+      currency:
+        description: 通貨
+        enum:
+        - JPY
+        - USD
+        type: string
+      orderId:
+        description: 発注ID
+        type: string
+      taxAmount:
+        description: 消費税
+        format: double
+        type: number
+      totalAmount:
+        description: 合計金額
+        format: double
+        type: number
+      volumeDiscount:
+        $ref: '#/definitions/VolumeDiscountModel'
+        description: 長期利用割引
   EventHandlerModel:
     properties:
       actionConfigList:
@@ -1178,6 +1323,7 @@ definitions:
         description: 契約ID
         type: string
       contractTermMonth:
+        default: 12
         description: 契約月数
         format: int32
         type: integer
@@ -1210,12 +1356,13 @@ definitions:
       volumeDiscountPaymentType:
         description: お支払い方法
         enum:
-        - PREPAYMENT
         - MONTHLY
+        - PREPAYMENT
         type: string
       volumeDiscountType:
         description: 料金計算方法
         enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
         - SORACOM_AIR_BASIC_CHARGE
         - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
         type: string
@@ -2956,6 +3103,46 @@ definitions:
         $ref: '#/definitions/Map'
       vpcPeeringConnections:
         $ref: '#/definitions/Map'
+  VolumeDiscountModel:
+    properties:
+      contractTermMonth:
+        default: 12
+        description: 契約月数
+        format: int32
+        type: integer
+      endDate:
+        description: 適用終了日
+        example: yyyyMMdd
+        type: string
+      initialCost:
+        description: 初期費用
+        format: double
+        type: number
+      quantity:
+        description: 数量
+        format: int32
+        type: integer
+      startDate:
+        description: 適用開始日
+        example: yyyyMMdd
+        type: string
+      unitPrice:
+        description: 単価
+        format: double
+        type: number
+      volumeDiscountPaymentType:
+        description: お支払い方法
+        enum:
+        - MONTHLY
+        - PREPAYMENT
+        type: string
+      volumeDiscountType:
+        description: 料金計算方法
+        enum:
+        - SORACOM_AIR_BASIC_CHARGE_V2
+        - SORACOM_AIR_BASIC_CHARGE
+        - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
+        type: string
   VpcPeeringConnection:
     properties:
       destinationCidrBlock:
@@ -2972,6 +3159,58 @@ info:
   title: SORACOM API
   version: VERSION_PLACEHOLDER
 paths:
+  /audit_logs/api:
+    get:
+      description: SORACOM API呼び出しの監査ログを新しいものから順に取得する
+      operationId: getApiAuditLogs
+      parameters:
+      - description: 'ログ取得のフィルターに用いるAPI種別 (例: `/v1/auth`)'
+        in: query
+        name: api_kind
+        required: false
+        type: string
+      - description: ログ取得対象の期間の始まり (unixtime milliseconds)
+        in: query
+        name: from_epoch_ms
+        required: false
+        type: integer
+      - description: ログ取得対象の期間の終わり (unixtime milliseconds)
+        in: query
+        name: to_epoch_ms
+        required: false
+        type: integer
+      - description: 取得するログエントリ数の上限
+        in: query
+        name: limit
+        required: false
+        type: integer
+      - description: 前ページで取得した最後のログエントリのタイムスタンプ (`requestedTimeEpochMs`)。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: SORACOM API呼び出し監査ログのエントリのリスト
+          schema:
+            items:
+              $ref: '#/definitions/APIAuditLogEntry'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM API呼び出しの監査ログを取得する
+      tags:
+      - AuditLog
+      x-soracom-cli:
+      - audit-logs api get
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /audit_logs/napter:
     get:
       description: SORACOM Napterの監査ログを新しいものから順に取得する
@@ -2989,12 +3228,12 @@ paths:
         name: resource_id
         required: false
         type: string
-      - description: ログ取得対象の期間の始まり (unixtime millis)
+      - description: ログ取得対象の期間の始まり (unixtime milliseconds)
         in: query
         name: from
         required: false
         type: integer
-      - description: ログ取得対象の期間の終わり (unixtime millis)
+      - description: ログ取得対象の期間の終わり (unixtime milliseconds)
         in: query
         name: to
         required: false
@@ -3384,6 +3623,33 @@ paths:
       - Payment
       x-soracom-cli:
       - coupons list
+    post:
+      consumes:
+      - application/json
+      description: 新規でクーポンの見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。
+      operationId: createCouponQuotation
+      parameters:
+      - description: クーポン詳細
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateEstimatedCouponRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/EstimatedCouponModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create coupon quotation.
+      tags:
+      - Order
+      x-soracom-cli:
+      - coupons create
   /coupons/{coupon_code}/register:
     post:
       consumes:
@@ -3413,6 +3679,33 @@ paths:
       - Payment
       x-soracom-cli:
       - coupons register
+  /coupons/{order_id}/confirm:
+    put:
+      consumes:
+      - application/json
+      description: 与信を実施し、問題ない場合に発注を確定します。
+      operationId: confirmCouponOrder
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/CouponResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Confirm coupon order.
+      tags:
+      - Order
+      x-soracom-cli:
+      - coupons confirm
   /credentials:
     get:
       consumes:
@@ -14523,6 +14816,34 @@ paths:
       - Payment
       x-soracom-cli:
       - volume-discounts list
+    post:
+      consumes:
+      - application/json
+      description: 新規で長期利用割引の見積もりの作成を行います。orderIdを/confirmにPUTすると発注が完了します。(現時点では、長期利用割引はplan-D、plan-K
+        でのみ利用できます。)
+      operationId: createVolumeDiscountQuotation
+      parameters:
+      - description: 長期割引契約詳細
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateEstimatedVolumeDiscountRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/EstimatedVolumeDiscountModel'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create long term discount quotation.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts create
   /volume_discounts/{contract_id}:
     get:
       consumes:
@@ -14552,6 +14873,54 @@ paths:
       - Payment
       x-soracom-cli:
       - volume-discounts get
+  /volume_discounts/{order_id}/confirm:
+    put:
+      consumes:
+      - application/json
+      description: 与信を実施し、問題ない場合に発注を確定します。
+      operationId: confirmVolumeDiscountOrder
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/GetVolumeDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Confirm long term discount order.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts confirm
+  /volume_discounts/available_discounts:
+    get:
+      consumes:
+      - application/json
+      description: 購入可能な長期利用割引のリストを返します。
+      operationId: listAvailableDiscounts
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/AvailableLongTermDiscountResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List available long term discounts.
+      tags:
+      - Order
+      x-soracom-cli:
+      - volume-discounts available-discounts
 produces:
 - application/json
 schemes:

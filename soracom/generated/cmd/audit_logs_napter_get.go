@@ -36,11 +36,11 @@ func init() {
 
 	AuditLogsNapterGetCmd.Flags().StringVar(&AuditLogsNapterGetCmdResourceType, "resource-type", "", TRAPI("Type of the target resource to query Napter audit log entries."))
 
-	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime millis)."))
+	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime milliseconds)."))
 
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
 
-	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime millis)."))
+	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
 
 	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	AuditLogsNapterCmd.AddCommand(AuditLogsNapterGetCmd)
