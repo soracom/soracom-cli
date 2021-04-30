@@ -94,6 +94,9 @@ cli:
     license-packs:
       summary: Lagoon のライセンスパックに関する操作を行います。
       description: Lagoon のライセンスパックに関する操作を行います。
+    migration:
+      summary: バージョンの移行に関する操作を実行します。
+      description: バージョンの移行に関する操作を実行します。
     users:
       summary: Lagoon ユーザーに関する操作を行います。
       description: Lagoon ユーザーに関する操作を行います。
