@@ -1600,6 +1600,14 @@ definitions:
               type: string
         type: array
     type: object
+  LagoonMigrationFromClassicRequest:
+    properties:
+      dashboardIds:
+        description: A list of dashboard IDs to migrate
+        items:
+          type: string
+        type: array
+    type: object
   LagoonPlanChangingRequest:
     properties:
       plan:
@@ -1613,7 +1621,9 @@ definitions:
     properties:
       plan:
         enum:
+        - free
         - maker
+        - pro
         type: string
       userPassword:
         description: This password is used by the initial user's login.
@@ -1674,8 +1684,6 @@ definitions:
       newPassword:
         type: string
       oldPassword:
-        type: string
-      userEmail:
         type: string
     type: object
   LagoonUserPermissionUpdatingRequest:
@@ -6171,6 +6179,12 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/LagoonDashboardPermissionsUpdatingRequest'
+      - description: If the value is true, a request will be issued to Lagoon Classic.  This
+          is only valid if both Lagoon and Lagoon Classic are enabled.
+        in: query
+        name: classic
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
@@ -6198,6 +6212,12 @@ paths:
         name: dashboard_id
         required: true
         type: integer
+      - description: If the value is true, a request will be issued to Lagoon Classic.  This
+          is only valid if both Lagoon and Lagoon Classic are enabled.
+        in: query
+        name: classic
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
@@ -6212,12 +6232,19 @@ paths:
       - Lagoon
       x-soracom-cli:
       - lagoon dashboards init-permissions
-  /lagoon/dashboards/permission:
+  /lagoon/dashboards/permissions:
     get:
       consumes:
       - application/json
       description: SORACOM Lagoon の全ダッシュボードの権限を取得します
       operationId: listLagoonDashboardsPermissions
+      parameters:
+      - description: If the value is true, a request will be issued to Lagoon Classic.  This
+          is only valid if both Lagoon and Lagoon Classic are enabled.
+        in: query
+        name: classic
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
@@ -6243,6 +6270,13 @@ paths:
       - application/json
       description: SORACOM Lagoon の提供するカスタムアイコンのイメージへのリンクを提供します
       operationId: getImageLink
+      parameters:
+      - description: If the value is true, a request will be issued to Lagoon Classic.  This
+          is only valid if both Lagoon and Lagoon Classic are enabled.
+        in: query
+        name: classic
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
@@ -6305,6 +6339,57 @@ paths:
       - Lagoon
       x-soracom-cli:
       - lagoon license-packs update
+  /lagoon/migration:
+    get:
+      consumes:
+      - application/json
+      description: SORACOM Lagoonのバージョン移行に関連する情報を取得します。この API による操作は root アカウントのみが可能です。
+      operationId: getLagoonMigrationInfo
+      parameters:
+      - description: req
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/LagoonPlanChangingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM Lagoonのバージョン移行に関連する情報の取得
+      tags:
+      - Lagoon
+      x-soracom-cli:
+      - lagoon migration get-info
+    post:
+      consumes:
+      - application/json
+      description: SORACOM Lagoonのバージョン移行を実行します。この API による操作は root アカウントのみが可能です。
+      operationId: migrateLagoon
+      parameters:
+      - description: req
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/LagoonMigrationFromClassicRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM Lagoonのバージョン移行の実行
+      tags:
+      - Lagoon
+      x-soracom-cli:
+      - lagoon migration migrate
   /lagoon/plan:
     put:
       consumes:
@@ -6391,6 +6476,13 @@ paths:
       - application/json
       description: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得します。
       operationId: listLagoonUsers
+      parameters:
+      - description: If the value is true, a request will be issued to Lagoon Classic.  This
+          is only valid if both Lagoon and Lagoon Classic are enabled.
+        in: query
+        name: classic
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
@@ -9735,58 +9827,6 @@ paths:
       - Email
       x-soracom-cli:
       - emails verify-add-email-token
-  /operators/email_change_token/issue:
-    post:
-      consumes:
-      - application/json
-      description: メールアドレス変更用のワンタイムトークンをメールで送付する。
-      operationId: issueEmailChangeToken
-      parameters:
-      - description: email
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/IssueEmailChangeTokenRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - api_key: []
-      - api_token: []
-      summary: Issue Email Change Token
-      tags:
-      - Operator
-      x-soracom-cli:
-      - operator issue-email-change-token
-  /operators/email_change_token/verify:
-    post:
-      consumes:
-      - application/json
-      description: メールアドレス変更用のトークンを確認して、メールアドレスを変更する。
-      operationId: verifyEmailChangeToken
-      parameters:
-      - description: token
-        in: body
-        name: token
-        required: true
-        schema:
-          $ref: '#/definitions/VerifyEmailChangeTokenRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - api_key: []
-      - api_token: []
-      summary: Verify Email Change Token
-      tags:
-      - Operator
-      x-soracom-cli:
-      - operator verify-email-change-token
   /operators/mfa_revoke_token/issue:
     post:
       consumes:
@@ -13816,6 +13856,37 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers update-speed-class
+  /subscribers/export:
+    post:
+      consumes:
+      - application/json
+      description: すべてのSubscriberをCSVファイルとしてエクスポートする
+      operationId: exportSubscribers
+      parameters:
+      - default: sync
+        description: エクスポート方法 (非同期, 同期)
+        enum:
+        - async
+        - sync
+        in: query
+        name: export_mode
+        required: false
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Subscriberのエクスポート先
+          schema:
+            $ref: '#/definitions/FileExportResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Export all subscribers.
+      tags:
+      - Subscriber
+      x-soracom-cli:
+      - subscribers export
   /subscribers/msisdn/{msisdn}/send_sms:
     post:
       consumes:
