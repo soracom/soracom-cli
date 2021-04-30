@@ -39,12 +39,12 @@ tear_down() {
         if [ "$test_result" -eq 0 ]; then
             GREEN=$'\e[0;32m'
             echo
-            echo -e ${GREEN}'TEST OK'${NO_COLOR}
+            echo -e "${GREEN}TEST OK${NO_COLOR}"
             echo
         else
             RED=$'\e[0;31m'
             echo
-            echo -e ${RED}'TEST FAILED'${NO_COLOR}
+            echo -e "${RED}TEST FAILED${NO_COLOR}"
             echo
         fi
         exit $test_result
