@@ -19,11 +19,16 @@ import (
 // LagoonDashboardsUpdatePermissionsCmdDashboardId holds value of 'dashboard_id' option
 var LagoonDashboardsUpdatePermissionsCmdDashboardId int64
 
+// LagoonDashboardsUpdatePermissionsCmdClassic holds value of 'classic' option
+var LagoonDashboardsUpdatePermissionsCmdClassic bool
+
 // LagoonDashboardsUpdatePermissionsCmdBody holds contents of request body to be sent
 var LagoonDashboardsUpdatePermissionsCmdBody string
 
 func init() {
 	LagoonDashboardsUpdatePermissionsCmd.Flags().Int64Var(&LagoonDashboardsUpdatePermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
+
+	LagoonDashboardsUpdatePermissionsCmd.Flags().BoolVar(&LagoonDashboardsUpdatePermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
 
 	LagoonDashboardsUpdatePermissionsCmd.Flags().StringVar(&LagoonDashboardsUpdatePermissionsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsUpdatePermissionsCmd)
@@ -104,6 +109,10 @@ func buildPathForLagoonDashboardsUpdatePermissionsCmd(path string) string {
 
 func buildQueryForLagoonDashboardsUpdatePermissionsCmd() url.Values {
 	result := url.Values{}
+
+	if LagoonDashboardsUpdatePermissionsCmdClassic != false {
+		result.Add("classic", sprintf("%t", LagoonDashboardsUpdatePermissionsCmdClassic))
+	}
 
 	return result
 }

@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LagoonGetImageLinkCmdClassic holds value of 'classic' option
+var LagoonGetImageLinkCmdClassic bool
+
 func init() {
+	LagoonGetImageLinkCmd.Flags().BoolVar(&LagoonGetImageLinkCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonCmd.AddCommand(LagoonGetImageLinkCmd)
 }
 
@@ -70,6 +74,10 @@ func buildPathForLagoonGetImageLinkCmd(path string) string {
 
 func buildQueryForLagoonGetImageLinkCmd() url.Values {
 	result := url.Values{}
+
+	if LagoonGetImageLinkCmdClassic != false {
+		result.Add("classic", sprintf("%t", LagoonGetImageLinkCmdClassic))
+	}
 
 	return result
 }

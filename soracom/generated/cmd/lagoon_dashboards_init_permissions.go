@@ -13,8 +13,13 @@ import (
 // LagoonDashboardsInitPermissionsCmdDashboardId holds value of 'dashboard_id' option
 var LagoonDashboardsInitPermissionsCmdDashboardId int64
 
+// LagoonDashboardsInitPermissionsCmdClassic holds value of 'classic' option
+var LagoonDashboardsInitPermissionsCmdClassic bool
+
 func init() {
 	LagoonDashboardsInitPermissionsCmd.Flags().Int64Var(&LagoonDashboardsInitPermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
+
+	LagoonDashboardsInitPermissionsCmd.Flags().BoolVar(&LagoonDashboardsInitPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsInitPermissionsCmd)
 }
 
@@ -81,6 +86,10 @@ func buildPathForLagoonDashboardsInitPermissionsCmd(path string) string {
 
 func buildQueryForLagoonDashboardsInitPermissionsCmd() url.Values {
 	result := url.Values{}
+
+	if LagoonDashboardsInitPermissionsCmdClassic != false {
+		result.Add("classic", sprintf("%t", LagoonDashboardsInitPermissionsCmdClassic))
+	}
 
 	return result
 }
