@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-d=$( cd "$( dirname "$0" )" || exit 1; cd ..; pwd -P )
-
 VERSION=$1
 if [ -z "$1" ]; then
   echo "Please specify version number (e.g. 1.2.3)"
   exit 1
 fi
+
+set -Eeuo pipefail
+d=$( cd "$( dirname "$0" )" && cd .. && pwd -P )
 
 : "Generate snapcraft.yaml" && {
   mkdir -p "$d/soracom/dist/$VERSION/snap"
@@ -24,7 +25,7 @@ parts:
   soracom:
     plugin: dump
     source: soracom_${VERSION}_linux_amd64.tar.gz
-    
+
 apps:
   soracom:
     command: soracom

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
-set -e
-set -x
-
 VERSION=$1
 if [ -z "$1" ]; then
   echo "Please specify version number (e.g. 1.2.3)"
   exit 1
 fi
 
+set -Eeuo pipefail
+d=$( cd "$( dirname "$0" )" && cd .. && pwd -P )
+
+set -x
 : "Generate layer.zip" && {
   wd="$d/soracom/dist/$VERSION/lambda-layer"
   rm -rf "$wd"

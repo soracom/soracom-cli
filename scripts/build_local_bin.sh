@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
+set -Eeuo pipefail
+d="$( cd "$( dirname "$0" )" && cd .. && pwd -P )"
 
 uname_s="$(uname -s)"
 if [ "$uname_s" == "Darwin" ]; then

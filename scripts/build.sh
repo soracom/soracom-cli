@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
-d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
+VERSION=$1
+if [ -z "$1" ]; then
+  VERSION='0.0.0'
+  echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
+fi
+
+TARGETS=$2
+if [ -z "$2" ]; then
+    TARGETS='linux windows darwin,!386 freebsd'
+    uname_s="$( uname -s | tr '[:upper:]' '[:lower:]' )"
+    if [[ "$TARGETS" != *"$uname_s"* ]]; then
+        TARGETS="$TARGETS $uname_s"
+    fi
+fi
+
+set -Eeuo pipefail
+
+d=$( cd "$( dirname "$0" )" && cd .. && pwd -P )
 
 : 'Check if shell scripts are healthy' && {
   command -v shellcheck > /dev/null 2>&1 && {
@@ -17,6 +34,7 @@ run_command_on_docker_container() {
   dir=$1
   cmd=$2
   #echo $cmd
+  set +u # $WERCKER might not be defined on non-wercker environments
   if [ -z "$WERCKER" ]; then
     docker run -i --rm \
       --user "$(id -u):$(id -g)" \
@@ -34,24 +52,8 @@ run_command_on_docker_container() {
     cd "/go/src/github.com/soracom/soracom-cli/$dir" && GO111MODULE=on bash -c "$cmd"
     set +x
   fi
+  set -u
 }
-
-set -e # aborting if any commands below exit with non-zero code
-
-VERSION=$1
-if [ -z "$1" ]; then
-  VERSION='0.0.0'
-  echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
-fi
-
-TARGETS=$2
-if [ -z "$2" ]; then
-    TARGETS='linux windows darwin,!386 freebsd'
-    uname_s="$( uname -s | tr '[:upper:]' '[:lower:]' )"
-    if [[ "$TARGETS" != *"$uname_s"* ]]; then
-        TARGETS="$TARGETS $uname_s"
-    fi
-fi
 
 : 'Install dependencies' && {
     echo 'Installing build dependencies ...'

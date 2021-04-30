@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-d="$( cd "$( dirname "$0" )"; cd ..; pwd )"
-set -e
-
-usage() {
-  echo "Usage: $0 <version> [aws profile name]"
-}
-
 VERSION=$1
 if [ -z "$VERSION" ]; then
   echo "Version number (e.g. 1.2.3) must be specified. Abort."
@@ -18,7 +11,12 @@ if [ -z "$AWS_PROFILE" ]; then
   AWS_PROFILE=soracom-dev  # 'soracom-dev' is for testing, as a safe default. if you want to go production, specify 'registry'
 fi
 
+set -Eeuo pipefail
+d="$( cd "$( dirname "$0" )" && cd .. && pwd -P )"
 
+usage() {
+  echo "Usage: $0 <version> [aws profile name]"
+}
 
 publish_layer() {
   layer_name=$1

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-d="$( cd "$( dirname "$0" )" || exit 1; cd ..; pwd )"
-set -eu pipefail
+set -Eeuo pipefail
+d="$( cd "$( dirname "$0" )" && cd .. && pwd )"
 
 fen="$d/../soracom-api/build/soracom-api.en.yaml"
 fja="$d/../soracom-api/build/soracom-api.ja.yaml"

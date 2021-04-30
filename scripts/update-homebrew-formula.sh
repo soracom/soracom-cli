@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-set -e
-
 version=$1
 git_username=$2
 git_email=$3
@@ -9,6 +7,8 @@ if [[ "$version" == "" ]] || [[ "$git_username" == "" ]] || [[ "$git_email" == "
     echo "usage: $0 <version number (e.g. '1.2.3')> <git user.name> <git user.email>"
     exit 1
 fi
+
+set -Eeuo pipefail
 
 tmpdir=$(mktemp -d)
 
