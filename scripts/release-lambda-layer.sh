@@ -28,6 +28,7 @@ publish_layer() {
     --zip-file "fileb://soracom/dist/$VERSION/lambda-layer/layer_${VERSION}.zip" \
     --profile "$AWS_PROFILE" \
     --region "$region" \
+    --no-cli-pager \
   && cd -
 
   layer_version="$(
@@ -44,7 +45,8 @@ publish_layer() {
     --principal '*' \
     --action lambda:GetLayerVersion \
     --profile "$AWS_PROFILE" \
-    --region "$region"
+    --region "$region" \
+    --no-cli-pager
 }
 
 should_skip() {
