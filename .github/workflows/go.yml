@@ -40,9 +40,6 @@ jobs:
       - name: Run the generator
         run: ./generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
 
-      - name: Generate
-        run: go generate -v ./soracom/ && ls ./soracom/ && ls ./soracom/generated/ && ls ./soracom/generated/cmd && ls ./soracom/generated/cmd/i18n_data.go
-
       #- name: Install a dependency which is required only for windows
       #run: go get -u github.com/bearmini/go-acl
 
