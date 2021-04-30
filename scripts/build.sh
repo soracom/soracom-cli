@@ -52,7 +52,6 @@ run_command_on_docker_container() {
     run_command_on_docker_container '' 'go get -u github.com/laher/goxc'
 
     echo 'Installing commands used with "go generate" ...'
-    run_command_on_docker_container '' 'go get -u github.com/jessevdk/go-assets-builder'
     run_command_on_docker_container '' 'go get -u github.com/elazarl/goproxy'
     run_command_on_docker_container '' 'go mod tidy'
 }
