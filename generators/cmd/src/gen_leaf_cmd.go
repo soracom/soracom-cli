@@ -170,6 +170,12 @@ func isResponseBodyRaw(m lib.APIMethod) bool {
 	if strings.ToUpper(m.Method) == "GET" && m.Path == "/files/{scope}/{path}" {
 		return true
 	}
+
+	// response contains signed URL, which should not be modified while Go json serializer prettifies '&' to '\u0026'
+	if strings.ToUpper(m.Method) == "POST" && strings.HasSuffix(m.Path, "/export") {
+		return true
+	}
+
 	return false
 }
 
