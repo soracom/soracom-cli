@@ -82,6 +82,7 @@ var StatsAirExportCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
+		rawOutput = true
 
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))

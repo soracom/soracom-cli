@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LagoonListUsersCmdClassic holds value of 'classic' option
+var LagoonListUsersCmdClassic bool
+
 func init() {
+	LagoonListUsersCmd.Flags().BoolVar(&LagoonListUsersCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonCmd.AddCommand(LagoonListUsersCmd)
 }
 
@@ -75,6 +79,10 @@ func buildPathForLagoonListUsersCmd(path string) string {
 
 func buildQueryForLagoonListUsersCmd() url.Values {
 	result := url.Values{}
+
+	if LagoonListUsersCmdClassic != false {
+		result.Add("classic", sprintf("%t", LagoonListUsersCmdClassic))
+	}
 
 	return result
 }

@@ -8,15 +8,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LagoonDashboardsListPermissionsCmdClassic holds value of 'classic' option
+var LagoonDashboardsListPermissionsCmdClassic bool
+
 func init() {
+	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsListPermissionsCmd)
 }
 
 // LagoonDashboardsListPermissionsCmd defines 'list-permissions' subcommand
 var LagoonDashboardsListPermissionsCmd = &cobra.Command{
 	Use:   "list-permissions",
-	Short: TRAPI("/lagoon/dashboards/permission:get:summary"),
-	Long:  TRAPI(`/lagoon/dashboards/permission:get:description`),
+	Short: TRAPI("/lagoon/dashboards/permissions:get:summary"),
+	Long:  TRAPI(`/lagoon/dashboards/permissions:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opt := &apiClientOptions{
 			BasePath: "/v1",
@@ -61,7 +65,7 @@ func collectLagoonDashboardsListPermissionsCmdParams(ac *apiClient) (*apiParams,
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForLagoonDashboardsListPermissionsCmd("/lagoon/dashboards/permission"),
+		path:   buildPathForLagoonDashboardsListPermissionsCmd("/lagoon/dashboards/permissions"),
 		query:  buildQueryForLagoonDashboardsListPermissionsCmd(),
 
 		noRetryOnError: noRetryOnError,
@@ -75,6 +79,10 @@ func buildPathForLagoonDashboardsListPermissionsCmd(path string) string {
 
 func buildQueryForLagoonDashboardsListPermissionsCmd() url.Values {
 	result := url.Values{}
+
+	if LagoonDashboardsListPermissionsCmdClassic != false {
+		result.Add("classic", sprintf("%t", LagoonDashboardsListPermissionsCmdClassic))
+	}
 
 	return result
 }
