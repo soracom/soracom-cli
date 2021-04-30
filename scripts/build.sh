@@ -34,25 +34,16 @@ run_command_on_docker_container() {
   dir=$1
   cmd=$2
   #echo $cmd
-  set +u # $WERCKER might not be defined on non-wercker environments
-  if [ -z "$WERCKER" ]; then
-    docker run -i --rm \
-      --user "$(id -u):$(id -g)" \
-      -v "$d":/go/src/github.com/soracom/soracom-cli \
-      -v "$gopath":/go \
-      -v "$d/.cache":/.cache \
-      -w "/go/src/github.com/soracom/soracom-cli/$dir" \
-      "golang:$goversion" bash -x -c "$cmd" || {
-      echo -e "${RED}Build failed.${RESET}"
-      exit 1
-    }
-  else
-    # on wercker, it's already running on a docker container
-    set -x
-    cd "/go/src/github.com/soracom/soracom-cli/$dir" && GO111MODULE=on bash -c "$cmd"
-    set +x
-  fi
-  set -u
+  docker run -i --rm \
+    --user "$(id -u):$(id -g)" \
+    -v "$d":/go/src/github.com/soracom/soracom-cli \
+    -v "$gopath":/go \
+    -v "$d/.cache":/.cache \
+    -w "/go/src/github.com/soracom/soracom-cli/$dir" \
+    "golang:$goversion" bash -x -c "$cmd" || {
+    echo -e "${RED}Build failed.${RESET}"
+    exit 1
+  }
 }
 
 : 'Install dependencies' && {

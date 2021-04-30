@@ -221,17 +221,6 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 ```
 
 
-## How to build using wercker
-
-Install wercker's CLI and execute the build as follows. It will run the test as well.
-
-```
-wercker build
-```
-
-TODO: Currently, the build result is generated in the container. It will be fixed to generate to the mounted volume.
-
-
 # How to release
 
 ```
