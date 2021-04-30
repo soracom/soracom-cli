@@ -22,9 +22,6 @@ var LagoonUpdateUserPasswordCmdNewPassword string
 // LagoonUpdateUserPasswordCmdOldPassword holds value of 'oldPassword' option
 var LagoonUpdateUserPasswordCmdOldPassword string
 
-// LagoonUpdateUserPasswordCmdUserEmail holds value of 'userEmail' option
-var LagoonUpdateUserPasswordCmdUserEmail string
-
 // LagoonUpdateUserPasswordCmdLagoonUserId holds value of 'lagoon_user_id' option
 var LagoonUpdateUserPasswordCmdLagoonUserId int64
 
@@ -35,8 +32,6 @@ func init() {
 	LagoonUpdateUserPasswordCmd.Flags().StringVar(&LagoonUpdateUserPasswordCmdNewPassword, "new-password", "", TRAPI(""))
 
 	LagoonUpdateUserPasswordCmd.Flags().StringVar(&LagoonUpdateUserPasswordCmdOldPassword, "old-password", "", TRAPI(""))
-
-	LagoonUpdateUserPasswordCmd.Flags().StringVar(&LagoonUpdateUserPasswordCmdUserEmail, "user-email", "", TRAPI(""))
 
 	LagoonUpdateUserPasswordCmd.Flags().Int64Var(&LagoonUpdateUserPasswordCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
@@ -165,10 +160,6 @@ func buildBodyForLagoonUpdateUserPasswordCmd() (string, error) {
 
 	if LagoonUpdateUserPasswordCmdOldPassword != "" {
 		result["oldPassword"] = LagoonUpdateUserPasswordCmdOldPassword
-	}
-
-	if LagoonUpdateUserPasswordCmdUserEmail != "" {
-		result["userEmail"] = LagoonUpdateUserPasswordCmdUserEmail
 	}
 
 	resultBytes, err := json.Marshal(result)
