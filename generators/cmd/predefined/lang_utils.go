@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"embed"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,6 +11,9 @@ import (
 	"github.com/soracom/soracom-cli/generators/lib"
 	yaml "gopkg.in/yaml.v2"
 )
+
+//go:embed assets/*
+var assets embed.FS
 
 type languageResourceMap map[interface{}]interface{}
 
@@ -43,7 +47,7 @@ func getSelectedLanguage() string {
 func loadAPIResources() map[string]languageResourceMap {
 	m := make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		m[lang] = loadLanguageResourceFile("/soracom-api." + lang + ".yaml")
+		m[lang] = loadLanguageResourceFile("assets/soracom-api." + lang + ".yaml")
 	}
 	return m
 }
@@ -51,7 +55,7 @@ func loadAPIResources() map[string]languageResourceMap {
 func loadSandboxResources() map[string]languageResourceMap {
 	m := make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		m[lang] = loadLanguageResourceFile("/sandbox/soracom-sandbox-api." + lang + ".yaml")
+		m[lang] = loadLanguageResourceFile("assets/sandbox/soracom-sandbox-api." + lang + ".yaml")
 	}
 	return m
 }
@@ -59,13 +63,13 @@ func loadSandboxResources() map[string]languageResourceMap {
 func loadCLIResources() map[string]languageResourceMap {
 	m := make(map[string]languageResourceMap)
 	for lang := range supportedLanguages {
-		m[lang] = loadLanguageResourceFile("/cli/" + lang + ".yaml")
+		m[lang] = loadLanguageResourceFile("assets/cli/" + lang + ".yaml")
 	}
 	return m
 }
 
 func loadLanguageResourceFile(resourceFileName string) languageResourceMap {
-	f, err := Assets.Open(resourceFileName)
+	f, err := assets.Open(resourceFileName)
 	if err != nil {
 		lib.WarnfStderr("unable to load CLI language resource '%s'\n", resourceFileName)
 		return nil
@@ -210,7 +214,6 @@ func getStringResource(data map[interface{}]interface{}, pathAndMethodAndField s
 	if !ok || methodInfo == nil {
 		return ""
 	}
-
 
 	str, ok := methodInfo[pmf[2]].(string)
 	if !ok {

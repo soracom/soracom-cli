@@ -1,0 +1,232 @@
+cli:
+  audit-logs:
+    summary: 監査ログを取得します。
+    description: 監査ログを取得します。
+    napter:
+      summary: Napter の監査ログを取得します。
+      description: Napter の監査ログを取得します。
+  auth:
+    summary: API アクセスの認証を行い、API キーと API トークンを発行します。
+    description: "API アクセスの認証を行います。\nルートアカウントで認証する場合は --email と --password を指定してください。\n認証キーを用いて認証する場合は --auth-key-id と --auth-key を指定してください。\nSAM ユーザーで認証する場合は --operator-id, --user-name, --password をリクエストに含めてください。認証が成功すると、API キーや API トークンの情報が表示されます。"
+  bills:
+    summary: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+    description: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+  cell-locations:
+    summary: 基地局の位置情報を取得します。
+    description: 基地局の位置情報を取得します。
+  common_params:
+    body:
+      short_help: リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。
+    paginate:
+      short_help: 自動的にページネーションします。
+  completion:
+    summary: bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
+    description: bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
+    bash:
+      summary: bash 用の補完 (completion) スクリプトを生成します。
+      description: bash 用の補完 (completion) スクリプトを生成します。
+    zsh:
+      summary: zsh 用の補完 (completion) スクリプトを生成します。
+      description: zsh 用の補完 (completion) スクリプトを生成します。
+  configure:
+    summary: コマンド実行環境（プロファイル）の設定や表示を行います。
+    description: コマンド実行環境（プロファイル）の設定や表示を行います。
+    profile:
+      permission_is_too_open: "認証情報ファイル %s へのアクセス権が十分に絞り込まれていません。\n認証情報ファイルへは、soracom コマンドを実行しているユーザーのみがアクセス可能なように設定する必要があります。"
+      prompt: "--- SORACOM CLI セットアップ ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
+      coverage_type:
+        prompt: "\n\nカバレッジタイプを選択してください。\n\n1. Global\n2. Japan\n\n"
+        select: "選択してください (1-2) > "
+      auth:
+        prompt: "\n\n認証方法を選択してください。\n\n1. AuthKeyId と AuthKey を入力する（推奨）\n2. オペレーターのメールアドレスとパスワードを入力する\n3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）\n\n"
+        select: "選択してください (1-3) > "
+      overwrite: "\nプロファイル %s はすでに存在しています。上書きしますか？ (Y/n) "
+    get:
+      summary: プロファイル情報を表示します。
+      description: プロファイル情報を表示します。
+  configure_sandbox:
+    summary: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+    description: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+    auth_key: 本番環境のアカウントの AuthKey（本番環境のアカウントを持っているかどうかを確認するために使われます）
+    auth_key_id: 本番環境のアカウントの AuthKeyId（本番環境のアカウントを持っているかどうかを確認するために使われます）
+    email: API Sandbox 環境に作られるユーザーのメールアドレス
+    password: API Sandbox 環境に作られるユーザーのパスワード
+    register-payment-method: 仮想の支払い方法を設定するかどうか
+    profile:
+      prompt: "--- SORACOM CLI セットアップ (Sandbox) ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
+      prod_auth:
+        prompt: "\n\n本番環境の AuthKeyID と AuthKey のペアを入力してください。これらは本番環境のアカウントを持っているかどうかを確認するためだけに使われます。\n\n"
+      sandbox_account:
+        prompt: "\n\nSandbox 環境に作成するオペレーターのメールアドレスとパスワードを入力してください。\n\n"
+  coupons:
+    summary: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+    description: 登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
+  credentials:
+    summary: 認証情報に関する操作を行います。
+    description: 認証情報に関する操作を行います。
+  data:
+    summary: SIM からアップロードされて格納されているデータを取得します。
+    description: SIM からアップロードされて格納されているデータを取得します。
+  devices:
+    summary: デバイスに関する操作を行います。
+    description: デバイスに関する操作を行います。
+  emails:
+    summary: メールアドレスに関する操作を行います。
+    description: メールアドレスに関する操作を行います。
+  event-handlers:
+    summary: イベントハンドラーに関する操作を行います。
+    description: イベントハンドラーに関する操作を行います。
+  files:
+    summary: Harvest Files のファイルを管理します。
+    description: Harvest Files のファイルを管理します。
+  gadgets:
+    summary: ガジェットに関する操作を行います。
+    description: ガジェットに関する操作を行います。
+  groups:
+    summary: グループに関する操作を行います。
+    description: グループに関する操作を行います。
+  lagoon:
+    summary: Lagoon に関する操作を行います。
+    description: Lagoon に関する操作を行います。
+    dashboards:
+      summary: Lagoon のダッシュボードに関する操作を行います。
+      description: Lagoon のダッシュボードに関する操作を行います。
+    license-packs:
+      summary: Lagoon のライセンスパックに関する操作を行います。
+      description: Lagoon のライセンスパックに関する操作を行います。
+    migration:
+      summary: バージョンの移行に関する操作を実行します。
+      description: バージョンの移行に関する操作を実行します。
+    users:
+      summary: Lagoon ユーザーに関する操作を行います。
+      description: Lagoon ユーザーに関する操作を行います。
+  logs:
+    summary: ログに関する操作を行います。
+    description: ログに関する操作を行います。
+  lora-devices:
+    summary: LoRa device に関する操作を行います。
+    description: LoRa device に関する操作を行います。
+  lora-gateways:
+    summary: LoRa gateway に関する操作を行います。
+    description: LoRa gateway に関する操作を行います。
+  lora-network-sets:
+    summary: LoRa network set に関する操作を行います。
+    description: LoRa network set に関する操作を行います。
+  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。\n"
+  operator:
+    summary: オペレーターに関する操作を行います。
+    description: オペレーターに関する操作を行います。
+    auth-keys:
+      summary: オペレーターの認証キーに関する操作を行います。
+      description: オペレーターの認証キーに関する操作を行います。
+  orders:
+    summary: 商品の注文に関する操作を行います。
+    description: 商品の注文に関する操作を行います。
+  payer-information:
+    summary: 課金明細に出力する支払い者情報を取得または設定します。
+    description: 課金明細に出力する支払い者情報を取得または設定します。
+  payment-history:
+    summary: お支払い履歴を取得します。
+    description: お支払い履歴を取得します。
+  payment-methods:
+    summary: お支払い方法に関する操作を行います。
+    description: お支払い方法に関する操作を行います。
+    webpay:
+      summary: WebPay によるお支払い方法を設定または取得します。
+      description: WebPay によるお支払い方法を設定または取得します。
+  payment-statements:
+    summary: 課金明細の一覧取得または出力を行います。
+    description: 課金明細の一覧取得または出力を行います。
+  port-mappings:
+    summary: オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
+    description: オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
+  products:
+    summary: 商品一覧を取得します。
+    description: 商品一覧を取得します。
+  query:
+    summary: リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
+    description: いろいろな条件を指定して、その条件に適合するリソース（サブスクライバー、Sigfox デバイス）を抽出します。
+  roles:
+    summary: ロールに関する操作を行います。
+    description: ロールに関する操作を行います。
+  sandbox:
+    summary: API サンドボックスに関する操作を行います。
+    description: API サンドボックスに関する操作を行います。
+  shipping-addresses:
+    summary: 出荷先情報に関する操作を行います。
+    description: 出荷先情報に関する操作を行います。
+  sigfox-devices:
+    summary: Sigfox デバイスに関する操作を行います。
+    description: Sigfox デバイスに関する操作を行います。
+  sims:
+    summary: SIM に関する操作を行います。
+    description: SIM に関する操作を行います。
+  soralets:
+    summary: Orbit の Soralet に関する操作を行います。
+    description: Orbit の Soralet に関する操作を行います。
+  stats:
+    summary: 統計情報に関する操作を行います。
+    description: 統計情報に関する操作を行います。
+    air:
+      summary: Air の統計情報に関する操作を行います。
+      description: Air の統計情報に関する操作を行います。
+      sims:
+        summary: SIM ID で Air の統計情報に関する操作を行います。
+        description: SIM ID で Air の統計情報に関する操作を行います。
+    beam:
+      summary: Beam の統計情報に関する操作を行います。
+      description: Beam の統計情報に関する操作を行います。
+    harvest:
+      summary: Harvest の利用統計情報を取得します。
+      description: Harvest の利用統計情報を取得します。
+    napter:
+      summary: Napter の利用統計情報を取得します。
+      description: Napter の利用統計情報を取得します。
+      audit-logs:
+        summary: Napter 監査ログの利用統計情報を取得します。
+        description: Napter 監査ログの利用統計情報を取得します。
+  subscribers:
+    summary: サブスクライバー (SIM) に関する操作を行います。
+    description: サブスクライバー (SIM) に関する操作を行います。
+  system-notifications:
+    summary: システム通知に関する操作を行います。
+    description: システム通知に関する操作を行います。
+  test:
+    summary: soracom コマンド自身のテストや診断を行います。
+    description: soracom コマンド自身のテストや診断を行います。
+    _500:
+      summary: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。
+      description: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。環境変数 SORACOM_VERBOSE=1 を指定した状態で実行するとよいでしょう。
+  unconfigure:
+    summary: コマンド実行環境（プロファイル）を削除します。
+    description: コマンド実行環境（プロファイル）を削除します。
+    prompt: "プロファイル %s を削除します。よろしいですか？ (y/N) "
+  users:
+    summary: SAM ユーザーに関する操作を行います。
+    description: SAM ユーザーに関する操作を行います。
+    auth-keys:
+      summary: SAM ユーザーの認証キーに関する操作を行います。
+      description: SAM ユーザーの認証キーに関する操作を行います。
+    default-permissions:
+      summary: SAM ユーザーのデフォルトパーミッションに関する操作を行います。
+      description: SAM ユーザーのデフォルトパーミッションに関する操作を行います。
+    mfa:
+      summary: SAM ユーザーの MFA に関する操作を行います。
+      description: SAM ユーザーの MFA に関する操作を行います。
+    password:
+      summary: SAM ユーザーのパスワードに関する操作を行います。
+      description: SAM ユーザーのパスワードに関する操作を行います。
+    permissions:
+      summary: SAM ユーザーのパーミッションに関する操作を行います。
+      description: SAM ユーザーのパーミッションに関する操作を行います。
+  version:
+    summary: バージョン情報を表示します。
+    description: バージョン情報を表示します。
+  volume-discounts:
+    summary: ボリュームディスカウント（長期利用割引）に関する操作を行います。
+    description: ボリュームディスカウント（長期利用割引）に関する操作を行います。
+  vpg:
+    summary: VPG に関する操作を行います。
+    description: VPG (Virtual Private Gateways) に関する操作を行います。
+  deprecated-api: 非推奨の API 呼び出しです。
+  alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"

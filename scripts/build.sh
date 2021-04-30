@@ -8,7 +8,7 @@ d=$( cd "$( dirname "$0" )"; cd ..; pwd -P )
   }
 }
 
-goversion=1.15
+goversion=1.16
 docker pull "golang:$goversion"
 gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
@@ -80,6 +80,9 @@ fi
 
     echo 'Generating source codes for soracom-cli by using the generator ...'
     run_command_on_docker_container '' 'generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/'
+
+    echo 'Copying assets to embed ...'
+    run_command_on_docker_container '' 'cp -r generators/assets/ soracom/generated/cmd/assets/'
 }
 
 : 'Build soracom-cli executables' && {

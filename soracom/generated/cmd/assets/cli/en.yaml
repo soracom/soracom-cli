@@ -1,0 +1,253 @@
+cli:
+  audit-logs:
+    summary: Retrieve audit logs.
+    description: Retrieve audit logs.
+    napter:
+      summary: Retrieve audit logs for Napter.
+      description: Retrieve audit logs for Napter.
+  auth:
+    summary: Performs authentication and issue an API Key and an API Token if successful.
+    description: "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
+  bills:
+    summary: Show or export billing info.
+    description: Show billing info for specified period, or export the billing info to a file
+  cell-locations:
+    summary: Retrieves cell tower location information.
+    description: Retrieves cell tower location information.
+  common_params:
+    body:
+      short_help: JSON string or @filename for API request body.
+    paginate:
+      short_help: Do pagination automatically.
+  completion:
+    summary: Generate script for bash or zsh completion.
+    description: Generate script for bash or zsh completion.
+    bash:
+      summary: Generate script for bash completion.
+      description: Generate script for bash completion.
+    zsh:
+      summary: Generate script for zsh completion.
+      description: Generate script for zsh completion.
+  configure:
+    summary: Show, create or update configurations (profiles).
+    description: Show, create or update configurations (profiles).
+    profile:
+      permission_is_too_open: "Permissions for the file '%s' which contains your credentials are too open.\nIt is required that your credential files are NOT accessible by others."
+      prompt: "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
+      coverage_type:
+        prompt: "\n\nPlease select which coverage type to use.\n\n1. Global\n2. Japan\n\n"
+        select: "select (1-2) > "
+      auth:
+        prompt: "\n\nPlease select which authentication method to use.\n\n1. Input AuthKeyId and AuthKey * Recommended * \n2. Input Operator credentials (Operator Email and Password)\n3. Input SAM credentials (OperatorId, User name and Password)\n\n"
+        select: "select (1-3) > "
+      overwrite: "\nProfile %s already exists. Overwrite it? (Y/n) "
+    get:
+      summary: Show specified profile configurations.
+      description: Show specified profile configurations.
+  configure_sandbox:
+    summary: Create configurations (profiles) for API Sandbox.
+    description: Create configurations (profiles) for API Sandbox.
+    auth_key: AuthKey for the production environment. (Used to check if you have a valid account on the production environment)
+    auth_key_id: AuthKeyId for the production environment. (Used to check if you have a valid account on the production environment)
+    email: E-mail address for the user to be created on the sandbox environment.
+    password: Password for the user to be created on the sandbox environment.
+    register-payment-method: Register a virtual payment method for the user if specified.
+    profile:
+      prompt: "--- SORACOM CLI setup (Sandbox) ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
+      prod_auth:
+        prompt: "\n\nPlease Specify a pair of AuthKeyID and AuthKey for the production environment to check if you have a valid account on it.\n\n"
+      sandbox_account:
+        prompt: "\n\nPlease Specify Email and Password for a sandbox account to be created.\n\n"
+  coupons:
+    summary: List or register coupons.
+    description: List or register coupons.
+  credentials:
+    summary: List, create, update or delete credentials sets.
+    description: List, create, update or delete credentials sets.
+  data:
+    summary: Get stored data from subscribers.
+    description: Get stored data from subscribers.
+  devices:
+    summary: Manage devices.
+    description: Manage devices.
+  emails:
+    summary: Manage email addresses.
+    description: Manage email addresses.
+  event-handlers:
+    summary: List, create, update or delete event handlers.
+    description: List, create, update or delete event handlers.
+  files:
+    summary: Manage files on Harvest Files.
+    description: Manage files on Harvest Files.
+  gadgets:
+    summary: Manage gadgets.
+    description: Manage gadgets.
+  groups:
+    summary: List, create, update or delete groups.
+    description: List, create, update or delete groups.
+  lagoon:
+    summary: Manage Lagoon settings.
+    description: Manage Lagoon settings.
+    dashboards:
+      summary: Manage Lagoon dashboards.
+      description: Manage Lagoon dashboards.
+    license-packs:
+      summary: Manage Lagoon license packs.
+      description: Manage Lagoon license packs.
+    migration:
+      summary: Version migration related tasks.
+      description: Version migration related tasks.
+    users:
+      summary: Manage Lagoon users.
+      description: Manage lagoon users.
+  logs:
+    summary: List logs.
+    description: List logs.
+  lora-devices:
+    summary: Manage LoRa devices.
+    description: Manage LoRa devices.
+  lora-gateways:
+    summary: Manage LoRa gateways.
+    description: Manage LoRa gateways.
+  lora-network-sets:
+    summary: Manage LoRa network sets.
+    description: Manage LoRa network sets.
+  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version.\n"
+  operator:
+    summary: Manage operators.
+    description: Manage operators.
+    auth-keys:
+      summary: List, create or delete operator's AuthKeys.
+      description: List, create or delete operator's AuthKeys.
+  orders:
+    summary: List, create or cancel orders.
+    description: List, create or cancel orders.
+  payer-information:
+    summary: Get or edit payer information.
+    description: Get or edit payer information.
+  payment-history:
+    summary: List payment history.
+    description: List payment history.
+  payment-methods:
+    summary: Create or update payment methods.
+    description: Create or update payment methods.
+    webpay:
+      summary: Create or update WebPay payment method.
+      description: Create or update WebPay payment method.
+  payment-statements:
+    summary: List or export payment statements.
+    description: List or export payment statements.
+  port-mappings:
+    summary: Manage port mappings for on-demand remote access.
+    description: Manage port mappings for on-demand remote access.
+  products:
+    summary: List products.
+    description: List products.
+  query:
+    summary: Search resources such as subscribers or sigfox devices.
+    description: Search resources such as subscribers or sigfox devices.
+  roles:
+    summary: List, create, update or delete roles.
+    description: List, create, update or delete roles.
+  sandbox:
+    summary: Sandbox related operations.
+    description: Sandbox related operations. Use this subcommand with sandbox-enabled profile.
+    coupons:
+      summary: Create coupons that are able to be used only in sandbox.
+      description: Create coupons that are able to be used only in sandbox.
+    operators:
+      summary: Manage operators in sandbox.
+      description: Manage operators in sandbox.
+    orders:
+      summary: Manage order status.
+      description: Manage order status.
+    stats:
+      summary: Insert stats for Air or Beam for testing purpose.
+      description: Insert stats for Air or Beam for testing purpose.
+      air:
+        summary: Insert stats for Air for testing purpose.
+        description: Insert stats for Air for testing purpose.
+      beam:
+        summary: Insert stats for Beam for testing purpose.
+        description: Insert stats for Beam for testing purpose.
+    subscribers:
+      summary: Create virtual subscribers in sandbox.
+      description: Create virtual subscribers in sandbox.
+  shipping-addresses:
+    summary: List, create, update or delete shipping addresses.
+    description: List, create, update or delete shipping addresses.
+  sigfox-devices:
+    summary: Manage Sigfox devices.
+    description: Manage Sigfox devices.
+  sims:
+    summary: Manage SIMs.
+    description: Manage SIMs.
+  soralets:
+    summary: Manage Soralets for Orbit.
+    description: Manage Soralets for Orbit.
+  stats:
+    summary: Show or export statistics.
+    description: Show or export statistics.
+    air:
+      summary: Show or export Air statistics.
+      description: Show or export Air statistics.
+      sims:
+        summary: Show or export Air statistics by SIM ID.
+        description: Show or export Air statistics by SIM ID.
+    beam:
+      summary: Show or export Beam statistics.
+      description: Show or export Beam statistics.
+    harvest:
+      summary: Get usage report for Harvest.
+      description: Get usage report for Harvest.
+    napter:
+      summary: Get usage report for Napter.
+      description: Get usage report for Napter.
+      audit-logs:
+        summary: Get usage report for Napter audit logs.
+        description: Get usage report for Napter audit logs.
+  subscribers:
+    summary: Manage subscribers.
+    description: Manage subscribers.
+  system-notifications:
+    summary: Manage system notifications.
+    description: Manage system notifications.
+  test:
+    summary: Do diagnostics & testings.
+    description: Do diagnostics & testings.
+    _500:
+      summary: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
+      description: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
+  unconfigure:
+    summary: Remove configurations.
+    description: Remove configurations.
+    prompt: "Are you sure to remove profile '%s' ? (y/N) "
+  users:
+    summary: Manage SAM users.
+    description: Manage SAM users.
+    auth-keys:
+      summary: List, create or delete SAM user's AuthKeys.
+      description: List, create or delete SAM user's AuthKeys.
+    default-permissions:
+      summary: Show or update SAM user's default permissions.
+      description: Show or update SAM user's default permissions.
+    mfa:
+      summary: Manage SAM user's MFA.
+      description: Manage SAM user's MFA.
+    password:
+      summary: Create, update or delete SAM user's password.
+      description: Create, update or delete SAM user's password.
+    permissions:
+      summary: Show, create and update SAM user's permissions.
+      description: Show, create and update SAM user's permissions.
+  version:
+    summary: Show version info.
+    description: Show version info.
+  volume-discounts:
+    summary: Manage volume discounts (long-term discounts).
+    description: Manage volume discounts (long-term discounts).
+  vpg:
+    summary: List, create, update or delete VPGs.
+    description: List, create, update or delete VPGs.
+  deprecated-api: Deprecated API calling.
+  alternative-api-suggestion: "Please consider to use the alternative API (command: `%s`)."
