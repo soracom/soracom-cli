@@ -38,7 +38,6 @@ gopath=${gopath%%:*}
       go generate && \
       go vet && \
       goimports -w ./*.go && \
-      go test && \
       go build -o generate-cmd
     )
 
