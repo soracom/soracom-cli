@@ -1,4 +1,4 @@
-name: Go
+name: Build artifacts
 
 on: push
 
@@ -16,17 +16,8 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Install goimports
-        run: go get golang.org/x/tools/cmd/goimports
-
-      - name: Install go-assets-builder
-        run: go get github.com/jessevdk/go-assets-builder
-
       - name: Generate
         run: go generate -v ./generagors/cmd/src/
-
-      - name: Format
-        run: goimports -w ./generators/
 
       - name: Test
         run: go test ./generators/cmd/src
@@ -43,18 +34,17 @@ jobs:
       - name: Copy assets
         run: cp -r generators/assets/ soracom/generated/cmd/assets/
 
-      #- name: Install a dependency which is required only for windows
-      #run: go get -u github.com/bearmini/go-acl
-
-      - name: Format
-        run: goimports -w ./soracom/
+      - name: Generate
+        run: go generate -v ./soracom
 
       - name: Build
         run: |
           GOOS=linux   GOARCH=amd64 go build -o soracom/dist/ghactions/linux-amd64/soracom   ./soracom
+          GOOS=linux   GOARCH=arm64 go build -o soracom/dist/ghactions/linux-arm64/soracom   ./soracom
           GOOS=linux   GOARCH=386   go build -o soracom/dist/ghactions/linux-386/soracom     ./soracom
           GOOS=linux   GOARCH=arm   go build -o soracom/dist/ghactions/linux-arm/soracom     ./soracom
           GOOS=darwin  GOARCH=amd64 go build -o soracom/dist/ghactions/darwin-amd64/soracom  ./soracom
+          GOOS=darwin  GOARCH=arm64 go build -o soracom/dist/ghactions/darwin-arm64/soracom  ./soracom
           GOOS=windows GOARCH=amd64 go build -o soracom/dist/ghactions/windows-amd64/soracom ./soracom
           GOOS=windows GOARCH=386   go build -o soracom/dist/ghactions/windows-386/soracom   ./soracom
           GOOS=freebsd GOARCH=amd64 go build -o soracom/dist/ghactions/freebsd-amd64/soracom ./soracom
