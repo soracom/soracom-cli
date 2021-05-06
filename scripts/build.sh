@@ -5,98 +5,31 @@ if [ -z "$1" ]; then
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
 
-TARGETS=$2
-if [ -z "$2" ]; then
-    TARGETS='linux windows darwin,!386 freebsd'
-    uname_s="$( uname -s | tr '[:upper:]' '[:lower:]' )"
-    if [[ "$TARGETS" != *"$uname_s"* ]]; then
-        TARGETS="$TARGETS $uname_s"
-    fi
-fi
-
 set -Eeuo pipefail
 
-d=$( cd "$( dirname "$0" )" && cd .. && pwd -P )
+d="$( cd "$( dirname "$0" )" && cd .. && pwd -P )"
+RED="\\033[1;31m"
+GREEN="\\033[1;32m"
+RESET="\\033[0m"
 
-: 'Check if shell scripts are healthy' && {
-  command -v shellcheck > /dev/null 2>&1 && {
-    shellcheck -e SC2164 "$d/scripts/"*.sh
-    shellcheck -e SC2164 "$d/test/"*.sh
-  }
-}
-
-goversion=1.16
-docker pull "golang:$goversion"
 gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
-run_command_on_docker_container() {
-  dir=$1
-  cmd=$2
-  #echo $cmd
-  docker run -i --rm \
+docker build -t soracom-cli-build "$d/build"
+docker run --rm -it \
     --user "$(id -u):$(id -g)" \
+    -e "VERSION=$VERSION" \
     -v "$d":/go/src/github.com/soracom/soracom-cli \
     -v "$gopath":/go \
     -v "$d/.cache":/.cache \
-    -w "/go/src/github.com/soracom/soracom-cli/$dir" \
-    "golang:$goversion" bash -x -c "$cmd" || {
-    echo -e "${RED}Build failed.${RESET}"
-    exit 1
-  }
-}
+    -w "/go/src/github.com/soracom/soracom-cli/" \
+    soracom-cli-build bash -x -c "ls /build && /build/build.sh" || {
+        echo
+        echo -e "${RED}Build failed.${RESET}"
+        echo
+        exit 1
+    }
 
-: 'Install dependencies' && {
-    echo 'Installing build dependencies ...'
-    run_command_on_docker_container '' 'go get -u golang.org/x/tools/cmd/goimports'
-    run_command_on_docker_container '' 'go get -u github.com/laher/goxc'
-
-    echo 'Installing commands used with "go generate" ...'
-    run_command_on_docker_container '' 'go get -u github.com/elazarl/goproxy'
-    run_command_on_docker_container '' 'go mod tidy'
-}
-
-: "Test generator's library" && {
-    echo "Testing generator's source ..."
-    run_command_on_docker_container 'generators/cmd/src' 'go test'
-    run_command_on_docker_container 'generators/lib'     'go test'
-}
-
-: 'Generate source code for soracom-cli' && {
-    echo 'Generating generator ...'
-    run_command_on_docker_container 'generators/cmd/src' 'go generate'
-    run_command_on_docker_container 'generators/cmd/src' 'go vet'
-    run_command_on_docker_container 'generators/cmd/src' 'goimports -w ./*.go'
-    run_command_on_docker_container 'generators/cmd/src' 'go test'
-    run_command_on_docker_container 'generators/cmd/src' 'go build -o generate-cmd'
-
-    echo 'Generating source codes for soracom-cli by using the generator ...'
-    run_command_on_docker_container '' 'generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/'
-
-    echo 'Copying assets to embed ...'
-    run_command_on_docker_container '' 'cp -r generators/assets/ soracom/generated/cmd/assets/'
-}
-
-: 'Build soracom-cli executables' && {
-    echo 'Building artifacts ...'
-    run_command_on_docker_container 'soracom' 'go generate'
-    run_command_on_docker_container 'soracom' 'go get -u github.com/bearmini/go-acl' # required to specify some dependencies explicitly as they are imported only in windows builds
-    run_command_on_docker_container 'soracom' 'gofmt -s -w .'
-    run_command_on_docker_container 'soracom' "goxc -bc='$TARGETS' -d=dist/ -pv=$VERSION -build-ldflags='-X github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION' -tasks-=rmbin"
-
-    # non-zipped versions for homebrew and testing
-    echo 'Renaming artifacts for homebrew ...'
-    for distfile in "$d/soracom/dist/$VERSION"/*/soracom; do
-      distos="${distfile%/*}"
-      distos="${distos##*/}"
-      mv "$distfile" "$d/soracom/dist/$VERSION/soracom_${VERSION}_${distos}"
-    done
-    for distfile in "$d"/soracom/dist/"$VERSION"/*/soracom.exe; do
-      distos="${distfile%/*}"
-      distos="${distos##*/}"
-      mv "$distfile" "$d/soracom/dist/$VERSION/soracom_${VERSION}_${distos}.exe"
-    done
-
-    # removing empty directories
-    find "$d/soracom/dist/$VERSION" -type d -empty -delete
-}
+echo
+echo -e "${GREEN}OK${RESET}"
+echo
