@@ -23,7 +23,7 @@ docker run --rm -it \
     -v "$gopath":/go \
     -v "$d/.cache":/.cache \
     -w "/go/src/github.com/soracom/soracom-cli/" \
-    soracom-cli-build bash -x -c "ls /build && /build/build.sh" || {
+    soracom-cli-build bash -x -c "/build/build.sh" || {
         echo
         echo -e "${RED}Build failed.${RESET}"
         echo
