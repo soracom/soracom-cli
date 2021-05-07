@@ -16,7 +16,7 @@ gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
 docker build -t soracom-cli-build "$d/build"
-docker run --rm -it \
+docker run --rm -t \
     --user "$(id -u):$(id -g)" \
     -e "VERSION=$VERSION" \
     -v "$d":/go/src/github.com/soracom/soracom-cli \
