@@ -11,8 +11,8 @@ func TestHarvestFilesPathEscape(t *testing.T) {
 		Expected string
 	}{
 		{
-			Name: "pattern 1",
-			Path: "hoge",
+			Name:     "pattern 1",
+			Path:     "hoge",
 			Expected: "hoge",
 		},
 	}
