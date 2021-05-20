@@ -103,8 +103,15 @@ func sandboxInit(profile *profile) (*authResult, error) {
 	}
 
 	respBody, err := ac.callAPI(param)
+	if err != nil {
+		return nil, err
+	}
 
 	var ar authResult
 	err = json.Unmarshal([]byte(respBody), &ar)
+	if err != nil {
+		return nil, err
+	}
+
 	return &ar, err
 }
