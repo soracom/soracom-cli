@@ -2,10 +2,10 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-var ConfigureOverwrite bool
+var configureOverwrite bool
 
 func init() {
-	ConfigureCmd.Flags().BoolVar(&ConfigureOverwrite, "overwrite", true, TRCLI("cli.configure.overwrite"))
+	ConfigureCmd.Flags().BoolVar(&configureOverwrite, "overwrite", true, TRCLI("cli.configure.overwrite"))
 	RootCmd.AddCommand(ConfigureCmd)
 	RootCmd.AddCommand(UnconfigureCmd)
 }
@@ -27,7 +27,7 @@ var ConfigureCmd = &cobra.Command{
 			return err
 		}
 
-		err = saveProfile(pn, profile, ConfigureOverwrite)
+		err = saveProfile(pn, profile, configureOverwrite)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err

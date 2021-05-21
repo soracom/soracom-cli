@@ -4148,7 +4148,7 @@ paths:
         type: string
       responses:
         "204":
-          description: Successfuly deleted
+          description: Successfully deleted
         "404":
           description: No such device object model found
       security:
