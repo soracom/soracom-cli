@@ -86,7 +86,7 @@ build() {
   bin="soracom_${VERSION}_${goos}_$goarch$ext"
 
   printf "  %-7s - %-5s  bin" "$goos" "$goarch"
-  GOOS="$goos" GOARCH="$goarch" go build -ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$VERSION'" -o "$bindir/$bin" ./soracom
+  make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" EXT="$ext"
 
   printf ", archive"
   case "$goos" in

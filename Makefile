@@ -1,3 +1,8 @@
+VERSION ?= 0.0.0
+GOOS ?= darwin
+GOARCH ?= amd64
+EXT ?= 
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -29,3 +34,10 @@ generate: ## Generate source code for soracom-cli
 	@echo 'Copying assets to embed ...'
 	cp -r generators/assets/ soracom/generated/cmd/assets/
 .PHONY:generate
+
+build: ## Build codes
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
+		-ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
+		-o "soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)" \
+		./soracom
+.PHONY:build
