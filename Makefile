@@ -13,6 +13,11 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 .DEFAULT_GOAL := help
 
+install-dev: ## Install dev dependencies
+	@echo 'Installing dependencies for development'
+	go get -u golang.org/x/lint/golint
+.PHONY:install-dev
+
 install: ## Install dependencies
 	@echo 'Installing build dependencies ...'
 	go get -u golang.org/x/tools/cmd/goimports
@@ -55,7 +60,7 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: install generate format test lint ## Run `build-artifacts` action
+ci-build-artifacts: install-dev install generate format test lint ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
