@@ -51,11 +51,18 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: ## Run `build-artifacts` action
-	make generate
-	make test
+ci-build-artifacts: install generate format test lint ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
 	make cross-build OS_LIST="freebsd" ARCH_LIST="amd64 386"
 .PHONY:ci-build-artifacts
+
+format: ## Format codes
+	go fmt ./...
+.PHONY:format
+
+lint: ## Lint codes
+	# FIXME: set exit status when lint failed($ golint -set_exit_status ./...)
+	golint ./... 
+.PHONY:lint
