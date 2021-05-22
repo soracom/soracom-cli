@@ -1,7 +1,11 @@
 VERSION ?= 0.0.0
 GOOS ?= darwin
 GOARCH ?= amd64
-EXT ?= 
+ifeq ($(GOOS),windows)
+	EXT = .exe
+else
+	EXT = 
+endif
 OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
 .PHONY: help

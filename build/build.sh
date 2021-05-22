@@ -86,7 +86,7 @@ build() {
   bin="soracom_${VERSION}_${goos}_$goarch$ext"
 
   printf "  %-7s - %-5s  bin" "$goos" "$goarch"
-  make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" EXT="$ext"
+  make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
   case "$goos" in
