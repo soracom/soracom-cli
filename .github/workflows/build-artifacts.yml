@@ -16,39 +16,8 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Generate
-        run: go generate -v ./generagors/cmd/src/
-
-      - name: Test
-        run: go test ./generators/cmd/src
-
-      - name: Test
-        run: go test ./generators/lib
-
-      - name: Build the generator
-        run: go build -o generate-cmd ./generators/cmd/src
-
-      - name: Run the generator
-        run: ./generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
-
-      - name: Copy assets
-        run: cp -r generators/assets/ soracom/generated/cmd/assets/
-
-      - name: Generate
-        run: go generate -v ./soracom
-
-      - name: Build
-        run: |
-          GOOS=linux   GOARCH=amd64 go build -o soracom/dist/ghactions/linux-amd64/soracom   ./soracom
-          GOOS=linux   GOARCH=arm64 go build -o soracom/dist/ghactions/linux-arm64/soracom   ./soracom
-          GOOS=linux   GOARCH=386   go build -o soracom/dist/ghactions/linux-386/soracom     ./soracom
-          GOOS=linux   GOARCH=arm   go build -o soracom/dist/ghactions/linux-arm/soracom     ./soracom
-          GOOS=darwin  GOARCH=amd64 go build -o soracom/dist/ghactions/darwin-amd64/soracom  ./soracom
-          GOOS=darwin  GOARCH=arm64 go build -o soracom/dist/ghactions/darwin-arm64/soracom  ./soracom
-          GOOS=windows GOARCH=amd64 go build -o soracom/dist/ghactions/windows-amd64/soracom ./soracom
-          GOOS=windows GOARCH=386   go build -o soracom/dist/ghactions/windows-386/soracom   ./soracom
-          GOOS=freebsd GOARCH=amd64 go build -o soracom/dist/ghactions/freebsd-amd64/soracom ./soracom
-          GOOS=freebsd GOARCH=386   go build -o soracom/dist/ghactions/freebsd-386/soracom   ./soracom
+      - name: Run build-artifacts command
+        run: make ci-build-artifacts
 
       - uses: actions/upload-artifact@v2
         with:

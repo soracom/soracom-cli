@@ -2,6 +2,7 @@ VERSION ?= 0.0.0
 GOOS ?= darwin
 GOARCH ?= amd64
 EXT ?= 
+OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
 .PHONY: help
 help:
@@ -38,6 +39,23 @@ generate: ## Generate source code for soracom-cli
 build: ## Build codes
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
 		-ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
-		-o "soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)" \
+		-o $(OUTPUT) \
 		./soracom
 .PHONY:build
+
+cross-build:
+	for os in $(OS_LIST); do \
+		for arch in $(ARCH_LIST); do \
+			make build GOOS=$$os GOARCH=$$arch OUTPUT=soracom/dist/ghactions/$$os-$$arch/soracom$(EXT); \
+		done; \
+	done
+.PHONY:cross-build
+
+ci-build-artifacts: ## Run `build-artifacts` action
+	make generate
+	make test
+	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
+	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
+	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
+	make cross-build OS_LIST="freebsd" ARCH_LIST="amd64 386"
+.PHONY:ci-build-artifacts
