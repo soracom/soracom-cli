@@ -72,6 +72,5 @@ format: ## Format codes
 .PHONY:format
 
 lint: ## Lint codes
-	# FIXME: set exit status when lint failed($ golint -set_exit_status ./...)
-	golint ./... 
+	golint -set_exit_status ./...
 .PHONY:lint
