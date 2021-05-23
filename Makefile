@@ -8,7 +8,7 @@ else
 endif
 OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
-GOCYCLO_OVER ?= 20
+GOCYCLO_OVER ?= 23
 
 .PHONY: help
 help:
