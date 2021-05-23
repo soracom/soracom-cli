@@ -8,6 +8,8 @@ else
 endif
 OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
+GOCYCLO_OVER ?= 20
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -15,7 +17,9 @@ help:
 
 install-dev: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
-	go get -u golang.org/x/lint/golint
+	go get -u \
+		golang.org/x/lint/golint \
+		github.com/fzipp/gocyclo/cmd/gocyclo
 .PHONY:install-dev
 
 install: ## Install dependencies
@@ -61,7 +65,7 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: install-dev install generate format test lint ## Run `build-artifacts` action
+ci-build-artifacts: install-dev install generate metrics-gocyclo test lint ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
@@ -75,3 +79,7 @@ format: ## Format codes
 lint: ## Lint codes
 	golint -set_exit_status ./...
 .PHONY:lint
+
+metrics-gocyclo: ## Metrics with gocyclo
+	gocyclo -over $(GOCYCLO_OVER) .
+.PHONY:metrics-gocyclo
