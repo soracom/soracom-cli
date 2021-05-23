@@ -43,6 +43,7 @@ generate: ## Generate source code for soracom-cli
 	./generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
 	@echo 'Copying assets to embed ...'
 	cp -r generators/assets/ soracom/generated/cmd/assets/
+	make format
 .PHONY:generate
 
 build: ## Build codes
