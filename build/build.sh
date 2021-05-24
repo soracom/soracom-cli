@@ -17,7 +17,7 @@ gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
 : 'Install dependencies' && {
-  make install
+  make install-deps
 }
 
 : "Test generator's library" && {

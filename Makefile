@@ -15,20 +15,20 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 .DEFAULT_GOAL := help
 
-install-dev: ## Install dev dependencies
+install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
 	go get -u \
 		golang.org/x/lint/golint \
 		github.com/fzipp/gocyclo/cmd/gocyclo
-.PHONY:install-dev
+.PHONY:install-dev-deps
 
-install: ## Install dependencies
+install-deps: ## Install dependencies
 	@echo 'Installing build dependencies ...'
 	go get -u golang.org/x/tools/cmd/goimports
 	@echo 'Installing commands used with "go generate" ...'
 	go get -u github.com/elazarl/goproxy
 	go mod tidy
-.PHONY:install
+.PHONY:install-deps
 
 test: ## Test generator's library
 	@echo "Testing generator's source ..."
@@ -65,7 +65,7 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: install-dev install generate metrics-gocyclo test lint ## Run `build-artifacts` action
+ci-build-artifacts: install-dev-deps install-deps generate metrics-gocyclo test lint ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
