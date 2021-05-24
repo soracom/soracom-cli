@@ -1,6 +1,6 @@
 VERSION ?= 0.0.0
-GOOS ?= darwin
-GOARCH ?= amd64
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
 ifeq ($(GOOS),windows)
 	EXT = .exe
 else
