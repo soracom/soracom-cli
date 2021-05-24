@@ -36,15 +36,18 @@ type APIMethod struct {
 	AlternativeCommand string                   `yaml:"x-soracom-alternative-cli"`
 }
 
+// Pagination holds information about pagination
 type Pagination struct {
 	Response Response `yaml:"response"`
 	Request  Request  `yaml:"request"`
 }
 
+// Response holds information about response
 type Response struct {
 	Header string `yaml:"header"`
 }
 
+// Request holds information about request
 type Request struct {
 	Param string `yaml:"param"`
 }
@@ -62,6 +65,7 @@ type APIParam struct {
 	Items       APIParamArrayItems `yaml:"items"`
 }
 
+// GetDefaultValueAsString returns the default value as string type
 func (p *APIParam) GetDefaultValueAsString() string {
 	if p.Default == nil {
 		return ""
@@ -73,6 +77,7 @@ func (p *APIParam) GetDefaultValueAsString() string {
 	return s
 }
 
+// GetDefaultValueAsInt64 returns the default value as int64 type
 func (p *APIParam) GetDefaultValueAsInt64() int64 {
 	if p.Default == nil {
 		return 0
@@ -84,6 +89,7 @@ func (p *APIParam) GetDefaultValueAsInt64() int64 {
 	return int64(s)
 }
 
+// GetDefaultValueAsFloat returns the default value as float64 type
 func (p *APIParam) GetDefaultValueAsFloat() float64 {
 	if p.Default == nil {
 		return 0.0
@@ -95,6 +101,7 @@ func (p *APIParam) GetDefaultValueAsFloat() float64 {
 	return s
 }
 
+// GetDefaultValueAsBool returns the default value as bool type
 func (p *APIParam) GetDefaultValueAsBool() bool {
 	if p.Default == nil {
 		return false
@@ -141,6 +148,7 @@ type StructProperty struct {
 	Default     interface{}
 }
 
+// GetDefaultValueAsString returns the default value as string type
 func (p *StructProperty) GetDefaultValueAsString() string {
 	if p.Default == nil {
 		return ""
@@ -152,6 +160,7 @@ func (p *StructProperty) GetDefaultValueAsString() string {
 	return s
 }
 
+// GetDefaultValueAsInt64 returns the default value as int64 type
 func (p *StructProperty) GetDefaultValueAsInt64() int64 {
 	if p.Default == nil {
 		return 0
@@ -163,6 +172,7 @@ func (p *StructProperty) GetDefaultValueAsInt64() int64 {
 	return int64(s)
 }
 
+// GetDefaultValueAsFloat returns the default value as float64 type
 func (p *StructProperty) GetDefaultValueAsFloat() float64 {
 	if p.Default == nil {
 		return 0.0
@@ -174,6 +184,7 @@ func (p *StructProperty) GetDefaultValueAsFloat() float64 {
 	return s
 }
 
+// GetDefaultValueAsBool returns the default value as bool type
 func (p *StructProperty) GetDefaultValueAsBool() bool {
 	if p.Default == nil {
 		return false
