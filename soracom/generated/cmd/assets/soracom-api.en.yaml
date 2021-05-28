@@ -4148,7 +4148,7 @@ paths:
         type: string
       responses:
         "204":
-          description: Successfuly deleted
+          description: Successfully deleted
         "404":
           description: No such device object model found
       security:
@@ -4808,7 +4808,7 @@ paths:
           header: x-soracom-next-key
   /devices/{device_id}/set_group:
     post:
-      description: Lets a device device join a group
+      description: Lets a device join a group
       operationId: setDeviceGroup
       parameters:
       - description: Device to update
@@ -4833,7 +4833,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: Lets a device device join a group
+      summary: Lets a device join a group
       tags:
       - Device
       x-soracom-cli:
