@@ -11,8 +11,8 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
-	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
-	golang.org/x/sys v0.0.0-20210503173754-0981d6026fa6
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
+	golang.org/x/sys v0.0.0-20210525143221-35b2ab0089ea
 	gopkg.in/yaml.v2 v2.3.0
 )
 
