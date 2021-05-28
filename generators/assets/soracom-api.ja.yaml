@@ -11670,6 +11670,193 @@ paths:
       - Sim
       x-soracom-cli:
       - sims session-events
+  /sims/{sim_id}/packet_capture_sessions:
+    get:
+      consumes:
+      - application/json
+      description: 指定されたSIMのパケットキャプチャセッションのリストを取得する。
+      operationId: listSimPacketCaptureSessions
+      parameters:
+      - description: 対象のSIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 現ページで取得した最後のパケットキャプチャセッション。このパラメータを指定することで次のパケットキャプチャセッション以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: 10
+        description: 取得するパケットキャプチャセッションの上限
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 指定されたSIMのパケットキャプチャセッションのリスト
+          schema:
+            items:
+              $ref: '#/definitions/PacketCaptureSession'
+            type: array
+        "404":
+          description: 指定されたSIMが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List packet capture sessions associated with the SIM
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims list-packet-capture-sessions
+    post:
+      consumes:
+      - application/json
+      description: 指定されたSIMに対するパケットキャプチャセッションを作成する。
+      operationId: createSimPacketCaptureSession
+      parameters:
+      - description: パケットキャプチャセッションを作成するSIMのID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: パケットキャプチャセッションリクエスト
+        in: body
+        name: packet_capture_session_request
+        required: true
+        schema:
+          $ref: '#/definitions/PacketCaptureSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 指定されたSIMに対して作成されたパケットキャプチャセッション
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: 指定されたSIMに対するパケットキャプチャセッションの作成が失敗した
+        "404":
+          description: 指定されたSIMが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create-packet-capture-session
+  /sims/{sim_id}/packet_capture_sessions/{session_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 指定したSIMに対するパケットキャプチャを削除する。
+      operationId: deleteSimPacketCaptureSession
+      parameters:
+      - description: 対象のSIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 対象のパケットキャプチャセッションID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 削除されたパケットキャプチャセッションの情報
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: 指定されたパケットキャプチャセッションの削除に失敗
+        "404":
+          description: 指定されたパケットキャプチャセッションが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims delete-packet-capture-session
+    get:
+      consumes:
+      - application/json
+      description: 指定したSIMに対するパケットキャプチャセッションを取得する。
+      operationId: getSimPacketCaptureSession
+      parameters:
+      - description: 対象のSIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 対象のパケットキャプチャセッションID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 指定されたパケットキャプチャセッション
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "404":
+          description: 指定されたパケットキャプチャセッションが存在しない
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get-packet-capture-session
+  /sims/{sim_id}/packet_capture_sessions/{session_id}/stop:
+    post:
+      consumes:
+      - application/json
+      description: 指定したSIMに対するパケットキャプチャを停止する。
+      operationId: stopSimPacketCaptureSession
+      parameters:
+      - description: 対象のSIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 対象のパケットキャプチャセッションID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 停止されたパケットキャプチャセッションの情報
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: The packet capture session can be stopped only when its status
+            is CAPTURING
+        "404":
+          description: 指定されたパケットキャプチャセッションが存在しない
+        "500":
+          description: 指定されたパケットキャプチャセッションが停止できなかった
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Stop SIM Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
       description: |
@@ -14589,22 +14776,22 @@ paths:
     get:
       consumes:
       - application/json
-      description: List packet capture sessins associated with the VPG
+      description: 指定されたVPGのパケットキャプチャセッションのリストを取得する。
       operationId: listPacketCaptureSessions
       parameters:
-      - description: VPG ID
+      - description: 対象のVPG ID
         in: path
         name: vpg_id
         required: true
         type: string
       - default: "null"
-        description: ID of the last group in the previous page
+        description: 現ページで取得した最後のパケットキャプチャセッション。このパラメータを指定することで次のパケットキャプチャセッション以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
         type: string
       - default: 10
-        description: Max number of results in a response
+        description: 取得するパケットキャプチャセッションの上限
         format: int32
         in: query
         name: limit
@@ -14614,7 +14801,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: List of packet capture sessions associated with the VPG
+          description: 指定されたVPGのパケットキャプチャセッションのリスト
           schema:
             items:
               $ref: '#/definitions/PacketCaptureSession'
@@ -14622,6 +14809,8 @@ paths:
         "400":
           description: Failed to list packet capture sessions associated with the
             VPG
+        "404":
+          description: 指定されたVPGが存在しない
       security:
       - api_key: []
       - api_token: []
@@ -14633,15 +14822,15 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a packet capture sessins associated the VPG
+      description: 指定されたVPGに対するパケットキャプチャセッションを作成する。
       operationId: createPacketCaptureSession
       parameters:
-      - description: VPG ID
+      - description: 対象のVPG ID
         in: path
         name: vpg_id
         required: true
         type: string
-      - description: A packet capture session request
+      - description: パケットキャプチャセッションリクエスト
         in: body
         name: packet_capture_session_request
         required: true
@@ -14651,12 +14840,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: Created a new packet capture sessions associated with the VPG
+          description: 指定されたVPGに対するパケットキャプチャセッションの作成が失敗した
           schema:
             $ref: '#/definitions/PacketCaptureSession'
         "400":
-          description: Failed to create a packet capture sessions associated with
-            the VPG
+          description: 指定されたVPGに対するパケットキャプチャセッションの作成が失敗した
+        "404":
+          description: 指定されたVPGが存在しない
       security:
       - api_key: []
       - api_token: []
@@ -14669,15 +14859,15 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a packet capture sessins associated the VPG
+      description: 指定したVPG対するパケットキャプチャを削除する。
       operationId: deletePacketCaptureSession
       parameters:
-      - description: VPG ID
+      - description: 対象のVPG ID
         in: path
         name: vpg_id
         required: true
         type: string
-      - description: Packet capture session ID
+      - description: 対象のパケットキャプチャセッションID
         in: path
         name: session_id
         required: true
@@ -14686,15 +14876,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: Deleted the packet capture sessions associated with the VPG
+          description: 削除されたパケットキャプチャセッションの情報
           schema:
             $ref: '#/definitions/PacketCaptureSession'
         "400":
-          description: Faield to delete the packet capture sessions associated with
-            the VPG was not found
+          description: 指定されたパケットキャプチャセッションの削除に失敗
         "404":
-          description: The packet capture sessions associated with the VPG was not
-            found
+          description: 指定されたパケットキャプチャセッションが存在しない
       security:
       - api_key: []
       - api_token: []
@@ -14706,15 +14894,15 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a packet capture sessins associated the VPG
+      description: 指定したVPGに対するパケットキャプチャを取得する。
       operationId: getPacketCaptureSession
       parameters:
-      - description: VPG ID
+      - description: 対象のVPG ID
         in: path
         name: vpg_id
         required: true
         type: string
-      - description: Packet capture session ID
+      - description: パケットキャプチャセッションリクエスト
         in: path
         name: session_id
         required: true
@@ -14723,12 +14911,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: The packet capture sessions associated with the VPG
+          description: 指定されたパケットキャプチャセッション
           schema:
             $ref: '#/definitions/PacketCaptureSession'
         "404":
-          description: The packet capture sessions associated with the VPG was not
-            found
+          description: 指定されたパケットキャプチャセッションが存在しない
       security:
       - api_key: []
       - api_token: []
@@ -14737,6 +14924,45 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg get-packet-capture-session
+  /virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}/stop:
+    post:
+      consumes:
+      - application/json
+      description: 指定したSIMに対するパケットキャプチャを停止する。
+      operationId: stopPacketCaptureSession
+      parameters:
+      - description: 対象のVPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: 対象のパケットキャプチャセッションID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 停止されたパケットキャプチャセッションの情報
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: The packet capture session can be stopped only when its status
+            is CAPTURING
+        "404":
+          description: 指定されたパケットキャプチャセッションが存在しない
+        "500":
+          description: 指定されたパケットキャプチャセッションが停止できなかった
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Stop Packet Capture Session
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg stop-packet-capture-session
   /virtual_private_gateways/{vpg_id}/set_routing_filter:
     post:
       consumes:

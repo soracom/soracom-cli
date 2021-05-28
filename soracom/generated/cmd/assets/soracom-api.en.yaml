@@ -4808,7 +4808,7 @@ paths:
           header: x-soracom-next-key
   /devices/{device_id}/set_group:
     post:
-      description: Lets a device device join a group
+      description: Lets a device join a group
       operationId: setDeviceGroup
       parameters:
       - description: Device to update
@@ -4833,7 +4833,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: Lets a device device join a group
+      summary: Lets a device join a group
       tags:
       - Device
       x-soracom-cli:
@@ -11869,6 +11869,195 @@ paths:
       - Sim
       x-soracom-cli:
       - sims session-events
+  /sims/{sim_id}/packet_capture_sessions:
+    get:
+      consumes:
+      - application/json
+      description: List packet capture sessions associated with the SIM
+      operationId: listSimPacketCaptureSessions
+      parameters:
+      - description: SIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: ID of the last packet capture session in the previous page
+        in: query
+        name: last_evaluated_key
+        required: false
+        type: string
+      - default: 10
+        description: Max number of results in a response
+        format: int32
+        in: query
+        name: limit
+        required: false
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of packet capture sessions associated with the SIM
+          schema:
+            items:
+              $ref: '#/definitions/PacketCaptureSession'
+            type: array
+        "404":
+          description: No such sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: List Packet Capture Sessions
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims list-packet-capture-sessions
+    post:
+      consumes:
+      - application/json
+      description: Create a packet capture session associated with the SIM
+      operationId: createSimPacketCaptureSession
+      parameters:
+      - description: The SIM ID for which a packet capture session is created
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: A packet capture session request
+        in: body
+        name: packet_capture_session_request
+        required: true
+        schema:
+          $ref: '#/definitions/PacketCaptureSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created a new packet capture sessions associated with the SIM
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "404":
+          description: No such sim found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create-packet-capture-session
+  /sims/{sim_id}/packet_capture_sessions/{session_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a packet capture session associated with the SIM
+      operationId: deleteSimPacketCaptureSession
+      parameters:
+      - description: SIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted the packet capture session associated with the SIM
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: Failed to delete the packet capture session associated with
+            the SIM
+        "404":
+          description: The packet capture session associated with the SIM was not
+            found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Delete Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims delete-packet-capture-session
+    get:
+      consumes:
+      - application/json
+      description: Get a packet capture sessins associated the SIM
+      operationId: getSimPacketCaptureSession
+      parameters:
+      - description: SIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The packet capture session associated with the SIM
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "404":
+          description: The packet capture session associated with the SIM was not
+            found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get-packet-capture-session
+  /sims/{sim_id}/packet_capture_sessions/{session_id}/stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop a packet capture session associated with the SIM
+      operationId: stopSimPacketCaptureSession
+      parameters:
+      - description: SIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The stopped packet capture session associated with the SIM
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: The packet capture session can be stopped only when its status
+            is CAPTURING
+        "404":
+          description: The packet capture session associated with the SIM was not
+            found
+        "500":
+          description: The packet capture session could not be stopped
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Stop SIM Packet Capture Session
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
       description: |
@@ -14850,7 +15039,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: List packet capture sessins associated with the VPG
+      description: List packet capture sessions associated with the VPG
       operationId: listPacketCaptureSessions
       parameters:
       - description: VPG ID
@@ -14894,7 +15083,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a packet capture sessins associated the VPG
+      description: Create a packet capture sessions associated the VPG
       operationId: createPacketCaptureSession
       parameters:
       - description: VPG ID
@@ -14930,7 +15119,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a packet capture sessins associated the VPG
+      description: Delete a packet capture sessions associated the VPG
       operationId: deletePacketCaptureSession
       parameters:
       - description: VPG ID
@@ -14967,7 +15156,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a packet capture sessins associated the VPG
+      description: Get a packet capture sessions associated the VPG
       operationId: getPacketCaptureSession
       parameters:
       - description: VPG ID
@@ -14998,6 +15187,46 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg get-packet-capture-session
+  /virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}/stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop a packet capture session associated with the VPG
+      operationId: stopPacketCaptureSession
+      parameters:
+      - description: VPG ID
+        in: path
+        name: vpg_id
+        required: true
+        type: string
+      - description: Packet capture session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The stopped packet capture session associated with the VPG
+          schema:
+            $ref: '#/definitions/PacketCaptureSession'
+        "400":
+          description: The packet capture session can be stopped only when its status
+            is CAPTURING
+        "404":
+          description: The packet capture session associated with the VPG was not
+            found
+        "500":
+          description: The packet capture session could not be stopped
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Stop Packet Capture Session
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg stop-packet-capture-session
   /virtual_private_gateways/{vpg_id}/set_routing_filter:
     post:
       consumes:

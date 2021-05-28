@@ -4,7 +4,7 @@ GOARCH ?= $(shell go env GOARCH)
 ifeq ($(GOOS),windows)
 	EXT = .exe
 else
-	EXT = 
+	EXT =
 endif
 OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
@@ -51,7 +51,7 @@ generate: ## Generate source code for soracom-cli
 .PHONY:generate
 
 build: ## Build codes
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
+	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
 		-ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
 		-o $(OUTPUT) \
 		./soracom
