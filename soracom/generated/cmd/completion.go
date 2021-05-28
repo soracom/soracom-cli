@@ -8,8 +8,8 @@ import (
 
 func init() {
 	RootCmd.AddCommand(CompletionCmd)
-	CompletionCmd.AddCommand(CompletionBashCmd)
-	CompletionCmd.AddCommand(CompletionZshCmd)
+	CompletionCmd.AddCommand(completionBashCmd)
+	CompletionCmd.AddCommand(completionZshCmd)
 }
 
 // CompletionCmd defines 'completion' subcommand
@@ -27,7 +27,7 @@ var CompletionCmd = &cobra.Command{
 	},
 }
 
-var CompletionBashCmd = &cobra.Command{
+var completionBashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: TRCLI("cli.completion.bash.summary"),
 	Long:  TRCLI("cli.completion.bash.description"),
@@ -40,7 +40,7 @@ var CompletionBashCmd = &cobra.Command{
 	},
 }
 
-var CompletionZshCmd = &cobra.Command{
+var completionZshCmd = &cobra.Command{
 	Use:   "zsh",
 	Short: TRCLI("cli.completion.zsh.summary"),
 	Long:  TRCLI("cli.completion.zsh.description"),

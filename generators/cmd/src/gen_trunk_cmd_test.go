@@ -9,19 +9,19 @@ import (
 
 var apiDef1 = &lib.APIDefinitions{
 	Methods: []lib.APIMethod{
-		lib.APIMethod{
+		{
 			CLI: []string{"subscribers list"},
 		},
-		lib.APIMethod{
+		{
 			CLI: []string{"subscribers get"},
 		},
-		lib.APIMethod{
+		{
 			CLI: []string{"stats air"},
 		},
-		lib.APIMethod{
+		{
 			CLI: []string{"stats beam hoge"},
 		},
-		lib.APIMethod{
+		{
 			CLI: []string{"stats napter audit-logs get"},
 		},
 	},
@@ -37,7 +37,7 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 			Name:   "pattern 1",
 			APIDef: apiDef1,
 			CommandArgs: []commandArgs{
-				commandArgs{
+				{
 					Use:                       "stats",
 					Short:                     "cli.stats.summary",
 					Long:                      "cli.stats.description",
@@ -45,7 +45,7 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 					ParentCommandVariableName: "RootCmd",
 					FileName:                  "stats.go",
 				},
-				commandArgs{
+				{
 					Use:                       "beam",
 					Short:                     "cli.stats.beam.summary",
 					Long:                      "cli.stats.beam.description",
@@ -53,7 +53,7 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 					ParentCommandVariableName: "StatsCmd",
 					FileName:                  "stats_beam.go",
 				},
-				commandArgs{
+				{
 					Use:                       "napter",
 					Short:                     "cli.stats.napter.summary",
 					Long:                      "cli.stats.napter.description",
@@ -61,7 +61,7 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 					ParentCommandVariableName: "StatsCmd",
 					FileName:                  "stats_napter.go",
 				},
-				commandArgs{
+				{
 					Use:                       "audit-logs",
 					Short:                     "cli.stats.napter.audit-logs.summary",
 					Long:                      "cli.stats.napter.audit-logs.description",
@@ -69,7 +69,7 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 					ParentCommandVariableName: "StatsNapterCmd",
 					FileName:                  "stats_napter_audit_logs.go",
 				},
-				commandArgs{
+				{
 					Use:                       "subscribers",
 					Short:                     "cli.subscribers.summary",
 					Long:                      "cli.subscribers.description",

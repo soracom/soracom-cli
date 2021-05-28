@@ -163,6 +163,7 @@ func getAltLang(ll string) string {
 	return ""
 }
 
+// TRAPI ...
 func TRAPI(pathAndMethodAndField string) string {
 	initIfRequired()
 	s := getStringResource(apiResources[selectedLang], pathAndMethodAndField)
@@ -223,6 +224,7 @@ func getStringResource(data map[interface{}]interface{}, pathAndMethodAndField s
 	return str
 }
 
+// TRCLI ...
 func TRCLI(resourceID string) string {
 	initIfRequired()
 	r := cliResources[selectedLang]

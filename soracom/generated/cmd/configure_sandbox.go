@@ -7,20 +7,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var ConfigureSandboxAuthKeyID string
-var ConfigureSandboxAuthKey string
-var ConfigureSandboxEmail string
-var ConfigureSandboxPassword string
-var ConfigureSandboxRegisterPaymentMethod bool
-var ConfigureSandboxOverwrite bool
+var configureSandboxAuthKeyID string
+var configureSandboxAuthKey string
+var configureSandboxEmail string
+var configureSandboxPassword string
+var configureSandboxRegisterPaymentMethod bool
+var configureSandboxOverwrite bool
 
 func init() {
-	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxAuthKeyID, "auth-key-id", "", TRCLI("cli.configure_sandbox.auth_key_id"))
-	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxAuthKey, "auth-key", "", TRCLI("cli.configure_sandbox.auth_key"))
-	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxEmail, "email", "", TRCLI("cli.configure_sandbox.email"))
-	ConfigureSandboxCmd.Flags().StringVar(&ConfigureSandboxPassword, "password", "", TRCLI("cli.configure_sandbox.password"))
-	ConfigureSandboxCmd.Flags().BoolVar(&ConfigureSandboxRegisterPaymentMethod, "register-payment-method", true, TRCLI("cli.configure_sandbox.register_payment_method"))
-	ConfigureSandboxCmd.Flags().BoolVar(&ConfigureSandboxOverwrite, "overwrite", true, TRCLI("cli.configure_sandbox.overwrite"))
+	ConfigureSandboxCmd.Flags().StringVar(&configureSandboxAuthKeyID, "auth-key-id", "", TRCLI("cli.configure_sandbox.auth_key_id"))
+	ConfigureSandboxCmd.Flags().StringVar(&configureSandboxAuthKey, "auth-key", "", TRCLI("cli.configure_sandbox.auth_key"))
+	ConfigureSandboxCmd.Flags().StringVar(&configureSandboxEmail, "email", "", TRCLI("cli.configure_sandbox.email"))
+	ConfigureSandboxCmd.Flags().StringVar(&configureSandboxPassword, "password", "", TRCLI("cli.configure_sandbox.password"))
+	ConfigureSandboxCmd.Flags().BoolVar(&configureSandboxRegisterPaymentMethod, "register-payment-method", true, TRCLI("cli.configure_sandbox.register_payment_method"))
+	ConfigureSandboxCmd.Flags().BoolVar(&configureSandboxOverwrite, "overwrite", true, TRCLI("cli.configure_sandbox.overwrite"))
 	RootCmd.AddCommand(ConfigureSandboxCmd)
 }
 
@@ -34,8 +34,8 @@ var ConfigureSandboxCmd = &cobra.Command{
 
 		var p *profile
 		var err error
-		if ConfigureSandboxAuthKeyID == "" || ConfigureSandboxAuthKey == "" || ConfigureSandboxEmail == "" || ConfigureSandboxPassword == "" {
-			p, err = collectSandboxProfileInfo(pn, ConfigureSandboxRegisterPaymentMethod)
+		if configureSandboxAuthKeyID == "" || configureSandboxAuthKey == "" || configureSandboxEmail == "" || configureSandboxPassword == "" {
+			p, err = collectSandboxProfileInfo(pn, configureSandboxRegisterPaymentMethod)
 			if err != nil {
 				cmd.SilenceUsage = true
 				return err
@@ -49,11 +49,11 @@ var ConfigureSandboxCmd = &cobra.Command{
 				Sandbox:               true,
 				CoverageType:          ct,
 				Endpoint:              &ep,
-				AuthKeyID:             &ConfigureSandboxAuthKeyID,
-				AuthKey:               &ConfigureSandboxAuthKey,
-				Email:                 &ConfigureSandboxEmail,
-				Password:              &ConfigureSandboxPassword,
-				RegisterPaymentMethod: ConfigureSandboxRegisterPaymentMethod,
+				AuthKeyID:             &configureSandboxAuthKeyID,
+				AuthKey:               &configureSandboxAuthKey,
+				Email:                 &configureSandboxEmail,
+				Password:              &configureSandboxPassword,
+				RegisterPaymentMethod: configureSandboxRegisterPaymentMethod,
 			}
 		}
 
@@ -67,7 +67,7 @@ var ConfigureSandboxCmd = &cobra.Command{
 		p.AuthKeyID = nil
 		p.AuthKey = nil
 
-		err = saveProfile(pn, p, ConfigureSandboxOverwrite)
+		err = saveProfile(pn, p, configureSandboxOverwrite)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -103,8 +103,15 @@ func sandboxInit(profile *profile) (*authResult, error) {
 	}
 
 	respBody, err := ac.callAPI(param)
+	if err != nil {
+		return nil, err
+	}
 
 	var ar authResult
 	err = json.Unmarshal([]byte(respBody), &ar)
+	if err != nil {
+		return nil, err
+	}
+
 	return &ar, err
 }
