@@ -77,29 +77,47 @@ EOD
   fakeroot dpkg-deb --build "$tmpdir" "$bindir/soracom_${VERSION}_$arch.deb" &> /dev/null
 }
 
+archive() {
+  goos=$1
+  goarch=$2
+  bindir=$3
+  binbase=$4
+
+  tmpdir="$( mktemp -d )"
+  trap 'remove_tmpdir $tmpdir' RETURN
+
+  workdir="soracom_${VERSION}_${goos}_$goarch"
+  mkdir -p "$tmpdir/$workdir"
+  cp "$bindir/$bin" "$tmpdir/$workdir/soracom"
+
+  case "$goos" in
+    "linux" | "freebsd")
+      tar -C "$tmpdir" -zcf "$bindir/$binbase.tar.gz" "$workdir/soracom"
+      ;;
+    "darwin" | "windows")
+      (cd "$tmpdir" && zip -q "$binbase.zip" "$workdir/soracom")
+      mv "$tmpdir/$binbase.zip" "$bindir/"
+      ;;
+    "*")
+      echo "unknown GOOS. skipping compression"
+      ;;
+  esac
+}
+
 build() {
   goos=$1
   goarch=$2
   ext=$3
 
   bindir="soracom/dist/$VERSION"
-  bin="soracom_${VERSION}_${goos}_$goarch$ext"
+  binbase="soracom_${VERSION}_${goos}_$goarch"
+  bin="$binbase$ext"
 
   printf "  %-7s - %-5s  bin" "$goos" "$goarch"
   make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
-  case "$goos" in
-    "linux" | "freebsd")
-      tar -zcf "$bindir/$bin.tar.gz" "$bindir/$bin"
-      ;;
-    "darwin" | "windows")
-      zip -q "$bindir/$bin.zip" "$bindir/$bin"
-      ;;
-    "*")
-      echo "unknown GOOS. skipping compression"
-      ;;
-  esac
+  archive "$goos" "$goarch" "$bindir" "$binbase"
 
   if [ "$goos" == "linux" ]; then
     printf ", package"
