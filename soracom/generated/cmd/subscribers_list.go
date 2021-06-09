@@ -50,7 +50,7 @@ func init() {
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
-	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve."))
+	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve. Setting a limit does not guarantee the number of subscribers returned in the response (i.e. the response may contain fewer subscribers than the specified limit)."))
 
 	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	SubscribersCmd.AddCommand(SubscribersListCmd)

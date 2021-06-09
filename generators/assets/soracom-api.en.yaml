@@ -734,6 +734,29 @@ definitions:
       scope:
         type: string
     type: object
+  DownlinkPingRequest:
+    properties:
+      numberOfPingRequests:
+        default: 1
+        description: the number of attempt ping
+        maximum: 5
+        type: integer
+      timeoutSeconds:
+        default: 1
+        description: the timeout duration of each ping
+        maximum: 3
+        type: integer
+  DownlinkPingResponse:
+    properties:
+      rtt:
+        description: the RTT of the ping result
+        type: string
+      stat:
+        description: the stats information of the ping result
+        type: string
+      success:
+        description: whether the ping was succeeded or not
+        type: boolean
   EmailsModel:
     properties:
       createDateTime:
@@ -11552,7 +11575,9 @@ paths:
         is returned in the 'Link' header of the response.
       operationId: listSims
       parameters:
-      - description: Maximum number of SIMs to retrieve.
+      - description: Maximum number of SIMs to retrieve. Setting a limit does not
+          guarantee the number of sims returned in the response (i.e. the response
+          may contain fewer sims than the specified limit).
         in: query
         name: limit
         required: false
@@ -11789,6 +11814,40 @@ paths:
       - Sim
       x-soracom-cli:
       - sims disable-termination
+  /sims/{sim_id}/downlink/ping:
+    post:
+      consumes:
+      - application/json
+      description: Send ICMP ping requests to a SIM.
+      operationId: sendDownlinkPing
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: ping options
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DownlinkPingRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Result of the ping
+          schema:
+            $ref: '#/definitions/DownlinkPingResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Send ping requests to a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-ping
   /sims/{sim_id}/enable_termination:
     post:
       consumes:
@@ -13440,7 +13499,9 @@ paths:
         name: serial_number_filter
         required: false
         type: string
-      - description: Maximum number of subscribers to retrieve.
+      - description: Maximum number of subscribers to retrieve. Setting a limit does
+          not guarantee the number of subscribers returned in the response (i.e. the
+          response may contain fewer subscribers than the specified limit).
         in: query
         name: limit
         required: false
@@ -13716,6 +13777,40 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers disable-termination
+  /subscribers/{imsi}/downlink/ping:
+    post:
+      consumes:
+      - application/json
+      description: Send ICMP ping requests to a subscriber.
+      operationId: sendSubscriberDownlinkPing
+      parameters:
+      - description: IMSI of the target subscriber.
+        format: IMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      - description: ping options
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DownlinkPingRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Result of the ping
+          schema:
+            $ref: '#/definitions/DownlinkPingResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Send ping requests to a subscriber.
+      tags:
+      - Subscriber
+      x-soracom-cli:
+      - subscribers downlink-ping
   /subscribers/{imsi}/enable_termination:
     post:
       consumes:
