@@ -20,7 +20,7 @@ var SimsListCmdPaginate bool
 func init() {
 	SimsListCmd.Flags().StringVar(&SimsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last SIM retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
 
-	SimsListCmd.Flags().Int64Var(&SimsListCmdLimit, "limit", 0, TRAPI("Maximum number of SIMs to retrieve."))
+	SimsListCmd.Flags().Int64Var(&SimsListCmdLimit, "limit", 0, TRAPI("Maximum number of SIMs to retrieve. Setting a limit does not guarantee the number of sims returned in the response (i.e. the response may contain fewer sims than the specified limit)."))
 
 	SimsListCmd.Flags().BoolVar(&SimsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	SimsCmd.AddCommand(SimsListCmd)

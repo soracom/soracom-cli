@@ -727,6 +727,29 @@ definitions:
       scope:
         type: string
     type: object
+  DownlinkPingRequest:
+    properties:
+      numberOfPingRequests:
+        default: 1
+        description: pingの試行回数
+        maximum: 5
+        type: integer
+      timeoutSeconds:
+        default: 1
+        description: 各ping実行のタイムアウト秒数
+        maximum: 3
+        type: integer
+  DownlinkPingResponse:
+    properties:
+      rtt:
+        description: pingのRTT的な結果
+        type: string
+      stat:
+        description: pingの統計的な結果
+        type: string
+      success:
+        description: pingの成功可否
+        type: boolean
   EmailsModel:
     properties:
       createDateTime:
@@ -11365,7 +11388,7 @@ paths:
       description: 条件にマッチするSIMのリストを返す。SIMの総数が1ページに収まらない場合は、レスポンス中に次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
       operationId: listSims
       parameters:
-      - description: 取得するSIMの上限
+      - description: 取得するSIMの上限。ただし、返却されるSIMの個数は指定された値を下回る可能性があります。
         in: query
         name: limit
         required: false
@@ -11595,6 +11618,40 @@ paths:
       - Sim
       x-soracom-cli:
       - sims disable-termination
+  /sims/{sim_id}/downlink/ping:
+    post:
+      consumes:
+      - application/json
+      description: SIMに対してICMP pingリクエストを送信する。
+      operationId: sendDownlinkPing
+      parameters:
+      - description: 対象のSIMのSIM ID
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: pingリクエストのオプション
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DownlinkPingRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: pingの結果
+          schema:
+            $ref: '#/definitions/DownlinkPingResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SIMに対してpingリクエストを送信する。
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-ping
   /sims/{sim_id}/enable_termination:
     post:
       consumes:
@@ -13208,7 +13265,7 @@ paths:
         name: serial_number_filter
         required: false
         type: string
-      - description: 取得するSubscriberの上限
+      - description: 取得するSubscriberの上限。ただし、返却されるSubscriberの個数は指定された値を下回る可能性があります。
         in: query
         name: limit
         required: false
@@ -13476,6 +13533,40 @@ paths:
       - Subscriber
       x-soracom-cli:
       - subscribers disable-termination
+  /subscribers/{imsi}/downlink/ping:
+    post:
+      consumes:
+      - application/json
+      description: Subscriberに対してICMP pingリクエストを送信する。
+      operationId: sendSubscriberDownlinkPing
+      parameters:
+      - description: 対象のSubscriberのIMSI
+        format: IMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      - description: pingリクエストのオプション
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DownlinkPingRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: pingの結果
+          schema:
+            $ref: '#/definitions/DownlinkPingResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Subscriberに対してpingリクエストを送信する。
+      tags:
+      - Subscriber
+      x-soracom-cli:
+      - subscribers downlink-ping
   /subscribers/{imsi}/enable_termination:
     post:
       consumes:
