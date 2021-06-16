@@ -13,8 +13,13 @@ import (
 // SigfoxDevicesTerminateCmdDeviceId holds value of 'device_id' option
 var SigfoxDevicesTerminateCmdDeviceId string
 
+// SigfoxDevicesTerminateCmdDeleteImmediately holds value of 'delete_immediately' option
+var SigfoxDevicesTerminateCmdDeleteImmediately bool
+
 func init() {
 	SigfoxDevicesTerminateCmd.Flags().StringVar(&SigfoxDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
+
+	SigfoxDevicesTerminateCmd.Flags().BoolVar(&SigfoxDevicesTerminateCmdDeleteImmediately, "delete-immediately", false, TRAPI("If the Sigfox device is deleted immediately"))
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesTerminateCmd)
 }
 
@@ -88,6 +93,10 @@ func buildPathForSigfoxDevicesTerminateCmd(path string) string {
 
 func buildQueryForSigfoxDevicesTerminateCmd() url.Values {
 	result := url.Values{}
+
+	if SigfoxDevicesTerminateCmdDeleteImmediately != false {
+		result.Add("delete_immediately", sprintf("%t", SigfoxDevicesTerminateCmdDeleteImmediately))
+	}
 
 	return result
 }

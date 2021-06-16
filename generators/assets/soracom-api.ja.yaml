@@ -11337,6 +11337,12 @@ paths:
         name: device_id
         required: true
         type: string
+      - default: false
+        description: Sigfox デバイスを即座に削除する
+        in: query
+        name: delete_immediately
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
