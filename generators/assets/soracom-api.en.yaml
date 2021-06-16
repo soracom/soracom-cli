@@ -11521,6 +11521,12 @@ paths:
         name: device_id
         required: true
         type: string
+      - default: false
+        description: If the Sigfox device is deleted immediately
+        in: query
+        name: delete_immediately
+        required: false
+        type: boolean
       produces:
       - application/json
       responses:
