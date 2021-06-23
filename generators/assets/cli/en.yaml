@@ -70,6 +70,9 @@ cli:
   devices:
     summary: Manage devices.
     description: Manage devices.
+  diagnostics:
+    summary: Do diagnostics and get the reports.
+    description: Do diagnostics and get the reports.
   emails:
     summary: Manage email addresses.
     description: Manage email addresses.

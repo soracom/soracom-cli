@@ -144,6 +144,53 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  ArcCredentialAttachRequest:
+    properties:
+      arcClientPeerPublicKey:
+        description: if this parameter is missing, the sever generates keypair
+        type: string
+  ArcCredentialAttachResponse:
+    properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+  ArcSessionCreateResponse:
+    properties:
+      arcAllowedIPs:
+        items:
+          type: string
+        type: array
+      arcClientPeerIpAddress:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+      arcServerEndpoint:
+        type: string
+      arcServerPeerPublicKey:
+        type: string
+  ArcSessionStatus:
+    properties:
+      arcAllowedIPs:
+        items:
+          type: string
+        type: array
+      arcClientPeerIpAddress:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+      arcServerEndpoint:
+        type: string
+      arcServerPeerPublicKey:
+        type: string
+      gtpcTeid:
+        format: int64
+        type: integer
+      lastUpdatedAt:
+        format: int64
+        type: integer
+      location:
+        type: string
   AttachRoleRequest:
     properties:
       roleId:
@@ -538,6 +585,17 @@ definitions:
     properties:
       roleId:
         type: string
+  CreateSimRequest:
+    properties:
+      subscription:
+        type: string
+      type:
+        enum:
+        - virtual
+        type: string
+    required:
+    - type
+    - subscription
   CreateSoraletRequest:
     properties:
       description:
@@ -734,6 +792,68 @@ definitions:
       scope:
         type: string
     type: object
+  DiagnosticRequest:
+    properties:
+      from:
+        description: Start time for diagnostic (unixtime milliseconds)
+        format: int64
+        type: integer
+      resourceId:
+        description: resourceId according to resourceType
+        type: string
+      resourceType:
+        enum:
+        - sim
+        type: string
+      service:
+        enum:
+        - Air
+        type: string
+      to:
+        description: End time for diagnostic (unixtime milliseconds)
+        format: int64
+        type: integer
+    required:
+    - service
+    - resourceType
+    - resourceId
+    - from
+    - to
+  DiagnosticResponse:
+    properties:
+      diagnosticId:
+        type: string
+      from:
+        description: Start time for diagnostic (unixtime milliseconds)
+        format: int64
+        type: integer
+      insights:
+        items:
+          additionalProperties:
+            $ref: '#/definitions/Insight'
+          type: object
+        type: array
+      resourceId:
+        description: resourceId according to resourceType
+        type: string
+      resourceType:
+        enum:
+        - sim
+        type: string
+      service:
+        enum:
+        - Air
+        type: string
+      status:
+        enum:
+        - diagnosing
+        - done
+        - failed
+        type: string
+      to:
+        description: End time for diagnostic (unixtime milliseconds)
+        format: int64
+        type: integer
   DownlinkPingRequest:
     properties:
       numberOfPingRequests:
@@ -1471,6 +1591,42 @@ definitions:
         type: string
     required:
     - fullName
+  Insight:
+    properties:
+      anomalyDetectedTimes:
+        description: Times that possible anomaly behaviors were detected. The format
+          depends on the timestamp of events relating to the category. (e.g. unixtime
+          milliseconds for session category)
+        items:
+          type: string
+        type: array
+      category:
+        enum:
+        - data
+        - session
+        - sim
+        - others
+        - unknown
+        type: string
+      insightId:
+        type: string
+      message:
+        type: string
+      referenceUrls:
+        description: Reference URLs that is related to the insight
+        items:
+          additionalProperties:
+            $ref: '#/definitions/ReferenceUrl'
+          type: object
+        type: array
+      severity:
+        enum:
+        - error
+        - warning
+        - info
+        - none
+        - unknown
+        type: string
   IpAddressMapEntry:
     properties:
       ipAddress:
@@ -2288,6 +2444,12 @@ definitions:
     required:
     - key
     - ipAddress
+  ReferenceUrl:
+    properties:
+      title:
+        type: string
+      url:
+        type: string
   RegisterGatePeerRequest:
     properties:
       innerIpAddress:
@@ -2711,6 +2873,10 @@ definitions:
     type: object
   Sim:
     properties:
+      arcSessionStatus:
+        additionalProperties:
+          $ref: '#/definitions/ArcSessionStatus'
+        type: object
       createdTime:
         format: int64
         type: integer
@@ -2738,7 +2904,13 @@ definitions:
         type: string
   SimProfile:
     properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
       iccid:
+        type: string
+      primaryImsi:
         type: string
       subscribers:
         additionalProperties:
@@ -4951,6 +5123,63 @@ paths:
       - Device
       x-soracom-cli:
       - devices unset-group
+  /diagnostics:
+    post:
+      consumes:
+      - application/json
+      description: Send a diagnostic request.
+      operationId: sendDiagnosticRequest
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DiagnosticRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: Successfully accepted a diagnostic request.
+          schema:
+            items:
+              $ref: '#/definitions/DiagnosticResponse'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Send diagnostic request
+      tags:
+      - Diagnostic
+      x-soracom-cli:
+      - diagnostics send-request
+  /diagnostics/{diagnostic_id}:
+    get:
+      description: Returns a diagnostic.
+      operationId: getDiagnostic
+      parameters:
+      - description: The identifier of diagnostic request.
+        in: path
+        name: diagnostic_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/DiagnosticResponse'
+        "404":
+          description: The specified diagnostic_id is not found.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Get diagnostic
+      tags:
+      - Diagnostic
+      x-soracom-cli:
+      - diagnostics get
   /event_handlers:
     get:
       consumes:
@@ -11617,6 +11846,33 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+    post:
+      consumes:
+      - application/json
+      description: Creates a SIM for example for use with Arc service.
+      operationId: createSim
+      parameters:
+      - description: A SIM creation request
+        in: body
+        name: create_sim_request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateSimRequest'
+      produces:
+      - application/json
+      responses:
+        201:
+          description: SIM created.
+          schema:
+            $ref: '#/definitions/Sim'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Create a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create
   /sims/{sim_id}:
     get:
       description: Obtain a SIM record identified by the sim_id
@@ -11672,6 +11928,61 @@ paths:
       - Sim
       x-soracom-cli:
       - sims activate
+  /sims/{sim_id}/credentials/arc:
+    delete:
+      description: Use this API to remove the set of credentials for Arc from the
+        specified SIM.
+      operationId: removeArcSimCredentials
+      parameters:
+      - description: SIM ID of the target SIM.
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      responses:
+        204:
+          description: The credentials for Arc have been removed.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Remove the credentials for Arc from a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims remove-arc-credentials
+    post:
+      consumes:
+      - application/json
+      description: Use this API to attach a set of credentials to a SIM.
+      operationId: attachArcSimCredentials
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Arc credential attach request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ArcCredentialAttachRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arc credential attach response
+          schema:
+            $ref: '#/definitions/ArcCredentialAttachResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Attach the credentials for Arc to a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims attach-arc-credentials
   /sims/{sim_id}/data:
     get:
       description: Returns a list of data entries sent from a SIM that match certain
@@ -12150,7 +12461,12 @@ paths:
                 the downloaded subscriber will be enabled immediately.
               type: boolean
             subscription:
-              description: Name of the sbscription plan
+              description: Name of the subscription plan
+              type: string
+            type:
+              enum:
+              - virtual
+              - cellular
               type: string
           required:
           - subscription
@@ -12170,6 +12486,42 @@ paths:
       - Sim
       x-soracom-cli:
       - sims add-subscription
+  /sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:
+    post:
+      description: Terminate subscription container. Currently this API supports only
+        for virtual subscribers for SORACOM Arc service.
+      operationId: terminateSubscriptionContainer
+      parameters:
+      - description: SIM ID of the target subscription container.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: ICCID of the target subscription container.
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: IMSI of the target subscription container.
+        format: IMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        204:
+          description: The subscription container has been terminated.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Terminate subscription container
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims terminate-subscription-container
   /sims/{sim_id}/profiles/{iccid}/subscription_containers:
     get:
       description: Returns a schema listing subscription containers and containing
@@ -12427,6 +12779,36 @@ paths:
       - Sim
       x-soracom-cli:
       - sims send-sms
+  /sims/{sim_id}/sessions/arc:
+    post:
+      consumes:
+      - application/json
+      description: Use this API to re-activate a session for a virtual SIM.
+      operationId: createArcSession
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arc session created
+          schema:
+            $ref: '#/definitions/ArcSessionCreateResponse'
+        400:
+          description: Arc credentials missing
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Re-create an Arc session.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create-arc-session
   /sims/{sim_id}/set_expiry_time:
     post:
       consumes:

@@ -15,6 +15,7 @@ Available Commands:
   credentials          認証情報に関する操作を行います。
   data                 SIM からアップロードされて格納されているデータを取得します。
   devices              デバイスに関する操作を行います。
+  diagnostics          診断を行ってその結果を取得します。
   emails               メールアドレスに関する操作を行います。
   event-handlers       イベントハンドラーに関する操作を行います。
   files                Harvest Files のファイルを管理します。

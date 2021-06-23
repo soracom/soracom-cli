@@ -15,6 +15,7 @@ Available Commands:
   credentials          List, create, update or delete credentials sets.
   data                 Get stored data from subscribers.
   devices              Manage devices.
+  diagnostics          Do diagnostics and get the reports.
   emails               Manage email addresses.
   event-handlers       List, create, update or delete event handlers.
   files                Manage files on Harvest Files.

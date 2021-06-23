@@ -70,6 +70,9 @@ cli:
   devices:
     summary: デバイスに関する操作を行います。
     description: デバイスに関する操作を行います。
+  diagnostics:
+    summary: 診断を行ってその結果を取得します。
+    description: 診断を行ってその結果を取得します。
   emails:
     summary: メールアドレスに関する操作を行います。
     description: メールアドレスに関する操作を行います。

@@ -142,6 +142,53 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  ArcCredentialAttachRequest:
+    properties:
+      arcClientPeerPublicKey:
+        description: if this parameter is missing, the sever generates keypair
+        type: string
+  ArcCredentialAttachResponse:
+    properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+  ArcSessionCreateResponse:
+    properties:
+      arcAllowedIPs:
+        items:
+          type: string
+        type: array
+      arcClientPeerIpAddress:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+      arcServerEndpoint:
+        type: string
+      arcServerPeerPublicKey:
+        type: string
+  ArcSessionStatus:
+    properties:
+      arcAllowedIPs:
+        items:
+          type: string
+        type: array
+      arcClientPeerIpAddress:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
+      arcServerEndpoint:
+        type: string
+      arcServerPeerPublicKey:
+        type: string
+      gtpcTeid:
+        format: int64
+        type: integer
+      lastUpdatedAt:
+        format: int64
+        type: integer
+      location:
+        type: string
   AttachRoleRequest:
     properties:
       roleId:
@@ -531,6 +578,17 @@ definitions:
     properties:
       roleId:
         type: string
+  CreateSimRequest:
+    properties:
+      subscription:
+        type: string
+      type:
+        enum:
+        - virtual
+        type: string
+    required:
+    - type
+    - subscription
   CreateSoraletRequest:
     properties:
       description:
@@ -727,6 +785,68 @@ definitions:
       scope:
         type: string
     type: object
+  DiagnosticRequest:
+    properties:
+      from:
+        description: 診断対象期間の始まり (unixtime milliseconds)
+        format: int64
+        type: integer
+      resourceId:
+        description: resourceType に応じた識別子
+        type: string
+      resourceType:
+        enum:
+        - sim
+        type: string
+      service:
+        enum:
+        - Air
+        type: string
+      to:
+        description: 診断対象期間の終わり (unixtime milliseconds)
+        format: int64
+        type: integer
+    required:
+    - service
+    - resourceType
+    - resourceId
+    - from
+    - to
+  DiagnosticResponse:
+    properties:
+      diagnosticId:
+        type: string
+      from:
+        description: 診断対象期間の始まり (unixtime milliseconds)
+        format: int64
+        type: integer
+      insights:
+        items:
+          additionalProperties:
+            $ref: '#/definitions/Insight'
+          type: object
+        type: array
+      resourceId:
+        description: resourceType に応じた識別子
+        type: string
+      resourceType:
+        enum:
+        - sim
+        type: string
+      service:
+        enum:
+        - Air
+        type: string
+      status:
+        enum:
+        - diagnosing
+        - done
+        - failed
+        type: string
+      to:
+        description: 診断対象期間の終わり (unixtime milliseconds)
+        format: int64
+        type: integer
   DownlinkPingRequest:
     properties:
       numberOfPingRequests:
@@ -1464,6 +1584,41 @@ definitions:
         type: string
     required:
     - fullName
+  Insight:
+    properties:
+      anomalyDetectedTimes:
+        description: 異常と思われる状況を検出した時間。フォーマットはcategoryに関するイベントのタイムスタンプに依存します。（例：sessionの場合は
+          unixtime milliseconds）
+        items:
+          type: string
+        type: array
+      category:
+        enum:
+        - data
+        - session
+        - sim
+        - others
+        - unknown
+        type: string
+      insightId:
+        type: string
+      message:
+        type: string
+      referenceUrls:
+        description: インサイトに関連のある参考情報の URL
+        items:
+          additionalProperties:
+            $ref: '#/definitions/ReferenceUrl'
+          type: object
+        type: array
+      severity:
+        enum:
+        - error
+        - warning
+        - info
+        - none
+        - unknown
+        type: string
   IpAddressMapEntry:
     properties:
       ipAddress:
@@ -2281,6 +2436,12 @@ definitions:
     required:
     - key
     - ipAddress
+  ReferenceUrl:
+    properties:
+      title:
+        type: string
+      url:
+        type: string
   RegisterGatePeerRequest:
     properties:
       innerIpAddress:
@@ -2704,6 +2865,10 @@ definitions:
     type: object
   Sim:
     properties:
+      arcSessionStatus:
+        additionalProperties:
+          $ref: '#/definitions/ArcSessionStatus'
+        type: object
       createdTime:
         format: int64
         type: integer
@@ -2731,7 +2896,13 @@ definitions:
         type: string
   SimProfile:
     properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
       iccid:
+        type: string
+      primaryImsi:
         type: string
       subscribers:
         additionalProperties:
@@ -4898,6 +5069,63 @@ paths:
       - Device
       x-soracom-cli:
       - devices unset-group
+  /diagnostics:
+    post:
+      consumes:
+      - application/json
+      description: 診断リクエストを送信します。
+      operationId: sendDiagnosticRequest
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/DiagnosticRequest'
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "201":
+          description: 診断リクエストが受け付けられました。
+          schema:
+            items:
+              $ref: '#/definitions/DiagnosticResponse'
+            type: array
+      security:
+      - api_key: []
+      - api_token: []
+      summary: 診断リクエストを送信します。
+      tags:
+      - Diagnostic
+      x-soracom-cli:
+      - diagnostics send-request
+  /diagnostics/{diagnostic_id}:
+    get:
+      description: 診断結果を取得します。
+      operationId: getDiagnostic
+      parameters:
+      - description: 診断リクエストの識別子
+        in: path
+        name: diagnostic_id
+        required: true
+        type: string
+      produces:
+      - application/json;charset=UTF-8
+      responses:
+        "200":
+          description: OK.
+          schema:
+            $ref: '#/definitions/DiagnosticResponse'
+        "404":
+          description: 指定された diagnostic_id が見つかりませんでした。
+      security:
+      - api_key: []
+      - api_token: []
+      summary: 診断結果を取得します。
+      tags:
+      - Diagnostic
+      x-soracom-cli:
+      - diagnostics get
   /event_handlers:
     get:
       consumes:
@@ -11426,6 +11654,33 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+    post:
+      consumes:
+      - application/json
+      description: 'SIMの新規作成を行います (例: SORACOM ArcのバーチャルSIM)。'
+      operationId: createSim
+      parameters:
+      - description: SIMの作成リクエスト
+        in: body
+        name: create_sim_request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateSimRequest'
+      produces:
+      - application/json
+      responses:
+        201:
+          description: SIMが作成されました
+          schema:
+            $ref: '#/definitions/Sim'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SIMの新規作成
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create
   /sims/{sim_id}:
     get:
       description: 指定されたSIMの情報を返す。
@@ -11481,6 +11736,60 @@ paths:
       - Sim
       x-soracom-cli:
       - sims activate
+  /sims/{sim_id}/credentials/arc:
+    delete:
+      description: SORACOM Arcのクレデンシャル (公開鍵) をSIMから除去します。
+      operationId: removeArcSimCredentials
+      parameters:
+      - description: 対象とするSIMのSIM ID
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      responses:
+        204:
+          description: ArcのクレデンシャルがSIMから除去されたことを表します
+      security:
+      - api_key: []
+      - api_token: []
+      summary: ArcのクレデンシャルをSIMから除去
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims remove-arc-credentials
+    post:
+      consumes:
+      - application/json
+      description: SORACOM Arcのクレデンシャル (公開鍵) をSIMに付与します。
+      operationId: attachArcSimCredentials
+      parameters:
+      - description: 対象とするSIMのSIM ID
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Arcのクレデンシャルの付与リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ArcCredentialAttachRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arcのクレデンシャル付与成功レスポンス
+          schema:
+            $ref: '#/definitions/ArcCredentialAttachResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: ArcのクレデンシャルをSIMへ付与
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims attach-arc-credentials
   /sims/{sim_id}/data:
     get:
       description: 指定されたSIMから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。
@@ -11948,6 +12257,11 @@ paths:
             subscription:
               description: サブスクリプション名
               type: string
+            type:
+              enum:
+              - virtual
+              - cellular
+              type: string
           required:
           - subscription
           type: object
@@ -11966,6 +12280,41 @@ paths:
       - Sim
       x-soracom-cli:
       - sims add-subscription
+  /sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:
+    post:
+      description: サブスクリプションコンテナの利用を終了します。現在、SORACOM ArcのためのバーチャルSubscriberの利用終了のみに対応しています。
+      operationId: terminateSubscriptionContainer
+      parameters:
+      - description: 対象とするサブスクリプションコンテナのSIM ID
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: 対象とするサブスクリプションコンテナのICCID
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: 対象とするサブスクリプションコンテナのIMSI
+        format: IMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        204:
+          description: サブスクリプションコンテナの利用が正常に終了されました
+      security:
+      - api_key: []
+      - api_token: []
+      summary: サブスクリプションコンテナの利用終了
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims terminate-subscription-container
   /sims/{sim_id}/profiles/{iccid}/subscription_containers:
     get:
       description: Returns a schema listing subscription containers and containing
@@ -12219,6 +12568,36 @@ paths:
       - Sim
       x-soracom-cli:
       - sims send-sms
+  /sims/{sim_id}/sessions/arc:
+    post:
+      consumes:
+      - application/json
+      description: SORACOM Arcセッションの作成を行います。すでにセッションが存在する場合は再作成を行います。
+      operationId: createArcSession
+      parameters:
+      - description: 対象とするSIMのSIM ID
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arcセッションが作成されました
+          schema:
+            $ref: '#/definitions/ArcSessionCreateResponse'
+        400:
+          description: 作成リクエスト中にArcのクレデンシャルが不足しています
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SORACOM Arcセッションの作成
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims create-arc-session
   /sims/{sim_id}/set_expiry_time:
     post:
       consumes:
