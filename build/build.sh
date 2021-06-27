@@ -82,20 +82,21 @@ archive() {
   goarch=$2
   bindir=$3
   binbase=$4
+  ext=$5
 
   tmpdir="$( mktemp -d )"
   trap 'remove_tmpdir $tmpdir' RETURN
 
   workdir="soracom_${VERSION}_${goos}_$goarch"
   mkdir -p "$tmpdir/$workdir"
-  cp "$bindir/$bin" "$tmpdir/$workdir/soracom"
+  cp "$bindir/$bin" "$tmpdir/$workdir/soracom$ext"
 
   case "$goos" in
     "linux" | "freebsd")
-      tar -C "$tmpdir" -zcf "$bindir/$binbase.tar.gz" "$workdir/soracom"
+      tar -C "$tmpdir" -zcf "$bindir/$binbase.tar.gz" "$workdir/soracom$ext"
       ;;
     "darwin" | "windows")
-      (cd "$tmpdir" && zip -q "$binbase.zip" "$workdir/soracom")
+      (cd "$tmpdir" && zip -q "$binbase.zip" "$workdir/soracom$ext")
       mv "$tmpdir/$binbase.zip" "$bindir/"
       ;;
     "*")
@@ -117,7 +118,7 @@ build() {
   make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
-  archive "$goos" "$goarch" "$bindir" "$binbase"
+  archive "$goos" "$goarch" "$bindir" "$binbase" "$ext"
 
   if [ "$goos" == "linux" ]; then
     printf ", package"
