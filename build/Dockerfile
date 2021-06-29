@@ -1,4 +1,4 @@
-FROM golang:1.16.5-buster
+FROM public.ecr.aws/bitnami/golang:latest
 
 RUN apt update && apt upgrade -y && apt install -y fakeroot shellcheck zip
 
