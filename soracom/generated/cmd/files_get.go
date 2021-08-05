@@ -58,6 +58,10 @@ var FilesGetCmd = &cobra.Command{
 		if body == "" {
 			return nil
 		}
+
+		if queryString != "" {
+			return processQuery(queryString, body)
+		}
 		rawOutput = true
 
 		if rawOutput {

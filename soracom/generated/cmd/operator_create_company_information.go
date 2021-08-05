@@ -125,6 +125,10 @@ var OperatorCreateCompanyInformationCmd = &cobra.Command{
 			return nil
 		}
 
+		if queryString != "" {
+			return processQuery(queryString, body)
+		}
+
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
