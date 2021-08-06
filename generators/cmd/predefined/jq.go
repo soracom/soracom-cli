@@ -7,8 +7,8 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-func processQuery(queryString, responseBody string) error {
-	q, err := gojq.Parse(queryString)
+func processJQ(jqString, responseBody string) error {
+	q, err := gojq.Parse(jqString)
 	if err != nil {
 		return err
 	}

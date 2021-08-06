@@ -20,7 +20,7 @@ var providedAuthKeyID string
 var providedAuthKey string
 var rawOutput bool
 var noRetryOnError bool
-var queryString string
+var jqString string
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", "Specify profile name")
@@ -31,5 +31,5 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&providedAuthKey, "auth-key", "", "Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.")
 	RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, "Specify soracom-cli to output raw response from the API endpoint")
 	RootCmd.PersistentFlags().BoolVar(&noRetryOnError, "no-retry-on-error", false, "Specify soracom-cli not to retry even if the API endpoint returns an error")
-	RootCmd.PersistentFlags().StringVar(&queryString, "query", "", "Specify a query string in jq syntax to manipulate the response from the API")
+	RootCmd.PersistentFlags().StringVar(&jqString, "jq", "", "Specify a query string in jq syntax to manipulate the response from the API")
 }
