@@ -19,9 +19,8 @@ import (
   "strings"
 {{end}}
 
-{{if .Deprecated }}
+  "github.com/itchyny/gojq"
   "github.com/soracom/soracom-cli/generators/lib"
-{{end}}
   "github.com/spf13/cobra"
 )
 
@@ -106,6 +105,16 @@ var {{ $cmdvar }} = &cobra.Command{
     {{end}}
 
     {{end}}
+
+    var jq *gojq.Query
+    if jqString != "" {
+      var err error
+      jq, err = gojq.Parse(jqString)
+      if err != nil {
+        return err
+      }
+    }
+
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
@@ -139,8 +148,8 @@ var {{ $cmdvar }} = &cobra.Command{
       return nil
     }
 
-    if jqString != "" {
-      return processJQ(jqString, body)
+    if jq != nil {
+      return processJQ(jq, body)
     }
 
     {{- if .ResponseBodyRaw}}

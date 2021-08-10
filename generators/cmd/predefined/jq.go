@@ -7,19 +7,14 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-func processJQ(jqString, responseBody string) error {
-	q, err := gojq.Parse(jqString)
-	if err != nil {
-		return err
-	}
-
+func processJQ(query *gojq.Query, responseBody string) error {
 	var j interface{}
-	err = json.Unmarshal([]byte(responseBody), &j)
+	err := json.Unmarshal([]byte(responseBody), &j)
 	if err != nil {
 		return err
 	}
 
-	iter := q.Run(j)
+	iter := query.Run(j)
 	for {
 		v, ok := iter.Next()
 		if !ok {
