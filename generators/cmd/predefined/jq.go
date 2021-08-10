@@ -32,7 +32,7 @@ func processJQ(jqString, responseBody string) error {
 		}
 
 		if text, err := jsonScalarToString(v); err == nil {
-			fmt.Printf(text)
+			fmt.Println(text)
 		} else {
 			var jsonFragment []byte
 			jsonFragment, err = json.Marshal(v)
