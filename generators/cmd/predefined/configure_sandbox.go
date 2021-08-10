@@ -102,7 +102,7 @@ func sandboxInit(profile *profile) (*authResult, error) {
 		body:           string(reqBodyBytes),
 	}
 
-	respBody, err := ac.callAPI(param)
+	respBody, _, err := ac.callAPI(param)
 	if err != nil {
 		return nil, err
 	}

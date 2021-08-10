@@ -13,6 +13,7 @@ import (
 {{if .BodyExists }}
   "io/ioutil"
 {{end}}
+  "mime"
   "net/url"
   "os"
 {{if .BodyExists}}
@@ -138,7 +139,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return err
     }
 
-    body, err := ac.callAPI(param)
+    body, contentType, err := ac.callAPI(param)
     if err != nil {
       cmd.SilenceUsage = true
       return err
@@ -148,8 +149,18 @@ var {{ $cmdvar }} = &cobra.Command{
       return nil
     }
 
+    mediaType, _, err := mime.ParseMediaType(contentType)
+    if err != nil {
+      cmd.SilenceUsage = true
+      return err
+    }
+
     if jq != nil {
-      return processJQ(jq, body)
+      if mediaType == "application/json" {
+        return processJQ(jq, body)
+      } else {
+        lib.WarnfStderr(TRCLI("cli.tried-jq-on-non-json")+"\n")
+      }
     }
 
     {{- if .ResponseBodyRaw}}

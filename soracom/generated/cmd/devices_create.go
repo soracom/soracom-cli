@@ -6,11 +6,14 @@ import (
 
 	"io/ioutil"
 
+	"mime"
 	"net/url"
 	"os"
 
 	"strings"
 
+	"github.com/itchyny/gojq"
+	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -98,6 +101,16 @@ var DevicesCreateCmd = &cobra.Command{
 	Short: TRAPI("/devices:post:summary"),
 	Long:  TRAPI(`/devices:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		var jq *gojq.Query
+		if jqString != "" {
+			var err error
+			jq, err = gojq.Parse(jqString)
+			if err != nil {
+				return err
+			}
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
@@ -118,7 +131,7 @@ var DevicesCreateCmd = &cobra.Command{
 			return err
 		}
 
-		body, err := ac.callAPI(param)
+		body, contentType, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -128,8 +141,18 @@ var DevicesCreateCmd = &cobra.Command{
 			return nil
 		}
 
-		if jqString != "" {
-			return processJQ(jqString, body)
+		mediaType, _, err := mime.ParseMediaType(contentType)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if jq != nil {
+			if mediaType == "application/json" {
+				return processJQ(jq, body)
+			} else {
+				lib.WarnfStderr(TRCLI("cli.tried-jq-on-non-json") + "\n")
+			}
 		}
 
 		if rawOutput {

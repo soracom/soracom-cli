@@ -221,6 +221,7 @@ cli:
     _500:
       summary: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
       description: Call an API which always returns 500 Internal server error, to check if retrying code is working expectedly.
+  tried-jq-on-non-json: "Tried jq operation on the response which is not in JSON format. Ignoring the jq argument."
   unconfigure:
     summary: Remove configurations.
     description: Remove configurations.

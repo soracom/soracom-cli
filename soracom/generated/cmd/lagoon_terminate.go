@@ -2,9 +2,12 @@
 package cmd
 
 import (
+	"mime"
 	"net/url"
 	"os"
 
+	"github.com/itchyny/gojq"
+	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +21,16 @@ var LagoonTerminateCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/terminate:post:summary"),
 	Long:  TRAPI(`/lagoon/terminate:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		var jq *gojq.Query
+		if jqString != "" {
+			var err error
+			jq, err = gojq.Parse(jqString)
+			if err != nil {
+				return err
+			}
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
@@ -38,7 +51,7 @@ var LagoonTerminateCmd = &cobra.Command{
 			return err
 		}
 
-		body, err := ac.callAPI(param)
+		body, contentType, err := ac.callAPI(param)
 		if err != nil {
 			cmd.SilenceUsage = true
 			return err
@@ -48,8 +61,18 @@ var LagoonTerminateCmd = &cobra.Command{
 			return nil
 		}
 
-		if jqString != "" {
-			return processJQ(jqString, body)
+		mediaType, _, err := mime.ParseMediaType(contentType)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+
+		if jq != nil {
+			if mediaType == "application/json" {
+				return processJQ(jq, body)
+			} else {
+				lib.WarnfStderr(TRCLI("cli.tried-jq-on-non-json") + "\n")
+			}
 		}
 
 		if rawOutput {

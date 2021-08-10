@@ -42,7 +42,7 @@ var Test500Cmd = &cobra.Command{
 			body:        `{"expect":"500 Internal Server Error"}`,
 		}
 
-		_, err := ac.callAPI(param)
+		_, _, err := ac.callAPI(param)
 
 		return err
 	},

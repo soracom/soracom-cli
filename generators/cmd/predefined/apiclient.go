@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -121,21 +122,22 @@ type apiParams struct {
 }
 
 // params.path and params.query must be escaped before calling this func
-func (ac *apiClient) callAPI(params *apiParams) (string, error) {
+func (ac *apiClient) callAPI(params *apiParams) (string, string, error) {
 	var (
-		resBody       string
-		latestVersion string
+		resBody        string
+		resContentType string
+		latestVersion  string
 	)
 
 	for {
 		u, err := ac.constructURL(params)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 
 		req, err := ac.constructRequest(u, params)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 
 		if ac.verbose {
@@ -144,15 +146,17 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 
 		res, rb, err := ac.doRequest(req, params)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 		if ac.verbose && res != nil {
 			dumpHTTPResponse(res)
 		}
 
 		if res.StatusCode >= http.StatusBadRequest {
-			return "", newAPIError(rb)
+			return "", "", newAPIError(rb)
 		}
+
+		resContentType = res.Header.Get("content-type")
 		latestVersion = res.Header.Get("x-soracom-cli-version")
 
 		if !params.doPagination {
@@ -160,9 +164,15 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 			break
 		}
 
+		mediaType, _, err := mime.ParseMediaType(resContentType)
+		if mediaType != "application/json" {
+			resBody = rb
+			break
+		}
+
 		resBody, err = concatJSONArray(resBody, rb)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 
 		k, v := getPaginationKeyValue(res, params)
@@ -183,7 +193,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 		}
 	}
 
-	return resBody, nil
+	return resBody, resContentType, nil
 }
 
 // arr1 = "[1,2]"
