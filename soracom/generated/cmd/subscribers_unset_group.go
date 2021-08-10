@@ -54,8 +54,8 @@ var SubscribersUnsetGroupCmd = &cobra.Command{
 			return nil
 		}
 
-		if queryString != "" {
-			return processQuery(queryString, body)
+		if jqString != "" {
+			return processJQ(jqString, body)
 		}
 
 		if rawOutput {
