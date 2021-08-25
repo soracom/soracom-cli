@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var ShippingAddressesDeleteCmd = &cobra.Command{
 }
 
 func collectShippingAddressesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if ShippingAddressesDeleteCmdOperatorId == "" {
 		ShippingAddressesDeleteCmdOperatorId = ac.OperatorID
 	}
 
-	if ShippingAddressesDeleteCmdShippingAddressId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
+	err = checkIfRequiredStringParameterIsSupplied("shipping_address_id", "shipping-address-id", "path", parsedBody, ShippingAddressesDeleteCmdShippingAddressId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

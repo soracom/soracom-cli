@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 }
 
 func collectLoraGatewaysDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraGatewaysDeleteTagCmdGatewayId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("gateway_id", "gateway-id", "path", parsedBody, LoraGatewaysDeleteTagCmdGatewayId)
+	if err != nil {
+		return nil, err
 	}
 
-	if LoraGatewaysDeleteTagCmdTagName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	err = checkIfRequiredStringParameterIsSupplied("tag_name", "tag-name", "path", parsedBody, LoraGatewaysDeleteTagCmdTagName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

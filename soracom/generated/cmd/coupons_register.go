@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var CouponsRegisterCmd = &cobra.Command{
 }
 
 func collectCouponsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-	if CouponsRegisterCmdCouponCode == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "coupon-code")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("coupon_code", "coupon-code", "path", parsedBody, CouponsRegisterCmdCouponCode)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

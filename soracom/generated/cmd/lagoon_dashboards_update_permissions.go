@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -75,18 +72,22 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 }
 
 func collectLagoonDashboardsUpdatePermissionsCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForLagoonDashboardsUpdatePermissionsCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForLagoonDashboardsUpdatePermissionsCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if LagoonDashboardsUpdatePermissionsCmdDashboardId == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "dashboard-id")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("dashboard_id", "dashboard-id", "path", parsedBody, LagoonDashboardsUpdatePermissionsCmdDashboardId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

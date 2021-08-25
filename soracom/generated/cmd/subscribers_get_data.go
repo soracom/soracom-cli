@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -94,8 +92,11 @@ var SubscribersGetDataCmd = &cobra.Command{
 }
 
 func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
-	if SubscribersGetDataCmdImsi == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SubscribersGetDataCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

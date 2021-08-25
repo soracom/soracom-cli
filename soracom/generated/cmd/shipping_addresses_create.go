@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -135,46 +132,41 @@ var ShippingAddressesCreateCmd = &cobra.Command{
 }
 
 func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if ShippingAddressesCreateCmdOperatorId == "" {
 		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForShippingAddressesCreateCmd()
+	body, err = buildBodyForShippingAddressesCreateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if ShippingAddressesCreateCmdAddressLine1 == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "address-line1")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("addressLine1", "address-line1", "body", parsedBody, ShippingAddressesCreateCmdAddressLine1)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesCreateCmdCity == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "city")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("city", "city", "body", parsedBody, ShippingAddressesCreateCmdCity)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesCreateCmdState == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "state")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("state", "state", "body", parsedBody, ShippingAddressesCreateCmdState)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesCreateCmdZipCode == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "zip-code")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("zipCode", "zip-code", "body", parsedBody, ShippingAddressesCreateCmdZipCode)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var VpgCreatePacketCaptureSessionCmd = &cobra.Command{
 }
 
 func collectVpgCreatePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVpgCreatePacketCaptureSessionCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVpgCreatePacketCaptureSessionCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VpgCreatePacketCaptureSessionCmdVpgId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgCreatePacketCaptureSessionCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgCreatePacketCaptureSessionCmdDuration == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "duration")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("duration", "duration", "body", parsedBody, VpgCreatePacketCaptureSessionCmdDuration)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

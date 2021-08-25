@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var VpgUnregisterGatePeerCmd = &cobra.Command{
 }
 
 func collectVpgUnregisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgUnregisterGatePeerCmdOuterIpAddress == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "outer-ip-address")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("outer_ip_address", "outer-ip-address", "path", parsedBody, VpgUnregisterGatePeerCmdOuterIpAddress)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgUnregisterGatePeerCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgUnregisterGatePeerCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

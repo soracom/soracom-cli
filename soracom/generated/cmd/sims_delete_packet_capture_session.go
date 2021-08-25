@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var SimsDeletePacketCaptureSessionCmd = &cobra.Command{
 }
 
 func collectSimsDeletePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsDeletePacketCaptureSessionCmdSessionId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "session-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("session_id", "session-id", "path", parsedBody, SimsDeletePacketCaptureSessionCmdSessionId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsDeletePacketCaptureSessionCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsDeletePacketCaptureSessionCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

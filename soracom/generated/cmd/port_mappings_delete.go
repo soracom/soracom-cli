@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var PortMappingsDeleteCmd = &cobra.Command{
 }
 
 func collectPortMappingsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-	if PortMappingsDeleteCmdIpAddress == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "ip-address")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("ip_address", "ip-address", "path", parsedBody, PortMappingsDeleteCmdIpAddress)
+	if err != nil {
+		return nil, err
 	}
 
-	if PortMappingsDeleteCmdPort == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "port")
+	err = checkIfRequiredStringParameterIsSupplied("port", "port", "path", parsedBody, PortMappingsDeleteCmdPort)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

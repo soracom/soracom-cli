@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -90,30 +87,31 @@ var UsersPermissionsUpdateCmd = &cobra.Command{
 }
 
 func collectUsersPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if UsersPermissionsUpdateCmdOperatorId == "" {
 		UsersPermissionsUpdateCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForUsersPermissionsUpdateCmd()
+	body, err = buildBodyForUsersPermissionsUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if UsersPermissionsUpdateCmdPermission == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "permission")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("permission", "permission", "body", parsedBody, UsersPermissionsUpdateCmdPermission)
+	if err != nil {
+		return nil, err
 	}
 
-	if UsersPermissionsUpdateCmdUserName == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("user_name", "user-name", "path", parsedBody, UsersPermissionsUpdateCmdUserName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

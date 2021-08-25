@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,18 +77,22 @@ var LagoonUpdateUserEmailCmd = &cobra.Command{
 }
 
 func collectLagoonUpdateUserEmailCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForLagoonUpdateUserEmailCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForLagoonUpdateUserEmailCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if LagoonUpdateUserEmailCmdLagoonUserId == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "lagoon-user-id")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("lagoon_user_id", "lagoon-user-id", "path", parsedBody, LagoonUpdateUserEmailCmdLagoonUserId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

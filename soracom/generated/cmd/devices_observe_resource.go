@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -84,20 +82,26 @@ var DevicesObserveResourceCmd = &cobra.Command{
 }
 
 func collectDevicesObserveResourceCmdParams(ac *apiClient) (*apiParams, error) {
-	if DevicesObserveResourceCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, DevicesObserveResourceCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesObserveResourceCmdInstance == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
+	err = checkIfRequiredStringParameterIsSupplied("instance", "instance", "path", parsedBody, DevicesObserveResourceCmdInstance)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesObserveResourceCmdObject == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
+	err = checkIfRequiredStringParameterIsSupplied("object", "object", "path", parsedBody, DevicesObserveResourceCmdObject)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesObserveResourceCmdResource == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
+	err = checkIfRequiredStringParameterIsSupplied("resource", "resource", "path", parsedBody, DevicesObserveResourceCmdResource)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

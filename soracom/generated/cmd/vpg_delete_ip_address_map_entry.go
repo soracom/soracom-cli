@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 }
 
 func collectVpgDeleteIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgDeleteIpAddressMapEntryCmdKey == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "key")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("key", "key", "path", parsedBody, VpgDeleteIpAddressMapEntryCmdKey)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgDeleteIpAddressMapEntryCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgDeleteIpAddressMapEntryCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

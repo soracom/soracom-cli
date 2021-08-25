@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var RolesListUsersCmd = &cobra.Command{
 }
 
 func collectRolesListUsersCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if RolesListUsersCmdOperatorId == "" {
 		RolesListUsersCmdOperatorId = ac.OperatorID
 	}
 
-	if RolesListUsersCmdRoleId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
+	err = checkIfRequiredStringParameterIsSupplied("role_id", "role-id", "path", parsedBody, RolesListUsersCmdRoleId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

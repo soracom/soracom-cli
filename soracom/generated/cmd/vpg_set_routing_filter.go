@@ -2,10 +2,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -73,18 +72,22 @@ var VpgSetRoutingFilterCmd = &cobra.Command{
 }
 
 func collectVpgSetRoutingFilterCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVpgSetRoutingFilterCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVpgSetRoutingFilterCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VpgSetRoutingFilterCmdVpgId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgSetRoutingFilterCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

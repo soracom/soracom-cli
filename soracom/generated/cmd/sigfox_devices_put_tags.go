@@ -2,10 +2,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -73,18 +72,22 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 }
 
 func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSigfoxDevicesPutTagsCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSigfoxDevicesPutTagsCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SigfoxDevicesPutTagsCmdDeviceId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SigfoxDevicesPutTagsCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

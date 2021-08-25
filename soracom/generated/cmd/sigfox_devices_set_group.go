@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -95,18 +92,22 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 }
 
 func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSigfoxDevicesSetGroupCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSigfoxDevicesSetGroupCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SigfoxDevicesSetGroupCmdDeviceId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SigfoxDevicesSetGroupCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

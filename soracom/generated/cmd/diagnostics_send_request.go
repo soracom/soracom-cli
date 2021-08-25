@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -95,50 +92,42 @@ var DiagnosticsSendRequestCmd = &cobra.Command{
 }
 
 func collectDiagnosticsSendRequestCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForDiagnosticsSendRequestCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForDiagnosticsSendRequestCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if DiagnosticsSendRequestCmdResourceId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("resourceId", "resource-id", "body", parsedBody, DiagnosticsSendRequestCmdResourceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DiagnosticsSendRequestCmdResourceType == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("resourceType", "resource-type", "body", parsedBody, DiagnosticsSendRequestCmdResourceType)
+	if err != nil {
+		return nil, err
 	}
 
-	if DiagnosticsSendRequestCmdService == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "service")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("service", "service", "body", parsedBody, DiagnosticsSendRequestCmdService)
+	if err != nil {
+		return nil, err
 	}
 
-	if DiagnosticsSendRequestCmdFrom == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "body", parsedBody, DiagnosticsSendRequestCmdFrom)
+	if err != nil {
+		return nil, err
 	}
 
-	if DiagnosticsSendRequestCmdTo == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "body", parsedBody, DiagnosticsSendRequestCmdTo)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var GroupsDeleteTagCmd = &cobra.Command{
 }
 
 func collectGroupsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
-	if GroupsDeleteTagCmdGroupId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("group_id", "group-id", "path", parsedBody, GroupsDeleteTagCmdGroupId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GroupsDeleteTagCmdTagName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	err = checkIfRequiredStringParameterIsSupplied("tag_name", "tag-name", "path", parsedBody, GroupsDeleteTagCmdTagName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

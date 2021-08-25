@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -90,42 +87,37 @@ var SandboxInitCmd = &cobra.Command{
 }
 
 func collectSandboxInitCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSandboxInitCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSandboxInitCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SandboxInitCmdAuthKey == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("authKey", "auth-key", "body", parsedBody, SandboxInitCmdAuthKey)
+	if err != nil {
+		return nil, err
 	}
 
-	if SandboxInitCmdAuthKeyId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("authKeyId", "auth-key-id", "body", parsedBody, SandboxInitCmdAuthKeyId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SandboxInitCmdEmail == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("email", "email", "body", parsedBody, SandboxInitCmdEmail)
+	if err != nil {
+		return nil, err
 	}
 
-	if SandboxInitCmdPassword == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "password")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("password", "password", "body", parsedBody, SandboxInitCmdPassword)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

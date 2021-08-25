@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -79,8 +77,11 @@ var GroupsListSubscribersCmd = &cobra.Command{
 }
 
 func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
-	if GroupsListSubscribersCmdGroupId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("group_id", "group-id", "path", parsedBody, GroupsListSubscribersCmdGroupId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

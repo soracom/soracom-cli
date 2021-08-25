@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraDevicesGetCmd = &cobra.Command{
 }
 
 func collectLoraDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraDevicesGetCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, LoraDevicesGetCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraGatewaysEnableTerminationCmd = &cobra.Command{
 }
 
 func collectLoraGatewaysEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraGatewaysEnableTerminationCmdGatewayId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("gateway_id", "gateway-id", "path", parsedBody, LoraGatewaysEnableTerminationCmdGatewayId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -3,9 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -78,9 +77,16 @@ var LagoonRegisterCmd = &cobra.Command{
 }
 
 func collectLagoonRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForLagoonRegisterCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForLagoonRegisterCmd()
 	if err != nil {
 		return nil, err
+	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 	}
 	contentType := "application/json"
 

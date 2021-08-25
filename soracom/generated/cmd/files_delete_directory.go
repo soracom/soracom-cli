@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,8 +67,11 @@ var FilesDeleteDirectoryCmd = &cobra.Command{
 }
 
 func collectFilesDeleteDirectoryCmdParams(ac *apiClient) (*apiParams, error) {
-	if FilesDeleteDirectoryCmdPath == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("path", "path", "path", parsedBody, FilesDeleteDirectoryCmdPath)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraDevicesUnsetGroupCmd = &cobra.Command{
 }
 
 func collectLoraDevicesUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraDevicesUnsetGroupCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, LoraDevicesUnsetGroupCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var VpgUnsetRedirectionCmd = &cobra.Command{
 }
 
 func collectVpgUnsetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgUnsetRedirectionCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgUnsetRedirectionCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

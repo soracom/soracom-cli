@@ -2,10 +2,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -78,26 +77,27 @@ var GroupsPutConfigCmd = &cobra.Command{
 }
 
 func collectGroupsPutConfigCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForGroupsPutConfigCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForGroupsPutConfigCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if GroupsPutConfigCmdGroupId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "group-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("group_id", "group-id", "path", parsedBody, GroupsPutConfigCmdGroupId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GroupsPutConfigCmdNamespace == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "namespace")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("namespace", "namespace", "path", parsedBody, GroupsPutConfigCmdNamespace)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

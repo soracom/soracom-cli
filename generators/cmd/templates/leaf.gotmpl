@@ -2,17 +2,11 @@
 package cmd
 
 import (
-{{if .BodyExists }}
-{{if not .SendBodyRaw }}
+{{- if .BodyExists }}
   "encoding/json"
-{{end}}
-{{end}}
-{{if .RequiredFlagExists }}
   "fmt"
-{{end}}
-{{if .BodyExists }}
   "io/ioutil"
-{{end}}
+{{- end }}
   "net/url"
   "os"
 {{if .BodyExists}}
@@ -153,6 +147,18 @@ var {{ $cmdvar }} = &cobra.Command{
 }
 
 func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
+  {{- if .BodyExists }}
+  var body string
+  var parsedBody interface{}
+  var err error
+  {{- end }}
+  {{- if not .BodyExists}}
+  {{- if .RequiredFlagExists }}
+  var parsedBody interface{}
+  var err error
+  {{- end }}
+  {{- end }}
+
   {{- if .RequireOperatorID }}
   if {{$prefix}}OperatorId == "" {
     {{$prefix}}OperatorId = ac.OperatorID
@@ -160,9 +166,13 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{end}}
 
   {{- if .BodyExists }}
-  body, err := buildBodyFor{{$suffix}}()
+  body, err = buildBodyFor{{$suffix}}()
   if err != nil {
     return nil, err
+  }
+  err = json.Unmarshal([]byte(body), &parsedBody)
+  if err != nil {
+    return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
   }
 
   {{- if .ContentTypeFromArg }}
@@ -178,14 +188,9 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- if .Required}}
   {{- if ne .VarName "OperatorId" }}
   {{- if not .DefaultValueSpecified }}
-  if {{$prefix}}{{.VarName}} == "" {
-    {{- if $bodyExists}}
-    if body == "" {
-    {{end}}
-    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
-    {{- if $bodyExists}}
-    }
-    {{end}}
+  err = checkIfRequiredStringParameterIsSupplied("{{.Name}}", "{{.LongOption}}", "{{.In}}", parsedBody, {{$prefix}}{{.VarName}})
+  if err != nil {
+    return nil, err
   }
   {{end}}
   {{end}}
@@ -195,14 +200,9 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- range .StringSliceFlags}}
   {{- if .Required}}
   {{- if not .DefaultValueSpecified }}
-  if len({{$prefix}}{{.VarName}}) == 0 {
-    {{- if $bodyExists}}
-    if body == "" {
-    {{end}}
-    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
-    {{- if $bodyExists}}
-    }
-    {{end}}
+  err = checkIfRequiredStringSliceParameterIsSupplied("{{.Name}}", "{{.LongOption}}", "{{.In}}", parsedBody, {{$prefix}}{{.VarName}})
+  if err != nil {
+    return nil, err
   }
   {{end}}
   {{end}}
@@ -211,14 +211,9 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- range .IntegerFlags}}
   {{- if .Required}}
   {{- if not .DefaultValueSpecified }}
-  if {{$prefix}}{{.VarName}} == 0 {
-    {{- if $bodyExists}}
-    if body == "" {
-    {{end}}
-    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
-    {{- if $bodyExists}}
-    }
-    {{end}}
+  err = checkIfRequiredIntegerParameterIsSupplied("{{.Name}}", "{{.LongOption}}", "{{.In}}", parsedBody, {{$prefix}}{{.VarName}})
+  if err != nil {
+    return nil, err
   }
   {{end}}
   {{end}}
@@ -227,14 +222,9 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- range .FloatFlags}}
   {{- if .Required}}
   {{- if not .DefaultValueSpecified }}
-  if {{$prefix}}{{.VarName}} == 0.0 {
-    {{- if $bodyExists}}
-    if body == "" {
-    {{end}}
-    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
-    {{- if $bodyExists}}
-    }
-    {{end}}
+  err = checkIfRequiredFloatParameterIsSupplied("{{.Name}}", "{{.LongOption}}", "{{.In}}", parsedBody, {{$prefix}}{{.VarName}})
+  if err != nil {
+    return nil, err
   }
   {{end}}
   {{end}}
@@ -243,14 +233,9 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- range .BoolFlags}}
   {{- if .Required}}
   {{- if not .DefaultValueSpecified }}
-  if {{$prefix}}{{.VarName}} == false {
-    {{- if $bodyExists}}
-    if body == "" {
-    {{end}}
-    return nil, fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
-    {{- if $bodyExists}}
-    }
-    {{end}}
+  err = checkIfRequiredBoolParameterIsSupplied("{{.Name}}", "{{.LongOption}}", "{{.In}}", parsedBody, {{$prefix}}{{.VarName}})
+  if err != nil {
+    return nil, err
   }
   {{end}}
   {{end}}

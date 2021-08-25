@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 }
 
 func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {
-	if DevicesDeleteDeviceTagCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, DevicesDeleteDeviceTagCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesDeleteDeviceTagCmdTagName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	err = checkIfRequiredStringParameterIsSupplied("tag_name", "tag-name", "path", parsedBody, DevicesDeleteDeviceTagCmdTagName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

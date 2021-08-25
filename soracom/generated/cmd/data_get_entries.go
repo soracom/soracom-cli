@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -99,13 +97,17 @@ var DataGetEntriesCmd = &cobra.Command{
 }
 
 func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if DataGetEntriesCmdResourceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
+	err = checkIfRequiredStringParameterIsSupplied("resource_id", "resource-id", "path", parsedBody, DataGetEntriesCmdResourceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DataGetEntriesCmdResourceType == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
+	err = checkIfRequiredStringParameterIsSupplied("resource_type", "resource-type", "path", parsedBody, DataGetEntriesCmdResourceType)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

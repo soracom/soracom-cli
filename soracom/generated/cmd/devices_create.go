@@ -3,9 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -138,9 +137,16 @@ var DevicesCreateCmd = &cobra.Command{
 }
 
 func collectDevicesCreateCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForDevicesCreateCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForDevicesCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 	}
 	contentType := "application/json"
 

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -94,8 +92,11 @@ var DevicesGetDataCmd = &cobra.Command{
 }
 
 func collectDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
-	if DevicesGetDataCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, DevicesGetDataCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

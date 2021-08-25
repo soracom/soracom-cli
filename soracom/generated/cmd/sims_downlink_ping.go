@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,18 +82,22 @@ var SimsDownlinkPingCmd = &cobra.Command{
 }
 
 func collectSimsDownlinkPingCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSimsDownlinkPingCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSimsDownlinkPingCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SimsDownlinkPingCmdSimId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsDownlinkPingCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

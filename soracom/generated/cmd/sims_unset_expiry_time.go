@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SimsUnsetExpiryTimeCmd = &cobra.Command{
 }
 
 func collectSimsUnsetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsUnsetExpiryTimeCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsUnsetExpiryTimeCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

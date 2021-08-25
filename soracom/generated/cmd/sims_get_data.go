@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -89,9 +87,12 @@ var SimsGetDataCmd = &cobra.Command{
 }
 
 func collectSimsGetDataCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if SimsGetDataCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsGetDataCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

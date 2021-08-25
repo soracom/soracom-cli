@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,9 +72,12 @@ var OrdersListSubscribersCmd = &cobra.Command{
 }
 
 func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if OrdersListSubscribersCmdOrderId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "order-id")
+	err = checkIfRequiredStringParameterIsSupplied("order_id", "order-id", "path", parsedBody, OrdersListSubscribersCmdOrderId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

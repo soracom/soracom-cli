@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,18 +77,22 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 }
 
 func collectLoraGatewaysSetNetworkSetCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForLoraGatewaysSetNetworkSetCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForLoraGatewaysSetNetworkSetCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if LoraGatewaysSetNetworkSetCmdGatewayId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("gateway_id", "gateway-id", "path", parsedBody, LoraGatewaysSetNetworkSetCmdGatewayId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

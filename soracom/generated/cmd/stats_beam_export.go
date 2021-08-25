@@ -3,9 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -94,13 +93,20 @@ var StatsBeamExportCmd = &cobra.Command{
 }
 
 func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if StatsBeamExportCmdOperatorId == "" {
 		StatsBeamExportCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForStatsBeamExportCmd()
+	body, err = buildBodyForStatsBeamExportCmd()
 	if err != nil {
 		return nil, err
+	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 	}
 	contentType := "application/json"
 

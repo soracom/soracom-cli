@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,22 +82,26 @@ var SystemNotificationsSetCmd = &cobra.Command{
 }
 
 func collectSystemNotificationsSetCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if SystemNotificationsSetCmdOperatorId == "" {
 		SystemNotificationsSetCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForSystemNotificationsSetCmd()
+	body, err = buildBodyForSystemNotificationsSetCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SystemNotificationsSetCmdType == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "type")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("type", "type", "path", parsedBody, SystemNotificationsSetCmdType)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

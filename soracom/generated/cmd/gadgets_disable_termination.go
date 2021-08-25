@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var GadgetsDisableTerminationCmd = &cobra.Command{
 }
 
 func collectGadgetsDisableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
-	if GadgetsDisableTerminationCmdProductId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("product_id", "product-id", "path", parsedBody, GadgetsDisableTerminationCmdProductId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GadgetsDisableTerminationCmdSerialNumber == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+	err = checkIfRequiredStringParameterIsSupplied("serial_number", "serial-number", "path", parsedBody, GadgetsDisableTerminationCmdSerialNumber)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

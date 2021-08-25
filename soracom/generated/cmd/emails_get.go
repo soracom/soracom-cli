@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var EmailsGetCmd = &cobra.Command{
 }
 
 func collectEmailsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if EmailsGetCmdOperatorId == "" {
 		EmailsGetCmdOperatorId = ac.OperatorID
 	}
 
-	if EmailsGetCmdEmailId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "email-id")
+	err = checkIfRequiredStringParameterIsSupplied("email_id", "email-id", "path", parsedBody, EmailsGetCmdEmailId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

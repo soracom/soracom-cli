@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -90,42 +87,37 @@ var DevicesExecuteResourceCmd = &cobra.Command{
 }
 
 func collectDevicesExecuteResourceCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForDevicesExecuteResourceCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForDevicesExecuteResourceCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if DevicesExecuteResourceCmdDeviceId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, DevicesExecuteResourceCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesExecuteResourceCmdInstance == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "instance")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("instance", "instance", "path", parsedBody, DevicesExecuteResourceCmdInstance)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesExecuteResourceCmdObject == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "object")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("object", "object", "path", parsedBody, DevicesExecuteResourceCmdObject)
+	if err != nil {
+		return nil, err
 	}
 
-	if DevicesExecuteResourceCmdResource == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "resource")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("resource", "resource", "path", parsedBody, DevicesExecuteResourceCmdResource)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

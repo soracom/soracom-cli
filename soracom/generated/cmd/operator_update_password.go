@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,30 +82,31 @@ var OperatorUpdatePasswordCmd = &cobra.Command{
 }
 
 func collectOperatorUpdatePasswordCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if OperatorUpdatePasswordCmdOperatorId == "" {
 		OperatorUpdatePasswordCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForOperatorUpdatePasswordCmd()
+	body, err = buildBodyForOperatorUpdatePasswordCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if OperatorUpdatePasswordCmdCurrentPassword == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "current-password")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("currentPassword", "current-password", "body", parsedBody, OperatorUpdatePasswordCmdCurrentPassword)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdatePasswordCmdNewPassword == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "new-password")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("newPassword", "new-password", "body", parsedBody, OperatorUpdatePasswordCmdNewPassword)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

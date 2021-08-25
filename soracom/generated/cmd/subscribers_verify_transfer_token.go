@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -75,18 +72,22 @@ var SubscribersVerifyTransferTokenCmd = &cobra.Command{
 }
 
 func collectSubscribersVerifyTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSubscribersVerifyTransferTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSubscribersVerifyTransferTokenCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SubscribersVerifyTransferTokenCmdToken == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "token")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("token", "token", "body", parsedBody, SubscribersVerifyTransferTokenCmdToken)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

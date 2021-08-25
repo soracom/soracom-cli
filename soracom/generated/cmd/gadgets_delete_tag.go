@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,16 +72,21 @@ var GadgetsDeleteTagCmd = &cobra.Command{
 }
 
 func collectGadgetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {
-	if GadgetsDeleteTagCmdProductId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("product_id", "product-id", "path", parsedBody, GadgetsDeleteTagCmdProductId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GadgetsDeleteTagCmdSerialNumber == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+	err = checkIfRequiredStringParameterIsSupplied("serial_number", "serial-number", "path", parsedBody, GadgetsDeleteTagCmdSerialNumber)
+	if err != nil {
+		return nil, err
 	}
 
-	if GadgetsDeleteTagCmdTagName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "tag-name")
+	err = checkIfRequiredStringParameterIsSupplied("tag_name", "tag-name", "path", parsedBody, GadgetsDeleteTagCmdTagName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -135,62 +132,51 @@ var OperatorUpdateCompanyInformationCmd = &cobra.Command{
 }
 
 func collectOperatorUpdateCompanyInformationCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if OperatorUpdateCompanyInformationCmdOperatorId == "" {
 		OperatorUpdateCompanyInformationCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForOperatorUpdateCompanyInformationCmd()
+	body, err = buildBodyForOperatorUpdateCompanyInformationCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if OperatorUpdateCompanyInformationCmdCompanyName == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "company-name")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("companyName", "company-name", "body", parsedBody, OperatorUpdateCompanyInformationCmdCompanyName)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdateCompanyInformationCmdContactPersonName == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "contact-person-name")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("contactPersonName", "contact-person-name", "body", parsedBody, OperatorUpdateCompanyInformationCmdContactPersonName)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdateCompanyInformationCmdCountryCode == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "country-code")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("countryCode", "country-code", "body", parsedBody, OperatorUpdateCompanyInformationCmdCountryCode)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdateCompanyInformationCmdDepartment == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "department")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("department", "department", "body", parsedBody, OperatorUpdateCompanyInformationCmdDepartment)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdateCompanyInformationCmdPhoneNumber == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "phone-number")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("phoneNumber", "phone-number", "body", parsedBody, OperatorUpdateCompanyInformationCmdPhoneNumber)
+	if err != nil {
+		return nil, err
 	}
 
-	if OperatorUpdateCompanyInformationCmdZipCode == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "zip-code")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("zipCode", "zip-code", "body", parsedBody, OperatorUpdateCompanyInformationCmdZipCode)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

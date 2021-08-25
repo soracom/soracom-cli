@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var OrdersConfirmCmd = &cobra.Command{
 }
 
 func collectOrdersConfirmCmdParams(ac *apiClient) (*apiParams, error) {
-	if OrdersConfirmCmdOrderId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "order-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("order_id", "order-id", "path", parsedBody, OrdersConfirmCmdOrderId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

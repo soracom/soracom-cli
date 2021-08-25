@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -79,13 +77,17 @@ var QuerySubscribersTrafficVolumeRankingCmd = &cobra.Command{
 }
 
 func collectQuerySubscribersTrafficVolumeRankingCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if QuerySubscribersTrafficVolumeRankingCmdFrom == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "query", parsedBody, QuerySubscribersTrafficVolumeRankingCmdFrom)
+	if err != nil {
+		return nil, err
 	}
 
-	if QuerySubscribersTrafficVolumeRankingCmdTo == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "query", parsedBody, QuerySubscribersTrafficVolumeRankingCmdTo)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

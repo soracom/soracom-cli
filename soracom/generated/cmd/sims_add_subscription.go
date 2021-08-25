@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,26 +77,27 @@ var SimsAddSubscriptionCmd = &cobra.Command{
 }
 
 func collectSimsAddSubscriptionCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSimsAddSubscriptionCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSimsAddSubscriptionCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SimsAddSubscriptionCmdIccid == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "iccid")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("iccid", "iccid", "path", parsedBody, SimsAddSubscriptionCmdIccid)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsAddSubscriptionCmdSimId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsAddSubscriptionCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

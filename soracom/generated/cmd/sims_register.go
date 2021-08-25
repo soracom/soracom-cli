@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var SimsRegisterCmd = &cobra.Command{
 }
 
 func collectSimsRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSimsRegisterCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSimsRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SimsRegisterCmdRegistrationSecret == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "registration-secret")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("registrationSecret", "registration-secret", "body", parsedBody, SimsRegisterCmdRegistrationSecret)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsRegisterCmdSimId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsRegisterCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraDevicesEnableTerminationCmd = &cobra.Command{
 }
 
 func collectLoraDevicesEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraDevicesEnableTerminationCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, LoraDevicesEnableTerminationCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

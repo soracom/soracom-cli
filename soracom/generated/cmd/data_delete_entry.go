@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,16 +72,21 @@ var DataDeleteEntryCmd = &cobra.Command{
 }
 
 func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {
-	if DataDeleteEntryCmdResourceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("resource_id", "resource-id", "path", parsedBody, DataDeleteEntryCmdResourceId)
+	if err != nil {
+		return nil, err
 	}
 
-	if DataDeleteEntryCmdResourceType == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "resource-type")
+	err = checkIfRequiredStringParameterIsSupplied("resource_type", "resource-type", "path", parsedBody, DataDeleteEntryCmdResourceType)
+	if err != nil {
+		return nil, err
 	}
 
-	if DataDeleteEntryCmdTime == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "time")
+	err = checkIfRequiredIntegerParameterIsSupplied("time", "time", "path", parsedBody, DataDeleteEntryCmdTime)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

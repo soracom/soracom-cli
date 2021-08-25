@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,8 +67,11 @@ var FilesGetMetadataCmd = &cobra.Command{
 }
 
 func collectFilesGetMetadataCmdParams(ac *apiClient) (*apiParams, error) {
-	if FilesGetMetadataCmdPath == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "path")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("path", "path", "path", parsedBody, FilesGetMetadataCmdPath)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

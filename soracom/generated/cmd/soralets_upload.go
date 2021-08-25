@@ -2,10 +2,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -78,18 +77,22 @@ var SoraletsUploadCmd = &cobra.Command{
 }
 
 func collectSoraletsUploadCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSoraletsUploadCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSoraletsUploadCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := SoraletsUploadCmdContentType
 
-	if SoraletsUploadCmdSoraletId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "soralet-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("soralet_id", "soralet-id", "path", parsedBody, SoraletsUploadCmdSoraletId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

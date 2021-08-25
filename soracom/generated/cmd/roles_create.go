@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -90,30 +87,31 @@ var RolesCreateCmd = &cobra.Command{
 }
 
 func collectRolesCreateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if RolesCreateCmdOperatorId == "" {
 		RolesCreateCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForRolesCreateCmd()
+	body, err = buildBodyForRolesCreateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if RolesCreateCmdPermission == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "permission")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("permission", "permission", "body", parsedBody, RolesCreateCmdPermission)
+	if err != nil {
+		return nil, err
 	}
 
-	if RolesCreateCmdRoleId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("role_id", "role-id", "path", parsedBody, RolesCreateCmdRoleId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var PaymentHistoryGetCmd = &cobra.Command{
 }
 
 func collectPaymentHistoryGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if PaymentHistoryGetCmdPaymentTransactionId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "payment-transaction-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("payment_transaction_id", "payment-transaction-id", "path", parsedBody, PaymentHistoryGetCmdPaymentTransactionId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 }
 
 func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgListIpAddressMapEntriesCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgListIpAddressMapEntriesCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

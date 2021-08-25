@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SigfoxDevicesGetCmd = &cobra.Command{
 }
 
 func collectSigfoxDevicesGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if SigfoxDevicesGetCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SigfoxDevicesGetCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

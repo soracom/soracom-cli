@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -95,34 +92,32 @@ var VolumeDiscountsCreateCmd = &cobra.Command{
 }
 
 func collectVolumeDiscountsCreateCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVolumeDiscountsCreateCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVolumeDiscountsCreateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VolumeDiscountsCreateCmdVolumeDiscountPaymentType == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "volume-discount-payment-type")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("volumeDiscountPaymentType", "volume-discount-payment-type", "body", parsedBody, VolumeDiscountsCreateCmdVolumeDiscountPaymentType)
+	if err != nil {
+		return nil, err
 	}
 
-	if VolumeDiscountsCreateCmdVolumeDiscountType == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "volume-discount-type")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("volumeDiscountType", "volume-discount-type", "body", parsedBody, VolumeDiscountsCreateCmdVolumeDiscountType)
+	if err != nil {
+		return nil, err
 	}
 
-	if VolumeDiscountsCreateCmdQuantity == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "quantity")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("quantity", "quantity", "body", parsedBody, VolumeDiscountsCreateCmdQuantity)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

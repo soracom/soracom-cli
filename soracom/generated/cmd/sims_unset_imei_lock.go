@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SimsUnsetImeiLockCmd = &cobra.Command{
 }
 
 func collectSimsUnsetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsUnsetImeiLockCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsUnsetImeiLockCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

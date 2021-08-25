@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -79,20 +77,26 @@ var StatsBeamGetCmd = &cobra.Command{
 }
 
 func collectStatsBeamGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if StatsBeamGetCmdImsi == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, StatsBeamGetCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsBeamGetCmdPeriod == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "period")
+	err = checkIfRequiredStringParameterIsSupplied("period", "period", "query", parsedBody, StatsBeamGetCmdPeriod)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsBeamGetCmdFrom == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "query", parsedBody, StatsBeamGetCmdFrom)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsBeamGetCmdTo == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "query", parsedBody, StatsBeamGetCmdTo)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

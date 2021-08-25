@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -79,20 +77,26 @@ var StatsAirSimsGetCmd = &cobra.Command{
 }
 
 func collectStatsAirSimsGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if StatsAirSimsGetCmdPeriod == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "period")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("period", "period", "query", parsedBody, StatsAirSimsGetCmdPeriod)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsAirSimsGetCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("simId", "sim-id", "path", parsedBody, StatsAirSimsGetCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsAirSimsGetCmdFrom == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "from")
+	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "query", parsedBody, StatsAirSimsGetCmdFrom)
+	if err != nil {
+		return nil, err
 	}
 
-	if StatsAirSimsGetCmdTo == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "to")
+	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "query", parsedBody, StatsAirSimsGetCmdTo)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var VolumeDiscountsGetCmd = &cobra.Command{
 }
 
 func collectVolumeDiscountsGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if VolumeDiscountsGetCmdContractId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "contract-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("contract_id", "contract-id", "path", parsedBody, VolumeDiscountsGetCmdContractId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{
