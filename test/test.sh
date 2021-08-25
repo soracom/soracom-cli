@@ -280,6 +280,31 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
     test "$numSubs" -eq 4
 }
 
+: "Check if an error is returned when required parameter is missing" && {
+    set +e
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers update-speed-class \
+        --profile soracom-cli-test \
+        2>&1 )"
+    exitCode="$?"
+    set -e
+    test "$exitCode" -ne 0
+    [[ "$resp" == *"Error: required parameter 'imsi' is not specified"* ]]
+}
+
+: "Check if an error is returned when required parameter in the request body is missing" && {
+    set +e
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers update-speed-class \
+        --imsi "001010000000000" \
+        --profile soracom-cli-test \
+        2>&1 )"
+    exitCode="$?"
+    set -e
+    test "$exitCode" -ne 0
+    [[ "$resp" == *"Error: required parameter 'speedClass' in body (or command line option 'speed-class') is not specified"* ]]
+}
+
 : "Checking english help text" && {
     help_en="$( env LC_ALL=en_US.UTF-8 "${SORACOM_ENVS[@]}" "$SORACOM" -h )"
     diff <( echo "$help_en" ) <( cat "$d/test/data/help_en_expected.txt" )
