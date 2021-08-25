@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd -P )"
-set -e
-
 VERSION=$1
-if [ -z "$1" ]; then
+set -Eeuo pipefail
+
+if [ -z "$VERSION" ]; then
   VERSION="0.0.0"
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
@@ -59,7 +59,7 @@ fi
 
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
 : "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
-SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=$SORACOM_DEBUG")
+SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=${SORACOM_DEBUG:-}")
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
 ZIPCODE="1234567"
