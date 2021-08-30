@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -140,54 +137,46 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 }
 
 func collectShippingAddressesUpdateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if ShippingAddressesUpdateCmdOperatorId == "" {
 		ShippingAddressesUpdateCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForShippingAddressesUpdateCmd()
+	body, err = buildBodyForShippingAddressesUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if ShippingAddressesUpdateCmdAddressLine1 == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "address-line1")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("addressLine1", "address-line1", "body", parsedBody, ShippingAddressesUpdateCmdAddressLine1)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesUpdateCmdCity == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "city")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("city", "city", "body", parsedBody, ShippingAddressesUpdateCmdCity)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesUpdateCmdShippingAddressId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("shipping_address_id", "shipping-address-id", "path", parsedBody, ShippingAddressesUpdateCmdShippingAddressId)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesUpdateCmdState == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "state")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("state", "state", "body", parsedBody, ShippingAddressesUpdateCmdState)
+	if err != nil {
+		return nil, err
 	}
 
-	if ShippingAddressesUpdateCmdZipCode == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "zip-code")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("zipCode", "zip-code", "body", parsedBody, ShippingAddressesUpdateCmdZipCode)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

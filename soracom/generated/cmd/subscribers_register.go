@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var SubscribersRegisterCmd = &cobra.Command{
 }
 
 func collectSubscribersRegisterCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSubscribersRegisterCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSubscribersRegisterCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SubscribersRegisterCmdImsi == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SubscribersRegisterCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
-	if SubscribersRegisterCmdRegistrationSecret == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "registration-secret")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("registrationSecret", "registration-secret", "body", parsedBody, SubscribersRegisterCmdRegistrationSecret)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

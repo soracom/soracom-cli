@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 }
 
 func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVpgRegisterGatePeerCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVpgRegisterGatePeerCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VpgRegisterGatePeerCmdOuterIpAddress == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "outer-ip-address")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("outerIpAddress", "outer-ip-address", "body", parsedBody, VpgRegisterGatePeerCmdOuterIpAddress)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgRegisterGatePeerCmdVpgId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgRegisterGatePeerCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,16 +72,21 @@ var SimsDeleteCountryMappingEntryCmd = &cobra.Command{
 }
 
 func collectSimsDeleteCountryMappingEntryCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsDeleteCountryMappingEntryCmdIccid == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "iccid")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("iccid", "iccid", "path", parsedBody, SimsDeleteCountryMappingEntryCmdIccid)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsDeleteCountryMappingEntryCmdMcc == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "mcc")
+	err = checkIfRequiredStringParameterIsSupplied("mcc", "mcc", "path", parsedBody, SimsDeleteCountryMappingEntryCmdMcc)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsDeleteCountryMappingEntryCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsDeleteCountryMappingEntryCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

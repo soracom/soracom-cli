@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -70,9 +68,12 @@ var PaymentStatementsExportCmd = &cobra.Command{
 }
 
 func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if PaymentStatementsExportCmdPaymentStatementId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "payment-statement-id")
+	err = checkIfRequiredStringParameterIsSupplied("payment_statement_id", "payment-statement-id", "path", parsedBody, PaymentStatementsExportCmdPaymentStatementId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

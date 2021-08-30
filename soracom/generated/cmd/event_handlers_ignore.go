@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var EventHandlersIgnoreCmd = &cobra.Command{
 }
 
 func collectEventHandlersIgnoreCmdParams(ac *apiClient) (*apiParams, error) {
-	if EventHandlersIgnoreCmdHandlerId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("handler_id", "handler-id", "path", parsedBody, EventHandlersIgnoreCmdHandlerId)
+	if err != nil {
+		return nil, err
 	}
 
-	if EventHandlersIgnoreCmdImsi == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, EventHandlersIgnoreCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

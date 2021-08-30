@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -89,13 +87,17 @@ var CellLocationsGetCmd = &cobra.Command{
 }
 
 func collectCellLocationsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if CellLocationsGetCmdMcc == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "mcc")
+	err = checkIfRequiredStringParameterIsSupplied("mcc", "mcc", "query", parsedBody, CellLocationsGetCmdMcc)
+	if err != nil {
+		return nil, err
 	}
 
-	if CellLocationsGetCmdMnc == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "mnc")
+	err = checkIfRequiredStringParameterIsSupplied("mnc", "mnc", "query", parsedBody, CellLocationsGetCmdMnc)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

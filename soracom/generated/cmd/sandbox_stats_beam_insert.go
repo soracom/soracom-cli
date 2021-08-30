@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,18 +77,22 @@ var SandboxStatsBeamInsertCmd = &cobra.Command{
 }
 
 func collectSandboxStatsBeamInsertCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSandboxStatsBeamInsertCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSandboxStatsBeamInsertCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SandboxStatsBeamInsertCmdImsi == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SandboxStatsBeamInsertCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var OperatorDeleteContractCmd = &cobra.Command{
 }
 
 func collectOperatorDeleteContractCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if OperatorDeleteContractCmdOperatorId == "" {
 		OperatorDeleteContractCmdOperatorId = ac.OperatorID
 	}
 
-	if OperatorDeleteContractCmdContractName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "contract-name")
+	err = checkIfRequiredStringParameterIsSupplied("contract_name", "contract-name", "path", parsedBody, OperatorDeleteContractCmdContractName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

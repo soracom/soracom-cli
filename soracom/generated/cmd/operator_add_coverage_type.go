@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var OperatorAddCoverageTypeCmd = &cobra.Command{
 }
 
 func collectOperatorAddCoverageTypeCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if OperatorAddCoverageTypeCmdOperatorId == "" {
 		OperatorAddCoverageTypeCmdOperatorId = ac.OperatorID
 	}
 
-	if OperatorAddCoverageTypeCmdCoverageType == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "coverage-type")
+	err = checkIfRequiredStringParameterIsSupplied("coverage_type", "coverage-type", "path", parsedBody, OperatorAddCoverageTypeCmdCoverageType)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

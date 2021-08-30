@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraNetworkSetsDeleteCmd = &cobra.Command{
 }
 
 func collectLoraNetworkSetsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraNetworkSetsDeleteCmdNsId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("ns_id", "ns-id", "path", parsedBody, LoraNetworkSetsDeleteCmdNsId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

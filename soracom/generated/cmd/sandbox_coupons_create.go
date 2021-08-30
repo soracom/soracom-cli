@@ -3,9 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -83,9 +82,16 @@ var SandboxCouponsCreateCmd = &cobra.Command{
 }
 
 func collectSandboxCouponsCreateCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSandboxCouponsCreateCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSandboxCouponsCreateCmd()
 	if err != nil {
 		return nil, err
+	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 	}
 	contentType := "application/json"
 

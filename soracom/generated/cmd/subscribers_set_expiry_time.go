@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 }
 
 func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSubscribersSetExpiryTimeCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSubscribersSetExpiryTimeCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SubscribersSetExpiryTimeCmdImsi == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SubscribersSetExpiryTimeCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
-	if SubscribersSetExpiryTimeCmdExpiryTime == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "expiry-time")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("expiryTime", "expiry-time", "body", parsedBody, SubscribersSetExpiryTimeCmdExpiryTime)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

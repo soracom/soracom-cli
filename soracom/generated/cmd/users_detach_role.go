@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,16 +72,20 @@ var UsersDetachRoleCmd = &cobra.Command{
 }
 
 func collectUsersDetachRoleCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if UsersDetachRoleCmdOperatorId == "" {
 		UsersDetachRoleCmdOperatorId = ac.OperatorID
 	}
 
-	if UsersDetachRoleCmdRoleId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "role-id")
+	err = checkIfRequiredStringParameterIsSupplied("role_id", "role-id", "path", parsedBody, UsersDetachRoleCmdRoleId)
+	if err != nil {
+		return nil, err
 	}
 
-	if UsersDetachRoleCmdUserName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+	err = checkIfRequiredStringParameterIsSupplied("user_name", "user-name", "path", parsedBody, UsersDetachRoleCmdUserName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

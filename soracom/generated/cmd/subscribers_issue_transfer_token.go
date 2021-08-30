@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,26 +77,27 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 }
 
 func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSubscribersIssueTransferTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSubscribersIssueTransferTokenCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "transfer-destination-operator-email")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("transferDestinationOperatorEmail", "transfer-destination-operator-email", "body", parsedBody, SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail)
+	if err != nil {
+		return nil, err
 	}
 
-	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "transfer-destination-operator-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("transferDestinationOperatorId", "transfer-destination-operator-id", "body", parsedBody, SubscribersIssueTransferTokenCmdTransferDestinationOperatorId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

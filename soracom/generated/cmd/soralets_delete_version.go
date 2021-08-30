@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var SoraletsDeleteVersionCmd = &cobra.Command{
 }
 
 func collectSoraletsDeleteVersionCmdParams(ac *apiClient) (*apiParams, error) {
-	if SoraletsDeleteVersionCmdSoraletId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "soralet-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("soralet_id", "soralet-id", "path", parsedBody, SoraletsDeleteVersionCmdSoraletId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SoraletsDeleteVersionCmdVersion == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "version")
+	err = checkIfRequiredIntegerParameterIsSupplied("version", "version", "path", parsedBody, SoraletsDeleteVersionCmdVersion)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

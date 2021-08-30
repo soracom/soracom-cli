@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var DevicesDeleteObjectModelCmd = &cobra.Command{
 }
 
 func collectDevicesDeleteObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
-	if DevicesDeleteObjectModelCmdModelId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "model-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("model_id", "model-id", "path", parsedBody, DevicesDeleteObjectModelCmdModelId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

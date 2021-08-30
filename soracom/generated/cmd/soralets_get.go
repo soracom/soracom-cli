@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SoraletsGetCmd = &cobra.Command{
 }
 
 func collectSoraletsGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if SoraletsGetCmdSoraletId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "soralet-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("soralet_id", "soralet-id", "path", parsedBody, SoraletsGetCmdSoraletId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

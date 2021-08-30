@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,26 +77,27 @@ var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 }
 
 func collectSubscribersUpdateSpeedClassCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSubscribersUpdateSpeedClassCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSubscribersUpdateSpeedClassCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SubscribersUpdateSpeedClassCmdImsi == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SubscribersUpdateSpeedClassCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
-	if SubscribersUpdateSpeedClassCmdSpeedClass == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "speed-class")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("speedClass", "speed-class", "body", parsedBody, SubscribersUpdateSpeedClassCmdSpeedClass)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

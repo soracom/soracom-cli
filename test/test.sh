@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 d="$( cd "$( dirname "$0" )"; cd ..; pwd -P )"
-set -e
-
 VERSION=$1
-if [ -z "$1" ]; then
+set -Eeuo pipefail
+
+if [ -z "$VERSION" ]; then
   VERSION="0.0.0"
   echo "Version number (e.g. 1.2.3) is not specified. Using $VERSION as the default version number"
 fi
@@ -59,7 +59,7 @@ fi
 
 SORACOM_PROFILE_DIR=$tmpdir/.soracom
 : "${SORACOM_ENDPOINT:=https://api-sandbox.soracom.io}"
-SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=$SORACOM_DEBUG")
+SORACOM_ENVS=("SORACOM_ENDPOINT=$SORACOM_ENDPOINT" "SORACOM_PROFILE_DIR=$SORACOM_PROFILE_DIR" "SORACOM_DEBUG=${SORACOM_DEBUG:-}")
 EMAIL="soracom-cli-test+$(random_string)@soracom.jp"
 PASSWORD=$(random_string)
 ZIPCODE="1234567"
@@ -278,6 +278,31 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         )"
     numSubs="$( echo "$resp" | jq -r .[].imsi | wc -l )"
     test "$numSubs" -eq 4
+}
+
+: "Check if an error is returned when required parameter is missing" && {
+    set +e
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers update-speed-class \
+        --profile soracom-cli-test \
+        2>&1 )"
+    exitCode="$?"
+    set -e
+    test "$exitCode" -ne 0
+    [[ "$resp" == *"Error: required parameter 'imsi' is not specified"* ]]
+}
+
+: "Check if an error is returned when required parameter in the request body is missing" && {
+    set +e
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        subscribers update-speed-class \
+        --imsi "001010000000000" \
+        --profile soracom-cli-test \
+        2>&1 )"
+    exitCode="$?"
+    set -e
+    test "$exitCode" -ne 0
+    [[ "$resp" == *"Error: required parameter 'speedClass' in body (or command line option 'speed-class') is not specified"* ]]
 }
 
 : "Checking english help text" && {

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LoraGatewaysGetCmd = &cobra.Command{
 }
 
 func collectLoraGatewaysGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if LoraGatewaysGetCmdGatewayId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "gateway-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("gateway_id", "gateway-id", "path", parsedBody, LoraGatewaysGetCmdGatewayId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,26 +77,27 @@ var EmailsIssueAddEmailTokenCmd = &cobra.Command{
 }
 
 func collectEmailsIssueAddEmailTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForEmailsIssueAddEmailTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForEmailsIssueAddEmailTokenCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if EmailsIssueAddEmailTokenCmdEmail == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("email", "email", "body", parsedBody, EmailsIssueAddEmailTokenCmdEmail)
+	if err != nil {
+		return nil, err
 	}
 
-	if EmailsIssueAddEmailTokenCmdPassword == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "password")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("password", "password", "body", parsedBody, EmailsIssueAddEmailTokenCmdPassword)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

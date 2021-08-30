@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LagoonDeleteUserCmd = &cobra.Command{
 }
 
 func collectLagoonDeleteUserCmdParams(ac *apiClient) (*apiParams, error) {
-	if LagoonDeleteUserCmdLagoonUserId == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "lagoon-user-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredIntegerParameterIsSupplied("lagoon_user_id", "lagoon-user-id", "path", parsedBody, LagoonDeleteUserCmdLagoonUserId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

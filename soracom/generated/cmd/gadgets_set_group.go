@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -100,26 +97,27 @@ var GadgetsSetGroupCmd = &cobra.Command{
 }
 
 func collectGadgetsSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForGadgetsSetGroupCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForGadgetsSetGroupCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if GadgetsSetGroupCmdProductId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("product_id", "product-id", "path", parsedBody, GadgetsSetGroupCmdProductId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GadgetsSetGroupCmdSerialNumber == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("serial_number", "serial-number", "path", parsedBody, GadgetsSetGroupCmdSerialNumber)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

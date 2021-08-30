@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 }
 
 func collectSubscribersDeleteTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	if SubscribersDeleteTransferTokenCmdToken == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "token")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("token", "token", "path", parsedBody, SubscribersDeleteTransferTokenCmdToken)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

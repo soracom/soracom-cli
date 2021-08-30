@@ -3,9 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -73,9 +72,16 @@ var OperatorIssueMfaRevokeTokenCmd = &cobra.Command{
 }
 
 func collectOperatorIssueMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForOperatorIssueMfaRevokeTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForOperatorIssueMfaRevokeTokenCmd()
 	if err != nil {
 		return nil, err
+	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 	}
 	contentType := "application/json"
 

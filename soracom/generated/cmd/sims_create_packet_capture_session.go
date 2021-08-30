@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,26 +82,27 @@ var SimsCreatePacketCaptureSessionCmd = &cobra.Command{
 }
 
 func collectSimsCreatePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSimsCreatePacketCaptureSessionCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSimsCreatePacketCaptureSessionCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SimsCreatePacketCaptureSessionCmdSimId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsCreatePacketCaptureSessionCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsCreatePacketCaptureSessionCmdDuration == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "duration")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("duration", "duration", "body", parsedBody, SimsCreatePacketCaptureSessionCmdDuration)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

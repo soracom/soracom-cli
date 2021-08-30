@@ -2,10 +2,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -78,26 +77,27 @@ var VpgUpdateMirroringPeerCmd = &cobra.Command{
 }
 
 func collectVpgUpdateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVpgUpdateMirroringPeerCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVpgUpdateMirroringPeerCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VpgUpdateMirroringPeerCmdIpaddr == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "ipaddr")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("ipaddr", "ipaddr", "path", parsedBody, VpgUpdateMirroringPeerCmdIpaddr)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgUpdateMirroringPeerCmdVpgId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgUpdateMirroringPeerCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

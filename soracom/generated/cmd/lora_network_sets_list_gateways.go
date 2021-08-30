@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -79,9 +77,12 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 }
 
 func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if LoraNetworkSetsListGatewaysCmdNsId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "ns-id")
+	err = checkIfRequiredStringParameterIsSupplied("ns_id", "ns-id", "path", parsedBody, LoraNetworkSetsListGatewaysCmdNsId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

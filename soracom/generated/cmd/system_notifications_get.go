@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var SystemNotificationsGetCmd = &cobra.Command{
 }
 
 func collectSystemNotificationsGetCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if SystemNotificationsGetCmdOperatorId == "" {
 		SystemNotificationsGetCmdOperatorId = ac.OperatorID
 	}
 
-	if SystemNotificationsGetCmdType == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "type")
+	err = checkIfRequiredStringParameterIsSupplied("type", "type", "path", parsedBody, SystemNotificationsGetCmdType)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

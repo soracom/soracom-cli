@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var CredentialsDeleteCmd = &cobra.Command{
 }
 
 func collectCredentialsDeleteCmdParams(ac *apiClient) (*apiParams, error) {
-	if CredentialsDeleteCmdCredentialsId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "credentials-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("credentials_id", "credentials-id", "path", parsedBody, CredentialsDeleteCmdCredentialsId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

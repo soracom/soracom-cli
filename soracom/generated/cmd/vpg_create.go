@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,18 +82,22 @@ var VpgCreateCmd = &cobra.Command{
 }
 
 func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForVpgCreateCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForVpgCreateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if VpgCreateCmdType == 0 {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "type")
-		}
-
+	err = checkIfRequiredIntegerParameterIsSupplied("type", "type", "body", parsedBody, VpgCreateCmdType)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

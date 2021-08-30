@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 }
 
 func collectVpgDeleteVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgDeleteVpcPeeringConnectionCmdPcxId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "pcx-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("pcx_id", "pcx-id", "path", parsedBody, VpgDeleteVpcPeeringConnectionCmdPcxId)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgDeleteVpcPeeringConnectionCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgDeleteVpcPeeringConnectionCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

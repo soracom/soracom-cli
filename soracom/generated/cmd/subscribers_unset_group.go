@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SubscribersUnsetGroupCmd = &cobra.Command{
 }
 
 func collectSubscribersUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-	if SubscribersUnsetGroupCmdImsi == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "imsi")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, SubscribersUnsetGroupCmdImsi)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

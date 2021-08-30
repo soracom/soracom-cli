@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -85,22 +82,26 @@ var UsersPasswordCreateCmd = &cobra.Command{
 }
 
 func collectUsersPasswordCreateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if UsersPasswordCreateCmdOperatorId == "" {
 		UsersPasswordCreateCmdOperatorId = ac.OperatorID
 	}
 
-	body, err := buildBodyForUsersPasswordCreateCmd()
+	body, err = buildBodyForUsersPasswordCreateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if UsersPasswordCreateCmdUserName == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("user_name", "user-name", "path", parsedBody, UsersPasswordCreateCmdUserName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

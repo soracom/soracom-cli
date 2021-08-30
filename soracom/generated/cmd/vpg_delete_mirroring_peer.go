@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var VpgDeleteMirroringPeerCmd = &cobra.Command{
 }
 
 func collectVpgDeleteMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgDeleteMirroringPeerCmdIpaddr == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "ipaddr")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("ipaddr", "ipaddr", "path", parsedBody, VpgDeleteMirroringPeerCmdIpaddr)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgDeleteMirroringPeerCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgDeleteMirroringPeerCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

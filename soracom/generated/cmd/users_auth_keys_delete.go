@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -74,16 +72,20 @@ var UsersAuthKeysDeleteCmd = &cobra.Command{
 }
 
 func collectUsersAuthKeysDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if UsersAuthKeysDeleteCmdOperatorId == "" {
 		UsersAuthKeysDeleteCmdOperatorId = ac.OperatorID
 	}
 
-	if UsersAuthKeysDeleteCmdAuthKeyId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "auth-key-id")
+	err = checkIfRequiredStringParameterIsSupplied("auth_key_id", "auth-key-id", "path", parsedBody, UsersAuthKeysDeleteCmdAuthKeyId)
+	if err != nil {
+		return nil, err
 	}
 
-	if UsersAuthKeysDeleteCmdUserName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+	err = checkIfRequiredStringParameterIsSupplied("user_name", "user-name", "path", parsedBody, UsersAuthKeysDeleteCmdUserName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

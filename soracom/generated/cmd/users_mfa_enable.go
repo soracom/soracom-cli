@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var UsersMfaEnableCmd = &cobra.Command{
 }
 
 func collectUsersMfaEnableCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if UsersMfaEnableCmdOperatorId == "" {
 		UsersMfaEnableCmdOperatorId = ac.OperatorID
 	}
 
-	if UsersMfaEnableCmdUserName == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "user-name")
+	err = checkIfRequiredStringParameterIsSupplied("user_name", "user-name", "path", parsedBody, UsersMfaEnableCmdUserName)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

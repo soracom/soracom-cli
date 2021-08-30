@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -80,18 +77,22 @@ var SandboxOperatorsGetSignupTokenCmd = &cobra.Command{
 }
 
 func collectSandboxOperatorsGetSignupTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSandboxOperatorsGetSignupTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSandboxOperatorsGetSignupTokenCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SandboxOperatorsGetSignupTokenCmdEmail == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("email", "email", "path", parsedBody, SandboxOperatorsGetSignupTokenCmdEmail)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

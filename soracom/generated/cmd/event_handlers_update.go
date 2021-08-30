@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -75,18 +72,22 @@ var EventHandlersUpdateCmd = &cobra.Command{
 }
 
 func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForEventHandlersUpdateCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForEventHandlersUpdateCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if EventHandlersUpdateCmdHandlerId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("handler_id", "handler-id", "path", parsedBody, EventHandlersUpdateCmdHandlerId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var BillsGetCmd = &cobra.Command{
 }
 
 func collectBillsGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if BillsGetCmdYyyyMM == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "yyyy-mm")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("yyyyMM", "yyyy-mm", "path", parsedBody, BillsGetCmdYyyyMM)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

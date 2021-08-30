@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var VpgDeletePacketCaptureSessionCmd = &cobra.Command{
 }
 
 func collectVpgDeletePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
-	if VpgDeletePacketCaptureSessionCmdSessionId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "session-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("session_id", "session-id", "path", parsedBody, VpgDeletePacketCaptureSessionCmdSessionId)
+	if err != nil {
+		return nil, err
 	}
 
-	if VpgDeletePacketCaptureSessionCmdVpgId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "vpg-id")
+	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgDeletePacketCaptureSessionCmdVpgId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

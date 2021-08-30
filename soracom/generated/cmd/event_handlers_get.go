@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var EventHandlersGetCmd = &cobra.Command{
 }
 
 func collectEventHandlersGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if EventHandlersGetCmdHandlerId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "handler-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("handler_id", "handler-id", "path", parsedBody, EventHandlersGetCmdHandlerId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

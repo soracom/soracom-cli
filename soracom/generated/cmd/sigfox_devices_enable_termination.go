@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var SigfoxDevicesEnableTerminationCmd = &cobra.Command{
 }
 
 func collectSigfoxDevicesEnableTerminationCmdParams(ac *apiClient) (*apiParams, error) {
-	if SigfoxDevicesEnableTerminationCmdDeviceId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "device-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SigfoxDevicesEnableTerminationCmdDeviceId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

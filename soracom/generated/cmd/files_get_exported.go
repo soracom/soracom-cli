@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var FilesGetExportedCmd = &cobra.Command{
 }
 
 func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {
-	if FilesGetExportedCmdExportedFileId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "exported-file-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("exported_file_id", "exported-file-id", "path", parsedBody, FilesGetExportedCmdExportedFileId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

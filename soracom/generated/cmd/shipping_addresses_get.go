@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,15 @@ var ShippingAddressesGetCmd = &cobra.Command{
 }
 
 func collectShippingAddressesGetCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 	if ShippingAddressesGetCmdOperatorId == "" {
 		ShippingAddressesGetCmdOperatorId = ac.OperatorID
 	}
 
-	if ShippingAddressesGetCmdShippingAddressId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "shipping-address-id")
+	err = checkIfRequiredStringParameterIsSupplied("shipping_address_id", "shipping-address-id", "path", parsedBody, ShippingAddressesGetCmdShippingAddressId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

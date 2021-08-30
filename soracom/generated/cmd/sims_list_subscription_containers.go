@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var SimsListSubscriptionContainersCmd = &cobra.Command{
 }
 
 func collectSimsListSubscriptionContainersCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsListSubscriptionContainersCmdIccid == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "iccid")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("iccid", "iccid", "path", parsedBody, SimsListSubscriptionContainersCmdIccid)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsListSubscriptionContainersCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsListSubscriptionContainersCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

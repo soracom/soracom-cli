@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var SimsStopPacketCaptureSessionCmd = &cobra.Command{
 }
 
 func collectSimsStopPacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
-	if SimsStopPacketCaptureSessionCmdSessionId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "session-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("session_id", "session-id", "path", parsedBody, SimsStopPacketCaptureSessionCmdSessionId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SimsStopPacketCaptureSessionCmdSimId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "sim-id")
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsStopPacketCaptureSessionCmdSimId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

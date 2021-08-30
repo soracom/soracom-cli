@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -105,50 +102,42 @@ var SoraletsTestCmd = &cobra.Command{
 }
 
 func collectSoraletsTestCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForSoraletsTestCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForSoraletsTestCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if SoraletsTestCmdContentType == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "content-type")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("contentType", "content-type", "body", parsedBody, SoraletsTestCmdContentType)
+	if err != nil {
+		return nil, err
 	}
 
-	if SoraletsTestCmdDirection == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "direction")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("direction", "direction", "body", parsedBody, SoraletsTestCmdDirection)
+	if err != nil {
+		return nil, err
 	}
 
-	if SoraletsTestCmdPayload == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "payload")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("payload", "payload", "body", parsedBody, SoraletsTestCmdPayload)
+	if err != nil {
+		return nil, err
 	}
 
-	if SoraletsTestCmdSoraletId == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "soralet-id")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("soralet_id", "soralet-id", "path", parsedBody, SoraletsTestCmdSoraletId)
+	if err != nil {
+		return nil, err
 	}
 
-	if SoraletsTestCmdVersion == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "version")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("version", "version", "body", parsedBody, SoraletsTestCmdVersion)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

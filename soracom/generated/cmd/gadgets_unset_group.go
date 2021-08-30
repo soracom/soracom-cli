@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -69,12 +67,16 @@ var GadgetsUnsetGroupCmd = &cobra.Command{
 }
 
 func collectGadgetsUnsetGroupCmdParams(ac *apiClient) (*apiParams, error) {
-	if GadgetsUnsetGroupCmdProductId == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "product-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("product_id", "product-id", "path", parsedBody, GadgetsUnsetGroupCmdProductId)
+	if err != nil {
+		return nil, err
 	}
 
-	if GadgetsUnsetGroupCmdSerialNumber == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "serial-number")
+	err = checkIfRequiredStringParameterIsSupplied("serial_number", "serial-number", "path", parsedBody, GadgetsUnsetGroupCmdSerialNumber)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

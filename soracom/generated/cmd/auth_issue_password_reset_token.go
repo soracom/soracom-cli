@@ -3,11 +3,8 @@ package cmd
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"io/ioutil"
-
 	"net/url"
 	"os"
 
@@ -70,18 +67,22 @@ var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 }
 
 func collectAuthIssuePasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {
-	body, err := buildBodyForAuthIssuePasswordResetTokenCmd()
+	var body string
+	var parsedBody interface{}
+	var err error
+	body, err = buildBodyForAuthIssuePasswordResetTokenCmd()
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal([]byte(body), &parsedBody)
+	if err != nil {
+		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+	}
 	contentType := "application/json"
 
-	if AuthIssuePasswordResetTokenCmdEmail == "" {
-		if body == "" {
-
-			return nil, fmt.Errorf("required parameter '%s' is not specified", "email")
-		}
-
+	err = checkIfRequiredStringParameterIsSupplied("email", "email", "body", parsedBody, AuthIssuePasswordResetTokenCmdEmail)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

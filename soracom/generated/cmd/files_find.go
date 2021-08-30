@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -84,13 +82,17 @@ var FilesFindCmd = &cobra.Command{
 }
 
 func collectFilesFindCmdParams(ac *apiClient) (*apiParams, error) {
+	var parsedBody interface{}
+	var err error
 
-	if FilesFindCmdPrefix == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "prefix")
+	err = checkIfRequiredStringParameterIsSupplied("prefix", "prefix", "query", parsedBody, FilesFindCmdPrefix)
+	if err != nil {
+		return nil, err
 	}
 
-	if FilesFindCmdScope == "" {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "scope")
+	err = checkIfRequiredStringParameterIsSupplied("scope", "scope", "query", parsedBody, FilesFindCmdScope)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{

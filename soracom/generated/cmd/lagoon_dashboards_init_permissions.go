@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"net/url"
 	"os"
 
@@ -64,8 +62,11 @@ var LagoonDashboardsInitPermissionsCmd = &cobra.Command{
 }
 
 func collectLagoonDashboardsInitPermissionsCmdParams(ac *apiClient) (*apiParams, error) {
-	if LagoonDashboardsInitPermissionsCmdDashboardId == 0 {
-		return nil, fmt.Errorf("required parameter '%s' is not specified", "dashboard-id")
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredIntegerParameterIsSupplied("dashboard_id", "dashboard-id", "path", parsedBody, LagoonDashboardsInitPermissionsCmdDashboardId)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{
