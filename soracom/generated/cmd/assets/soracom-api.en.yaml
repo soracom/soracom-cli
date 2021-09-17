@@ -155,6 +155,17 @@ definitions:
         type: string
       arcClientPeerPublicKey:
         type: string
+  ArcCredentialRenewRequest:
+    properties:
+      arcClientPeerPublicKey:
+        description: if this parameter is missing, the sever generates keypair
+        type: string
+  ArcCredentialRenewResponse:
+    properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
   ArcSessionCreateResponse:
     properties:
       arcAllowedIPs:
@@ -625,6 +636,7 @@ definitions:
         - 15
         type: integer
       useInternetGateway:
+        default: true
         type: boolean
     required:
     - type
@@ -11260,6 +11272,22 @@ paths:
         name: tag
         required: false
         type: array
+      - collectionFormat: multi
+        description: Subscription (e.g. `Plan01s`) to search
+        in: query
+        items:
+          type: string
+        name: subscription
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: Module type (e.g. `mini`, `virtual`) to search
+        in: query
+        items:
+          type: string
+        name: module_type
+        required: false
+        type: array
       - default: 10
         description: The maximum number of item to retrieve
         format: int32
@@ -11930,8 +11958,9 @@ paths:
       - sims activate
   /sims/{sim_id}/credentials/arc:
     delete:
-      description: Use this API to remove the set of credentials for Arc from the
-        specified SIM.
+      deprecated: true
+      description: (DEPRECATED) Use this API to remove the set of credentials for
+        Arc from the specified SIM. Please do not use this API.
       operationId: removeArcSimCredentials
       parameters:
       - description: SIM ID of the target SIM.
@@ -11945,7 +11974,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: Remove the credentials for Arc from a SIM.
+      summary: (DEPRECATED) Remove the credentials for Arc from a SIM.
       tags:
       - Sim
       x-soracom-cli:
@@ -11953,7 +11982,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Use this API to attach a set of credentials to a SIM.
+      deprecated: true
+      description: (DEPRECATED) Use this API to attach a set of credentials to a SIM.
+        Please use `renewArcSimCredentials` API instead.
       operationId: attachArcSimCredentials
       parameters:
       - description: SIM ID of the target SIM.
@@ -11978,11 +12009,45 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: Attach the credentials for Arc to a SIM.
+      summary: (DEPRECATED) Attach the credentials for Arc to a SIM.
       tags:
       - Sim
       x-soracom-cli:
       - sims attach-arc-credentials
+    put:
+      consumes:
+      - application/json
+      description: Use this API to attach a set of credentials to a SIM and re-initialize
+        a session at once.
+      operationId: renewArcSimCredentials
+      parameters:
+      - description: SIM ID of the target SIM.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Arc credential attach request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ArcCredentialRenewRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arc credential attach response
+          schema:
+            $ref: '#/definitions/ArcCredentialRenewResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Renew the credentials for Arc to a SIM.
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims renew-arc-credentials
   /sims/{sim_id}/data:
     get:
       description: Returns a list of data entries sent from a SIM that match certain

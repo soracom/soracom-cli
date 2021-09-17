@@ -153,6 +153,17 @@ definitions:
         type: string
       arcClientPeerPublicKey:
         type: string
+  ArcCredentialRenewRequest:
+    properties:
+      arcClientPeerPublicKey:
+        description: SIMに付与するArcクライアントの公開鍵。もしこの値が空の場合はサーバーがキーペアを生成します。
+        type: string
+  ArcCredentialRenewResponse:
+    properties:
+      arcClientPeerPrivateKey:
+        type: string
+      arcClientPeerPublicKey:
+        type: string
   ArcSessionCreateResponse:
     properties:
       arcAllowedIPs:
@@ -618,6 +629,7 @@ definitions:
         - 15
         type: integer
       useInternetGateway:
+        default: true
         type: boolean
     required:
     - type
@@ -5402,7 +5414,7 @@ paths:
       - application/json;charset=UTF-8
       responses:
         200:
-          description: プレフィックにマッチしたエントリエントリのリスト。 prefix がマッチするファイルエントリが無ければ空のリスト。
+          description: prefix にマッチしたファイルエントリのリスト。prefix にマッチするファイルエントリが無ければ空のリスト。
           schema:
             items:
               $ref: '#/definitions/FileEntry'
@@ -11095,6 +11107,22 @@ paths:
         name: tag
         required: false
         type: array
+      - collectionFormat: multi
+        description: '検索したいサブスクリプション (例: `Plan01s`)'
+        in: query
+        items:
+          type: string
+        name: subscription
+        required: false
+        type: array
+      - collectionFormat: multi
+        description: '検索したいモジュールタイプ (例: `mini`, `virtual`)'
+        in: query
+        items:
+          type: string
+        name: module_type
+        required: false
+        type: array
       - default: 10
         description: 取得する結果の上限数
         format: int32
@@ -11738,7 +11766,8 @@ paths:
       - sims activate
   /sims/{sim_id}/credentials/arc:
     delete:
-      description: SORACOM Arcのクレデンシャル (公開鍵) をSIMから除去します。
+      deprecated: true
+      description: (非推奨のAPIです。利用しないでください) SORACOM Arcのクレデンシャル (公開鍵) をSIMから除去します。
       operationId: removeArcSimCredentials
       parameters:
       - description: 対象とするSIMのSIM ID
@@ -11752,7 +11781,7 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: ArcのクレデンシャルをSIMから除去
+      summary: (非推奨) ArcのクレデンシャルをSIMから除去
       tags:
       - Sim
       x-soracom-cli:
@@ -11760,7 +11789,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: SORACOM Arcのクレデンシャル (公開鍵) をSIMに付与します。
+      deprecated: true
+      description: (非推奨のAPIです。代わりに `renewArcSimCredentials` APIを利用してください) SORACOM
+        Arcのクレデンシャル (公開鍵) をSIMに付与します。
       operationId: attachArcSimCredentials
       parameters:
       - description: 対象とするSIMのSIM ID
@@ -11785,11 +11816,44 @@ paths:
       security:
       - api_key: []
       - api_token: []
-      summary: ArcのクレデンシャルをSIMへ付与
+      summary: (非推奨) ArcのクレデンシャルをSIMへ付与
       tags:
       - Sim
       x-soracom-cli:
       - sims attach-arc-credentials
+    put:
+      consumes:
+      - application/json
+      description: SIMにArcのクレデンシャルを付与し、セッションの再初期化処理を行います
+      operationId: renewArcSimCredentials
+      parameters:
+      - description: 対象とするSIMのSIM ID
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: Arcのクレデンシャルの付与リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ArcCredentialRenewRequest'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Arcのクレデンシャルの付与およびセッションの再初期化の成功レスポンス
+          schema:
+            $ref: '#/definitions/ArcCredentialRenewResponse'
+      security:
+      - api_key: []
+      - api_token: []
+      summary: SIMに対するArcのクレデンシャルを更新する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims renew-arc-credentials
   /sims/{sim_id}/data:
     get:
       description: 指定されたSIMから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が1ページに収まらない場合は、次のページにアクセスするためのURLを`Link`ヘッダに含めて返す。

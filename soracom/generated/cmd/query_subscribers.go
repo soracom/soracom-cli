@@ -25,6 +25,9 @@ var QuerySubscribersCmdIccid []string
 // QuerySubscribersCmdImsi holds multiple values of 'imsi' option
 var QuerySubscribersCmdImsi []string
 
+// QuerySubscribersCmdModuleType holds multiple values of 'module_type' option
+var QuerySubscribersCmdModuleType []string
+
 // QuerySubscribersCmdMsisdn holds multiple values of 'msisdn' option
 var QuerySubscribersCmdMsisdn []string
 
@@ -33,6 +36,9 @@ var QuerySubscribersCmdName []string
 
 // QuerySubscribersCmdSerialNumber holds multiple values of 'serial_number' option
 var QuerySubscribersCmdSerialNumber []string
+
+// QuerySubscribersCmdSubscription holds multiple values of 'subscription' option
+var QuerySubscribersCmdSubscription []string
 
 // QuerySubscribersCmdTag holds multiple values of 'tag' option
 var QuerySubscribersCmdTag []string
@@ -54,11 +60,15 @@ func init() {
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdImsi, "imsi", []string{}, TRAPI("IMSI to search"))
 
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdModuleType, "module-type", []string{}, TRAPI("Module type (e.g. `mini`, `virtual`) to search"))
+
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdName, "name", []string{}, TRAPI("Name to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
+
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. `Plan01s`) to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 
@@ -165,6 +175,12 @@ func buildQueryForQuerySubscribersCmd() url.Values {
 		}
 	}
 
+	for _, s := range QuerySubscribersCmdModuleType {
+		if s != "" {
+			result.Add("module_type", s)
+		}
+	}
+
 	for _, s := range QuerySubscribersCmdMsisdn {
 		if s != "" {
 			result.Add("msisdn", s)
@@ -180,6 +196,12 @@ func buildQueryForQuerySubscribersCmd() url.Values {
 	for _, s := range QuerySubscribersCmdSerialNumber {
 		if s != "" {
 			result.Add("serial_number", s)
+		}
+	}
+
+	for _, s := range QuerySubscribersCmdSubscription {
+		if s != "" {
+			result.Add("subscription", s)
 		}
 	}
 

@@ -10,6 +10,8 @@ import (
 
 	"strings"
 
+	"github.com/soracom/soracom-cli/generators/lib"
+
 	"github.com/spf13/cobra"
 )
 
@@ -37,6 +39,8 @@ var SimsAttachArcCredentialsCmd = &cobra.Command{
 	Short: TRAPI("/sims/{sim_id}/credentials/arc:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
