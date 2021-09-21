@@ -84,11 +84,14 @@ func collectLoraNetworkSetsAddPermissionCmdParams(ac *apiClient) (*apiParams, er
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal([]byte(body), &parsedBody)
-	if err != nil {
-		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
-	}
 	contentType := "application/json"
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
 
 	err = checkIfRequiredStringParameterIsSupplied("ns_id", "ns-id", "path", parsedBody, LoraNetworkSetsAddPermissionCmdNsId)
 	if err != nil {

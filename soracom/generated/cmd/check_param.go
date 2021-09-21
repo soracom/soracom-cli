@@ -67,13 +67,13 @@ func checkIfRequiredFloatParameterIsSupplied(propName, optionName, in string, pa
 func checkIfRequiredBoolParameterIsSupplied(propName, optionName, in string, parsedBody interface{}, varValue bool) error {
 	if in == "body" {
 		contains := doesBodyContainParameter(parsedBody, propName)
-		if !contains && varValue == false {
+		if !contains && !varValue {
 			return fmt.Errorf("required parameter '%s' in body (or command line option '%s') is not specified", propName, optionName)
 		}
 		return nil
 	}
 
-	if varValue == false {
+	if !varValue {
 		return fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
 	}
 	return nil

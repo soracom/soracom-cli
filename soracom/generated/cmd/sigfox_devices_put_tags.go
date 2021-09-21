@@ -79,11 +79,14 @@ func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal([]byte(body), &parsedBody)
-	if err != nil {
-		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
-	}
 	contentType := "application/json"
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
 
 	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SigfoxDevicesPutTagsCmdDeviceId)
 	if err != nil {
