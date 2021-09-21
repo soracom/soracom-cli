@@ -170,10 +170,6 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   if err != nil {
     return nil, err
   }
-  err = json.Unmarshal([]byte(body), &parsedBody)
-  if err != nil {
-    return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
-  }
 
   {{- if .ContentTypeFromArg }}
   contentType := {{$prefix}}{{.ContentTypeVarName}}
@@ -181,6 +177,12 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   contentType := "{{.ContentType}}"
   {{end}}
 
+  if contentType == "application/json" {
+    err = json.Unmarshal([]byte(body), &parsedBody)
+    if err != nil {
+      return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+    }
+  }  
   {{end}}
 
   {{- /* check if all required parameters are supplied */ -}}
