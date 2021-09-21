@@ -30,7 +30,7 @@ func init() {
 
 	VpgCreateCmd.Flags().Int64Var(&VpgCreateCmdType, "type", 0, TRAPI(""))
 
-	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", false, TRAPI(""))
+	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", true, TRAPI(""))
 
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	VpgCmd.AddCommand(VpgCreateCmd)
@@ -161,7 +161,7 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result["type"] = VpgCreateCmdType
 	}
 
-	if VpgCreateCmdUseInternetGateway != false {
+	if VpgCreateCmdUseInternetGateway != true {
 		result["useInternetGateway"] = VpgCreateCmdUseInternetGateway
 	}
 

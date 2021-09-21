@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/soracom/soracom-cli/generators/lib"
+
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +24,8 @@ var SimsRemoveArcCredentialsCmd = &cobra.Command{
 	Short: TRAPI("/sims/{sim_id}/credentials/arc:delete:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
