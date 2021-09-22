@@ -89,11 +89,14 @@ func collectFilesPutCmdParams(ac *apiClient) (*apiParams, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal([]byte(body), &parsedBody)
-	if err != nil {
-		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
-	}
 	contentType := FilesPutCmdContentType
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
 
 	err = checkIfRequiredStringParameterIsSupplied("path", "path", "path", parsedBody, FilesPutCmdPath)
 	if err != nil {

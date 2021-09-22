@@ -84,11 +84,14 @@ func collectLagoonUsersUpdatePermissionCmdParams(ac *apiClient) (*apiParams, err
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal([]byte(body), &parsedBody)
-	if err != nil {
-		return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
-	}
 	contentType := "application/json"
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
 
 	err = checkIfRequiredIntegerParameterIsSupplied("lagoon_user_id", "lagoon-user-id", "path", parsedBody, LagoonUsersUpdatePermissionCmdLagoonUserId)
 	if err != nil {
