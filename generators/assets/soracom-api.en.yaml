@@ -194,13 +194,14 @@ definitions:
         type: string
       arcServerPeerPublicKey:
         type: string
-      gtpcTeid:
-        format: int64
-        type: integer
+      gatewayPrivateIpAddress:
+        type: string
+      gatewayPublicIpAddress:
+        type: string
       lastUpdatedAt:
         format: int64
         type: integer
-      location:
+      vpgId:
         type: string
   AttachRoleRequest:
     properties:
@@ -296,6 +297,12 @@ definitions:
       unixtime:
         format: int64
         type: integer
+  Capabilities:
+    properties:
+      data:
+        type: boolean
+      sms:
+        type: boolean
   Cell:
     properties:
       ci:
@@ -2413,12 +2420,44 @@ definitions:
       vpgId:
         description: The Virtual Private Gateway IP address configured.
         type: string
+  PriceByQuantity:
+    properties:
+      minQuantity:
+        description: Min quantity
+        format: int32
+        type: integer
+      price:
+        description: Price
+        format: double
+        type: number
+      taxIncludedPrice:
+        description: TaxIncluded price
+        format: double
+        type: number
   ProductModel:
     properties:
+      campaignCode:
+        description: Campaign code
+        type: string
+      consignorId:
+        description: Consignor ID
+        type: string
+      consignorName:
+        description: Consignor name
+        type: string
       count:
         description: Count
         format: double
         type: number
+      currency:
+        description: Currency
+        enum:
+        - JPY
+        - USD
+        type: string
+      description:
+        description: Product Description
+        type: string
       maxQuantity:
         description: Max quantity
         format: int32
@@ -2427,6 +2466,10 @@ definitions:
         description: Price
         format: double
         type: number
+      priceByQuantityList:
+        items:
+          $ref: '#/definitions/PriceByQuantity'
+        type: array
       productCode:
         description: Product code
         type: string
@@ -2440,13 +2483,28 @@ definitions:
         description: Product type
         enum:
         - sim
+        - lora
+        - sigfox
         - network_module
+        - misc
         type: string
       properties:
         additionalProperties:
           type: string
         description: Properties
         type: object
+      regularPrice:
+        description: Regular price
+        format: double
+        type: number
+      taxIncludedPrice:
+        description: Price
+        format: double
+        type: number
+      taxIncludedRegularPrice:
+        description: TaxIncluded regular price
+        format: double
+        type: number
   PutIpAddressMapEntryRequest:
     properties:
       ipAddress:
@@ -2885,34 +2943,75 @@ definitions:
     type: object
   Sim:
     properties:
+      activeProfileId:
+        type: string
       arcSessionStatus:
-        additionalProperties:
-          $ref: '#/definitions/ArcSessionStatus'
-        type: object
+        $ref: '#/definitions/ArcSessionStatus'
+      capabilities:
+        $ref: '#/definitions/Capabilities'
       createdTime:
+        format: int64
+        type: integer
+      expiryAction:
+        enum:
+        - doNothing
+        - deleteSession
+        - deactivate
+        - suspend
+        - terminate
+        type: string
+      expiryTime:
         format: int64
         type: integer
       groupId:
         type: string
+      imeiLock:
+        $ref: '#/definitions/ImeiLock'
       lastModifiedTime:
         format: int64
         type: integer
+      lastPortMappingCreatedTime:
+        format: int64
+        type: integer
+      localInfo:
+        $ref: '#/definitions/Map'
+      moduleType:
+        type: string
       operatorId:
         type: string
       otaSerialNumber:
         type: string
+      pcapEndTime:
+        format: int64
+        type: integer
+      pcapStartTime:
+        format: int64
+        type: integer
+      previousSession:
+        $ref: '#/definitions/PreviousSessionStatus'
       profiles:
         additionalProperties:
           $ref: '#/definitions/SimProfile'
         type: object
+      serialNumber:
+        type: string
+      sessionStatus:
+        $ref: '#/definitions/SessionStatus'
       simId:
         type: string
       speedClass:
         type: string
+      status:
+        type: string
+      tags:
+        $ref: '#/definitions/TagSet'
+      terminationEnabled:
+        type: boolean
       type:
         enum:
-        - uicc
         - euicc
+        - uicc
+        - virtual
         type: string
   SimProfile:
     properties:
@@ -2922,12 +3021,30 @@ definitions:
         type: string
       iccid:
         type: string
+      otaSupported:
+        type: boolean
       primaryImsi:
         type: string
       subscribers:
         additionalProperties:
-          $ref: '#/definitions/Subscriber'
+          $ref: '#/definitions/SimplifiedSubscriber'
         type: object
+  SimplifiedSubscriber:
+    properties:
+      bundles:
+        items:
+          type: string
+        type: array
+      capabilities:
+        $ref: '#/definitions/Capabilities'
+      imsi:
+        type: string
+      msisdn:
+        type: string
+      status:
+        type: string
+      subscription:
+        type: string
   SmsForwardingReport:
     properties:
       messageId:
@@ -3795,9 +3912,14 @@ paths:
         name: tac
         required: false
         type: string
-      - description: ECID - Enhanced Cell ID (for 4G)
+      - description: ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`
         in: query
         name: ecid
+        required: false
+        type: string
+      - description: ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`
+        in: query
+        name: eci
         required: false
         type: string
       produces:
@@ -11273,7 +11395,7 @@ paths:
         required: false
         type: array
       - collectionFormat: multi
-        description: Subscription (e.g. `Plan01s`) to search
+        description: Subscription (e.g. `plan01s`) to search
         in: query
         items:
           type: string
@@ -12551,6 +12673,47 @@ paths:
       - Sim
       x-soracom-cli:
       - sims add-subscription
+  /sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/cancel_download:
+    post:
+      description: Cancel the download of subscription before it gets downloaded to
+        the SIM. The condition is that the status of the subscription is still `shipped`
+      operationId: cancelSubscriptionContainerDownload
+      parameters:
+      - description: SIM ID of the target subscription container.
+        format: SimId
+        in: path
+        name: sim_id
+        required: true
+        type: string
+      - description: ICCID of the target subscription container.
+        in: path
+        name: iccid
+        required: true
+        type: string
+      - description: IMSI of the target subscription container.
+        format: IMSI
+        in: path
+        name: imsi
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: A schema listing subscription containers and containing a map
+            of PLMN codes to subscription containers.
+          schema:
+            $ref: '#/definitions/SubscriptionContainerStatus'
+        404:
+          description: No such SIM found
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Cancel subscription download to subscription container
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims cancel-subscription-container-download
   /sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:
     post:
       description: Terminate subscription container. Currently this API supports only
