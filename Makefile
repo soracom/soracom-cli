@@ -24,10 +24,11 @@ install-dev-deps: ## Install dev dependencies
 
 install-deps: ## Install dependencies
 	@echo 'Installing build dependencies ...'
-	go get -u golang.org/x/tools/cmd/goimports
+	go get golang.org/x/tools/internal/imports
+	go get golang.org/x/tools/internal/gocommand
+	go install golang.org/x/tools/cmd/goimports
 	@echo 'Installing commands used with "go generate" ...'
 	go get -u github.com/elazarl/goproxy
-	go mod tidy
 .PHONY:install-deps
 
 test: ## Test generator's library
