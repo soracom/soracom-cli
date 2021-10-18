@@ -68,7 +68,7 @@ func init() {
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. `Plan01s`) to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. `plan01s`) to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 

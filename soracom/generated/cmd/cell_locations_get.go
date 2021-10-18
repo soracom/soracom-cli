@@ -11,6 +11,9 @@ import (
 // CellLocationsGetCmdCid holds value of 'cid' option
 var CellLocationsGetCmdCid string
 
+// CellLocationsGetCmdEci holds value of 'eci' option
+var CellLocationsGetCmdEci string
+
 // CellLocationsGetCmdEcid holds value of 'ecid' option
 var CellLocationsGetCmdEcid string
 
@@ -29,7 +32,9 @@ var CellLocationsGetCmdTac string
 func init() {
 	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdCid, "cid", "", TRAPI("CID - Cell ID (for 3G)"))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEcid, "ecid", "", TRAPI("ECID - Enhanced Cell ID (for 4G)"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEci, "eci", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`"))
+
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEcid, "ecid", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`"))
 
 	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdLac, "lac", "", TRAPI("LAC - Location Area Code (for 3G)"))
 
@@ -119,6 +124,10 @@ func buildQueryForCellLocationsGetCmd() url.Values {
 
 	if CellLocationsGetCmdCid != "" {
 		result.Add("cid", CellLocationsGetCmdCid)
+	}
+
+	if CellLocationsGetCmdEci != "" {
+		result.Add("eci", CellLocationsGetCmdEci)
 	}
 
 	if CellLocationsGetCmdEcid != "" {
