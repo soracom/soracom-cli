@@ -1,64 +1,71 @@
 package cmd
 
 import (
-	"fmt"
 	"net/http"
 	"os"
-	"runtime"
 	"testing"
 
 	"github.com/elazarl/goproxy"
+	"github.com/tj/assert"
 )
 
-type dummyAPIServer struct {
-	accessCount int
+type footprints struct {
+	http  int
+	https int
 }
 
-func (s *dummyAPIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.accessCount++
-	fmt.Fprintf(w, "response from dummy api server")
-}
+func setupProxyServerForTest(proxyAddr string, fp *footprints) {
+	proxy := goproxy.NewProxyHttpServer()
+	proxy.Verbose = true
+	proxy.Tr = &http.Transport{} // To avoid using this proxy to access this proxy itself
 
-func orPanic(err error) {
-	if err != nil {
-		panic(err)
-	}
+	proxy.OnRequest(goproxy.DstHostIs("example.com")).DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		fp.http++
+		return req, nil
+	})
+
+	proxy.OnRequest().HandleConnect(goproxy.FuncHttpsHandler(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+		fp.https++
+		return goproxy.RejectConnect, host
+	}))
+
+	go http.ListenAndServe(proxyAddr, proxy)
 }
 
 func TestCallAPIWithProxy(t *testing.T) {
-	if runtime.GOOS != "darwin" {
-		// we are not able to get goproxy working on Linux env
-		return
-	}
 	origEnvVars := saveEnvVars([]string{"HTTP_PROXY"})
 	defer restoreEnvVars(origEnvVars)
 
-	proxyAddr := ":18080"
+	proxyPort := ":18080"
+	proxyAddr := "http://localhost" + proxyPort
 	err := os.Setenv("HTTP_PROXY", proxyAddr)
-	if err != nil {
-		t.Fatalf("os.Setenv() failed.")
-	}
+	assert.NoError(t, err)
+	err = os.Setenv("HTTPS_PROXY", proxyAddr)
+	assert.NoError(t, err)
 
-	var proxyAccessCount int
-	proxy := goproxy.NewProxyHttpServer()
-	proxy.Verbose = true
-	var CountAndReject goproxy.FuncHttpsHandler = func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
-		proxyAccessCount++
-		return goproxy.RejectConnect, host
-	}
+	fp := &footprints{}
+	setupProxyServerForTest(proxyPort, fp)
 
-	proxy.OnRequest().HandleConnect(CountAndReject)
-	go http.ListenAndServe(proxyAddr, proxy)
-
-	ac := newAPIClient(&apiClientOptions{})
-	ac.callAPI(&apiParams{
+	// Test HTTP
+	ac := newAPIClient(&apiClientOptions{Endpoint: "http://example.com"})
+	// Ignoring response and error because example.com always returns 404 Not Found for the path 'v1/subscribers'
+	_, _ = ac.callAPI(&apiParams{
 		method:         "GET",
 		path:           "v1/subscribers",
 		noRetryOnError: true,
 	})
-	if proxyAccessCount == 0 {
-		t.Fatalf("proxy server should be accessed when HTTP_PROXY env var is set")
-	}
+	assert.Equal(t, 1, fp.http, "proxy server should be accessed when HTTP_PROXY env var is set")
+
+	// Test HTTPS
+	ac = newAPIClient(&apiClientOptions{Endpoint: "https://api.soracom.io"})
+	// Ignoring response and error because api.soracom.io always returns 400 Bad request with the error message 'invalid api key'
+	_, _ = ac.callAPI(&apiParams{
+		method:         "GET",
+		path:           "v1/subscribers",
+		noRetryOnError: true,
+	})
+	assert.Equal(t, 1, fp.https, "proxy server should be accessed when HTTP_PROXY env var is set")
+
 }
 
 func saveEnvVars(vars []string) map[string]string {
