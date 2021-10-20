@@ -32,10 +32,14 @@ test: ## Test generator's library
 	go test ./generators/lib
 .PHONY:test
 
-generate: ## Generate source code for soracom-cli
+test-generated: ## Test generated source code
+	@echo "Testing generated source ..."
+	go test ./soracom/generated/cmd
+.PHONY:test-generated
+
+generate: install-deps ## Generate source code for soracom-cli
 	echo 'Generating generator ...'
 	cd ./generators/cmd/src && \
-	go generate && \
 	go vet && \
 	goimports -w ./*.go && \
 	go build -o generate-cmd
@@ -72,10 +76,10 @@ format: ## Format codes
 	go fmt ./...
 .PHONY:format
 
-lint: ## Lint codes
-	golint -set_exit_status ./...
+lint: install-dev-deps ## Lint codes
+	staticcheck ./soracom/...
 .PHONY:lint
 
-metrics-gocyclo: ## Metrics with gocyclo
+metrics-gocyclo: install-dev-deps ## Metrics with gocyclo
 	gocyclo -over $(GOCYCLO_OVER) .
 .PHONY:metrics-gocyclo
