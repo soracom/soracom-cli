@@ -19,6 +19,7 @@ func checkIfRequiredStringParameterIsSupplied(propName, optionName, in string, p
 	return nil
 }
 
+//lint:ignore U1000 we want to keep this function for the future use.
 func checkIfRequiredStringSliceParameterIsSupplied(propName, optionName, in string, parsedBody interface{}, varValue []string) error {
 	if in == "body" {
 		contains := doesBodyContainParameter(parsedBody, propName)
@@ -64,6 +65,7 @@ func checkIfRequiredFloatParameterIsSupplied(propName, optionName, in string, pa
 	return nil
 }
 
+//lint:ignore U1000 we want to keep this function for the future use.
 func checkIfRequiredBoolParameterIsSupplied(propName, optionName, in string, parsedBody interface{}, varValue bool) error {
 	if in == "body" {
 		contains := doesBodyContainParameter(parsedBody, propName)
