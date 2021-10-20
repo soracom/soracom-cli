@@ -19,12 +19,8 @@ install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
 	go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 	go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
-.PHONY:install-dev-deps
-
-install-deps: ## Install dependencies
-	@echo 'Installing build dependencies ...'
 	go install golang.org/x/tools/cmd/goimports@v0.1.7
-.PHONY:install-deps
+.PHONY:install-dev-deps
 
 test: ## Test generator's library
 	@echo "Testing generator's source ..."
@@ -32,12 +28,7 @@ test: ## Test generator's library
 	go test ./generators/lib
 .PHONY:test
 
-test-generated: ## Test generated source code
-	@echo "Testing generated source ..."
-	go test ./soracom/generated/cmd
-.PHONY:test-generated
-
-generate: install-deps ## Generate source code for soracom-cli
+generate: ## Generate source code for soracom-cli
 	echo 'Generating generator ...'
 	cd ./generators/cmd/src && \
 	go vet && \
@@ -49,6 +40,23 @@ generate: install-deps ## Generate source code for soracom-cli
 	cp -r generators/assets/ soracom/generated/cmd/assets/
 	make format
 .PHONY:generate
+
+format: ## Format codes
+	go fmt ./...
+.PHONY:format
+
+test-generated: ## Test generated source code
+	@echo "Testing generated source ..."
+	go test ./soracom/generated/cmd
+.PHONY:test-generated
+
+lint: ## Lint codes
+	staticcheck ./soracom/...
+.PHONY:lint
+
+metrics-gocyclo: ## Metrics with gocyclo
+	gocyclo -over $(GOCYCLO_OVER) .
+.PHONY:metrics-gocyclo
 
 build: ## Build codes
 	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
@@ -65,21 +73,9 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: install-dev-deps install-deps generate metrics-gocyclo test lint ## Run `build-artifacts` action
+ci-build-artifacts: install-dev-deps test generate test-generated lint metrics-gocyclo ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"
 	make cross-build OS_LIST="freebsd" ARCH_LIST="amd64 386"
 .PHONY:ci-build-artifacts
-
-format: ## Format codes
-	go fmt ./...
-.PHONY:format
-
-lint: install-dev-deps ## Lint codes
-	staticcheck ./soracom/...
-.PHONY:lint
-
-metrics-gocyclo: install-dev-deps ## Metrics with gocyclo
-	gocyclo -over $(GOCYCLO_OVER) .
-.PHONY:metrics-gocyclo
