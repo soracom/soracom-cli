@@ -17,18 +17,13 @@ help:
 
 install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
-	go get -u \
-		golang.org/x/lint/golint \
-		github.com/fzipp/gocyclo/cmd/gocyclo
+	go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
 .PHONY:install-dev-deps
 
 install-deps: ## Install dependencies
 	@echo 'Installing build dependencies ...'
-	go get golang.org/x/tools/internal/imports
-	go get golang.org/x/tools/internal/gocommand
-	go install golang.org/x/tools/cmd/goimports
-	@echo 'Installing commands used with "go generate" ...'
-	go get -u github.com/elazarl/goproxy
+	go install golang.org/x/tools/cmd/goimports@v0.1.7
 .PHONY:install-deps
 
 test: ## Test generator's library
