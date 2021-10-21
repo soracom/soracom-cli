@@ -15,7 +15,7 @@ import (
 	"github.com/kennygrant/sanitize"
 	"github.com/mitchellh/go-homedir"
 	"github.com/soracom/soracom-cli/generators/lib"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 type profile struct {
@@ -69,10 +69,6 @@ func getDefaultProfileName() string {
 
 func getDefaultSandboxProfileName() string {
 	return "sandbox"
-}
-
-func getDefaultCoverageType() string {
-	return "g"
 }
 
 func getProfileDir() (string, error) {
@@ -285,7 +281,7 @@ func collectSandboxProfileInfo(profileName string, registerPaymentMethod bool) (
 
 func readPassword(prompt string) (string, error) {
 	fmt.Print(prompt)
-	password, err := terminal.ReadPassword(int(syscall.Stdin))
+	password, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return "", err
 	}
@@ -318,7 +314,7 @@ func collectCoverageType() (string, error) {
 }
 
 func collectAuthInfo() (*authInfo, error) {
-	fmt.Printf(TRCLI("cli.configure.profile.auth.prompt"))
+	fmt.Print(TRCLI("cli.configure.profile.auth.prompt"))
 	var i int
 	for {
 		fmt.Print(TRCLI("cli.configure.profile.auth.select"))
@@ -385,7 +381,7 @@ func collectAuthInfo() (*authInfo, error) {
 }
 
 func collectProductionEnvAuthInfoForSandbox() (*authInfo, error) {
-	fmt.Printf(TRCLI("cli.configure_sandbox.profile.prod_auth.prompt"))
+	fmt.Print(TRCLI("cli.configure_sandbox.profile.prod_auth.prompt"))
 
 	var authKeyID, authKey string
 	fmt.Print("authKeyId: ")
@@ -402,7 +398,7 @@ func collectProductionEnvAuthInfoForSandbox() (*authInfo, error) {
 }
 
 func collectSandboxAccountInfo() (*authInfo, error) {
-	fmt.Printf(TRCLI("cli.configure_sandbox.profile.sandbox_account.prompt"))
+	fmt.Print(TRCLI("cli.configure_sandbox.profile.sandbox_account.prompt"))
 
 	var email string
 	fmt.Print("email: ")

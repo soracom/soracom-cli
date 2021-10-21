@@ -16,8 +16,8 @@ d="/go/src/github.com/soracom/soracom-cli"
 gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
-: 'Install dependencies' && {
-  make install-deps
+: "Install dev dependencies" && {
+  make install-dev-deps
 }
 
 : "Test generator's library" && {
@@ -26,6 +26,12 @@ gopath=${gopath%%:*}
 
 : 'Generate source code for soracom-cli' && {
   make generate
+}
+
+: "Test the generated source code" && {
+  make test-generated
+  make lint
+  make metrics-gocyclo
 }
 
 remove_tmpdir() {

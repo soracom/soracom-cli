@@ -188,7 +188,7 @@ func TRAPI(pathAndMethodAndField string) string {
 }
 
 func getStringResource(data map[interface{}]interface{}, pathAndMethodAndField string) string {
-	if data == nil || len(data) == 0 {
+	if len(data) == 0 {
 		return ""
 	}
 
