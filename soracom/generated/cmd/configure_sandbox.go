@@ -89,7 +89,7 @@ func sandboxInit(profile *profile) (*authResult, error) {
 		ac.SetVerbose(true)
 	}
 
-	reqBodyBytes, err := json.Marshal(profile)
+	reqBodyBytes, err := json.Marshal(createSandboxInitRequest(profile))
 	if err != nil {
 		return nil, err
 	}
@@ -114,4 +114,24 @@ func sandboxInit(profile *profile) (*authResult, error) {
 	}
 
 	return &ar, err
+}
+
+type sandboxInitRequest struct {
+	AuthKey               *string  `json:"authKey,omitempty"`
+	AuthKeyID             *string  `json:"authKeyId,omitempty"`
+	CoverageTypes         []string `json:"coverageTypes"`
+	Email                 *string  `json:"email,omitempty"`
+	Password              *string  `json:"password,omitempty"`
+	RegisterPaymentMethod bool     `json:"registerPaymentMethod"`
+}
+
+func createSandboxInitRequest(profile *profile) sandboxInitRequest {
+	return sandboxInitRequest{
+		AuthKey:               profile.AuthKey,
+		AuthKeyID:             profile.AuthKeyID,
+		CoverageTypes:         []string{profile.CoverageType},
+		Email:                 profile.Email,
+		Password:              profile.Password,
+		RegisterPaymentMethod: profile.RegisterPaymentMethod,
+	}
 }
