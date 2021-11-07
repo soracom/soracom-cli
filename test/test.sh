@@ -80,6 +80,7 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
         --auth-key "$SORACOM_AUTHKEY_FOR_TEST" \
         --email "$EMAIL" \
         --password "$PASSWORD" \
+        --coverage-type "jp" \
         --profile soracom-cli-test
 }
 
