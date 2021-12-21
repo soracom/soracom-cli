@@ -45,7 +45,7 @@ func checkIfRequiredIntegerParameterIsSupplied(propName, optionName, in string, 
 	}
 
 	if varValue == 0 {
-		return fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+		return fmt.Errorf("required parameter '%s' is not specified", optionName)
 	}
 	return nil
 }
@@ -60,7 +60,7 @@ func checkIfRequiredFloatParameterIsSupplied(propName, optionName, in string, pa
 	}
 
 	if varValue == 0.0 {
-		return fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+		return fmt.Errorf("required parameter '%s' is not specified", optionName)
 	}
 	return nil
 }
@@ -76,7 +76,7 @@ func checkIfRequiredBoolParameterIsSupplied(propName, optionName, in string, par
 	}
 
 	if !varValue {
-		return fmt.Errorf("required parameter '%s' is not specified", "{{.LongOption}}")
+		return fmt.Errorf("required parameter '%s' is not specified", optionName)
 	}
 	return nil
 }
