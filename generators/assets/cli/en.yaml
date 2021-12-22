@@ -50,8 +50,9 @@ cli:
     auth_key: AuthKey for the production environment. (Used to check if you have a valid account on the production environment)
     auth_key_id: AuthKeyId for the production environment. (Used to check if you have a valid account on the production environment)
     email: E-mail address for the user to be created on the sandbox environment.
+    overwrite: Overwrite if the same profile already exists.
     password: Password for the user to be created on the sandbox environment.
-    register-payment-method: Register a virtual payment method for the user if specified.
+    register_payment_method: Register a virtual payment method for the user if specified.
     profile:
       prompt: "--- SORACOM CLI setup (Sandbox) ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
       prod_auth:
