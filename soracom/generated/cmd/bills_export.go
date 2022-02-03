@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var BillsExportCmd = &cobra.Command{
 	Short: TRAPI("/bills/{yyyyMM}/export:post:summary"),
 	Long:  TRAPI(`/bills/{yyyyMM}/export:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

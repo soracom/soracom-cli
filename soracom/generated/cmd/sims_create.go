@@ -37,6 +37,11 @@ var SimsCreateCmd = &cobra.Command{
 	Short: TRAPI("/sims:post:summary"),
 	Long:  TRAPI(`/sims:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

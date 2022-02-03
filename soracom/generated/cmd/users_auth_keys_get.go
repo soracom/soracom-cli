@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -32,6 +33,11 @@ var UsersAuthKeysGetCmd = &cobra.Command{
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

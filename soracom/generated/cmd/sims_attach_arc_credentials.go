@@ -41,6 +41,10 @@ var SimsAttachArcCredentialsCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

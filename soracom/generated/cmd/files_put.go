@@ -42,6 +42,11 @@ var FilesPutCmd = &cobra.Command{
 	Short: TRAPI("/files/{scope}/{path}:put:summary"),
 	Long:  TRAPI(`/files/{scope}/{path}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

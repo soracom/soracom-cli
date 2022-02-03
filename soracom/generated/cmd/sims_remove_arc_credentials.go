@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -25,6 +26,10 @@ var SimsRemoveArcCredentialsCmd = &cobra.Command{
 	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
 
 		opt := &apiClientOptions{
 			BasePath: "/v1",

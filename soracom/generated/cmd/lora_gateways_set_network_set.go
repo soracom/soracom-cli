@@ -37,6 +37,11 @@ var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 	Short: TRAPI("/lora_gateways/{gateway_id}/set_network_set:post:summary"),
 	Long:  TRAPI(`/lora_gateways/{gateway_id}/set_network_set:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

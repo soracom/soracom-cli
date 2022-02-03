@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var VpgDeletePacketCaptureSessionCmd = &cobra.Command{
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:delete:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

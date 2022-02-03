@@ -97,6 +97,11 @@ var ShippingAddressesUpdateCmd = &cobra.Command{
 	Short: TRAPI("/operators/{operator_id}/shipping_addresses/{shipping_address_id}:put:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

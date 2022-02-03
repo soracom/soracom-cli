@@ -37,6 +37,11 @@ var GadgetsPutTagsCmd = &cobra.Command{
 	Short: TRAPI("/gadgets/{product_id}/{serial_number}/tags:put:summary"),
 	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}/tags:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

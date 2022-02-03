@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -37,6 +38,11 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 	Short: TRAPI("/lora_network_sets/{ns_id}/gateways:get:summary"),
 	Long:  TRAPI(`/lora_network_sets/{ns_id}/gateways:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

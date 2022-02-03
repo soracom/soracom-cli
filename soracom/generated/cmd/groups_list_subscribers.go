@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -37,6 +38,11 @@ var GroupsListSubscribersCmd = &cobra.Command{
 	Short: TRAPI("/groups/{group_id}/subscribers:get:summary"),
 	Long:  TRAPI(`/groups/{group_id}/subscribers:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

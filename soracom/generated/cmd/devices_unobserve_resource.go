@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -37,6 +38,11 @@ var DevicesUnobserveResourceCmd = &cobra.Command{
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}/unobserve:post:summary"),
 	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}/unobserve:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

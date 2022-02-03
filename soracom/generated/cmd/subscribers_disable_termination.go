@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -22,6 +23,11 @@ var SubscribersDisableTerminationCmd = &cobra.Command{
 	Short: TRAPI("/subscribers/{imsi}/disable_termination:post:summary"),
 	Long:  TRAPI(`/subscribers/{imsi}/disable_termination:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

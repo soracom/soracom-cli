@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -86,6 +87,10 @@ var QuerySubscribersCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 		lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
 
 		opt := &apiClientOptions{
 			BasePath: "/v1",

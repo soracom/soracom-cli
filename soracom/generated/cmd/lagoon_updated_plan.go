@@ -32,6 +32,11 @@ var LagoonUpdatedPlanCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/plan:put:summary"),
 	Long:  TRAPI(`/lagoon/plan:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

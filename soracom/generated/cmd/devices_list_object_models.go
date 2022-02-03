@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -32,6 +33,11 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 	Short: TRAPI("/device_object_models:get:summary"),
 	Long:  TRAPI(`/device_object_models:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

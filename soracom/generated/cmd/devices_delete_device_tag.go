@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 	Short: TRAPI("/devices/{device_id}/tags/{tag_name}:delete:summary"),
 	Long:  TRAPI(`/devices/{device_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

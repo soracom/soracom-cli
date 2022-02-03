@@ -37,6 +37,11 @@ var DevicesSetObjectModelScopeCmd = &cobra.Command{
 	Short: TRAPI("/device_object_models/{model_id}/set_scope:post:summary"),
 	Long:  TRAPI(`/device_object_models/{model_id}/set_scope:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

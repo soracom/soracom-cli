@@ -37,6 +37,11 @@ var EmailsIssueAddEmailTokenCmd = &cobra.Command{
 	Short: TRAPI("/operators/add_email_token/issue:post:summary"),
 	Long:  TRAPI(`/operators/add_email_token/issue:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
