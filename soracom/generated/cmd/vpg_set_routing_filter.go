@@ -32,6 +32,11 @@ var VpgSetRoutingFilterCmd = &cobra.Command{
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/set_routing_filter:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/set_routing_filter:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

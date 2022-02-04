@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -37,6 +38,11 @@ var QuerySubscribersTrafficVolumeRankingCmd = &cobra.Command{
 	Short: TRAPI("/query/subscribers/traffic_volume/ranking:get:summary"),
 	Long:  TRAPI(`/query/subscribers/traffic_volume/ranking:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

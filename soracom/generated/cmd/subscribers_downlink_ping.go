@@ -42,6 +42,11 @@ var SubscribersDownlinkPingCmd = &cobra.Command{
 	Short: TRAPI("/subscribers/{imsi}/downlink/ping:post:summary"),
 	Long:  TRAPI(`/subscribers/{imsi}/downlink/ping:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

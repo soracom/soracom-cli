@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -42,6 +43,11 @@ var FilesListCmd = &cobra.Command{
 	Short: TRAPI("/files/{scope}/{path}/:get:summary"),
 	Long:  TRAPI(`/files/{scope}/{path}/:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

@@ -37,6 +37,11 @@ var PortMappingsCreateCmd = &cobra.Command{
 	Short: TRAPI("/port_mappings:post:summary"),
 	Long:  TRAPI(`/port_mappings:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

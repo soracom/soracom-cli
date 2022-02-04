@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -32,6 +33,11 @@ var VpgListPacketCaptureSessionsCmd = &cobra.Command{
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/packet_capture_sessions:get:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/packet_capture_sessions:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

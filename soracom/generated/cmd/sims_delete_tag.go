@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var SimsDeleteTagCmd = &cobra.Command{
 	Short: TRAPI("/sims/{sim_id}/tags/{tag_name}:delete:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/tags/{tag_name}:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

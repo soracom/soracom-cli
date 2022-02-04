@@ -37,6 +37,11 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	Short: TRAPI("/auth/password_reset_token/verify:post:summary"),
 	Long:  TRAPI(`/auth/password_reset_token/verify:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

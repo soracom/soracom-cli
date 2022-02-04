@@ -32,6 +32,11 @@ var CouponsCreateCmd = &cobra.Command{
 	Short: TRAPI("/coupons:post:summary"),
 	Long:  TRAPI(`/coupons:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

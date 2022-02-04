@@ -27,6 +27,11 @@ var CellLocationsBatchGetCmd = &cobra.Command{
 	Short: TRAPI("/cell_locations:post:summary"),
 	Long:  TRAPI(`/cell_locations:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

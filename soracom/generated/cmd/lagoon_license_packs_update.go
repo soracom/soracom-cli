@@ -27,6 +27,11 @@ var LagoonLicensePacksUpdateCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/license_packs:put:summary"),
 	Long:  TRAPI(`/lagoon/license_packs:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

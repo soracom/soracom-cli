@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var RolesGetCmd = &cobra.Command{
 	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:get:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

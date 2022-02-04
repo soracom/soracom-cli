@@ -2,9 +2,9 @@
 package cmd
 
 import (
+  "fmt"
 {{- if .BodyExists }}
   "encoding/json"
-  "fmt"
   "io/ioutil"
 {{- end }}
   "net/url"
@@ -100,6 +100,11 @@ var {{ $cmdvar }} = &cobra.Command{
     {{end}}
 
     {{end}}
+
+    if len(args) > 0 {
+        return fmt.Errorf("unexpected arguments passed => %v", args)
+    }
+
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
@@ -182,7 +187,7 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
     if err != nil {
       return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
     }
-  }  
+  }
   {{end}}
 
   {{- /* check if all required parameters are supplied */ -}}

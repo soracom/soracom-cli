@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -37,6 +38,11 @@ var StatsAirSimsGetCmd = &cobra.Command{
 	Short: TRAPI("/stats/air/sims/{simId}:get:summary"),
 	Long:  TRAPI(`/stats/air/sims/{simId}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

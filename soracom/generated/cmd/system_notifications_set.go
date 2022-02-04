@@ -42,6 +42,11 @@ var SystemNotificationsSetCmd = &cobra.Command{
 	Short: TRAPI("/operators/{operator_id}/system_notifications/{type}:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

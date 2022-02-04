@@ -42,6 +42,11 @@ var VpgCreateCmd = &cobra.Command{
 	Short: TRAPI("/virtual_private_gateways:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 
@@ -27,6 +28,11 @@ var UsersMfaRevokeCmd = &cobra.Command{
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/mfa:delete:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/mfa:delete:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

@@ -42,6 +42,11 @@ var SandboxCouponsCreateCmd = &cobra.Command{
 	Short: TRAPI("/sandbox/coupons/create:post:summary"),
 	Long:  TRAPI(`/sandbox/coupons/create:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

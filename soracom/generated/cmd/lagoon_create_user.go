@@ -42,6 +42,11 @@ var LagoonCreateUserCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/users:post:summary"),
 	Long:  TRAPI(`/lagoon/users:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

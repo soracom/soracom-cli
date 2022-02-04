@@ -37,6 +37,11 @@ var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 	Short: TRAPI("/lora_network_sets/{ns_id}/revoke_permission:post:summary"),
 	Long:  TRAPI(`/lora_network_sets/{ns_id}/revoke_permission:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

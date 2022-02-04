@@ -52,6 +52,11 @@ var DiagnosticsSendRequestCmd = &cobra.Command{
 	Short: TRAPI("/diagnostics:post:summary"),
 	Long:  TRAPI(`/diagnostics:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

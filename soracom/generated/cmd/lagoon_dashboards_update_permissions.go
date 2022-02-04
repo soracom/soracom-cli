@@ -37,6 +37,11 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/dashboards/{dashboard_id}/permissions:put:summary"),
 	Long:  TRAPI(`/lagoon/dashboards/{dashboard_id}/permissions:put:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),

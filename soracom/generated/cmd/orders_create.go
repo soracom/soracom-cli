@@ -32,6 +32,11 @@ var OrdersCreateCmd = &cobra.Command{
 	Short: TRAPI("/orders:post:summary"),
 	Long:  TRAPI(`/orders:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		if len(args) > 0 {
+			return fmt.Errorf("unexpected arguments passed => %v", args)
+		}
+
 		opt := &apiClientOptions{
 			BasePath: "/v1",
 			Language: getSelectedLanguage(),
