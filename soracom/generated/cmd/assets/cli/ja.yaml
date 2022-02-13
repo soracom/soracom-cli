@@ -116,7 +116,7 @@ cli:
   lora-network-sets:
     summary: LoRa network set に関する操作を行います。
     description: LoRa network set に関する操作を行います。
-  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。\n"
+  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。 'soracom self-update' コマンドで更新が可能です。\n"
   operator:
     summary: オペレーターに関する操作を行います。
     description: オペレーターに関する操作を行います。
@@ -234,3 +234,9 @@ cli:
     description: VPG (Virtual Private Gateways) に関する操作を行います。
   deprecated-api: 非推奨の API 呼び出しです。
   alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"
+  self_update:
+    summary: soracom-cliを最新のバージョンに更新します。
+    description: soracom-cliを最新のバージョンに更新します。
+    already_latest: "ご利用のsoracom-cliのバージョンは最新 (%s) です。更新の必要はありません。\n"
+    prompt_confirmation: "新しいバージョンのsoracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n更新しますか？ (y/N) "
+    update_finished: "更新が完了しました。"
