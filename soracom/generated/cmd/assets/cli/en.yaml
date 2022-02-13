@@ -116,7 +116,7 @@ cli:
   lora-network-sets:
     summary: Manage LoRa network sets.
     description: Manage LoRa network sets.
-  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version. 'soracom self-update' command is handy to update it.\n"
+  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version. 'soracom self-update' command is handy to update it.\nThe detailed release note of the latest version is here: https://github.com/soracom/soracom-cli/releases/tag/%[3]s\n"
   operator:
     summary: Manage operators.
     description: Manage operators.

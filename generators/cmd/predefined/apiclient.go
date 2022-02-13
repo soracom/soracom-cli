@@ -177,7 +177,7 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 
 	if !params.noVersionCheck {
 		if isNewerThanCurrentVersion(latestVersion) {
-			lib.PrintfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version)
+			lib.PrintfStderr(TRCLI("cli.new-version-is-released"), latestVersion, version, latestVersion)
 		}
 	}
 

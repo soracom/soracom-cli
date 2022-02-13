@@ -116,7 +116,7 @@ cli:
   lora-network-sets:
     summary: LoRa network set に関する操作を行います。
     description: LoRa network set に関する操作を行います。
-  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。 'soracom self-update' コマンドで更新が可能です。\n"
+  new-version-is-released: "現在お使いのバージョン v%[2]s より新しい %[1]s がリリースされています。アップデートしてください。 'soracom self-update' コマンドで更新が可能です。\n最新バージョンの詳細なリリースノートはこちらをご参照ください: https://github.com/soracom/soracom-cli/releases/tag/%[3]s\n"
   operator:
     summary: オペレーターに関する操作を行います。
     description: オペレーターに関する操作を行います。
