@@ -170,8 +170,37 @@ func swapExecutableBinaryFile(downloaded *os.File) error {
 		return err
 	}
 
+	tempFilePath := ""
+	if runtime.GOOS == "windows" {
+		// In windows, it prohibits to removing/moving the running binary directly, so this accords to the following sequence.
+		//   1. rename the current running binary <soracom> to a tempfile <tmp-soracom> (i.e. then tmp-soracom becomes the running binary)
+		//   2. rename the downloaded new version binary to the original running binary path <soracom>
+		//   3. after that, <soracom> becomes the new version from the next run time
+		tempFile, err := os.CreateTemp("", "soracom-cli_")
+		if err != nil {
+			return fmt.Errorf("failed to create a tempfile to update: %w", err)
+		}
+		tempFilePath = tempFile.Name()
+
+		err = tempFile.Close() // this close is mandatory to rename it at the bellow
+		if err != nil {
+			return fmt.Errorf("failed to create a tempfile to update: %w", err)
+		}
+
+		err = os.Rename(execPath, tempFilePath)
+		if err != nil {
+			return fmt.Errorf("failed to swap the current running cli and tempfile: %w", err)
+		}
+	}
+
 	err = os.Rename(downloaded.Name(), execPath)
 	if err != nil {
+		if tempFilePath != "" { // restoring
+			err = os.Rename(tempFilePath, execPath)
+			if err != nil {
+				fmt.Printf("error: failed to restore the cli binary; %s", err)
+			}
+		}
 		return fmt.Errorf("failed to swap the binary file between the current executing and downloaded latest one: %w", err)
 	}
 
