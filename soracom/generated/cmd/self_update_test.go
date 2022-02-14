@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"runtime"
 	"testing"
 
@@ -178,4 +179,28 @@ func TestGrepAssetsByRuntimeInfo(t *testing.T) {
 
 	got := grepAssetsByRuntimeInfo(assets, "0.0.0", runtime.GOOS, runtime.GOARCH)
 	assert.Nil(t, got)
+}
+
+func TestDetermineActualPathOf(t *testing.T) {
+	tempFile, err := os.CreateTemp("", "")
+	assert.NoError(t, err)
+	tempFilePath := tempFile.Name()
+	defer func() {
+		_ = os.Remove(tempFilePath)
+	}()
+
+	tempSymlinkPath := tempFilePath + ".symlink"
+	err = os.Symlink(tempFilePath, tempSymlinkPath)
+	assert.NoError(t, err)
+	defer func() {
+		_ = os.Remove(tempSymlinkPath)
+	}()
+
+	actualPath, err := determineActualPathOf(tempFilePath)
+	assert.NoError(t, err)
+	assert.Equal(t, tempFilePath, actualPath)
+
+	actualPath, err = determineActualPathOf(tempSymlinkPath)
+	assert.NoError(t, err)
+	assert.Equal(t, tempFilePath, actualPath)
 }

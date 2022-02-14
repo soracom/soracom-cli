@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -164,10 +165,32 @@ func swapExecutableBinaryFile(downloaded *os.File) error {
 		return fmt.Errorf("failed to get the current executing soracom-cli binary information: %w", err)
 	}
 
-	err = os.Rename(downloaded.Name(), currentExecPath)
+	execPath, err := determineActualPathOf(currentExecPath)
+	if err != nil {
+		return err
+	}
+
+	err = os.Rename(downloaded.Name(), execPath)
 	if err != nil {
 		return fmt.Errorf("failed to swap the binary file between the current executing and downloaded latest one: %w", err)
 	}
 
 	return nil
+}
+
+func determineActualPathOf(path string) (string, error) {
+	fileInfo, err := os.Lstat(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to refer the lstat information of %s: %w", path, err)
+	}
+
+	if fileInfo.Mode()&os.ModeSymlink != os.ModeSymlink {
+		return path, nil
+	}
+
+	resolvedPath, err := filepath.EvalSymlinks(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve a symlink for the curent executing path: %w", err)
+	}
+	return resolvedPath, nil
 }
