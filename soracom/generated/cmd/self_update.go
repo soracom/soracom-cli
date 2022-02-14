@@ -35,7 +35,7 @@ var SelfUpdateCmd = &cobra.Command{
 			return nil
 		}
 
-		fmt.Printf(TRCLI("cli.self_update.prompt_confirmation"), latestReleased.TagName)
+		fmt.Printf(TRCLI("cli.self_update.prompt_confirmation"), latestReleased.TagName, strings.TrimPrefix(latestReleased.TagName, "v"), runtime.GOARCH)
 		yes, err := readDefaultNoConfirmationPrompt()
 		if err != nil {
 			return err

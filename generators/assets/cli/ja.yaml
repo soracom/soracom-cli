@@ -238,5 +238,5 @@ cli:
     summary: soracom-cliを最新のバージョンに更新します。
     description: soracom-cliを最新のバージョンに更新します。
     already_latest: "ご利用のsoracom-cliのバージョンは最新 (%s) です。更新の必要はありません。\n"
-    prompt_confirmation: "新しいバージョンのsoracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n更新しますか？ (y/N) "
+    prompt_confirmation: "新しいバージョンのsoracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nパッケージマネージャーを利用してsoracom-cliをインストールしている場合はそのパッケージマネージャーの提供する方法でアップデートしてください:\n\n  brew upgrade soracom-cli\n    or\n  snap refresh soracom\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\n更新しますか？ (y/N) "
     update_finished: "更新が完了しました。"
