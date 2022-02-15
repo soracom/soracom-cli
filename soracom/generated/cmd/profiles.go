@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"syscall"
 
 	"github.com/kennygrant/sanitize"
@@ -161,11 +159,11 @@ func saveProfile(profileName string, prof *profile, overwrite bool) error {
 	if _, err := os.Stat(path); err == nil && !overwrite {
 		// prompt if overwrites or not when already exist
 		fmt.Printf(TRCLI("cli.configure.profile.overwrite"), profileName)
-		s, err := readLine()
+		yes, err := readDefaultYesConfirmationPrompt()
 		if err != nil {
 			return err
 		}
-		if s != "" && strings.ToLower(s) != "y" {
+		if !yes {
 			return errors.New("abort")
 		}
 
@@ -195,14 +193,11 @@ func saveProfile(profileName string, prof *profile, overwrite bool) error {
 
 func confirmDeleteProfile(profileName string) bool {
 	fmt.Printf(TRCLI("cli.unconfigure.prompt"), profileName)
-	s, err := readLine()
+	yes, err := readDefaultNoConfirmationPrompt()
 	if err != nil {
 		return false
 	}
-	if s != "" && strings.ToLower(s) == "y" {
-		return true
-	}
-	return false
+	return yes
 }
 
 func deleteProfile(profileName string) error {
@@ -412,14 +407,4 @@ func collectSandboxAccountInfo() (*authInfo, error) {
 	}
 	fmt.Println()
 	return &authInfo{Email: &email, Password: &password}, nil
-}
-
-func readLine() (string, error) {
-	reader := bufio.NewReader(os.Stdin)
-	s, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
-	}
-
-	return strings.TrimSpace(s), nil
 }

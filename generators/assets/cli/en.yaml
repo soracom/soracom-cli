@@ -116,7 +116,7 @@ cli:
   lora-network-sets:
     summary: Manage LoRa network sets.
     description: Manage LoRa network sets.
-  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version.\n"
+  new-version-is-released: "The latest version %[1]s is released which is newer than current version v%[2]s. Please update to the latest version. 'soracom self-update' command is handy to update it.\nThe detailed release note of the latest version is here: https://github.com/soracom/soracom-cli/releases/tag/%[3]s\n"
   operator:
     summary: Manage operators.
     description: Manage operators.
@@ -255,3 +255,9 @@ cli:
     description: List, create, update or delete VPGs.
   deprecated-api: Deprecated API calling.
   alternative-api-suggestion: "Please consider to use the alternative API (command: `%s`)."
+  self_update:
+    summary: Updates soracom-cli to the latest version.
+    description: Updates soracom-cli to the latest version.
+    already_latest: "It doesn't need to update the CLI because the using version is the latest: %s\n"
+    prompt_confirmation: "There is a newer soracom-cli version '%[1]s'.\nRelease Note: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nIf you installed soracom-cli using a package manager, please use that to update this:\n\n  brew upgrade soracom-cli\n    or\n  snap refresh soracom\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\nDo you want to continue updating? (y/N) "
+    update_finished: "It updated successfully."
