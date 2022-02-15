@@ -397,4 +397,13 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
     env "${SORACOM_ENVS[@]}" "$SORACOM" vpg
 }
 
+: "Should command execution fail when unnecessary arguments passed" && {
+    set +e
+    resp="$(env "${SORACOM_ENVS[@]}" "$SORACOM" audit-logs api get __UNNECESSARY__ __ARGUMENTS__ 2>&1)"
+    exitCode="$?"
+    set -e
+    test "$exitCode" -ne 0
+    [[ "$resp" == *"Error: unexpected arguments passed => [__UNNECESSARY__ __ARGUMENTS__]"* ]]
+}
+
 test_result=0
