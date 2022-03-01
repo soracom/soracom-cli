@@ -399,7 +399,11 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 
 : "Should command execution fail when unnecessary arguments passed" && {
     set +e
-    resp="$(env "${SORACOM_ENVS[@]}" "$SORACOM" audit-logs api get __UNNECESSARY__ __ARGUMENTS__ 2>&1)"
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        audit-logs api get \
+        __UNNECESSARY__ __ARGUMENTS__ \
+        --profile soracom-cli-test \
+        2>&1 )"
     exitCode="$?"
     set -e
     test "$exitCode" -ne 0

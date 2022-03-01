@@ -38,6 +38,7 @@ Available Commands:
   query                Search resources such as subscribers or sigfox devices.
   roles                List, create, update or delete roles.
   sandbox              Sandbox related operations.
+  self-update          Updates soracom-cli to the latest version.
   shipping-addresses   List, create, update or delete shipping addresses.
   sigfox-devices       Manage Sigfox devices.
   sims                 Manage SIMs.

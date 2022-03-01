@@ -38,6 +38,7 @@ Available Commands:
   query                リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
   roles                ロールに関する操作を行います。
   sandbox              API サンドボックスに関する操作を行います。
+  self-update          soracom-cli を最新のバージョンに更新します。
   shipping-addresses   出荷先情報に関する操作を行います。
   sigfox-devices       Sigfox デバイスに関する操作を行います。
   sims                 SIM に関する操作を行います。
