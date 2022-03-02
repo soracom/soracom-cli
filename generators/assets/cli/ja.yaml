@@ -1,4 +1,5 @@
 cli:
+  alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"
   audit-logs:
     summary: 監査ログを取得します。
     description: 監査ログを取得します。
@@ -68,6 +69,7 @@ cli:
   data:
     summary: SIM からアップロードされて格納されているデータを取得します。
     description: SIM からアップロードされて格納されているデータを取得します。
+  deprecated-api: 非推奨の API 呼び出しです。
   devices:
     summary: デバイスに関する操作を行います。
     description: デバイスに関する操作を行います。
@@ -156,6 +158,12 @@ cli:
   sandbox:
     summary: API サンドボックスに関する操作を行います。
     description: API サンドボックスに関する操作を行います。
+  self_update:
+    summary: soracom-cli を最新のバージョンに更新します。
+    description: soracom-cli を最新のバージョンに更新します。
+    already_latest: "ご利用の soracom-cli のバージョンは最新 (%s) です。更新の必要はありません。\n"
+    prompt_confirmation: "新しいバージョンの soracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nパッケージマネージャーを利用して soracom-cli をインストールしている場合はそのパッケージマネージャーの提供する方法でアップデートしてください:\n\n  brew upgrade soracom-cli\n    or\n  snap refresh soracom\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\n更新しますか？ (y/N) "
+    update_finished: "更新が完了しました。"
   shipping-addresses:
     summary: 出荷先情報に関する操作を行います。
     description: 出荷先情報に関する操作を行います。
@@ -232,11 +240,3 @@ cli:
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。
-  deprecated-api: 非推奨の API 呼び出しです。
-  alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"
-  self_update:
-    summary: soracom-cliを最新のバージョンに更新します。
-    description: soracom-cliを最新のバージョンに更新します。
-    already_latest: "ご利用のsoracom-cliのバージョンは最新 (%s) です。更新の必要はありません。\n"
-    prompt_confirmation: "新しいバージョンのsoracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nパッケージマネージャーを利用してsoracom-cliをインストールしている場合はそのパッケージマネージャーの提供する方法でアップデートしてください:\n\n  brew upgrade soracom-cli\n    or\n  snap refresh soracom\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\n更新しますか？ (y/N) "
-    update_finished: "更新が完了しました。"
