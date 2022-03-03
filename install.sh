@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 if \soracom > /dev/null 2>&1; then
   if [[ "$( \command -v soracom )" != "/usr/local/bin/soracom" ]] || [ -L "/usr/local/bin/soracom" ]; then
-    echo 'soracom-cli is already installed by using another method (brew, snap, apt etc.).' 2>&1
+    echo 'soracom-cli is already installed by using another method (brew, snap, dpkg etc.).' 2>&1
     echo 'Please use the same method if you want to update soracom-cli.' 2>&1
     exit 1
   fi
