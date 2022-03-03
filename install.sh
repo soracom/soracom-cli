@@ -98,7 +98,7 @@ extract() {
       tar -C "$dir" -xf "$path"
       ;;
     ".zip")
-      unzip "$path" -d "$dir"
+      unzip -q "$path" -d "$dir"
       ;;
     *)
       echo "unknown archive extension: $ext"
