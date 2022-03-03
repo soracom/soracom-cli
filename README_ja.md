@@ -44,7 +44,7 @@ soracom コマンドは以下のような特徴を備えています。
 
 # インストール方法
 
-## macOS をお使いで、homebrew によりインストールする場合
+## macOS もしくは Linux をお使いで、homebrew によりインストールする場合
 
 ```
 $ brew tap soracom/soracom-cli
@@ -52,8 +52,24 @@ $ brew install soracom-cli
 $ brew install bash-completion
 ```
 
+## Ubuntu Linux をお使いで、snap によりインストールする場合
+
+```
+$ sudo snap soracom/soracom-cli
+```
+
 ## それ以外の場合
-[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置します。
+
+以下のコマンドを実行することで、最新版の `soracom` コマンドがダウンロードされて `/usr/local/bin` にインストールされます。
+
+```
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
+```
+
+この方法でインストールした `soracom` コマンドをバージョンアップしたい場合は、このコマンドを再度実行してください。
+この方法でインストールした `soracom` コマンドをアンインストールしたい場合は、`/usr/local/bin/soracom` を削除してください。（プロファイル情報も含めて完全に削除したい場合は `$HOME/.soracom/` ディレクトリも削除してください）
+
+上記のコマンドがうまく行かない場合、もしくは古いバージョンの `soracom` コマンドをインストールしたい場合は、[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置してください。
 
 
 # 使用方法

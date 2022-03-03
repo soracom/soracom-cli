@@ -43,7 +43,7 @@ The `soracom` command:
 
 # How to install
 
-## Using Mac (macOS), installing by homebrew
+## Using Mac (macOS) or Linux, installing by homebrew
 
 ```
 $ brew tap soracom/soracom-cli
@@ -51,8 +51,24 @@ $ brew install soracom-cli
 $ brew install bash-completion
 ```
 
+## Using Ubuntu Linux, installing with snap
+
+```
+$ sudo snap install soracom-cli
+```
+
 ## In other cases
-Download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in PATH.
+
+By running the following command, the latest version of `soracom` command will be installed in `/usr/local/bin`.
+
+```
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
+```
+
+If you want to upgrade the `soracom` command, you can just run the command again.
+If you want to uninstall the `soracom` command, you can just remove `/usr/local/bin/soracom`. (You may want to remove `$HOME/.soracom/` directory which contains profiles for the `soracom` command.)
+
+If the command above didn't work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in PATH.
 
 
 # How to use
