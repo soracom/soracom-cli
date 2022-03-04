@@ -54,7 +54,7 @@ $ brew install bash-completion
 ## Using Ubuntu Linux, installing with snap
 
 ```
-$ sudo snap install soracom-cli
+$ sudo snap install soracom
 ```
 
 ## In other cases
