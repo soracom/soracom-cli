@@ -55,7 +55,7 @@ $ brew install bash-completion
 ## Ubuntu Linux をお使いで、snap によりインストールする場合
 
 ```
-$ sudo snap soracom/soracom
+$ sudo snap install soracom
 ```
 
 ## それ以外の場合
