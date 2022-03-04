@@ -113,12 +113,13 @@ ext_regexp="$( get_ext_regexp "$goos" )"
 ext="$( get_ext "$goos" )"
 
 url="$( \curl -fsSL https://api.github.com/repos/soracom/soracom-cli/releases/latest | \
-  grep 'browser_download_url' | \
-  grep "${goos}_${goarch}${ext_regexp}" | \
+  \grep 'browser_download_url' | \
+  \grep "${goos}_${goarch}${ext_regexp}" | \
   cut -d : -f 2-3 | \
   tr -d '"'
 )"
-url="$(echo $url)" # trim spaces
+shopt -s extglob
+url="${url##+( )}" # removes longest matching series of spaces from the front (`shopt -s extglob` is required)
 fname=${url##*/}   # removes longest matching series of the pattern from the front (string after the last / will be left)
 
 tmpdir=$(mktemp -d -t soracom.XXXXXXXX)
