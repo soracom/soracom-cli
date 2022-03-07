@@ -73,6 +73,10 @@ OS=$( uname -s | tr '[:upper:]' '[:lower:]' )
 
 SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
 
+invoke_soracom_command() {
+    env "${SORACOM_ENVS[@]}" "$SORACOM" --profile soracom-cli-test "$@"
+}
+
 : "Create an account on the sandbox" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" \
         configure-sandbox \
@@ -304,6 +308,35 @@ SORACOM="$d/soracom/dist/$VERSION/soracom_${VERSION}_${OS}_${ARCH}"
     set -e
     test "$exitCode" -ne 0
     [[ "$resp" == *"Error: required parameter 'speedClass' in body (or command line option 'speed-class') is not specified"* ]]
+}
+
+: "Create Soralets" && {
+    invoke_soracom_command soralets create --soralet-id soracom-cli-test
+}
+
+: "Upload wasm module to the Soralet" && {
+    invoke_soracom_command soralets upload \
+      --soralet-id soracom-cli-test \
+      --content-type "application/octet-stream" \
+      --body @"$d/test/data/gps-multi-unit.wasm"
+}
+
+: "Execute the wasm module" && {
+    invoke_soracom_command soralets exec \
+      --soralet-id soracom-cli-test \
+      --version 1 \
+      --direction uplink \
+      --content-type "application/json" \
+      --payload "{}" \
+      --body '{"source":{"resourceType":"Subscriber","resourceId":"001010000000000"}}'
+}
+
+: "Delete the wasm module" && {
+    invoke_soracom_command soralets delete-version --soralet-id soracom-cli-test --version 1
+}
+
+: "Delete the Soralet" && {
+    invoke_soracom_command soralets delete --soralet-id soracom-cli-test
 }
 
 : "Checking english help text" && {
