@@ -124,7 +124,7 @@ goarch="$( get_goarch )"
 ext_regexp="$( get_ext_regexp "$goos" )"
 ext="$( get_ext "$goos" )"
 
-url="$( \curl -fSL# https://api.github.com/repos/soracom/soracom-cli/releases/latest | \
+url="$( \curl -fsSL https://api.github.com/repos/soracom/soracom-cli/releases/latest | \
   \grep 'browser_download_url' | \
   \grep "${goos}_${goarch}${ext_regexp}" | \
   cut -d : -f 2-3 | \
@@ -143,8 +143,8 @@ tear_down() {
     }
 }
 
-echo -n "Downloading ... "
-curl -fsSL --output "$tmpdir/$fname" "$url"
+echo "Downloading ... "
+curl -fSL# --output "$tmpdir/$fname" "$url"
 echo "done."
 
 echo -n "Extracting ... "
