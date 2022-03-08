@@ -44,7 +44,7 @@ soracom コマンドは以下のような特徴を備えています。
 
 # インストール方法
 
-## macOS をお使いで、homebrew によりインストールする場合
+## macOS もしくは Linux をお使いで、homebrew によりインストールする場合
 
 ```
 $ brew tap soracom/soracom-cli
@@ -52,8 +52,57 @@ $ brew install soracom-cli
 $ brew install bash-completion
 ```
 
+## Ubuntu Linux をお使いで、snap によりインストールする場合
+
+```
+$ sudo snap install soracom
+```
+
+snap を使って `soracom` コマンドをインストールし、`$HOME/.soracom` ディレクトリに保存されたプロファイル情報を利用したい場合は `dot-soracom` インターフェースを `soracom` の snap パッケージに connect してください。
+
+```
+snap connect soracom:dot-soracom
+```
+
+さらに、snap でインストールした場合のデフォルトのプロファイルディレクトリ `$SNAP_USER_DATA/.soracom`（すなわち `$HOME/snap/soracom/<revision>/.soracom`）の代わりに `$HOME/.soracom` を利用するために以下のような行を `.bashrc` などに追加してください。
+
+```
+export SORACOM_PROFILE=$HOME/.soracom
+```
+
 ## それ以外の場合
-[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置します。
+
+以下に紹介するいずれかのコマンドを実行することで、最新版の `soracom` コマンドがダウンロードされてインストールされます。
+
+
+もし `/usr/local/bin` にファイルを書き込む権限のあるユーザー（root など）でインストールする場合はいかのコマンドを実行してください。
+
+```
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
+```
+
+`/usr/local/bin` に書き込む権限がない場合は以下のいずれかのコマンドを実行してください。
+
+sudo コマンドを実行可能（ユーザーが sudoers に入っている）で、`soracom` コマンドを `/usr/local/bin` にインストールしたい場合：
+
+```
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | sudo bash
+```
+
+もしくは sudo コマンドを利用できないか、`soracom` コマンドを `$HOME/bin` など `/usr/local/bin` 以外の場所にインストールしたい場合：
+
+```
+mkdir -p "$HOME/bin"
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | BINDIR="$HOME/bin" bash
+```
+
+`"$HOME/bin"` の部分はお好きなディレクトリに変更してください。
+
+上記いずれかの方法でインストールした `soracom` コマンドをバージョンアップしたい場合は、同じコマンドを再度実行してください。
+
+インストールした `soracom` コマンドをアンインストールしたい場合は、インストールした `soracom` コマンドの実行ファイルを手動で削除してください。（プロファイル情報も含めて完全に削除したい場合は `$HOME/.soracom/` ディレクトリも削除してください）
+
+上記のコマンドがいずれもうまく行かない場合、もしくは古いバージョンの `soracom` コマンドをインストールしたい場合は、[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置してください。
 
 
 # 使用方法
