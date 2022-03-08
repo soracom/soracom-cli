@@ -57,18 +57,52 @@ $ brew install bash-completion
 $ sudo snap install soracom
 ```
 
+In this case, you may want to connect the snap to `dot-soracom` interface which is for reading / writing profile files in `$HOME/.soracom`:
+
+```
+$ snap connect soracom:dot-soracom
+```
+
+You may also want to have the following line in your `.bashrc` etc. to use `$HOME/.soracom` as the profiles directory instead of `$SNAP_USER_DATA/.soracom` (i.e. `~/snap/soracom/<revision>/.soracom`)
+
+```
+export SORACOM_PROFILE=$HOME/.soracom
+```
+
 ## In other cases
 
-By running the following command, the latest version of `soracom` command will be installed in `/usr/local/bin`.
+By running one of the following commands, the latest version of `soracom` command will be installed.
+
+If you have a permission to write a file into `/usr/local/bin` directory, please run the command below:
 
 ```
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
 ```
 
-If you want to upgrade the `soracom` command, you can just run the command again.
-If you want to uninstall the `soracom` command, you can just remove `/usr/local/bin/soracom`. (You may want to remove `$HOME/.soracom/` directory which contains profiles for the `soracom` command.)
+If you do not have a permission to write a file into `/usr/local/bin` directory, please run the command either of the following commands:
 
-If the command above didn't work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in PATH.
+(If you are in sudoers and want to install `soracom` command to `/usr/local/bin`)
+
+```
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | sudo bash
+```
+
+or
+
+(If you are not in sudoers or want to install `soracom` command to other directory e.g. `$HOME/bin`)
+
+```
+mkdir -p "$HOME/bin"
+curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | BINDIR="$HOME/bin" bash
+```
+
+You can change `"$HOME/bin"` in the command above to wherever you want.
+
+If you want to upgrade the `soracom` command, you can just run the same command you used to install `soracom` again.
+
+If you want to uninstall the `soracom` command, you can just remove `soracom` executable file you have installed. (You may want to remove `$HOME/.soracom/` directory which contains profiles for the `soracom` command.)
+
+If the commands above did not work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in `PATH`.
 
 
 # How to use
