@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+BINDIR="${BINDIR:-/usr/local/bin}"
+if [ ! -d "$BINDIR" ]; then
+  echo "It seems that the installation target directory $BINDIR does not exist or is not a directory." 2>&1
+  echo "Please make sure the directory $BINDIR exists." 2>&1
+  exit 1
+fi
+if [ ! -w "$BINDIR" ]; then
+  echo "It seems you do not have a permission to install 'soracom' executable file to $BINDIR." 2>&1
+  echo "Please run this script again with appropriate permissions." 2>&1
+  exit 1
+fi
+
 if \soracom > /dev/null 2>&1; then
-  if [[ "$( \command -v soracom )" != "/usr/local/bin/soracom" ]] || [ -L "/usr/local/bin/soracom" ]; then
+  if [[ "$( \command -v soracom )" != "$BINDIR/soracom" ]] || [ -L "$BINDIR/soracom" ]; then
     echo 'soracom-cli is already installed by using another method (brew, snap, dpkg etc.).' 2>&1
     echo 'Please use the same method if you want to update soracom-cli.' 2>&1
     exit 1
@@ -141,6 +153,6 @@ echo "done."
 
 echo -n "Installing ... "
 dirname="${fname%"${ext}"}"
-sudo mv "$tmpdir/$dirname/soracom" /usr/local/bin
-sudo chmod +x /usr/local/bin/soracom
+mv "$tmpdir/$dirname/soracom" "$BINDIR"
+chmod +x "$BINDIR/soracom"
 echo "done."
