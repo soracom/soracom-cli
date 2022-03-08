@@ -142,7 +142,22 @@ func collectOperatorUpdateIndividualInformationCmdParams(ac *apiClient) (*apiPar
 		}
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("countryCode", "country-code", "body", parsedBody, OperatorUpdateIndividualInformationCmdCountryCode)
+	if err != nil {
+		return nil, err
+	}
+
 	err = checkIfRequiredStringParameterIsSupplied("fullName", "full-name", "body", parsedBody, OperatorUpdateIndividualInformationCmdFullName)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("phoneNumber", "phone-number", "body", parsedBody, OperatorUpdateIndividualInformationCmdPhoneNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("zipCode", "zip-code", "body", parsedBody, OperatorUpdateIndividualInformationCmdZipCode)
 	if err != nil {
 		return nil, err
 	}

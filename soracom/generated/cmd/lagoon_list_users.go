@@ -13,7 +13,7 @@ import (
 var LagoonListUsersCmdClassic bool
 
 func init() {
-	LagoonListUsersCmd.Flags().BoolVar(&LagoonListUsersCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonListUsersCmd.Flags().BoolVar(&LagoonListUsersCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonCmd.AddCommand(LagoonListUsersCmd)
 }
 

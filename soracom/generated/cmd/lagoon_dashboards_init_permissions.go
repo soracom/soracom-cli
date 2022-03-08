@@ -18,7 +18,7 @@ var LagoonDashboardsInitPermissionsCmdClassic bool
 func init() {
 	LagoonDashboardsInitPermissionsCmd.Flags().Int64Var(&LagoonDashboardsInitPermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
 
-	LagoonDashboardsInitPermissionsCmd.Flags().BoolVar(&LagoonDashboardsInitPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonDashboardsInitPermissionsCmd.Flags().BoolVar(&LagoonDashboardsInitPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsInitPermissionsCmd)
 }
 
