@@ -135,7 +135,7 @@ url="${url##+( )}" # removes longest matching series of spaces from the front (`
 fname=${url##*/}   # removes longest matching series of the pattern from the front (string after the last / will be left)
 
 tmpdir=$(mktemp -d -t soracom.XXXXXXXX)
-#trap 'tear_down' 0
+trap 'tear_down' 0
 
 tear_down() {
     : "Clean up tmpdir" && {
