@@ -25,7 +25,7 @@ var LagoonDashboardsUpdatePermissionsCmdBody string
 func init() {
 	LagoonDashboardsUpdatePermissionsCmd.Flags().Int64Var(&LagoonDashboardsUpdatePermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
 
-	LagoonDashboardsUpdatePermissionsCmd.Flags().BoolVar(&LagoonDashboardsUpdatePermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonDashboardsUpdatePermissionsCmd.Flags().BoolVar(&LagoonDashboardsUpdatePermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
 
 	LagoonDashboardsUpdatePermissionsCmd.Flags().StringVar(&LagoonDashboardsUpdatePermissionsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsUpdatePermissionsCmd)

@@ -2,10 +2,10 @@
 set -Eeuo pipefail
 d="$( cd "$( dirname "$0" )" && cd .. && pwd )"
 
-fen="$d/../soracom-api/build/soracom-api.en.yaml"
-fja="$d/../soracom-api/build/soracom-api.ja.yaml"
-sen="$d/../soracom-api/apidef/sandbox/soracom-sandbox-api.en.yaml"
-sja="$d/../soracom-api/build/soracom-sandbox-api.ja.yaml"
+fen="$d/../soracom-api/dist/prod/soracom-api.en.yaml"
+fja="$d/../soracom-api/dist/prod/soracom-api.ja.yaml"
+sen="$d/../soracom-api/dist/sandbox/soracom-sandbox-api.en.yaml"
+sja="$d/../soracom-api/dist/sandbox/soracom-sandbox-api.ja.yaml"
 
 if [ ! -f "$fen" ] || [ ! -f "$fja" ] || [ ! -f "$sen" ] || [ ! -f "$sja" ]; then
   echo "API definition files not found. Build soracom-api first."
@@ -13,8 +13,8 @@ if [ ! -f "$fen" ] || [ ! -f "$fja" ] || [ ! -f "$sen" ] || [ ! -f "$sja" ]; the
 fi
 
 set -x
-cp "$fen" "$d/generators/assets/"
-cp "$fja" "$d/generators/assets/"
-cp "$sen" "$d/generators/assets/sandbox/"
-cp "$sja" "$d/generators/assets/sandbox/"
+npx api-spec-converter --from openapi_3 --to swagger_2 --syntax yaml "$fen" > "$d/generators/assets/soracom-api.en.yaml"
+npx api-spec-converter --from openapi_3 --to swagger_2 --syntax yaml "$fja" > "$d/generators/assets/soracom-api.ja.yaml"
+npx api-spec-converter --from openapi_3 --to swagger_2 --syntax yaml "$sen" > "$d/generators/assets/sandbox/soracom-sandbox-api.en.yaml"
+npx api-spec-converter --from openapi_3 --to swagger_2 --syntax yaml "$sja" > "$d/generators/assets/sandbox/soracom-sandbox-api.ja.yaml"
 set +x

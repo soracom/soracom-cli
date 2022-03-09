@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// SimsEnableSubscriptionContainerCmdContainerId holds value of 'containerId' option
+// SimsEnableSubscriptionContainerCmdContainerId holds value of 'container_id' option
 var SimsEnableSubscriptionContainerCmdContainerId string
 
 // SimsEnableSubscriptionContainerCmdIccid holds value of 'iccid' option
@@ -30,8 +30,8 @@ func init() {
 // SimsEnableSubscriptionContainerCmd defines 'enable-subscription-container' subcommand
 var SimsEnableSubscriptionContainerCmd = &cobra.Command{
 	Use:   "enable-subscription-container",
-	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscription_containers/{containerId}/enable:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/{containerId}/enable:post:description`),
+	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:post:summary"),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
@@ -80,7 +80,7 @@ var SimsEnableSubscriptionContainerCmd = &cobra.Command{
 func collectSimsEnableSubscriptionContainerCmdParams(ac *apiClient) (*apiParams, error) {
 	var parsedBody interface{}
 	var err error
-	err = checkIfRequiredStringParameterIsSupplied("containerId", "container-id", "path", parsedBody, SimsEnableSubscriptionContainerCmdContainerId)
+	err = checkIfRequiredStringParameterIsSupplied("container_id", "container-id", "path", parsedBody, SimsEnableSubscriptionContainerCmdContainerId)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func collectSimsEnableSubscriptionContainerCmdParams(ac *apiClient) (*apiParams,
 
 	return &apiParams{
 		method: "POST",
-		path:   buildPathForSimsEnableSubscriptionContainerCmd("/sims/{sim_id}/profiles/{iccid}/subscription_containers/{containerId}/enable"),
+		path:   buildPathForSimsEnableSubscriptionContainerCmd("/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable"),
 		query:  buildQueryForSimsEnableSubscriptionContainerCmd(),
 
 		noRetryOnError: noRetryOnError,
@@ -108,7 +108,7 @@ func buildPathForSimsEnableSubscriptionContainerCmd(path string) string {
 
 	escapedContainerId := url.PathEscape(SimsEnableSubscriptionContainerCmdContainerId)
 
-	path = strReplace(path, "{"+"containerId"+"}", escapedContainerId, -1)
+	path = strReplace(path, "{"+"container_id"+"}", escapedContainerId, -1)
 
 	escapedIccid := url.PathEscape(SimsEnableSubscriptionContainerCmdIccid)
 

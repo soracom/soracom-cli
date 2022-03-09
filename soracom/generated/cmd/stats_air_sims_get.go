@@ -12,7 +12,7 @@ import (
 // StatsAirSimsGetCmdPeriod holds value of 'period' option
 var StatsAirSimsGetCmdPeriod string
 
-// StatsAirSimsGetCmdSimId holds value of 'simId' option
+// StatsAirSimsGetCmdSimId holds value of 'sim_id' option
 var StatsAirSimsGetCmdSimId string
 
 // StatsAirSimsGetCmdFrom holds value of 'from' option
@@ -35,8 +35,8 @@ func init() {
 // StatsAirSimsGetCmd defines 'get' subcommand
 var StatsAirSimsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TRAPI("/stats/air/sims/{simId}:get:summary"),
-	Long:  TRAPI(`/stats/air/sims/{simId}:get:description`),
+	Short: TRAPI("/stats/air/sims/{sim_id}:get:summary"),
+	Long:  TRAPI(`/stats/air/sims/{sim_id}:get:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
@@ -90,7 +90,7 @@ func collectStatsAirSimsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
-	err = checkIfRequiredStringParameterIsSupplied("simId", "sim-id", "path", parsedBody, StatsAirSimsGetCmdSimId)
+	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, StatsAirSimsGetCmdSimId)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func collectStatsAirSimsGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForStatsAirSimsGetCmd("/stats/air/sims/{simId}"),
+		path:   buildPathForStatsAirSimsGetCmd("/stats/air/sims/{sim_id}"),
 		query:  buildQueryForStatsAirSimsGetCmd(),
 
 		noRetryOnError: noRetryOnError,
@@ -118,7 +118,7 @@ func buildPathForStatsAirSimsGetCmd(path string) string {
 
 	escapedSimId := url.PathEscape(StatsAirSimsGetCmdSimId)
 
-	path = strReplace(path, "{"+"simId"+"}", escapedSimId, -1)
+	path = strReplace(path, "{"+"sim_id"+"}", escapedSimId, -1)
 
 	return path
 }

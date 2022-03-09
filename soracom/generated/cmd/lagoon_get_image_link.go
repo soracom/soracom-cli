@@ -13,7 +13,7 @@ import (
 var LagoonGetImageLinkCmdClassic bool
 
 func init() {
-	LagoonGetImageLinkCmd.Flags().BoolVar(&LagoonGetImageLinkCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic.  This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonGetImageLinkCmd.Flags().BoolVar(&LagoonGetImageLinkCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
 	LagoonCmd.AddCommand(LagoonGetImageLinkCmd)
 }
 

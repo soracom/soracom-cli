@@ -128,16 +128,6 @@ func collectDiagnosticsSendRequestCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
-	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "body", parsedBody, DiagnosticsSendRequestCmdFrom)
-	if err != nil {
-		return nil, err
-	}
-
-	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "body", parsedBody, DiagnosticsSendRequestCmdTo)
-	if err != nil {
-		return nil, err
-	}
-
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForDiagnosticsSendRequestCmd("/diagnostics"),
