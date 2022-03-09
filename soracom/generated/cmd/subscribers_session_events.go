@@ -27,6 +27,9 @@ var SubscribersSessionEventsCmdTo int64
 // SubscribersSessionEventsCmdPaginate indicates to do pagination or not
 var SubscribersSessionEventsCmdPaginate bool
 
+// SubscribersSessionEventsCmdOutputJSONL indicates to output with jsonl format
+var SubscribersSessionEventsCmdOutputJSONL bool
+
 func init() {
 	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
@@ -39,6 +42,8 @@ func init() {
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
 
 	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SubscribersCmd.AddCommand(SubscribersSessionEventsCmd)
 }
 
@@ -86,6 +91,10 @@ var SubscribersSessionEventsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SubscribersSessionEventsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -30,6 +30,9 @@ var DevicesGetDataCmdTo int64
 // DevicesGetDataCmdPaginate indicates to do pagination or not
 var DevicesGetDataCmdPaginate bool
 
+// DevicesGetDataCmdOutputJSONL indicates to output with jsonl format
+var DevicesGetDataCmdOutputJSONL bool
+
 func init() {
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
@@ -44,6 +47,8 @@ func init() {
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DevicesCmd.AddCommand(DevicesGetDataCmd)
 }
 
@@ -91,6 +96,10 @@ var DevicesGetDataCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DevicesGetDataCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

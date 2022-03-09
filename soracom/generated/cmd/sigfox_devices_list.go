@@ -27,6 +27,9 @@ var SigfoxDevicesListCmdLimit int64
 // SigfoxDevicesListCmdPaginate indicates to do pagination or not
 var SigfoxDevicesListCmdPaginate bool
 
+// SigfoxDevicesListCmdOutputJSONL indicates to output with jsonl format
+var SigfoxDevicesListCmdOutputJSONL bool
+
 func init() {
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	SigfoxDevicesListCmd.Flags().Int64Var(&SigfoxDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of Sigfox devices to retrieve."))
 
 	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesListCmd)
 }
 
@@ -86,6 +91,10 @@ var SigfoxDevicesListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SigfoxDevicesListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

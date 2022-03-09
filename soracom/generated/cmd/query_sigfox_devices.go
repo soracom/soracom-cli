@@ -39,6 +39,9 @@ var QuerySigfoxDevicesCmdLimit int64
 // QuerySigfoxDevicesCmdPaginate indicates to do pagination or not
 var QuerySigfoxDevicesCmdPaginate bool
 
+// QuerySigfoxDevicesCmdOutputJSONL indicates to output with jsonl format
+var QuerySigfoxDevicesCmdOutputJSONL bool
+
 func init() {
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Sigfox device ID of the last Sigfox device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
@@ -59,6 +62,8 @@ func init() {
 	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	QueryCmd.AddCommand(QuerySigfoxDevicesCmd)
 }
 
@@ -106,6 +111,10 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if QuerySigfoxDevicesCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

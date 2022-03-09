@@ -27,6 +27,9 @@ var DevicesListCmdLimit int64
 // DevicesListCmdPaginate indicates to do pagination or not
 var DevicesListCmdPaginate bool
 
+// DevicesListCmdOutputJSONL indicates to output with jsonl format
+var DevicesListCmdOutputJSONL bool
+
 func init() {
 	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
 
@@ -39,6 +42,8 @@ func init() {
 	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", -1, TRAPI("Max number of Devices in a response"))
 
 	DevicesListCmd.Flags().BoolVar(&DevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DevicesListCmd.Flags().BoolVar(&DevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DevicesCmd.AddCommand(DevicesListCmd)
 }
 
@@ -86,6 +91,10 @@ var DevicesListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DevicesListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

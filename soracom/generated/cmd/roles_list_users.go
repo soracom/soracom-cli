@@ -15,10 +15,15 @@ var RolesListUsersCmdOperatorId string
 // RolesListUsersCmdRoleId holds value of 'role_id' option
 var RolesListUsersCmdRoleId string
 
+// RolesListUsersCmdOutputJSONL indicates to output with jsonl format
+var RolesListUsersCmdOutputJSONL bool
+
 func init() {
 	RolesListUsersCmd.Flags().StringVar(&RolesListUsersCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
 	RolesListUsersCmd.Flags().StringVar(&RolesListUsersCmdRoleId, "role-id", "", TRAPI("role_id"))
+
+	RolesListUsersCmd.Flags().BoolVar(&RolesListUsersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	RolesCmd.AddCommand(RolesListUsersCmd)
 }
 
@@ -66,6 +71,10 @@ var RolesListUsersCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if RolesListUsersCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -50,6 +50,11 @@ var {{$prefix}}{{.VarName}} bool
 var {{$prefix}}Paginate bool
 {{end}}
 
+{{- if .HasArrayResponse}}
+// {{$prefix}}OutputJSONL indicates to output with jsonl format
+var {{$prefix}}OutputJSONL bool
+{{end}}
+
 {{- if .BodyExists }}
 // {{$prefix}}Body holds contents of request body to be sent
 var {{$prefix}}Body string
@@ -78,6 +83,10 @@ func init() {
 
 {{- if .PaginationAvailable}}
   {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}Paginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+{{end}}
+
+{{- if .HasArrayResponse}}
+  {{$cmdvar}}.Flags().BoolVar(&{{$prefix}}OutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 {{end}}
 
 {{- if .BodyExists }}
@@ -145,6 +154,11 @@ var {{ $cmdvar }} = &cobra.Command{
     if rawOutput {
       _, err = os.Stdout.Write([]byte(body))
     } else {
+      {{- if .HasArrayResponse}}
+      if {{$prefix}}OutputJSONL {
+        return printStringAsJSONL(body)
+      }
+      {{end}}
       return prettyPrintStringAsJSON(body)
     }
     return err

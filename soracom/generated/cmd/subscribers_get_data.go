@@ -30,6 +30,9 @@ var SubscribersGetDataCmdTo int64
 // SubscribersGetDataCmdPaginate indicates to do pagination or not
 var SubscribersGetDataCmdPaginate bool
 
+// SubscribersGetDataCmdOutputJSONL indicates to output with jsonl format
+var SubscribersGetDataCmdOutputJSONL bool
+
 func init() {
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
@@ -44,6 +47,8 @@ func init() {
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SubscribersCmd.AddCommand(SubscribersGetDataCmd)
 }
 
@@ -91,6 +96,10 @@ var SubscribersGetDataCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SubscribersGetDataCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -21,6 +21,9 @@ var StatsAirGetCmdFrom int64
 // StatsAirGetCmdTo holds value of 'to' option
 var StatsAirGetCmdTo int64
 
+// StatsAirGetCmdOutputJSONL indicates to output with jsonl format
+var StatsAirGetCmdOutputJSONL bool
+
 func init() {
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
@@ -29,6 +32,8 @@ func init() {
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsAirGetCmd.Flags().BoolVar(&StatsAirGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
 
@@ -76,6 +81,10 @@ var StatsAirGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if StatsAirGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

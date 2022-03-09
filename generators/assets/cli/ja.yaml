@@ -18,6 +18,8 @@ cli:
   common_params:
     body:
       short_help: リクエストの Body に指定する JSON です。@filename もしくは JSON 文字列で指定します。
+    jsonl:
+      short_help: 配列型のレスポンスを JSONL (JSON Lines) フォーマットで出力します。
     paginate:
       short_help: 自動的にページネーションします。
   completion:

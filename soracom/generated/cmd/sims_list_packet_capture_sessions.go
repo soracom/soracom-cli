@@ -18,12 +18,17 @@ var SimsListPacketCaptureSessionsCmdSimId string
 // SimsListPacketCaptureSessionsCmdLimit holds value of 'limit' option
 var SimsListPacketCaptureSessionsCmdLimit int64
 
+// SimsListPacketCaptureSessionsCmdOutputJSONL indicates to output with jsonl format
+var SimsListPacketCaptureSessionsCmdOutputJSONL bool
+
 func init() {
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last packet capture session in the previous page"))
 
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID"))
 
 	SimsListPacketCaptureSessionsCmd.Flags().Int64Var(&SimsListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response"))
+
+	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SimsCmd.AddCommand(SimsListPacketCaptureSessionsCmd)
 }
 
@@ -71,6 +76,10 @@ var SimsListPacketCaptureSessionsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SimsListPacketCaptureSessionsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

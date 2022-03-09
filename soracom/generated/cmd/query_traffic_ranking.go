@@ -21,6 +21,9 @@ var QueryTrafficRankingCmdLimit int64
 // QueryTrafficRankingCmdTo holds value of 'to' option
 var QueryTrafficRankingCmdTo int64
 
+// QueryTrafficRankingCmdOutputJSONL indicates to output with jsonl format
+var QueryTrafficRankingCmdOutputJSONL bool
+
 func init() {
 	QueryTrafficRankingCmd.Flags().StringVar(&QueryTrafficRankingCmdOrder, "order", "desc", TRAPI("The order of ranking"))
 
@@ -29,6 +32,8 @@ func init() {
 	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdTo, "to", 0, TRAPI("The end point of searching range (unixtime: in milliseconds)"))
+
+	QueryTrafficRankingCmd.Flags().BoolVar(&QueryTrafficRankingCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	QueryCmd.AddCommand(QueryTrafficRankingCmd)
 }
 
@@ -76,6 +81,10 @@ var QueryTrafficRankingCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if QueryTrafficRankingCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

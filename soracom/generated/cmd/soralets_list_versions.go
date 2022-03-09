@@ -24,6 +24,9 @@ var SoraletsListVersionsCmdLimit int64
 // SoraletsListVersionsCmdPaginate indicates to do pagination or not
 var SoraletsListVersionsCmdPaginate bool
 
+// SoraletsListVersionsCmdOutputJSONL indicates to output with jsonl format
+var SoraletsListVersionsCmdOutputJSONL bool
+
 func init() {
 	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last version retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next version onward."))
 
@@ -34,6 +37,8 @@ func init() {
 	SoraletsListVersionsCmd.Flags().Int64Var(&SoraletsListVersionsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 
 	SoraletsListVersionsCmd.Flags().BoolVar(&SoraletsListVersionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SoraletsListVersionsCmd.Flags().BoolVar(&SoraletsListVersionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SoraletsCmd.AddCommand(SoraletsListVersionsCmd)
 }
 
@@ -81,6 +86,10 @@ var SoraletsListVersionsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SoraletsListVersionsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -9,7 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LagoonLicensePacksListStatusCmdOutputJSONL indicates to output with jsonl format
+var LagoonLicensePacksListStatusCmdOutputJSONL bool
+
 func init() {
+	LagoonLicensePacksListStatusCmd.Flags().BoolVar(&LagoonLicensePacksListStatusCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LagoonLicensePacksCmd.AddCommand(LagoonLicensePacksListStatusCmd)
 }
 
@@ -52,6 +56,10 @@ var LagoonLicensePacksListStatusCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LagoonLicensePacksListStatusCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

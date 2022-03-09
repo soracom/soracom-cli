@@ -12,8 +12,13 @@ import (
 // LagoonUsersListCmdClassic holds value of 'classic' option
 var LagoonUsersListCmdClassic bool
 
+// LagoonUsersListCmdOutputJSONL indicates to output with jsonl format
+var LagoonUsersListCmdOutputJSONL bool
+
 func init() {
 	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
+
+	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LagoonUsersCmd.AddCommand(LagoonUsersListCmd)
 }
 
@@ -61,6 +66,10 @@ var LagoonUsersListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LagoonUsersListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

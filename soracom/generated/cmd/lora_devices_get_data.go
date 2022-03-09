@@ -30,6 +30,9 @@ var LoraDevicesGetDataCmdTo int64
 // LoraDevicesGetDataCmdPaginate indicates to do pagination or not
 var LoraDevicesGetDataCmdPaginate bool
 
+// LoraDevicesGetDataCmdOutputJSONL indicates to output with jsonl format
+var LoraDevicesGetDataCmdOutputJSONL bool
+
 func init() {
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
@@ -44,6 +47,8 @@ func init() {
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LoraDevicesCmd.AddCommand(LoraDevicesGetDataCmd)
 }
 
@@ -91,6 +96,10 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LoraDevicesGetDataCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

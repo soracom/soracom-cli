@@ -18,12 +18,17 @@ var VpgListPacketCaptureSessionsCmdVpgId string
 // VpgListPacketCaptureSessionsCmdLimit holds value of 'limit' option
 var VpgListPacketCaptureSessionsCmdLimit int64
 
+// VpgListPacketCaptureSessionsCmdOutputJSONL indicates to output with jsonl format
+var VpgListPacketCaptureSessionsCmdOutputJSONL bool
+
 func init() {
 	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last group in the previous page"))
 
 	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgListPacketCaptureSessionsCmd.Flags().Int64Var(&VpgListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response"))
+
+	VpgListPacketCaptureSessionsCmd.Flags().BoolVar(&VpgListPacketCaptureSessionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	VpgCmd.AddCommand(VpgListPacketCaptureSessionsCmd)
 }
 
@@ -71,6 +76,10 @@ var VpgListPacketCaptureSessionsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if VpgListPacketCaptureSessionsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

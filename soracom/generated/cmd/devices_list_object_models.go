@@ -18,12 +18,17 @@ var DevicesListObjectModelsCmdLimit int64
 // DevicesListObjectModelsCmdPaginate indicates to do pagination or not
 var DevicesListObjectModelsCmdPaginate bool
 
+// DevicesListObjectModelsCmdOutputJSONL indicates to output with jsonl format
+var DevicesListObjectModelsCmdOutputJSONL bool
+
 func init() {
 	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page"))
 
 	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", -1, TRAPI("Max number of device object models in a response"))
 
 	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DevicesCmd.AddCommand(DevicesListObjectModelsCmd)
 }
 
@@ -71,6 +76,10 @@ var DevicesListObjectModelsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DevicesListObjectModelsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

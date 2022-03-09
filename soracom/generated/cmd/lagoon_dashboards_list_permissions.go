@@ -12,8 +12,13 @@ import (
 // LagoonDashboardsListPermissionsCmdClassic holds value of 'classic' option
 var LagoonDashboardsListPermissionsCmdClassic bool
 
+// LagoonDashboardsListPermissionsCmdOutputJSONL indicates to output with jsonl format
+var LagoonDashboardsListPermissionsCmdOutputJSONL bool
+
 func init() {
 	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
+
+	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LagoonDashboardsCmd.AddCommand(LagoonDashboardsListPermissionsCmd)
 }
 
@@ -61,6 +66,10 @@ var LagoonDashboardsListPermissionsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LagoonDashboardsListPermissionsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

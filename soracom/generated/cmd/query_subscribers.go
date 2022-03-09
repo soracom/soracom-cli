@@ -50,6 +50,9 @@ var QuerySubscribersCmdLimit int64
 // QuerySubscribersCmdPaginate indicates to do pagination or not
 var QuerySubscribersCmdPaginate bool
 
+// QuerySubscribersCmdOutputJSONL indicates to output with jsonl format
+var QuerySubscribersCmdOutputJSONL bool
+
 func init() {
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
@@ -76,6 +79,8 @@ func init() {
 	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	QueryCmd.AddCommand(QuerySubscribersCmd)
 }
 
@@ -125,6 +130,10 @@ var QuerySubscribersCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if QuerySubscribersCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

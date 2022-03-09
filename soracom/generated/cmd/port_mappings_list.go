@@ -18,12 +18,17 @@ var PortMappingsListCmdLimit int64
 // PortMappingsListCmdPaginate indicates to do pagination or not
 var PortMappingsListCmdPaginate bool
 
+// PortMappingsListCmdOutputJSONL indicates to output with jsonl format
+var PortMappingsListCmdOutputJSONL bool
+
 func init() {
 	PortMappingsListCmd.Flags().StringVar(&PortMappingsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Port Mapping ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
 	PortMappingsListCmd.Flags().Int64Var(&PortMappingsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	PortMappingsCmd.AddCommand(PortMappingsListCmd)
 }
 
@@ -71,6 +76,10 @@ var PortMappingsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if PortMappingsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

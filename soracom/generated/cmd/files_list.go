@@ -24,6 +24,9 @@ var FilesListCmdScope string
 // FilesListCmdPaginate indicates to do pagination or not
 var FilesListCmdPaginate bool
 
+// FilesListCmdOutputJSONL indicates to output with jsonl format
+var FilesListCmdOutputJSONL bool
+
 func init() {
 	FilesListCmd.Flags().StringVar(&FilesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filename  of the last file entry retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
 
@@ -34,6 +37,8 @@ func init() {
 	FilesListCmd.Flags().StringVar(&FilesListCmdScope, "scope", "private", TRAPI("Scope of the request"))
 
 	FilesListCmd.Flags().BoolVar(&FilesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	FilesListCmd.Flags().BoolVar(&FilesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	FilesCmd.AddCommand(FilesListCmd)
 }
 
@@ -81,6 +86,10 @@ var FilesListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if FilesListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

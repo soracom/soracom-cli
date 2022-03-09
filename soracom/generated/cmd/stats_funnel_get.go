@@ -21,6 +21,9 @@ var StatsFunnelGetCmdFrom int64
 // StatsFunnelGetCmdTo holds value of 'to' option
 var StatsFunnelGetCmdTo int64
 
+// StatsFunnelGetCmdOutputJSONL indicates to output with jsonl format
+var StatsFunnelGetCmdOutputJSONL bool
+
 func init() {
 	StatsFunnelGetCmd.Flags().StringVar(&StatsFunnelGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
@@ -29,6 +32,8 @@ func init() {
 	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
 	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsFunnelGetCmd.Flags().BoolVar(&StatsFunnelGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsFunnelCmd.AddCommand(StatsFunnelGetCmd)
 }
 
@@ -76,6 +81,10 @@ var StatsFunnelGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if StatsFunnelGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

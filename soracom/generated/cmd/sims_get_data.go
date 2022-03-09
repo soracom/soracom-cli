@@ -27,6 +27,9 @@ var SimsGetDataCmdLimit int64
 // SimsGetDataCmdTo holds value of 'to' option
 var SimsGetDataCmdTo int64
 
+// SimsGetDataCmdOutputJSONL indicates to output with jsonl format
+var SimsGetDataCmdOutputJSONL bool
+
 func init() {
 	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	SimsGetDataCmd.Flags().BoolVar(&SimsGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SimsCmd.AddCommand(SimsGetDataCmd)
 }
 
@@ -86,6 +91,10 @@ var SimsGetDataCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SimsGetDataCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

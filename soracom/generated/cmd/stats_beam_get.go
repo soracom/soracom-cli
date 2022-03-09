@@ -21,6 +21,9 @@ var StatsBeamGetCmdFrom int64
 // StatsBeamGetCmdTo holds value of 'to' option
 var StatsBeamGetCmdTo int64
 
+// StatsBeamGetCmdOutputJSONL indicates to output with jsonl format
+var StatsBeamGetCmdOutputJSONL bool
+
 func init() {
 	StatsBeamGetCmd.Flags().StringVar(&StatsBeamGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
@@ -29,6 +32,8 @@ func init() {
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
 	StatsBeamGetCmd.Flags().Int64Var(&StatsBeamGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsBeamGetCmd.Flags().BoolVar(&StatsBeamGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsBeamCmd.AddCommand(StatsBeamGetCmd)
 }
 
@@ -76,6 +81,10 @@ var StatsBeamGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if StatsBeamGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

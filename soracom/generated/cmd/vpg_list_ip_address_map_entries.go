@@ -12,8 +12,13 @@ import (
 // VpgListIpAddressMapEntriesCmdVpgId holds value of 'vpg_id' option
 var VpgListIpAddressMapEntriesCmdVpgId string
 
+// VpgListIpAddressMapEntriesCmdOutputJSONL indicates to output with jsonl format
+var VpgListIpAddressMapEntriesCmdOutputJSONL bool
+
 func init() {
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
 
@@ -61,6 +66,10 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if VpgListIpAddressMapEntriesCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

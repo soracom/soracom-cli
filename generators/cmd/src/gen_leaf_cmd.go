@@ -72,6 +72,7 @@ func generateCommandFiles(apiDef *lib.APIDefinitions, m lib.APIMethod, tmpl *tem
 			PaginationRequestParameterInQuery: getPaginationRequestparameterInQuery(m.Pagination),
 			Deprecated:                        m.Deprecated,
 			AlternativeCommand:                m.AlternativeCommand,
+			HasArrayResponse:                  hasArrayResponse(m),
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
 			if doesContentTypeParamExist(m.Parameters) {
@@ -174,6 +175,16 @@ func isResponseBodyRaw(m lib.APIMethod) bool {
 	// response contains signed URL, which should not be modified while Go json serializer prettifies '&' to '\u0026'
 	if strings.ToUpper(m.Method) == "POST" && strings.HasSuffix(m.Path, "/export") {
 		return true
+	}
+
+	return false
+}
+
+func hasArrayResponse(m lib.APIMethod) bool {
+	for _, res := range m.Responses {
+		if res.Schema != nil && res.Schema.Type == "array" {
+			return true
+		}
 	}
 
 	return false

@@ -13,10 +13,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CellLocationsBatchGetCmdOutputJSONL indicates to output with jsonl format
+var CellLocationsBatchGetCmdOutputJSONL bool
+
 // CellLocationsBatchGetCmdBody holds contents of request body to be sent
 var CellLocationsBatchGetCmdBody string
 
 func init() {
+	CellLocationsBatchGetCmd.Flags().BoolVar(&CellLocationsBatchGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
 	CellLocationsBatchGetCmd.Flags().StringVar(&CellLocationsBatchGetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	CellLocationsCmd.AddCommand(CellLocationsBatchGetCmd)
 }
@@ -65,6 +70,10 @@ var CellLocationsBatchGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if CellLocationsBatchGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

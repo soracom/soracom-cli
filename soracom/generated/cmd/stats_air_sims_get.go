@@ -21,6 +21,9 @@ var StatsAirSimsGetCmdFrom int64
 // StatsAirSimsGetCmdTo holds value of 'to' option
 var StatsAirSimsGetCmdTo int64
 
+// StatsAirSimsGetCmdOutputJSONL indicates to output with jsonl format
+var StatsAirSimsGetCmdOutputJSONL bool
+
 func init() {
 	StatsAirSimsGetCmd.Flags().StringVar(&StatsAirSimsGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
 
@@ -29,6 +32,8 @@ func init() {
 	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
 
 	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsAirSimsGetCmd.Flags().BoolVar(&StatsAirSimsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsAirSimsCmd.AddCommand(StatsAirSimsGetCmd)
 }
 
@@ -76,6 +81,10 @@ var StatsAirSimsGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if StatsAirSimsGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

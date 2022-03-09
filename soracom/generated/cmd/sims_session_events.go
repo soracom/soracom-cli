@@ -24,6 +24,9 @@ var SimsSessionEventsCmdLimit int64
 // SimsSessionEventsCmdTo holds value of 'to' option
 var SimsSessionEventsCmdTo int64
 
+// SimsSessionEventsCmdOutputJSONL indicates to output with jsonl format
+var SimsSessionEventsCmdOutputJSONL bool
+
 func init() {
 	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
 
@@ -34,6 +37,8 @@ func init() {
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
+
+	SimsSessionEventsCmd.Flags().BoolVar(&SimsSessionEventsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SimsCmd.AddCommand(SimsSessionEventsCmd)
 }
 
@@ -81,6 +86,10 @@ var SimsSessionEventsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SimsSessionEventsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err
