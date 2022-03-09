@@ -45,27 +45,27 @@ The `soracom` command:
 
 ## Using Mac (macOS) or Linux, installing by homebrew
 
-```
-$ brew tap soracom/soracom-cli
-$ brew install soracom-cli
-$ brew install bash-completion
+```shell
+brew tap soracom/soracom-cli
+brew install soracom-cli
+brew install bash-completion
 ```
 
-## Using Ubuntu Linux, installing with snap
+## Using Linux, installing with snap
 
-```
-$ sudo snap install soracom
+```shell
+sudo snap install soracom
 ```
 
 In this case, you may want to connect the snap to `dot-soracom` interface which is for reading / writing profile files in `$HOME/.soracom`:
 
-```
-$ snap connect soracom:dot-soracom
+```shell
+snap connect soracom:dot-soracom
 ```
 
-You may also want to have the following line in your `.bashrc` etc. to use `$HOME/.soracom` as the profiles directory instead of `$SNAP_USER_DATA/.soracom` (i.e. `~/snap/soracom/<revision>/.soracom`)
+You may also want to have the following line in your `.bashrc` etc. to use `$HOME/.soracom` as the profiles directory instead of `$SNAP_USER_DATA/.soracom` (i.e. `$HOME/snap/soracom/<revision>/.soracom`)
 
-```
+```bash
 export SORACOM_PROFILE=$HOME/.soracom
 ```
 
@@ -73,25 +73,25 @@ export SORACOM_PROFILE=$HOME/.soracom
 
 By running one of the following commands, the latest version of `soracom` command will be installed.
 
-If you have a permission to write a file into `/usr/local/bin` directory, please run the command below:
+If you have a permission to write a file into `/usr/local/bin` directory (e.g. you are `root` user), please run the command below:
 
-```
+```shell
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
 ```
 
-If you do not have a permission to write a file into `/usr/local/bin` directory, please run the command either of the following commands:
+If you do not have a permission to write a file into `/usr/local/bin` directory, please run either of the following commands.
 
-(If you are in sudoers and want to install `soracom` command to `/usr/local/bin`)
+If you are in sudoers and want to install `soracom` command to `/usr/local/bin`:
 
-```
+```shell
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | sudo bash
 ```
 
 or
 
-(If you are not in sudoers or want to install `soracom` command to other directory e.g. `$HOME/bin`)
+If you are not in sudoers or want to install `soracom` command to other directory e.g. `$HOME/bin`:
 
-```
+```shell
 mkdir -p "$HOME/bin"
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | BINDIR="$HOME/bin" bash
 ```
@@ -259,7 +259,8 @@ For developers who want to build from source or for those who wish to make a pul
 In the environment where Go is installed, run the build script as follows:
 
 ```
-./scripts/build.sh 1.2.3
+VERSION=1.2.3
+./scripts/build.sh $VERSION
 ```
 
 Here 1.2.3 is the version number. Please specify an appropriate number.
@@ -269,7 +270,7 @@ If the build succeeds, then run the test:
 ```
 export SORACOM_AUTHKEY_ID_FOR_TEST=...   # set AuthKey ID & AuthKey of a Soracom operator (account) to use the API sandbox.
 export SORACOM_AUTHKEY_FOR_TEST=...
-./test/test.sh
+./test/test.sh $VERSION
 ```
 
 

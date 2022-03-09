@@ -46,27 +46,27 @@ soracom コマンドは以下のような特徴を備えています。
 
 ## macOS もしくは Linux をお使いで、homebrew によりインストールする場合
 
-```
-$ brew tap soracom/soracom-cli
-$ brew install soracom-cli
-$ brew install bash-completion
+```shell
+brew tap soracom/soracom-cli
+brew install soracom-cli
+brew install bash-completion
 ```
 
-## Ubuntu Linux をお使いで、snap によりインストールする場合
+## Linux をお使いで、snap によりインストールする場合
 
-```
-$ sudo snap install soracom
+```shell
+sudo snap install soracom
 ```
 
 snap を使って `soracom` コマンドをインストールし、`$HOME/.soracom` ディレクトリに保存されたプロファイル情報を利用したい場合は `dot-soracom` インターフェースを `soracom` の snap パッケージに connect してください。
 
-```
+```shell
 snap connect soracom:dot-soracom
 ```
 
 さらに、snap でインストールした場合のデフォルトのプロファイルディレクトリ `$SNAP_USER_DATA/.soracom`（すなわち `$HOME/snap/soracom/<revision>/.soracom`）の代わりに `$HOME/.soracom` を利用するために以下のような行を `.bashrc` などに追加してください。
 
-```
+```bash
 export SORACOM_PROFILE=$HOME/.soracom
 ```
 
@@ -77,7 +77,7 @@ export SORACOM_PROFILE=$HOME/.soracom
 
 もし `/usr/local/bin` にファイルを書き込む権限のあるユーザー（root など）でインストールする場合はいかのコマンドを実行してください。
 
-```
+```shell
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
 ```
 
@@ -85,13 +85,13 @@ curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.
 
 sudo コマンドを実行可能（ユーザーが sudoers に入っている）で、`soracom` コマンドを `/usr/local/bin` にインストールしたい場合：
 
-```
+```shell
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | sudo bash
 ```
 
 もしくは sudo コマンドを利用できないか、`soracom` コマンドを `$HOME/bin` など `/usr/local/bin` 以外の場所にインストールしたい場合：
 
-```
+```shell
 mkdir -p "$HOME/bin"
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | BINDIR="$HOME/bin" bash
 ```
@@ -258,7 +258,8 @@ soracom configure
 Go がインストールされている状態で、以下のようにビルドスクリプトを実行します。
 
 ```
-./scripts/build.sh 1.2.3
+VERSION=1.2.3
+./scripts/build.sh $VERSION
 ```
 
 ここで 1.2.3 はバージョン番号です。適当な番号を指定してください。
@@ -266,5 +267,9 @@ Go がインストールされている状態で、以下のようにビルド�
 ビルドが成功したら、次にテストを実行します。
 
 ```
-./test/test.sh
+# API sandbox を利用するために、実在する SORACOM オペレーター（アカウント）の
+# AuthKey ID と AuthKey を事前に環境変数に設定してください。
+export SORACOM_AUTHKEY_ID_FOR_TEST=...
+export SORACOM_AUTHKEY_FOR_TEST=...
+./test/test.sh $VERSION
 ```
