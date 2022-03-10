@@ -251,6 +251,15 @@ invoke_soracom_command() {
         --profile soracom-cli-test
 }
 
+: "Get subscribers list with --jsonl option" && {
+    subscribers="$( invoke_soracom_command subscribers list --jsonl )"
+    if [ "$( echo "$subscribers" | wc -l )" -ne 4 ]; then
+        echo "expected 4 lines for 4 subscribers, but got the following:" 2>&1
+        echo "$subscribers" 2>&1
+        exit 1
+    fi
+}
+
 : "Create a group" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         groups create \
