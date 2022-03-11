@@ -29,6 +29,14 @@ architectures:
   - build-on: all
     run-on: ${arch}
 
+plugs:
+  dot-soracom:
+    interface: personal-files
+    read:
+      - \$HOME/.soracom
+    write:
+      - \$HOME/.soracom
+
 parts:
   soracom:
     plugin: dump
@@ -40,6 +48,10 @@ parts:
 apps:
   soracom:
     command: soracom
+    plugs:
+      - home
+      - network
+      - dot-soracom
 EOD
 }
 
