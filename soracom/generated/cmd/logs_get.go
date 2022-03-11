@@ -33,6 +33,9 @@ var LogsGetCmdTo int64
 // LogsGetCmdPaginate indicates to do pagination or not
 var LogsGetCmdPaginate bool
 
+// LogsGetCmdOutputJSONL indicates to output with jsonl format
+var LogsGetCmdOutputJSONL bool
+
 func init() {
 	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -49,6 +52,8 @@ func init() {
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime)."))
 
 	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	LogsGetCmd.Flags().BoolVar(&LogsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LogsCmd.AddCommand(LogsGetCmd)
 }
 
@@ -96,6 +101,10 @@ var LogsGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LogsGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

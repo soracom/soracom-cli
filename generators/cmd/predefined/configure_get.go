@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"os"
+
+	"github.com/spf13/cobra"
+)
 
 func init() {
 	ConfigureCmd.AddCommand(ConfigureGetCmd)
@@ -22,6 +26,6 @@ var ConfigureGetCmd = &cobra.Command{
 			return err
 		}
 
-		return prettyPrintObjectAsJSON(p)
+		return prettyPrintObjectAsJSON(p, os.Stdout)
 	},
 }

@@ -27,6 +27,9 @@ var GroupsListCmdLimit int64
 // GroupsListCmdPaginate indicates to do pagination or not
 var GroupsListCmdPaginate bool
 
+// GroupsListCmdOutputJSONL indicates to output with jsonl format
+var GroupsListCmdOutputJSONL bool
+
 func init() {
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsListCmd.Flags().BoolVar(&GroupsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	GroupsListCmd.Flags().BoolVar(&GroupsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
 
@@ -86,6 +91,10 @@ var GroupsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if GroupsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

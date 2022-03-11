@@ -39,6 +39,9 @@ var QueryDevicesCmdLimit int64
 // QueryDevicesCmdPaginate indicates to do pagination or not
 var QueryDevicesCmdPaginate bool
 
+// QueryDevicesCmdOutputJSONL indicates to output with jsonl format
+var QueryDevicesCmdOutputJSONL bool
+
 func init() {
 	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
 
@@ -59,6 +62,8 @@ func init() {
 	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	QueryCmd.AddCommand(QueryDevicesCmd)
 }
 
@@ -106,6 +111,10 @@ var QueryDevicesCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if QueryDevicesCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

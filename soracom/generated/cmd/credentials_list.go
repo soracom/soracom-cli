@@ -9,7 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CredentialsListCmdOutputJSONL indicates to output with jsonl format
+var CredentialsListCmdOutputJSONL bool
+
 func init() {
+	CredentialsListCmd.Flags().BoolVar(&CredentialsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	CredentialsCmd.AddCommand(CredentialsListCmd)
 }
 
@@ -57,6 +61,10 @@ var CredentialsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if CredentialsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

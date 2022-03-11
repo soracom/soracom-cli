@@ -30,6 +30,9 @@ var GadgetsListCmdLimit int64
 // GadgetsListCmdPaginate indicates to do pagination or not
 var GadgetsListCmdPaginate bool
 
+// GadgetsListCmdOutputJSONL indicates to output with jsonl format
+var GadgetsListCmdOutputJSONL bool
+
 func init() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ({product_id}/{serial_number}) of the last gadget retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -44,6 +47,8 @@ func init() {
 	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of gadgets to retrieve."))
 
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	GadgetsCmd.AddCommand(GadgetsListCmd)
 }
 
@@ -91,6 +96,10 @@ var GadgetsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if GadgetsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

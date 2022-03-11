@@ -12,8 +12,13 @@ import (
 // SystemNotificationsListCmdOperatorId holds value of 'operator_id' option
 var SystemNotificationsListCmdOperatorId string
 
+// SystemNotificationsListCmdOutputJSONL indicates to output with jsonl format
+var SystemNotificationsListCmdOutputJSONL bool
+
 func init() {
 	SystemNotificationsListCmd.Flags().StringVar(&SystemNotificationsListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+
+	SystemNotificationsListCmd.Flags().BoolVar(&SystemNotificationsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SystemNotificationsCmd.AddCommand(SystemNotificationsListCmd)
 }
 
@@ -61,6 +66,10 @@ var SystemNotificationsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SystemNotificationsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

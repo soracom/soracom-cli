@@ -27,6 +27,9 @@ var LoraGatewaysListCmdLimit int64
 // LoraGatewaysListCmdPaginate indicates to do pagination or not
 var LoraGatewaysListCmdPaginate bool
 
+// LoraGatewaysListCmdOutputJSONL indicates to output with jsonl format
+var LoraGatewaysListCmdOutputJSONL bool
+
 func init() {
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LoraGatewaysCmd.AddCommand(LoraGatewaysListCmd)
 }
 
@@ -86,6 +91,10 @@ var LoraGatewaysListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LoraGatewaysListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -21,6 +21,9 @@ var DataListSourceResourcesCmdLimit int64
 // DataListSourceResourcesCmdPaginate indicates to do pagination or not
 var DataListSourceResourcesCmdPaginate bool
 
+// DataListSourceResourcesCmdOutputJSONL indicates to output with jsonl format
+var DataListSourceResourcesCmdOutputJSONL bool
+
 func init() {
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `resourceId` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -29,6 +32,8 @@ func init() {
 	DataListSourceResourcesCmd.Flags().Int64Var(&DataListSourceResourcesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DataCmd.AddCommand(DataListSourceResourcesCmd)
 }
 
@@ -76,6 +81,10 @@ var DataListSourceResourcesCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DataListSourceResourcesCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -51,6 +51,9 @@ var QuerySimsCmdLimit int64
 // QuerySimsCmdPaginate indicates to do pagination or not
 var QuerySimsCmdPaginate bool
 
+// QuerySimsCmdOutputJSONL indicates to output with jsonl format
+var QuerySimsCmdOutputJSONL bool
+
 func init() {
 	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SIM ID of the last SIM retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
 
@@ -79,6 +82,8 @@ func init() {
 	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
 
 	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	QueryCmd.AddCommand(QuerySimsCmd)
 }
 
@@ -126,6 +131,10 @@ var QuerySimsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if QuerySimsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

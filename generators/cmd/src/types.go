@@ -136,4 +136,5 @@ type commandArgs struct {
 	PaginationRequestParameterInQuery string
 	Deprecated                        bool
 	AlternativeCommand                string
+	HasArrayResponse                  bool
 }

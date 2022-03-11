@@ -27,6 +27,9 @@ var VpgListCmdLimit int64
 // VpgListCmdPaginate indicates to do pagination or not
 var VpgListCmdPaginate bool
 
+// VpgListCmdOutputJSONL indicates to output with jsonl format
+var VpgListCmdOutputJSONL bool
+
 func init() {
 	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	VpgListCmd.Flags().BoolVar(&VpgListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	VpgListCmd.Flags().BoolVar(&VpgListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	VpgCmd.AddCommand(VpgListCmd)
 }
 
@@ -86,6 +91,10 @@ var VpgListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if VpgListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

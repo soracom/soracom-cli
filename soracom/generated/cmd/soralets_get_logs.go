@@ -24,6 +24,9 @@ var SoraletsGetLogsCmdLimit int64
 // SoraletsGetLogsCmdPaginate indicates to do pagination or not
 var SoraletsGetLogsCmdPaginate bool
 
+// SoraletsGetLogsCmdOutputJSONL indicates to output with jsonl format
+var SoraletsGetLogsCmdOutputJSONL bool
+
 func init() {
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last log message retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next log message onward."))
 
@@ -34,6 +37,8 @@ func init() {
 	SoraletsGetLogsCmd.Flags().Int64Var(&SoraletsGetLogsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 
 	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SoraletsCmd.AddCommand(SoraletsGetLogsCmd)
 }
 
@@ -81,6 +86,10 @@ var SoraletsGetLogsCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SoraletsGetLogsCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

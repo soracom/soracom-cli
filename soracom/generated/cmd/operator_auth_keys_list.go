@@ -12,8 +12,13 @@ import (
 // OperatorAuthKeysListCmdOperatorId holds value of 'operator_id' option
 var OperatorAuthKeysListCmdOperatorId string
 
+// OperatorAuthKeysListCmdOutputJSONL indicates to output with jsonl format
+var OperatorAuthKeysListCmdOutputJSONL bool
+
 func init() {
 	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+
+	OperatorAuthKeysListCmd.Flags().BoolVar(&OperatorAuthKeysListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)
 }
 
@@ -61,6 +66,10 @@ var OperatorAuthKeysListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if OperatorAuthKeysListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

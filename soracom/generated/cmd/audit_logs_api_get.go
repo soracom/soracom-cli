@@ -27,6 +27,9 @@ var AuditLogsApiGetCmdToEpochMs int64
 // AuditLogsApiGetCmdPaginate indicates to do pagination or not
 var AuditLogsApiGetCmdPaginate bool
 
+// AuditLogsApiGetCmdOutputJSONL indicates to output with jsonl format
+var AuditLogsApiGetCmdOutputJSONL bool
+
 func init() {
 	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdApiKind, "api-kind", "", TRAPI("Filter item for audit log retrieval by API kind (e.g. `/v1/auth`)."))
 
@@ -39,6 +42,8 @@ func init() {
 	AuditLogsApiGetCmd.Flags().Int64Var(&AuditLogsApiGetCmdToEpochMs, "to-epoch-ms", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
 
 	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	AuditLogsApiCmd.AddCommand(AuditLogsApiGetCmd)
 }
 
@@ -86,6 +91,10 @@ var AuditLogsApiGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if AuditLogsApiGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

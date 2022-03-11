@@ -33,6 +33,9 @@ var DataGetEntriesCmdTo int64
 // DataGetEntriesCmdPaginate indicates to do pagination or not
 var DataGetEntriesCmdPaginate bool
 
+// DataGetEntriesCmdOutputJSONL indicates to output with jsonl format
+var DataGetEntriesCmdOutputJSONL bool
+
 func init() {
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -49,6 +52,8 @@ func init() {
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DataCmd.AddCommand(DataGetEntriesCmd)
 }
 
@@ -96,6 +101,10 @@ var DataGetEntriesCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DataGetEntriesCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

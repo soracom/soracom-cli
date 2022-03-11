@@ -30,6 +30,9 @@ var SigfoxDevicesGetDataCmdTo int64
 // SigfoxDevicesGetDataCmdPaginate indicates to do pagination or not
 var SigfoxDevicesGetDataCmdPaginate bool
 
+// SigfoxDevicesGetDataCmdOutputJSONL indicates to output with jsonl format
+var SigfoxDevicesGetDataCmdOutputJSONL bool
+
 func init() {
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
@@ -44,6 +47,8 @@ func init() {
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesGetDataCmd)
 }
 
@@ -91,6 +96,10 @@ var SigfoxDevicesGetDataCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if SigfoxDevicesGetDataCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

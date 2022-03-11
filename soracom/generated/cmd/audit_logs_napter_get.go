@@ -30,6 +30,9 @@ var AuditLogsNapterGetCmdTo int64
 // AuditLogsNapterGetCmdPaginate indicates to do pagination or not
 var AuditLogsNapterGetCmdPaginate bool
 
+// AuditLogsNapterGetCmdOutputJSONL indicates to output with jsonl format
+var AuditLogsNapterGetCmdOutputJSONL bool
+
 func init() {
 	AuditLogsNapterGetCmd.Flags().StringVar(&AuditLogsNapterGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
@@ -44,6 +47,8 @@ func init() {
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
 
 	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	AuditLogsNapterCmd.AddCommand(AuditLogsNapterGetCmd)
 }
 
@@ -91,6 +96,10 @@ var AuditLogsNapterGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if AuditLogsNapterGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

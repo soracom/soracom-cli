@@ -12,8 +12,13 @@ import (
 // EventHandlersListForSubscriberCmdImsi holds value of 'imsi' option
 var EventHandlersListForSubscriberCmdImsi string
 
+// EventHandlersListForSubscriberCmdOutputJSONL indicates to output with jsonl format
+var EventHandlersListForSubscriberCmdOutputJSONL bool
+
 func init() {
 	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("imsi"))
+
+	EventHandlersListForSubscriberCmd.Flags().BoolVar(&EventHandlersListForSubscriberCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	EventHandlersCmd.AddCommand(EventHandlersListForSubscriberCmd)
 }
 
@@ -61,6 +66,10 @@ var EventHandlersListForSubscriberCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if EventHandlersListForSubscriberCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -12,8 +12,13 @@ import (
 // EventHandlersListCmdTarget holds value of 'target' option
 var EventHandlersListCmdTarget string
 
+// EventHandlersListCmdOutputJSONL indicates to output with jsonl format
+var EventHandlersListCmdOutputJSONL bool
+
 func init() {
 	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TRAPI("target"))
+
+	EventHandlersListCmd.Flags().BoolVar(&EventHandlersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	EventHandlersCmd.AddCommand(EventHandlersListCmd)
 }
 
@@ -61,6 +66,10 @@ var EventHandlersListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if EventHandlersListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

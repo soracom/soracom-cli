@@ -28,6 +28,9 @@ var DiagnosticsSendRequestCmdFrom int64
 // DiagnosticsSendRequestCmdTo holds value of 'to' option
 var DiagnosticsSendRequestCmdTo int64
 
+// DiagnosticsSendRequestCmdOutputJSONL indicates to output with jsonl format
+var DiagnosticsSendRequestCmdOutputJSONL bool
+
 // DiagnosticsSendRequestCmdBody holds contents of request body to be sent
 var DiagnosticsSendRequestCmdBody string
 
@@ -41,6 +44,8 @@ func init() {
 	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdFrom, "from", 0, TRAPI(""))
 
 	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdTo, "to", 0, TRAPI(""))
+
+	DiagnosticsSendRequestCmd.Flags().BoolVar(&DiagnosticsSendRequestCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
 	DiagnosticsSendRequestCmd.Flags().StringVar(&DiagnosticsSendRequestCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	DiagnosticsCmd.AddCommand(DiagnosticsSendRequestCmd)
@@ -90,6 +95,10 @@ var DiagnosticsSendRequestCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DiagnosticsSendRequestCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

@@ -27,6 +27,9 @@ var LoraNetworkSetsListCmdLimit int64
 // LoraNetworkSetsListCmdPaginate indicates to do pagination or not
 var LoraNetworkSetsListCmdPaginate bool
 
+// LoraNetworkSetsListCmdOutputJSONL indicates to output with jsonl format
+var LoraNetworkSetsListCmdOutputJSONL bool
+
 func init() {
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last network set retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
@@ -39,6 +42,8 @@ func init() {
 	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
 
 	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListCmd)
 }
 
@@ -86,6 +91,10 @@ var LoraNetworkSetsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if LoraNetworkSetsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

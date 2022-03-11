@@ -12,8 +12,13 @@ import (
 // EmailsListCmdOperatorId holds value of 'operator_id' option
 var EmailsListCmdOperatorId string
 
+// EmailsListCmdOutputJSONL indicates to output with jsonl format
+var EmailsListCmdOutputJSONL bool
+
 func init() {
 	EmailsListCmd.Flags().StringVar(&EmailsListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+
+	EmailsListCmd.Flags().BoolVar(&EmailsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	EmailsCmd.AddCommand(EmailsListCmd)
 }
 
@@ -61,6 +66,10 @@ var EmailsListCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if EmailsListCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

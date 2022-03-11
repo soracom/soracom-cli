@@ -24,6 +24,9 @@ var FilesFindCmdScope string
 // FilesFindCmdPaginate indicates to do pagination or not
 var FilesFindCmdPaginate bool
 
+// FilesFindCmdOutputJSONL indicates to output with jsonl format
+var FilesFindCmdOutputJSONL bool
+
 func init() {
 	FilesFindCmd.Flags().StringVar(&FilesFindCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filePath of the last file entry retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
 
@@ -34,6 +37,8 @@ func init() {
 	FilesFindCmd.Flags().StringVar(&FilesFindCmdScope, "scope", "", TRAPI("Scope of the request"))
 
 	FilesFindCmd.Flags().BoolVar(&FilesFindCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	FilesFindCmd.Flags().BoolVar(&FilesFindCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	FilesCmd.AddCommand(FilesFindCmd)
 }
 
@@ -81,6 +86,10 @@ var FilesFindCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if FilesFindCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

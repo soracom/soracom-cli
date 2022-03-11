@@ -12,8 +12,13 @@ import (
 // VpgListGatePeersCmdVpgId holds value of 'vpg_id' option
 var VpgListGatePeersCmdVpgId string
 
+// VpgListGatePeersCmdOutputJSONL indicates to output with jsonl format
+var VpgListGatePeersCmdOutputJSONL bool
+
 func init() {
 	VpgListGatePeersCmd.Flags().StringVar(&VpgListGatePeersCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgListGatePeersCmd.Flags().BoolVar(&VpgListGatePeersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	VpgCmd.AddCommand(VpgListGatePeersCmd)
 }
 
@@ -61,6 +66,10 @@ var VpgListGatePeersCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if VpgListGatePeersCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err

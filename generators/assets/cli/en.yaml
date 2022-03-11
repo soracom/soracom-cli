@@ -18,6 +18,8 @@ cli:
   common_params:
     body:
       short_help: JSON string or @filename for API request body.
+    jsonl:
+      short_help: Output array response with JSONL (JSON Lines) format.
     paginate:
       short_help: Do pagination automatically.
   completion:

@@ -30,6 +30,9 @@ var DataGetCmdTo int64
 // DataGetCmdPaginate indicates to do pagination or not
 var DataGetCmdPaginate bool
 
+// DataGetCmdOutputJSONL indicates to output with jsonl format
+var DataGetCmdOutputJSONL bool
+
 func init() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
@@ -44,6 +47,8 @@ func init() {
 	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
 
 	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	DataGetCmd.Flags().BoolVar(&DataGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	DataCmd.AddCommand(DataGetCmd)
 }
 
@@ -91,6 +96,10 @@ var DataGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if DataGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err
