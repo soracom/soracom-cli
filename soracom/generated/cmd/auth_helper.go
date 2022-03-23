@@ -40,6 +40,17 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 			AuthKeyID: &providedAuthKeyID,
 			AuthKey:   &providedAuthKey,
 		}
+	} else if providedAuthCommand != "" {
+		profile, err := getProfileFromExternalCommand()
+		if err != nil {
+			lib.PrintfStderr("unable to read the profile from external command.\n")
+			return err
+		}
+
+		areq = &authRequest{
+			AuthKeyID: profile.AuthKeyID,
+			AuthKey:   profile.AuthKey,
+		}
 	} else {
 		profile, err := getProfile()
 		if err != nil {

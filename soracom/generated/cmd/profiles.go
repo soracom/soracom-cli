@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"syscall"
@@ -59,6 +60,30 @@ func getProfile() (*profile, error) {
 
 	loadedProfile = profile
 	return loadedProfile, nil
+}
+
+func getProfileFromExternalCommand() (*profile, error) {
+	var (
+		b   []byte
+		err error
+	)
+	if runtime.GOOS == "windows" {
+		b, err = exec.Command("powershell", providedAuthCommand).Output()
+	} else {
+		b, err = exec.Command("sh", "-c", providedAuthCommand).Output()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	var p profile
+	err = json.Unmarshal(b, &p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
 }
 
 func getDefaultProfileName() string {
