@@ -28,6 +28,7 @@ type profile struct {
 	OperatorID            *string `json:"operatorId,omitempty"`
 	Endpoint              *string `json:"endpoint,omitempty"`
 	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
+	AuthCommand           *string `json:"authCommand,omitempty"`
 }
 
 type authInfo struct {
@@ -62,15 +63,16 @@ func getProfile() (*profile, error) {
 	return loadedProfile, nil
 }
 
-func getProfileFromExternalCommand() (*profile, error) {
+func getProfileFromExternalCommand(command string) (*profile, error) {
 	var (
 		b   []byte
 		err error
 	)
+
 	if runtime.GOOS == "windows" {
-		b, err = exec.Command("powershell", providedAuthCommand).Output()
+		b, err = exec.Command("powershell", command).Output()
 	} else {
-		b, err = exec.Command("sh", "-c", providedAuthCommand).Output()
+		b, err = exec.Command("sh", "-c", command).Output()
 	}
 
 	if err != nil {
