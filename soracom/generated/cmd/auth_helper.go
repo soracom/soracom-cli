@@ -68,7 +68,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 			OperatorID: profile.OperatorID,
 		}
 
-		if profile.AuthCommand != nil {
+		if profile.AuthCommand != nil && *profile.AuthCommand != "" {
 			p, err := getProfileFromExternalCommand(*profile.AuthCommand)
 			if err != nil {
 				lib.PrintfStderr("unable to read the profile from external command.\n")
