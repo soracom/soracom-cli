@@ -54,7 +54,7 @@ func TestCallAPIWithProxy(t *testing.T) {
 		path:           "v1/subscribers",
 		noRetryOnError: true,
 	})
-	//assert.Equal(t, 1, fp.http, "proxy server should be accessed when HTTP_PROXY env var is set")
+	assert.Equal(t, 1, fp.http, "proxy server should be accessed when HTTP_PROXY env var is set")
 
 	// Test HTTPS
 	ac = newAPIClient(&apiClientOptions{Endpoint: "https://api.soracom.io"})
