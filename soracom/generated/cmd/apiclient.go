@@ -361,7 +361,7 @@ func (ac *apiClient) SetVerbose(verbose bool) {
 	ac.verbose = verbose
 }
 
-func hideSecureHeaders(dump []byte) []byte {
+func hideSecretHeaders(dump []byte) []byte {
 	return reSecretHeader.ReplaceAll(dump, []byte("$1: <hidden>"))
 }
 
@@ -372,7 +372,7 @@ func dumpHTTPRequest(req *http.Request) {
 		lib.PrintfStderr("error while dumping http request header and body: %s\n", err)
 		return
 	}
-	dump = hideSecureHeaders(dump)
+	dump = hideSecretHeaders(dump)
 	lib.PrintfStderr("%s\n", string(dump))
 }
 

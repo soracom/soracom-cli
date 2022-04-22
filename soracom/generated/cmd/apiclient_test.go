@@ -143,19 +143,19 @@ func TestConcatJSONArray(t *testing.T) {
 	}
 }
 
-func TestHideSecureHeaders(t *testing.T) {
+func TestHideSecretHeaders(t *testing.T) {
 	var testData = []struct {
 		Name     string
 		Input    string
 		Expected string
 	}{
 		{
-			Name:     "Nominal case for secure headers: X-Soracom-Api-Key",
+			Name:     "Nominal case for secret headers: X-Soracom-Api-Key",
 			Input:    "GET / HTTP/1.1\nX-Soracom-Api-Key: this-should-be-hidden\nHello: world",
 			Expected: "GET / HTTP/1.1\nX-Soracom-Api-Key: <hidden>\nHello: world",
 		},
 		{
-			Name:     "Nominal case for secure headers: X-Soracom-Token",
+			Name:     "Nominal case for secret headers: X-Soracom-Token",
 			Input:    "GET / HTTP/1.1\nX-Soracom-Token: this-should-be-hidden\nHello: world",
 			Expected: "GET / HTTP/1.1\nX-Soracom-Token: <hidden>\nHello: world",
 		},
@@ -171,7 +171,7 @@ func TestHideSecureHeaders(t *testing.T) {
 		t.Run(data.Name, func(t *testing.T) {
 			t.Parallel()
 
-			actualByte := hideSecureHeaders([]byte(data.Input))
+			actualByte := hideSecretHeaders([]byte(data.Input))
 			actual := string(actualByte)
 			if actual != data.Expected {
 				t.Errorf("result of hideSecureHeaders() is unmatched with expected.\nExpected: %v\nActual: %v", data.Expected, actual)
