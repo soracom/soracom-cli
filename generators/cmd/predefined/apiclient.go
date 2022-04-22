@@ -33,7 +33,7 @@ type apiClient struct {
 
 var (
 	// reSecretHeader is the representation of a compiled regular expression for secure headers which should be hidden.
-	reSecretHeader = regexp.MustCompile(`(?m:^([^:]*(X-Soracom-Api-Key|X-Soracom-Token)[^:]*):.*$)`)
+	reSecretHeader = regexp.MustCompile(`(?mi:^((X-Soracom-Api-Key|X-Soracom-Token)):.*$)`)
 )
 
 // APIError represents an error occurred while calling API

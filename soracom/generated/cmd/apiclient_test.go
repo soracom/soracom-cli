@@ -164,6 +164,16 @@ func TestHideSecretHeaders(t *testing.T) {
 			Input:    "GET / HTTP/1.1\nHeader: leave-this-as-it-is\nHello: world",
 			Expected: "GET / HTTP/1.1\nHeader: leave-this-as-it-is\nHello: world",
 		},
+		{
+			Name:     "Headers which contain secret header but are not exactly same with secret header should not be replaced",
+			Input:    "GET / HTTP/1.1\nX-Soracom-Api-Key-Version: 2022-04-22\nHello: world",
+			Expected: "GET / HTTP/1.1\nX-Soracom-Api-Key-Version: 2022-04-22\nHello: world",
+		},
+		{
+			Name:     "Headers should be treated as case-insensitive and transparently",
+			Input:    "GET / HTTP/1.1\nx-sORACOM-aPI-kEY: this-should-be-hidden\nHello: world",
+			Expected: "GET / HTTP/1.1\nx-sORACOM-aPI-kEY: <hidden>\nHello: world",
+		},
 	}
 
 	for _, data := range testData {
