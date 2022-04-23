@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -29,6 +30,11 @@ type apiClient struct {
 	language   string
 	verbose    bool
 }
+
+var (
+	// reSecretHeader is the representation of a compiled regular expression for secure headers which should be hidden.
+	reSecretHeader = regexp.MustCompile(`(?mi:^((X-Soracom-Api-Key|X-Soracom-Token)):.*$)`)
+)
 
 // APIError represents an error occurred while calling API
 type apiError struct {
@@ -355,6 +361,10 @@ func (ac *apiClient) SetVerbose(verbose bool) {
 	ac.verbose = verbose
 }
 
+func hideSecretHeaders(dump []byte) []byte {
+	return reSecretHeader.ReplaceAll(dump, []byte("$1: <hidden>"))
+}
+
 func dumpHTTPRequest(req *http.Request) {
 	dumpBody := req.Header.Get("Content-Type") != "application/octet-stream"
 	dump, err := httputil.DumpRequest(req, dumpBody)
@@ -362,6 +372,7 @@ func dumpHTTPRequest(req *http.Request) {
 		lib.PrintfStderr("error while dumping http request header and body: %s\n", err)
 		return
 	}
+	dump = hideSecretHeaders(dump)
 	lib.PrintfStderr("%s\n", string(dump))
 }
 

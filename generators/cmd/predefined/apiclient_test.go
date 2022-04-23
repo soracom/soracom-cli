@@ -142,3 +142,50 @@ func TestConcatJSONArray(t *testing.T) {
 		})
 	}
 }
+
+func TestHideSecretHeaders(t *testing.T) {
+	var testData = []struct {
+		Name     string
+		Input    string
+		Expected string
+	}{
+		{
+			Name:     "Nominal case for secret headers: X-Soracom-Api-Key",
+			Input:    "GET / HTTP/1.1\nX-Soracom-Api-Key: this-should-be-hidden\nHello: world",
+			Expected: "GET / HTTP/1.1\nX-Soracom-Api-Key: <hidden>\nHello: world",
+		},
+		{
+			Name:     "Nominal case for secret headers: X-Soracom-Token",
+			Input:    "GET / HTTP/1.1\nX-Soracom-Token: this-should-be-hidden\nHello: world",
+			Expected: "GET / HTTP/1.1\nX-Soracom-Token: <hidden>\nHello: world",
+		},
+		{
+			Name:     "Nominal case for headers",
+			Input:    "GET / HTTP/1.1\nHeader: leave-this-as-it-is\nHello: world",
+			Expected: "GET / HTTP/1.1\nHeader: leave-this-as-it-is\nHello: world",
+		},
+		{
+			Name:     "Headers which contain secret header but are not exactly same with secret header should not be replaced",
+			Input:    "GET / HTTP/1.1\nX-Soracom-Api-Key-Version: 2022-04-22\nHello: world",
+			Expected: "GET / HTTP/1.1\nX-Soracom-Api-Key-Version: 2022-04-22\nHello: world",
+		},
+		{
+			Name:     "Headers should be treated as case-insensitive and transparently",
+			Input:    "GET / HTTP/1.1\nx-sORACOM-aPI-kEY: this-should-be-hidden\nHello: world",
+			Expected: "GET / HTTP/1.1\nx-sORACOM-aPI-kEY: <hidden>\nHello: world",
+		},
+	}
+
+	for _, data := range testData {
+		data := data // capture
+		t.Run(data.Name, func(t *testing.T) {
+			t.Parallel()
+
+			actualByte := hideSecretHeaders([]byte(data.Input))
+			actual := string(actualByte)
+			if actual != data.Expected {
+				t.Errorf("result of hideSecureHeaders() is unmatched with expected.\nExpected: %v\nActual: %v", data.Expected, actual)
+			}
+		})
+	}
+}
