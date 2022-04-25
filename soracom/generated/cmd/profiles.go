@@ -64,16 +64,7 @@ func getProfile() (*profile, error) {
 }
 
 func getProfileFromExternalCommand(command string) (*profile, error) {
-	var (
-		b   []byte
-		err error
-	)
-
-	if runtime.GOOS == "windows" {
-		b, err = exec.Command("powershell", command).Output()
-	} else {
-		b, err = exec.Command("sh", "-c", command).Output()
-	}
+	b, err := exec.Command(command).Output()
 
 	if err != nil {
 		return nil, err
