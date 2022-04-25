@@ -43,7 +43,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	} else if providedCommandToProvideCredentials != "" {
 		profile, err := getProfileFromExternalCommand(providedCommandToProvideCredentials)
 		if err != nil {
-			lib.PrintfStderr("unable to read the profile from external command.\n")
+			lib.PrintfStderr("unable to get credentials from an external command.\n")
 			return err
 		}
 
@@ -71,7 +71,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		if profile.CommandToProvideCredentials != nil && *profile.CommandToProvideCredentials != "" {
 			p, err := getProfileFromExternalCommand(*profile.CommandToProvideCredentials)
 			if err != nil {
-				lib.PrintfStderr("unable to read credentials from a external command.\n")
+				lib.PrintfStderr("unable to get credentials from an external command.\n")
 				return err
 			}
 
