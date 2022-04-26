@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/kennygrant/sanitize"
+	"github.com/mattn/go-shellwords"
 	"github.com/mitchellh/go-homedir"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"golang.org/x/term"
@@ -64,7 +65,21 @@ func getProfile() (*profile, error) {
 }
 
 func getProfileFromExternalCommand(command string) (*profile, error) {
-	b, err := exec.Command(command).Output()
+	args, err := shellwords.Parse(command)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var b []byte
+	switch len(args) {
+	case 0:
+		return nil, nil
+	case 1:
+		b, err = exec.Command(command).Output()
+	default:
+		b, err = exec.Command(args[0], args[1:]...).Output()
+	}
 
 	if err != nil {
 		return nil, err
