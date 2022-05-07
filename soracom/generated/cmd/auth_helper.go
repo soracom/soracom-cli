@@ -48,8 +48,12 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		}
 
 		areq = &authRequest{
-			AuthKeyID: profile.AuthKeyID,
-			AuthKey:   profile.AuthKey,
+			Email:      profile.Email,
+			Password:   profile.Password,
+			AuthKeyID:  profile.AuthKeyID,
+			AuthKey:    profile.AuthKey,
+			Username:   profile.Username,
+			OperatorID: profile.OperatorID,
 		}
 	} else {
 		profile, err := getProfile()
@@ -75,8 +79,12 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 				return err
 			}
 
+			areq.Email = p.Email
+			areq.Password = p.Password
 			areq.AuthKeyID = p.AuthKeyID
 			areq.AuthKey = p.AuthKey
+			areq.Username = p.Username
+			areq.OperatorID = p.OperatorID
 		}
 	}
 
