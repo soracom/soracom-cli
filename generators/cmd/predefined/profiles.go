@@ -71,15 +71,11 @@ func getProfileFromExternalCommand(command string) (*profile, error) {
 		return nil, err
 	}
 
-	var b []byte
-	switch len(args) {
-	case 0:
+	if len(args) < 1 {
 		return nil, nil
-	case 1:
-		b, err = exec.Command(command).Output()
-	default:
-		b, err = exec.Command(args[0], args[1:]...).Output()
 	}
+
+	b, err := exec.Command(args[0], args[1:]...).Output()
 
 	if err != nil {
 		return nil, err
