@@ -19,6 +19,17 @@ type authRequest struct {
 	OperatorID *string `json:"operatorId,omitempty"`
 }
 
+func authRequestFromProfile(p *profile) *authRequest {
+	return &authRequest{
+		Email:      p.Email,
+		Password:   p.Password,
+		AuthKeyID:  p.AuthKeyID,
+		AuthKey:    p.AuthKey,
+		Username:   p.Username,
+		OperatorID: p.OperatorID,
+	}
+}
+
 type authResult struct {
 	APIKey     string `json:"apiKey"`
 	Token      string `json:"token"`
@@ -46,15 +57,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 			lib.PrintfStderr("unable to get credentials from an external command.\n")
 			return err
 		}
-
-		areq = &authRequest{
-			Email:      profile.Email,
-			Password:   profile.Password,
-			AuthKeyID:  profile.AuthKeyID,
-			AuthKey:    profile.AuthKey,
-			Username:   profile.Username,
-			OperatorID: profile.OperatorID,
-		}
+		areq = authRequestFromProfile(profile)
 	} else {
 		profile, err := getProfile()
 		if err != nil {
@@ -62,15 +65,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 			lib.PrintfStderr("run `soracom configure` first.\n")
 			return err
 		}
-
-		areq = &authRequest{
-			Email:      profile.Email,
-			Password:   profile.Password,
-			AuthKeyID:  profile.AuthKeyID,
-			AuthKey:    profile.AuthKey,
-			Username:   profile.Username,
-			OperatorID: profile.OperatorID,
-		}
+		areq = authRequestFromProfile(profile)
 
 		if profile.CommandToProvideCredentials != nil && *profile.CommandToProvideCredentials != "" {
 			p, err := getProfileFromExternalCommand(*profile.CommandToProvideCredentials)
@@ -78,13 +73,7 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 				lib.PrintfStderr("unable to get credentials from an external command.\n")
 				return err
 			}
-
-			areq.Email = p.Email
-			areq.Password = p.Password
-			areq.AuthKeyID = p.AuthKeyID
-			areq.AuthKey = p.AuthKey
-			areq.Username = p.Username
-			areq.OperatorID = p.OperatorID
+			areq = authRequestFromProfile(p)
 		}
 	}
 
