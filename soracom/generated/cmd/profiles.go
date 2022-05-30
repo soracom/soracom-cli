@@ -19,17 +19,17 @@ import (
 )
 
 type profile struct {
-	Sandbox                     bool    `json:"sandbox"`
-	CoverageType                string  `json:"coverageType"`
-	Email                       *string `json:"email,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	AuthKeyID                   *string `json:"authKeyId,omitempty"`
-	AuthKey                     *string `json:"authKey,omitempty"`
-	Username                    *string `json:"username,omitempty"`
-	OperatorID                  *string `json:"operatorId,omitempty"`
-	Endpoint                    *string `json:"endpoint,omitempty"`
-	RegisterPaymentMethod       bool    `json:"registerPaymentMethod"`
-	CommandToProvideCredentials *string `json:"commandToProvideCredentials,omitempty"`
+	Sandbox               bool    `json:"sandbox"`
+	CoverageType          string  `json:"coverageType"`
+	Email                 *string `json:"email,omitempty"`
+	Password              *string `json:"password,omitempty"`
+	AuthKeyID             *string `json:"authKeyId,omitempty"`
+	AuthKey               *string `json:"authKey,omitempty"`
+	Username              *string `json:"username,omitempty"`
+	OperatorID            *string `json:"operatorId,omitempty"`
+	Endpoint              *string `json:"endpoint,omitempty"`
+	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
+	ProfileCommand        *string `json:"profileCommand,omitempty"`
 }
 
 type authInfo struct {
