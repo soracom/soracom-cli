@@ -15,7 +15,7 @@ func TestGetProfileFromExternalCommand(t *testing.T) {
 	username := "testUsername"
 	operatorID := "testOperatorID"
 
-	command := fmt.Sprintf("/bin/echo \"{\\\"Email\\\": \\\"%s\\\",\\\"Password\\\": \\\"%s\\\",\\\"AuthKeyID\\\": \\\"%s\\\",\\\"AuthKey\\\": \\\"%s\\\",\\\"Username\\\": \\\"%s\\\",\\\"OperatorID\\\": \\\"%s\\\"}\"", email, password, authKeyID, authKey, username, operatorID)
+	command := fmt.Sprintf("/bin/echo \"{\\\"email\\\": \\\"%s\\\",\\\"password\\\": \\\"%s\\\",\\\"authKeyId\\\": \\\"%s\\\",\\\"authKey\\\": \\\"%s\\\",\\\"userName\\\": \\\"%s\\\",\\\"operatorId\\\": \\\"%s\\\"}\"", email, password, authKeyID, authKey, username, operatorID)
 	p, err := getProfileFromExternalCommand(command)
 
 	if !assert.NoError(t, err) {
