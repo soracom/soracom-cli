@@ -159,6 +159,26 @@ paths:
       summary: Performs authentication to access to the SORACOM API.
       x-soracom-cli:
         - auth
+  /auth/logout:
+    post:
+      parameters: []
+      responses:
+        '204':
+          description: Successfully revoked the API key and the API token.
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - Auth
+      description: >-
+        Revoke the API key and API token that are used to call this API. Once
+        revoked, the API key and API token cannot be used to call the SORACOM
+        API, regardless of their expiration time. This API can be called
+        regardless of permission settings.
+      operationId: logout
+      summary: Revoke API key and API token to access to the SORACOM API.
+      x-soracom-cli:
+        - logout
   /auth/password_reset_token/issue:
     post:
       consumes:
@@ -1828,6 +1848,10 @@ paths:
             items:
               $ref: '#/definitions/DiagnosticResponse'
             type: array
+        '400':
+          description: Bad definitions among diagnostic time range (from/to queries).
+        '404':
+          description: The specified resource is not found.
       security:
         - api_key: []
           api_token: []
@@ -2116,7 +2140,7 @@ paths:
           in: query
           name: limit
           required: false
-          type: string
+          type: integer
         - description: >-
             The filePath of the last file entry retrieved on the current page.
             By specifying this parameter, you can continue to retrieve the list
@@ -2387,7 +2411,7 @@ paths:
           in: query
           name: limit
           required: false
-          type: string
+          type: integer
         - description: >-
             The filename  of the last file entry retrieved on the current page.
             By specifying this parameter, you can continue to retrieve the list
@@ -3270,6 +3294,9 @@ paths:
           description: Bad request
         '403':
           description: Unauthorized operation
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: Update permissions for a dashboard of SORACOM Lagoon
@@ -3300,6 +3327,9 @@ paths:
           description: Bad request
         '403':
           description: Unauthorized operation
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: >-
@@ -3330,6 +3360,9 @@ paths:
             type: string
         '400':
           description: Bad request
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: Get a custom icon image link of SORACOM Lagoon
@@ -3351,6 +3384,9 @@ paths:
             type: array
         '400':
           description: Bad request
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: Get the status of active SORACOM Lagoon license packs
@@ -3375,6 +3411,9 @@ paths:
           description: Bad request
         '404':
           description: Operator Not Found
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: >-
@@ -3451,6 +3490,9 @@ paths:
           description: Bad request
         '404':
           description: Operator Not Found
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: >-
@@ -4825,6 +4867,9 @@ paths:
             $ref: '#/definitions/LoraNetworkSet'
         '404':
           description: The specified LoRa network set does not exist.
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - LoraNetworkSet
       description: Inserts/updates tags for the specified LoRa network set.
@@ -4906,6 +4951,8 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: メール登録数の最大を超過しました。
       security:
         - api_key: []
           api_token: []
@@ -5307,6 +5354,9 @@ paths:
             items:
               $ref: '#/definitions/EmailsModel'
             type: array
+        '400':
+          description: |
+            SAM ユーザーの認証情報を使用して呼び出しました。ルートユーザーの認証情報を使用して呼び出してください。
       security:
         - api_key: []
           api_token: []
@@ -6136,6 +6186,32 @@ paths:
       summary: Generate Authentication Token.
       x-soracom-cli:
         - operator generate-api-token
+  '/operators/{operator_id}/tokens':
+    delete:
+      parameters:
+        - description: Operator ID
+          in: path
+          name: operator_id
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Successfully revoked all API keys and API tokens.
+        '400':
+          description: Wrong operator ID was specified.
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - Operator
+      description: >-
+        Revoke all API keys and API tokens that were generated by the root user.
+        Once revoked, the API key and API token cannot be used to call the
+        SORACOM API, regardless of their expiration time.
+      operationId: revokeOperatorAuthTokens
+      summary: Revoke all API keys and API tokens that were generated by the root user.
+      x-soracom-cli:
+        - operator revoke-operator-auth-tokens
   '/operators/{operator_id}/users':
     get:
       produces:
@@ -6901,6 +6977,39 @@ paths:
       summary: Detach Role from User.
       x-soracom-cli:
         - users detach-role
+  '/operators/{operator_id}/users/{user_name}/tokens':
+    delete:
+      parameters:
+        - description: Operator ID
+          in: path
+          name: operator_id
+          required: true
+          type: string
+        - description: SAM user name
+          in: path
+          name: user_name
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Successfully revoked all API keys and API tokens
+        '400':
+          description: Wrong operator ID or username was specified.
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - User
+      description: >-
+        Revoke all API keys and API tokens that were generated by the specified
+        SAM user. Once revoked, the API key and API token cannot be used to call
+        the SORACOM API, regardless of their expiration time.
+      operationId: revokeUserAuthTokens
+      summary: >-
+        Revoke all API keys and API tokens that were generated by the specified
+        SAM user.
+      x-soracom-cli:
+        - users revoke-user-auth-tokens
   /orders:
     get:
       produces:
@@ -7063,6 +7172,11 @@ paths:
       summary: List ordered subscribers.
       x-soracom-cli:
         - orders list-subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/orders/{order_id}/subscribers/register':
     post:
       produces:
@@ -8707,6 +8821,11 @@ paths:
       summary: Get data sent from a SIM.
       x-soracom-cli:
         - sims get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/sims/{sim_id}/deactivate':
     post:
       produces:
@@ -8820,7 +8939,7 @@ paths:
       tags:
         - Sim
       description: Send ICMP ping requests to a SIM.
-      operationId: downlinkPingToUserEquipment
+      operationId: simDownlinkPingToUserEquipment
       summary: Send ping requests to a SIM.
       x-soracom-cli:
         - sims downlink-ping
@@ -8899,13 +9018,18 @@ paths:
         - Sim
       description: >-
         Returns the history of session creation, change, and deletion events
-        occurred on the target SIM in the last 14 days. If the total number of
+        occurred on the target SIM in the last 32 days. If the total number of
         events does not fit in one page, a URL for accessing the next page is
         returned in the `Link` header of the response.
       operationId: listSimSessionEvents
       summary: List Session Events.
       x-soracom-cli:
         - sims session-events
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/sims/{sim_id}/packet_capture_sessions':
     get:
       produces:
@@ -8947,6 +9071,11 @@ paths:
       summary: List Packet Capture Sessions
       x-soracom-cli:
         - sims list-packet-capture-sessions
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
         - application/json
@@ -9891,6 +10020,10 @@ paths:
           description: The SIM's detailed information after the update.
           schema:
             $ref: '#/definitions/Sim'
+        '400':
+          description: >-
+            The specified speed class does not exist to the subscription. For
+            example, arc.standard cannot be specified for plan01s.
         '404':
           description: The specified SIM does not exist.
       security:
@@ -11084,6 +11217,11 @@ paths:
           required: true
           schema:
             items:
+              description: 設定するバンドル。以下のいずれかを指定します。
+              enum:
+                - D-300MB
+                - DU-10GB
+                - DU-50GB
               type: string
             type: array
       responses:
@@ -11292,7 +11430,7 @@ paths:
       tags:
         - Subscriber
       description: Send ICMP ping requests to a subscriber.
-      operationId: sendSubscriberDownlinkPing
+      operationId: subscriberDownlinkPingToUserEquipment
       summary: Send ping requests to a subscriber.
       x-soracom-cli:
         - subscribers downlink-ping
@@ -11370,10 +11508,10 @@ paths:
       tags:
         - Subscriber
       description: >-
-        Returns the event history for the specified subscriber, including
-        session creation, change, and deletion. If the total number of events
-        does not fit in one page, a URL for accessing the next page is returned
-        in the `Link` header of the response.
+        Returns the history of session creation, change, and deletion events
+        occurred on the target SIM in the last 32 days. If the total number of
+        events does not fit in one page, a URL for accessing the next page is
+        returned in the `Link` header of the response.
       operationId: listSessionEvents
       summary: List Session Events.
       x-soracom-cli:
@@ -12010,6 +12148,66 @@ paths:
       summary: Close SORACOM Gate.
       x-soracom-cli:
         - vpg close-gate
+  '/virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator':
+    post:
+      produces:
+        - application/json
+      parameters:
+        - description: VPG ID
+          format: VpgId
+          in: path
+          name: vpg_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Disabled the privacy separator successfully
+          schema:
+            $ref: '#/definitions/VirtualPrivateGateway'
+        '404':
+          description: No such VPG found
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - VirtualPrivateGateway
+      description: >-
+        Disable SORACOM Gate privacy separator feature on the VPG to allow the
+        Gate D2D function.
+      operationId: disableGatePrivacySeparator
+      summary: Disable SORACOM Gate privacy separator feature on the VPG
+      x-soracom-cli:
+        - vpg disable-gate-privacy-separator
+  '/virtual_private_gateways/{vpg_id}/gate/enable_privacy_separator':
+    post:
+      produces:
+        - application/json
+      parameters:
+        - description: VPG ID
+          format: VpgId
+          in: path
+          name: vpg_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Enabled the privacy separator successfully
+          schema:
+            $ref: '#/definitions/VirtualPrivateGateway'
+        '404':
+          description: No such VPG found
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - VirtualPrivateGateway
+      description: >-
+        Enable SORACOM Gate privacy separator feature on the VPG to prohibit the
+        Gate D2D function.
+      operationId: enableGatePrivacySeparator
+      summary: Enable SORACOM Gate privacy separator feature on the VPG
+      x-soracom-cli:
+        - vpg enable-gate-privacy-separator
   '/virtual_private_gateways/{vpg_id}/gate/open':
     post:
       consumes:
@@ -12486,6 +12684,11 @@ paths:
       summary: List Packet Capture Sessions
       x-soracom-cli:
         - vpg list-packet-capture-sessions
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
         - application/json
@@ -13203,8 +13406,14 @@ definitions:
   Capabilities:
     properties:
       data:
+        description: |
+          - `true`: データ通信あり
+          - `false`: データ通信なし
         type: boolean
       sms:
+        description: |
+          - `true`: SMS あり
+          - `false`: SMS なし
         type: boolean
     type: object
   Cell:
@@ -14043,6 +14252,20 @@ definitions:
   ExpiryTime:
     properties:
       expiryAction:
+        description: >
+          期限切れ時のアクション。以下のいずれかを指定します。各設定について詳しくは、[IoT SIM
+          の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/)
+          を参照してください。なお、`terminate` を指定する場合は、あらかじめ解約プロテクションを解除してください。
+
+          - `doNothing` : 保留
+
+          - `deleteSession` : セッション切断
+
+          - `deactivate` : 休止
+
+          - `suspend` : 利用中断
+
+          - `terminate` : 解約
         enum:
           - doNothing
           - deleteSession
@@ -15101,6 +15324,16 @@ definitions:
               format: int32
               type: integer
             licensePackName:
+              description: >
+                Specify the license packs for which you want to update the
+                number.
+
+                - `basicUser`: User License Pack
+
+                - `basicDashboard`: Dashboard License Pack
+              enum:
+                - basicUser
+                - basicDashboard
               type: string
           type: object
         type: array
@@ -15286,13 +15519,13 @@ definitions:
   LocationRegistrationStatus:
     properties:
       cs:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
         description: Information on location registration to the CS network
       eps:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
         description: Information on location registration to the EPS network
       ps:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
         description: Information on location registration to the PS network
     type: object
   LocationRegistrationStatusForNetwork:
@@ -15925,6 +16158,7 @@ definitions:
       groupId:
         type: string
       registrationSecret:
+        description: PUK or PASSCODE on SIM card
         type: string
     required:
       - registrationSecret
@@ -15938,6 +16172,7 @@ definitions:
       groupId:
         type: string
       registrationSecret:
+        description: PUK or PASSCODE on SIM card
         type: string
     required:
       - registrationSecret
@@ -16047,6 +16282,7 @@ definitions:
           - SimSubscriptionStatusRule
           - DailyTotalTrafficRule
           - MonthlyTotalTrafficRule
+          - MonthlyChargeRule
         type: string
     required:
       - properties
@@ -16064,10 +16300,15 @@ definitions:
         type: string
       inactiveTimeoutOffsetMinutes:
         type: string
+      limitTotalAmount:
+        type: string
       limitTotalTrafficMegaByte:
         type: string
       runOnceAmongTarget:
-        type: boolean
+        enum:
+          - true
+          - false
+        type: string
       targetOtaStatus:
         description: Only for SimSubscriptionStatusRule
         enum:
@@ -16096,7 +16337,6 @@ definitions:
         type: string
     required:
       - inactiveTimeoutDateConst
-      - limitTotalTrafficMegaByte
     type: object
   SessionEvent:
     properties:
@@ -16160,7 +16400,10 @@ definitions:
         format: int64
         type: integer
       online:
-        description: Whether or not the SIM is online.
+        description: |
+          セッション状態
+          - `true`: オンライン
+          - `false`: オフライン
         type: boolean
       ueIpAddress:
         description: The IP address of the device.
@@ -16382,7 +16625,21 @@ definitions:
       speedClass:
         type: string
       status:
-        type: string
+        description: |
+          IoT SIM のステータス
+          - `ready`: 準備完了
+          - `active`: 使用中
+          - `inactive`: 休止中
+          - `standby`: 利用開始待ち
+          - `suspended`: 利用中断中
+          - `terminated`: 解約済み
+        enum:
+          - ready
+          - active
+          - inactive
+          - standby
+          - suspended
+          - terminated
       terminationEnabled:
         type: boolean
       type:
@@ -16759,11 +17016,31 @@ definitions:
   UpdateSpeedClassRequest:
     properties:
       speedClass:
+        description: |
+          速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
+          - plan01s、plan01s - Low Data Volume、planX3、plan-D の場合:
+              - `s1.minimum`
+              - `s1.slow`
+              - `s1.standard`
+              - `s1.fast`
+              - `s1.4xfast`
+          - plan-KM1 の場合:
+              - `t1.standard`
+          - plan-DU の場合:
+              - `u1.standard`
+              - `u1.slow`
+          - バーチャル SIM/Subscriber の場合:
+              - `arc.standard`
         enum:
           - s1.minimum
           - s1.slow
           - s1.standard
           - s1.fast
+          - s1.4xfast
+          - t1.standard
+          - u1.standard
+          - u1.slow
+          - arc.standard
         type: string
     required:
       - speedClass
@@ -16935,6 +17212,8 @@ securityDefinitions:
     in: header
     name: X-Soracom-Token
     type: apiKey
+tags:
+  - name: AuditLog
 x-components:
   examples:
     APITokenCredentials:

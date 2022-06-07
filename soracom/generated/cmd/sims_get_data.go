@@ -27,6 +27,9 @@ var SimsGetDataCmdLimit int64
 // SimsGetDataCmdTo holds value of 'to' option
 var SimsGetDataCmdTo int64
 
+// SimsGetDataCmdPaginate indicates to do pagination or not
+var SimsGetDataCmdPaginate bool
+
 // SimsGetDataCmdOutputJSONL indicates to output with jsonl format
 var SimsGetDataCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func init() {
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+
+	SimsGetDataCmd.Flags().BoolVar(&SimsGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimsGetDataCmd.Flags().BoolVar(&SimsGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SimsCmd.AddCommand(SimsGetDataCmd)
@@ -114,6 +119,10 @@ func collectSimsGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsGetDataCmd("/sims/{sim_id}/data"),
 		query:  buildQueryForSimsGetDataCmd(),
+
+		doPagination:                      SimsGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

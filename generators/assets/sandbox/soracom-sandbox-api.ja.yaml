@@ -308,6 +308,15 @@ definitions:
   sandboxCreateSubscriberRequest:
     properties:
       subscription:
+        description: サブスクリプション。以下のいずれかを指定します。
+        enum:
+          - plan01s
+          - plan01s-low_data_volume
+          - planX3
+          - plan-D
+          - plan-K
+          - plan-KM1
+          - plan-DU
         type: string
     type: object
   sandboxCreateSubscriberResponse:
@@ -380,7 +389,14 @@ definitions:
       authKeyId:
         type: string
       coverageTypes:
+        description: |
+          カバレッジタイプ
+          - `g`: グローバルカバレッジ
+          - `jp`: 日本カバレッジ
         items:
+          enum:
+            - g
+            - jp
           type: string
         type: array
       email:
@@ -456,5 +472,7 @@ definitions:
       - orderId
       - operatorId
     type: object
+tags:
+  - name: Coupon
 x-components: {}
 

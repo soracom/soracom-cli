@@ -144,14 +144,32 @@ paths:
       tags:
         - Auth
       description: >-
-        API アクセスの認証を行います。ルートアカウントで認証する場合は email と password、認証キーでの認証の場合は
-        authKeyId と authKey、SAM ユーザー認証の場合は operatorId, userName, password
+        API アクセスの認証を行います。ルートユーザーで認証する場合は email と password、認証キーでの認証の場合は authKeyId
+        と authKey、SAM ユーザー認証の場合は operatorId, userName, password
         をリクエストに含めてください。認証が成功した場合、API キーと API トークンが返されるので、以降の認証が必要なリクエスト時にはこの API
         キーと API トークンをヘッダーに付与してリクエストを行ってください。
       operationId: auth
       summary: API アクセスの認証を行い、API キーと API トークンを発行します。
       x-soracom-cli:
         - auth
+  /auth/logout:
+    post:
+      parameters: []
+      responses:
+        '204':
+          description: API キーと API トークンの無効化に成功しました。
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - Auth
+      description: >-
+        この API を呼び出すときに指定された API キーと API トークンを無効化します。無効化したあとは、有効期間に関わらず API キーと
+        API トークンを用いて SORACOM API を呼び出すことはできません。この API は、権限設定に関わらず呼び出すことができます。
+      operationId: logout
+      summary: SORACOM API にアクセスするための API キーと API トークンを無効化します。
+      x-soracom-cli:
+        - logout
   /auth/password_reset_token/issue:
     post:
       consumes:
@@ -1767,6 +1785,10 @@ paths:
             items:
               $ref: '#/definitions/DiagnosticResponse'
             type: array
+        '400':
+          description: 診断対象期間の指定 (from/to) に誤りがあります。
+        '404':
+          description: 指定されたリソースが見つかりませんでした。
       security:
         - api_key: []
           api_token: []
@@ -2051,7 +2073,7 @@ paths:
           in: query
           name: limit
           required: false
-          type: string
+          type: integer
         - description: >-
             現ページで取得した最後のファイルエントリの filePath
             。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
@@ -2310,7 +2332,7 @@ paths:
           in: query
           name: limit
           required: false
-          type: string
+          type: integer
         - description: >-
             現ページで取得した最後のファイルエントリの filename
             。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
@@ -2334,7 +2356,7 @@ paths:
         - FileEntry
       description: >-
         scope と path で指定された配下のファイルエントリのリストを返却します。この操作はディレクトリにのみ有効で、与えられた path
-        に対応するファイルエントリがディレクトリでない場合エラーが返されます。エントリの総数が １
+        に対応するファイルエントリがディレクトリでない場合エラーが返されます。エントリの総数が 1
         ページに収まらない場合、次のページへアクセスするための URL が Link ヘッダに含まれます。
       operationId: listFiles
       summary: scope と path で指定されたファイルやディレクトリの一覧を取得します。
@@ -3076,7 +3098,7 @@ paths:
           api_token: []
       tags:
         - Group
-      description: 指定された Configuratio Group のタグを追加・更新
+      description: 指定された Configuration Group のタグを追加・更新
       operationId: putGroupTags
       summary: Update Group Tags
       x-sam-operationId: putTags
@@ -3175,6 +3197,9 @@ paths:
           description: Bad request
         '403':
           description: Unauthorized operation
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon のダッシュボードの権限を更新します
@@ -3205,6 +3230,9 @@ paths:
           description: Bad request
         '403':
           description: Unauthorized operation
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon のダッシュボードの権限を初期化します
@@ -3231,6 +3259,9 @@ paths:
             type: string
         '400':
           description: Bad request
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon の提供するカスタムアイコンのイメージへのリンクを提供します
@@ -3252,6 +3283,9 @@ paths:
             type: array
         '400':
           description: Bad request
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon のライセンスパックのステータスを取得します
@@ -3276,6 +3310,9 @@ paths:
           description: Bad request
         '404':
           description: Operator Not Found
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon の追加ライセンスパックを更新・変更します。この API による操作は root アカウントのみが可能です。
@@ -3348,6 +3385,9 @@ paths:
           description: Bad request
         '404':
           description: Operator Not Found
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - Lagoon
       description: SORACOM Lagoon のプランを変更します。この API による操作は root アカウントのみが可能です。
@@ -3836,7 +3876,7 @@ paths:
             $ref: '#/definitions/LoraData'
       responses:
         '204':
-          description: データは LoRa Network Server にセットされ、送信先デバイスが取得出来る状態になったことを示す。
+          description: データは LoRa Network Server にセットされ、送信先デバイスが取得できる状態になったことを示す。
         '400':
           description: 与えられた JSON に無効な値が含まれている。
         '404':
@@ -3849,8 +3889,8 @@ paths:
       description: >-
         指定したデバイスにデータを送信する。データは LoRa Network Server
         にセットされ、次に利用可能なデータ送信スロットを使って指定デバイスに送信される。未送信のデータが LoRa Network Server
-        にあった場合には、最新の受信データで上書きされる。 一定時間(2
-        時間)受け取られなかった場合、デバイス受信時に新しいメッセージを受けた場合は、メッセージは破棄されます。
+        にあった場合には、最新の受信データで上書きされる。 一定時間 (2 時間)
+        受け取られなかった場合、デバイス受信時に新しいメッセージを受けた場合は、メッセージは破棄されます。
       operationId: sendDataToLoraDevice
       summary: Send data to a LoRa device.
       x-soracom-cli:
@@ -4673,6 +4713,9 @@ paths:
             $ref: '#/definitions/LoraNetworkSet'
         '404':
           description: 指定された LoRa network set が存在しない
+      security:
+        - api_key: []
+          api_token: []
       tags:
         - LoraNetworkSet
       description: 指定された LoRa network set のタグを追加・更新
@@ -4750,6 +4793,8 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: メール登録数の最大を超過しました。
       security:
         - api_key: []
           api_token: []
@@ -5145,6 +5190,9 @@ paths:
             items:
               $ref: '#/definitions/EmailsModel'
             type: array
+        '400':
+          description: |
+            SAM ユーザーの認証情報を使用して呼び出しました。ルートユーザーの認証情報を使用して呼び出してください。
       security:
         - api_key: []
           api_token: []
@@ -5968,6 +6016,31 @@ paths:
       summary: Generate Authentication Token
       x-soracom-cli:
         - operator generate-api-token
+  '/operators/{operator_id}/tokens':
+    delete:
+      parameters:
+        - description: オペレーターID
+          in: path
+          name: operator_id
+          required: true
+          type: string
+      responses:
+        '204':
+          description: ルートユーザーが発行した全ての API キーと API トークンの無効化に成功しました。
+        '400':
+          description: 誤ったオペレーター ID が指定されました。
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - Operator
+      description: >-
+        ルートユーザーが発行した全ての API キーと API トークンを無効化します。無効化したあとは、有効期間に関わらず API キーと API
+        トークンを用いて SORACOM API を呼び出すことはできません。
+      operationId: revokeOperatorAuthTokens
+      summary: ルートユーザーが発行した全ての API キーと API トークンを無効化します。
+      x-soracom-cli:
+        - operator revoke-operator-auth-tokens
   '/operators/{operator_id}/users':
     get:
       produces:
@@ -6733,6 +6806,36 @@ paths:
       summary: Detach Role from User
       x-soracom-cli:
         - users detach-role
+  '/operators/{operator_id}/users/{user_name}/tokens':
+    delete:
+      parameters:
+        - description: オペレーターID
+          in: path
+          name: operator_id
+          required: true
+          type: string
+        - description: SAM ユーザー名
+          in: path
+          name: user_name
+          required: true
+          type: string
+      responses:
+        '204':
+          description: 指定されたユーザーが発行した全ての API キーと API トークンの無効化に成功しました。
+        '400':
+          description: 誤ったオペレーター ID または SAM ユーザー名が指定されました。
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - User
+      description: >-
+        指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化します。無効化されたあとは、有効期間に関わらず API
+        キーと API トークンを用いて SORACOM API を呼び出すことはできません。
+      operationId: revokeUserAuthTokens
+      summary: 指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化します。
+      x-soracom-cli:
+        - users revoke-user-auth-tokens
   /orders:
     get:
       produces:
@@ -6889,6 +6992,11 @@ paths:
       summary: List ordered subscribers.
       x-soracom-cli:
         - orders list-subscribers
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/orders/{order_id}/subscribers/register':
     post:
       produces:
@@ -8474,6 +8582,11 @@ paths:
       summary: Get data sent from a SIM.
       x-soracom-cli:
         - sims get-data
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/sims/{sim_id}/deactivate':
     post:
       produces:
@@ -8587,7 +8700,7 @@ paths:
       tags:
         - Sim
       description: SIM に対して ICMP ping リクエストを送信する。
-      operationId: downlinkPingToUserEquipment
+      operationId: simDownlinkPingToUserEquipment
       summary: SIM に対して ping リクエストを送信する。
       x-soracom-cli:
         - sims downlink-ping
@@ -8662,12 +8775,17 @@ paths:
       tags:
         - Sim
       description: >-
-        指定された SIM に関する過去 14 日間のセッション作成・変更・削除のイベント履歴を返す。イベントの総数が 1
+        指定された SIM に関する過去 32 日間のセッション作成・変更・切断のイベント履歴を返す。イベントの総数が 1
         ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を`Link`ヘッダに含めて返す。
       operationId: listSimSessionEvents
       summary: List Session Events
       x-soracom-cli:
         - sims session-events
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   '/sims/{sim_id}/packet_capture_sessions':
     get:
       produces:
@@ -8710,6 +8828,11 @@ paths:
       summary: List packet capture sessions associated with the SIM
       x-soracom-cli:
         - sims list-packet-capture-sessions
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
         - application/json
@@ -9641,6 +9764,10 @@ paths:
           description: 更新後の SIM の詳細情報
           schema:
             $ref: '#/definitions/Sim'
+        '400':
+          description: >-
+            指定された速度クラスは、このサブスクリプションに存在しません。たとえば、plan01s のときは arc.standard
+            は指定できません。
         '404':
           description: 指定された SIM が存在しない
       security:
@@ -10043,7 +10170,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で通信量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で通信量が記録されます。
           enum:
             - month
             - day
@@ -10089,7 +10218,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で通信量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で通信量が記録されます。
           enum:
             - month
             - day
@@ -10152,7 +10283,7 @@ paths:
       tags:
         - Stats
       description: >-
-        Operator が保有する全 Subscriber の Soracom Beam 利用量履歴をファイルで取得する。取得対象の期間は from,
+        Operator が保有する全 Subscriber の SORACOM Beam 利用量履歴をファイルで取得する。取得対象の期間は from,
         to の unixtime で指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
       operationId: exportBeamStats
       summary: Export Beam Usage Report of All Subscribers
@@ -10178,7 +10309,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で利用量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で利用量が記録されます。
           enum:
             - month
             - day
@@ -10199,7 +10332,7 @@ paths:
           api_token: []
       tags:
         - Stats
-      description: IMSI で指定した Subscriber の Soracom Beam 利用量履歴を取得する。
+      description: IMSI で指定した Subscriber の SORACOM Beam 利用量履歴を取得する。
       operationId: getBeamStats
       summary: Get Beam Usage Report of Subscriber
       x-soracom-cli:
@@ -10241,7 +10374,7 @@ paths:
       tags:
         - Stats
       description: >-
-        Operator が保有する全 Subscriber の Soracom Funk 利用量履歴をファイルで取得する。取得対象の期間は from,
+        Operator が保有する全 Subscriber の SORACOM Funk 利用量履歴をファイルで取得する。取得対象の期間は from,
         to の unixtime で指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
       operationId: exportFunkStats
       summary: Export Funk Usage Report of All Subscribers
@@ -10267,7 +10400,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で利用量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で利用量が記録されます。
           enum:
             - month
             - day
@@ -10288,7 +10423,7 @@ paths:
           api_token: []
       tags:
         - Stats
-      description: IMSI で指定した Subscriber の Soracom Funk 利用量履歴を取得する。
+      description: IMSI で指定した Subscriber の SORACOM Funk 利用量履歴を取得する。
       operationId: getFunkStats
       summary: Get Funk Usage Report of Subscriber
       x-soracom-cli:
@@ -10330,7 +10465,7 @@ paths:
       tags:
         - Stats
       description: >-
-        Operator が保有する全 Subscriber の Soracom Funnel 利用量履歴をファイルで取得する。取得対象の期間は
+        Operator が保有する全 Subscriber の SORACOM Funnel 利用量履歴をファイルで取得する。取得対象の期間は
         from, to の unixtime で指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
       operationId: exportFunnelStats
       summary: Export Funnel Usage Report of All Subscribers
@@ -10356,7 +10491,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で利用量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で利用量が記録されます。
           enum:
             - month
             - day
@@ -10377,7 +10514,7 @@ paths:
           api_token: []
       tags:
         - Stats
-      description: IMSI で指定した Subscriber の Soracom Funnel 利用量履歴を取得する。
+      description: IMSI で指定した Subscriber の SORACOM Funnel 利用量履歴を取得する。
       operationId: getFunnelStats
       summary: Get Funnel Usage Report of Subscriber
       x-soracom-cli:
@@ -10432,7 +10569,9 @@ paths:
           name: to
           required: true
           type: integer
-        - description: 集計単位。minutes は基本的に 5 分間隔。
+        - description: >-
+            集計単位。minutes は最も細かい粒度で利用量履歴を出力します。ただし、デバイスが SORACOM
+            プラットフォームに接続している間は、約 5 分間隔で利用量が記録されます。
           enum:
             - month
             - day
@@ -10453,7 +10592,7 @@ paths:
           api_token: []
       tags:
         - Stats
-      description: IMSI で指定した Subscriber の Soracom Harvest 利用量履歴を取得する。
+      description: IMSI で指定した Subscriber の SORACOM Harvest 利用量履歴を取得する。
       operationId: getHarvestStats
       summary: Get Harvest Usage Report of Subscriber
       x-soracom-cli:
@@ -10782,6 +10921,11 @@ paths:
           required: true
           schema:
             items:
+              description: 設定するバンドル。以下のいずれかを指定します。
+              enum:
+                - D-300MB
+                - DU-10GB
+                - DU-50GB
               type: string
             type: array
       responses:
@@ -10789,6 +10933,8 @@ paths:
           description: 更新後の Subscriber の詳細情報
           schema:
             $ref: '#/definitions/Subscriber'
+        '400':
+          description: 指定されたバンドルは、この Subscriber のサブスクリプションではサポートされていない
         '404':
           description: 指定された Subscriber が存在しない
       security:
@@ -10979,7 +11125,7 @@ paths:
       tags:
         - Subscriber
       description: Subscriber に対して ICMP ping リクエストを送信する。
-      operationId: sendSubscriberDownlinkPing
+      operationId: subscriberDownlinkPingToUserEquipment
       summary: Subscriber に対して ping リクエストを送信する。
       x-soracom-cli:
         - subscribers downlink-ping
@@ -11054,7 +11200,7 @@ paths:
       tags:
         - Subscriber
       description: >-
-        指定された Subscriber のセッション作成・変更・削除のイベント履歴を返す。イベントの総数が 1
+        指定された Subscriber に関する過去 32 日間のセッション作成・変更・切断のイベント履歴を返す。イベントの総数が 1
         ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を`Link`ヘッダに含めて返す。
       operationId: listSessionEvents
       summary: List Session Events
@@ -11673,6 +11819,66 @@ paths:
       summary: Close SORACOM Gate.
       x-soracom-cli:
         - vpg close-gate
+  '/virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator':
+    post:
+      produces:
+        - application/json
+      parameters:
+        - description: VPG ID
+          format: VpgId
+          in: path
+          name: vpg_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: プライバシーセパレーター機能の無効化に成功
+          schema:
+            $ref: '#/definitions/VirtualPrivateGateway'
+        '404':
+          description: 指定された VPG が存在しない
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - VirtualPrivateGateway
+      description: >-
+        指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効にする。これにより Gate D2D
+        機能を有効化する。
+      operationId: disableGatePrivacySeparator
+      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効にする。
+      x-soracom-cli:
+        - vpg disable-gate-privacy-separator
+  '/virtual_private_gateways/{vpg_id}/gate/enable_privacy_separator':
+    post:
+      produces:
+        - application/json
+      parameters:
+        - description: VPG ID
+          format: VpgId
+          in: path
+          name: vpg_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: プライバシーセパレーター機能の有効化に成功
+          schema:
+            $ref: '#/definitions/VirtualPrivateGateway'
+        '404':
+          description: 指定された VPG が存在しない
+      security:
+        - api_key: []
+          api_token: []
+      tags:
+        - VirtualPrivateGateway
+      description: >-
+        指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効にする。これにより Gate D2D
+        機能を無効化する。
+      operationId: enableGatePrivacySeparator
+      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効にする。
+      x-soracom-cli:
+        - vpg enable-gate-privacy-separator
   '/virtual_private_gateways/{vpg_id}/gate/open':
     post:
       consumes:
@@ -11717,7 +11923,7 @@ paths:
           type: string
       responses:
         '200':
-          description: 正しく VPG に登録された Gate Peer のリストが取得出来た
+          description: 正しく VPG に登録された Gate Peer のリストが取得できた
           schema:
             items:
               $ref: '#/definitions/GatePeer'
@@ -12150,6 +12356,11 @@ paths:
       summary: List Packet Capture Sessions
       x-soracom-cli:
         - vpg list-packet-capture-sessions
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
     post:
       consumes:
         - application/json
@@ -12336,7 +12547,7 @@ paths:
         '200':
           description: 指定された VPG の Terminate 作業を開始
         '400':
-          description: 指定された VPG の Terminate 出来ない理由が存在
+          description: 指定された VPG の Terminate できない理由が存在
         '404':
           description: 指定された VPG は存在しない
       security:
@@ -12863,8 +13074,14 @@ definitions:
   Capabilities:
     properties:
       data:
+        description: |
+          - `true`: データ通信あり
+          - `false`: データ通信なし
         type: boolean
       sms:
+        description: |
+          - `true`: SMS あり
+          - `false`: SMS なし
         type: boolean
     type: object
   Cell:
@@ -13698,6 +13915,20 @@ definitions:
   ExpiryTime:
     properties:
       expiryAction:
+        description: >
+          期限切れ時のアクション。以下のいずれかを指定します。各設定について詳しくは、[IoT SIM
+          の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/)
+          を参照してください。なお、`terminate` を指定する場合は、あらかじめ解約プロテクションを解除してください。
+
+          - `doNothing` : 保留
+
+          - `deleteSession` : セッション切断
+
+          - `deactivate` : 休止
+
+          - `suspend` : 利用中断
+
+          - `terminate` : 解約
         enum:
           - doNothing
           - deleteSession
@@ -14621,7 +14852,7 @@ definitions:
         description: 追加するメールアドレス
         type: string
       password:
-        description: オペレーターのパスワード
+        description: ルートユーザーのパスワード
         type: string
     required:
       - email
@@ -14758,6 +14989,13 @@ definitions:
               format: int32
               type: integer
             licensePackName:
+              description: |
+                個数を変更するライセンスパックを指定します。
+                - `basicUser`: ユーザー追加パック
+                - `basicDashboard`: ダッシュボード追加パック
+              enum:
+                - basicUser
+                - basicDashboard
               type: string
           type: object
         type: array
@@ -14943,19 +15181,19 @@ definitions:
   LocationRegistrationStatus:
     properties:
       cs:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
-        description: CS ネットワークへの位置登録状況
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
+        description: CS ネットワークへのネットワーク登録状況
       eps:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
-        description: EPS ネットワークへの位置登録状況
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
+        description: EPS ネットワークへのネットワーク登録状況
       ps:
-        $ref: '#components/schemas/LocationRegistrationStatusForNetwork'
-        description: PS ネットワークへの位置登録状況
+        $ref: '#/definitions/LocationRegistrationStatusForNetwork'
+        description: PS ネットワークへのネットワーク登録状況
     type: object
   LocationRegistrationStatusForNetwork:
     properties:
       lastModifiedTime:
-        description: 最後に位置登録が成功したときのタイムスタンプ（ミリ秒単位の Unix 時間）
+        description: 最後にネットワーク登録が成功したときのタイムスタンプ（ミリ秒単位の Unix 時間）
         format: int64
         type: integer
       vplmn:
@@ -15581,6 +15819,7 @@ definitions:
       groupId:
         type: string
       registrationSecret:
+        description: PUK or PASSCODE on SIM card
         type: string
     required:
       - registrationSecret
@@ -15594,6 +15833,7 @@ definitions:
       groupId:
         type: string
       registrationSecret:
+        description: PUK or PASSCODE on SIM card
         type: string
     required:
       - registrationSecret
@@ -15703,6 +15943,7 @@ definitions:
           - SimSubscriptionStatusRule
           - DailyTotalTrafficRule
           - MonthlyTotalTrafficRule
+          - MonthlyChargeRule
         type: string
     required:
       - properties
@@ -15720,10 +15961,15 @@ definitions:
         type: string
       inactiveTimeoutOffsetMinutes:
         type: string
+      limitTotalAmount:
+        type: string
       limitTotalTrafficMegaByte:
         type: string
       runOnceAmongTarget:
-        type: boolean
+        enum:
+          - true
+          - false
+        type: string
       targetOtaStatus:
         description: SimSubscriptionStatusRule の時のみ有効
         enum:
@@ -15752,7 +15998,6 @@ definitions:
         type: string
     required:
       - inactiveTimeoutDateConst
-      - limitTotalTrafficMegaByte
     type: object
   SessionEvent:
     properties:
@@ -15816,7 +16061,10 @@ definitions:
         format: int64
         type: integer
       online:
-        description: Whether or not the SIM is online.
+        description: |
+          セッション状態
+          - `true`: オンライン
+          - `false`: オフライン
         type: boolean
       ueIpAddress:
         description: The IP address of the device.
@@ -16038,7 +16286,21 @@ definitions:
       speedClass:
         type: string
       status:
-        type: string
+        description: |
+          IoT SIM のステータス
+          - `ready`: 準備完了
+          - `active`: 使用中
+          - `inactive`: 休止中
+          - `standby`: 利用開始待ち
+          - `suspended`: 利用中断中
+          - `terminated`: 解約済み
+        enum:
+          - ready
+          - active
+          - inactive
+          - standby
+          - suspended
+          - terminated
       terminationEnabled:
         type: boolean
       type:
@@ -16091,11 +16353,16 @@ definitions:
     properties:
       encodingType:
         default: 2
-        description: >-
-          メッセージ本体のエンコーディングタイプ。`1` はメッセージ本体を `DCS_7BIT` で送信することを示す。このエンコーディングでは 1
-          バイト文字しか送ることができない。`2` は `DCS_UCS2`
-          を示す。このエンコーディングではマルチバイト文字がサポートされる。encodingType が省略された場合のデフォルトは `2`
-          (`DCS_UCS2`)。
+        description: >
+          メッセージ本体のエンコーディングタイプ。デフォルトは `2` (`DCS_UCS2`)。
+
+          - `1`: GSM 7 ビット標準アルファベットを送信できます。漢字やキリル文字、アラビア文字などは送信できません。最大 160 文字
+          (最大 140 バイト)。
+
+              例: `{"encodingType":1, "payload":"Test message."}`
+          - `2`: UCS-2 で送信する。漢字やキリル文字、アラビア文字などを送信できます。最大 70 文字。
+
+              例: `{"encodingType":2, "payload":"テストメッセージ"}`
         type: integer
       payload:
         type: string
@@ -16240,7 +16507,7 @@ definitions:
         type: integer
       locationRegistrationStatus:
         $ref: '#/definitions/LocationRegistrationStatus'
-        description: 各ネットワークへの位置登録状況
+        description: 各ネットワークへのネットワーク登録状況
       moduleType:
         description: >-
           物理的な SIM の形状（フォームファクタ）。取りうる値は、標準 (2FF) サイズの "mini"、 3FF サイズの
@@ -16408,11 +16675,31 @@ definitions:
   UpdateSpeedClassRequest:
     properties:
       speedClass:
+        description: |
+          速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
+          - plan01s、plan01s - Low Data Volume、planX3、plan-D の場合:
+              - `s1.minimum`
+              - `s1.slow`
+              - `s1.standard`
+              - `s1.fast`
+              - `s1.4xfast`
+          - plan-KM1 の場合:
+              - `t1.standard`
+          - plan-DU の場合:
+              - `u1.standard`
+              - `u1.slow`
+          - バーチャル SIM/Subscriber の場合:
+              - `arc.standard`
         enum:
           - s1.minimum
           - s1.slow
           - s1.standard
           - s1.fast
+          - s1.4xfast
+          - t1.standard
+          - u1.standard
+          - u1.slow
+          - arc.standard
         type: string
     required:
       - speedClass
@@ -16584,6 +16871,121 @@ securityDefinitions:
     in: header
     name: X-Soracom-Token
     type: apiKey
+tags:
+  - description: '[監査ログ](/ja-jp/docs/api-audit-logs/)'
+    name: AuditLog
+  - description: |
+      [API 呼び出しにおける認証](/ja-jp/tools/api/key-and-token/)
+      - API キーおよび API トークンの発行
+      - パスワードリセットトークンの発行および検証
+    name: Auth
+  - description: '[ご利用料金と支払い明細](/ja-jp/guides/accounting/check-usage/check-usage/)'
+    name: Billing
+  - description: '[基地局の位置情報](/ja-jp/docs/air/get-location-info/#基地局の位置情報を取得する)'
+    name: CellLocation
+  - description: |
+      - [クーポンコード](/ja-jp/guides/accounting/payment/register-coupon/)
+      - [利用料金 (支払明細)](/ja-jp/guides/accounting/check-usage/check-usage/)
+      - [お支払い方法](/ja-jp/guides/accounting/payment/)
+      - [長期利用割引](/ja-jp/docs/air/volume-discount/)
+    name: Payment
+  - description: |
+      - [クーポンコード](/ja-jp/guides/accounting/payment/register-coupon/)
+      - [長期利用割引](/ja-jp/docs/air/volume-discount/)
+      - 発注
+      - 商品一覧
+    name: Order
+  - description: |
+      [認証情報ストア](/ja-jp/docs/credentials-store/)
+      認証情報の作成、更新、削除
+    name: Credential
+  - description: '[SORACOM Harvest Data](/ja-jp/docs/harvest/)'
+    name: DataEntry
+  - description: '[SORACOM Inventory オブジェクトモデル](/ja-jp/docs/inventory/define-custom-object/)'
+    name: DeviceObjectModel
+  - description: '[SORACOM Inventory デバイス](/ja-jp/docs/inventory/)'
+    name: Device
+  - description: '[診断機能](/ja-jp/docs/diagnostic/)'
+    name: Diagnostic
+  - description: '[イベントハンドラー](/ja-jp/docs/event-handler/)'
+    name: EventHandler
+  - description: '[SORACOM Harvest Files](/ja-jp/docs/harvest/)'
+    name: FileEntry
+  - description: >
+      以下の API でエクスポートされたファイルのダウンロード
+
+      - [Billing](/ja-jp/tools/api/reference/#/Billing)
+
+      - [Payment:
+      exportPaymentStatement](/ja-jp/tools/api/reference/#/Payment/exportPaymentStatement)
+
+      - [Stats](/ja-jp/tools/api/reference/#/Stats)
+
+      -
+      [Subscriber:exportSubscribers](/ja-jp/tools/api/reference/#/Subscriber/exportSubscribers)
+    name: Files
+  - description: >-
+      [SORACOM LTE-M Button powered by
+      AWS](/ja-jp/guides/soracom-lte-m-button-series/lte-m-button-aws/)
+    name: Gadget
+  - description: '[グループ設定](/ja-jp/docs/group-configuration/)'
+    name: Group
+  - description: |
+      [SORACOM Lagoon](/ja-jp/docs/lagoon-v2/)
+      ユーザーやプランの制御
+    name: Lagoon
+  - description: エラーログ
+    name: Log
+  - description: '[SORACOM Air for LoRaWAN](/ja-jp/docs/air-for-lorawan/) デバイス'
+    name: LoraDevice
+  - description: '[SORACOM Air for LoRaWAN](/ja-jp/docs/air-for-lorawan/) ゲートウェイ'
+    name: LoraGateway
+  - description: '[SORACOM Air for LoRaWAN](/ja-jp/docs/air-for-lorawan/) ネットワークセット'
+    name: LoraNetworkSet
+  - description: |
+      - オペレータ
+      - 登録情報の更新
+      - パスワード変更
+      - [多要素認証](/ja-jp/docs/mfa/)
+    name: Operator
+  - description: '[メールアドレス](/ja-jp/docs/email/)'
+    name: Email
+  - description: '[アクセス管理 (SORACOM Access Management)](/ja-jp/docs/sam/)'
+    name: Role
+  - description: 直販での発送先住所に関する操作
+    name: ShippingAddress
+  - description: '[メールアドレス](/ja-jp/docs/email/)'
+    name: SystemNotification
+  - description: |
+      - [アクセス管理 (SORACOM Access Management)](/ja-jp/docs/sam/)
+      - パスワード変更
+      - [多要素認証](/ja-jp/docs/mfa/)
+    name: User
+  - description: '[SORACOM Napter](/ja-jp/docs/napter/)'
+    name: PortMapping
+  - description: SIM、SORACOM Inventory デバイス、Sigfox デバイスの検索
+    name: Query
+  - description: '[SORACOM Air for Sigfox](/ja-jp/docs/air-for-sigfox/) デバイス'
+    name: SigfoxDevice
+  - description: |
+      [SORACOM Air for セルラー](/ja-jp/docs/air/) の SIM の情報取得、操作、解約
+
+      (Subscriber と同等だがサブスクリプションコンテナに対応した新しい API)
+    name: Sim
+  - description: '[SORACOM Orbit](/ja-jp/docs/orbit/) Soralet'
+    name: Soralet
+  - description: '[通信量履歴](/ja-jp/docs/air/view-data-usage/) の取得'
+    name: Stats
+  - description: '[SORACOM Air for セルラー](/ja-jp/docs/air/) の SIM の情報取得、操作、解約'
+    name: Subscriber
+  - description: >
+      - [Virtual Private Gateway (VPG)](/ja-jp/docs/vpg/) (Canal / Direct / Door
+      / Gate)
+
+      - [SORACOM Junction](/ja-jp/docs/junction/)
+
+      - [SORACOM Peek](/ja-jp/docs/peek/)
+    name: VirtualPrivateGateway
 x-components:
   examples:
     APITokenCredentials:

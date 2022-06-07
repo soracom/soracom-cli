@@ -51,6 +51,11 @@ var LagoonDashboardsUpdatePermissionsCmd = &cobra.Command{
 		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 			ac.SetVerbose(true)
 		}
+		err := authHelper(ac, cmd, args)
+		if err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 
 		param, err := collectLagoonDashboardsUpdatePermissionsCmdParams(ac)
 		if err != nil {

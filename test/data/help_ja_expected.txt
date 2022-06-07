@@ -23,6 +23,7 @@ Available Commands:
   groups               グループに関する操作を行います。
   help                 Help about any command
   lagoon               Lagoon に関する操作を行います。
+  logout               SORACOM API にアクセスするための API キーと API トークンを無効化します。
   logs                 ログに関する操作を行います。
   lora-devices         LoRa device に関する操作を行います。
   lora-gateways        LoRa gateway に関する操作を行います。
@@ -53,14 +54,15 @@ Available Commands:
   vpg                  VPG に関する操作を行います。
 
 Flags:
-      --api-key string         Specify API key otherwise soracom-cli performs authentication on behalf of you
-      --api-token string       Specify API token otherwise soracom-cli performs authentication on behalf of you
-      --auth-key string        Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.
-      --auth-key-id string     Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you don't need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please don't forget specifying these options along with --coverage-type.
-      --coverage-type string   Specify coverage type, 'g' for Global, 'jp' for Japan
-  -h, --help                   help for soracom
-      --no-retry-on-error      Specify soracom-cli not to retry even if the API endpoint returns an error
-      --profile string         Specify profile name
-      --raw-output             Specify soracom-cli to output raw response from the API endpoint
+      --api-key string           Specify API key otherwise soracom-cli performs authentication on behalf of you
+      --api-token string         Specify API token otherwise soracom-cli performs authentication on behalf of you
+      --auth-key string          Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
+      --auth-key-id string       Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
+      --coverage-type string     Specify coverage type, 'g' for Global, 'jp' for Japan
+  -h, --help                     help for soracom
+      --no-retry-on-error        Specify soracom-cli not to retry even if the API endpoint returns an error
+      --profile string           Specify profile name
+      --profile-command string   Specify a command to provide a profile. If this option is specified, soracom-cli works without pre-configured profile. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying this option along with --coverage-type.
+      --raw-output               Specify soracom-cli to output raw response from the API endpoint
 
 Use "soracom [command] --help" for more information about a command.

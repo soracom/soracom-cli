@@ -18,12 +18,17 @@ var OrdersListSubscribersCmdOrderId string
 // OrdersListSubscribersCmdLimit holds value of 'limit' option
 var OrdersListSubscribersCmdLimit int64
 
+// OrdersListSubscribersCmdPaginate indicates to do pagination or not
+var OrdersListSubscribersCmdPaginate bool
+
 func init() {
 	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key."))
 
 	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdOrderId, "order-id", "", TRAPI("order_id"))
 
 	OrdersListSubscribersCmd.Flags().Int64Var(&OrdersListSubscribersCmdLimit, "limit", 0, TRAPI("Max number of subscribers in a response."))
+
+	OrdersListSubscribersCmd.Flags().BoolVar(&OrdersListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 	OrdersCmd.AddCommand(OrdersListSubscribersCmd)
 }
 
@@ -90,6 +95,10 @@ func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForOrdersListSubscribersCmd("/orders/{order_id}/subscribers"),
 		query:  buildQueryForOrdersListSubscribersCmd(),
+
+		doPagination:                      OrdersListSubscribersCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

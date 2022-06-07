@@ -12,14 +12,14 @@ import (
 // FilesListCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var FilesListCmdLastEvaluatedKey string
 
-// FilesListCmdLimit holds value of 'limit' option
-var FilesListCmdLimit string
-
 // FilesListCmdPath holds value of 'path' option
 var FilesListCmdPath string
 
 // FilesListCmdScope holds value of 'scope' option
 var FilesListCmdScope string
+
+// FilesListCmdLimit holds value of 'limit' option
+var FilesListCmdLimit int64
 
 // FilesListCmdPaginate indicates to do pagination or not
 var FilesListCmdPaginate bool
@@ -30,11 +30,11 @@ var FilesListCmdOutputJSONL bool
 func init() {
 	FilesListCmd.Flags().StringVar(&FilesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filename  of the last file entry retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
 
-	FilesListCmd.Flags().StringVar(&FilesListCmdLimit, "limit", "", TRAPI("Num of entries"))
-
 	FilesListCmd.Flags().StringVar(&FilesListCmdPath, "path", "/", TRAPI("Target path"))
 
 	FilesListCmd.Flags().StringVar(&FilesListCmdScope, "scope", "private", TRAPI("Scope of the request"))
+
+	FilesListCmd.Flags().Int64Var(&FilesListCmdLimit, "limit", 10, TRAPI("Num of entries"))
 
 	FilesListCmd.Flags().BoolVar(&FilesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
@@ -131,8 +131,8 @@ func buildQueryForFilesListCmd() url.Values {
 		result.Add("last_evaluated_key", FilesListCmdLastEvaluatedKey)
 	}
 
-	if FilesListCmdLimit != "" {
-		result.Add("limit", FilesListCmdLimit)
+	if FilesListCmdLimit != 10 {
+		result.Add("limit", sprintf("%d", FilesListCmdLimit))
 	}
 
 	return result
