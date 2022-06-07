@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"syscall"
 
 	"github.com/kennygrant/sanitize"
+	"github.com/mattn/go-shellwords"
 	"github.com/mitchellh/go-homedir"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"golang.org/x/term"
@@ -27,6 +29,7 @@ type profile struct {
 	OperatorID            *string `json:"operatorId,omitempty"`
 	Endpoint              *string `json:"endpoint,omitempty"`
 	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
+	ProfileCommand        *string `json:"profileCommand,omitempty"`
 }
 
 type authInfo struct {
@@ -59,6 +62,32 @@ func getProfile() (*profile, error) {
 
 	loadedProfile = profile
 	return loadedProfile, nil
+}
+
+func getProfileFromExternalCommand(command string) (*profile, error) {
+	args, err := shellwords.Parse(command)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(args) < 1 {
+		return nil, nil
+	}
+
+	b, err := exec.Command(args[0], args[1:]...).Output()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var p profile
+	err = json.Unmarshal(b, &p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
 }
 
 func getDefaultProfileName() string {
