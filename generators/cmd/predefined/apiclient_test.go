@@ -133,12 +133,8 @@ func TestConcatJSONArray(t *testing.T) {
 			t.Parallel()
 
 			v, err := concatJSONArray(data.Arr1, data.Arr2)
-			if err != nil {
-				t.Fatalf("%+v\n", err)
-			}
-			if v != data.Expected {
-				t.Errorf("result of concatJSONArray() is unmatched with expected.\nArr1: %v\nArr2: %v\nExpected: %#08x\nActual:   %#08x", data.Arr1, data.Arr2, data.Expected, v)
-			}
+			assert.NoError(t, err)
+			assert.Equal(t, data.Expected, v)
 		})
 	}
 }

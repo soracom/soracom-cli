@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"os"
@@ -24,17 +25,20 @@ func prettyPrintStringAsJSONToWriter(rawJSON string, w io.Writer) error {
 }
 
 func prettyPrintObjectAsJSON(obj interface{}, w io.Writer) error {
-	b, err := json.MarshalIndent(obj, "", "\t")
+	var bb bytes.Buffer
+	e := json.NewEncoder(&bb)
+	e.SetEscapeHTML(false)
+	e.SetIndent("", "\t")
+	err := e.Encode(obj)
 	if err != nil {
 		return err
 	}
 
-	_, err = w.Write(b)
+	_, err = bb.WriteTo(w)
 	if err != nil {
 		return err
 	}
 
-	w.Write([]byte{'\n'})
 	return nil
 }
 
@@ -63,16 +67,18 @@ func printStringAsJSONLToWriter(rawJSON string, w io.Writer) error {
 }
 
 func printObjectOneLine(obj interface{}, w io.Writer) error {
-	b, err := json.Marshal(obj)
+	var bb bytes.Buffer
+	e := json.NewEncoder(&bb)
+	e.SetEscapeHTML(false)
+	err := e.Encode(obj)
 	if err != nil {
 		return err
 	}
 
-	_, err = w.Write(b)
+	_, err = bb.WriteTo(w)
 	if err != nil {
 		return err
 	}
 
-	w.Write([]byte{'\n'})
 	return nil
 }
