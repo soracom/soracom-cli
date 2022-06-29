@@ -20,7 +20,7 @@ var OrdersCreateCmdShippingAddressId string
 var OrdersCreateCmdBody string
 
 func init() {
-	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI(""))
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID"))
 
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	OrdersCmd.AddCommand(OrdersCreateCmd)

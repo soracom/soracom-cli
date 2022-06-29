@@ -1,315 +1,300 @@
-swagger: '2.0'
+openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: '20160218'
-host: api-sandbox.soracom.io
-basePath: /v1
-schemes:
-  - https
+  version: "20160218"
+servers:
+- url: https://api-sandbox.soracom.io/v1
 paths:
   /sandbox/coupons/create:
     post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: request
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxCreateCouponRequest'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/sandboxCreateCouponResponse'
-        '400':
-          description: API の引数が誤っている。
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Coupon
       description: クーポンをを新規作成します。
       operationId: sandboxCreateCoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxCreateCouponRequest'
+        description: request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxCreateCouponResponse'
+          description: OK
+        "400":
+          description: API の引数が誤っている。
+      security:
+      - api_key: []
+        api_token: []
       summary: クーポンを作成する
+      tags:
+      - Coupon
       x-soracom-cli:
-        - sandbox coupons create
+      - sandbox coupons create
   /sandbox/init:
     post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: request
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxInitRequest'
-      responses:
-        '201':
-          description: Sandbox 用の Operator の作成に成功
-          schema:
-            $ref: '#/definitions/sandboxAuthResponse'
-        '400':
-          description: 'メールアドレスが不正もしくは AuthKeyId, AuthKey が誤っている。'
-      tags:
-        - Operator
-      description: >-
-        Operator のサインアップ、認証および課金情報の登録を行います。サンドボックス環境に新しく作成するオペレーターの email と
-        password、本番環境の SAM ユーザーの authKeyId と authKey
-        をリクエストに含めてください。オペレーターの作成に成功した場合、API キーと API
-        トークンが返されるので、以降の認証が必要なリクエスト時にはこの API キーと API トークンをヘッダーに付与してリクエストを行ってください。
+      description: Operator のサインアップ、認証および課金情報の登録を行います。サンドボックス環境に新しく作成するオペレーターの email
+        と password、本番環境の SAM ユーザーの authKeyId と authKey をリクエストに含めてください。オペレーターの作成に成功した場合、API
+        キーと API トークンが返されるので、以降の認証が必要なリクエスト時にはこの API キーと API トークンをヘッダーに付与してリクエストを行ってください。
       operationId: sandboxInitializeOperator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxInitRequest'
+        description: request
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxAuthResponse'
+          description: Sandbox 用の Operator の作成に成功
+        "400":
+          description: メールアドレスが不正もしくは AuthKeyId, AuthKey が誤っている。
       summary: Operator を初期化する
-      x-soracom-cli:
-        - sandbox init
-  '/sandbox/operators/token/{email}':
-    post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: email
-          in: path
-          name: email
-          required: true
-          type: string
-        - description: 認証リクエスト
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxGetSignupTokenRequest'
-      responses:
-        '200':
-          description: 認証成功
-          schema:
-            $ref: '#/definitions/sandboxGetSignupTokenResponse'
-        '400':
-          description: メールアドレス、AuthKeyId、AuthKey のいずれかが誤っている。
       tags:
-        - Operator
-      description: >-
-        登録確認用のサインアップトークンを取得します。API の引数に本番環境の SAM ユーザーの AuthKeyId と AuthKey
-        を指定してください。
-      operationId: sandboxGetSignupToken
-      summary: サインアップトークンを取得する
+      - Operator
       x-soracom-cli:
-        - sandbox operators get-signup-token
-  '/sandbox/operators/{operator_id}':
+      - sandbox init
+  /sandbox/operators/{operator_id}:
     delete:
-      parameters:
-        - description: operator_id
-          in: path
-          name: operator_id
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Operator が存在しない
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Operator
       description: Operator を削除します。
       operationId: sandboxDeleteOperator
+      parameters:
+      - description: operator_id
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Operator が存在しない
+      security:
+      - api_key: []
+        api_token: []
       summary: Operator を削除する
+      tags:
+      - Operator
       x-soracom-cli:
-        - sandbox operators delete
+      - sandbox operators delete
+  /sandbox/operators/token/{email}:
+    post:
+      description: 登録確認用のサインアップトークンを取得します。API の引数に本番環境の SAM ユーザーの AuthKeyId と AuthKey
+        を指定してください。
+      operationId: sandboxGetSignupToken
+      parameters:
+      - description: email
+        in: path
+        name: email
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxGetSignupTokenRequest'
+        description: 認証リクエスト
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxGetSignupTokenResponse'
+          description: 認証成功
+        "400":
+          description: メールアドレス、AuthKeyId、AuthKey のいずれかが誤っている。
+      summary: サインアップトークンを取得する
+      tags:
+      - Operator
+      x-soracom-cli:
+      - sandbox operators get-signup-token
   /sandbox/orders/ship:
     post:
-      consumes:
-        - application/json
-      parameters:
-        - description: Shipping request
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxShipOrderRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Order が存在しない
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Order
       description: 指定された Order を出荷済み状態に変更し、Order に含まれる Subscriber を準備完了状態にします。
       operationId: sandboxShipOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxShipOrderRequest'
+        description: Shipping request
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Order が存在しない
+      security:
+      - api_key: []
+        api_token: []
       summary: Order を出荷済状態にする
-      x-soracom-cli:
-        - sandbox orders ship
-  '/sandbox/stats/air/subscribers/{imsi}':
-    post:
-      consumes:
-        - application/json
-      parameters:
-        - description: IMSI
-          in: path
-          name: imsi
-          required: true
-          type: string
-        - description: ある時点のデータ通信量の統計情報
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxInsertAirStatsRequest'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: 同じ IMSI に対して同じタイムスタンプのデータが投入された
-      security:
-        - api_key: []
-          api_token: []
       tags:
-        - Stats
-      description: >-
-        Air の統計情報としてテスト用データ（上り下りのデータ通信量、タイムスタンプ付き）を投入します。Sandbox
-        内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
+      - Order
+      x-soracom-cli:
+      - sandbox orders ship
+  /sandbox/stats/air/subscribers/{imsi}:
+    post:
+      description: Air の統計情報としてテスト用データ（上り下りのデータ通信量、タイムスタンプ付き）を投入します。Sandbox 内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
       operationId: sandboxInsertAirStats
-      summary: テスト用に Air の統計情報を登録する
-      x-soracom-cli:
-        - sandbox stats air insert
-  '/sandbox/stats/beam/subscribers/{imsi}':
-    post:
-      consumes:
-        - application/json
       parameters:
-        - description: IMSI
-          in: path
-          name: imsi
-          required: true
+      - description: IMSI
+        in: path
+        name: imsi
+        required: true
+        schema:
           type: string
-        - description: ある時点のリクエスト数の統計情報
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/sandboxInsertBeamStatsRequest'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxInsertAirStatsRequest'
+        description: ある時点のデータ通信量の統計情報
+        required: true
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
+        "400":
           description: 同じ IMSI に対して同じタイムスタンプのデータが投入された
       security:
-        - api_key: []
-          api_token: []
+      - api_key: []
+        api_token: []
+      summary: テスト用に Air の統計情報を登録する
       tags:
-        - Stats
-      description: >-
-        Beam の統計情報としてテスト用データ（リクエスト数、タイムスタンプ付き）を投入します。Sandbox
-        内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
-      operationId: sandboxInsertBeamStats
-      summary: テスト用に Beam の統計情報を登録する
+      - Stats
       x-soracom-cli:
-        - sandbox stats beam insert
+      - sandbox stats air insert
+  /sandbox/stats/beam/subscribers/{imsi}:
+    post:
+      description: Beam の統計情報としてテスト用データ（リクエスト数、タイムスタンプ付き）を投入します。Sandbox 内部で日ごと・月ごとの統計情報も自動的に累計されて取得できるようになります。同じタイムスタンプで複数回データを投入することはできません。
+      operationId: sandboxInsertBeamStats
+      parameters:
+      - description: IMSI
+        in: path
+        name: imsi
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxInsertBeamStatsRequest'
+        description: ある時点のリクエスト数の統計情報
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: 同じ IMSI に対して同じタイムスタンプのデータが投入された
+      security:
+      - api_key: []
+        api_token: []
+      summary: テスト用に Beam の統計情報を登録する
+      tags:
+      - Stats
+      x-soracom-cli:
+      - sandbox stats beam insert
   /sandbox/subscribers/create:
     post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: Create request
-          in: body
-          name: body
-          schema:
-            $ref: '#/definitions/sandboxCreateSubscriberRequest'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/sandboxCreateSubscriberResponse'
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Subscriber
       description: Subscriber を新規作成します
       operationId: sandboxCreateSubscriber
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sandboxCreateSubscriberRequest'
+        description: Create request
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxCreateSubscriberResponse'
+          description: OK
+      security:
+      - api_key: []
+        api_token: []
       summary: Subscriber を作成する
+      tags:
+      - Subscriber
       x-soracom-cli:
-        - sandbox subscribers create
-definitions:
-  TagSet:
-    additionalProperties:
-      type: string
-    type: object
-  sandboxAuthResponse:
-    properties:
-      apiKey:
+      - sandbox subscribers create
+components:
+  schemas:
+    TagSet:
+      additionalProperties:
         type: string
-      operatorId:
-        type: string
-      token:
-        type: string
-      userName:
-        type: string
-    type: object
-  sandboxBeamCounts:
-    properties:
-      count:
-        format: int64
-        type: integer
-    type: object
-  sandboxCreateCouponRequest:
-    properties:
-      amount:
-        example: 1000
-        format: int32
-        type: integer
-      applicableBillItemName:
-        enum:
+      type: object
+    sandboxAuthResponse:
+      properties:
+        apiKey:
+          type: string
+        operatorId:
+          type: string
+        token:
+          type: string
+        userName:
+          type: string
+      type: object
+    sandboxBeamCounts:
+      properties:
+        count:
+          format: int64
+          type: integer
+      type: object
+    sandboxCreateCouponRequest:
+      properties:
+        amount:
+          example: 1000
+          format: int32
+          type: integer
+        applicableBillItemName:
+          enum:
           - dailyDataTrafficChargeTotal
           - dailyChargeTotal
           - dailySoracomBeamRequestChargeTotal
-        example: dailyDataTrafficChargeTotal
-        type: string
-      expiryYearMonth:
-        example: yyyyMM
-        type: string
-    type: object
-  sandboxCreateCouponResponse:
-    properties:
-      amount:
-        description: クーポン額
-        format: double
-        type: number
-      balance:
-        description: 残高
-        format: double
-        type: number
-      billItemName:
-        description: 対象課金アイテム
-        type: string
-      couponCode:
-        description: クーポンコード
-        type: string
-      expiryYearMonth:
-        description: 有効期限
-        example: yyyyMM
-        type: string
-    type: object
-  sandboxCreateSubscriberRequest:
-    properties:
-      subscription:
-        description: サブスクリプション。以下のいずれかを指定します。
-        enum:
+          example: dailyDataTrafficChargeTotal
+          type: string
+        expiryYearMonth:
+          example: yyyyMM
+          type: string
+      type: object
+    sandboxCreateCouponResponse:
+      properties:
+        amount:
+          description: クーポン額
+          format: double
+          type: number
+        balance:
+          description: 残高
+          format: double
+          type: number
+        billItemName:
+          description: 対象課金アイテム
+          type: string
+        couponCode:
+          description: クーポンコード
+          type: string
+        expiryYearMonth:
+          description: 有効期限
+          example: yyyyMM
+          type: string
+      type: object
+    sandboxCreateSubscriberRequest:
+      properties:
+        subscription:
+          description: サブスクリプション。以下のいずれかを指定します。
+          enum:
           - plan01s
           - plan01s-low_data_volume
           - planX3
@@ -317,162 +302,160 @@ definitions:
           - plan-K
           - plan-KM1
           - plan-DU
-        type: string
-    type: object
-  sandboxCreateSubscriberResponse:
-    properties:
-      tags:
-        $ref: '#/definitions/TagSet'
-      apn:
-        type: string
-      createdAt:
-        format: int64
-        type: integer
-      expiryTime:
-        format: int64
-        type: integer
-      imsi:
-        type: string
-      ipAddress:
-        type: string
-      lastModifiedAt:
-        format: int64
-        type: integer
-      msisdn:
-        type: string
-      operatorId:
-        type: string
-      registrationSecret:
-        type: string
-      serialNumber:
-        type: string
-      speedClass:
-        type: string
-      status:
-        type: string
-      subscription:
-        type: string
-    type: object
-  sandboxDataTrafficStats:
-    properties:
-      downloadByteSizeTotal:
-        format: int64
-        type: integer
-      downloadPacketSizeTotal:
-        format: int64
-        type: integer
-      uploadByteSizeTotal:
-        format: int64
-        type: integer
-      uploadPacketSizeTotal:
-        format: int64
-        type: integer
-    type: object
-  sandboxGetSignupTokenRequest:
-    properties:
-      authKey:
-        type: string
-      authKeyId:
-        type: string
-    type: object
-  sandboxGetSignupTokenResponse:
-    properties:
-      token:
-        type: string
-    required:
+          type: string
+      type: object
+    sandboxCreateSubscriberResponse:
+      properties:
+        apn:
+          type: string
+        createdAt:
+          format: int64
+          type: integer
+        expiryTime:
+          format: int64
+          type: integer
+        imsi:
+          type: string
+        ipAddress:
+          type: string
+        lastModifiedAt:
+          format: int64
+          type: integer
+        msisdn:
+          type: string
+        operatorId:
+          type: string
+        registrationSecret:
+          type: string
+        serialNumber:
+          type: string
+        speedClass:
+          type: string
+        status:
+          type: string
+        subscription:
+          type: string
+        tags:
+          $ref: '#/components/schemas/TagSet'
+      type: object
+    sandboxDataTrafficStats:
+      properties:
+        downloadByteSizeTotal:
+          format: int64
+          type: integer
+        downloadPacketSizeTotal:
+          format: int64
+          type: integer
+        uploadByteSizeTotal:
+          format: int64
+          type: integer
+        uploadPacketSizeTotal:
+          format: int64
+          type: integer
+      type: object
+    sandboxGetSignupTokenRequest:
+      properties:
+        authKey:
+          type: string
+        authKeyId:
+          type: string
+      type: object
+    sandboxGetSignupTokenResponse:
+      properties:
+        token:
+          type: string
+      required:
       - token
-    type: object
-  sandboxInitRequest:
-    properties:
-      authKey:
-        type: string
-      authKeyId:
-        type: string
-      coverageTypes:
-        description: |
-          カバレッジタイプ
-          - `g`: グローバルカバレッジ
-          - `jp`: 日本カバレッジ
-        items:
-          enum:
+      type: object
+    sandboxInitRequest:
+      properties:
+        authKey:
+          type: string
+        authKeyId:
+          type: string
+        coverageTypes:
+          description: |
+            カバレッジタイプ
+            - `g`: グローバルカバレッジ
+            - `jp`: 日本カバレッジ
+          items:
+            enum:
             - g
             - jp
+            type: string
+          type: array
+        email:
           type: string
-        type: array
-      email:
-        type: string
-      password:
-        type: string
-      registerPaymentMethod:
-        default: true
-        type: boolean
-    required:
+        password:
+          type: string
+        registerPaymentMethod:
+          default: true
+          type: boolean
+      required:
       - email
       - password
       - authKeyId
       - authKey
-    type: object
-  sandboxInsertAirStatsRequest:
-    properties:
-      dataTrafficStatsMap:
-        properties:
-          s1.fast:
-            $ref: '#/definitions/sandboxDataTrafficStats'
-          s1.minimum:
-            $ref: '#/definitions/sandboxDataTrafficStats'
-          s1.slow:
-            $ref: '#/definitions/sandboxDataTrafficStats'
-          s1.standard:
-            $ref: '#/definitions/sandboxDataTrafficStats'
-        type: object
-      unixtime:
-        description: UNIX 時刻（ミリ秒単位）
-        format: int64
-        type: integer
-    type: object
-  sandboxInsertBeamStatsRequest:
-    properties:
-      beamStatsMap:
-        properties:
-          inHttp:
-            $ref: '#/definitions/sandboxBeamCounts'
-          inMqtt:
-            $ref: '#/definitions/sandboxBeamCounts'
-          inTcp:
-            $ref: '#/definitions/sandboxBeamCounts'
-          inUdp:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outHttp:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outHttps:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outMqtt:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outMqtts:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outTcp:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outTcps:
-            $ref: '#/definitions/sandboxBeamCounts'
-          outUdp:
-            $ref: '#/definitions/sandboxBeamCounts'
-        type: object
-      unixtime:
-        description: UNIX 時刻（ミリ秒単位）
-        format: int64
-        type: integer
-    type: object
-  sandboxShipOrderRequest:
-    properties:
-      operatorId:
-        type: string
-      orderId:
-        type: string
-    required:
+      type: object
+    sandboxInsertAirStatsRequest:
+      properties:
+        dataTrafficStatsMap:
+          properties:
+            s1.fast:
+              $ref: '#/components/schemas/sandboxDataTrafficStats'
+            s1.minimum:
+              $ref: '#/components/schemas/sandboxDataTrafficStats'
+            s1.slow:
+              $ref: '#/components/schemas/sandboxDataTrafficStats'
+            s1.standard:
+              $ref: '#/components/schemas/sandboxDataTrafficStats'
+          type: object
+        unixtime:
+          description: UNIX 時刻（ミリ秒単位）
+          format: int64
+          type: integer
+      type: object
+    sandboxInsertBeamStatsRequest:
+      properties:
+        beamStatsMap:
+          properties:
+            inHttp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            inMqtt:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            inTcp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            inUdp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outHttp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outHttps:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outMqtt:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outMqtts:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outTcp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outTcps:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+            outUdp:
+              $ref: '#/components/schemas/sandboxBeamCounts'
+          type: object
+        unixtime:
+          description: UNIX 時刻（ミリ秒単位）
+          format: int64
+          type: integer
+      type: object
+    sandboxShipOrderRequest:
+      properties:
+        operatorId:
+          type: string
+        orderId:
+          type: string
+      required:
       - orderId
       - operatorId
-    type: object
+      type: object
 tags:
-  - name: Coupon
-x-components: {}
-
+- name: Coupon

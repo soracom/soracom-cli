@@ -30,7 +30,7 @@ func init() {
 
 	SimsSendSmsCmd.Flags().StringVar(&SimsSendSmsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsSendSmsCmd.Flags().Int64Var(&SimsSendSmsCmdEncodingType, "encoding-type", 2, TRAPI(""))
+	SimsSendSmsCmd.Flags().Int64Var(&SimsSendSmsCmdEncodingType, "encoding-type", 2, TRAPI("Encoding type of the message body. `1` indicates the body is `DCS_7BIT` that only supports single byte characters. `2` is `DCS_UCS2` that supports multi-byte text. When omitted, it is treated as `2` (`DCS_UCS2`)."))
 
 	SimsSendSmsCmd.Flags().StringVar(&SimsSendSmsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsSendSmsCmd)

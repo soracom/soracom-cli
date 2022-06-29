@@ -26,11 +26,11 @@ var SubscribersSetExpiryTimeCmdExpiryTime int64
 var SubscribersSetExpiryTimeCmdBody string
 
 func init() {
-	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI(""))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("期限切れ時のアクション。以下のいずれかを指定します。各設定について詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。なお、`terminate` を指定する場合は、あらかじめ解約プロテクションを解除してください。- `doNothing` : 保留- `deleteSession` : セッション切断- `deactivate` : 休止- `suspend` : 利用中断- `terminate` : 解約"))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI(""))
+	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("The timestamp (in Unix milliseconds) of a date and time set using the Expiration function. If no Expiration function is set, null is returned."))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)

@@ -28,7 +28,7 @@ var SimsRegisterCmdBody string
 func init() {
 	SimsRegisterCmd.Flags().StringVar(&SimsRegisterCmdGroupId, "group-id", "", TRAPI(""))
 
-	SimsRegisterCmd.Flags().StringVar(&SimsRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
+	SimsRegisterCmd.Flags().StringVar(&SimsRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI("PUK or PASSCODE on SIM card"))
 
 	SimsRegisterCmd.Flags().StringVar(&SimsRegisterCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 

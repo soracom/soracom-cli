@@ -28,9 +28,9 @@ var SubscribersDownlinkPingCmdBody string
 func init() {
 	SubscribersDownlinkPingCmd.Flags().StringVar(&SubscribersDownlinkPingCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersDownlinkPingCmd.Flags().Int64Var(&SubscribersDownlinkPingCmdNumberOfPingRequests, "number-of-ping-requests", 1, TRAPI(""))
+	SubscribersDownlinkPingCmd.Flags().Int64Var(&SubscribersDownlinkPingCmdNumberOfPingRequests, "number-of-ping-requests", 1, TRAPI("the number of attempt ping"))
 
-	SubscribersDownlinkPingCmd.Flags().Int64Var(&SubscribersDownlinkPingCmdTimeoutSeconds, "timeout-seconds", 1, TRAPI(""))
+	SubscribersDownlinkPingCmd.Flags().Int64Var(&SubscribersDownlinkPingCmdTimeoutSeconds, "timeout-seconds", 1, TRAPI("the timeout duration of each ping"))
 
 	SubscribersDownlinkPingCmd.Flags().StringVar(&SubscribersDownlinkPingCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersDownlinkPingCmd)

@@ -30,7 +30,7 @@ func init() {
 
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdPayload, "payload", "", TRAPI(""))
 
-	SubscribersSendSmsCmd.Flags().Int64Var(&SubscribersSendSmsCmdEncodingType, "encoding-type", 2, TRAPI(""))
+	SubscribersSendSmsCmd.Flags().Int64Var(&SubscribersSendSmsCmdEncodingType, "encoding-type", 2, TRAPI("Encoding type of the message body. `1` indicates the body is `DCS_7BIT` that only supports single byte characters. `2` is `DCS_UCS2` that supports multi-byte text. When omitted, it is treated as `2` (`DCS_UCS2`)."))
 
 	SubscribersSendSmsCmd.Flags().StringVar(&SubscribersSendSmsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersSendSmsCmd)

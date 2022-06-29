@@ -23,9 +23,9 @@ var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 var SubscribersIssueTransferTokenCmdBody string
 
 func init() {
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI("移管先オペレーターEmail"))
 
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI(""))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI("移管先オペレーターID"))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)

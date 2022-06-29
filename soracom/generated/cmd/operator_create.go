@@ -25,7 +25,7 @@ var OperatorCreateCmdBody string
 func init() {
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdEmail, "email", "", TRAPI(""))
 
-	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TRAPI(""))
+	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdPassword, "password", "", TRAPI("パスワードは以下の条件を満たしている必要があります：長さ 8 文字以上 100 文字以内、アルファベット小文字 (a-z) を 1 文字以上使用、アルファベット大文字 (A-Z) を 1 文字以上使用、数字を 1 文字以上使用。記号なども使用できます。"))
 
 	OperatorCreateCmd.Flags().StringVar(&OperatorCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	OperatorCmd.AddCommand(OperatorCreateCmd)

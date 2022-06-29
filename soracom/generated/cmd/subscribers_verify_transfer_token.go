@@ -20,7 +20,7 @@ var SubscribersVerifyTransferTokenCmdToken string
 var SubscribersVerifyTransferTokenCmdBody string
 
 func init() {
-	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI(""))
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI("トークン"))
 
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersVerifyTransferTokenCmd)

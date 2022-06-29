@@ -33,7 +33,7 @@ func init() {
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI(""))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI("JSON string of permissions"))
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 

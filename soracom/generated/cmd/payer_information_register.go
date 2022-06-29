@@ -26,11 +26,11 @@ var PayerInformationRegisterCmdFullName string
 var PayerInformationRegisterCmdBody string
 
 func init() {
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdCompanyName, "company-name", "", TRAPI(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdCompanyName, "company-name", "", TRAPI("Company name"))
 
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdDepartment, "department", "", TRAPI(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdDepartment, "department", "", TRAPI("Department"))
 
-	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TRAPI(""))
+	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TRAPI("Full name"))
 
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	PayerInformationCmd.AddCommand(PayerInformationRegisterCmd)

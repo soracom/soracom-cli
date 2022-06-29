@@ -26,7 +26,7 @@ var LagoonUsersCreateCmdUserPassword string
 var LagoonUsersCreateCmdBody string
 
 func init() {
-	LagoonUsersCreateCmd.Flags().StringVar(&LagoonUsersCreateCmdRole, "role", "", TRAPI(""))
+	LagoonUsersCreateCmd.Flags().StringVar(&LagoonUsersCreateCmdRole, "role", "", TRAPI("A role that represents the permission."))
 
 	LagoonUsersCreateCmd.Flags().StringVar(&LagoonUsersCreateCmdUserEmail, "user-email", "", TRAPI(""))
 

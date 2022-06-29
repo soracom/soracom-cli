@@ -25,7 +25,7 @@ var SandboxStatsAirInsertCmdBody string
 func init() {
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
 
-	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI(""))
+	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI("UNIX time (in milliseconds)"))
 
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SandboxStatsAirCmd.AddCommand(SandboxStatsAirInsertCmd)

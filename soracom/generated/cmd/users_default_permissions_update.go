@@ -25,7 +25,7 @@ var UsersDefaultPermissionsUpdateCmdBody string
 func init() {
 	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdPermissions, "permissions", "", TRAPI(""))
+	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdPermissions, "permissions", "", TRAPI("JSON string of permissions"))
 
 	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	UsersDefaultPermissionsCmd.AddCommand(UsersDefaultPermissionsUpdateCmd)

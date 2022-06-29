@@ -25,7 +25,7 @@ var SubscribersUpdateSpeedClassCmdBody string
 func init() {
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI(""))
+	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。- plan01s、plan01s - Low Data Volume、planX3、plan-D の場合:    - `s1.minimum`    - `s1.slow`    - `s1.standard`    - `s1.fast`    - `s1.4xfast`- plan-KM1 の場合:    - `t1.standard`- plan-DU の場合:    - `u1.standard`    - `u1.slow`- バーチャル SIM/Subscriber の場合:    - `arc.standard`"))
 
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersUpdateSpeedClassCmd)

@@ -25,7 +25,7 @@ var SandboxStatsBeamInsertCmdBody string
 func init() {
 	SandboxStatsBeamInsertCmd.Flags().StringVar(&SandboxStatsBeamInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
 
-	SandboxStatsBeamInsertCmd.Flags().Int64Var(&SandboxStatsBeamInsertCmdUnixtime, "unixtime", 0, TRAPI(""))
+	SandboxStatsBeamInsertCmd.Flags().Int64Var(&SandboxStatsBeamInsertCmdUnixtime, "unixtime", 0, TRAPI("UNIX time (in milliseconds)"))
 
 	SandboxStatsBeamInsertCmd.Flags().StringVar(&SandboxStatsBeamInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SandboxStatsBeamCmd.AddCommand(SandboxStatsBeamInsertCmd)

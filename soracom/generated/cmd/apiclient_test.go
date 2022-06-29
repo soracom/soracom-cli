@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/elazarl/goproxy"
 	"github.com/tj/assert"
@@ -30,6 +31,7 @@ func setupProxyServerForTest(proxyAddr string, fp *footprints) {
 	}))
 
 	go http.ListenAndServe(proxyAddr, proxy)
+	time.Sleep(1 * time.Second)
 }
 
 func TestCallAPIWithProxy(t *testing.T) {

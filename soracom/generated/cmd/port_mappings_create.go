@@ -23,9 +23,9 @@ var PortMappingsCreateCmdTlsRequired bool
 var PortMappingsCreateCmdBody string
 
 func init() {
-	PortMappingsCreateCmd.Flags().Float64Var(&PortMappingsCreateCmdDuration, "duration", 0, TRAPI(""))
+	PortMappingsCreateCmd.Flags().Float64Var(&PortMappingsCreateCmdDuration, "duration", 0, TRAPI("Specify the duration, in seconds, that remote access should be enabled."))
 
-	PortMappingsCreateCmd.Flags().BoolVar(&PortMappingsCreateCmdTlsRequired, "tls-required", false, TRAPI(""))
+	PortMappingsCreateCmd.Flags().BoolVar(&PortMappingsCreateCmdTlsRequired, "tls-required", false, TRAPI("Specify whether access uses TLS."))
 
 	PortMappingsCreateCmd.Flags().StringVar(&PortMappingsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	PortMappingsCmd.AddCommand(PortMappingsCreateCmd)

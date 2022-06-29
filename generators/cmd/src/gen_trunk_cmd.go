@@ -5,10 +5,11 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/soracom/soracom-cli/generators/lib"
 )
 
-func generateTrunkCommands(apiDef *lib.APIDefinitions, templateDir, outputDir string) error {
+func generateTrunkCommands(apiDef *openapi3.T, templateDir, outputDir string) error {
 	subCommandTemplate, err := openTemplateFile(templateDir, "trunk.gotmpl")
 	if err != nil {
 		return err
@@ -30,7 +31,7 @@ func generateTrunkCommands(apiDef *lib.APIDefinitions, templateDir, outputDir st
 	return nil
 }
 
-func generateArgsForTrunkCommands(apiDef *lib.APIDefinitions) []commandArgs {
+func generateArgsForTrunkCommands(apiDef *openapi3.T) []commandArgs {
 	trunkCommands := extractTrunkCommands(apiDef)
 
 	result := make([]commandArgs, 0)
@@ -51,23 +52,22 @@ func generateArgsForTrunkCommands(apiDef *lib.APIDefinitions) []commandArgs {
 	return result
 }
 
-func extractTrunkCommands(apiDef *lib.APIDefinitions) []string {
+func extractTrunkCommands(apiDef *openapi3.T) []string {
 	commands := map[string]interface{}{}
 
-	for _, m := range apiDef.Methods {
-		if m.CLI == nil || len(m.CLI) == 0 {
-			continue
-		}
+	for _, path := range apiDef.Paths {
+		for _, op := range path.Operations() {
+			cliCommands := getCLICommands(op)
+			for _, cmd := range cliCommands {
+				s := strings.Split(cmd, " ")
+				if len(s) <= 1 {
+					continue
+				}
 
-		for _, cli := range m.CLI {
-			s := strings.Split(cli, " ")
-			if len(s) <= 1 {
-				continue
-			}
-
-			for i := 1; i < len(s); i++ {
-				ss := s[:i]
-				commands[strings.Join(ss, " ")] = true
+				for i := 1; i < len(s); i++ {
+					ss := s[:i]
+					commands[strings.Join(ss, " ")] = true
+				}
 			}
 		}
 	}
