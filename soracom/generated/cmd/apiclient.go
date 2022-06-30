@@ -213,8 +213,19 @@ func concatJSONArray(arr1, arr2 string) (string, error) {
 
 	a := append(a1, a2...)
 
-	b, err := json.Marshal(a)
+	b, err := marshalJSONUnescaped(a)
 	return string(b), err
+}
+
+func marshalJSONUnescaped(x interface{}) ([]byte, error) {
+	var bb bytes.Buffer
+	e := json.NewEncoder(&bb)
+	e.SetEscapeHTML(false)
+	err := e.Encode(x)
+	if err != nil {
+		return nil, err
+	}
+	return bb.Bytes()[:len(bb.Bytes())-1], nil // removing trailing `\n`
 }
 
 func (ac *apiClient) constructURL(params *apiParams) (*url.URL, error) {
