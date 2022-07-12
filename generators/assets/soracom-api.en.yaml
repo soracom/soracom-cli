@@ -1930,6 +1930,14 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Diagnosing SORACOM Air for Cellular:
+                value:
+                  from: 1655251200000
+                  resouceType: sim
+                  resourceId: XXXXXXXXXXXXXXXXXXX
+                  service: Air
+                  to: 1655337600000
             schema:
               $ref: '#/components/schemas/DiagnosticRequest'
         description: request
@@ -5360,7 +5368,7 @@ paths:
           description: OK.
         "400":
           description: |
-            SAM ユーザーの認証情報を使用して呼び出しました。ルートユーザーの認証情報を使用して呼び出してください。
+            This operation is allowed only for root user.
       security:
       - api_key: []
         api_token: []
@@ -7153,7 +7161,7 @@ paths:
         "200":
           description: OK
         "400":
-          description: メール登録数の最大を超過しました。
+          description: Exceeds maximum number of emails.
       security:
       - api_key: []
         api_token: []
@@ -11394,7 +11402,7 @@ paths:
           application/json:
             schema:
               items:
-                description: 設定するバンドル。以下のいずれかを指定します。
+                description: Specify a bundle to be set.
                 enum:
                 - D-300MB
                 - DU-10GB
@@ -13650,10 +13658,11 @@ components:
     APICallErrorMessage:
       properties:
         code:
-          description: エラーコード
+          description: Error code.
           type: string
         message:
-          description: エラーメッセージ。リクエスト時に X-Soracom-Lang ヘッダーに言語(en,ja)を設定するとその言語のメッセージがセットされます。
+          description: Error message. You can choose language by setting X-Soracom-Lang
+            (en or ja) header when issuing a request.
           type: string
       required:
       - code
@@ -13946,13 +13955,13 @@ components:
       properties:
         data:
           description: |
-            - `true`: データ通信あり
-            - `false`: データ通信なし
+            - `true`: with data
+            - `false`: without data
           type: boolean
         sms:
           description: |
-            - `true`: SMS あり
-            - `false`: SMS なし
+            - `true`: with SMS
+            - `false`: without SMS
           type: boolean
       type: object
     Cell:
@@ -14237,7 +14246,7 @@ components:
         description:
           type: string
         permission:
-          description: Permission の JSON
+          description: Permission as JSON
           type: string
       required:
       - permission
@@ -14368,18 +14377,18 @@ components:
     DailyBill:
       properties:
         amount:
-          description: 金額
+          description: Amount of bills.
           format: int64
           type: integer
         date:
-          description: 年月日
+          description: yyyyMMdd
           example: yyyyMMdd
           type: string
       type: object
     DailyBillResponse:
       properties:
         billList:
-          description: 日ごとの利用料リスト
+          description: List of daily bills.
           items:
             $ref: '#/components/schemas/DailyBill'
           type: array
@@ -14779,23 +14788,27 @@ components:
       properties:
         expiryAction:
           description: |
-            期限切れ時のアクション。以下のいずれかを指定します。各設定について詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。なお、`terminate` を指定する場合は、あらかじめ解約プロテクションを解除してください。
-            - `doNothing` : 保留
-            - `deleteSession` : セッション切断
-            - `deactivate` : 休止
-            - `suspend` : 利用中断
-            - `terminate` : 解約
+            Specify expiry action. Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify terminate as an action.
+
+            When omitted, it is set to null value.
+            - `doNothing` : do nothing
+            - `deleteSession` : delete session of the SIM if any
+            - `deactivate` : change the SIM status to Inactive
+            - `suspend` : change the SIM status to Suspended
+            - `terminate` : forcibly end any existing connections, and terminate the SIM
+            - null value : not set (It works the same as `doNothing`)
           enum:
           - doNothing
           - deleteSession
           - deactivate
           - suspend
           - terminate
+          - (null value)
+          nullable: true
           type: string
         expiryTime:
           description: The timestamp (in Unix milliseconds) of a date and time set
-            using the Expiration function. If no Expiration function is set, null
-            is returned.
+            using the Expiration function.
           format: int64
           type: integer
       required:
@@ -14852,13 +14865,15 @@ components:
     FileExportResponse:
       properties:
         exportedFileId:
-          description: ファイル出力 ID(リクエストに export_mode=async を指定した場合）
+          description: Exported file ID (in the case that export mode is async).
           type: string
         exportedFilePath:
-          description: 出力済みファイル取得パス(リクエストに export_mode=async を付与した場合）
+          description: Path to the exported file (in the case that export mode is
+            async).
           type: string
         url:
-          description: ファイルダウンロード URL(export_mode 指定なし、もしくは export_mode=sync の場合
+          description: URL of the exported file (in the case that export mode is not
+            specified or sync).
           type: string
       type: object
     FunkStatsResponse:
@@ -15274,9 +15289,9 @@ components:
         tokenTimeoutSeconds:
           default: 86400
           description: |
-            新しい API トークンの有効期限の長さ（秒単位）。
-            指定しなければデフォルトは 86400 [秒]（24 時間）。
-            最大値は 172800 [秒]（48 時間）。
+            New API token expiry duration in seconds.
+            Default: 86400 [seconds] (24 hours)
+            Maximum: 172800 [seconds] (48 hours)
           maximum: 172800
           type: integer
       type: object
@@ -15297,7 +15312,7 @@ components:
     GetBillingHistoryResponse:
       properties:
         billList:
-          description: 月ごとの利用料リスト
+          description: List of monthly bills.
           items:
             $ref: '#/components/schemas/MonthlyBill'
           type: array
@@ -15310,24 +15325,24 @@ components:
     GetExportedFileResponse:
       properties:
         status:
-          description: ファイル出力ステータス
+          description: Status of the export operation
           enum:
           - processing
           - exported
           - failed
           type: string
         url:
-          description: ファイルダウンロード URL
+          description: Download URL of the exported file
           type: string
       type: object
     GetLatestBill:
       properties:
         amount:
-          description: 金額
+          description: Amount of bills.
           format: int64
           type: integer
         lastEvaluatedTime:
-          description: 利用額計算を実施した時間
+          description: Date andtime when calculated.
           example: yyyyMMddHHmmss
           type: string
       type: object
@@ -15494,10 +15509,10 @@ components:
         phoneNumber:
           type: string
         shippingAddressId:
-          description: 配送先 ID
+          description: ID of shipping address
           type: string
         shippingArea:
-          description: 配送先エリア
+          description: shipping area
           type: string
         state:
           type: string
@@ -15742,13 +15757,13 @@ components:
     IssueSubscriberTransferTokenRequest:
       properties:
         transferDestinationOperatorEmail:
-          description: 移管先オペレーターEmail
+          description: Email address of the destination operator.
           type: string
         transferDestinationOperatorId:
-          description: 移管先オペレーターID
+          description: Operator ID of the destination operator.
           type: string
         transferImsi:
-          description: 移管する IMSI リスト
+          description: List of IMSIs to be transferred.
           items:
             type: string
           type: array
@@ -15760,7 +15775,7 @@ components:
     IssueSubscriberTransferTokenResponse:
       properties:
         token:
-          description: トークン
+          description: Transfer token.
           type: string
       required:
       - token
@@ -16239,11 +16254,11 @@ components:
     MonthlyBill:
       properties:
         amount:
-          description: 金額
+          description: Amount of monthly bills.
           format: int64
           type: integer
         paymentStatus:
-          description: 直近の課金ステータス
+          description: Latest payment status.
           enum:
           - lessThanMinimumCharge
           - paying
@@ -16253,10 +16268,10 @@ components:
           - fail
           type: string
         paymentTransactionId:
-          description: 課金詳細取得用の ID
+          description: Transaction ID to get detail of payment.
           type: string
         yearMonth:
-          description: 年月
+          description: yyyyMM
           example: yyyyMM
           type: string
       type: object
@@ -16662,8 +16677,9 @@ components:
         email:
           type: string
         password:
-          description: パスワードは以下の条件を満たしている必要があります：長さ 8 文字以上 100 文字以内、アルファベット小文字 (a-z)
-            を 1 文字以上使用、アルファベット大文字 (A-Z) を 1 文字以上使用、数字を 1 文字以上使用。記号なども使用できます。
+          description: 'Requirements for password: At least 8 characters (max 100),
+            a mixture of lowercase (a-z), uppercase (A-Z), number (0-9) letters. You
+            can use symbols.'
           type: string
       required:
       - email
@@ -16765,7 +16781,7 @@ components:
         description:
           type: string
         permission:
-          description: Permission の JSON
+          description: Permission as JSON
           type: string
         roleId:
           type: string
@@ -16931,9 +16947,9 @@ components:
           type: integer
         online:
           description: |
-            セッション状態
-            - `true`: オンライン
-            - `false`: オフライン
+            Session status.
+            - `true`: online
+            - `false`: offline
           type: boolean
         ueIpAddress:
           description: The IP address of the device.
@@ -17110,6 +17126,7 @@ components:
           - deactivate
           - suspend
           - terminate
+          - (null value)
           type: string
         expiryTime:
           format: int64
@@ -17154,13 +17171,13 @@ components:
           type: string
         status:
           description: |
-            IoT SIM のステータス
-            - `ready`: 準備完了
-            - `active`: 使用中
-            - `inactive`: 休止中
-            - `standby`: 利用開始待ち
-            - `suspended`: 利用中断中
-            - `terminated`: 解約済み
+            Status of this IoT SIM
+            - `ready`
+            - `active`
+            - `inactive`
+            - `standby`
+            - `suspended`
+            - `terminated`
           enum:
           - ready
           - active
@@ -17341,6 +17358,7 @@ components:
           - deactivate
           - suspend
           - terminate
+          - (null value)
           type: string
         groupId:
           description: The SIM group ID where the SIM belongs to.
@@ -17538,19 +17556,19 @@ components:
       properties:
         speedClass:
           description: |
-            速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
-            - plan01s、plan01s - Low Data Volume、planX3、plan-D の場合:
+            Speed class. You can specify one of followings based on this IoT SIM's subscription.
+            - plan01s、plan01s - Low Data Volume、planX3、plan-D:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
                 - `s1.fast`
                 - `s1.4xfast`
-            - plan-KM1 の場合:
+            - plan-KM1:
                 - `t1.standard`
-            - plan-DU の場合:
+            - plan-DU:
                 - `u1.standard`
                 - `u1.slow`
-            - バーチャル SIM/Subscriber の場合:
+            - Virtual SIM/Subscriber:
                 - `arc.standard`
           enum:
           - s1.minimum
@@ -17624,7 +17642,7 @@ components:
     VerifySubscriberTransferTokenRequest:
       properties:
         token:
-          description: トークン
+          description: Transfer token.
           type: string
       required:
       - token
@@ -17632,7 +17650,7 @@ components:
     VerifySubscriberTransferTokenResponse:
       properties:
         transferredImsi:
-          description: 移管された IMSI リスト
+          description: List of IMSIs which were transferred.
           items:
             type: string
           type: array

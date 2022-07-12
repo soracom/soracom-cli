@@ -26,11 +26,11 @@ var SimsSetExpiryTimeCmdExpiryTime int64
 var SimsSetExpiryTimeCmdBody string
 
 func init() {
-	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("期限切れ時のアクション。以下のいずれかを指定します。各設定について詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。なお、`terminate` を指定する場合は、あらかじめ解約プロテクションを解除してください。- `doNothing` : 保留- `deleteSession` : セッション切断- `deactivate` : 休止- `suspend` : 利用中断- `terminate` : 解約"))
+	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("Specify expiry action. Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify terminate as an action.When omitted, it is set to null value.- `doNothing` : do nothing- `deleteSession` : delete session of the SIM if any- `deactivate` : change the SIM status to Inactive- `suspend` : change the SIM status to Suspended- `terminate` : forcibly end any existing connections, and terminate the SIM- null value : not set (It works the same as `doNothing`)"))
 
 	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsSetExpiryTimeCmd.Flags().Int64Var(&SimsSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("The timestamp (in Unix milliseconds) of a date and time set using the Expiration function. If no Expiration function is set, null is returned."))
+	SimsSetExpiryTimeCmd.Flags().Int64Var(&SimsSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("The timestamp (in Unix milliseconds) of a date and time set using the Expiration function."))
 
 	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsSetExpiryTimeCmd)

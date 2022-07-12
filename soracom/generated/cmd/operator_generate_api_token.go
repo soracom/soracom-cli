@@ -25,7 +25,7 @@ var OperatorGenerateApiTokenCmdBody string
 func init() {
 	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
 
-	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 86400, TRAPI("新しい API トークンの有効期限の長さ（秒単位）。指定しなければデフォルトは 86400 [秒]（24 時間）。最大値は 172800 [秒]（48 時間）。"))
+	OperatorGenerateApiTokenCmd.Flags().Int64Var(&OperatorGenerateApiTokenCmdTokenTimeoutSeconds, "token-timeout-seconds", 86400, TRAPI("New API token expiry duration in seconds.Default: 86400 [seconds] (24 hours)Maximum: 172800 [seconds] (48 hours)"))
 
 	OperatorGenerateApiTokenCmd.Flags().StringVar(&OperatorGenerateApiTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	OperatorCmd.AddCommand(OperatorGenerateApiTokenCmd)
