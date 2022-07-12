@@ -20,7 +20,7 @@ var CouponsCreateCmdAmount float64
 var CouponsCreateCmdBody string
 
 func init() {
-	CouponsCreateCmd.Flags().Float64Var(&CouponsCreateCmdAmount, "amount", 0, TRAPI(""))
+	CouponsCreateCmd.Flags().Float64Var(&CouponsCreateCmdAmount, "amount", 0, TRAPI("Amount"))
 
 	CouponsCreateCmd.Flags().StringVar(&CouponsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	CouponsCmd.AddCommand(CouponsCreateCmd)

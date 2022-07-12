@@ -4,33 +4,41 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/soracom/soracom-cli/generators/lib"
+	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/tj/assert"
 )
 
-var apiDef1 = &lib.APIDefinitions{
-	Methods: []lib.APIMethod{
-		{
-			CLI: []string{"subscribers list"},
-		},
-		{
-			CLI: []string{"subscribers get"},
-		},
-		{
-			CLI: []string{"stats air"},
-		},
-		{
-			CLI: []string{"stats beam hoge"},
-		},
-		{
-			CLI: []string{"stats napter audit-logs get"},
-		},
-	},
-}
+const apiDef1String = `
+paths:
+  "/v1/subscribers":
+    get:
+      x-soracom-cli:
+        - subscribers list
+  '/v1/subscribers/{imsi}':
+    get:
+      x-soracom-cli:
+        - subscribers get
+  '/v1/stats/air':
+    get:
+      x-soracom-cli:
+        - stats air
+  '/v1/stats/beam/hoge':
+    get:
+      x-soracom-cli:
+        - stats beam hoge
+  '/v1/stats/napter/audit-logs':
+    get:
+      x-soracom-cli:
+        - stats napter audit-logs get
+`
 
 func TestGenerateArgsForTrunkCommands(t *testing.T) {
+	apiDef1, err := openapi3.NewLoader().LoadFromData([]byte(apiDef1String))
+	assert.NoError(t, err)
+
 	var testData = []struct {
 		Name        string
-		APIDef      *lib.APIDefinitions
+		APIDef      *openapi3.T
 		CommandArgs []commandArgs
 	}{
 		{
@@ -95,9 +103,12 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 }
 
 func TestExtractTrunkCommands(t *testing.T) {
+	apiDef1, err := openapi3.NewLoader().LoadFromData([]byte(apiDef1String))
+	assert.NoError(t, err)
+
 	var testData = []struct {
 		Name          string
-		APIDef        *lib.APIDefinitions
+		APIDef        *openapi3.T
 		TrunkCommands []string
 	}{
 		{

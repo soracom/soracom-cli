@@ -23,7 +23,7 @@ var LagoonUpdateUserPermissionCmdLagoonUserId int64
 var LagoonUpdateUserPermissionCmdBody string
 
 func init() {
-	LagoonUpdateUserPermissionCmd.Flags().StringVar(&LagoonUpdateUserPermissionCmdRole, "role", "", TRAPI(""))
+	LagoonUpdateUserPermissionCmd.Flags().StringVar(&LagoonUpdateUserPermissionCmdRole, "role", "", TRAPI("A role that represents the permission."))
 
 	LagoonUpdateUserPermissionCmd.Flags().Int64Var(&LagoonUpdateUserPermissionCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 

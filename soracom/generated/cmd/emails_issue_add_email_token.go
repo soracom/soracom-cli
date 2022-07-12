@@ -23,9 +23,9 @@ var EmailsIssueAddEmailTokenCmdPassword string
 var EmailsIssueAddEmailTokenCmdBody string
 
 func init() {
-	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdEmail, "email", "", TRAPI(""))
+	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdEmail, "email", "", TRAPI("Email address to be added"))
 
-	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdPassword, "password", "", TRAPI(""))
+	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdPassword, "password", "", TRAPI("Password of the operator"))
 
 	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	EmailsCmd.AddCommand(EmailsIssueAddEmailTokenCmd)

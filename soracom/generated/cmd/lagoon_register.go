@@ -25,7 +25,7 @@ var LagoonRegisterCmdBody string
 func init() {
 	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdPlan, "plan", "", TRAPI(""))
 
-	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdUserPassword, "user-password", "", TRAPI(""))
+	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdUserPassword, "user-password", "", TRAPI("This password is used by the initial user's login."))
 
 	LagoonRegisterCmd.Flags().StringVar(&LagoonRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	LagoonCmd.AddCommand(LagoonRegisterCmd)

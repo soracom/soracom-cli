@@ -23,7 +23,7 @@ var SimsRenewArcCredentialsCmdSimId string
 var SimsRenewArcCredentialsCmdBody string
 
 func init() {
-	SimsRenewArcCredentialsCmd.Flags().StringVar(&SimsRenewArcCredentialsCmdArcClientPeerPublicKey, "arc-client-peer-public-key", "", TRAPI(""))
+	SimsRenewArcCredentialsCmd.Flags().StringVar(&SimsRenewArcCredentialsCmdArcClientPeerPublicKey, "arc-client-peer-public-key", "", TRAPI("if this parameter is missing, the sever generates keypair"))
 
 	SimsRenewArcCredentialsCmd.Flags().StringVar(&SimsRenewArcCredentialsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 

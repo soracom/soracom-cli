@@ -13,14 +13,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// EventHandlersUpdateCmdDescription holds value of 'description' option
+var EventHandlersUpdateCmdDescription string
+
 // EventHandlersUpdateCmdHandlerId holds value of 'handler_id' option
 var EventHandlersUpdateCmdHandlerId string
+
+// EventHandlersUpdateCmdName holds value of 'name' option
+var EventHandlersUpdateCmdName string
+
+// EventHandlersUpdateCmdStatus holds value of 'status' option
+var EventHandlersUpdateCmdStatus string
+
+// EventHandlersUpdateCmdTargetGroupId holds value of 'targetGroupId' option
+var EventHandlersUpdateCmdTargetGroupId string
+
+// EventHandlersUpdateCmdTargetImsi holds value of 'targetImsi' option
+var EventHandlersUpdateCmdTargetImsi string
+
+// EventHandlersUpdateCmdTargetOperatorId holds value of 'targetOperatorId' option
+var EventHandlersUpdateCmdTargetOperatorId string
+
+// EventHandlersUpdateCmdTargetSimId holds value of 'targetSimId' option
+var EventHandlersUpdateCmdTargetSimId string
 
 // EventHandlersUpdateCmdBody holds contents of request body to be sent
 var EventHandlersUpdateCmdBody string
 
 func init() {
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdDescription, "description", "", TRAPI(""))
+
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdName, "name", "", TRAPI(""))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdStatus, "status", "", TRAPI(""))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetGroupId, "target-group-id", "", TRAPI(""))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetImsi, "target-imsi", "", TRAPI(""))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
+
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetSimId, "target-sim-id", "", TRAPI(""))
 
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	EventHandlersCmd.AddCommand(EventHandlersUpdateCmd)
@@ -98,6 +133,11 @@ func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("status", "status", "body", parsedBody, EventHandlersUpdateCmdStatus)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForEventHandlersUpdateCmd("/event_handlers/{handler_id}"),
@@ -153,6 +193,34 @@ func buildBodyForEventHandlersUpdateCmd() (string, error) {
 
 	if result == nil {
 		result = make(map[string]interface{})
+	}
+
+	if EventHandlersUpdateCmdDescription != "" {
+		result["description"] = EventHandlersUpdateCmdDescription
+	}
+
+	if EventHandlersUpdateCmdName != "" {
+		result["name"] = EventHandlersUpdateCmdName
+	}
+
+	if EventHandlersUpdateCmdStatus != "" {
+		result["status"] = EventHandlersUpdateCmdStatus
+	}
+
+	if EventHandlersUpdateCmdTargetGroupId != "" {
+		result["targetGroupId"] = EventHandlersUpdateCmdTargetGroupId
+	}
+
+	if EventHandlersUpdateCmdTargetImsi != "" {
+		result["targetImsi"] = EventHandlersUpdateCmdTargetImsi
+	}
+
+	if EventHandlersUpdateCmdTargetOperatorId != "" {
+		result["targetOperatorId"] = EventHandlersUpdateCmdTargetOperatorId
+	}
+
+	if EventHandlersUpdateCmdTargetSimId != "" {
+		result["targetSimId"] = EventHandlersUpdateCmdTargetSimId
 	}
 
 	resultBytes, err := json.Marshal(result)

@@ -20,7 +20,7 @@ var SandboxSubscribersCreateCmdSubscription string
 var SandboxSubscribersCreateCmdBody string
 
 func init() {
-	SandboxSubscribersCreateCmd.Flags().StringVar(&SandboxSubscribersCreateCmdSubscription, "subscription", "", TRAPI(""))
+	SandboxSubscribersCreateCmd.Flags().StringVar(&SandboxSubscribersCreateCmdSubscription, "subscription", "", TRAPI("Subscription. Specify one of:"))
 
 	SandboxSubscribersCreateCmd.Flags().StringVar(&SandboxSubscribersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SandboxSubscribersCmd.AddCommand(SandboxSubscribersCreateCmd)

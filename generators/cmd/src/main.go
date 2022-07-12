@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/soracom/soracom-cli/generators/lib"
 )
 
@@ -60,12 +61,13 @@ func run() error {
 		return err
 	}
 
-	apiDef, err := lib.LoadAPIDef(*apiDefFile)
+	loader := openapi3.NewLoader()
+	apiDef, err := loader.LoadFromFile(*apiDefFile)
 	if err != nil {
 		return err
 	}
 
-	apiSandboxDef, err := lib.LoadAPIDef(*apiSandboxDefFile)
+	apiSandboxDef, err := loader.LoadFromFile(*apiSandboxDefFile)
 	if err != nil {
 		return err
 	}
@@ -73,7 +75,7 @@ func run() error {
 	return generateCommands(apiDef, apiSandboxDef, *templateDir, *predefinedDir, *outputDir)
 }
 
-func generateCommands(apiDef, apiSandboxDef *lib.APIDefinitions, templateDir, predefinedDir, outputDir string) error {
+func generateCommands(apiDef, apiSandboxDef *openapi3.T, templateDir, predefinedDir, outputDir string) error {
 	err := generateRootCommand(apiDef, templateDir, outputDir)
 	if err != nil {
 		return err
@@ -174,6 +176,27 @@ func formatGeneratedFiles(outputDir string) error {
 		}
 	}
 	return nil
+}
+
+func getCLICommands(op *openapi3.Operation) []string {
+	xSoracomCliField, found := op.ExtensionProps.Extensions["x-soracom-cli"]
+	if !found {
+		return nil
+	}
+
+	jr, ok := xSoracomCliField.(json.RawMessage)
+	if !ok {
+		lib.WarnfStderr("invalid x-soracom-cli: %v\n", op.ExtensionProps.Extensions["x-soracom-cli"])
+		return nil
+	}
+
+	var result []string
+	err := json.Unmarshal(jr, &result)
+	if err != nil {
+		lib.WarnfStderr("expected string array as `x-soracom-cli` but it was not\n")
+		return nil
+	}
+	return result
 }
 
 func toJSON(x interface{}) string {

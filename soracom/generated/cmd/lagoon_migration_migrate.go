@@ -10,6 +10,8 @@ import (
 
 	"strings"
 
+	"github.com/soracom/soracom-cli/generators/lib"
+
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +29,7 @@ var LagoonMigrationMigrateCmd = &cobra.Command{
 	Short: TRAPI("/lagoon/migration:post:summary"),
 	Long:  TRAPI(`/lagoon/migration:post:description`),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 
 		if len(args) > 0 {
 			return fmt.Errorf("unexpected arguments passed => %v", args)

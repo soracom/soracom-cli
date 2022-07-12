@@ -25,7 +25,7 @@ var SimsUpdateSpeedClassCmdBody string
 func init() {
 	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI(""))
+	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("Speed class. You can specify one of followings based on this IoT SIM's subscription.- plan01s、plan01s - Low Data Volume、planX3、plan-D:    - `s1.minimum`    - `s1.slow`    - `s1.standard`    - `s1.fast`    - `s1.4xfast`- plan-KM1:    - `t1.standard`- plan-DU:    - `u1.standard`    - `u1.slow`- Virtual SIM/Subscriber:    - `arc.standard`"))
 
 	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsUpdateSpeedClassCmd)

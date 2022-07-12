@@ -17,7 +17,7 @@ help:
 
 install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
-	go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	go install honnef.co/go/tools/cmd/staticcheck@v0.3.2
 	go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
 	go install golang.org/x/tools/cmd/goimports@v0.1.7
 .PHONY:install-dev-deps

@@ -1,8 +1,10 @@
 package main
 
-import "github.com/soracom/soracom-cli/generators/lib"
+import (
+	"github.com/getkin/kin-openapi/openapi3"
+)
 
-func generateRootCommand(apiDef *lib.APIDefinitions, templateDir, outputDir string) error {
+func generateRootCommand(apiDef *openapi3.T, templateDir, outputDir string) error {
 	t, err := openTemplateFile(templateDir, "root.gotmpl")
 	if err != nil {
 		return err

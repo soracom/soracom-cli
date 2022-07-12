@@ -1,5 +1,21 @@
 package main
 
+// Pagination holds information about pagination
+type Pagination struct {
+	Response Response `yaml:"response"`
+	Request  Request  `yaml:"request"`
+}
+
+// Response holds information about response
+type Response struct {
+	Header string `yaml:"header"`
+}
+
+// Request holds information about request
+type Request struct {
+	Param string `yaml:"param"`
+}
+
 type stringFlag struct {
 	VarName                string
 	LongOption             string

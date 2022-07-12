@@ -28,9 +28,9 @@ var SimsDownlinkPingCmdBody string
 func init() {
 	SimsDownlinkPingCmd.Flags().StringVar(&SimsDownlinkPingCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsDownlinkPingCmd.Flags().Int64Var(&SimsDownlinkPingCmdNumberOfPingRequests, "number-of-ping-requests", 1, TRAPI(""))
+	SimsDownlinkPingCmd.Flags().Int64Var(&SimsDownlinkPingCmdNumberOfPingRequests, "number-of-ping-requests", 1, TRAPI("the number of attempt ping"))
 
-	SimsDownlinkPingCmd.Flags().Int64Var(&SimsDownlinkPingCmdTimeoutSeconds, "timeout-seconds", 1, TRAPI(""))
+	SimsDownlinkPingCmd.Flags().Int64Var(&SimsDownlinkPingCmdTimeoutSeconds, "timeout-seconds", 1, TRAPI("the timeout duration of each ping"))
 
 	SimsDownlinkPingCmd.Flags().StringVar(&SimsDownlinkPingCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsDownlinkPingCmd)

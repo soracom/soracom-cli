@@ -50,6 +50,7 @@ func checkIfRequiredIntegerParameterIsSupplied(propName, optionName, in string, 
 	return nil
 }
 
+//lint:ignore U1000 we want to keep this function for the future use.
 func checkIfRequiredFloatParameterIsSupplied(propName, optionName, in string, parsedBody interface{}, varValue float64) error {
 	if in == "body" {
 		contains := doesBodyContainParameter(parsedBody, propName)

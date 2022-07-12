@@ -20,7 +20,7 @@ var EmailsVerifyAddEmailTokenCmdToken string
 var EmailsVerifyAddEmailTokenCmdBody string
 
 func init() {
-	EmailsVerifyAddEmailTokenCmd.Flags().StringVar(&EmailsVerifyAddEmailTokenCmdToken, "token", "", TRAPI(""))
+	EmailsVerifyAddEmailTokenCmd.Flags().StringVar(&EmailsVerifyAddEmailTokenCmdToken, "token", "", TRAPI("Token sent by email"))
 
 	EmailsVerifyAddEmailTokenCmd.Flags().StringVar(&EmailsVerifyAddEmailTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	EmailsCmd.AddCommand(EmailsVerifyAddEmailTokenCmd)
