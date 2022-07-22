@@ -153,4 +153,6 @@ type commandArgs struct {
 	Deprecated                        bool
 	AlternativeCommand                string
 	HasArrayResponse                  bool
+	Tag                               string
+	OperationID                       string
 }
