@@ -26,7 +26,7 @@ func init() {
 var VpgDeleteVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "delete-vpc-peering-connection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:delete:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:delete:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:delete:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "deleteVpcPeeringConnection"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

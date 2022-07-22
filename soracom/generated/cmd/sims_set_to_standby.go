@@ -21,7 +21,7 @@ func init() {
 var SimsSetToStandbyCmd = &cobra.Command{
 	Use:   "set-to-standby",
 	Short: TRAPI("/sims/{sim_id}/set_to_standby:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/set_to_standby:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/set_to_standby:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimToStandby"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

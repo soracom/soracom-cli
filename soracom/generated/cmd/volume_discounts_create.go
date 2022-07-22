@@ -50,7 +50,7 @@ func init() {
 var VolumeDiscountsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/volume_discounts:post:summary"),
-	Long:  TRAPI(`/volume_discounts:post:description`),
+	Long:  TRAPI(`/volume_discounts:post:description`) + "\n\n" + createLinkToAPIReference("Order", "createVolumeDiscountQuotation"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

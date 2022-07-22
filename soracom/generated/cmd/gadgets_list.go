@@ -56,7 +56,7 @@ func init() {
 var GadgetsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/gadgets:get:summary"),
-	Long:  TRAPI(`/gadgets:get:description`),
+	Long:  TRAPI(`/gadgets:get:description`) + "\n\n" + createLinkToAPIReference("Gadget", "listGadgets"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

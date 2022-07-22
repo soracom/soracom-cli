@@ -26,7 +26,7 @@ func init() {
 var SigfoxDevicesDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/sigfox_devices/{device_id}/tags/{tag_name}:delete:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}/tags/{tag_name}:delete:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "deleteSigfoxDeviceTag"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

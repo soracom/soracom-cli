@@ -88,7 +88,7 @@ func init() {
 var QuerySubscribersCmd = &cobra.Command{
 	Use:   "subscribers",
 	Short: TRAPI("/query/subscribers:get:summary"),
-	Long:  TRAPI(`/query/subscribers:get:description`),
+	Long:  TRAPI(`/query/subscribers:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchSubscribers"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 		lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")

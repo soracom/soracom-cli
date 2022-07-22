@@ -21,7 +21,7 @@ func init() {
 var FilesGetExportedCmd = &cobra.Command{
 	Use:   "get-exported",
 	Short: TRAPI("/files/exported/{exported_file_id}:get:summary"),
-	Long:  TRAPI(`/files/exported/{exported_file_id}:get:description`),
+	Long:  TRAPI(`/files/exported/{exported_file_id}:get:description`) + "\n\n" + createLinkToAPIReference("Files", "getExportedFile"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

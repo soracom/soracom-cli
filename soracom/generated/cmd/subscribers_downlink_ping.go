@@ -40,7 +40,7 @@ func init() {
 var SubscribersDownlinkPingCmd = &cobra.Command{
 	Use:   "downlink-ping",
 	Short: TRAPI("/subscribers/{imsi}/downlink/ping:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/downlink/ping:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/downlink/ping:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "subscriberDownlinkPingToUserEquipment"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

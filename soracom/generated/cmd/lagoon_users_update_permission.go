@@ -35,7 +35,7 @@ func init() {
 var LagoonUsersUpdatePermissionCmd = &cobra.Command{
 	Use:   "update-permission",
 	Short: TRAPI("/lagoon/users/{lagoon_user_id}/permission:put:summary"),
-	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}/permission:put:description`),
+	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}/permission:put:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "updateLagoonUserPermission"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

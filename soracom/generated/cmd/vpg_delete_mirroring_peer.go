@@ -26,7 +26,7 @@ func init() {
 var VpgDeleteMirroringPeerCmd = &cobra.Command{
 	Use:   "delete-mirroring-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:delete:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:delete:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:delete:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "deleteMirroringPeer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

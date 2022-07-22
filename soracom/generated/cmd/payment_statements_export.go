@@ -26,7 +26,7 @@ func init() {
 var PaymentStatementsExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/payment_statements/{payment_statement_id}/export:post:summary"),
-	Long:  TRAPI(`/payment_statements/{payment_statement_id}/export:post:description`),
+	Long:  TRAPI(`/payment_statements/{payment_statement_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Payment", "exportPaymentStatement"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -30,7 +30,7 @@ func init() {
 var EmailsVerifyAddEmailTokenCmd = &cobra.Command{
 	Use:   "verify-add-email-token",
 	Short: TRAPI("/operators/add_email_token/verify:post:summary"),
-	Long:  TRAPI(`/operators/add_email_token/verify:post:description`),
+	Long:  TRAPI(`/operators/add_email_token/verify:post:description`) + "\n\n" + createLinkToAPIReference("Email", "verifyAddEmailToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

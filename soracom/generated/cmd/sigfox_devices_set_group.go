@@ -50,7 +50,7 @@ func init() {
 var SigfoxDevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TRAPI("/sigfox_devices/{device_id}/set_group:post:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}/set_group:post:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}/set_group:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "setSigfoxDeviceGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

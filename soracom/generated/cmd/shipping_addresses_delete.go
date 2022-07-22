@@ -26,7 +26,7 @@ func init() {
 var ShippingAddressesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/operators/{operator_id}/shipping_addresses/{shipping_address_id}:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses/{shipping_address_id}:delete:description`) + "\n\n" + createLinkToAPIReference("ShippingAddress", "deleteShippingAddress"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

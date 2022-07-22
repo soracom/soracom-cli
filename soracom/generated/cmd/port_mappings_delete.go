@@ -26,7 +26,7 @@ func init() {
 var PortMappingsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/port_mappings/{ip_address}/{port}:delete:summary"),
-	Long:  TRAPI(`/port_mappings/{ip_address}/{port}:delete:description`),
+	Long:  TRAPI(`/port_mappings/{ip_address}/{port}:delete:description`) + "\n\n" + createLinkToAPIReference("PortMapping", "deletePortMapping"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

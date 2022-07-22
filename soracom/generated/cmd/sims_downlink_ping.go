@@ -40,7 +40,7 @@ func init() {
 var SimsDownlinkPingCmd = &cobra.Command{
 	Use:   "downlink-ping",
 	Short: TRAPI("/sims/{sim_id}/downlink/ping:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/downlink/ping:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/downlink/ping:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "simDownlinkPingToUserEquipment"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -21,7 +21,7 @@ func init() {
 var LoraGatewaysUnsetNetworkSetCmd = &cobra.Command{
 	Use:   "unset-network-set",
 	Short: TRAPI("/lora_gateways/{gateway_id}/unset_network_set:post:summary"),
-	Long:  TRAPI(`/lora_gateways/{gateway_id}/unset_network_set:post:description`),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/unset_network_set:post:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "unsetLoraNetworkSet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

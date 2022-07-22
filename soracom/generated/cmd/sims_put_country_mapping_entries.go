@@ -35,7 +35,7 @@ func init() {
 var SimsPutCountryMappingEntriesCmd = &cobra.Command{
 	Use:   "put-country-mapping-entries",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:put:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:put:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:put:description`) + "\n\n" + createLinkToAPIReference("Sim", "putSubscriptionContainerCountryMappingEntries"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

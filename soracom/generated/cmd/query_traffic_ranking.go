@@ -41,7 +41,7 @@ func init() {
 var QueryTrafficRankingCmd = &cobra.Command{
 	Use:   "traffic-ranking",
 	Short: TRAPI("/query/subscribers/traffic_volume/ranking:get:summary"),
-	Long:  TRAPI(`/query/subscribers/traffic_volume/ranking:get:description`),
+	Long:  TRAPI(`/query/subscribers/traffic_volume/ranking:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchSubscriberTrafficVolumeRanking"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

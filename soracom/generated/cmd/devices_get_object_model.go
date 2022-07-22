@@ -21,7 +21,7 @@ func init() {
 var DevicesGetObjectModelCmd = &cobra.Command{
 	Use:   "get-object-model",
 	Short: TRAPI("/device_object_models/{model_id}:get:summary"),
-	Long:  TRAPI(`/device_object_models/{model_id}:get:description`),
+	Long:  TRAPI(`/device_object_models/{model_id}:get:description`) + "\n\n" + createLinkToAPIReference("DeviceObjectModel", "getDeviceObjectModel"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

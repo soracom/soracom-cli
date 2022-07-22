@@ -26,7 +26,7 @@ func init() {
 var LagoonDashboardsListPermissionsCmd = &cobra.Command{
 	Use:   "list-permissions",
 	Short: TRAPI("/lagoon/dashboards/permissions:get:summary"),
-	Long:  TRAPI(`/lagoon/dashboards/permissions:get:description`),
+	Long:  TRAPI(`/lagoon/dashboards/permissions:get:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "listLagoonDashboardsPermissions"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

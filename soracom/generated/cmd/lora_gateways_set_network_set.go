@@ -35,7 +35,7 @@ func init() {
 var LoraGatewaysSetNetworkSetCmd = &cobra.Command{
 	Use:   "set-network-set",
 	Short: TRAPI("/lora_gateways/{gateway_id}/set_network_set:post:summary"),
-	Long:  TRAPI(`/lora_gateways/{gateway_id}/set_network_set:post:description`),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/set_network_set:post:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "setLoraNetworkSet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

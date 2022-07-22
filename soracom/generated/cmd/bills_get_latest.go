@@ -17,7 +17,7 @@ func init() {
 var BillsGetLatestCmd = &cobra.Command{
 	Use:   "get-latest",
 	Short: TRAPI("/bills/latest:get:summary"),
-	Long:  TRAPI(`/bills/latest:get:description`),
+	Long:  TRAPI(`/bills/latest:get:description`) + "\n\n" + createLinkToAPIReference("Billing", "getLatestBilling"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

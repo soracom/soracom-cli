@@ -40,7 +40,7 @@ func init() {
 var VpgRegisterGatePeerCmd = &cobra.Command{
 	Use:   "register-gate-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "registerGatePeer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

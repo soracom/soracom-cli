@@ -26,7 +26,7 @@ func init() {
 var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 	Use:   "list-ip-address-map-entries",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:get:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:get:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:get:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "listVirtualPrivateGatewayIpAddressMapEntries"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

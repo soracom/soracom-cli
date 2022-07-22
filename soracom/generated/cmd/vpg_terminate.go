@@ -21,7 +21,7 @@ func init() {
 var VpgTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/terminate:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/terminate:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/terminate:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "terminateVirtualPrivateGateway"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

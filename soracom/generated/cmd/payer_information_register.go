@@ -40,7 +40,7 @@ func init() {
 var PayerInformationRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TRAPI("/payment_statements/payer_information:post:summary"),
-	Long:  TRAPI(`/payment_statements/payer_information:post:description`),
+	Long:  TRAPI(`/payment_statements/payer_information:post:description`) + "\n\n" + createLinkToAPIReference("Payment", "registerPayerInformation"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

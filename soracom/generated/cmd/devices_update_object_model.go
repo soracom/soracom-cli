@@ -65,7 +65,7 @@ func init() {
 var DevicesUpdateObjectModelCmd = &cobra.Command{
 	Use:   "update-object-model",
 	Short: TRAPI("/device_object_models/{model_id}:post:summary"),
-	Long:  TRAPI(`/device_object_models/{model_id}:post:description`),
+	Long:  TRAPI(`/device_object_models/{model_id}:post:description`) + "\n\n" + createLinkToAPIReference("DeviceObjectModel", "updateDeviceObjectModel"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

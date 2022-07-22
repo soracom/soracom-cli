@@ -21,7 +21,7 @@ func init() {
 var SandboxOperatorsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/sandbox/operators/{operator_id}:delete:summary"),
-	Long:  TRAPI(`/sandbox/operators/{operator_id}:delete:description`),
+	Long:  TRAPI(`/sandbox/operators/{operator_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxDeleteOperator"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

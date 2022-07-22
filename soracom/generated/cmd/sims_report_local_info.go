@@ -21,7 +21,7 @@ func init() {
 var SimsReportLocalInfoCmd = &cobra.Command{
 	Use:   "report-local-info",
 	Short: TRAPI("/sims/{sim_id}/report_local_info:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/report_local_info:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/report_local_info:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "reportSimLocalInfo"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -40,7 +40,7 @@ func init() {
 var SystemNotificationsSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: TRAPI("/operators/{operator_id}/system_notifications/{type}:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:post:description`) + "\n\n" + createLinkToAPIReference("SystemNotification", "setSystemNotification"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

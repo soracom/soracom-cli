@@ -41,7 +41,7 @@ func init() {
 var DevicesObserveResourceCmd = &cobra.Command{
 	Use:   "observe-resource",
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}/observe:post:summary"),
-	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}/observe:post:description`),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}/observe:post:description`) + "\n\n" + createLinkToAPIReference("Device", "observeDeviceResource"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

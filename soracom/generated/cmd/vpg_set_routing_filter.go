@@ -30,7 +30,7 @@ func init() {
 var VpgSetRoutingFilterCmd = &cobra.Command{
 	Use:   "set-routing-filter",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/set_routing_filter:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/set_routing_filter:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/set_routing_filter:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "setRoutingFilter"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -31,7 +31,7 @@ func init() {
 var UsersDetachRoleCmd = &cobra.Command{
 	Use:   "detach-role",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/roles/{role_id}:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles/{role_id}:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles/{role_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Role", "detachRole"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -50,7 +50,7 @@ func init() {
 var SandboxInitCmd = &cobra.Command{
 	Use:   "init",
 	Short: TRAPI("/sandbox/init:post:summary"),
-	Long:  TRAPI(`/sandbox/init:post:description`),
+	Long:  TRAPI(`/sandbox/init:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxInitializeOperator"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

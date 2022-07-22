@@ -31,7 +31,7 @@ func init() {
 var SimsTerminateSubscriptionContainerCmd = &cobra.Command{
 	Use:   "terminate-subscription-container",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "terminateSubscriptionContainer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -35,7 +35,7 @@ func init() {
 var SimsSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TRAPI("/sims/{sim_id}/set_group:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/set_group:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/set_group:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

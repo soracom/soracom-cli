@@ -21,7 +21,7 @@ func init() {
 var OrdersCancelCmd = &cobra.Command{
 	Use:   "cancel",
 	Short: TRAPI("/orders/{order_id}/cancel:put:summary"),
-	Long:  TRAPI(`/orders/{order_id}/cancel:put:description`),
+	Long:  TRAPI(`/orders/{order_id}/cancel:put:description`) + "\n\n" + createLinkToAPIReference("Order", "cancelOrder"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

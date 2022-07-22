@@ -40,7 +40,7 @@ func init() {
 var UsersUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}:put:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}:put:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}:put:description`) + "\n\n" + createLinkToAPIReference("User", "updateUser"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

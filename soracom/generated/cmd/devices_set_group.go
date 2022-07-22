@@ -30,7 +30,7 @@ func init() {
 var DevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TRAPI("/devices/{device_id}/set_group:post:summary"),
-	Long:  TRAPI(`/devices/{device_id}/set_group:post:description`),
+	Long:  TRAPI(`/devices/{device_id}/set_group:post:description`) + "\n\n" + createLinkToAPIReference("Device", "setDeviceGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

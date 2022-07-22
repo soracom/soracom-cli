@@ -21,7 +21,7 @@ func init() {
 var OrdersRegisterSubscribersCmd = &cobra.Command{
 	Use:   "register-subscribers",
 	Short: TRAPI("/orders/{order_id}/subscribers/register:post:summary"),
-	Long:  TRAPI(`/orders/{order_id}/subscribers/register:post:description`),
+	Long:  TRAPI(`/orders/{order_id}/subscribers/register:post:description`) + "\n\n" + createLinkToAPIReference("Order", "registerOrderedSim"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

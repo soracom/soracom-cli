@@ -21,7 +21,7 @@ func init() {
 var OperatorRevokeMfaCmd = &cobra.Command{
 	Use:   "revoke-mfa",
 	Short: TRAPI("/operators/{operator_id}/mfa:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/mfa:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/mfa:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "revokeMFA"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -26,7 +26,7 @@ func init() {
 var FilesGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/files/{scope}/{path}:get:summary"),
-	Long:  TRAPI(`/files/{scope}/{path}:get:description`),
+	Long:  TRAPI(`/files/{scope}/{path}:get:description`) + "\n\n" + createLinkToAPIReference("FileEntry", "getFile"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

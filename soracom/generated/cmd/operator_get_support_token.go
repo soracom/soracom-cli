@@ -21,7 +21,7 @@ func init() {
 var OperatorGetSupportTokenCmd = &cobra.Command{
 	Use:   "get-support-token",
 	Short: TRAPI("/operators/{operator_id}/support/token:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/support/token:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/support/token:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "generateSupportToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

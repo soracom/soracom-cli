@@ -21,7 +21,7 @@ func init() {
 var SimsCreateArcSessionCmd = &cobra.Command{
 	Use:   "create-arc-session",
 	Short: TRAPI("/sims/{sim_id}/sessions/arc:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/sessions/arc:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/sessions/arc:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "createArcSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

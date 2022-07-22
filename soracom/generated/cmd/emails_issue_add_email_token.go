@@ -35,7 +35,7 @@ func init() {
 var EmailsIssueAddEmailTokenCmd = &cobra.Command{
 	Use:   "issue-add-email-token",
 	Short: TRAPI("/operators/add_email_token/issue:post:summary"),
-	Long:  TRAPI(`/operators/add_email_token/issue:post:description`),
+	Long:  TRAPI(`/operators/add_email_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Email", "issueAddEmailToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

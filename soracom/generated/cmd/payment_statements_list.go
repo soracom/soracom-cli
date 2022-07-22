@@ -17,7 +17,7 @@ func init() {
 var PaymentStatementsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/payment_statements:get:summary"),
-	Long:  TRAPI(`/payment_statements:get:description`),
+	Long:  TRAPI(`/payment_statements:get:description`) + "\n\n" + createLinkToAPIReference("Payment", "listPaymentStatements"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

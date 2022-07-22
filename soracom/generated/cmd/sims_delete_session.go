@@ -21,7 +21,7 @@ func init() {
 var SimsDeleteSessionCmd = &cobra.Command{
 	Use:   "delete-session",
 	Short: TRAPI("/sims/{sim_id}/delete_session:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/delete_session:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/delete_session:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "deleteSimSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

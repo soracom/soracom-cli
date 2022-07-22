@@ -51,7 +51,7 @@ func init() {
 var CellLocationsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/cell_locations:get:summary"),
-	Long:  TRAPI(`/cell_locations:get:description`),
+	Long:  TRAPI(`/cell_locations:get:description`) + "\n\n" + createLinkToAPIReference("CellLocation", "getCellLocation"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -35,7 +35,7 @@ func init() {
 var SimsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/sims:post:summary"),
-	Long:  TRAPI(`/sims:post:description`),
+	Long:  TRAPI(`/sims:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "createSim"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

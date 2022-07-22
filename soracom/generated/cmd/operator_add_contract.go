@@ -35,7 +35,7 @@ func init() {
 var OperatorAddContractCmd = &cobra.Command{
 	Use:   "add-contract",
 	Short: TRAPI("/operators/{operator_id}/contracts:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/contracts:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/contracts:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "addOperatorContract"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

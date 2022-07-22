@@ -90,7 +90,7 @@ func init() {
 var OperatorCreateCompanyInformationCmd = &cobra.Command{
 	Use:   "create-company-information",
 	Short: TRAPI("/operators/{operator_id}/company_information:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/company_information:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/company_information:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "createCompanyInformation"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

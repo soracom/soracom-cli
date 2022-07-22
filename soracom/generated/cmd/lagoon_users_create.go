@@ -40,7 +40,7 @@ func init() {
 var LagoonUsersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/lagoon/users:post:summary"),
-	Long:  TRAPI(`/lagoon/users:post:description`),
+	Long:  TRAPI(`/lagoon/users:post:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "createLagoonUser"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

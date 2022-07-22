@@ -17,7 +17,7 @@ func init() {
 var PaymentMethodsGetCurrentCmd = &cobra.Command{
 	Use:   "get-current",
 	Short: TRAPI("/payment_methods/current:get:summary"),
-	Long:  TRAPI(`/payment_methods/current:get:description`),
+	Long:  TRAPI(`/payment_methods/current:get:description`) + "\n\n" + createLinkToAPIReference("Payment", "getPaymentMethod"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

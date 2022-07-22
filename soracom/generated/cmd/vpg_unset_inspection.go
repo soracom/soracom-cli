@@ -21,7 +21,7 @@ func init() {
 var VpgUnsetInspectionCmd = &cobra.Command{
 	Use:   "unset-inspection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/unset_inspection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_inspection:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_inspection:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "unsetInspectionConfiguration"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

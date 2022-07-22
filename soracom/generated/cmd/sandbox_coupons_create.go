@@ -40,7 +40,7 @@ func init() {
 var SandboxCouponsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/sandbox/coupons/create:post:summary"),
-	Long:  TRAPI(`/sandbox/coupons/create:post:description`),
+	Long:  TRAPI(`/sandbox/coupons/create:post:description`) + "\n\n" + createLinkToAPIReference("Coupon", "sandboxCreateCoupon"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -41,7 +41,7 @@ func init() {
 var StatsFunkGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/funk/subscribers/{imsi}:get:summary"),
-	Long:  TRAPI(`/stats/funk/subscribers/{imsi}:get:description`),
+	Long:  TRAPI(`/stats/funk/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getFunkStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

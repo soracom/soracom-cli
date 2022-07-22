@@ -21,7 +21,7 @@ func init() {
 var UsersDefaultPermissionsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/operators/{operator_id}/users/default_permissions:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/default_permissions:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/default_permissions:get:description`) + "\n\n" + createLinkToAPIReference("User", "getDefaultPermissions"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

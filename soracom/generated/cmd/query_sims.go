@@ -91,7 +91,7 @@ func init() {
 var QuerySimsCmd = &cobra.Command{
 	Use:   "sims",
 	Short: TRAPI("/query/sims:get:summary"),
-	Long:  TRAPI(`/query/sims:get:description`),
+	Long:  TRAPI(`/query/sims:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchSims"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

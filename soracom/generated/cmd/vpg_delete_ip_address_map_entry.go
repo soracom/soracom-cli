@@ -26,7 +26,7 @@ func init() {
 var VpgDeleteIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "delete-ip-address-map-entry",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map/{key}:delete:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map/{key}:delete:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map/{key}:delete:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "deleteVirtualPrivateGatewayIpAddressMapEntry"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

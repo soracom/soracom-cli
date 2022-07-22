@@ -27,7 +27,7 @@ func init() {
 var LagoonMigrationMigrateCmd = &cobra.Command{
 	Use:   "migrate",
 	Short: TRAPI("/lagoon/migration:post:summary"),
-	Long:  TRAPI(`/lagoon/migration:post:description`),
+	Long:  TRAPI(`/lagoon/migration:post:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "migrateLagoon"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 

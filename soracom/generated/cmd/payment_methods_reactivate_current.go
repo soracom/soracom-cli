@@ -17,7 +17,7 @@ func init() {
 var PaymentMethodsReactivateCurrentCmd = &cobra.Command{
 	Use:   "reactivate-current",
 	Short: TRAPI("/payment_methods/current/activate:post:summary"),
-	Long:  TRAPI(`/payment_methods/current/activate:post:description`),
+	Long:  TRAPI(`/payment_methods/current/activate:post:description`) + "\n\n" + createLinkToAPIReference("Payment", "activatePaymentMethod"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

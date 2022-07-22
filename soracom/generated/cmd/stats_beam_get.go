@@ -41,7 +41,7 @@ func init() {
 var StatsBeamGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/beam/subscribers/{imsi}:get:summary"),
-	Long:  TRAPI(`/stats/beam/subscribers/{imsi}:get:description`),
+	Long:  TRAPI(`/stats/beam/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getBeamStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
