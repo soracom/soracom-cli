@@ -50,7 +50,7 @@ func init() {
 var VpgCreateMirroringPeerCmd = &cobra.Command{
 	Use:   "create-mirroring-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createMirroringPeer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -66,7 +66,7 @@ func init() {
 var SubscribersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/subscribers:get:summary"),
-	Long:  TRAPI(`/subscribers:get:description`),
+	Long:  TRAPI(`/subscribers:get:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "listSubscribers"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

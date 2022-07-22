@@ -35,7 +35,7 @@ func init() {
 var SubscribersSetImeiLockCmd = &cobra.Command{
 	Use:   "set-imei-lock",
 	Short: TRAPI("/subscribers/{imsi}/set_imei_lock:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/set_imei_lock:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/set_imei_lock:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "setImeiLock"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

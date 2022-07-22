@@ -21,7 +21,7 @@ func init() {
 var SoraletsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/soralets/{soralet_id}:get:summary"),
-	Long:  TRAPI(`/soralets/{soralet_id}:get:description`),
+	Long:  TRAPI(`/soralets/{soralet_id}:get:description`) + "\n\n" + createLinkToAPIReference("Soralet", "getSoralet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

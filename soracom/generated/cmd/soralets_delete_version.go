@@ -26,7 +26,7 @@ func init() {
 var SoraletsDeleteVersionCmd = &cobra.Command{
 	Use:   "delete-version",
 	Short: TRAPI("/soralets/{soralet_id}/versions/{version}:delete:summary"),
-	Long:  TRAPI(`/soralets/{soralet_id}/versions/{version}:delete:description`),
+	Long:  TRAPI(`/soralets/{soralet_id}/versions/{version}:delete:description`) + "\n\n" + createLinkToAPIReference("Soralet", "deleteSoraletVersion"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

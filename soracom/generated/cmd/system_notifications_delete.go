@@ -26,7 +26,7 @@ func init() {
 var SystemNotificationsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/operators/{operator_id}/system_notifications/{type}:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:delete:description`) + "\n\n" + createLinkToAPIReference("SystemNotification", "deleteSystemNotification"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

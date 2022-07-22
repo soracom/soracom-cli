@@ -35,7 +35,7 @@ func init() {
 var LoraNetworkSetsRevokePermissionCmd = &cobra.Command{
 	Use:   "revoke-permission",
 	Short: TRAPI("/lora_network_sets/{ns_id}/revoke_permission:post:summary"),
-	Long:  TRAPI(`/lora_network_sets/{ns_id}/revoke_permission:post:description`),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/revoke_permission:post:description`) + "\n\n" + createLinkToAPIReference("LoraNetworkSet", "revokePermissionFromLoraNetworkSet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

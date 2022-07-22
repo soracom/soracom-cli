@@ -21,7 +21,7 @@ func init() {
 var SubscribersSetToStandbyCmd = &cobra.Command{
 	Use:   "set-to-standby",
 	Short: TRAPI("/subscribers/{imsi}/set_to_standby:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/set_to_standby:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/set_to_standby:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "setSubscriberToStandby"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

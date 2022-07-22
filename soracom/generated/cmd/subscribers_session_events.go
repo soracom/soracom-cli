@@ -51,7 +51,7 @@ func init() {
 var SubscribersSessionEventsCmd = &cobra.Command{
 	Use:   "session-events",
 	Short: TRAPI("/subscribers/{imsi}/events/sessions:get:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/events/sessions:get:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/events/sessions:get:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "listSessionEvents"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

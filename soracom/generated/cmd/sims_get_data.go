@@ -56,7 +56,7 @@ func init() {
 var SimsGetDataCmd = &cobra.Command{
 	Use:   "get-data",
 	Short: TRAPI("/sims/{sim_id}/data:get:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/data:get:description`),
+	Long:  TRAPI(`/sims/{sim_id}/data:get:description`) + "\n\n" + createLinkToAPIReference("Sim", "getDataFromSim"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

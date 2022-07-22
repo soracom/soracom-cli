@@ -35,7 +35,7 @@ func init() {
 var SigfoxDevicesSendDataCmd = &cobra.Command{
 	Use:   "send-data",
 	Short: TRAPI("/sigfox_devices/{device_id}/data:post:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}/data:post:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}/data:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "sendDataToSigfoxDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -21,7 +21,7 @@ func init() {
 var GroupsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/groups/{group_id}:get:summary"),
-	Long:  TRAPI(`/groups/{group_id}:get:description`),
+	Long:  TRAPI(`/groups/{group_id}:get:description`) + "\n\n" + createLinkToAPIReference("Group", "getGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

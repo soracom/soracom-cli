@@ -40,7 +40,7 @@ func init() {
 var SandboxOperatorsGetSignupTokenCmd = &cobra.Command{
 	Use:   "get-signup-token",
 	Short: TRAPI("/sandbox/operators/token/{email}:post:summary"),
-	Long:  TRAPI(`/sandbox/operators/token/{email}:post:description`),
+	Long:  TRAPI(`/sandbox/operators/token/{email}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxGetSignupToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

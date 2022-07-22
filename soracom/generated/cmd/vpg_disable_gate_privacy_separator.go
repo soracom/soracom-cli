@@ -21,7 +21,7 @@ func init() {
 var VpgDisableGatePrivacySeparatorCmd = &cobra.Command{
 	Use:   "disable-gate-privacy-separator",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "disableGatePrivacySeparator"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

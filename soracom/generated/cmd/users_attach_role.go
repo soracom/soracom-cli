@@ -40,7 +40,7 @@ func init() {
 var UsersAttachRoleCmd = &cobra.Command{
 	Use:   "attach-role",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/roles:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles:post:description`) + "\n\n" + createLinkToAPIReference("Role", "attachRole"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

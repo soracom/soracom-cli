@@ -35,7 +35,7 @@ func init() {
 var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	Use:   "verify-password-reset-token",
 	Short: TRAPI("/auth/password_reset_token/verify:post:summary"),
-	Long:  TRAPI(`/auth/password_reset_token/verify:post:description`),
+	Long:  TRAPI(`/auth/password_reset_token/verify:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "verifyPasswordResetToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

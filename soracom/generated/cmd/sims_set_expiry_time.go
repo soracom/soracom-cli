@@ -40,7 +40,7 @@ func init() {
 var SimsSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
 	Short: TRAPI("/sims/{sim_id}/set_expiry_time:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/set_expiry_time:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/set_expiry_time:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimExpiryTime"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

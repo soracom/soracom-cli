@@ -30,7 +30,7 @@ func init() {
 var LagoonUpdatedPlanCmd = &cobra.Command{
 	Use:   "updated-plan",
 	Short: TRAPI("/lagoon/plan:put:summary"),
-	Long:  TRAPI(`/lagoon/plan:put:description`),
+	Long:  TRAPI(`/lagoon/plan:put:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "updateLagoonPlan"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

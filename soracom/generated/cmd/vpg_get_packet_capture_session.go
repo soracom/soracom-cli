@@ -26,7 +26,7 @@ func init() {
 var VpgGetPacketCaptureSessionCmd = &cobra.Command{
 	Use:   "get-packet-capture-session",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:get:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:get:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}:get:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "getPacketCaptureSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

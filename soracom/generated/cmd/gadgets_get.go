@@ -26,7 +26,7 @@ func init() {
 var GadgetsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/gadgets/{product_id}/{serial_number}:get:summary"),
-	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}:get:description`),
+	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}:get:description`) + "\n\n" + createLinkToAPIReference("Gadget", "getGadget"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

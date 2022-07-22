@@ -30,7 +30,7 @@ func init() {
 var SimsPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/sims/{sim_id}/tags:put:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/tags:put:description`),
+	Long:  TRAPI(`/sims/{sim_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("Sim", "putSimTags"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

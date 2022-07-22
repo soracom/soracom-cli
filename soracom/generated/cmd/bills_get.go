@@ -21,7 +21,7 @@ func init() {
 var BillsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/bills/{yyyyMM}:get:summary"),
-	Long:  TRAPI(`/bills/{yyyyMM}:get:description`),
+	Long:  TRAPI(`/bills/{yyyyMM}:get:description`) + "\n\n" + createLinkToAPIReference("Billing", "getBilling"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

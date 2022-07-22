@@ -35,7 +35,7 @@ func init() {
 var OperatorVerifyMfaOtpCmd = &cobra.Command{
 	Use:   "verify-mfa-otp",
 	Short: TRAPI("/operators/{operator_id}/mfa/verify:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/mfa/verify:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/mfa/verify:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "verifyMFA"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

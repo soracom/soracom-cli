@@ -17,7 +17,7 @@ func init() {
 var VolumeDiscountsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/volume_discounts:get:summary"),
-	Long:  TRAPI(`/volume_discounts:get:description`),
+	Long:  TRAPI(`/volume_discounts:get:description`) + "\n\n" + createLinkToAPIReference("Payment", "listVolumeDiscounts"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

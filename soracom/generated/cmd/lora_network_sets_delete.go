@@ -21,7 +21,7 @@ func init() {
 var LoraNetworkSetsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/lora_network_sets/{ns_id}:delete:summary"),
-	Long:  TRAPI(`/lora_network_sets/{ns_id}:delete:description`),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}:delete:description`) + "\n\n" + createLinkToAPIReference("LoraNetworkSet", "deleteLoraNetworkSet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

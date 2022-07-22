@@ -17,7 +17,7 @@ func init() {
 var LogoutCmd = &cobra.Command{
 	Use:   "logout",
 	Short: TRAPI("/auth/logout:post:summary"),
-	Long:  TRAPI(`/auth/logout:post:description`),
+	Long:  TRAPI(`/auth/logout:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "logout"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

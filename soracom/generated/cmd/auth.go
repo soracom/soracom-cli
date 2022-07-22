@@ -65,7 +65,7 @@ func init() {
 var AuthCmd = &cobra.Command{
 	Use:   "auth",
 	Short: TRAPI("/auth:post:summary"),
-	Long:  TRAPI(`/auth:post:description`),
+	Long:  TRAPI(`/auth:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "auth"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

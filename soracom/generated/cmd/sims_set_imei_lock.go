@@ -35,7 +35,7 @@ func init() {
 var SimsSetImeiLockCmd = &cobra.Command{
 	Use:   "set-imei-lock",
 	Short: TRAPI("/sims/{sim_id}/set_imei_lock:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/set_imei_lock:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/set_imei_lock:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimImeiLock"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

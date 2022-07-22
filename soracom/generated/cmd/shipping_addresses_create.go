@@ -90,7 +90,7 @@ func init() {
 var ShippingAddressesCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/operators/{operator_id}/shipping_addresses:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses:post:description`) + "\n\n" + createLinkToAPIReference("ShippingAddress", "createShippingAddress"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

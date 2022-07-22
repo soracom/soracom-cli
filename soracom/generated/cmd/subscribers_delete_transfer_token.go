@@ -21,7 +21,7 @@ func init() {
 var SubscribersDeleteTransferTokenCmd = &cobra.Command{
 	Use:   "delete-transfer-token",
 	Short: TRAPI("/subscribers/transfer_token/{token}:delete:summary"),
-	Long:  TRAPI(`/subscribers/transfer_token/{token}:delete:description`),
+	Long:  TRAPI(`/subscribers/transfer_token/{token}:delete:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "deleteSubscriberTransferToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

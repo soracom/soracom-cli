@@ -21,7 +21,7 @@ func init() {
 var SimsUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
 	Short: TRAPI("/sims/{sim_id}/unset_group:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/unset_group:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/unset_group:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "unsetSimGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

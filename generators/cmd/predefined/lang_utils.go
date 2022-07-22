@@ -280,3 +280,7 @@ func visit(data map[interface{}]interface{}, path string) string {
 		}
 	}
 }
+
+func createLinkToAPIReference(tag, operationID string) string {
+	return fmt.Sprintf(TRCLI("cli.refer-api-reference"), tag, operationID)
+}

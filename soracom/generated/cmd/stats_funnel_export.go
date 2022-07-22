@@ -50,7 +50,7 @@ func init() {
 var StatsFunnelExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/stats/funnel/operators/{operator_id}/export:post:summary"),
-	Long:  TRAPI(`/stats/funnel/operators/{operator_id}/export:post:description`),
+	Long:  TRAPI(`/stats/funnel/operators/{operator_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "exportFunnelStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

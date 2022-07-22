@@ -26,7 +26,7 @@ func init() {
 var OperatorDeleteContractCmd = &cobra.Command{
 	Use:   "delete-contract",
 	Short: TRAPI("/operators/{operator_id}/contracts/{contract_name}:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/contracts/{contract_name}:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/contracts/{contract_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "deleteOperatorContract"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

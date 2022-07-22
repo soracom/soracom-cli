@@ -40,7 +40,7 @@ func init() {
 var SimsSendSmsCmd = &cobra.Command{
 	Use:   "send-sms",
 	Short: TRAPI("/sims/{sim_id}/send_sms:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/send_sms:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/send_sms:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "sendSmsToSim"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

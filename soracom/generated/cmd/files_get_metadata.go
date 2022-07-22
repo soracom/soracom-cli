@@ -26,7 +26,7 @@ func init() {
 var FilesGetMetadataCmd = &cobra.Command{
 	Use:   "get-metadata",
 	Short: TRAPI("/files/{scope}/{path}:head:summary"),
-	Long:  TRAPI(`/files/{scope}/{path}:head:description`),
+	Long:  TRAPI(`/files/{scope}/{path}:head:description`) + "\n\n" + createLinkToAPIReference("FileEntry", "getFileMetadata"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

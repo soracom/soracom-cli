@@ -40,7 +40,7 @@ func init() {
 var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 	Use:   "send-sms-by-msisdn",
 	Short: TRAPI("/subscribers/msisdn/{msisdn}/send_sms:post:summary"),
-	Long:  TRAPI(`/subscribers/msisdn/{msisdn}/send_sms:post:description`),
+	Long:  TRAPI(`/subscribers/msisdn/{msisdn}/send_sms:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "sendSmsByMsisdn"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

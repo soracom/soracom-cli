@@ -31,7 +31,7 @@ func init() {
 var DataDeleteEntryCmd = &cobra.Command{
 	Use:   "delete-entry",
 	Short: TRAPI("/data/{resource_type}/{resource_id}/{time}:delete:summary"),
-	Long:  TRAPI(`/data/{resource_type}/{resource_id}/{time}:delete:description`),
+	Long:  TRAPI(`/data/{resource_type}/{resource_id}/{time}:delete:description`) + "\n\n" + createLinkToAPIReference("DataEntry", "deleteDataEntry"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

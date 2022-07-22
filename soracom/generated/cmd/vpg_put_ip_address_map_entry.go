@@ -40,7 +40,7 @@ func init() {
 var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "put-ip-address-map-entry",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "putVirtualPrivateGatewayIpAddressMapEntry"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

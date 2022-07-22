@@ -25,7 +25,7 @@ func init() {
 var LagoonLicensePacksUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TRAPI("/lagoon/license_packs:put:summary"),
-	Long:  TRAPI(`/lagoon/license_packs:put:description`),
+	Long:  TRAPI(`/lagoon/license_packs:put:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "updateLagoonLicensePack"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

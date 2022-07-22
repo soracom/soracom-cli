@@ -30,7 +30,7 @@ func init() {
 var OperatorVerifyCmd = &cobra.Command{
 	Use:   "verify",
 	Short: TRAPI("/operators/verify:post:summary"),
-	Long:  TRAPI(`/operators/verify:post:description`),
+	Long:  TRAPI(`/operators/verify:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "verifyOperator"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

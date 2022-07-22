@@ -35,7 +35,7 @@ func init() {
 var SimsRenewArcCredentialsCmd = &cobra.Command{
 	Use:   "renew-arc-credentials",
 	Short: TRAPI("/sims/{sim_id}/credentials/arc:put:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:put:description`),
+	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:put:description`) + "\n\n" + createLinkToAPIReference("Sim", "renewArcSimCredentials"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

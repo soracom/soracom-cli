@@ -21,7 +21,7 @@ func init() {
 var LoraDevicesUnsetGroupCmd = &cobra.Command{
 	Use:   "unset-group",
 	Short: TRAPI("/lora_devices/{device_id}/unset_group:post:summary"),
-	Long:  TRAPI(`/lora_devices/{device_id}/unset_group:post:description`),
+	Long:  TRAPI(`/lora_devices/{device_id}/unset_group:post:description`) + "\n\n" + createLinkToAPIReference("LoraDevice", "unsetLoraDeviceGroup"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

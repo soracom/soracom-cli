@@ -26,7 +26,7 @@ func init() {
 var EventHandlersUnignoreCmd = &cobra.Command{
 	Use:   "unignore",
 	Short: TRAPI("/event_handlers/{handler_id}/subscribers/{imsi}/ignore:delete:summary"),
-	Long:  TRAPI(`/event_handlers/{handler_id}/subscribers/{imsi}/ignore:delete:description`),
+	Long:  TRAPI(`/event_handlers/{handler_id}/subscribers/{imsi}/ignore:delete:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "deleteIgnoreEventHandler"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

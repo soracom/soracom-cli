@@ -21,7 +21,7 @@ func init() {
 var BillsExportLatestCmd = &cobra.Command{
 	Use:   "export-latest",
 	Short: TRAPI("/bills/latest/export:post:summary"),
-	Long:  TRAPI(`/bills/latest/export:post:description`),
+	Long:  TRAPI(`/bills/latest/export:post:description`) + "\n\n" + createLinkToAPIReference("Billing", "exportLatestBilling"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

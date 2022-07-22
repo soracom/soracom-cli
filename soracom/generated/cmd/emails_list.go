@@ -26,7 +26,7 @@ func init() {
 var EmailsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/operators/{operator_id}/emails:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/emails:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/emails:get:description`) + "\n\n" + createLinkToAPIReference("Email", "listEmails"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

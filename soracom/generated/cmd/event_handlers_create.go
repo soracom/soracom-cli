@@ -60,7 +60,7 @@ func init() {
 var EventHandlersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/event_handlers:post:summary"),
-	Long:  TRAPI(`/event_handlers:post:description`),
+	Long:  TRAPI(`/event_handlers:post:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "createEventHandler"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

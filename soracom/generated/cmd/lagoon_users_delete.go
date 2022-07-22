@@ -21,7 +21,7 @@ func init() {
 var LagoonUsersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/lagoon/users/{lagoon_user_id}:delete:summary"),
-	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}:delete:description`),
+	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "deleteLagoonUser"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

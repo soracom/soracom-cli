@@ -40,7 +40,7 @@ func init() {
 var SubscribersSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
 	Short: TRAPI("/subscribers/{imsi}/set_expiry_time:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/set_expiry_time:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/set_expiry_time:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "setExpiryTime"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

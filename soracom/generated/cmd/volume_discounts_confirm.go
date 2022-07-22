@@ -21,7 +21,7 @@ func init() {
 var VolumeDiscountsConfirmCmd = &cobra.Command{
 	Use:   "confirm",
 	Short: TRAPI("/volume_discounts/{order_id}/confirm:put:summary"),
-	Long:  TRAPI(`/volume_discounts/{order_id}/confirm:put:description`),
+	Long:  TRAPI(`/volume_discounts/{order_id}/confirm:put:description`) + "\n\n" + createLinkToAPIReference("Order", "confirmVolumeDiscountOrder"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

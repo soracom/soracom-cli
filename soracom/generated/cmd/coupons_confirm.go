@@ -21,7 +21,7 @@ func init() {
 var CouponsConfirmCmd = &cobra.Command{
 	Use:   "confirm",
 	Short: TRAPI("/coupons/{order_id}/confirm:put:summary"),
-	Long:  TRAPI(`/coupons/{order_id}/confirm:put:description`),
+	Long:  TRAPI(`/coupons/{order_id}/confirm:put:description`) + "\n\n" + createLinkToAPIReference("Order", "confirmCouponOrder"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

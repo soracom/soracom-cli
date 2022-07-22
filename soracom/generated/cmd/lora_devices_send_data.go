@@ -40,7 +40,7 @@ func init() {
 var LoraDevicesSendDataCmd = &cobra.Command{
 	Use:   "send-data",
 	Short: TRAPI("/lora_devices/{device_id}/data:post:summary"),
-	Long:  TRAPI(`/lora_devices/{device_id}/data:post:description`),
+	Long:  TRAPI(`/lora_devices/{device_id}/data:post:description`) + "\n\n" + createLinkToAPIReference("LoraDevice", "sendDataToLoraDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

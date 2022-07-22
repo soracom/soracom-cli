@@ -26,7 +26,7 @@ func init() {
 var OperatorAddCoverageTypeCmd = &cobra.Command{
 	Use:   "add-coverage-type",
 	Short: TRAPI("/operators/{operator_id}/coverage_type/{coverage_type}:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/coverage_type/{coverage_type}:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/coverage_type/{coverage_type}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "addCoverageType"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

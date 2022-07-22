@@ -21,7 +21,7 @@ func init() {
 var SubscribersExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/subscribers/export:post:summary"),
-	Long:  TRAPI(`/subscribers/export:post:description`),
+	Long:  TRAPI(`/subscribers/export:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "exportSubscribers"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

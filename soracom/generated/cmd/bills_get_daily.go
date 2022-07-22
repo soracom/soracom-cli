@@ -21,7 +21,7 @@ func init() {
 var BillsGetDailyCmd = &cobra.Command{
 	Use:   "get-daily",
 	Short: TRAPI("/bills/{yyyyMM}/daily:get:summary"),
-	Long:  TRAPI(`/bills/{yyyyMM}/daily:get:description`),
+	Long:  TRAPI(`/bills/{yyyyMM}/daily:get:description`) + "\n\n" + createLinkToAPIReference("Billing", "getBillingPerDay"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

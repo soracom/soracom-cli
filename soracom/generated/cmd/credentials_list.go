@@ -21,7 +21,7 @@ func init() {
 var CredentialsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/credentials:get:summary"),
-	Long:  TRAPI(`/credentials:get:description`),
+	Long:  TRAPI(`/credentials:get:description`) + "\n\n" + createLinkToAPIReference("Credential", "listCredentials"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

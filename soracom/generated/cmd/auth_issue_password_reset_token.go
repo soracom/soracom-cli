@@ -30,7 +30,7 @@ func init() {
 var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 	Use:   "issue-password-reset-token",
 	Short: TRAPI("/auth/password_reset_token/issue:post:summary"),
-	Long:  TRAPI(`/auth/password_reset_token/issue:post:description`),
+	Long:  TRAPI(`/auth/password_reset_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "issuePasswordResetToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

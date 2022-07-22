@@ -41,7 +41,7 @@ func init() {
 var DevicesGetResourceCmd = &cobra.Command{
 	Use:   "get-resource",
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}:get:summary"),
-	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}:get:description`),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}:get:description`) + "\n\n" + createLinkToAPIReference("Device", "readDeviceResource"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

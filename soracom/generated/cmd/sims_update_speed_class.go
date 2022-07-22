@@ -35,7 +35,7 @@ func init() {
 var SimsUpdateSpeedClassCmd = &cobra.Command{
 	Use:   "update-speed-class",
 	Short: TRAPI("/sims/{sim_id}/update_speed_class:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/update_speed_class:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/update_speed_class:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "updateSimSpeedClass"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

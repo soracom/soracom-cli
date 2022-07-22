@@ -21,7 +21,7 @@ func init() {
 var PaymentHistoryGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/payment_history/transactions/{payment_transaction_id}:get:summary"),
-	Long:  TRAPI(`/payment_history/transactions/{payment_transaction_id}:get:description`),
+	Long:  TRAPI(`/payment_history/transactions/{payment_transaction_id}:get:description`) + "\n\n" + createLinkToAPIReference("Payment", "getPaymentTransaction"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

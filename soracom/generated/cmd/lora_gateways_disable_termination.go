@@ -21,7 +21,7 @@ func init() {
 var LoraGatewaysDisableTerminationCmd = &cobra.Command{
 	Use:   "disable-termination",
 	Short: TRAPI("/lora_gateways/{gateway_id}/disable_termination:post:summary"),
-	Long:  TRAPI(`/lora_gateways/{gateway_id}/disable_termination:post:description`),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/disable_termination:post:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "disableTerminationOnLoraGateway"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

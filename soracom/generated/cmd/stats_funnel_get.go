@@ -41,7 +41,7 @@ func init() {
 var StatsFunnelGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/funnel/subscribers/{imsi}:get:summary"),
-	Long:  TRAPI(`/stats/funnel/subscribers/{imsi}:get:description`),
+	Long:  TRAPI(`/stats/funnel/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getFunnelStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

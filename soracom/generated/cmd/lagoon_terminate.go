@@ -17,7 +17,7 @@ func init() {
 var LagoonTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TRAPI("/lagoon/terminate:post:summary"),
-	Long:  TRAPI(`/lagoon/terminate:post:description`),
+	Long:  TRAPI(`/lagoon/terminate:post:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "terminateLagoon"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
