@@ -26,7 +26,7 @@ func init() {
 var EventHandlersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/event_handlers:get:summary"),
-	Long:  TRAPI(`/event_handlers:get:description`),
+	Long:  TRAPI(`/event_handlers:get:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "listEventHandlers"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -21,7 +21,7 @@ func init() {
 var UsersDefaultPermissionsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/operators/{operator_id}/users/default_permissions:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/default_permissions:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/default_permissions:delete:description`) + "\n\n" + createLinkToAPIReference("User", "deleteDefaultPermissions"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

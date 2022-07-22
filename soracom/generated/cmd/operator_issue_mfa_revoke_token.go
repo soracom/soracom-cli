@@ -35,7 +35,7 @@ func init() {
 var OperatorIssueMfaRevokeTokenCmd = &cobra.Command{
 	Use:   "issue-mfa-revoke-token",
 	Short: TRAPI("/operators/mfa_revoke_token/issue:post:summary"),
-	Long:  TRAPI(`/operators/mfa_revoke_token/issue:post:description`),
+	Long:  TRAPI(`/operators/mfa_revoke_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "issueMFARevokingToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -40,7 +40,7 @@ func init() {
 var UsersMfaVerifyCmd = &cobra.Command{
 	Use:   "verify",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/mfa/verify:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/mfa/verify:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/mfa/verify:post:description`) + "\n\n" + createLinkToAPIReference("User", "verifyUserMFA"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

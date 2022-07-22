@@ -35,7 +35,7 @@ func init() {
 var PortMappingsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/port_mappings:post:summary"),
-	Long:  TRAPI(`/port_mappings:post:description`),
+	Long:  TRAPI(`/port_mappings:post:description`) + "\n\n" + createLinkToAPIReference("PortMapping", "createPortMapping"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

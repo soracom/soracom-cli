@@ -35,7 +35,7 @@ func init() {
 var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	Use:   "issue-transfer-token",
 	Short: TRAPI("/subscribers/transfer_token/issue:post:summary"),
-	Long:  TRAPI(`/subscribers/transfer_token/issue:post:description`),
+	Long:  TRAPI(`/subscribers/transfer_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "issueSubscriberTransferToken"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

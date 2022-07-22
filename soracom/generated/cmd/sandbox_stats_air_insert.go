@@ -35,7 +35,7 @@ func init() {
 var SandboxStatsAirInsertCmd = &cobra.Command{
 	Use:   "insert",
 	Short: TRAPI("/sandbox/stats/air/subscribers/{imsi}:post:summary"),
-	Long:  TRAPI(`/sandbox/stats/air/subscribers/{imsi}:post:description`),
+	Long:  TRAPI(`/sandbox/stats/air/subscribers/{imsi}:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "sandboxInsertAirStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

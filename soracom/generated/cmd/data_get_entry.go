@@ -31,7 +31,7 @@ func init() {
 var DataGetEntryCmd = &cobra.Command{
 	Use:   "get-entry",
 	Short: TRAPI("/data/{resource_type}/{resource_id}/{time}:get:summary"),
-	Long:  TRAPI(`/data/{resource_type}/{resource_id}/{time}:get:description`),
+	Long:  TRAPI(`/data/{resource_type}/{resource_id}/{time}:get:description`) + "\n\n" + createLinkToAPIReference("DataEntry", "getDataEntry"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

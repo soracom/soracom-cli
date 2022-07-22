@@ -40,7 +40,7 @@ func init() {
 var CredentialsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/credentials/{credentials_id}:post:summary"),
-	Long:  TRAPI(`/credentials/{credentials_id}:post:description`),
+	Long:  TRAPI(`/credentials/{credentials_id}:post:description`) + "\n\n" + createLinkToAPIReference("Credential", "createCredential"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

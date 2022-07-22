@@ -21,7 +21,7 @@ func init() {
 var OperatorGetIndividualInformationCmd = &cobra.Command{
 	Use:   "get-individual-information",
 	Short: TRAPI("/operators/{operator_id}/individual_information:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/individual_information:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/individual_information:get:description`) + "\n\n" + createLinkToAPIReference("Operator", "getIndividualInformation"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

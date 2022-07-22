@@ -56,7 +56,7 @@ func init() {
 var LoraDevicesGetDataCmd = &cobra.Command{
 	Use:   "get-data",
 	Short: TRAPI("/lora_devices/{device_id}/data:get:summary"),
-	Long:  TRAPI(`/lora_devices/{device_id}/data:get:description`),
+	Long:  TRAPI(`/lora_devices/{device_id}/data:get:description`) + "\n\n" + createLinkToAPIReference("LoraDevice", "getDataFromLoraDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

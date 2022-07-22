@@ -65,7 +65,7 @@ func init() {
 var EventHandlersUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TRAPI("/event_handlers/{handler_id}:put:summary"),
-	Long:  TRAPI(`/event_handlers/{handler_id}:put:description`),
+	Long:  TRAPI(`/event_handlers/{handler_id}:put:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "updateEventHandler"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

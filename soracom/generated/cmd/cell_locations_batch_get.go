@@ -30,7 +30,7 @@ func init() {
 var CellLocationsBatchGetCmd = &cobra.Command{
 	Use:   "batch-get",
 	Short: TRAPI("/cell_locations:post:summary"),
-	Long:  TRAPI(`/cell_locations:post:description`),
+	Long:  TRAPI(`/cell_locations:post:description`) + "\n\n" + createLinkToAPIReference("CellLocation", "batchGetCellLocations"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

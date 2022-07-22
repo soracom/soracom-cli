@@ -31,7 +31,7 @@ func init() {
 var GroupsDeleteConfigCmd = &cobra.Command{
 	Use:   "delete-config",
 	Short: TRAPI("/groups/{group_id}/configuration/{namespace}/{name}:delete:summary"),
-	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}/{name}:delete:description`),
+	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}/{name}:delete:description`) + "\n\n" + createLinkToAPIReference("Group", "deleteConfigurationParameter"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

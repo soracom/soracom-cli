@@ -30,7 +30,7 @@ func init() {
 var LoraGatewaysPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/lora_gateways/{gateway_id}/tags:put:summary"),
-	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags:put:description`),
+	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "putLoraGatewayTags"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

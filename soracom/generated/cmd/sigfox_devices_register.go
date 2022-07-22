@@ -35,7 +35,7 @@ func init() {
 var SigfoxDevicesRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TRAPI("/sigfox_devices/{device_id}/register:post:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}/register:post:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}/register:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "registerSigfoxDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

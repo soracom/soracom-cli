@@ -23,7 +23,7 @@ func init() {
 var SimsRemoveArcCredentialsCmd = &cobra.Command{
 	Use:   "remove-arc-credentials",
 	Short: TRAPI("/sims/{sim_id}/credentials/arc:delete:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:delete:description`),
+	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:delete:description`) + "\n\n" + createLinkToAPIReference("Sim", "removeArcSimCredentials"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 

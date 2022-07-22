@@ -21,7 +21,7 @@ func init() {
 var SubscribersReportLocalInfoCmd = &cobra.Command{
 	Use:   "report-local-info",
 	Short: TRAPI("/subscribers/{imsi}/report_local_info:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/report_local_info:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/report_local_info:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "reportLocalInfo"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

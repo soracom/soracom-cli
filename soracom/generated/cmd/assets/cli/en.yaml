@@ -184,6 +184,7 @@ cli:
   query:
     summary: Search resources such as subscribers or sigfox devices.
     description: Search resources such as subscribers or sigfox devices.
+  refer-api-reference: For more information on the arguments and response of this command, see https://developers.soracom.io/en/api/#!/%s/%s
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.

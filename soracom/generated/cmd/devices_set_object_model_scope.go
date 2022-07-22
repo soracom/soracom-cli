@@ -35,7 +35,7 @@ func init() {
 var DevicesSetObjectModelScopeCmd = &cobra.Command{
 	Use:   "set-object-model-scope",
 	Short: TRAPI("/device_object_models/{model_id}/set_scope:post:summary"),
-	Long:  TRAPI(`/device_object_models/{model_id}/set_scope:post:description`),
+	Long:  TRAPI(`/device_object_models/{model_id}/set_scope:post:description`) + "\n\n" + createLinkToAPIReference("DeviceObjectModel", "setDeviceObjectModelScope"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

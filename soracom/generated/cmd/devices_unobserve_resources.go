@@ -31,7 +31,7 @@ func init() {
 var DevicesUnobserveResourcesCmd = &cobra.Command{
 	Use:   "unobserve-resources",
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/unobserve:post:summary"),
-	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/unobserve:post:description`),
+	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/unobserve:post:description`) + "\n\n" + createLinkToAPIReference("Device", "unobserveDeviceResources"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

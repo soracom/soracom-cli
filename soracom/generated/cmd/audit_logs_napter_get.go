@@ -56,7 +56,7 @@ func init() {
 var AuditLogsNapterGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/audit_logs/napter:get:summary"),
-	Long:  TRAPI(`/audit_logs/napter:get:description`),
+	Long:  TRAPI(`/audit_logs/napter:get:description`) + "\n\n" + createLinkToAPIReference("AuditLog", "getNapterAuditLogs"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

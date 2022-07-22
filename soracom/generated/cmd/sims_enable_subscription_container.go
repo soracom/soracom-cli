@@ -31,7 +31,7 @@ func init() {
 var SimsEnableSubscriptionContainerCmd = &cobra.Command{
 	Use:   "enable-subscription-container",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "enableSubscriptionContainer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

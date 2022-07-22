@@ -35,7 +35,7 @@ func init() {
 var GroupsPutConfigCmd = &cobra.Command{
 	Use:   "put-config",
 	Short: TRAPI("/groups/{group_id}/configuration/{namespace}:put:summary"),
-	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}:put:description`),
+	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}:put:description`) + "\n\n" + createLinkToAPIReference("Group", "putConfigurationParameters"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

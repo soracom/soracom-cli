@@ -26,7 +26,7 @@ func init() {
 var SigfoxDevicesTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TRAPI("/sigfox_devices/{device_id}/terminate:post:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}/terminate:post:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}/terminate:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "terminateSigfoxDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

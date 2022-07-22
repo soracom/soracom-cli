@@ -48,6 +48,10 @@ func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.
 		}()
 
 		pagination := getXSoracomCliPagination(op)
+		tag := ""
+		if len(op.Tags) > 0 {
+			tag = op.Tags[0]
+		}
 
 		a := commandArgs{
 			Use:                               getLast(commandName),
@@ -77,6 +81,8 @@ func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.
 			Deprecated:                        op.Deprecated,
 			AlternativeCommand:                getXSoracomAlternativeCli(op),
 			HasArrayResponse:                  hasArrayResponse(op.Responses),
+			Tag:                               tag,
+			OperationID:                       op.OperationID,
 		}
 		if a.Method == "POST" || a.Method == "PUT" {
 			if doesContentTypeParamExist(op.Parameters) {

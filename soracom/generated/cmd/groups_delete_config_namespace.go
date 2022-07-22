@@ -26,7 +26,7 @@ func init() {
 var GroupsDeleteConfigNamespaceCmd = &cobra.Command{
 	Use:   "delete-config-namespace",
 	Short: TRAPI("/groups/{group_id}/configuration/{namespace}:delete:summary"),
-	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}:delete:description`),
+	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}:delete:description`) + "\n\n" + createLinkToAPIReference("Group", "deleteConfigurationNamespace"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

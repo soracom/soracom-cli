@@ -35,7 +35,7 @@ func init() {
 var VpgSetInspectionCmd = &cobra.Command{
 	Use:   "set-inspection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "setInspectionConfiguration"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -26,7 +26,7 @@ func init() {
 var SimsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/sims/{sim_id}/tags/{tag_name}:delete:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/tags/{tag_name}:delete:description`),
+	Long:  TRAPI(`/sims/{sim_id}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Sim", "deleteSimTag"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

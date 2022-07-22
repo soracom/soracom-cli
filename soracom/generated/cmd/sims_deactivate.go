@@ -21,7 +21,7 @@ func init() {
 var SimsDeactivateCmd = &cobra.Command{
 	Use:   "deactivate",
 	Short: TRAPI("/sims/{sim_id}/deactivate:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/deactivate:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/deactivate:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "deactivateSim"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -21,7 +21,7 @@ func init() {
 var SubscribersEnableTerminationCmd = &cobra.Command{
 	Use:   "enable-termination",
 	Short: TRAPI("/subscribers/{imsi}/enable_termination:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/enable_termination:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/enable_termination:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "enableTermination"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

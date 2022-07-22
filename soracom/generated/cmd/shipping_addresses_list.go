@@ -21,7 +21,7 @@ func init() {
 var ShippingAddressesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/operators/{operator_id}/shipping_addresses:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/shipping_addresses:get:description`) + "\n\n" + createLinkToAPIReference("ShippingAddress", "listShippingAddresses"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

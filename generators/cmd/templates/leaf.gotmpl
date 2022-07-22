@@ -100,7 +100,7 @@ func init() {
 var {{ $cmdvar }} = &cobra.Command{
   Use: "{{.Use}}",
   Short: TRAPI("{{.Short}}"),
-  Long: TRAPI(`{{.Long}}`),
+  Long: TRAPI(`{{.Long}}`) + "\n\n" + createLinkToAPIReference("{{.Tag}}", "{{.OperationID}}"),
   RunE: func(cmd *cobra.Command, args []string) error {
     {{- if .Deprecated}}
     lib.WarnfStderr(TRCLI("cli.deprecated-api")+"\n")

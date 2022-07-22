@@ -35,7 +35,7 @@ func init() {
 var SubscribersUpdateSpeedClassCmd = &cobra.Command{
 	Use:   "update-speed-class",
 	Short: TRAPI("/subscribers/{imsi}/update_speed_class:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/update_speed_class:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/update_speed_class:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "updateSpeedClass"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

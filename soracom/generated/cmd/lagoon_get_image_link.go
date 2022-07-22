@@ -21,7 +21,7 @@ func init() {
 var LagoonGetImageLinkCmd = &cobra.Command{
 	Use:   "get-image-link",
 	Short: TRAPI("/lagoon/image/link:get:summary"),
-	Long:  TRAPI(`/lagoon/image/link:get:description`),
+	Long:  TRAPI(`/lagoon/image/link:get:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "getImageLink"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

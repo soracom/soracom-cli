@@ -35,7 +35,7 @@ func init() {
 var SimsAddSubscriptionCmd = &cobra.Command{
 	Use:   "add-subscription",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/add_subscription:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/add_subscription:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/add_subscription:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "addSubscription"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

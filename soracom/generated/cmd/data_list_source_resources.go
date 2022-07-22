@@ -41,7 +41,7 @@ func init() {
 var DataListSourceResourcesCmd = &cobra.Command{
 	Use:   "list-source-resources",
 	Short: TRAPI("/data/resources:get:summary"),
-	Long:  TRAPI(`/data/resources:get:description`),
+	Long:  TRAPI(`/data/resources:get:description`) + "\n\n" + createLinkToAPIReference("DataEntry", "listDataSourceResources"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

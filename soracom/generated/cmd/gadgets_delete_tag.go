@@ -31,7 +31,7 @@ func init() {
 var GadgetsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/gadgets/{product_id}/{serial_number}/tags/{tag_name}:delete:summary"),
-	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}/tags/{tag_name}:delete:description`),
+	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Gadget", "deleteGadgetTag"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

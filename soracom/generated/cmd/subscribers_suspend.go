@@ -21,7 +21,7 @@ func init() {
 var SubscribersSuspendCmd = &cobra.Command{
 	Use:   "suspend",
 	Short: TRAPI("/subscribers/{imsi}/suspend:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/suspend:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/suspend:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "suspendSubscriber"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

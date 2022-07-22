@@ -188,6 +188,7 @@ cli:
   query:
     summary: リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
     description: いろいろな条件を指定して、その条件に適合するリソース（サブスクライバー、Sigfox デバイス）を抽出します。
+  refer-api-reference: このコマンドの引数およびレスポンスについての詳細は、https://users.soracom.io/ja-jp/tools/api/reference/#/%s/%s を参照してください。
   roles:
     summary: ロールに関する操作を行います。
     description: ロールに関する操作を行います。

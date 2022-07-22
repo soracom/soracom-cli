@@ -61,7 +61,7 @@ func init() {
 var LogsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/logs:get:summary"),
-	Long:  TRAPI(`/logs:get:description`),
+	Long:  TRAPI(`/logs:get:description`) + "\n\n" + createLinkToAPIReference("Log", "getLogs"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

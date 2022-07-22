@@ -21,7 +21,7 @@ func init() {
 var SigfoxDevicesGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/sigfox_devices/{device_id}:get:summary"),
-	Long:  TRAPI(`/sigfox_devices/{device_id}:get:description`),
+	Long:  TRAPI(`/sigfox_devices/{device_id}:get:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "getSigfoxDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

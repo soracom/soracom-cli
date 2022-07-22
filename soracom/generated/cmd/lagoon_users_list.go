@@ -26,7 +26,7 @@ func init() {
 var LagoonUsersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/lagoon/users:get:summary"),
-	Long:  TRAPI(`/lagoon/users:get:description`),
+	Long:  TRAPI(`/lagoon/users:get:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "listLagoonUsers"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

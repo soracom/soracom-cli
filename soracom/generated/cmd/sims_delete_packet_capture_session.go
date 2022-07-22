@@ -26,7 +26,7 @@ func init() {
 var SimsDeletePacketCaptureSessionCmd = &cobra.Command{
 	Use:   "delete-packet-capture-session",
 	Short: TRAPI("/sims/{sim_id}/packet_capture_sessions/{session_id}:delete:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions/{session_id}:delete:description`),
+	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions/{session_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Sim", "deleteSimPacketCaptureSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

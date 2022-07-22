@@ -35,7 +35,7 @@ func init() {
 var LoraNetworkSetsAddPermissionCmd = &cobra.Command{
 	Use:   "add-permission",
 	Short: TRAPI("/lora_network_sets/{ns_id}/add_permission:post:summary"),
-	Long:  TRAPI(`/lora_network_sets/{ns_id}/add_permission:post:description`),
+	Long:  TRAPI(`/lora_network_sets/{ns_id}/add_permission:post:description`) + "\n\n" + createLinkToAPIReference("LoraNetworkSet", "addPermissionToLoraNetworkSet"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

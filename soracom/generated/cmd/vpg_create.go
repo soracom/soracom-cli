@@ -40,7 +40,7 @@ func init() {
 var VpgCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/virtual_private_gateways:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createVirtualPrivateGateway"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

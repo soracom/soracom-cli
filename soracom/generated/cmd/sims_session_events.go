@@ -51,7 +51,7 @@ func init() {
 var SimsSessionEventsCmd = &cobra.Command{
 	Use:   "session-events",
 	Short: TRAPI("/sims/{sim_id}/events/sessions:get:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/events/sessions:get:description`),
+	Long:  TRAPI(`/sims/{sim_id}/events/sessions:get:description`) + "\n\n" + createLinkToAPIReference("Sim", "listSimSessionEvents"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

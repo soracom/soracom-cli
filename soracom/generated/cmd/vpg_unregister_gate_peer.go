@@ -26,7 +26,7 @@ func init() {
 var VpgUnregisterGatePeerCmd = &cobra.Command{
 	Use:   "unregister-gate-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:delete:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:delete:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:delete:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "unregisterGatePeer"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

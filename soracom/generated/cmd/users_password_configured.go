@@ -26,7 +26,7 @@ func init() {
 var UsersPasswordConfiguredCmd = &cobra.Command{
 	Use:   "configured",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:get:description`) + "\n\n" + createLinkToAPIReference("User", "hasUserPassword"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

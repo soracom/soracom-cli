@@ -26,7 +26,7 @@ func init() {
 var FilesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/files/{scope}/{path}:delete:summary"),
-	Long:  TRAPI(`/files/{scope}/{path}:delete:description`),
+	Long:  TRAPI(`/files/{scope}/{path}:delete:description`) + "\n\n" + createLinkToAPIReference("FileEntry", "deleteFile"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

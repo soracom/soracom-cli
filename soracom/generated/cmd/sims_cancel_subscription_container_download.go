@@ -31,7 +31,7 @@ func init() {
 var SimsCancelSubscriptionContainerDownloadCmd = &cobra.Command{
 	Use:   "cancel-subscription-container-download",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/cancel_download:post:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/cancel_download:post:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/cancel_download:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "cancelSubscriptionContainerDownload"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

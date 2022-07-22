@@ -35,7 +35,7 @@ func init() {
 var SandboxOrdersShipCmd = &cobra.Command{
 	Use:   "ship",
 	Short: TRAPI("/sandbox/orders/ship:post:summary"),
-	Long:  TRAPI(`/sandbox/orders/ship:post:description`),
+	Long:  TRAPI(`/sandbox/orders/ship:post:description`) + "\n\n" + createLinkToAPIReference("Order", "sandboxShipOrder"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

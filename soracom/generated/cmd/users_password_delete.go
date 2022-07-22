@@ -26,7 +26,7 @@ func init() {
 var UsersPasswordDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/password:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/password:delete:description`) + "\n\n" + createLinkToAPIReference("User", "deleteUserPassword"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

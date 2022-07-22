@@ -30,7 +30,7 @@ func init() {
 var GroupsPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/groups/{group_id}/tags:put:summary"),
-	Long:  TRAPI(`/groups/{group_id}/tags:put:description`),
+	Long:  TRAPI(`/groups/{group_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("Group", "putGroupTags"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

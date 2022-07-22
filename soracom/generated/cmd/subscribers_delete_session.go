@@ -21,7 +21,7 @@ func init() {
 var SubscribersDeleteSessionCmd = &cobra.Command{
 	Use:   "delete-session",
 	Short: TRAPI("/subscribers/{imsi}/delete_session:post:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/delete_session:post:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/delete_session:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "deleteSubscriberSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -26,7 +26,7 @@ func init() {
 var RolesGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/operators/{operator_id}/roles/{role_id}:get:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:get:description`),
+	Long:  TRAPI(`/operators/{operator_id}/roles/{role_id}:get:description`) + "\n\n" + createLinkToAPIReference("Role", "getRole"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -31,7 +31,7 @@ func init() {
 var SimsDeleteCountryMappingEntryCmd = &cobra.Command{
 	Use:   "delete-country-mapping-entry",
 	Short: TRAPI("/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:delete:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:delete:description`),
+	Long:  TRAPI(`/sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:delete:description`) + "\n\n" + createLinkToAPIReference("Sim", "deleteSubscriptionContainerCountryMappingEntry"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

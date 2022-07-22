@@ -21,7 +21,7 @@ func init() {
 var OperatorRevokeOperatorAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-operator-auth-tokens",
 	Short: TRAPI("/operators/{operator_id}/tokens:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/tokens:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/tokens:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "revokeOperatorAuthTokens"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

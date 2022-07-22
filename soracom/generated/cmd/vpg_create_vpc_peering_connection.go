@@ -50,7 +50,7 @@ func init() {
 var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "create-vpc-peering-connection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createVpcPeeringConnection"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

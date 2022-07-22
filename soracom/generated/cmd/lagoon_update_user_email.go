@@ -35,7 +35,7 @@ func init() {
 var LagoonUpdateUserEmailCmd = &cobra.Command{
 	Use:   "update-user-email",
 	Short: TRAPI("/lagoon/users/{lagoon_user_id}/email:put:summary"),
-	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}/email:put:description`),
+	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}/email:put:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "updateLagoonUserEmail"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -30,7 +30,7 @@ func init() {
 var SandboxSubscribersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/sandbox/subscribers/create:post:summary"),
-	Long:  TRAPI(`/sandbox/subscribers/create:post:description`),
+	Long:  TRAPI(`/sandbox/subscribers/create:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "sandboxCreateSubscriber"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

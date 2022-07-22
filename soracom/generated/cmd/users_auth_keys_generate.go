@@ -26,7 +26,7 @@ func init() {
 var UsersAuthKeysGenerateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys:post:description`) + "\n\n" + createLinkToAPIReference("User", "generateUserAuthKey"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -21,7 +21,7 @@ func init() {
 var VpgUnsetRedirectionCmd = &cobra.Command{
 	Use:   "unset-redirection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/unset_redirection:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_redirection:post:description`),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/unset_redirection:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "unsetRedirectionConfiguration"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

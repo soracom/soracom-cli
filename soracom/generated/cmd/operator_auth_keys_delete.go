@@ -26,7 +26,7 @@ func init() {
 var OperatorAuthKeysDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/operators/{operator_id}/auth_keys/{auth_key_id}:delete:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/auth_keys/{auth_key_id}:delete:description`),
+	Long:  TRAPI(`/operators/{operator_id}/auth_keys/{auth_key_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "deleteOperatorAuthKey"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

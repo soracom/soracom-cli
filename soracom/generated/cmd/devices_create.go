@@ -95,7 +95,7 @@ func init() {
 var DevicesCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/devices:post:summary"),
-	Long:  TRAPI(`/devices:post:description`),
+	Long:  TRAPI(`/devices:post:description`) + "\n\n" + createLinkToAPIReference("Device", "createDevice"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

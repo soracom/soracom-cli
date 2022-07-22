@@ -26,7 +26,7 @@ func init() {
 var SimsGetPacketCaptureSessionCmd = &cobra.Command{
 	Use:   "get-packet-capture-session",
 	Short: TRAPI("/sims/{sim_id}/packet_capture_sessions/{session_id}:get:summary"),
-	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions/{session_id}:get:description`),
+	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions/{session_id}:get:description`) + "\n\n" + createLinkToAPIReference("Sim", "getSimPacketCaptureSession"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

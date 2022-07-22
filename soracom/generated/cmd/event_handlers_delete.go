@@ -21,7 +21,7 @@ func init() {
 var EventHandlersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/event_handlers/{handler_id}:delete:summary"),
-	Long:  TRAPI(`/event_handlers/{handler_id}:delete:description`),
+	Long:  TRAPI(`/event_handlers/{handler_id}:delete:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "deleteEventHandler"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

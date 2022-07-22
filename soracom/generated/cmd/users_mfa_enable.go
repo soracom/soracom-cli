@@ -26,7 +26,7 @@ func init() {
 var UsersMfaEnableCmd = &cobra.Command{
 	Use:   "enable",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/mfa:post:summary"),
-	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/mfa:post:description`),
+	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/mfa:post:description`) + "\n\n" + createLinkToAPIReference("User", "enableUserMFA"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -30,7 +30,7 @@ func init() {
 var SubscribersPutBundlesCmd = &cobra.Command{
 	Use:   "put-bundles",
 	Short: TRAPI("/subscribers/{imsi}/bundles:put:summary"),
-	Long:  TRAPI(`/subscribers/{imsi}/bundles:put:description`),
+	Long:  TRAPI(`/subscribers/{imsi}/bundles:put:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "putBundles"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {

@@ -26,7 +26,7 @@ func init() {
 var GroupsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/groups/{group_id}/tags/{tag_name}:delete:summary"),
-	Long:  TRAPI(`/groups/{group_id}/tags/{tag_name}:delete:description`),
+	Long:  TRAPI(`/groups/{group_id}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Group", "deleteGroupTag"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
