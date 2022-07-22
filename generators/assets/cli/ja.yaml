@@ -108,7 +108,7 @@ cli:
       このオプションを指定した場合は合わせて --coverage-type も指定してください。
     auth-key-id: |
       認証処理に利用する認証キー ID (AuthKeyId) を指定します。
-      --auth-key-id と --auth-key の両方を指定すると、soracom-cli 事前にセットアップされたプロファイル情報なしでも動作します。
+      --auth-key-id と --auth-key の両方を指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
       すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなりますので、一時的にコマンドを実行したい場合やスクリプトからの実行などに適しています。
       このプションを指定した場合は合わせて --coverage-type も指定してください。
     coverage-type: |
