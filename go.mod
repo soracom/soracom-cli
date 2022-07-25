@@ -4,7 +4,9 @@ require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/dvsekhvalnov/jose2go v1.5.0
 	github.com/elazarl/goproxy v0.0.0-20210801061803-8e322dfb79c4
+	github.com/getkin/kin-openapi v0.97.0
 	github.com/kennygrant/sanitize v1.2.4
+	github.com/mattn/go-shellwords v1.0.12
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
@@ -18,13 +20,11 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/elazarl/goproxy/ext v0.0.0-20200809112317-0581fc3aee2d // indirect
-	github.com/getkin/kin-openapi v0.97.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/invopop/yaml v0.1.0 // indirect
 	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
-	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
