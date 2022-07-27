@@ -54,15 +54,38 @@ Available Commands:
   vpg                  List, create, update or delete VPGs.
 
 Flags:
-      --api-key string           Specify API key otherwise soracom-cli performs authentication on behalf of you
-      --api-token string         Specify API token otherwise soracom-cli performs authentication on behalf of you
-      --auth-key string          Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
-      --auth-key-id string       Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
-      --coverage-type string     Specify coverage type, 'g' for Global, 'jp' for Japan
+      --api-key string           Specify an API key.
+                                 If you do not specify an API key, soracom-cli will perform the authentication process on your behalf to obtain an API key.
+                                 If you already have an API key, you can skip the authentication process by specifying it in this argument to speed up the process.
+                                 --api-token must be specified at the same time.
+                                 
+      --api-token string         Specify an API token.
+                                 If you do not specify an API token, soracom-cli will perform the authentication process on your behalf to obtain an API token.
+                                 If you already have an API token, you can skip the authentication process by specifying it in this argument to speed up the process.
+                                 --api-key must be specified at the same time.
+                                 
+      --auth-key string          Specify the AuthKey to be used for the authentication process.
+                                 If both --auth-key-id and --auth-key are specified, soracom-cli will work without pre-configured profiles.
+                                 This means that the 'soracom configure' command does not need to be run beforehand, which is suitable for cases where you only want to run a command temporarily or from a script.
+                                 If you specify this option, you must also specify --coverage-type.
+                                 
+      --auth-key-id string       Specify AuthKeyId to be used for the authentication process.
+                                 If both --auth-key-id and --auth-key are specified, soracom-cli will work without pre-configured profiles.
+                                 This means that the 'soracom configure' command does not need to be run beforehand, which is suitable for cases where you only want to run a command temporarily or from a script.
+                                 If you specify this option, you must also specify --coverage-type.
+                                 
+      --coverage-type string     Specify the coverage type, 'g' for Global, 'jp' for Japan.
+                                 
   -h, --help                     help for soracom
-      --no-retry-on-error        Specify soracom-cli not to retry even if the API endpoint returns an error
-      --profile string           Specify profile name
-      --profile-command string   Specify a command to provide a profile. If this option is specified, soracom-cli works without pre-configured profile. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying this option along with --coverage-type.
-      --raw-output               Specify soracom-cli to output raw response from the API endpoint
+      --no-retry-on-error        If this flag is specified, soracom-cli will not retry even if the API endpoint returns an error. (The default is to retry several times with backoff.)
+                                 
+      --profile string           Specify a profile name.
+                                 
+      --profile-command string   Specify a command to supply profile information.
+                                 With this option, soracom-cli will work without pre-configured profiles.
+                                 This means that the 'soracom configure' command does not need to be run beforehand.
+                                 Authentication information can be stored in a more secure location, such as a password manager, and used via external commands.
+                                 
+      --raw-output               Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
 
 Use "soracom [command] --help" for more information about a command.
