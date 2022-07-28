@@ -54,15 +54,38 @@ Available Commands:
   vpg                  VPG に関する操作を行います。
 
 Flags:
-      --api-key string           Specify API key otherwise soracom-cli performs authentication on behalf of you
-      --api-token string         Specify API token otherwise soracom-cli performs authentication on behalf of you
-      --auth-key string          Specify AuthKey to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
-      --auth-key-id string       Specify AuthKeyId to be used for authentication. If both --auth-key-id and --auth-key are specified, soracom-cli works without profiles. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying these options along with --coverage-type.
-      --coverage-type string     Specify coverage type, 'g' for Global, 'jp' for Japan
+      --api-key string           API キーを指定します。
+                                 API キーを指定しなければ soracom-cli が代わりに認証処理を実行して API キーを取得します。
+                                 もし API キーを既に持っている場合はこの引数に指定することで認証処理をスキップできるので高速化できます。
+                                 --api-token も同時に指定してください。
+                                 
+      --api-token string         API トークンを指定します。
+                                 API トークンを指定しなければ soracom-cli が代わりに認証処理を実行して API トークンを取得します。
+                                 もし API トークンを既に持っている場合はこの引数に指定することで認証処理をスキップできるので高速化できます。
+                                 --api-key も同時に指定してください。
+                                 
+      --auth-key string          認証処理に利用する認証キーシークレット (AuthKey) を指定します。
+                                 --auth-key-id と --auth-key の両方を指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
+                                 すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなりますので、一時的にコマンドを実行したいだけの場合やスクリプトからの実行などに適しています。
+                                 このオプションを指定した場合は合わせて --coverage-type も指定してください。
+                                 
+      --auth-key-id string       認証処理に利用する認証キー ID (AuthKeyId) を指定します。
+                                 --auth-key-id と --auth-key の両方を指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
+                                 すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなりますので、一時的にコマンドを実行したい場合やスクリプトからの実行などに適しています。
+                                 このオプションを指定した場合は合わせて --coverage-type も指定してください。
+                                 
+      --coverage-type string     カバレッジタイプを指定します。グローバルカバレッジは 'g'、日本カバレッジは 'jp' です。
+                                 
   -h, --help                     help for soracom
-      --no-retry-on-error        Specify soracom-cli not to retry even if the API endpoint returns an error
-      --profile string           Specify profile name
-      --profile-command string   Specify a command to provide a profile. If this option is specified, soracom-cli works without pre-configured profile. It means you do not need to run 'soracom configure' before running the command. This may be suitable for temporary execution. Please do not forget specifying this option along with --coverage-type.
-      --raw-output               Specify soracom-cli to output raw response from the API endpoint
+      --no-retry-on-error        このフラグを指定すると、API がエラーを返してきた場合にもリトライしません（デフォルトではバックオフしながら数回リトライします）。
+                                 
+      --profile string           プロファイル名を指定します。
+                                 
+      --profile-command string   プロファイル情報を供給するためのコマンドを指定します。
+                                 このオプションを指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
+                                 すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなります。
+                                 認証情報をパスワードマネージャーなどのより安全な場所に格納しておき、外部コマンド経由でそれを利用することができます。
+                                 
+      --raw-output               API から返却されたレスポンスを加工せずにそのまま出力します（デフォルトでは JSON をインデントして表示します）。
 
 Use "soracom [command] --help" for more information about a command.
