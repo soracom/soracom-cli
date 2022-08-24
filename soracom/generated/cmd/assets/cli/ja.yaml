@@ -189,6 +189,9 @@ cli:
     summary: リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
     description: いろいろな条件を指定して、その条件に適合するリソース（サブスクライバー、Sigfox デバイス）を抽出します。
   refer-api-reference: このコマンドの引数およびレスポンスについての詳細は、https://users.soracom.io/ja-jp/tools/api/reference/#/%s/%s を参照してください。
+  resource-summaries:
+    summary: リソースの要約を取得します。
+    description: リソースの要約を取得します。
   roles:
     summary: ロールに関する操作を行います。
     description: ロールに関する操作を行います。
@@ -210,6 +213,12 @@ cli:
   sims:
     summary: SIM に関する操作を行います。
     description: SIM に関する操作を行います。
+  sora-cam:
+    summary: Soracom Cloud Camera Services に関する操作を行います。
+    description: Manage Soracom Cloud Camera Services に関する操作を行います。
+    license-packs:
+      summary: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
+      description: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
   soralets:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。

@@ -37,12 +37,14 @@ Available Commands:
   port-mappings        Manage port mappings for on-demand remote access.
   products             List products.
   query                Search resources such as subscribers or sigfox devices.
+  resource-summaries   Get resource summary.
   roles                List, create, update or delete roles.
   sandbox              Sandbox related operations.
   self-update          Updates soracom-cli to the latest version.
   shipping-addresses   List, create, update or delete shipping addresses.
   sigfox-devices       Manage Sigfox devices.
   sims                 Manage SIMs.
+  sora-cam             Manage Soracom Cloud Camera Services settings.
   soralets             Manage Soralets for Orbit.
   stats                Show or export statistics.
   subscribers          Manage subscribers.
