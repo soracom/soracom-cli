@@ -37,12 +37,14 @@ Available Commands:
   port-mappings        オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
   products             商品一覧を取得します。
   query                リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
+  resource-summaries   リソースの要約を取得します。
   roles                ロールに関する操作を行います。
   sandbox              API サンドボックスに関する操作を行います。
   self-update          soracom-cli を最新のバージョンに更新します。
   shipping-addresses   出荷先情報に関する操作を行います。
   sigfox-devices       Sigfox デバイスに関する操作を行います。
   sims                 SIM に関する操作を行います。
+  sora-cam             Soracom Cloud Camera Services に関する操作を行います。
   soralets             Orbit の Soralet に関する操作を行います。
   stats                統計情報に関する操作を行います。
   subscribers          サブスクライバー (SIM) に関する操作を行います。

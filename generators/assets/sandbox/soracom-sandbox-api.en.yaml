@@ -237,6 +237,15 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Creating "plan01s":
+                value:
+                  subscription: plan01s
+              Creating "plan-D D-300MB":
+                value:
+                  bundle:
+                  - D-300MB
+                  subscription: plan-D
             schema:
               $ref: '#/components/schemas/sandboxCreateSubscriberRequest'
         description: Create request
@@ -306,16 +315,29 @@ components:
       type: object
     sandboxCreateSubscriberRequest:
       properties:
+        bundles:
+          description: "Bundle. If necessary, specify one of:"
+          type: array
+          items:
+            enum:
+            - X3-5MB
+            - D-300MB
+            - DU-10MB
+            - DU-50MB
+            - K2-300MB
+            type: string
         subscription:
           description: "Subscription. Specify one of:"
           enum:
           - plan01s
           - plan01s-low_data_volume
+          - planP1
           - planX3
           - plan-D
           - plan-K
           - plan-KM1
           - plan-DU
+          - plan-K2
           type: string
       type: object
     sandboxCreateSubscriberResponse:

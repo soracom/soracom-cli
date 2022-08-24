@@ -8228,6 +8228,39 @@ paths:
       x-soracom-cli:
       - query subscribers traffic-volume-ranking
       - query traffic-ranking
+  /resource_summaries/{resource_summary_type}:
+    get:
+      description: resource_summary_type で指定された種別のリソースの要約を取得します。
+      operationId: getResourceSummary
+      parameters:
+      - description: |
+          リソースの要約の種別
+
+          - `simsPerStatus`: ステータスごとの IoT SIM の数
+        in: path
+        name: resource_summary_type
+        required: true
+        schema:
+          enum:
+          - simsPerStatus
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceSummary'
+          description: リソースの要約を取得しました
+        "404":
+          description: 指定のリソースの要約は存在しません
+      security:
+      - api_key: []
+        api_token: []
+      summary: resource_summary_type で指定された種別のリソースの要約を取得します。
+      tags:
+      - ResourceSummary
+      x-soracom-cli:
+      - resource-summaries get
   /sigfox_devices:
     get:
       description: 条件にマッチする Sigfox device のリストを返す。Sigfox device の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
@@ -9361,7 +9394,7 @@ paths:
       - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
-      description: 新しいサブスクリプションコンテナを SIM プロファイルに追加するための OTA のアップデートをトリガするための API
+      description: 新しいセカンダリサブスクリプションを IoT SIM に追加するための OTA のアップデートをトリガします。
       operationId: addSubscription
       parameters:
       - description: 対象の SIM の ID
@@ -9370,7 +9403,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 対象の SIM プロファイルの ICCID（UICC SIM の場合 SID ID と同一）
+      - description: 対象の IoT SIM の ICCID。eUICC 非対応 の IoT SIM の場合は、ICCID と SIM ID は同一です。
         in: path
         name: iccid
         required: true
@@ -9382,13 +9415,27 @@ paths:
             schema:
               properties:
                 enable:
-                  description: ダウンロード完了後に新たに追加された Subscriber を有効化するかどうかを示すフラグ。 true
-                    にセットされた場合、ダウンロードされた Subscriber が即時有効になる。
+                  description: |
+                    セカンダリサブスクリプションのダウンロードが完了すると、すぐにそのセカンダリサブスクリプションを有効化 (active) するかどうかを指定します。
+                    - `true`: すぐに有効化 (active) する
+                    - `false`: 無効 (inactive) を維持する。次の [ネットワーク登録](/ja-jp/resources/glossary/#ネットワーク登録) 時に、セカンダリサブスクリプションが有効化 (active) されます。
                   type: boolean
                 subscription:
-                  description: サブスクリプション名
+                  description: |
+                    追加する [セカンダリサブスクリプション](/ja-jp/resources/glossary/subscription/)
+                    - `planP1`、`planX1`、`planX2`、`planX3`: 追加サブスクリプション
+                    - `planArc01`: バーチャル SIM/Subscriber
+                  enum:
+                  - planP1
+                  - planX1
+                  - planX2
+                  - planX3
+                  - planArc01
                   type: string
                 type:
+                  description: |
+                    - `virtual`: `subscription` で `planArc01` を指定した場合
+                    - `cellular`: `subscription` で `planArc01` 以外を指定した場合
                   enum:
                   - virtual
                   - cellular
@@ -9403,12 +9450,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/SimProfile'
           description: 更新された SIM プロファイル
+        "400":
+          description: 追加できないサブスクリプションを指定した。たとえば、plan-D の IoT SIM に `planP1` は追加できません。
         "404":
-          description: 指定した SIM もしくは SIM プロファイルが存在しない
+          description: 指定した SIM ID および ICCID の IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: 新しいサブスクリプションコンテナを SIM プロファイルに追加する。
+      summary: 新しいセカンダリサブスクリプションを IoT SIM に追加する
       tags:
       - Sim
       x-soracom-cli:
@@ -10178,6 +10227,74 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sora_cam/license_packs:
+    get:
+      description: 利用可能なライセンスパックの一覧を取得します。 現在、この API は日本カバレッジでのみ利用可能です。
+      operationId: listSoraCamLicensePacks
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - id: CR7-SC
+                name: Cloud Recording License (7 Days)
+                quantity: 0
+                salesChannel: SORACOM Inc.
+              - id: CR14-SC
+                name: Cloud Recording License (14 Days)
+                quantity: 1
+                salesChannel: SORACOM Inc.
+              - id: CR30-SC
+                name: Cloud Recording License (30 Days)
+                quantity: 2
+                salesChannel: SORACOM Inc.
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamLicensePackResponse'
+                type: array
+          description: ライセンスパックの一覧を取得しました。
+        "400":
+          description: リクエストが不正です。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Soracom Cloud Camera Services のライセンスパックの一覧を取得します。
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam license-packs list
+  /sora_cam/license_packs/{license_pack_id}/quantity:
+    put:
+      description: license_pack_id で指定されたライセンスパックのライセンス数を更新します。 ライセンス数に応じて月額費用が発生します。
+        現在、この API は日本カバレッジでのみ利用可能です。
+      operationId: updateSoraCamLicensePackQuantity
+      parameters:
+      - description: ライセンスパックの ID
+        in: path
+        name: license_pack_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoraCamLicensePackQuantityUpdatingRequest'
+        description: ライセンス数の更新内容
+        required: true
+      responses:
+        "204":
+          description: ライセンス数を更新しました。
+        "400":
+          description: 更新リクエストが不正です。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Soracom Cloud Camera Services のライセンス数を更新します。
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam license-packs update-quantity
   /soralets:
     get:
       description: Soralet の一覧を取得します。
@@ -10568,13 +10685,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -13122,7 +13239,7 @@ paths:
       - volume-discounts list
     post:
       description: 新規で長期利用割引の見積もりの作成を行います。orderId を/confirm に PUT すると発注が完了します。(現時点では、長期利用割引は
-        plan-D、plan-K でのみ利用できます。)
+        plan-D バンドルなし、plan-K でのみ利用できます。)
       operationId: createVolumeDiscountQuotation
       requestBody:
         content:
@@ -13552,6 +13669,7 @@ components:
             $ref: '#/components/schemas/DataTrafficStats'
           type: object
         date:
+          description: 日時 (協定世界時 (UTC))
           type: string
         unixtime:
           format: int64
@@ -16480,9 +16598,7 @@ components:
           description: PUK or PASSCODE on SIM card
           type: string
         tags:
-          items:
-            $ref: '#/components/schemas/TagUpdateRequest'
-          type: array
+          $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
       type: object
@@ -16494,9 +16610,7 @@ components:
           description: PUK or PASSCODE on SIM card
           type: string
         tags:
-          items:
-            $ref: '#/components/schemas/TagUpdateRequest'
-          type: array
+          $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
       type: object
@@ -16547,6 +16661,68 @@ components:
           type: object
         values:
           type: object
+      type: object
+    ResourceSummary:
+      properties:
+        resourceSummaryItems:
+          description: リソースの要約アイテムの一覧
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItem'
+          type: array
+        resourceSummaryType:
+          description: |
+            リソースの要約の種別
+
+            - `simsPerStatus`: ステータスごとの IoT SIM の数
+          example: simsPerStatus
+          type: string
+      type: object
+    ResourceSummaryItem:
+      properties:
+        dimensions:
+          description: リソースの要約アイテムのディメンションの一覧
+          example: []
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItemDimension'
+          type: array
+        updatedTime:
+          description: リソースの要約アイテムの最終更新日時 (unixtime ミリ秒単位)
+          example: 1654007722000
+          format: int64
+          type: integer
+        values:
+          description: リソースの要約アイテムの集計値の一覧
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItemValue'
+          type: array
+      type: object
+    ResourceSummaryItemDimension:
+      properties:
+        name:
+          description: リソースの要約アイテムのディメンションの名前
+          type: string
+        value:
+          description: リソースの要約アイテムのディメンションの値
+          type: string
+      type: object
+    ResourceSummaryItemValue:
+      properties:
+        name:
+          description: |
+            リソースの要約アイテムの集計値の名前
+
+            - `resourceSummaryType` が `simsPerStatus` の場合:
+              - `readySims`: ステータスが「準備完了 (ready)」の IoT SIM の数
+              - `activeSims`: ステータスが「使用中 (active)」の IoT SIM の数
+              - `inactiveSims`: ステータスが「休止中 (inactive)」の IoT SIM の数
+              - `standbySims`: ステータスが「利用開始待ち (standby)」の IoT SIM の数
+              - `suspendedSims`: ステータスが「利用中断中 (suspended)」の IoT SIM の数
+          example: activeSims
+          type: string
+        value:
+          description: リソースの要約アイテムの集計値の値
+          example: 1
+          type: number
       type: object
     RoleResponse:
       properties:
@@ -17026,6 +17202,39 @@ components:
         payload:
           type: string
       type: object
+    SoraCamLicensePackQuantityUpdatingRequest:
+      properties:
+        currentQuantity:
+          description: 現在のライセンス数
+          example: 1
+          format: int32
+          type: integer
+        desiredQuantity:
+          description: 変更後のライセンス数
+          example: 2
+          format: int32
+          type: integer
+      type: object
+    SoraCamLicensePackResponse:
+      properties:
+        id:
+          description: ライセンスパックの ID
+          example: CR7-SC
+          type: string
+        name:
+          description: ライセンスパックの名前
+          example: Cloud Recording License (7 Days)
+          type: string
+        quantity:
+          description: 現在のライセンス数
+          example: 1
+          format: int32
+          type: integer
+        salesChannel:
+          description: ライセンスパックの販売元
+          example: SORACOM Inc.
+          type: string
+      type: object
     SoracomBeamStats:
       properties:
         count:
@@ -17332,7 +17541,7 @@ components:
         speedClass:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
-            - plan01s、plan01s - Low Data Volume、planX3、plan-D の場合:
+            - plan01s、plan01s - Low Data Volume、planP1、planX3、plan-D の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -17601,6 +17810,8 @@ tags:
   name: Role
 - description: 直販での発送先住所に関する操作
   name: ShippingAddress
+- description: '[Soracom Cloud Camera Services](/ja-jp/guides/soracom-cloud-camera-services/)'
+  name: SoraCam
 - description: '[メールアドレス](/ja-jp/docs/email/)'
   name: SystemNotification
 - description: |

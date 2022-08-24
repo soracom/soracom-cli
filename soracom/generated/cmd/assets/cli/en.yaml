@@ -189,6 +189,9 @@ cli:
     summary: Search resources such as subscribers or sigfox devices.
     description: Search resources such as subscribers or sigfox devices.
   refer-api-reference: For more information on the arguments and response of this command, see https://developers.soracom.io/en/api/#!/%s/%s
+  resource-summaries:
+    summary: Get resource summary.
+    description: Get resource summary.
   roles:
     summary: List, create, update or delete roles.
     description: List, create, update or delete roles.
@@ -231,6 +234,12 @@ cli:
   sims:
     summary: Manage SIMs.
     description: Manage SIMs.
+  sora-cam:
+    summary: Manage Soracom Cloud Camera Services settings.
+    description: Manage Soracom Cloud Camera Services settings.
+    license-packs:
+      summary: Manage Soracom Cloud Camera Services license packs.
+      description: Manage Soracom Cloud Camera Services license packs.
   soralets:
     summary: Manage Soralets for Orbit.
     description: Manage Soralets for Orbit.

@@ -8355,6 +8355,39 @@ paths:
       x-soracom-cli:
       - query subscribers traffic-volume-ranking
       - query traffic-ranking
+  /resource_summaries/{resource_summary_type}:
+    get:
+      description: Obtain a resource summary information identified by resource_summary_type.
+      operationId: getResourceSummary
+      parameters:
+      - description: |
+          The type of the resource summary.
+
+          - `simsPerStatus`: The number of IoT SIMs per status
+        in: path
+        name: resource_summary_type
+        required: true
+        schema:
+          enum:
+          - simsPerStatus
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceSummary'
+          description: The resource summary was found.
+        "404":
+          description: No such resource summary.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get the resource summary identified by resource_summary_type.
+      tags:
+      - ResourceSummary
+      x-soracom-cli:
+      - resource-summaries get
   /sigfox_devices:
     get:
       description: Returns a list of Sigfox devices that match certain criteria. If
@@ -9520,8 +9553,8 @@ paths:
       - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
-      description: This API is used to trigger the OTA update of a new subscription
-        container to a SIM profile.
+      description: Trigger an OTA update to add a new secondary subscription to an
+        IoT SIM.
       operationId: addSubscription
       parameters:
       - description: Id of the target SIM
@@ -9530,7 +9563,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: Iccid of the target profile
+      - description: ICCID of the target IoT SIM; for IoT SIMs that do not support
+          eUICC, the ICCID and SIM ID are the same.
         in: path
         name: iccid
         required: true
@@ -9542,14 +9576,27 @@ paths:
             schema:
               properties:
                 enable:
-                  description: A flag to indicate if it should cause a switch to the
-                    subscription after the download has finished. If it is set to
-                    true, the downloaded subscriber will be enabled immediately.
+                  description: |
+                    Specifies whether to activate the secondary subscription as soon as it has been downloaded.
+                    - `true`: Activate immediately
+                    - `false`: Keep inactive. The secondary subscriptions will be activated at the next network registration.
                   type: boolean
                 subscription:
-                  description: Name of the subscription plan
+                  description: |
+                    Name of the secondary subscription to be added.
+                    - `planP1`, `planX1`, `planX2`, `planX3`: Additional Subscription
+                    - `planArc01`: Virtual SIM/Subscriber
+                  enum:
+                  - planP1
+                  - planX1
+                  - planX2
+                  - planX3
+                  - planArc01
                   type: string
                 type:
+                  description: |
+                    - `virtual`: When `subscription` is `planArc01`.
+                    - `cellular`: When `subscription` is other than `planArc01`.
                   enum:
                   - virtual
                   - cellular
@@ -9564,12 +9611,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/SimProfile'
           description: The updated SIM profile
+        "400":
+          description: You specified a subscription that cannot be added. For example,
+            `planP1` cannot be added to an IoT SIM in plan-D.
         "404":
-          description: No such profile or sim found
+          description: No such IoT SIM with the specified SIM ID and ICCID found.
       security:
       - api_key: []
         api_token: []
-      summary: Adds a new subscription container to a SIM profile
+      summary: Adds a new secondary subscription to an IoT SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -10347,6 +10397,76 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sora_cam/license_packs:
+    get:
+      description: Returns the list of license packs which you can use. Currently,
+        this API is only available for Japan coverage.
+      operationId: listSoraCamLicensePacks
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - id: CR7-SC
+                name: Cloud Recording License (7 Days)
+                quantity: 0
+                salesChannel: SORACOM Inc.
+              - id: CR14-SC
+                name: Cloud Recording License (14 Days)
+                quantity: 1
+                salesChannel: SORACOM Inc.
+              - id: CR30-SC
+                name: Cloud Recording License (30 Days)
+                quantity: 2
+                salesChannel: SORACOM Inc.
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamLicensePackResponse'
+                type: array
+          description: The license pack list was returned.
+        "400":
+          description: The request is invalid.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List license packs of Soracom Cloud Camera Services.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam license-packs list
+  /sora_cam/license_packs/{license_pack_id}/quantity:
+    put:
+      description: Updates the license quantity for the license pack identified by
+        license_pack_id.         This operation will cost you monthly fee based on
+        number of licenses. Currently, this API is only available for Japan coverage.
+      operationId: updateSoraCamLicensePackQuantity
+      parameters:
+      - description: ID of the license pack
+        in: path
+        name: license_pack_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoraCamLicensePackQuantityUpdatingRequest'
+        description: The change in the license quantity.
+        required: true
+      responses:
+        "204":
+          description: The license quantity was updated.
+        "400":
+          description: The updating request is invalid.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update the license quantity of Soracom Cloud Camera Services.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam license-packs update-quantity
   /soralets:
     get:
       description: Returns a list of Soralets.
@@ -13776,6 +13896,7 @@ components:
             $ref: '#/components/schemas/DataTrafficStats'
           type: object
         date:
+          description: A date and time in UTC time zone.
           type: string
         unixtime:
           format: int64
@@ -16705,9 +16826,7 @@ components:
           description: PUK or PASSCODE on SIM card
           type: string
         tags:
-          items:
-            $ref: '#/components/schemas/TagUpdateRequest'
-          type: array
+          $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
       type: object
@@ -16719,9 +16838,7 @@ components:
           description: PUK or PASSCODE on SIM card
           type: string
         tags:
-          items:
-            $ref: '#/components/schemas/TagUpdateRequest'
-          type: array
+          $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
       type: object
@@ -16772,6 +16889,69 @@ components:
           type: object
         values:
           type: object
+      type: object
+    ResourceSummary:
+      properties:
+        resourceSummaryItems:
+          description: A list of resource summary items.
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItem'
+          type: array
+        resourceSummaryType:
+          description: |
+            The type of the resource summary.
+
+            - `simsPerStatus`: The number of IoT SIMs per status
+          example: simsPerStatus
+          type: string
+      type: object
+    ResourceSummaryItem:
+      properties:
+        dimensions:
+          description: A list of dimensions for the resource summary item.
+          example: []
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItemDimension'
+          type: array
+        updatedTime:
+          description: The last updated time of the resource summary item (unixtime
+            milliseconds).
+          example: 1654007722000
+          format: int64
+          type: integer
+        values:
+          description: A list of values for the resource summary item.
+          items:
+            $ref: '#/components/schemas/ResourceSummaryItemValue'
+          type: array
+      type: object
+    ResourceSummaryItemDimension:
+      properties:
+        name:
+          description: The name of the resource summary item dimension.
+          type: string
+        value:
+          description: The value of the resource summary item dimension.
+          type: string
+      type: object
+    ResourceSummaryItemValue:
+      properties:
+        name:
+          description: |
+            The name of the resource summary item value.
+
+            - if `resourceSummaryType` is `simsPerStatus`:
+              - `readySims`: The number of IoT SIMs of which status is ready
+              - `activeSims`: The number of IoT SIMs of which status is active
+              - `inactiveSims`: The number of IoT SIMs of which status is inactive
+              - `standbySims`: The number of IoT SIMs of which status is standby
+              - `suspendedSims`: The number of IoT SIMs of which status is suspended
+          example: activeSims
+          type: string
+        value:
+          description: The value of the resource summary item value.
+          example: 1
+          type: number
       type: object
     RoleResponse:
       properties:
@@ -17246,6 +17426,39 @@ components:
         payload:
           type: string
       type: object
+    SoraCamLicensePackQuantityUpdatingRequest:
+      properties:
+        currentQuantity:
+          description: Current license quantity of the license pack
+          example: 1
+          format: int32
+          type: integer
+        desiredQuantity:
+          description: Desired license quantity of the license pack
+          example: 2
+          format: int32
+          type: integer
+      type: object
+    SoraCamLicensePackResponse:
+      properties:
+        id:
+          description: ID of the license pack
+          example: CR7-SC
+          type: string
+        name:
+          description: Name of the license pack
+          example: Cloud Recording License (7 Days)
+          type: string
+        quantity:
+          description: Current license quantity of the license pack
+          example: 1
+          format: int32
+          type: integer
+        salesChannel:
+          description: Sales channel of the license pack
+          example: SORACOM Inc.
+          type: string
+      type: object
     SoracomBeamStats:
       properties:
         count:
@@ -17557,7 +17770,7 @@ components:
         speedClass:
           description: |
             Speed class. You can specify one of followings based on this IoT SIM's subscription.
-            - plan01s、plan01s - Low Data Volume、planX3、plan-D:
+            - plan01s, plan01s - Low Data Volume, planP1, planX3, plan-D:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
