@@ -19,6 +19,9 @@ var SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail string
 // SubscribersIssueTransferTokenCmdTransferDestinationOperatorId holds value of 'transferDestinationOperatorId' option
 var SubscribersIssueTransferTokenCmdTransferDestinationOperatorId string
 
+// SubscribersIssueTransferTokenCmdTransferImsi holds multiple values of 'transferImsi' option
+var SubscribersIssueTransferTokenCmdTransferImsi []string
+
 // SubscribersIssueTransferTokenCmdBody holds contents of request body to be sent
 var SubscribersIssueTransferTokenCmdBody string
 
@@ -26,6 +29,8 @@ func init() {
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI("Email address of the destination operator."))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI("Operator ID of the destination operator."))
+
+	SubscribersIssueTransferTokenCmd.Flags().StringSliceVar(&SubscribersIssueTransferTokenCmdTransferImsi, "transfer-imsi", []string{}, TRAPI("List of IMSIs to be transferred."))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
@@ -108,6 +113,11 @@ func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, e
 		return nil, err
 	}
 
+	err = checkIfRequiredStringSliceParameterIsSupplied("transferImsi", "transfer-imsi", "body", parsedBody, SubscribersIssueTransferTokenCmdTransferImsi)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSubscribersIssueTransferTokenCmd("/subscribers/transfer_token/issue"),
@@ -167,6 +177,10 @@ func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
 
 	if SubscribersIssueTransferTokenCmdTransferDestinationOperatorId != "" {
 		result["transferDestinationOperatorId"] = SubscribersIssueTransferTokenCmdTransferDestinationOperatorId
+	}
+
+	if len(SubscribersIssueTransferTokenCmdTransferImsi) != 0 {
+		result["transferImsi"] = SubscribersIssueTransferTokenCmdTransferImsi
 	}
 
 	resultBytes, err := json.Marshal(result)

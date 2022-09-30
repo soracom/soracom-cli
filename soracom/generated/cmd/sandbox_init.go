@@ -25,6 +25,9 @@ var SandboxInitCmdEmail string
 // SandboxInitCmdPassword holds value of 'password' option
 var SandboxInitCmdPassword string
 
+// SandboxInitCmdCoverageTypes holds multiple values of 'coverageTypes' option
+var SandboxInitCmdCoverageTypes []string
+
 // SandboxInitCmdRegisterPaymentMethod holds value of 'registerPaymentMethod' option
 var SandboxInitCmdRegisterPaymentMethod bool
 
@@ -39,6 +42,8 @@ func init() {
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdEmail, "email", "", TRAPI(""))
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdPassword, "password", "", TRAPI(""))
+
+	SandboxInitCmd.Flags().StringSliceVar(&SandboxInitCmdCoverageTypes, "coverage-types", []string{}, TRAPI("Coverage type.- `g`: Global coverage- `jp`: Japan coverage"))
 
 	SandboxInitCmd.Flags().BoolVar(&SandboxInitCmdRegisterPaymentMethod, "register-payment-method", true, TRAPI(""))
 
@@ -195,6 +200,10 @@ func buildBodyForSandboxInitCmd() (string, error) {
 
 	if SandboxInitCmdPassword != "" {
 		result["password"] = SandboxInitCmdPassword
+	}
+
+	if len(SandboxInitCmdCoverageTypes) != 0 {
+		result["coverageTypes"] = SandboxInitCmdCoverageTypes
 	}
 
 	if SandboxInitCmdRegisterPaymentMethod != true {

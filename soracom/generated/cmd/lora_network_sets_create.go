@@ -25,6 +25,9 @@ var LoraNetworkSetsCreateCmdNetworkSetId string
 // LoraNetworkSetsCreateCmdOperatorId holds value of 'operatorId' option
 var LoraNetworkSetsCreateCmdOperatorId string
 
+// LoraNetworkSetsCreateCmdAllowedOperators holds multiple values of 'allowedOperators' option
+var LoraNetworkSetsCreateCmdAllowedOperators []string
+
 // LoraNetworkSetsCreateCmdBody holds contents of request body to be sent
 var LoraNetworkSetsCreateCmdBody string
 
@@ -36,6 +39,8 @@ func init() {
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdOperatorId, "operator-id", "", TRAPI(""))
+
+	LoraNetworkSetsCreateCmd.Flags().StringSliceVar(&LoraNetworkSetsCreateCmdAllowedOperators, "allowed-operators", []string{}, TRAPI(""))
 
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsCreateCmd)
@@ -175,6 +180,10 @@ func buildBodyForLoraNetworkSetsCreateCmd() (string, error) {
 
 	if LoraNetworkSetsCreateCmdOperatorId != "" {
 		result["operatorId"] = LoraNetworkSetsCreateCmdOperatorId
+	}
+
+	if len(LoraNetworkSetsCreateCmdAllowedOperators) != 0 {
+		result["allowedOperators"] = LoraNetworkSetsCreateCmdAllowedOperators
 	}
 
 	resultBytes, err := json.Marshal(result)

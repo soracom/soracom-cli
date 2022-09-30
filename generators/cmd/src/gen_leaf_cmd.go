@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"net/url"
 	"regexp"
@@ -43,7 +42,7 @@ func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.
 		defer func() {
 			err := f.Close()
 			if err != nil {
-				fmt.Printf("[WARN] unable to close a file '%s'", f.Name())
+				lib.WarnfStderr("unable to close a file '%s'", f.Name())
 			}
 		}()
 
@@ -70,7 +69,7 @@ func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.
 			PathParamsExist:                   doPathParamsExist(op.Parameters),
 			QueryParamsExist:                  doQueryParamsExist(op.Parameters),
 			StringFlags:                       getStringFlags(apiDef, path, op.Parameters, op.RequestBody),
-			StringSliceFlags:                  getStringSliceFlags(apiDef, op.Parameters),
+			StringSliceFlags:                  getStringSliceFlags(apiDef, path, op.Parameters, op.RequestBody),
 			IntegerFlags:                      getIntegerFlags(apiDef, op.Parameters, op.RequestBody),
 			FloatFlags:                        getFloatFlags(apiDef, op.Parameters, op.RequestBody),
 			BoolFlags:                         getBoolFlags(apiDef, op.Parameters, op.RequestBody),
@@ -174,6 +173,30 @@ func getTypeOfParam(param *openapi3.ParameterRef) string {
 	}
 
 	return param.Value.Schema.Value.Type
+}
+
+func getTypeOfArrayItem(param *openapi3.ParameterRef) string {
+	if getTypeOfParam(param) != "array" {
+		return ""
+	}
+
+	if param.Value.Schema.Value.Items == nil || param.Value.Schema.Value.Items.Value == nil {
+		return ""
+	}
+
+	return param.Value.Schema.Value.Items.Value.Type
+}
+
+func isTypeOfParamArrayOfString(param *openapi3.ParameterRef) bool {
+	if getTypeOfParam(param) != "array" {
+		return false
+	}
+
+	if getTypeOfArrayItem(param) != "string" {
+		return false
+	}
+
+	return true
 }
 
 func getRequestBodySchema(apiDef *openapi3.T, reqBody *openapi3.RequestBodyRef) *openapi3.SchemaRef {
@@ -305,22 +328,14 @@ func getStringFlags(apiDef *openapi3.T, path string, parameters openapi3.Paramet
 			if getTypeOfParam(param) != "string" {
 				continue
 			}
-			f := stringFlag{
-				VarName:                lib.TitleCase(param.Value.Name),
-				LongOption:             lib.OptionCase(param.Value.Name),
-				DefaultValueSpecified:  param.Value.Schema.Value.Default != nil,
-				DefaultValue:           getDefaultValueAsString(param.Value.Schema),
-				ShortHelp:              convertDescriptionToShortHelp(param.Value.Description),
-				Name:                   param.Value.Name,
-				In:                     param.Value.In,
-				HarvestFilesPathEscape: isHarvestFilesPathEscapeRequired(path, param),
+			required := param.Value.Required
+			if param.Value.Name == "operator_id" {
+				required = false
 			}
-			if param.Value.Name != "operator_id" {
-				f.Required = param.Value.Required
-			}
+			f := stringFlagFromParameter(param, path, required)
 			result = append(result, f)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.Value.In)
+			lib.WarnfStderr("parameters in '%s' is not supported\n", param.Value.In)
 		}
 	}
 
@@ -339,63 +354,55 @@ func getStringFlags(apiDef *openapi3.T, path string, parameters openapi3.Paramet
 
 func getStringFlagsFromStruct(schema *openapi3.SchemaRef) []stringFlag {
 	result := []stringFlag{}
-	if schema == nil {
-		lib.WarnfStderr("getStringFlagsFromStruct(): schema == nil\n")
-		return result
-	}
-	if schema.Value == nil {
-		lib.WarnfStderr("getStringFlagsFromStruct(): schema.Value == nil. schema == %#v\n", schema)
-		return result
-	}
-	if schema.Value.Properties == nil {
-		lib.WarnfStderr("getStringFlagsFromStruct(): schema.Value.Properties == nil. schema.Value == %#v\n", schema.Value)
-		return result
-	}
 
-	for propName, prop := range schema.Value.Properties {
+	for propName, prop := range getPropertiesFromSchema(schema) {
 		if prop.Value.Type != "string" {
 			continue
 		}
-		var f stringFlag
-		f.VarName = lib.TitleCase(propName)
-		f.LongOption = lib.OptionCase(propName)
-		f.DefaultValueSpecified = prop.Value.Default != nil
-		f.DefaultValue = getDefaultValueAsString(prop)
-		f.ShortHelp = convertDescriptionToShortHelp(prop.Value.Description)
-		f.In = "body"
-		f.Name = propName
-		f.Required = containsString(schema.Value.Required, propName)
+		f := stringFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
 		result = append(result, f)
 	}
 	return result
 }
 
-func getStringSliceFlags(apiDef *openapi3.T, parameters openapi3.Parameters) []stringFlag {
+func getStringSliceFlags(apiDef *openapi3.T, path string, parameters openapi3.Parameters, reqBody *openapi3.RequestBodyRef) []stringFlag {
 	result := []stringFlag{}
 	for _, param := range parameters {
 		switch param.Value.In {
 		case "query":
-			if getTypeOfParam(param) != "array" || param.Value.Schema.Value.Items.Value.Type != "string" {
+			if !isTypeOfParamArrayOfString(param) {
 				continue
 			}
-			var f stringFlag
-			f.VarName = lib.TitleCase(param.Value.Name)
-			f.LongOption = lib.OptionCase(param.Value.Name)
-			f.DefaultValueSpecified = param.Value.Schema.Value.Default != nil
-			f.DefaultValue = getDefaultValueAsString(param.Value.Schema)
-			f.ShortHelp = convertDescriptionToShortHelp(param.Value.Description)
-			f.Name = param.Value.Name
-			f.In = param.Value.In
-			f.Required = param.Value.Required
+			f := stringFlagFromParameter(param, path, param.Value.Required)
 			result = append(result, f)
 		case "path", "body", "header":
 			continue
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.Value.In)
+			lib.WarnfStderr("parameters in '%s' is not supported\n", param.Value.In)
+		}
+	}
+
+	if reqBody != nil {
+		schema := getRequestBodySchema(apiDef, reqBody)
+		if schema != nil {
+			s := getStringSliceFlagsFromStruct(schema)
+			result = append(result, s...)
 		}
 	}
 
 	sort.Sort(stringFlagsByName(result))
+	return result
+}
+
+func getStringSliceFlagsFromStruct(schema *openapi3.SchemaRef) []stringFlag {
+	result := []stringFlag{}
+	for propName, prop := range getPropertiesFromSchema(schema) {
+		if prop.Value.Type != "array" || prop.Value.Items == nil || prop.Value.Items.Value.Type != "string" {
+			continue
+		}
+		f := stringFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
+		result = append(result, f)
+	}
 	return result
 }
 
@@ -407,18 +414,10 @@ func getIntegerFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody
 			if getTypeOfParam(param) != "integer" {
 				continue
 			}
-			var f integerFlag
-			f.VarName = lib.TitleCase(param.Value.Name)
-			f.LongOption = lib.OptionCase(param.Value.Name)
-			f.DefaultValueSpecified = param.Value.Schema.Value.Default != nil
-			f.DefaultValue = getDefaultValueAsInt64(param.Value.Schema)
-			f.ShortHelp = convertDescriptionToShortHelp(param.Value.Description)
-			f.Name = param.Value.Name
-			f.In = param.Value.In
-			f.Required = param.Value.Required
+			f := integerFlagFromParameter(param)
 			result = append(result, f)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.Value.In)
+			lib.WarnfStderr("parameters in '%s' is not supported\n", param.Value.In)
 		}
 	}
 
@@ -436,32 +435,11 @@ func getIntegerFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody
 
 func getIntegerFlagsFromStruct(schema *openapi3.SchemaRef) []integerFlag {
 	result := []integerFlag{}
-	if schema == nil {
-		lib.WarnfStderr("getIntegerFlagsFromStruct(): schema == nil\n")
-		return result
-	}
-	if schema.Value == nil {
-		lib.WarnfStderr("getIntegerFlagsFromStruct(): schema.Value == nil. schema == %#v\n", schema)
-		return result
-	}
-	if schema.Value.Properties == nil {
-		lib.WarnfStderr("getIntegerFlagsFromStruct(): schema.Value.Properties == nil. schema.Value == %#v\n", schema.Value)
-		return result
-	}
-	for propName, prop := range schema.Value.Properties {
+	for propName, prop := range getPropertiesFromSchema(schema) {
 		if prop.Value.Type != "integer" {
 			continue
 		}
-		var f integerFlag
-		f.VarName = lib.TitleCase(propName)
-		f.LongOption = lib.OptionCase(propName)
-		f.DefaultValueSpecified = prop.Value.Default != nil
-		f.DefaultValue = getDefaultValueAsInt64(prop)
-		f.Format = prop.Value.Format
-		f.ShortHelp = convertDescriptionToShortHelp(prop.Value.Description)
-		f.In = "body"
-		f.Name = propName
-		f.Required = containsString(schema.Value.Required, propName)
+		f := integerFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
 		result = append(result, f)
 	}
 	return result
@@ -475,18 +453,10 @@ func getFloatFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *
 			if getTypeOfParam(param) != "number" {
 				continue
 			}
-			var f floatFlag
-			f.VarName = lib.TitleCase(param.Value.Name)
-			f.LongOption = lib.OptionCase(param.Value.Name)
-			f.DefaultValueSpecified = param.Value.Schema.Value.Default != nil
-			f.DefaultValue = getDefaultValueAsFloat(param.Value.Schema)
-			f.ShortHelp = convertDescriptionToShortHelp(param.Value.Description)
-			f.Name = param.Value.Name
-			f.In = param.Value.In
-			f.Required = param.Value.Required
+			f := floatFlagFromParameter(param)
 			result = append(result, f)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.Value.In)
+			lib.WarnfStderr("parameters in '%s' is not supported\n", param.Value.In)
 		}
 	}
 
@@ -504,32 +474,11 @@ func getFloatFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *
 
 func getFloatFlagsFromStruct(schema *openapi3.SchemaRef) []floatFlag {
 	result := []floatFlag{}
-	if schema == nil {
-		lib.WarnfStderr("getFloatFlagsFromStruct(): schema == nil\n")
-		return result
-	}
-	if schema.Value == nil {
-		lib.WarnfStderr("getFloatFlagsFromStruct(): schema.Value == nil. schema == %#v\n", schema)
-		return result
-	}
-	if schema.Value.Properties == nil {
-		lib.WarnfStderr("getFloatFlagsFromStruct(): schema.Value.Properties == nil. schema.Value == %#v\n", schema.Value)
-		return result
-	}
-	for propName, prop := range schema.Value.Properties {
+	for propName, prop := range getPropertiesFromSchema(schema) {
 		if prop.Value.Type != "number" {
 			continue
 		}
-		var f floatFlag
-		f.VarName = lib.TitleCase(propName)
-		f.LongOption = lib.OptionCase(propName)
-		f.DefaultValueSpecified = prop.Value.Default != nil
-		f.DefaultValue = getDefaultValueAsFloat(prop)
-		f.Format = prop.Value.Format
-		f.ShortHelp = convertDescriptionToShortHelp(prop.Value.Description)
-		f.In = "body"
-		f.Name = propName
-		f.Required = containsString(schema.Value.Required, propName)
+		f := floatFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
 		result = append(result, f)
 	}
 	return result
@@ -543,18 +492,10 @@ func getBoolFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *o
 			if getTypeOfParam(param) != "boolean" {
 				continue
 			}
-			var f boolFlag
-			f.VarName = lib.TitleCase(param.Value.Name)
-			f.LongOption = lib.OptionCase(param.Value.Name)
-			f.DefaultValueSpecified = param.Value.Schema.Value.Default != nil
-			f.DefaultValue = getDefaultValueAsBool(param.Value.Schema)
-			f.ShortHelp = convertDescriptionToShortHelp(param.Value.Description)
-			f.Name = param.Value.Name
-			f.In = param.Value.In
-			f.Required = param.Value.Required
+			f := boolFlagFromParameter(param)
 			result = append(result, f)
 		default:
-			fmt.Printf("[WARN] parameters in '%s' is not supported\n", param.Value.In)
+			lib.WarnfStderr("parameters in '%s' is not supported\n", param.Value.In)
 		}
 	}
 
@@ -572,35 +513,135 @@ func getBoolFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *o
 
 func getBoolFlagsFromStruct(schema *openapi3.SchemaRef) []boolFlag {
 	result := []boolFlag{}
-	if schema == nil {
-		lib.WarnfStderr("getBoolFlagsFromStruct(): schema == nil\n")
-		return result
-	}
-	if schema.Value == nil {
-		lib.WarnfStderr("getBoolFlagsFromStruct(): schema.Value == nil. schema == %#v\n", schema)
-		return result
-	}
-	if schema.Value.Properties == nil {
-		lib.WarnfStderr("getBoolFlagsFromStruct(): schema.Value.Properties == nil. schema.Value == %#v\n", schema.Value)
-		return result
-	}
-	for propName, prop := range schema.Value.Properties {
+	for propName, prop := range getPropertiesFromSchema(schema) {
 		if prop.Value.Type != "boolean" {
 			continue
 		}
-		var f boolFlag
-		f.VarName = lib.TitleCase(propName)
-		f.LongOption = lib.OptionCase(propName)
-		f.DefaultValueSpecified = prop.Value.Default != nil
-		f.DefaultValue = getDefaultValueAsBool(prop)
-		f.Format = prop.Value.Format
-		f.ShortHelp = convertDescriptionToShortHelp(prop.Value.Description)
-		f.In = "body"
-		f.Name = propName
-		f.Required = containsString(schema.Value.Required, propName)
+		f := boolFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
 		result = append(result, f)
 	}
 	return result
+}
+
+func getPropertiesFromSchema(schema *openapi3.SchemaRef) openapi3.Schemas {
+	if schema == nil {
+		return nil
+	}
+	if schema.Value == nil {
+		return nil
+	}
+	if schema.Value.Properties == nil {
+		return nil
+	}
+	return schema.Value.Properties
+}
+
+func stringFlagFromParameter(param *openapi3.ParameterRef, path string, required bool) stringFlag {
+	return stringFlag{
+		VarName:                lib.TitleCase(param.Value.Name),
+		LongOption:             lib.OptionCase(param.Value.Name),
+		DefaultValueSpecified:  param.Value.Schema.Value.Default != nil,
+		DefaultValue:           getDefaultValueAsString(param.Value.Schema),
+		ShortHelp:              convertDescriptionToShortHelp(param.Value.Description),
+		In:                     param.Value.In,
+		Name:                   param.Value.Name,
+		Required:               required,
+		HarvestFilesPathEscape: isHarvestFilesPathEscapeRequired(path, param),
+	}
+}
+
+func stringFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) stringFlag {
+	return stringFlag{
+		VarName:               lib.TitleCase(propName),
+		LongOption:            lib.OptionCase(propName),
+		DefaultValueSpecified: prop.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsString(prop),
+		ShortHelp:             convertDescriptionToShortHelp(prop.Value.Description),
+		In:                    in,
+		Name:                  propName,
+		Required:              required,
+	}
+}
+
+func integerFlagFromParameter(param *openapi3.ParameterRef) integerFlag {
+	return integerFlag{
+		VarName:               lib.TitleCase(param.Value.Name),
+		LongOption:            lib.OptionCase(param.Value.Name),
+		DefaultValueSpecified: param.Value.Schema.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsInt64(param.Value.Schema),
+		ShortHelp:             convertDescriptionToShortHelp(param.Value.Description),
+		In:                    param.Value.In,
+		Name:                  param.Value.Name,
+		Required:              param.Value.Required,
+	}
+}
+
+func integerFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) integerFlag {
+	return integerFlag{
+		VarName:               lib.TitleCase(propName),
+		LongOption:            lib.OptionCase(propName),
+		DefaultValueSpecified: prop.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsInt64(prop),
+		Format:                prop.Value.Format,
+		ShortHelp:             convertDescriptionToShortHelp(prop.Value.Description),
+		In:                    in,
+		Name:                  propName,
+		Required:              required,
+	}
+}
+
+func floatFlagFromParameter(param *openapi3.ParameterRef) floatFlag {
+	return floatFlag{
+		VarName:               lib.TitleCase(param.Value.Name),
+		LongOption:            lib.OptionCase(param.Value.Name),
+		DefaultValueSpecified: param.Value.Schema.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsFloat(param.Value.Schema),
+		ShortHelp:             convertDescriptionToShortHelp(param.Value.Description),
+		In:                    param.Value.In,
+		Name:                  param.Value.Name,
+		Required:              param.Value.Required,
+	}
+}
+
+func floatFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) floatFlag {
+	return floatFlag{
+		VarName:               lib.TitleCase(propName),
+		LongOption:            lib.OptionCase(propName),
+		DefaultValueSpecified: prop.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsFloat(prop),
+		Format:                prop.Value.Format,
+		ShortHelp:             convertDescriptionToShortHelp(prop.Value.Description),
+		In:                    in,
+		Name:                  propName,
+		Required:              required,
+	}
+}
+
+func boolFlagFromParameter(param *openapi3.ParameterRef) boolFlag {
+	return boolFlag{
+		VarName:               lib.TitleCase(param.Value.Name),
+		LongOption:            lib.OptionCase(param.Value.Name),
+		DefaultValueSpecified: param.Value.Schema.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsBool(param.Value.Schema),
+		ShortHelp:             convertDescriptionToShortHelp(param.Value.Description),
+		In:                    param.Value.In,
+		Name:                  param.Value.Name,
+		Required:              param.Value.Required,
+	}
+}
+
+func boolFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) boolFlag {
+	return boolFlag{
+		VarName:               lib.TitleCase(propName),
+		LongOption:            lib.OptionCase(propName),
+		DefaultValueSpecified: prop.Value.Default != nil,
+		DefaultValue:          getDefaultValueAsBool(prop),
+		Format:                prop.Value.Format,
+		ShortHelp:             convertDescriptionToShortHelp(prop.Value.Description),
+		In:                    in,
+		Name:                  propName,
+		Required:              required,
+	}
 }
 
 func doesRequiredFlagExist(apiDef *openapi3.T, path string, params openapi3.Parameters, reqBody *openapi3.RequestBodyRef) bool {
@@ -610,7 +651,7 @@ func doesRequiredFlagExist(apiDef *openapi3.T, path string, params openapi3.Para
 		}
 	}
 
-	for _, f := range getStringSliceFlags(apiDef, params) {
+	for _, f := range getStringSliceFlags(apiDef, path, params, reqBody) {
 		if f.Required && !f.DefaultValueSpecified {
 			return true
 		}

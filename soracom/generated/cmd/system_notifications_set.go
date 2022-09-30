@@ -22,6 +22,9 @@ var SystemNotificationsSetCmdPassword string
 // SystemNotificationsSetCmdType holds value of 'type' option
 var SystemNotificationsSetCmdType string
 
+// SystemNotificationsSetCmdEmailIdList holds multiple values of 'emailIdList' option
+var SystemNotificationsSetCmdEmailIdList []string
+
 // SystemNotificationsSetCmdBody holds contents of request body to be sent
 var SystemNotificationsSetCmdBody string
 
@@ -31,6 +34,8 @@ func init() {
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdPassword, "password", "", TRAPI("Password of the operator. This is necessary when type is primary."))
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdType, "type", "", TRAPI("system notification type"))
+
+	SystemNotificationsSetCmd.Flags().StringSliceVar(&SystemNotificationsSetCmdEmailIdList, "email-id-list", []string{}, TRAPI(""))
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SystemNotificationsCmd.AddCommand(SystemNotificationsSetCmd)
@@ -112,6 +117,11 @@ func collectSystemNotificationsSetCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	err = checkIfRequiredStringSliceParameterIsSupplied("emailIdList", "email-id-list", "body", parsedBody, SystemNotificationsSetCmdEmailIdList)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSystemNotificationsSetCmd("/operators/{operator_id}/system_notifications/{type}"),
@@ -175,6 +185,10 @@ func buildBodyForSystemNotificationsSetCmd() (string, error) {
 
 	if SystemNotificationsSetCmdPassword != "" {
 		result["password"] = SystemNotificationsSetCmdPassword
+	}
+
+	if len(SystemNotificationsSetCmdEmailIdList) != 0 {
+		result["emailIdList"] = SystemNotificationsSetCmdEmailIdList
 	}
 
 	resultBytes, err := json.Marshal(result)

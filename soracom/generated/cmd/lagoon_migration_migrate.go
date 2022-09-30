@@ -15,10 +15,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LagoonMigrationMigrateCmdDashboardIds holds multiple values of 'dashboardIds' option
+var LagoonMigrationMigrateCmdDashboardIds []string
+
 // LagoonMigrationMigrateCmdBody holds contents of request body to be sent
 var LagoonMigrationMigrateCmdBody string
 
 func init() {
+	LagoonMigrationMigrateCmd.Flags().StringSliceVar(&LagoonMigrationMigrateCmdDashboardIds, "dashboard-ids", []string{}, TRAPI("A list of dashboard IDs to migrate"))
+
 	LagoonMigrationMigrateCmd.Flags().StringVar(&LagoonMigrationMigrateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	LagoonMigrationCmd.AddCommand(LagoonMigrationMigrateCmd)
 }
@@ -142,6 +147,10 @@ func buildBodyForLagoonMigrationMigrateCmd() (string, error) {
 
 	if result == nil {
 		result = make(map[string]interface{})
+	}
+
+	if len(LagoonMigrationMigrateCmdDashboardIds) != 0 {
+		result["dashboardIds"] = LagoonMigrationMigrateCmdDashboardIds
 	}
 
 	resultBytes, err := json.Marshal(result)
