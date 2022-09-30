@@ -16,11 +16,16 @@ import (
 // SandboxSubscribersCreateCmdSubscription holds value of 'subscription' option
 var SandboxSubscribersCreateCmdSubscription string
 
+// SandboxSubscribersCreateCmdBundles holds multiple values of 'bundles' option
+var SandboxSubscribersCreateCmdBundles []string
+
 // SandboxSubscribersCreateCmdBody holds contents of request body to be sent
 var SandboxSubscribersCreateCmdBody string
 
 func init() {
 	SandboxSubscribersCreateCmd.Flags().StringVar(&SandboxSubscribersCreateCmdSubscription, "subscription", "", TRAPI("Subscription. Specify one of:"))
+
+	SandboxSubscribersCreateCmd.Flags().StringSliceVar(&SandboxSubscribersCreateCmdBundles, "bundles", []string{}, TRAPI("Bundle. If necessary, specify one of:"))
 
 	SandboxSubscribersCreateCmd.Flags().StringVar(&SandboxSubscribersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SandboxSubscribersCmd.AddCommand(SandboxSubscribersCreateCmd)
@@ -148,6 +153,10 @@ func buildBodyForSandboxSubscribersCreateCmd() (string, error) {
 
 	if SandboxSubscribersCreateCmdSubscription != "" {
 		result["subscription"] = SandboxSubscribersCreateCmdSubscription
+	}
+
+	if len(SandboxSubscribersCreateCmdBundles) != 0 {
+		result["bundles"] = SandboxSubscribersCreateCmdBundles
 	}
 
 	resultBytes, err := json.Marshal(result)

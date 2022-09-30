@@ -384,6 +384,14 @@ func buildBodyFor{{$suffix}}() (string, error) {
   {{end}}
   {{end}}
 
+  {{range .StringSliceFlags}}
+  {{if eq .In "body"}}
+  if len({{$prefix}}{{.VarName}}) != 0 {
+    result["{{.Name}}"] = {{$prefix}}{{.VarName}}
+  }
+  {{end}}
+  {{end}}
+
   {{range .IntegerFlags}}
   {{if eq .In "body"}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
