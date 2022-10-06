@@ -44,7 +44,7 @@ Available Commands:
   shipping-addresses   出荷先情報に関する操作を行います。
   sigfox-devices       Sigfox デバイスに関する操作を行います。
   sims                 SIM に関する操作を行います。
-  sora-cam             Soracom Cloud Camera Services に関する操作を行います。
+  sora-cam             Soracom Cloud Camera Services (ソラカメ) に関する操作を行います。
   soralets             Orbit の Soralet に関する操作を行います。
   stats                統計情報に関する操作を行います。
   subscribers          サブスクライバー (SIM) に関する操作を行います。
@@ -60,34 +60,34 @@ Flags:
                                  API キーを指定しなければ soracom-cli が代わりに認証処理を実行して API キーを取得します。
                                  もし API キーを既に持っている場合はこの引数に指定することで認証処理をスキップできるので高速化できます。
                                  --api-token も同時に指定してください。
-                                 
+
       --api-token string         API トークンを指定します。
                                  API トークンを指定しなければ soracom-cli が代わりに認証処理を実行して API トークンを取得します。
                                  もし API トークンを既に持っている場合はこの引数に指定することで認証処理をスキップできるので高速化できます。
                                  --api-key も同時に指定してください。
-                                 
+
       --auth-key string          認証処理に利用する認証キーシークレット (AuthKey) を指定します。
                                  --auth-key-id と --auth-key の両方を指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
                                  すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなりますので、一時的にコマンドを実行したいだけの場合やスクリプトからの実行などに適しています。
                                  このオプションを指定した場合は合わせて --coverage-type も指定してください。
-                                 
+
       --auth-key-id string       認証処理に利用する認証キー ID (AuthKeyId) を指定します。
                                  --auth-key-id と --auth-key の両方を指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
                                  すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなりますので、一時的にコマンドを実行したい場合やスクリプトからの実行などに適しています。
                                  このオプションを指定した場合は合わせて --coverage-type も指定してください。
-                                 
+
       --coverage-type string     カバレッジタイプを指定します。グローバルカバレッジは 'g'、日本カバレッジは 'jp' です。
-                                 
+
   -h, --help                     help for soracom
       --no-retry-on-error        このフラグを指定すると、API がエラーを返してきた場合にもリトライしません（デフォルトではバックオフしながら数回リトライします）。
-                                 
+
       --profile string           プロファイル名を指定します。
-                                 
+
       --profile-command string   プロファイル情報を供給するためのコマンドを指定します。
                                  このオプションを指定すると、soracom-cli は事前にセットアップされたプロファイル情報なしでも動作します。
                                  すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなります。
                                  認証情報をパスワードマネージャーなどのより安全な場所に格納しておき、外部コマンド経由でそれを利用することができます。
-                                 
+
       --raw-output               API から返却されたレスポンスを加工せずにそのまま出力します（デフォルトでは JSON をインデントして表示します）。
 
 Use "soracom [command] --help" for more information about a command.

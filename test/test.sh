@@ -260,10 +260,11 @@ invoke_soracom_command() {
     fi
 }
 
+groupName="test_group_name_$( random_string )"
 : "Create a group" && {
     resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
         groups create \
-        --body '{"tags":{"name":"test1"}}' \
+        --body "{\"tags\":{\"name\":\"$groupName\"}}" \
         --profile soracom-cli-test
         )"
     groupId="$( echo "$resp" | jq -r .groupId)"
@@ -279,8 +280,17 @@ invoke_soracom_command() {
         )"
 }
 
-: "Sleep 15 seconds to make sure all subscribers indexed in the searchlight (elasticsearch)" && {
-    sleep 15
+: "Add a subscriber to the group" && {
+    invoke_soracom_command subscribers set-group --imsi "$imsi" --group-id "$groupId"
+}
+
+: "Wait for all subscribers indexed in the searchlight (elasticsearch)" && {
+    sleepSeconds=15
+    echo "Sleeping $sleepSeconds seconds to make sure all subscribers are indexed in the database ..."
+    for (( i=0; i < sleepSeconds; i++ )); do
+        echo -n '.'
+        sleep 1
+    done
 }
 
 : "Query subscribers" && {
@@ -293,6 +303,27 @@ invoke_soracom_command() {
     numSubs="$( echo "$resp" | jq -r .[].imsi | wc -l )"
     test "$numSubs" -eq 4
 }
+
+: "Query SIMs" && {
+    resp="$( env "${SORACOM_ENVS[@]}" "$SORACOM" \
+        query sims \
+        --imsi '00101' \
+        --limit 10 \
+        --profile soracom-cli-test
+        )"
+    numSubs="$( echo "$resp" | jq -r .[].simId | wc -l )"
+    test "$numSubs" -eq 4
+}
+
+#: "Query subscribers by group name" && {
+#    resp="$( invoke_soracom_command \
+#        query sims \
+#        --group "$groupName" \
+#        --limit 10
+#        )"
+#    numSubs="$( echo "$resp" | jq -r .[].simId | wc -l )"
+#    test "$numSubs" -eq 1
+#}
 
 : "Check if an error is returned when required parameter is missing" && {
     set +e
@@ -350,12 +381,12 @@ invoke_soracom_command() {
 
 : "Checking english help text" && {
     help_en="$( env LC_ALL=en_US.UTF-8 "${SORACOM_ENVS[@]}" "$SORACOM" -h )"
-    diff <( echo "$help_en" ) <( cat "$d/test/data/help_en_expected.txt" )
+    diff --ignore-trailing-space <( echo "$help_en" ) <( cat "$d/test/data/help_en_expected.txt" )
 }
 
 : "Checking japanese help text" && {
     help_ja=$( env LC_ALL=ja_JP.UTF-8 "${SORACOM_ENVS[@]}" "$SORACOM" -h )
-    diff <( echo "$help_ja" ) <( cat "$d/test/data/help_ja_expected.txt" )
+    diff --ignore-trailing-space <( echo "$help_ja" ) <( cat "$d/test/data/help_ja_expected.txt" )
 }
 
 : "Displaying all top-level subcommands' help text"

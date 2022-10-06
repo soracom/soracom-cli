@@ -235,11 +235,20 @@ cli:
     summary: Manage SIMs.
     description: Manage SIMs.
   sora-cam:
-    summary: Manage Soracom Cloud Camera Services settings.
-    description: Manage Soracom Cloud Camera Services settings.
+    summary: Manage Soracom Cloud Camera Services (SoraCam) devices and licenses.
+    description: Manage Soracom Cloud Camera Services (SoraCam) devices and licenses.
     license-packs:
       summary: Manage Soracom Cloud Camera Services license packs.
       description: Manage Soracom Cloud Camera Services license packs.
+    devices:
+      summary: Manage SoraCam devices.
+      description: Manage SoraCam devices.
+      images:
+        summary: Manage image exports from SoraCam devices.
+        description: Manage image exports from SoraCam devices.
+      videos:
+        summary: Manage video exports from SoraCam devices.
+        description: Manage video exports from SoraCam devices.
   soralets:
     summary: Manage Soralets for Orbit.
     description: Manage Soralets for Orbit.

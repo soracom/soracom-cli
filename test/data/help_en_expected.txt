@@ -44,7 +44,7 @@ Available Commands:
   shipping-addresses   List, create, update or delete shipping addresses.
   sigfox-devices       Manage Sigfox devices.
   sims                 Manage SIMs.
-  sora-cam             Manage Soracom Cloud Camera Services settings.
+  sora-cam             Manage Soracom Cloud Camera Services (SoraCam) devices and licenses.
   soralets             Manage Soralets for Orbit.
   stats                Show or export statistics.
   subscribers          Manage subscribers.
@@ -60,34 +60,34 @@ Flags:
                                  If you do not specify an API key, soracom-cli will perform the authentication process on your behalf to obtain an API key.
                                  If you already have an API key, you can skip the authentication process by specifying it in this argument to speed up the process.
                                  --api-token must be specified at the same time.
-                                 
+
       --api-token string         Specify an API token.
                                  If you do not specify an API token, soracom-cli will perform the authentication process on your behalf to obtain an API token.
                                  If you already have an API token, you can skip the authentication process by specifying it in this argument to speed up the process.
                                  --api-key must be specified at the same time.
-                                 
+
       --auth-key string          Specify the AuthKey to be used for the authentication process.
                                  If both --auth-key-id and --auth-key are specified, soracom-cli will work without pre-configured profiles.
                                  This means that the 'soracom configure' command does not need to be run beforehand, which is suitable for cases where you only want to run a command temporarily or from a script.
                                  If you specify this option, you must also specify --coverage-type.
-                                 
+
       --auth-key-id string       Specify AuthKeyId to be used for the authentication process.
                                  If both --auth-key-id and --auth-key are specified, soracom-cli will work without pre-configured profiles.
                                  This means that the 'soracom configure' command does not need to be run beforehand, which is suitable for cases where you only want to run a command temporarily or from a script.
                                  If you specify this option, you must also specify --coverage-type.
-                                 
+
       --coverage-type string     Specify the coverage type, 'g' for Global, 'jp' for Japan.
-                                 
+
   -h, --help                     help for soracom
       --no-retry-on-error        If this flag is specified, soracom-cli will not retry even if the API endpoint returns an error. (The default is to retry several times with backoff.)
-                                 
+
       --profile string           Specify a profile name.
-                                 
+
       --profile-command string   Specify a command to supply profile information.
                                  With this option, soracom-cli will work without pre-configured profiles.
                                  This means that the 'soracom configure' command does not need to be run beforehand.
                                  Authentication information can be stored in a more secure location, such as a password manager, and used via external commands.
-                                 
+
       --raw-output               Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
 
 Use "soracom [command] --help" for more information about a command.

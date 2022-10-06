@@ -3109,7 +3109,7 @@ paths:
       description: 指定された Group のパラメータを追加・更新
       operationId: putConfigurationParameters
       parameters:
-      - description: 対象の Group
+      - description: 対象の Group の ID。[`Group:listGroups API`](#/Group/listGroups) で取得できます。
         in: path
         name: group_id
         required: true
@@ -3135,11 +3135,24 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Configuring Custom DNS for IoT SIM:
+                description: "[IoT SIM のカスタム DNS を設定する](/ja-jp/docs/air/configure-custom-dns/)
+                  場合は、以下の点に注意してください。 \n\n- パスパラメーターの `namespace` に、`SoracomAir` を指定します。\n-
+                  `key` と `value` のペアについて詳しくは、[ボディで指定するプロパティについて](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて)
+                  を参照してください。\n"
+                value:
+                - key: useCustomDns
+                  value: true
+                - key: dnsServers
+                  value:
+                  - 192.168.0.5
+                  - 192.168.0.6
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
               type: array
-        description: 更新対象のオブジェクトの配列
+        description: 更新対象のオブジェクトを指定します。
         required: true
       responses:
         "200":
@@ -9081,7 +9094,7 @@ paths:
   /sims/{sim_id}/downlink/ping:
     post:
       description: SIM に対して ICMP ping リクエストを送信する。
-      operationId: simDownlinkPingToUserEquipment
+      operationId: sendDownlinkPing
       parameters:
       - description: 対象の SIM の SIM ID
         in: path
@@ -10227,6 +10240,658 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sora_cam/devices:
+    get:
+      description: |
+        ソラカメ対応カメラの一覧を取得します。ライセンスを割り当てていないソラカメ対応カメラの情報も取得できます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: listSoraCamDevices
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - configuration:
+                  audioAlarmEnabled: false
+                  motionDetectionEnabled: true
+                  smokeAlarmEnabled: false
+                connected: true
+                deviceCategory: Camera
+                deviceId: 7CDDDEADBEEF
+                firmwareVersion: 4.58.0.97
+                lastConnectedTime: 1664512183393
+                name: My ATOM Cam 2
+                productDisplayName: ATOM Cam 2
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamDevice'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラの一覧を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices list
+  /sora_cam/devices/{device_id}:
+    get:
+      description: |
+        `device_id` で指定したソラカメ対応カメラの情報を取得します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: getSoraCamDevice
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                appliedLicenses:
+                - name: Cloud Continuous Recording
+                  value: storage_life=14
+                configuration:
+                  audioAlarmEnabled: false
+                  motionDetectionEnabled: true
+                  smokeAlarmEnabled: false
+                connected: true
+                deviceCategory: Camera
+                deviceId: 7CDDDEADBEEF
+                firmwareVersion: 4.58.0.97
+                lastConnectedTime: 1664512183393
+                name: My ATOM Cam 2
+                productDisplayName: ATOM Cam 2
+              schema:
+                $ref: '#/components/schemas/SoraCamDevice'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラの情報を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get
+  /sora_cam/devices/{device_id}/exports/usage:
+    get:
+      description: |
+        静止画の残りのエクスポート可能枚数や、録画映像の残りのエクスポート可能時間などを取得します。
+
+        **Warning**: 静止画をエクスポートしても、録画映像をエクスポートしても、動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: getSoraCamDeviceExportUsage
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                image:
+                  remainingFrames: 259131
+                  usedFrames: 69
+                meteredYearMonth: "202209"
+                video:
+                  remainingSeconds: 259131
+                  usedSeconds: 69
+              schema:
+                $ref: '#/components/schemas/SoraCamExportUsage'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラの静止画のエクスポート可能枚数や録画映像のエクスポート可能時間を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get-export-usage
+  /sora_cam/devices/{device_id}/images/exports:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) で開始した「録画映像から静止画をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象を 1 台のソラカメ対応カメラに限定します。
+
+        なお、対象を 1 台のソラカメ対応カメラに限定しないで、オペレーターが所有するすべてのソラカメ対応カメラにする場合は、[SoraCam:listSoraCamDeviceImageExports API](#/SoraCam/listSoraCamDeviceImageExports) を使用してください。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: listSoraCamDeviceImageExportsForDevice
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: processing
+                    url: ""
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1663735622739
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: completed
+                    url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラで撮影した録画映像から静止画をエクスポートする処理の現在の状況をリストで取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images list-exports-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        クラウド常時録画で保存された録画映像から静止画を切り出してエクスポートする処理を開始します。エクスポート処理は非同期で処理されます。エクスポート処理の進捗や、エクスポートしたファイルの URL は、[`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports) で取得できます。URL には有効期限が設定されています。
+
+        - URL を取得した時点で、ダウンロード状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+        - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: exportSoraCamDeviceRecordedImage
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              imageFilters:
+              - wide_angle_correction
+              time: 1658400332905
+            schema:
+              $ref: '#/components/schemas/SoraCamImageExportSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: initializing
+              schema:
+                $ref: '#/components/schemas/SoraCamImageExportInfo'
+          description: OK.
+        "400":
+          description: '`time` に指定した値が不適切です。'
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: クラウド常時録画で保存された録画映像から静止画をエクスポートする処理を開始する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images export
+  /sora_cam/devices/{device_id}/images/exports/{export_id}:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) で開始した「録画映像から静止画をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象を 1 つのエクスポート処理に限定します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: getSoraCamDeviceExportedImage
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 対象のエクスポート処理のエクスポート ID
+        in: path
+        name: export_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                $ref: '#/components/schemas/SoraCamImageExportInfo'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラ、またはエクスポート処理が見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: クラウド常時録画で保存された録画映像から静止画をエクスポートする処理の現在の状況を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images get-exported
+  /sora_cam/devices/{device_id}/stream:
+    get:
+      description: |
+        ストリーミング映像 (リアルタイム映像 / 録画映像) をダウンロードするための情報を取得します。具体的には、MPEG-DASH (Dynamic Adaptive Streaming over HTTP) と呼ばれるストリーミング方式に対応した URL の配列を取得できます。URL には有効期限が設定されています。
+
+        - リアルタイム映像をストリーミング再生する場合は、以下の点に注意してください。
+          - API を呼び出した時刻を基準に、300 秒 (5 分) のリアルタイム映像をストリーミング再生できる URL を取得できます。続きを視聴する場合は、もう一度 API を呼び出して、次の URL を取得してください。
+          - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が 5 分消費されます。
+        - 録画映像をストリーミング再生する場合は、以下の点に注意してください。
+          - 最大 300 秒 (5 分) の録画映像をストリーミング再生できる URL を取得できます。
+          - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+
+        **Warning**: リアルタイム映像は、クラウド常時録画で保存された録画映像から最新の映像を取得する機能です。したがって、リアルタイム映像を取得するには、クラウド常時録画ライセンスが必要です。ATOM アプリで再生できる「ライブ映像 (P2P)」は、リアルタイム映像とは異なる機能です。SORACOM API を利用して「ライブ映像 (P2P)」は取得できません。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: getSoraCamDeviceStreamingVideo
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          録画映像の開始時刻 (UNIX 時間 (ミリ秒))
+
+          - リアルタイム映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          録画映像の終了時刻 (UNIX 時間 (ミリ秒))
+
+          - リアルタイム映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+          - 一回の API 呼び出しで視聴できる時間は最大 300 秒 (5 分) です。`from` と `to` の差が、300 秒を超えないようにしてください。
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                playList:
+                - from: 1658400332905
+                  to: 1658400532705
+                  url: https://xxxxxxx.kinesisvideo.ap-northeast-1.amazonaws.com/dash/v1/getDASHManifest.mpd?SessionToken=foo
+              schema:
+                $ref: '#/components/schemas/SoraCamStreamingVideo'
+          description: OK.
+        "400":
+          description: '`from` または `to` に指定した値が不適切です。'
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ストリーミング映像 (リアルタイム映像 / 録画映像) をダウンロードするための情報を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get-streaming-video
+  /sora_cam/devices/{device_id}/videos/exports:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) で開始した「録画映像をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象を 1 台のソラカメ対応カメラに限定します。
+
+        なお、対象を 1 台のソラカメ対応カメラに限定しないで、オペレーターが所有するすべてのソラカメ対応カメラにする場合は、[SoraCam:listSoraCamDeviceVideoExports API](#/SoraCam/listSoraCamDeviceVideoExports) を使用してください。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: listSoraCamDeviceVideoExportsForDevice
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                status: initializing
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamVideoExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラで撮影した録画映像をエクスポートする処理の現在の状況をリストで取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos list-exports-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        クラウド常時録画で保存された録画映像を、ダウンロードできる方式 (mp4 ファイルを zip 形式で圧縮したファイル) でエクスポートする処理を開始します。エクスポート処理は非同期で処理されます。エクスポート処理の進捗や、エクスポートしたファイルの URL は、[`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports) で取得できます。URL には有効期限が設定されています。
+
+        - ひとつの URL でエクスポートできる時間は最大 300 秒 (5 分) です。
+        - URL を取得した時点で、ダウンロード状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+        - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: exportSoraCamDeviceRecordedVideo
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              from: 1662962400000
+              to: 1662962430000
+            schema:
+              $ref: '#/components/schemas/SoraCamVideoExportSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: initializing
+              schema:
+                $ref: '#/components/schemas/SoraCamVideoExportInfo'
+          description: OK.
+        "400":
+          description: |
+            - `from` または `to` に指定した値が不適切です。
+            - 指定された時刻の範囲にはエクスポート可能な録画映像が見つかりません。
+            - `Content-Type: application/json` ヘッダーが指定されていません。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: クラウド常時録画で保存された録画映像をエクスポートする処理を開始する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos export
+  /sora_cam/devices/{device_id}/videos/exports/{export_id}:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) で開始した「録画映像をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象を 1 つのエクスポート処理に限定します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: getSoraCamDeviceExportedVideo
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 対象のエクスポート処理のエクスポート ID
+        in: path
+        name: export_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              schema:
+                $ref: '#/components/schemas/SoraCamVideoExportInfo'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラ、またはエクスポート処理が見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: クラウド常時録画で保存された録画映像をエクスポートする処理の現在の状況を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos get-exported
+  /sora_cam/devices/images/exports:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) で開始した「録画映像から静止画をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象をオペレーターが所有するすべてのデバイスにしたり、1 台のソラカメ対応カメラに限定したりできます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: listSoraCamDeviceImageExports
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合はオペレーターが所有するすべてのデバイスが対象となります。
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: initializing
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: processing
+                url: ""
+              - deviceId: 7CDDDEADBEEF
+                expiryTime: 1663735622739
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5c
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: completed
+                url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラで撮影した録画映像から静止画をエクスポートする処理の現在の状況をリストで取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images list-exports
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /sora_cam/devices/videos/exports:
+    get:
+      description: |
+        [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) で開始した「録画映像をエクスポートする処理」の現在の状況をリストで取得します。この API では、対象をオペレーターが所有するすべてのデバイスにしたり、1 台のソラカメ対応カメラに限定したりできます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: listSoraCamDeviceVideoExports
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合はオペレーターが所有するすべてのデバイスが対象となります。
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamVideoExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラで撮影した録画映像をエクスポートする処理の現在の状況をリストで取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos list-exports
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/license_packs:
     get:
       description: 利用可能なライセンスパックの一覧を取得します。 現在、この API は日本カバレッジでのみ利用可能です。
@@ -17202,6 +17867,155 @@ components:
         payload:
           type: string
       type: object
+    SoraCamDevice:
+      properties:
+        appliedLicenses:
+          description: |
+            ソラカメ対応カメラに適用されているライセンス。この情報は、[`SoraCam:listSoraCamDevices API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDevices) を使用しても取得できません。[`SoraCam:getSoraCamDevice API`](/ja-jp/tools/api/reference/#/SoraCam/getSoraCamDevice) を使用してください。
+          items:
+            $ref: '#/components/schemas/SoraCamDeviceLicenseInfo'
+          type: array
+        configuration:
+          $ref: '#/components/schemas/SoraCamDeviceConfiguration'
+          description: ソラカメ対応カメラの現在のコンフィグレーション
+        connected:
+          description: ソラカメ対応カメラが現在クラウドに接続されているかどうか
+          type: boolean
+        deviceCategory:
+          description: |
+            ソラカメ対応カメラの種類
+
+            - `Camera`
+          type: string
+        deviceId:
+          description: ソラカメ対応カメラのデバイス ID
+          type: string
+        firmwareVersion:
+          description: ソラカメ対応カメラの現在のファームウェアバージョン
+          type: string
+        lastConnectedTime:
+          description: ソラカメ対応カメラが最後にクラウドに接続した UNIX 時間 (ミリ秒)
+          format: int64
+          type: integer
+        name:
+          description: ソラカメ対応カメラの名前
+          type: string
+        productDisplayName:
+          description: ソラカメ対応カメラの製品名
+          type: string
+      type: object
+    SoraCamDeviceConfiguration:
+      description: ソラカメ対応カメラのコンフィグレーション
+      properties:
+        audioAlarmEnabled:
+          description: 音声アラームが有効化されているかどうか
+          type: boolean
+        motionDetectionEnabled:
+          description: モーション検知が有効化されているかどうか
+          type: boolean
+        smokeAlarmEnabled:
+          description: 煙検知が有効化されているかどうか
+          type: boolean
+      type: object
+    SoraCamDeviceLicenseInfo:
+      properties:
+        name:
+          description: |
+            ソラカメ対応カメラに適用されているライセンスの名前
+
+            - `Cloud Continuous Recording`: クラウド常時録画ライセンス
+          type: string
+        value:
+          description: |
+            ソラカメ対応カメラに適用されているライセンスのプロパティ
+
+            `name` が `Cloud Continuous Recording` の場合:
+
+            - `storage_life`: 保存期間
+          type: string
+      type: object
+    SoraCamExportUsage:
+      properties:
+        deviceId:
+          description: ソラカメ対応カメラのデバイス ID
+          type: string
+        image:
+          $ref: '#/components/schemas/SoraCamImageExportUsage'
+          description: 静止画のエクスポート可能枚数
+        meteredYearMonth:
+          description: '静止画の残りのエクスポート可能枚数や、録画映像の残りのエクスポート可能時間などを取得した年月 (フォーマット: ''YYYYMM'')'
+          type: string
+        video:
+          $ref: '#/components/schemas/SoraCamVideoExportUsage'
+          description: 録画映像のエクスポート可能時間
+      type: object
+    SoraCamImageExportInfo:
+      properties:
+        deviceId:
+          description: ソラカメ対応カメラのデバイス ID
+          type: string
+        expiryTime:
+          description: URL の有効期限 (UNIX 時間 (ミリ秒))。`status` が `completed` の場合のみ含まれます。
+          format: int64
+          type: integer
+        exportId:
+          description: |
+            エクスポート ID。[`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) で取得したエクスポート ID を、[`SoraCam:getSoraCamDeviceExportedImage API`](/ja-jp/tools/api/reference/#/SoraCam/getSoraCamDeviceExportedImage) で指定すると、jpg ファイルをダウンロードするための URL を取得できます。
+          type: string
+        operatorId:
+          description: |
+            [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) を呼び出したオペレーターの ID
+          type: string
+        requestedTime:
+          description: |
+            [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) によるエクスポートのリクエストを SORACOM プラットフォームが受け付けた日時 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
+        status:
+          description: |
+            エクスポート処理の現在の状況。
+
+            - `initializing`: 初期状態
+            - `processing`: 処理中
+            - `completed`: エクスポート完了
+            - `failed`: エクスポート失敗
+            - `expired`: URL の有効期限切れ
+          enum:
+          - initializing
+          - processing
+          - completed
+          - failed
+          - expired
+          type: string
+        url:
+          description: エクスポートされた jpg ファイルをダウンロードするための URL。`status` が `completed` の場合のみ含まれます。
+          type: string
+      type: object
+    SoraCamImageExportSpecification:
+      properties:
+        imageFilters:
+          description: エクスポートした静止画に適用するフィルタ
+          items:
+            enum:
+            - wide_angle_correction
+            type: string
+          type: array
+        time:
+          description: エクスポート対象の時刻 (UNIX 時間 (ミリ秒))。指定した時刻に撮影された録画映像から静止画がエクスポートされます。
+          format: int64
+          type: integer
+      required:
+      - time
+      type: object
+    SoraCamImageExportUsage:
+      properties:
+        remainingFrames:
+          description: 今月中にエクスポート可能な静止画の残りの枚数
+          type: integer
+        usedFrames:
+          description: 今月消費した動画の視聴可能時間をすべて静止画でエクスポートしたと仮定した場合の静止画の枚数
+          type: integer
+      type: object
     SoraCamLicensePackQuantityUpdatingRequest:
       properties:
         currentQuantity:
@@ -17234,6 +18048,109 @@ components:
           description: ライセンスパックの販売元
           example: SORACOM Inc.
           type: string
+      type: object
+    SoraCamPlayListEntry:
+      properties:
+        from:
+          description: 録画映像の開始時刻 (UNIX 時間 (ミリ秒))。リアルタイム映像の場合は省略されます。
+          format: int64
+          type: integer
+        to:
+          description: 録画映像の終了時刻 (UNIX 時間 (ミリ秒))。リアルタイム映像の場合は省略されます。
+          format: int64
+          type: integer
+        url:
+          description: |
+            ストリーミング映像 (リアルタイム映像 / 録画映像) の mpd ファイルを取得するための URL
+
+            - 以下の場合は URL が返されません。
+              - リアルタイム映像を取得しようとした場合に、ソラカメ対応カメラの電源が入っていない。
+              - リアルタイム映像を取得しようとした場合に、ソラカメ対応カメラでクラウド録画が開始されていない。
+              - 録画映像を取得しようとした場合に、指定した `from` から `to` の間に録画映像が存在しない。
+          type: string
+      type: object
+    SoraCamStreamingVideo:
+      properties:
+        playList:
+          description: |
+            ストリーミング映像 (リアルタイム映像 / 録画映像) のプレイリストエントリーの配列
+
+            - リアルタイム映像の場合は、返却される動画ファイルは常にひとつです。また、`from` および `to` は省略されます。
+            - 録画映像の場合は、録画の状態によって動画ファイルが分割されていることがあります。
+          items:
+            $ref: '#/components/schemas/SoraCamPlayListEntry'
+          type: array
+      type: object
+    SoraCamVideoExportInfo:
+      properties:
+        deviceId:
+          description: ソラカメ対応カメラのデバイス ID
+          type: string
+        expiryTime:
+          description: URL の有効期限 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
+        exportId:
+          description: |
+            エクスポート ID。[`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) で取得したエクスポート ID を、[`SoraCam:getSoraCamDeviceExportedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/getSoraCamDeviceExportedVideo) で指定すると、mp4 ファイルを zip 形式で圧縮したファイルをダウンロードするための URL を取得できます。
+          type: string
+        operatorId:
+          description: |
+            [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) を呼び出したオペレーターの ID
+          type: string
+        requestedTime:
+          description: |
+            [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) によるエクスポートのリクエストを SORACOM プラットフォームが受け付けた日時 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
+        status:
+          description: |
+            エクスポート処理の現在の状況。
+
+            - `initializing`: 初期状態
+            - `processing`: 処理中
+            - `completed`: エクスポート完了
+            - `failed`: エクスポート失敗
+            - `expired`: URL の有効期限切れ
+          enum:
+          - initializing
+          - processing
+          - completed
+          - failed
+          - expired
+          type: string
+        url:
+          description: |
+            mp4 ファイルを zip 形式で圧縮したファイルをダウンロードするための URL。`status` が `completed` の場合のみ含まれます。
+
+            - ダウンロードした zip 形式のファイルを展開すると、mp4 ファイルを取得できます。
+          type: string
+      type: object
+    SoraCamVideoExportSpecification:
+      properties:
+        from:
+          description: エクスポート対象の開始時刻 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
+        to:
+          description: |
+            エクスポート対象の終了時刻 (UNIX 時間 (ミリ秒))
+
+            - 一回の API 呼び出しでエクスポートできる時間は最大 300 秒 (5 分) です。`from` と `to` の差が、300 秒を超えないようにしてください。
+          format: int64
+          type: integer
+      required:
+      - from
+      - to
+      type: object
+    SoraCamVideoExportUsage:
+      properties:
+        remainingSeconds:
+          description: 今月中にエクスポート可能な録画映像の残りの秒数
+          type: integer
+        usedSeconds:
+          description: 今月消費した動画の視聴可能時間をすべて録画映像でエクスポートしたと仮定した場合の、エクスポート可能な秒数
+          type: integer
       type: object
     SoracomBeamStats:
       properties:
@@ -17541,7 +18458,7 @@ components:
         speedClass:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
-            - plan01s、plan01s - Low Data Volume、planP1、planX3、plan-D の場合:
+            - plan01s、plan01s - Low Data Volume、planP1、planX3 X3-5MB、plan-D の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`

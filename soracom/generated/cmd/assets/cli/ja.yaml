@@ -214,11 +214,20 @@ cli:
     summary: SIM に関する操作を行います。
     description: SIM に関する操作を行います。
   sora-cam:
-    summary: Soracom Cloud Camera Services に関する操作を行います。
-    description: Manage Soracom Cloud Camera Services に関する操作を行います。
+    summary: Soracom Cloud Camera Services (ソラカメ) に関する操作を行います。
+    description: Manage Soracom Cloud Camera Services (ソラカメ) に関する操作を行います。
     license-packs:
       summary: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
       description: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
+    devices:
+      summary: ソラカメデバイスに関する操作を行います。
+      description: ソラカメデバイスに関する操作を行います。
+      images:
+        summary: ソラカメデバイスからの静止画のエクスポートに関する操作を行います。
+        description: ソラカメデバイスからの静止画のエクスポートに関する操作を行います。
+      videos:
+        summary: ソラカメデバイスからの動画のエクスポートに関する操作を行います。
+        description: ソラカメデバイスからの動画のエクスポートに関する操作を行います。
   soralets:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。

@@ -63,6 +63,7 @@ build: ## Build codes
 		-ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
 		-o $(OUTPUT) \
 		./soracom
+	@chmod +x $(OUTPUT)
 .PHONY:build
 
 cross-build:

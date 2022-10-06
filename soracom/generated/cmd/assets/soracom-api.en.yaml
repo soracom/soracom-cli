@@ -3180,6 +3180,19 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Configuring Custom DNS for IoT SIM:
+                description: |
+                  When configuring custom DNS for the IoT SIM, please note the following
+
+                  - Specify `SoracomAir` in the path parameter `namespace`.
+                value:
+                - key: useCustomDns
+                  value: true
+                - key: dnsServers
+                  value:
+                  - 192.168.0.5
+                  - 192.168.0.6
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
@@ -9234,7 +9247,7 @@ paths:
   /sims/{sim_id}/downlink/ping:
     post:
       description: Send ICMP ping requests to a SIM.
-      operationId: simDownlinkPingToUserEquipment
+      operationId: sendDownlinkPing
       parameters:
       - description: SIM ID of the target SIM.
         in: path
@@ -10397,6 +10410,688 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sora_cam/devices:
+    get:
+      description: |
+        Obtains a list of cameras that are compatible with the Soracom Cloud Camera Services. You can also retrieve information on cameras for which a license has not been assigned.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: listSoraCamDevices
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - configuration:
+                  audioAlarmEnabled: false
+                  motionDetectionEnabled: true
+                  smokeAlarmEnabled: false
+                connected: true
+                deviceCategory: Camera
+                deviceId: 7CDDDEADBEEF
+                firmwareVersion: 4.58.0.97
+                lastConnectedTime: 1664512183393
+                name: My ATOM Cam 2
+                productDisplayName: ATOM Cam 2
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamDevice'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List compatible camera devices.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices list
+  /sora_cam/devices/{device_id}:
+    get:
+      description: Obtain a SoraCam device record for the device identified by device_id.
+      operationId: getSoraCamDevice
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                appliedLicenses:
+                - name: Cloud Continuous Recording
+                  value: storage_life=14
+                configuration:
+                  audioAlarmEnabled: false
+                  motionDetectionEnabled: true
+                  smokeAlarmEnabled: false
+                connected: true
+                deviceCategory: Camera
+                deviceId: 7CDDDEADBEEF
+                firmwareVersion: 4.58.0.97
+                lastConnectedTime: 1664512183393
+                name: My ATOM Cam 2
+                productDisplayName: ATOM Cam 2
+              schema:
+                $ref: '#/components/schemas/SoraCamDevice'
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: |
+        Get the SoraCam device information identified by device_id.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get
+  /sora_cam/devices/{device_id}/exports/usage:
+    get:
+      description: |
+        Get the remaining number of still images that can be exported and the remaining exportable time of recorded video.
+
+        **Warning**: Exporting either still images or recorded video will consume the available video viewing time (72 hours per month).
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: getSoraCamDeviceExportUsage
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                image:
+                  remainingFrames: 259131
+                  usedFrames: 69
+                meteredYearMonth: "202209"
+                video:
+                  remainingSeconds: 259131
+                  usedSeconds: 69
+              schema:
+                $ref: '#/components/schemas/SoraCamExportUsage'
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get the remaining number of still images that can be exported and the
+        remaining exportable time of recorded video.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get-export-usage
+  /sora_cam/devices/{device_id}/images/exports:
+    get:
+      description: |
+        Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one compatible camera device.
+
+        In addition, if the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceImageExports API](#/SoraCam/listSoraCamDeviceImageExports).
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: listSoraCamDeviceImageExportsForDevice
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: Value of the x-soracom-next-key header in the response to the
+          last export request. By specifying this parameter, you can continue to retrieve
+          the list from the last export request.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of data related to export processing to be acquired
+          in one request. Note that the number of data that can be acquired may be
+          less than the specified number.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: processing
+                    url: ""
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1663735622739
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: completed
+                    url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get a list of the current status of the process of exporting still
+        image from recorded video taken with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images list-exports-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        Starts the process of extracting and exporting still images from recorded video saved by cloud continuous recording. The export process is processed asynchronously.The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports). The URL has an expiration date.
+
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the downloading status.
+        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: exportSoraCamDeviceRecordedImage
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              imageFilters:
+              - wide_angle_correction
+              time: 1658400332905
+            schema:
+              $ref: '#/components/schemas/SoraCamImageExportSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: initializing
+              schema:
+                $ref: '#/components/schemas/SoraCamImageExportInfo'
+          description: OK.
+        "400":
+          description: The value specified for `time` is invalid.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Start the process of exporting still images from recorded video saved
+        by cloud continuous recording
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images export
+  /sora_cam/devices/{device_id}/images/exports/{export_id}:
+    get:
+      description: |
+        Gets the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one export process.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: getSoraCamDeviceExportedImage
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: Export ID of the target export operation.
+        in: path
+        name: export_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                $ref: '#/components/schemas/SoraCamImageExportInfo'
+          description: OK.
+        "404":
+          description: The specified compatible camera device or export process could
+            not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get the current status of the process of exporting still images from
+        recorded video taken with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images get-exported
+  /sora_cam/devices/{device_id}/stream:
+    get:
+      description: |
+        Get information for downloading streaming video (real-time video / recorded video). Specifically, you can get an array of URLs that support a streaming method called MPEG-DASH (Dynamic Adaptive Streaming over HTTP). The URL has an expiration date.
+
+        - For real-time video, note the followings:
+          - You can get a URL to stream 300 seconds (5 minutes) of real-time video based on the time of the API called. To continue watching, call the API again to get the next URL.
+          - At the time of obtaining the URL, 5 minutes of the available video viewing time (72 hours per month) will be consumed regardless of the viewing status.
+        - For recorded video, note the followings:
+          - You can get a URL to stream up to 300 seconds (5 minutes) of recorded video.
+          - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the viewing status.
+
+        **Warning**: Real-time video is a function that retrieves the latest video from recorded video saved by cloud continuous recording. Therefore, a cloud continuous recording license is required to obtain real-time video. **Live video (P2P)** that can be played on the ATOM app is a different feature from the real-time video. **Live video (P2P)** cannot be obtained using the SORACOM API.
+      operationId: getSoraCamDeviceStreamingVideo
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          Start time of recorded video (UNIX time in milliseconds)
+
+          - Omit both `from` and `to` to get information for downloading real-time video.
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          End time of recorded video (UNIX time in milliseconds)
+
+          - Omit both `from` and `to` to get information for downloading real-time video.
+          - The maximum viewing time for a single API call is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds.
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                playList:
+                - from: 1658400332905
+                  to: 1658400532705
+                  url: https://xxxxxxx.kinesisvideo.ap-northeast-1.amazonaws.com/dash/v1/getDASHManifest.mpd?SessionToken=foo
+              schema:
+                $ref: '#/components/schemas/SoraCamStreamingVideo'
+          description: OK.
+        "400":
+          description: The value specified for `from` or `to` is invalid.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get information for downloading streaming video (real-time video /
+        recorded video).
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices get-streaming-video
+  /sora_cam/devices/{device_id}/videos/exports:
+    get:
+      description: |
+        Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one compatible camera device.
+
+        In addition, if the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceVideoExports API](#/SoraCam/listSoraCamDeviceVideoExports).
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: listSoraCamDeviceVideoExportsForDevice
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: Value of the x-soracom-next-key header in the response to the
+          last export request. By specifying this parameter, you can continue to retrieve
+          the list from the last export request.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of data related to export processing to be acquired
+          in one request. Note that the number of data that can be acquired may be
+          less than the specified number.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                status: initializing
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamVideoExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get a list of the current status of the process of exporting recorded
+        video taken with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos list-exports-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        Starts the process of exporting recorded video saved by cloud continuous recording in a format that can be downloaded (zipped mp4 files). The export process is processed asynchronously.The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports). The URL has an expiration date.
+
+        - The maximum export time for a single URL is 300 seconds (5 minutes).
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the downloading status.
+        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: exportSoraCamDeviceRecordedVideo
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              from: 1662962400000
+              to: 1662962430000
+            schema:
+              $ref: '#/components/schemas/SoraCamVideoExportSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: initializing
+              schema:
+                $ref: '#/components/schemas/SoraCamVideoExportInfo'
+          description: OK.
+        "400":
+          description: |
+            - The value specified for `from` or `to` is invalid.
+            - No exportable recordings were found in the specified time range.
+            - `Content-Type: application/json` header is not specified.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Start the process of exporting recorded video saved by cloud continuous
+        recording
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos export
+  /sora_cam/devices/{device_id}/videos/exports/{export_id}:
+    get:
+      description: |
+        Gets the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one export process.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: getSoraCamDeviceExportedVideo
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: Export ID of the target export operation.
+        in: path
+        name: export_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              schema:
+                $ref: '#/components/schemas/SoraCamVideoExportInfo'
+          description: OK.
+        "404":
+          description: The specified compatible camera device or export process could
+            not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get the current status of the process of exporting recorded video taken
+        with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos get-exported
+  /sora_cam/devices/images/exports:
+    get:
+      description: |
+        Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API can target all devices owned by the operator, or limit it to one compatible camera device.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: listSoraCamDeviceImageExports
+      parameters:
+      - description: Device ID of the target compatible camera device. If this ID
+          is not specified, all compatible camera devices owned by the operator will
+          be returned.
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: Value of the x-soracom-next-key header in the response to the
+          last export request. By specifying this parameter, you can continue to retrieve
+          the list from the last export request.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of data related to export processing to be acquired
+          in one request. Note that the number of data that can be acquired may be
+          less than the specified number.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: initializing
+              - deviceId: 7CDDDEADBEEF
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: processing
+                url: ""
+              - deviceId: 7CDDDEADBEEF
+                expiryTime: 1663735622739
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5c
+                operatorId: OP0012345678
+                requestedTime: 1663649222739
+                status: completed
+                url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get a list of the current status of the process of exporting still
+        image from recorded video taken with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices images list-exports
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /sora_cam/devices/videos/exports:
+    get:
+      description: |
+        Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API can target all devices owned by the operator, or limit it to one compatible camera device.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: listSoraCamDeviceVideoExports
+      parameters:
+      - description: Device ID of the target compatible camera device. If this ID
+          is not specified, all compatible camera devices owned by the operator will
+          be returned.
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: Value of the x-soracom-next-key header in the response to the
+          last export request. By specifying this parameter, you can continue to retrieve
+          the list from the last export request.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of data related to export processing to be acquired
+          in one request. Note that the number of data that can be acquired may be
+          less than the specified number.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                expiryTime: 1663059600000
+                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                operatorId: OP0012345678
+                requestedTime: 1662973200000
+                status: completed
+                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamVideoExportInfo'
+                type: array
+          description: OK.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get a list of the current status of the process of exporting recorded
+        video taken with a compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices videos list-exports
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/license_packs:
     get:
       description: Returns the list of license packs which you can use. Currently,
@@ -17426,6 +18121,163 @@ components:
         payload:
           type: string
       type: object
+    SoraCamDevice:
+      properties:
+        appliedLicenses:
+          description: |
+            List of licenses applied to the device. This information cannot be obtained using [`SoraCam:listSoraCamDevices API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDevices). Use [`SoraCam:getSoraCamDevice API`](/ja-jp/tools/api/reference/#/SoraCam/getSoraCamDevice).
+          items:
+            $ref: '#/components/schemas/SoraCamDeviceLicenseInfo'
+          type: array
+        configuration:
+          $ref: '#/components/schemas/SoraCamDeviceConfiguration'
+          description: Current configuration of the compatible camera device.
+        connected:
+          description: Whether the compatible camera device is connected to the cloud.
+          type: boolean
+        deviceCategory:
+          description: |
+            Category of the compatible camera device
+
+            - `Camera`
+          type: string
+        deviceId:
+          description: Device ID of the compatible camera device.
+          type: string
+        firmwareVersion:
+          description: Current firmware version of the compatible camera device.
+          type: string
+        lastConnectedTime:
+          description: UNIX time in milliseconds when the compatible camera device
+            was last connected to the cloud.
+          format: int64
+          type: integer
+        name:
+          description: Name of the compatible camera device.
+          type: string
+        productDisplayName:
+          description: Product name of the compatible camera device.
+          type: string
+      type: object
+    SoraCamDeviceConfiguration:
+      description: Configuration of the compatible camera device.
+      properties:
+        audioAlarmEnabled:
+          description: Whether audio alarm is enabled or not.
+          type: boolean
+        motionDetectionEnabled:
+          description: Whether motion detection is enabled or not.
+          type: boolean
+        smokeAlarmEnabled:
+          description: Whether smoke alarm is enabled or not.
+          type: boolean
+      type: object
+    SoraCamDeviceLicenseInfo:
+      properties:
+        name:
+          description: |
+            Name of the license applied to a comptible camera device.
+
+            - `Cloud Continuous Recording`
+          type: string
+        value:
+          description: |
+            Properties of the license applied to a compatible camera device.
+
+            If `name` is `Cloud Continuous Recording`:
+
+            - `storage_life`: Storage life
+          type: string
+      type: object
+    SoraCamExportUsage:
+      properties:
+        deviceId:
+          description: Device ID of the compatible camera device.
+          type: string
+        image:
+          $ref: '#/components/schemas/SoraCamImageExportUsage'
+          description: The remaining number of still images that can be exported.
+        meteredYearMonth:
+          description: 'Year and month when the remaining exportable number of still
+            images and the remaining exportable time of recorded video were obtained
+            (format: ''YYYYMM'')'
+          type: string
+        video:
+          $ref: '#/components/schemas/SoraCamVideoExportUsage'
+          description: The remaining exportable time of recorded video
+      type: object
+    SoraCamImageExportInfo:
+      properties:
+        deviceId:
+          description: Device ID of the compatible camera device.
+          type: string
+        expiryTime:
+          description: Expiration timestamp of the URL (unix time in milliseconds).
+            Only included if `status` is `completed`.
+          format: int64
+          type: integer
+        exportId:
+          description: |
+            Export ID. If you specify the export ID obtained in [`SoraCam:exportSoraCamDeviceRecordedImage API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) to [`SoraCam:getSoraCamDeviceExportedImage API`](/en-us/tools/api /reference/#/SoraCam/getSoraCamDeviceExportedImage), you can obtain the URL for downloading the jpg file.
+          type: string
+        operatorId:
+          description: Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedImage
+            API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage).
+          type: string
+        requestedTime:
+          description: |
+            The date and time when the SORACOM platform accepted the export request from [`SoraCam:exportSoraCamDeviceRecordedImage API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) (unix time in milliseconds).
+          format: int64
+          type: integer
+        status:
+          description: |
+            Current status of the export.
+
+            - `initializing`: Initial state
+            - `processing`: Processing
+            - `completed`: Export completed
+            - `failed`: Export failed
+            - `expired`: Exported URL is expired
+          enum:
+          - initializing
+          - processing
+          - completed
+          - failed
+          - expired
+          type: string
+        url:
+          description: URL to download the exported jpg file. Only included if `status`
+            is `completed`.
+          type: string
+      type: object
+    SoraCamImageExportSpecification:
+      properties:
+        imageFilters:
+          description: Image filters to be applied to the exported image.
+          items:
+            enum:
+            - wide_angle_correction
+            type: string
+          type: array
+        time:
+          description: Time to be exported (unix time in milliseconds). A still image
+            is exported from the recorded video taken at the specified time.'
+          format: int64
+          type: integer
+      required:
+      - time
+      type: object
+    SoraCamImageExportUsage:
+      properties:
+        remainingFrames:
+          description: Remaining number of still images that can be exported in this
+            month.
+          type: integer
+        usedFrames:
+          description: Number of still images assuming that all of the available video
+            viewing time consumed is exported as still images in this month.
+          type: integer
+      type: object
     SoraCamLicensePackQuantityUpdatingRequest:
       properties:
         currentQuantity:
@@ -17458,6 +18310,114 @@ components:
           description: Sales channel of the license pack
           example: SORACOM Inc.
           type: string
+      type: object
+    SoraCamPlayListEntry:
+      properties:
+        from:
+          description: The start time of the recorded video (unix time in milliseconds).
+            Omitted for real-time video.
+          format: int64
+          type: integer
+        to:
+          description: The end time of the recorded video (unix time in milliseconds).
+            Omitted for real-time video.
+          format: int64
+          type: integer
+        url:
+          description: |
+            URL to get mpd file of streaming video (real-time video / recorded video)
+
+            - No URL is returned in the following cases:
+              - When trying to get real-time video, the power of the compatible camera device is not turned on.
+              - When trying to get real-time video, cloud recording has not started on a compatible camera device.
+              - When trying to get recorded video, there is no recorded video between the specified `from` and `to`.
+          type: string
+      type: object
+    SoraCamStreamingVideo:
+      properties:
+        playList:
+          description: |
+            Array of playlist entries for streaming video (real-time video / recorded video)
+
+            - For real-time video, only one video file is always returned. In addition, `from` and `to` are omitted.
+            - For recorded video, the video file may be split depending on the recording status.
+          items:
+            $ref: '#/components/schemas/SoraCamPlayListEntry'
+          type: array
+      type: object
+    SoraCamVideoExportInfo:
+      properties:
+        deviceId:
+          description: Device ID of the compatible camera device.
+          type: string
+        expiryTime:
+          description: Expiration timestamp of the URL (unix time in milliseconds).
+          format: int64
+          type: integer
+        exportId:
+          description: |
+            Export ID. If you specify the export ID obtained in [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) to [`SoraCam:getSoraCamDeviceExportedVideo API`](/en-us/tools/api /reference/#/SoraCam/getSoraCamDeviceExportedVideo), you can obtain the URL for downloading the zipped mp4 file.
+          type: string
+        operatorId:
+          description: Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedVideo
+            API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo).
+          type: string
+        requestedTime:
+          description: |
+            The date and time when the SORACOM platform accepted the export request from [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) (unix time in milliseconds).
+          format: int64
+          type: integer
+        status:
+          description: |
+            Current status of the export.
+
+            - `initializing`: Initial state
+            - `processing`: Processing
+            - `completed`: Export completed
+            - `failed`: Export failed
+            - `expired: Exported URL is expired
+          enum:
+          - initializing
+          - processing
+          - completed
+          - failed
+          - expired
+          type: string
+        url:
+          description: |
+            URL to download a zipped mp4 file. Only included if `status` is `completed`.
+
+            - You can get mp4 files by extracting the downloaded zip file.
+          type: string
+      type: object
+    SoraCamVideoExportSpecification:
+      properties:
+        from:
+          description: Start time for exporting (unix time in milliseconds).
+          format: int64
+          type: integer
+        to:
+          description: |
+            End time for exporting (unix time in milliseconds).
+
+            - The maximum time for a single API call to export is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds.
+          format: int64
+          type: integer
+      required:
+      - from
+      - to
+      type: object
+    SoraCamVideoExportUsage:
+      properties:
+        remainingSeconds:
+          description: Remaining seconds of recorded video that can be exported in
+            this month.
+          type: integer
+        usedSeconds:
+          description: Number of seconds that can be exported, assuming that all of
+            the video viewable time consumed is exported as recorded video in this
+            month.
+          type: integer
       type: object
     SoracomBeamStats:
       properties:
