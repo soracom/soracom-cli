@@ -123,7 +123,7 @@ build() {
   binbase="soracom_${VERSION}_${goos}_$goarch"
   bin="$binbase$ext"
 
-  printf "  %-7s - %-7s    bin" "$goos" "$goarch"
+  printf "  %-7s - %-7s  bin" "$goos" "$goarch"
   make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
