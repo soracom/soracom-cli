@@ -54,6 +54,9 @@ build_deb_package() {
     "arm")
       arch="armhf"
       ;;
+    "riscv64")
+      arch="riscv64"
+      ;;
     *)
       arch="unknown"
       ;;
@@ -120,7 +123,7 @@ build() {
   binbase="soracom_${VERSION}_${goos}_$goarch"
   bin="$binbase$ext"
 
-  printf "  %-7s - %-5s  bin" "$goos" "$goarch"
+  printf "  %-7s - %-7s    bin" "$goos" "$goarch"
   make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
@@ -144,16 +147,17 @@ build() {
     )
 
     rm -rf "soracom/dist/$VERSION"
-    build linux   amd64 ''
-    build linux   arm64 ''
-    build linux   386   ''
-    build linux   arm   ''
-    build darwin  amd64 ''
-    build darwin  arm64 ''
-    build freebsd amd64 ''
-    build freebsd 386   ''
-    build freebsd arm   ''
-    build windows amd64 .exe
-    build windows 386   .exe
+    build linux   amd64   ''
+    build linux   arm64   ''
+    build linux   386     ''
+    build linux   arm     ''
+    build linux   riscv64 ''
+    build darwin  amd64   ''
+    build darwin  arm64   ''
+    build freebsd amd64   ''
+    build freebsd 386     ''
+    build freebsd arm     ''
+    build windows amd64   .exe
+    build windows 386     .exe
 
 }
