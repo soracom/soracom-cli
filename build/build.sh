@@ -62,11 +62,32 @@ build_deb_package() {
       ;;
   esac
 
-  fsize="$( stat --printf="%s" "$bindir/$bin" )"
-  fsize="$(( fsize / 1024 ))"
-
   tmpdir="$( mktemp -d )"
   trap 'remove_tmpdir $tmpdir' RETURN
+
+  mkdir -p "$tmpdir/usr/bin/"
+  cp "$bindir/$bin" "$tmpdir/usr/bin/soracom"
+
+  local license_text
+  license_text="$( sed -e '1,4d' -e 's/^$/./' -e 's/^/ /' -e '$s/^ \.$//' "$d/LICENSE" )"
+
+  mkdir -p "$tmpdir/usr/share/doc/soracom/"
+  cat << EOD > "$tmpdir/usr/share/doc/soracom/copyright"
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: soracom-cli
+Source: https://github.com/soracom/soracom-cli
+
+Files: *
+Copyright: 2015 Soracom, Inc.
+License: MIT
+
+License: MIT
+${license_text}
+EOD
+  
+
+  fsize="$( find $tmpdir -type f -not -path "$tmpdir/DEBIAN/*" -exec du -cb {} + | tail -1 | cut -f1 )"
+  fsize="$(( fsize / 1024 ))"
 
   mkdir -p "$tmpdir/DEBIAN"
   cat << EOD > "$tmpdir/DEBIAN/control"
@@ -79,9 +100,6 @@ Architecture: $arch
 Description: A command line tool \`soracom\' to invoke SORACOM API.
 Installed-Size: $fsize
 EOD
-
-  mkdir -p "$tmpdir/usr/bin/"
-  cp "$bindir/$bin" "$tmpdir/usr/bin/soracom"
 
   fakeroot dpkg-deb --build "$tmpdir" "$bindir/soracom_${VERSION}_$arch.deb" &> /dev/null
 }
