@@ -843,13 +843,17 @@ func containsString(ss []string, target string) bool {
 }
 
 func convertDescriptionToShortHelp(description string) string {
-	return trimTemplate(removeLineBreaks(description))
+	return trimTemplate(escapeDoubleQuotationMarks(removeLineBreaks(description)))
 }
 
 var lineBreaks = regexp.MustCompile(`[\r\n]`)
 
 func removeLineBreaks(s string) string {
 	return lineBreaks.ReplaceAllString(s, "")
+}
+
+func escapeDoubleQuotationMarks(s string) string {
+	return strings.ReplaceAll(s, `"`, `\"`)
 }
 
 var templateRegex = regexp.MustCompile(`^\s*\${(.+)}\s*$`)
