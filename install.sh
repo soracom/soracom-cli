@@ -62,6 +62,9 @@ get_goarch() {
     "arm64" | "aarch64")
       echo "arm64"
       ;;
+    "riscv64")
+      echo "riscv64"
+      ;;
     *)
       echo "unknown architecture: $( uname -m )" 2>&1
       exit 1
