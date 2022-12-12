@@ -28,7 +28,7 @@ var UsersUpdateCmdBody string
 func init() {
 	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdDescription, "description", "", TRAPI(""))
 
-	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersUpdateCmd.Flags().StringVar(&UsersUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
 

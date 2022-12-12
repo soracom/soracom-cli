@@ -29,7 +29,7 @@ var SystemNotificationsSetCmdEmailIdList []string
 var SystemNotificationsSetCmdBody string
 
 func init() {
-	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdPassword, "password", "", TRAPI("Password of the operator. This is necessary when type is primary."))
 

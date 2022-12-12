@@ -21,7 +21,7 @@ var UsersAuthKeysDeleteCmdUserName string
 func init() {
 	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAuthKeysDeleteCmd.Flags().StringVar(&UsersAuthKeysDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysDeleteCmd)

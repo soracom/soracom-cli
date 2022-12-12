@@ -2,9 +2,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os"
+
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -12,8 +16,18 @@ import (
 // OperatorRevokeMfaCmdOperatorId holds value of 'operator_id' option
 var OperatorRevokeMfaCmdOperatorId string
 
+// OperatorRevokeMfaCmdPassword holds value of 'password' option
+var OperatorRevokeMfaCmdPassword string
+
+// OperatorRevokeMfaCmdBody holds contents of request body to be sent
+var OperatorRevokeMfaCmdBody string
+
 func init() {
-	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+
+	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdPassword, "password", "", TRAPI("Root user's password"))
+
+	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	OperatorCmd.AddCommand(OperatorRevokeMfaCmd)
 }
 
@@ -68,14 +82,37 @@ var OperatorRevokeMfaCmd = &cobra.Command{
 }
 
 func collectOperatorRevokeMfaCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
+	var parsedBody interface{}
+	var err error
 	if OperatorRevokeMfaCmdOperatorId == "" {
 		OperatorRevokeMfaCmdOperatorId = ac.OperatorID
 	}
 
+	body, err = buildBodyForOperatorRevokeMfaCmd()
+	if err != nil {
+		return nil, err
+	}
+	contentType := ""
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("password", "password", "body", parsedBody, OperatorRevokeMfaCmdPassword)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
-		method: "DELETE",
-		path:   buildPathForOperatorRevokeMfaCmd("/operators/{operator_id}/mfa"),
-		query:  buildQueryForOperatorRevokeMfaCmd(),
+		method:      "DELETE",
+		path:        buildPathForOperatorRevokeMfaCmd("/operators/{operator_id}/mfa"),
+		query:       buildQueryForOperatorRevokeMfaCmd(),
+		contentType: contentType,
+		body:        body,
 
 		noRetryOnError: noRetryOnError,
 	}, nil
@@ -94,4 +131,46 @@ func buildQueryForOperatorRevokeMfaCmd() url.Values {
 	result := url.Values{}
 
 	return result
+}
+
+func buildBodyForOperatorRevokeMfaCmd() (string, error) {
+	var result map[string]interface{}
+
+	if OperatorRevokeMfaCmdBody != "" {
+		var b []byte
+		var err error
+
+		if strings.HasPrefix(OperatorRevokeMfaCmdBody, "@") {
+			fname := strings.TrimPrefix(OperatorRevokeMfaCmdBody, "@")
+			// #nosec
+			b, err = ioutil.ReadFile(fname)
+		} else if OperatorRevokeMfaCmdBody == "-" {
+			b, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			b = []byte(OperatorRevokeMfaCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if result == nil {
+		result = make(map[string]interface{})
+	}
+
+	if OperatorRevokeMfaCmdPassword != "" {
+		result["password"] = OperatorRevokeMfaCmdPassword
+	}
+
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }

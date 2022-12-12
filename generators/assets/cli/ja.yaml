@@ -220,14 +220,17 @@ cli:
       summary: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
       description: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
     devices:
-      summary: ソラカメデバイスに関する操作を行います。
-      description: ソラカメデバイスに関する操作を行います。
+      summary: ソラカメ対応カメラデバイスに関する操作を行います。
+      description: ソラカメ対応カメラデバイスに関する操作を行います。
+      events:
+        summary: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
+        description: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
       images:
-        summary: ソラカメデバイスからの静止画のエクスポートに関する操作を行います。
-        description: ソラカメデバイスからの静止画のエクスポートに関する操作を行います。
+        summary: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
+        description: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
       videos:
-        summary: ソラカメデバイスからの動画のエクスポートに関する操作を行います。
-        description: ソラカメデバイスからの動画のエクスポートに関する操作を行います。
+        summary: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
+        description: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
   soralets:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。

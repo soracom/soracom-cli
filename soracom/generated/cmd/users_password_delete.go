@@ -16,7 +16,7 @@ var UsersPasswordDeleteCmdOperatorId string
 var UsersPasswordDeleteCmdUserName string
 
 func init() {
-	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersPasswordDeleteCmd.Flags().StringVar(&UsersPasswordDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersPasswordCmd.AddCommand(UsersPasswordDeleteCmd)

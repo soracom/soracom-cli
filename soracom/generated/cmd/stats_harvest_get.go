@@ -9,24 +9,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// StatsHarvestGetCmdOperatorId holds value of 'operator_id' option
-var StatsHarvestGetCmdOperatorId string
+// StatsHarvestGetCmdImsi holds value of 'imsi' option
+var StatsHarvestGetCmdImsi string
 
-// StatsHarvestGetCmdYearMonth holds value of 'year_month' option
-var StatsHarvestGetCmdYearMonth string
+// StatsHarvestGetCmdPeriod holds value of 'period' option
+var StatsHarvestGetCmdPeriod string
+
+// StatsHarvestGetCmdFrom holds value of 'from' option
+var StatsHarvestGetCmdFrom int64
+
+// StatsHarvestGetCmdTo holds value of 'to' option
+var StatsHarvestGetCmdTo int64
+
+// StatsHarvestGetCmdOutputJSONL indicates to output with jsonl format
+var StatsHarvestGetCmdOutputJSONL bool
 
 func init() {
-	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
+	StatsHarvestGetCmd.Flags().StringVar(&StatsHarvestGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+
+	StatsHarvestGetCmd.Flags().Int64Var(&StatsHarvestGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
+
+	StatsHarvestGetCmd.Flags().Int64Var(&StatsHarvestGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+
+	StatsHarvestGetCmd.Flags().BoolVar(&StatsHarvestGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsHarvestCmd.AddCommand(StatsHarvestGetCmd)
 }
 
 // StatsHarvestGetCmd defines 'get' subcommand
 var StatsHarvestGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: TRAPI("/stats/harvest/operators/{operator_id}:get:summary"),
-	Long:  TRAPI(`/stats/harvest/operators/{operator_id}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getHarvestExportedDataStats"),
+	Short: TRAPI("/stats/harvest/subscribers/{imsi}:get:summary"),
+	Long:  TRAPI(`/stats/harvest/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getHarvestStats"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if len(args) > 0 {
@@ -66,6 +81,10 @@ var StatsHarvestGetCmd = &cobra.Command{
 		if rawOutput {
 			_, err = os.Stdout.Write([]byte(body))
 		} else {
+			if StatsHarvestGetCmdOutputJSONL {
+				return printStringAsJSONL(body)
+			}
+
 			return prettyPrintStringAsJSON(body)
 		}
 		return err
@@ -73,13 +92,31 @@ var StatsHarvestGetCmd = &cobra.Command{
 }
 
 func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
-	if StatsHarvestGetCmdOperatorId == "" {
-		StatsHarvestGetCmdOperatorId = ac.OperatorID
+	var parsedBody interface{}
+	var err error
+	err = checkIfRequiredStringParameterIsSupplied("imsi", "imsi", "path", parsedBody, StatsHarvestGetCmdImsi)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("period", "period", "query", parsedBody, StatsHarvestGetCmdPeriod)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredIntegerParameterIsSupplied("from", "from", "query", parsedBody, StatsHarvestGetCmdFrom)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredIntegerParameterIsSupplied("to", "to", "query", parsedBody, StatsHarvestGetCmdTo)
+	if err != nil {
+		return nil, err
 	}
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForStatsHarvestGetCmd("/stats/harvest/operators/{operator_id}"),
+		path:   buildPathForStatsHarvestGetCmd("/stats/harvest/subscribers/{imsi}"),
 		query:  buildQueryForStatsHarvestGetCmd(),
 
 		noRetryOnError: noRetryOnError,
@@ -88,9 +125,9 @@ func collectStatsHarvestGetCmdParams(ac *apiClient) (*apiParams, error) {
 
 func buildPathForStatsHarvestGetCmd(path string) string {
 
-	escapedOperatorId := url.PathEscape(StatsHarvestGetCmdOperatorId)
+	escapedImsi := url.PathEscape(StatsHarvestGetCmdImsi)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	path = strReplace(path, "{"+"imsi"+"}", escapedImsi, -1)
 
 	return path
 }
@@ -98,8 +135,16 @@ func buildPathForStatsHarvestGetCmd(path string) string {
 func buildQueryForStatsHarvestGetCmd() url.Values {
 	result := url.Values{}
 
-	if StatsHarvestGetCmdYearMonth != "" {
-		result.Add("year_month", StatsHarvestGetCmdYearMonth)
+	if StatsHarvestGetCmdPeriod != "" {
+		result.Add("period", StatsHarvestGetCmdPeriod)
+	}
+
+	if StatsHarvestGetCmdFrom != 0 {
+		result.Add("from", sprintf("%d", StatsHarvestGetCmdFrom))
+	}
+
+	if StatsHarvestGetCmdTo != 0 {
+		result.Add("to", sprintf("%d", StatsHarvestGetCmdTo))
 	}
 
 	return result

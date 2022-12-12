@@ -26,7 +26,7 @@ var UsersAttachRoleCmdUserName string
 var UsersAttachRoleCmdBody string
 
 func init() {
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI(""))
 

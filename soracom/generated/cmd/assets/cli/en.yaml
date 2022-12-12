@@ -243,6 +243,9 @@ cli:
     devices:
       summary: Manage SoraCam devices.
       description: Manage SoraCam devices.
+      events:
+        summary: Retrieve event history for SoraCam devices.
+        description: Retrieve event history for SoraCam devices.
       images:
         summary: Manage image exports from SoraCam devices.
         description: Manage image exports from SoraCam devices.

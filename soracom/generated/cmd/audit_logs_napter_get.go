@@ -42,7 +42,7 @@ func init() {
 
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime milliseconds)."))
 
-	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
+	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve (value range is 1 to 1000)."))
 
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
 

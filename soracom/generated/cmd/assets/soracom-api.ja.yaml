@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: VERSION_PLACEHOLDER
+  version: 20221212-031441
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -32,11 +32,13 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 取得するログエントリ数の上限
+      - description: 取得するログエントリ数の上限 (1 to 1000)
         in: query
         name: limit
         required: false
         schema:
+          maximum: 1000
+          minimum: 1
           type: integer
       - description: 前ページで取得した最後のログエントリのタイムスタンプ (`requestedTimeEpochMs`)。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
         in: query
@@ -48,6 +50,14 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                apiKind: /v1/bills
+                operatorId: OPXXXXXXXXXX
+                remoteIpAddress: xxx.xxx.xxx.xxx
+                requestPath: /v1/bills
+                requestedTimeEpocMs: 1234567890123
+                statusCode: 200
+                userName: SORACOMAPI
               schema:
                 items:
                   $ref: '#/components/schemas/APIAuditLogEntry'
@@ -97,11 +107,13 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 取得するログエントリ数の上限
+      - description: 取得するログエントリ数の上限 (1 to 1000)
         in: query
         name: limit
         required: false
         schema:
+          maximum: 1000
+          minimum: 1
           type: integer
       - description: 前ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
         in: query
@@ -113,6 +125,29 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - connectionId: 12345678-abcd-1234-abcd-123456789010
+                createdAt: 1234567890123
+                direction:
+                  destinationIPAddress: xxx.xxx.xxx.xxx
+                  destinationPort: 22
+                  sourceIPAddress: xxx.xxx.xxx.xxx
+                  sourcePort: 51720
+                imsi: "123456789012345"
+                operatorId: OPXXXXXXXXXX
+                tls: false
+                type: CLOSED
+              - connectionId: 12345678-abcd-1234-abcd-123456789011
+                createdAt: 1234567890123
+                direction:
+                  destinationIPAddress: xxx.xxx.xxx.xxx
+                  destinationPort: 22
+                  sourceIPAddress: xxx.xxx.xxx.xxx
+                  sourcePort: 51720
+                imsi: "234567890123456"
+                operatorId: OPXXXXXXXXXX
+                tls: false
+                type: EXPIRED
               schema:
                 items:
                   $ref: '#/components/schemas/NapterAuditLogEntry'
@@ -258,29 +293,47 @@ paths:
       - auth verify-password-reset-token
   /bills:
     get:
-      description: 過去の利用額履歴（無料利用枠などの割引適用後、税込）を返します。この API は月末締めをして確定した利用額のみ返します。
+      description: |
+        過去の確定した利用料金を取得します。
+
+        **Warning**: 取得できる利用料金は、過去 18 か月までです。それ以前の利用料金が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: getBillingHistory
       responses:
         "200":
           content:
             application/json:
+              example:
+                billList:
+                - amount: 28734
+                  paymentStatus: paid
+                  paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                  state: closed
+                  yearMonth: "202208"
+                - amount: 27075
+                  paymentStatus: paid
+                  paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                  state: closed
+                  yearMonth: "202207"
               schema:
                 $ref: '#/components/schemas/GetBillingHistoryResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get billing history
+      summary: 過去の確定した利用料金を取得する
       tags:
       - Billing
       x-soracom-cli:
       - bills list
   /bills/{yyyyMM}:
     get:
-      description: 指定した月の利用額履歴（無料利用枠などの割引適用後、税込）を返します。この API は月末締めをして確定した利用額のみ返します。
+      description: |
+        指定した月の確定した利用料金を取得します。
+
+        **Warning**: 取得できる利用料金は、過去 18 か月までです。それ以前の利用料金が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: getBilling
       parameters:
-      - description: 指定の年と月
+      - description: 対象年月
         in: path
         name: yyyyMM
         required: true
@@ -290,23 +343,37 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                amount: 28734
+                currency: JPY
+                paymentStatus: paid
+                paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                state: closed
+                yearMonth: "202208"
               schema:
                 $ref: '#/components/schemas/MonthlyBill'
           description: OK.
+        "404":
+          description: |
+            - 指定した月の利用料金が確定していません。
+            - 指定した月の利用料金がありません。
       security:
       - api_key: []
         api_token: []
-      summary: Get bill
+      summary: 指定した月の確定した利用料金を取得する
       tags:
       - Billing
       x-soracom-cli:
       - bills get
   /bills/{yyyyMM}/daily:
     get:
-      description: 指定した月の、日ごとの利用額明細を返します。この API は確定した利用額のみ返します。
+      description: |
+        指定した月の、日ごとの利用料金を取得します。また、月額で課金される利用料金は取得できません。
+
+        **Warning**: 取得できる利用料金は、過去 18 か月までです。それ以前の利用料金が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: getBillingPerDay
       parameters:
-      - description: 指定の年と月
+      - description: 対象年月
         in: path
         name: yyyyMM
         required: true
@@ -316,29 +383,46 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                billList:
+                - amount: 285
+                  currency: JPY
+                  date: "20220902"
+                - amount: 580
+                  currency: JPY
+                  date: "20220901"
               schema:
                 $ref: '#/components/schemas/DailyBillResponse'
           description: OK.
+        "404":
+          description: 利用料金が見つかりません。
       security:
       - api_key: []
         api_token: []
-      summary: Get bill per day
+      summary: 日ごとの利用料金を取得する
       tags:
       - Billing
       x-soracom-cli:
       - bills get-daily
   /bills/{yyyyMM}/export:
     post:
-      description: 指定月の利用額明細を返します。この明細には、日ごと,Subscriber ごと,課金項目ごとの利用額が含まれます。
+      description: |
+        指定月の課金詳細情報 CSV をダウンロードするための URL を発行します。課金詳細情報 CSV については、[課金詳細情報 CSV リファレンス](/ja-jp/guides/accounting/check-usage/billing-csv/) を参照してください。
+
+        **Warning**: ダウンロードできる課金詳細情報 CSV は、過去 18 か月までです。それ以前の利用料金が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: exportBilling
       parameters:
-      - description: 指定の年と月
+      - description: 対象年月
         in: path
         name: yyyyMM
         required: true
         schema:
           type: string
-      - description: export_mode (async, sync)
+      - description: |
+          課金詳細情報 CSV をダウンロードするための URL を取得する方法を指定します。
+
+          - `async`: SORACOM プラットフォームで URL が発行されるのを待たずに、`exportedFieldId` を取得します。この `exportedFieldId` を [`Files:getExportedFile API`](#/Files/getExportedFile) で指定すると、URL を取得できます。課金詳細情報 CSV のファイルサイズが大きい場合は、`async` を利用してください。
+          - `sync` (デフォルト): SORACOM プラットフォームで URL が発行されるのを待ちます。ただし、課金詳細情報 CSV のファイルサイズが大きい場合など、タイムアウトして URL を取得できないことがあります。タイムアウトする場合は、`async` を指定してください。
         in: query
         name: export_mode
         required: false
@@ -351,13 +435,23 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
+        "404":
+          description: 利用料金が見つかりません。
       security:
       - api_key: []
         api_token: []
-      summary: Output billing CSV file to S3
+      summary: 指定月の課金詳細情報 CSV をダウンロードするための URL を発行する
       tags:
       - Billing
       x-soracom-cli:
@@ -376,7 +470,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get latest bill
+      summary: 最新の利用料金を取得する
       tags:
       - Billing
       x-soracom-cli:
@@ -400,61 +494,91 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Export latest billing CSV file to S3
+      summary: 最新の課金詳細情報 CSV をダウンロードするための URL を発行する
       tags:
       - Billing
       x-soracom-cli:
       - bills export-latest
   /cell_locations:
     get:
-      description: セル ID などの基地局情報から、その基地局の位置情報（緯度経度）を取得します。 3G の場合は MCC, MNC, LAC,
-        CID を指定してください。CID がなくてもおおよその位置を取得することができますが、精度は高くありません。 LTE (4G) の場合は MCC,
-        MNC, TAC, ECID を指定してください。 基地局情報から位置情報への変換には外部のオープンなデータベースを利用していますので、情報が存在していなかったり誤っている場合もあります。
+      description: |
+        セル ID などの基地局情報から、その基地局の位置情報（緯度経度）を取得します。
+        3G の場合は MCC, MNC, LAC, CID を指定してください。CID がなくてもおおよその位置を取得することができますが、精度は高くありません。
+        LTE (4G) の場合は MCC, MNC, TAC, ECID を指定してください。
+        基地局情報から位置情報への変換には外部のオープンなデータベースを利用していますので、情報が存在していなかったり誤っている場合もあります。
+
+        3G の例
+        ```
+        $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&lac=195&cid=68485165' \
+        -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
+        -H "X-Soracom-Token: $X_SORACOM_TOKEN"
+        ```
+        4G の例
+        ```
+        $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&tac=5840&ecid=44668480' \
+        -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
+        -H "X-Soracom-Token: $X_SORACOM_TOKEN"
+        ```
       operationId: getCellLocation
       parameters:
       - description: MCC (Mobile Country Code) - 国コード
+        example: 440
         in: query
         name: mcc
         required: true
         schema:
           type: string
       - description: MNC (Mobile Network Code) - ネットワークコード
+        example: 10
         in: query
         name: mnc
         required: true
         schema:
           type: string
       - description: LAC (Location Area Code) - エリアコード（3G 用）
+        example: 195
         in: query
         name: lac
         required: false
         schema:
           type: string
       - description: CID (Cell ID) - セル ID（3G 用）
+        example: 68485165
         in: query
         name: cid
         required: false
         schema:
           type: string
       - description: TAC (Tracking Area Code) - エリアコード（LTE 用）
+        example: 5840
         in: query
         name: tac
         required: false
         schema:
           type: string
       - description: ECID (Enhanced Cell ID) - セル ID（LTE 用） - `ecid` もしくは `eci` のいずれかを指定してください。（どちらに値を指定しても結果は同一です）
+        example: 44668480
         in: query
         name: ecid
         required: false
         schema:
           type: string
       - description: ECID (Enhanced Cell ID) - セル ID（LTE 用） - `ecid` もしくは `eci` のいずれかを指定してください。（どちらに値を指定しても結果は同一です）
+        example: 44668480
         in: query
         name: eci
         required: false
@@ -464,6 +588,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                lat: 35.7119449
+                lon: 139.813642
+                range: 476
+                samples: 7
+                updated: 2022-01-01T00:00:00:000Z
               schema:
                 $ref: '#/components/schemas/CellLocation'
           description: 基地局の位置情報
@@ -485,6 +618,17 @@ paths:
       requestBody:
         content:
           application/json:
+            example:
+            - cid: "68485165"
+              identifier: test001
+              lac: "195"
+              mcc: "440"
+              mnc: "10"
+            - ecid: "44668480"
+              identifier: test002
+              mcc: "440"
+              mnc: "10"
+              tac: "5840"
             schema:
               items:
                 $ref: '#/components/schemas/CellIdentifier'
@@ -495,6 +639,25 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                identifier: test001
+                lat: 35.6814383
+                lon: 139.7665133
+                range: 0
+                samples: 1
+                updated: 2022-01-01T00:00:00:000Z
+              - avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                identifier: test002
+                lat: 35.7119449
+                lon: 139.813642
+                range: 476
+                samples: 7
+                updated: 2022-01-01T00:00:00:000Z
               schema:
                 items:
                   $ref: '#/components/schemas/CellLocation'
@@ -585,7 +748,7 @@ paths:
       description: 与信を実施し、問題ない場合に発注を確定します。
       operationId: confirmCouponOrder
       parameters:
-      - description: order_id
+      - description: 発注 ID
         in: path
         name: order_id
         required: true
@@ -2286,7 +2449,8 @@ paths:
       x-soracom-cli:
       - files delete
     get:
-      description: scope と path で指定されたファイルをダウンロードするための URL へリダイレクトします。
+      description: scope と path で指定されたファイルをダウンロードします。なお、path の末尾が `/` の場合は [FileEntry:listFiles
+        API](/ja-jp/tools/api/reference/#/FileEntry/listFiles) が呼び出されます。
       operationId: getFile
       parameters:
       - description: リクエストのスコープ
@@ -2437,9 +2601,9 @@ paths:
       x-soracom-cli:
       - files delete-directory
     get:
-      description: scope と path で指定された配下のファイルエントリのリストを返却します。この操作はディレクトリにのみ有効で、与えられた
-        path に対応するファイルエントリがディレクトリでない場合エラーが返されます。エントリの総数が 1 ページに収まらない場合、次のページへアクセスするための
-        URL が Link ヘッダに含まれます。
+      description: scope と path で指定されたディレクトリに含まれるファイルまたはディレクトリを取得します。なお、path の末尾が
+        `/` 以外の場合は [`FileEntry:getFile API`](/ja-jp/tools/api/reference/#/FileEntry/getFile)
+        が呼び出されます。エントリの総数が 1 ページに収まらない場合、次のページへアクセスするための URL が Link ヘッダに含まれます。
       operationId: listFiles
       parameters:
       - description: リクエストのスコープ
@@ -2498,11 +2662,22 @@ paths:
           header: x-soracom-next-key
   /files/exported/{exported_file_id}:
     get:
-      description: エクスポートされたファイルを取得します。ファイルエクスポートが完了している場合、レスポンスの url にファイルダウンロード
-        URL がセットされます。
+      description: |
+        非同期でファイルをエクスポートした場合の処理の進捗を取得します。エクスポートが完了している場合は、ファイルをダウンロードするための URL を取得できます。
+
+        非同期でファイルをエクスポートできる API は以下のとおりです。`exported_file_id` には、以下の API で取得した ファイルエクスポート ID (`exportedFileId` の値) を指定します。
+
+        - [`Billing:exportBilling API`](#/Billing/exportBilling)
+        - [`Billing:exportLatestBilling API`](#/Billing/exportLatestBilling)
+        - [`Payment:exportPaymentStatement API`](#/Payment/exportPaymentStatement)
+        - [`Stats:exportAirStats API`](#/Stats/exportAirStats)
+        - [`Stats:exportBeamStats API`](#/Stats/exportBeamStats)
+        - [`Stats:exportFunkStats API`](#/Stats/exportFunkStats)
+        - [`Stats:exportFunnelStats API`](#/Stats/exportFunnelStats)
+        - [`Subscriber:exportSubscribers API`](#/Subscriber/exportSubscribers)
       operationId: getExportedFile
       parameters:
-      - description: file export id
+      - description: ファイルエクスポート ID
         in: path
         name: exported_file_id
         required: true
@@ -2518,7 +2693,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: エクスポートされたファイルを取得します。
+      summary: 非同期でファイルをエクスポートした場合の処理の進捗を取得する
       tags:
       - Files
       x-soracom-cli:
@@ -3137,10 +3312,11 @@ paths:
           application/json:
             examples:
               Configuring Custom DNS for IoT SIM:
-                description: "[IoT SIM のカスタム DNS を設定する](/ja-jp/docs/air/configure-custom-dns/)
-                  場合は、以下の点に注意してください。 \n\n- パスパラメーターの `namespace` に、`SoracomAir` を指定します。\n-
-                  `key` と `value` のペアについて詳しくは、[ボディで指定するプロパティについて](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて)
-                  を参照してください。\n"
+                description: |
+                  [IoT SIM のカスタム DNS を設定する](/ja-jp/docs/air/configure-custom-dns/) 場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[ボディで指定するプロパティについて](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: useCustomDns
                   value: true
@@ -4990,7 +5166,7 @@ paths:
       description: Operator の情報を返す。
       operationId: getOperator
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5018,7 +5194,7 @@ paths:
       description: Operator の AuthKey 一覧を返す。
       operationId: listOperatorAuthKeys
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5045,7 +5221,7 @@ paths:
       description: Operator の AuthKey を生成する。
       operationId: generateOperatorAuthKey
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5071,7 +5247,7 @@ paths:
       description: Operator の AuthKey を削除する。
       operationId: deleteOperatorAuthKey
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5099,7 +5275,7 @@ paths:
       description: Operator の企業情報を返す。
       operationId: getCompanyInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5124,7 +5300,7 @@ paths:
       description: Operator の企業情報を設定する。
       operationId: createCompanyInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5152,7 +5328,7 @@ paths:
       description: Operator の企業情報を更新する。
       operationId: updateCompanyInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5181,7 +5357,7 @@ paths:
       description: Operator のオプション契約を追加する。
       operationId: addOperatorContract
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5214,7 +5390,7 @@ paths:
       description: Opearator のオプション契約を解除する。
       operationId: deleteOperatorContract
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5242,7 +5418,7 @@ paths:
       description: Operator に新規のカバレッジタイプを追加する。
       operationId: addCoverageType
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5270,7 +5446,7 @@ paths:
       description: メールアドレスの一覧を返す。
       operationId: listEmails
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5301,7 +5477,7 @@ paths:
       description: メールアドレスを削除する。
       operationId: deleteEmail
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5328,7 +5504,7 @@ paths:
       description: メールアドレスを取得する。
       operationId: getEmail
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5360,7 +5536,7 @@ paths:
       description: Operator の個人情報を返す。
       operationId: getIndividualInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5385,7 +5561,7 @@ paths:
       description: Operator の個人情報を設定する。
       operationId: createIndividualInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5413,7 +5589,7 @@ paths:
       description: Operator の個人情報を更新する。
       operationId: updateIndividualInformation
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5442,21 +5618,27 @@ paths:
       description: オペレーターの MFA を無効化します。
       operationId: revokeMFA
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MFARevokeRequest'
+        required: true
       responses:
         "204":
-          description: Revoked
+          description: 無効化されました。
         "400":
-          description: Bad request
+          description: 不正なリクエストです。
       security:
       - api_key: []
         api_token: []
-      summary: Revoke Operator's MFA.
+      summary: オペレーターの MFA を無効化する
       tags:
       - Operator
       x-soracom-cli:
@@ -5466,7 +5648,7 @@ paths:
         のいずれかです。
       operationId: getMFAStatus
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5494,7 +5676,7 @@ paths:
         MFA OTP を検証する必要があります。
       operationId: enableMFA
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5523,7 +5705,7 @@ paths:
         API で正しく検証が行われるまで、MFA は有効になりません。この API のレスポンスとして返ってくるバックアップコードは必ず保管してください。
       operationId: verifyMFA
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5558,7 +5740,7 @@ paths:
       description: Operator のパスワードを更新する。
       operationId: updateOperatorPassword
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5589,7 +5771,7 @@ paths:
       description: Role の一覧を返す。
       operationId: listRoles
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5617,7 +5799,7 @@ paths:
       description: Role を削除する。
       operationId: deleteRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5632,6 +5814,10 @@ paths:
       responses:
         "204":
           description: 指定されたロールは削除されました。
+        "400":
+          description: 指定されたロールは使用中です。
+        "404":
+          description: ロールが見つかりません。
       security:
       - api_key: []
         api_token: []
@@ -5644,7 +5830,7 @@ paths:
       description: Role を取得する。
       operationId: getRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5663,6 +5849,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/RoleResponse'
           description: OK.
+        "404":
+          description: ロールが見つかりません。
       security:
       - api_key: []
         api_token: []
@@ -5675,7 +5863,7 @@ paths:
       description: Role を新しく追加する。
       operationId: createRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5701,6 +5889,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateRoleResponse'
           description: OK.
+        "400":
+          description: ロールの作成に失敗しました。
       security:
       - api_key: []
         api_token: []
@@ -5713,7 +5903,7 @@ paths:
       description: Role を編集する。
       operationId: updateRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5735,6 +5925,8 @@ paths:
       responses:
         "200":
           description: OK
+        "404":
+          description: ロールが見つかりません。
       security:
       - api_key: []
         api_token: []
@@ -5748,7 +5940,7 @@ paths:
       description: Role に紐づくユーザーの一覧を取得する。
       operationId: listRoleAttachedUsers
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5769,6 +5961,8 @@ paths:
                   $ref: '#/components/schemas/UserDetailResponse'
                 type: array
           description: OK.
+        "404":
+          description: ロールが見つかりません。
       security:
       - api_key: []
         api_token: []
@@ -5782,7 +5976,7 @@ paths:
       description: 商品発送先の一覧を返します。
       operationId: listShippingAddresses
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5807,7 +6001,7 @@ paths:
       description: 商品発送先を新規登録する。
       operationId: createShippingAddress
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5840,7 +6034,7 @@ paths:
       description: 商品発送先を削除する。
       operationId: deleteShippingAddress
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5867,7 +6061,7 @@ paths:
       description: 商品発送先を返す。
       operationId: getShippingAddress
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5933,7 +6127,7 @@ paths:
       description: サポート画面アクセス用のトークンを返す。
       operationId: generateSupportToken
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5963,7 +6157,7 @@ paths:
       description: システム通知の一覧を返す。
       operationId: listSystemNotifications
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -5991,7 +6185,7 @@ paths:
       description: システム通知を削除する。
       operationId: deleteSystemNotification
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6022,7 +6216,7 @@ paths:
       description: システム通知を返す。
       operationId: getSystemNotification
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6058,7 +6252,7 @@ paths:
       description: システム通知を設定する。
       operationId: setSystemNotification
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6103,7 +6297,7 @@ paths:
         API トークンを用いることができる。
       operationId: generateAuthToken
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6143,7 +6337,7 @@ paths:
         キーと API トークンを用いて SORACOM API を呼び出すことはできません。
       operationId: revokeOperatorAuthTokens
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6167,7 +6361,7 @@ paths:
       description: SAM ユーザー一覧を返す。
       operationId: listUsers
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6195,7 +6389,7 @@ paths:
       description: SAM ユーザーを削除する。
       operationId: deleteUser
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6228,7 +6422,7 @@ paths:
       description: SAM ユーザーを返す。
       operationId: getUser
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6259,7 +6453,7 @@ paths:
       description: SAM ユーザーを新しく追加する。
       operationId: createUser
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6281,6 +6475,8 @@ paths:
       responses:
         "201":
           description: SAM ユーザーが新しく追加されました。
+        "400":
+          description: SAM ユーザーの作成に失敗しました。
       security:
       - api_key: []
         api_token: []
@@ -6293,7 +6489,7 @@ paths:
       description: SAM ユーザーを更新する。
       operationId: updateUser
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6334,7 +6530,7 @@ paths:
       description: SAM ユーザーの AuthKey 一覧を返す。
       operationId: listUserAuthKeys
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6367,7 +6563,7 @@ paths:
       description: SAM ユーザーの AuthKey を生成する。
       operationId: generateUserAuthKey
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6399,7 +6595,7 @@ paths:
       description: SAM ユーザーの AuthKey を削除する。
       operationId: deleteUserAuthKey
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6438,7 +6634,7 @@ paths:
       description: SAM ユーザーの AuthKey を返す。
       operationId: getUserAuthKey
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6476,7 +6672,7 @@ paths:
       description: SAM ユーザーの MFA を無効にする
       operationId: revokeUserMFA
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6505,7 +6701,7 @@ paths:
       description: SAM ユーザーの MFA の使用状態を取得する
       operationId: getUserMFAStatus
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6538,7 +6734,7 @@ paths:
       description: SAM ユーザーの MFA を有効にする。
       operationId: enableUserMFA
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6572,7 +6768,7 @@ paths:
       description: SAM ユーザーの MFA を有効にした後に MFA OTP が正しく受理されるかを検証する
       operationId: verifyUserMFA
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6609,7 +6805,7 @@ paths:
       description: ユーザーのパスワードを削除する。
       operationId: deleteUserPassword
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6642,7 +6838,7 @@ paths:
       description: SAM ユーザーのパスワードがセットされているかを取得する。
       operationId: hasUserPassword
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6673,7 +6869,7 @@ paths:
       description: SAM ユーザーのパスワードを作成する。
       operationId: createUserPassword
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6707,7 +6903,7 @@ paths:
       description: SAM ユーザーのパスワードを更新する。
       operationId: updateUserPassword
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6837,7 +7033,7 @@ paths:
       description: ユーザーのロールの一覧を取得する。
       operationId: listUserRoles
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6858,6 +7054,8 @@ paths:
                   $ref: '#/components/schemas/RoleResponse'
                 type: array
           description: OK.
+        "404":
+          description: SAM ユーザーが存在しません。
       security:
       - api_key: []
         api_token: []
@@ -6870,7 +7068,7 @@ paths:
       description: ユーザーにロールをアタッチする。
       operationId: attachRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6892,6 +7090,10 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: 指定されたロールはすでにアタッチされているか、あるいは存在しません。
+        "404":
+          description: SAM ユーザーが存在しません。
       security:
       - api_key: []
         api_token: []
@@ -6905,7 +7107,7 @@ paths:
       description: ユーザーからロールをデタッチする。
       operationId: detachRole
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6926,6 +7128,8 @@ paths:
       responses:
         "200":
           description: OK
+        "404":
+          description: SAM ユーザーまたはロールが存在しません。
       security:
       - api_key: []
         api_token: []
@@ -6940,7 +7144,7 @@ paths:
         API キーと API トークンを用いて SORACOM API を呼び出すことはできません。
       operationId: revokeUserAuthTokens
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6970,7 +7174,7 @@ paths:
       description: すべての SAM ユーザーに適用されるデフォルト権限を削除する。
       operationId: deleteDefaultPermissions
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -6995,7 +7199,7 @@ paths:
       description: すべての SAM ユーザーに適用されるデフォルト権限を取得する。
       operationId: getDefaultPermissions
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -7024,7 +7228,7 @@ paths:
       description: すべての SAM ユーザーに適用されるデフォルト権限を更新する。
       operationId: updateDefaultPermissions
       parameters:
-      - description: オペレーターID
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -7167,7 +7371,10 @@ paths:
       - operator verify
   /orders:
     get:
-      description: 発注確定済みの発注一覧を返します。
+      description: |
+        発注確定済みの注文履歴の一覧を取得します。
+
+        **Warning**: 取得できる注文履歴は、過去 18 か月までです。それ以前の注文履歴が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: listOrders
       responses:
         "200":
@@ -7179,7 +7386,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List confirmed orders.
+      summary: 発注確定済みの注文履歴の一覧を取得する
       tags:
       - Order
       x-soracom-cli:
@@ -7211,10 +7418,13 @@ paths:
       - orders create
   /orders/{order_id}:
     get:
-      description: 発注確定済みの発注を返します。
+      description: |
+        発注確定済みの注文履歴を 1 件だけ取得します。
+
+        **Warning**: 取得できる注文履歴は、過去 18 か月までです。それ以前の注文履歴が必要な場合は、[SORACOM サポート](/ja-jp/docs/support/) に問い合わせてください。
       operationId: getOrder
       parameters:
-      - description: order_id
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
         in: path
         name: order_id
         required: true
@@ -7230,7 +7440,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get confirmed order.
+      summary: 発注確定済みの発注情報を 1 件だけ取得する
       tags:
       - Order
       x-soracom-cli:
@@ -7240,7 +7450,7 @@ paths:
       description: 発注をキャンセルします。既に発送済みの場合はエラーが返されます。
       operationId: cancelOrder
       parameters:
-      - description: order_id
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
         in: path
         name: order_id
         required: true
@@ -7266,7 +7476,7 @@ paths:
       description: 与信を実施し、問題ない場合に発注を確定します。
       operationId: confirmOrder
       parameters:
-      - description: order_id
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
         in: path
         name: order_id
         required: true
@@ -7283,12 +7493,47 @@ paths:
       - Order
       x-soracom-cli:
       - orders confirm
+  /orders/{order_id}/resource_initial_setting:
+    put:
+      description: 発注した商品に対して初期設定を指定します。
+      operationId: updateOrderedResourceInitialSetting
+      parameters:
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
+        in: path
+        name: order_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInitialSetting'
+        description: 発注した商品に対する初期設定
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+          description: 初期設定の更新に成功しました。
+        "400":
+          description: 指定したリクエストに誤りがあります。
+        "404":
+          description: オーダー ID が見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 発注した商品に対して初期設定を指定する。
+      tags:
+      - Order
   /orders/{order_id}/subscribers:
     get:
       description: 発注した SIM の Subscriber 一覧を返します。
       operationId: listOrderedSubscribers
       parameters:
-      - description: order_id
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
         in: path
         name: order_id
         required: true
@@ -7333,7 +7578,7 @@ paths:
       description: 発注した SIM をオペレーターに登録します。
       operationId: registerOrderedSim
       parameters:
-      - description: order_id
+      - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
         in: path
         name: order_id
         required: true
@@ -7359,7 +7604,8 @@ paths:
       description: 課金処理の結果を返します。
       operationId: getPaymentTransaction
       parameters:
-      - description: 課金処理 ID
+      - description: 課金処理 ID。[Billing:getBillingHistory API](#/Billing/getBillingHistory)
+          や [Billing:getBilling API](#/Billing/getBilling) で取得できます。
         in: path
         name: payment_transaction_id
         required: true
@@ -8748,9 +8994,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sim'
                 type: array
-          description: A list of subscribers
+          description: IoT SIM の一覧
         "404":
-          description: No such SIM found
+          description: 指定した SIM が存在しない
       security:
       - api_key: []
         api_token: []
@@ -8765,14 +9011,15 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: 'SIM の新規作成を行います (例: SORACOM Arc のバーチャル SIM)。'
+      description: SORACOM Arc のバーチャル SIM/Subscriber を新規作成します。詳しくは、[バーチャル SIM/Subscriber
+        を作成する](/ja-jp/docs/arc/create-virtual-sim/) を参照してください。
       operationId: createSim
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateSimRequest'
-        description: SIM の作成リクエスト
+        description: バーチャル SIM/Subscriber の作成リクエスト。
         required: true
       responses:
         "201":
@@ -8780,18 +9027,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: SIM が作成されました
+          description: バーチャル SIM/Subscriber が作成されました。
       security:
       - api_key: []
         api_token: []
-      summary: SIM の新規作成
+      summary: バーチャル SIM/Subscriber を新規作成する
       tags:
       - Sim
       x-soracom-cli:
       - sims create
   /sims/{sim_id}:
     get:
-      description: 指定した SIM の情報を取得する。
+      description: IoT SIM の情報を取得します。
       operationId: getSim
       parameters:
       - description: 対象の SIM ID
@@ -8806,13 +9053,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 指定した SIM の詳細情報
+          description: IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get SIM
+      summary: IoT SIM の情報を取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -8849,7 +9096,10 @@ paths:
   /sims/{sim_id}/credentials/arc:
     delete:
       deprecated: true
-      description: (非推奨の API です。利用しないでください) SORACOM Arc のクレデンシャル (公開鍵) を SIM から除去します。
+      description: |
+        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を SIM から除去します。
+
+        **Warning**: この API は利用しないでください。
       operationId: removeArcSimCredentials
       parameters:
       - description: 対象とする SIM の SIM ID
@@ -8871,8 +9121,10 @@ paths:
       - sims remove-arc-credentials
     post:
       deprecated: true
-      description: (非推奨の API です。代わりに `renewArcSimCredentials` API を利用してください) SORACOM
-        Arc のクレデンシャル (公開鍵) を SIM に付与します。
+      description: |
+        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を SIM に付与します。
+
+        **Warning**: 代わりに `renewArcSimCredentials` API を利用してください。
       operationId: attachArcSimCredentials
       parameters:
       - description: 対象とする SIM の SIM ID
@@ -8961,7 +9213,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: データエントリのソート順。下降順（最新のデータが先頭）もしくは上昇順（最も古いデータが先頭）。
+      - description: データエントリのソート順。下降順 (最新のデータが先頭) もしくは上昇順 (最も古いデータが先頭)。
         in: query
         name: sort
         required: false
@@ -9156,7 +9408,7 @@ paths:
       - sims enable-termination
   /sims/{sim_id}/events/sessions:
     get:
-      description: 指定した SIM に関する過去 32 日間のセッション履歴 (作成 / 変更 / 切断のイベント履歴) を返す。イベントの総数が
+      description: 指定した SIM に関する過去 32 日間のセッションの作成 / 変更 / 切断のイベント履歴を取得します。イベントの総数が
         1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を `Link` ヘッダに含めて返す。
       operationId: listSimSessionEvents
       parameters:
@@ -9202,7 +9454,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Session Events
+      summary: セッション履歴を取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -9407,7 +9659,8 @@ paths:
       - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
-      description: 新しいセカンダリサブスクリプションを IoT SIM に追加するための OTA のアップデートをトリガします。
+      description: 新しい [セカンダリサブスクリプション (追加サブスクリプション、またはバーチャル SIM/Subscriber)](/ja-jp/resources/glossary/subscription/)
+        を IoT SIM に追加します。
       operationId: addSubscription
       parameters:
       - description: 対象の SIM の ID
@@ -9425,13 +9678,25 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Adding planX3:
+                value:
+                  enable: true
+                  subscription: planX3
+                  type: cellular
+              Adding virtual SIM/Subscriber:
+                value:
+                  subscription: planArc01
+                  type: virtual
             schema:
               properties:
                 enable:
                   description: |
-                    セカンダリサブスクリプションのダウンロードが完了すると、すぐにそのセカンダリサブスクリプションを有効化 (active) するかどうかを指定します。
+                    [追加サブスクリプション](/ja-jp/resources/glossary/subscription/) の場合に、追加サブスクリプションのダウンロードが完了すると、すぐに有効化 (active) するかどうかを指定します。デフォルトは `true` です。
                     - `true`: すぐに有効化 (active) する
-                    - `false`: 無効 (inactive) を維持する。次の [ネットワーク登録](/ja-jp/resources/glossary/#ネットワーク登録) 時に、セカンダリサブスクリプションが有効化 (active) されます。
+                    - `false`: 無効 (inactive) を維持する。次の [ネットワーク登録](/ja-jp/resources/glossary/#ネットワーク登録) または [セッション](/ja-jp/resources/glossary/session/) 確立時に、追加サブスクリプションが有効化 (active) されます。
+
+                    なお、バーチャル SIM/Subscriber の場合は、無視されます。
                   type: boolean
                 subscription:
                   description: |
@@ -9727,7 +9992,7 @@ paths:
       - sims delete-country-mapping-entry
   /sims/{sim_id}/register:
     post:
-      description: オペレーターに SIM を登録する。
+      description: オペレーターに IoT SIM を登録します。
       operationId: registerSim
       parameters:
       - description: 対象の SIM ID
@@ -9753,14 +10018,19 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register SIM
+      summary: オペレーターに IoT SIM を登録する
       tags:
       - Sim
       x-soracom-cli:
       - sims register
   /sims/{sim_id}/report_local_info:
     post:
-      description: SIM に対し、SIM ローカル情報をレポートするように指示する。
+      description: |
+        SIM ローカル情報レポートを取得します。
+
+        **Alert**: SIM ローカル情報レポート取得のリクエスト 1 件につき、IoT デバイスへの SMS 送信 1 通が発生します。IoT デバイスへの SMS 送信は有料です。利用料金について詳しくは、以下のページを参照してください。
+        - [SMS 機能](https://soracom.jp/services/air/cellular/pricing/price_iot_sim/#sms) (グローバルカバレッジ)
+        - [SMS 機能](https://soracom.jp/services/air/cellular/pricing/price_specific_area_sim/#sms) (日本カバレッジ)
       operationId: reportSimLocalInfo
       parameters:
       - description: 対象の SIM の ID
@@ -9776,15 +10046,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscriber'
-          description: SIM ローカル情報レポートの指示に成功。SIM の情報は SIM からのレポートが成功した時点で非同期に更新される
+          description: SIM ローカル情報レポートの更新依頼に成功しました。SIM ローカル情報レポートは、IoT SIM からのレポートが成功すると非同期に更新されます。非同期に更新された情報は、SORACOM
+            ユーザーコンソールで確認できます。詳しくは、[SIM ローカル情報レポートを確認する](/ja-jp/docs/air/get-local-info-report/)
+            を参照してください。
         "400":
-          description: SIM が SIM ローカル情報レポート機能に対応していない
+          description: 指定した IoT SIM は、SIM ローカル情報レポート機能に対応していません。
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定したカバレッジタイプに、指定した IoT SIM が存在しません。
       security:
       - api_key: []
         api_token: []
-      summary: Triggers SIM to report SIM local info.
+      summary: SIM ローカル情報レポートを取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -9858,7 +10130,7 @@ paths:
       - sims create-arc-session
   /sims/{sim_id}/set_expiry_time:
     post:
-      description: 指定した SIM の有効期限とアクションを設定する。
+      description: 指定した IoT SIM の有効期限とアクションを設定します。
       operationId: setSimExpiryTime
       parameters:
       - description: 対象の SIM ID
@@ -9887,7 +10159,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Expiry Time of SIM
+      summary: IoT SIM の有効期限とアクションを設定する
       tags:
       - Sim
       x-soracom-cli:
@@ -9908,7 +10180,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetGroupRequest'
-        description: Group（ID のみを含めばよい）
+        description: グループの情報 (グループ ID のみ)
         required: true
       responses:
         "200":
@@ -9943,7 +10215,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetImeiLockRequest'
-        description: SIM に指定する IMEI lock の設定 （オンラインの SIM の現在の IMEI にロックするには IMEI は指定しなくてもよい）
+        description: SIM に指定する IMEI lock の設定 (オンラインの SIM の現在の IMEI にロックするには IMEI は指定しなくてもよい)
       responses:
         "200":
           content:
@@ -9952,7 +10224,9 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: 更新後の SIM の詳細情報
         "400":
-          description: IMEI 文字列が無効か、オフラインの SIM にも関わらず IMEI が指定されていない.
+          description: |
+            - IMEI 文字列が無効です。
+            - オフラインの SIM にも関わらず IMEI が指定されていません。
         "404":
           description: 指定した SIM が存在しない
       security:
@@ -10072,8 +10346,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: 削除対象のタグ名（URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら encodeURIComponent()
-          したものを指定する）
+      - description: 削除対象のタグ名 (URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript なら
+          encodeURIComponent() したものを指定する)
         in: path
         name: tag_name
         required: true
@@ -10204,7 +10478,7 @@ paths:
       - sims unset-imei-lock
   /sims/{sim_id}/update_speed_class:
     post:
-      description: 指定した SIM の速度クラスを変更する。
+      description: IoT SIM の速度クラスを変更します。
       operationId: updateSimSpeedClass
       parameters:
       - description: 対象の SIM ID
@@ -10218,7 +10492,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateSpeedClassRequest'
-        description: speed_class
+        description: IoT SIM の速度クラス。
         required: true
       responses:
         "200":
@@ -10235,7 +10509,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update SIM speed class
+      summary: IoT SIM の速度クラスを変更する
       tags:
       - Sim
       x-soracom-cli:
@@ -10322,6 +10596,85 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get
+  /sora_cam/devices/{device_id}/events:
+    get:
+      description: |
+        `device_id` で指定したソラカメ対応カメラで検出されたイベントの一覧を取得します。
+      operationId: listSoraCamDeviceEventsForDevice
+      parameters:
+      - description: 対象のソラカメ対応カメラの ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: 一回のリクエストで取得するイベント数の最大値。なお、取得できるイベントの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      - description: イベントを取得する期間の開始時刻 (UNIX 時間 (ミリ秒))。省略した場合は、対象のソラカメ対応カメラで検出された最も古いイベントの発生時刻が設定されます。
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: イベントを取得する期間の終了時刻 (UNIX 時間 (ミリ秒))。省略した場合は、現在時刻が設定されます。
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          イベント一覧のソート順。
+
+          - `desc`: 降順 (対象のソラカメ対応カメラで検出された最新のイベントが先頭)
+          - `asc`: 昇順 (対象のソラカメ対応カメラで検出された最も古いイベントが先頭)
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamEvent'
+                type: array
+          description: OK.
+        "400":
+          description: 指定された引数が不正です。
+        "404":
+          description: 指定されたソラカメ対応カメラが見つかりませんでした。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラのイベント一覧を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices events list-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/devices/{device_id}/exports/usage:
     get:
       description: |
@@ -10393,6 +10746,17 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
@@ -10635,15 +10999,45 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                status: initializing
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -10763,6 +11157,82 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices videos get-exported
+  /sora_cam/devices/events:
+    get:
+      description: ソラカメ対応カメラで検出されたイベントの一覧を取得します。
+      operationId: listSoraCamDeviceEvents
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合は、オペレーターが所有するすべてのソラカメ対応デバイスのイベントが対象となります。
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: integer
+      - description: 一回のリクエストで取得するイベント数の最大値。なお、取得できるイベントの個数は、指定した数を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      - description: イベントを取得する期間の開始時刻 (UNIX 時間 (ミリ秒))。省略した場合は、ソラカメ対応カメラで検出された最も古いイベントの発生時刻が設定されます。
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: イベントを取得する期間の終了時刻 (UNIX 時間 (ミリ秒))。省略した場合は、現在時刻が設定されます。
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          イベント一覧のソート順。
+
+          - `desc`: 降順 (ソラカメ対応カメラで検出された最新のイベントが先頭)
+          - `asc`: 昇順 (ソラカメ対応カメラで検出された最も古いイベントが先頭)
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamEvent'
+                type: array
+          description: OK.
+        "400":
+          description: 指定された引数が不正です。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラで検出されたイベントの一覧を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices events list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/devices/images/exports:
     get:
       description: |
@@ -10790,6 +11260,17 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
@@ -10860,13 +11341,24 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
             application/json;charset=UTF-8:
               example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
+              - deviceId: 7CDDDEADBEEF
+                expiryTime: 1662973800000
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
                 operatorId: OP0012345678
                 requestedTime: 1662973200000
@@ -11298,17 +11790,23 @@ paths:
       - soralets delete-version
   /stats/air/operators/{operator_id}/export:
     post:
-      description: Operator が保有する全 Subscriber の通信量をファイルで取得する。取得対象の期間は from, to の unixtime
-        で指定する。履歴の詳細度は月単位。ファイルの出力先は AWS S3。ファイルの出力形式は CSV。
+      description: |
+        オペレーターが所有していたすべての IoT SIM のデータ通信量を、[Air データ通信量実績データ CSV](/ja-jp/docs/air/stats-csv/) でダウンロードします。
+
+        **Info**: 解約した IoT SIM のデータ通信量も確認できます。
       operationId: exportAirStats
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
         schema:
           type: string
-      - description: export_mode (async, sync)
+      - description: |
+          Air データ通信量実績データ CSV をダウンロードするための URL を取得する方法を指定します。
+
+          - `async`: SORACOM プラットフォームで URL が発行されるのを待たずに、`exportedFieldId` を取得します。この `exportedFieldId` を [`Files:getExportedFile API`](#/Files/getExportedFile) で指定すると、URL を取得できます。Air データ通信量実績データ CSV のファイルサイズが大きい場合は、`async` を利用してください。
+          - `sync` (デフォルト): SORACOM プラットフォームで URL が発行されるのを待ちます。ただし、Air データ通信量実績データ CSV のファイルサイズが大きい場合など、タイムアウトして URL を取得できないことがあります。タイムアウトする場合は、`async` を指定してください。
         in: query
         name: export_mode
         required: false
@@ -11328,6 +11826,14 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
@@ -11341,7 +11847,10 @@ paths:
       - stats air export
   /stats/air/sims/{sim_id}:
     get:
-      description: simId で指定した SIM の通信量履歴を取得する。
+      description: |
+        SIM ID で指定した SIM のデータ通信量履歴を取得します。
+
+        **Warning**: 解約した IoT SIM のデータ通信量は確認できません。
       operationId: getAirStatsOfSim
       parameters:
       - description: SIM ID
@@ -11385,14 +11894,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Air Usage Report of SIM
+      summary: SIM ID で指定した IoT SIM のデータ通信量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
       - stats air sims get
   /stats/air/subscribers/{imsi}:
     get:
-      description: IMSI で指定した Subscriber の通信量履歴を取得する。
+      description: |
+        IMSI で指定した IoT SIM のデータ通信量履歴を取得します。
+
+        **Warning**: 解約した IoT SIM のデータ通信量は確認できません。
       operationId: getAirStats
       parameters:
       - description: imsi
@@ -11436,7 +11948,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Air Usage Report of Subscriber
+      summary: IMSI で指定した IoT SIM のデータ通信量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -13020,6 +13532,10 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualPrivateGateway'
           description: 指定された VPG
         "404":
           description: 指定された VPG は存在しない
@@ -13059,8 +13575,7 @@ paths:
       - vpg close-gate
   /virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator:
     post:
-      description: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効にする。これにより Gate D2D
-        機能を有効化する。
+      description: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効化して、Gate D2D 機能を有効化します。
       operationId: disableGatePrivacySeparator
       parameters:
       - description: VPG ID
@@ -13089,8 +13604,7 @@ paths:
       - vpg disable-gate-privacy-separator
   /virtual_private_gateways/{vpg_id}/gate/enable_privacy_separator:
     post:
-      description: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効にする。これにより Gate D2D
-        機能を無効化する。
+      description: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効化して、Gate D2D 機能を無効化します。
       operationId: enableGatePrivacySeparator
       parameters:
       - description: VPG ID
@@ -13112,7 +13626,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効にする。
+      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を有効化する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13271,7 +13785,7 @@ paths:
         "400":
           description: リクエストに誤りがある
         "404":
-          description: 指定された VPG あるいは Peer は存在しない
+          description: 指定された VPG は存在しない
       security:
       - api_key: []
         api_token: []
@@ -13281,7 +13795,7 @@ paths:
       x-soracom-cli:
       - vpg list-ip-address-map-entries
     post:
-      description: VPG の IP アドレスマップのエントリーを追加する
+      description: VPG の IP アドレスマップのエントリーを追加します。
       operationId: putVirtualPrivateGatewayIpAddressMapEntry
       parameters:
       - description: 対象の VPG の ID
@@ -13310,7 +13824,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Put VPG IP address map entry
+      summary: VPG の IP アドレスマップのエントリーを追加する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13342,7 +13856,7 @@ paths:
         "400":
           description: リクエストに誤りがある
         "404":
-          description: 指定された VPG あるいは Peer は存在しない
+          description: 指定された VPG または Key は存在しない
       security:
       - api_key: []
         api_token: []
@@ -13377,7 +13891,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction ミラーリング peer を追加します。
+      summary: Junction ミラーリング peer を追加する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13445,7 +13959,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction ミラーリング peer を更新します。
+      summary: Junction ミラーリング peer を更新する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13476,7 +13990,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction インスペクション機能の設定を行います。
+      summary: Junction インスペクション機能の設定を行う
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13507,7 +14021,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction リダイレクション機能の設定を行います。
+      summary: Junction リダイレクション機能の設定を行う
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13538,7 +14052,7 @@ paths:
       - vpg unset-inspection
   /virtual_private_gateways/{vpg_id}/junction/unset_redirection:
     post:
-      description: Junction リダイレクション機能の設定を行います。
+      description: Junction リダイレクション機能の設定を解除します。
       operationId: unsetRedirectionConfiguration
       parameters:
       - description: VPG ID
@@ -13555,7 +14069,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction リダイレクション機能の設定を行います。
+      summary: Junction リダイレクション機能の設定を解除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13636,7 +14150,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: 指定された VPG に対するパケットキャプチャセッションの作成が失敗した
+          description: 指定された VPG に対するパケットキャプチャセッションの作成が成功した
         "400":
           description: 指定された VPG に対するパケットキャプチャセッションの作成が失敗した
         "404":
@@ -13695,7 +14209,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: パケットキャプチャセッションリクエスト
+      - description: パケットキャプチャセッション ID
         in: path
         name: session_id
         required: true
@@ -13961,7 +14475,7 @@ paths:
       description: 与信を実施し、問題ない場合に発注を確定します。
       operationId: confirmVolumeDiscountOrder
       parameters:
-      - description: order_id
+      - description: 発注 ID
         in: path
         name: order_id
         required: true
@@ -14189,7 +14703,7 @@ components:
           description: 'API 種別 (例: `/v1/auth`)。'
           type: string
         operatorId:
-          description: API を呼び出したオペレーターID。
+          description: API を呼び出したオペレーター ID。
           type: string
         remoteIpAddress:
           description: API の呼び出し元 IP アドレス。
@@ -14219,7 +14733,7 @@ components:
           description: エラーコード
           type: string
         message:
-          description: エラーメッセージ。リクエスト時に X-Soracom-Lang ヘッダーに言語(en,ja)を設定するとその言語のメッセージがセットされます。
+          description: エラーメッセージ。リクエスト時に X-Soracom-Lang ヘッダーに言語 (en, ja) を設定すると、エラーメッセージの出力言語を選択できます。
           type: string
       required:
       - code
@@ -14384,16 +14898,20 @@ components:
     ArcSessionStatus:
       properties:
         arcAllowedIPs:
+          description: Arc サーバーから受信した WireGuard AllowedIPs が表示されます。
           items:
             type: string
           type: array
         arcClientPeerIpAddress:
+          description: クライアントの IP アドレスです。
           type: string
         arcClientPeerPublicKey:
           type: string
         arcServerEndpoint:
+          description: Arc サーバーの WireGuard プロトコルのエンドポイントです。
           type: string
         arcServerPeerPublicKey:
+          description: Arc サーバーのサーバーピア公開鍵です。
           type: string
         gatewayPrivateIpAddress:
           type: string
@@ -14472,6 +14990,17 @@ components:
           description: 契約月数
           format: int32
           type: integer
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        taxIncludedUnitPrice:
+          description: 税込単価
+          format: double
+          type: number
         unitPrice:
           description: 単価
           format: double
@@ -14591,7 +15120,7 @@ components:
           format: int32
           type: integer
         created:
-          description: このレコードが最初に作られたときのタイムスタンプ。
+          description: このレコードが最初に作られたときのタイムスタンプ (UTC)。
           format: date-time
           type: string
         exact:
@@ -14616,7 +15145,7 @@ components:
           format: int32
           type: integer
         updated:
-          description: このレコードが最後に更新されたときのタイムスタンプ。
+          description: このレコードが最後に更新されたときのタイムスタンプ (UTC)。
           format: date-time
           type: string
       type: object
@@ -14684,9 +15213,16 @@ components:
         couponCode:
           description: クーポンコード
           type: string
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         expiryYearMonth:
           description: 有効期限
-          example: yyyyMM
+          format: yyyyMM
           type: string
         orderId:
           description: 発注 ID
@@ -14829,8 +15365,12 @@ components:
     CreateSimRequest:
       properties:
         subscription:
+          description: バーチャル SIM/Subscriber を作成するには、`planArc01` を指定します。
+          enum:
+          - planArc01
           type: string
         type:
+          description: バーチャル SIM/Subscriber を作成するには、`virtual` を指定します。
           enum:
           - virtual
           type: string
@@ -14863,10 +15403,11 @@ components:
           default: 10.128.0.0/9
           type: string
         type:
-          description: |-
-            VPG Type.
-             - `14` : Type-E
-             - `15` : Type-F
+          description: |
+            VPG のタイプ
+
+            - `14` : Type-E
+            - `15` : Type-F
           enum:
           - 14
           - 15
@@ -14934,15 +15475,22 @@ components:
           description: 金額
           format: int64
           type: integer
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         date:
           description: 年月日
-          example: yyyyMMdd
+          format: yyyyMMdd
           type: string
       type: object
     DailyBillResponse:
       properties:
         billList:
-          description: 日ごとの利用料リスト
+          description: 日ごとの利用料金
           items:
             $ref: '#/components/schemas/DailyBill'
           type: array
@@ -15181,10 +15729,11 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         expiryYearMonth:
           description: 有効期限
-          example: yyyyMM
+          format: yyyyMM
           type: string
         orderId:
           description: 発注 ID
@@ -15211,11 +15760,32 @@ components:
           description: 購入数
           format: int32
           type: integer
+        taxIncludedProductAmount:
+          type: number
       type: object
     EstimatedOrderModel:
       properties:
+        appliedShippingOptions:
+          description: Applied shipping options
+          items:
+            type: object
+          type: array
+        balanceDue:
+          description: Balance due
+          format: double
+          type: number
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         email:
           description: メールアドレス
+          type: string
+        orderChannel:
+          description: Order channel
           type: string
         orderId:
           description: 発注 ID
@@ -15225,6 +15795,12 @@ components:
           items:
             $ref: '#/components/schemas/EstimatedOrderItemModel'
           type: array
+        preferredDeliveryDate:
+          description: Preferred delivery date
+          type: string
+        purchaseOrderNumber:
+          description: Purchase order number
+          type: string
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
           description: 発送先
@@ -15239,8 +15815,19 @@ components:
           description: 消費税
           format: double
           type: number
+        taxIncludedInShippingCost:
+          description: Tax included in shipping cost
+          format: double
+          type: number
+        taxOnShippingCost:
+          description: Whether shipping cost is taxable
+          type: boolean
         totalAmount:
           description: 合計金額
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: Withholding tax amount
           format: double
           type: number
       type: object
@@ -15251,6 +15838,7 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         orderId:
           description: 発注 ID
@@ -15376,15 +15964,25 @@ components:
     ExportRequest:
       properties:
         from:
+          description: 対象期間の開始日時 (UNIX 時間 (ミリ秒))
+          example: 1654009200
           format: int64
           type: integer
         period:
+          description: |
+            履歴の詳細度。
+
+            - `month`: 月ごと
+            - `day`: 日ごと
+            - `minutes`: 分ごと
           enum:
           - month
           - day
           - minutes
           type: string
         to:
+          description: 対象期間の終了日時 (UNIX 時間 (ミリ秒))
+          example: 1656601200
           format: int64
           type: integer
       type: object
@@ -15424,13 +16022,14 @@ components:
     FileExportResponse:
       properties:
         exportedFileId:
-          description: ファイル出力 ID(リクエストに export_mode=async を指定した場合）
+          description: ファイルエクスポート ID。この ID を [`Files:getExportedFile API`](#/Files/getExportedFile)
+            を呼び出すときに指定すると、ファイルをダウンロードするための URL を取得できます。`export_mode` に `async` を指定した場合のみ含まれます。
           type: string
         exportedFilePath:
-          description: 出力済みファイル取得パス(リクエストに export_mode=async を付与した場合）
+          description: 出力済みファイルのパス。`export_mode` に `async` を指定した場合のみ含まれます。
           type: string
         url:
-          description: ファイルダウンロード URL(export_mode 指定なし、もしくは export_mode=sync の場合
+          description: ファイルをダウンロードするための URL。`export_mode` に `sync` を指定した場合のみ含まれます。
           type: string
       type: object
     FunkStatsResponse:
@@ -15869,7 +16468,7 @@ components:
     GetBillingHistoryResponse:
       properties:
         billList:
-          description: 月ごとの利用料リスト
+          description: 月ごとの利用料金
           items:
             $ref: '#/components/schemas/MonthlyBill'
           type: array
@@ -15898,6 +16497,13 @@ components:
           description: 金額
           format: int64
           type: integer
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         lastEvaluatedTime:
           description: 利用額計算を実施した時間
           example: yyyyMMddHHmmss
@@ -15927,12 +16533,33 @@ components:
       type: object
     GetOrderResponse:
       properties:
+        appliedShippingOptions:
+          description: 適用済み配送オプション
+          items:
+            type: object
+          type: array
+        balanceDue:
+          description: 差引請求額
+          format: double
+          type: number
+        containsTaxIncludedAmounts:
+          type: boolean
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         email:
           description: メールアドレス
           type: string
+        orderChannel:
+          description: 発注チャンネル
+          type: string
         orderDateTime:
-          description: 発注日時
-          example: yyyyMMddHHmmss
+          description: 発注日時 (yyyyMMddHHmmss)
+          format: yyyyMMddHHmmss
           type: string
         orderId:
           description: 発注 ID
@@ -15954,6 +16581,14 @@ components:
           - cancelled
           - failed
           type: string
+        preferredDeliveryDate:
+          description: 希望納品日
+          type: string
+        purchaseOrderNumber:
+          description: 注文番号
+          type: string
+        resourceInitialSetting:
+          $ref: '#/components/schemas/ResourceInitialSetting'
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
           description: 発送先
@@ -15965,21 +16600,37 @@ components:
           format: double
           type: number
         shippingLabelNumber:
-          description: 宅配便送り状番号
+          description: 宅配便送り状番号 (代表)
           type: string
+        shippingLabelNumbers:
+          description: 宅配便送り状番号
+          items:
+            type: string
+          type: array
         taxAmount:
-          description: 消費税
+          description: 税額
           format: double
           type: number
+        taxIncludedInShippingCost:
+          description: 送料に含まれる税額
+          format: double
+          type: number
+        taxOnShippingCost:
+          description: 配送料の課税有無
+          type: boolean
         totalAmount:
-          description: 合計金額
+          description: 合計額 (税込)
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: 源泉徴収税額
           format: double
           type: number
       type: object
     GetPaymentMethodResult:
       properties:
         errorCode:
-          description: エラーコード（支払い情報が無効な場合のみ）
+          description: エラーコード (支払い情報が無効な場合のみ)
           enum:
           - success
           - processing
@@ -15998,7 +16649,7 @@ components:
           - processing_error
           type: string
         errorMessage:
-          description: エラーメッセージ（支払い情報が無効な場合のみ
+          description: エラーメッセージ (支払い情報が無効な場合のみ)
           type: string
         properties:
           description: 支払い情報
@@ -16114,6 +16765,13 @@ components:
           description: 契約月数
           format: int32
           type: integer
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         endDate:
           description: 適用終了日
           example: yyyyMMdd
@@ -16214,8 +16872,10 @@ components:
           type: integer
       type: object
     ImeiLock:
+      description: IMEI ロックの設定
       properties:
         imei:
+          description: 対象デバイスの IMEI
           type: string
       type: object
     IndividualInformationModel:
@@ -16319,7 +16979,7 @@ components:
           description: 移管先オペレーターEmail
           type: string
         transferDestinationOperatorId:
-          description: 移管先オペレーターID
+          description: 移管先オペレーター ID
           type: string
         transferImsi:
           description: 移管する IMSI リスト
@@ -16782,6 +17442,14 @@ components:
         password:
           type: string
       type: object
+    MFARevokeRequest:
+      properties:
+        password:
+          description: ルートユーザーのパスワード
+          type: string
+      required:
+      - password
+      type: object
     MFARevokingTokenVerifyRequest:
       properties:
         backupCode:
@@ -16812,25 +17480,65 @@ components:
     MonthlyBill:
       properties:
         amount:
-          description: 金額
+          description: 利用料金
           format: int64
           type: integer
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         paymentStatus:
-          description: 直近の課金ステータス
+          description: |
+            お支払い状況。詳しくは、FAQ: [ご利用料金のお支払状況について](https://support.soracom.io/hc/ja/articles/360029337031) を参照してください。
+
+            - `lessThanMinimumCharge`: 翌月以降請求 (最低課金額に満たないため)
+            - `paying`: 支払い処理中
+            - `paid`: 支払い済み
+            - `fail`: 処理失敗
+            - `refunding`: リファンド処理中
+            - `refunded`: リファンド済み
+            - `refund_fail`: リファンド処理失敗
+            - `delegating_to_third_party`: 債権譲渡中
+            - `delegated_to_third_party`: 債権譲渡済み
+            - `charging`: 請求実施中
+            - `canceling`: キャンセル中
+            - `cancelled`: キャンセル済み
+            - `cancel_failed`: キャンセル処理失敗
           enum:
           - lessThanMinimumCharge
           - paying
           - paid
+          - fail
           - refunding
           - refunded
-          - fail
+          - refund_fail
+          - delegating_to_third_party
+          - delegated_to_third_party
+          - charging
+          - canceling
+          - cancelled
+          - cancel_failed
           type: string
         paymentTransactionId:
-          description: 課金詳細取得用の ID
+          description: 課金処理 ID。この ID を指定して [Payment:getPaymentTransaction API](#/Payment/getPaymentTransaction)
+            を呼び出すと課金詳細が取得できます。
+          type: string
+        state:
+          description: |
+            利用料金の集計状況
+
+            - `temporary`: 集計中
+            - `closed`: 確定済み
+          enum:
+          - temporary
+          - closed
           type: string
         yearMonth:
           description: 年月
-          example: yyyyMM
+          format: yyyyMM
           type: string
       type: object
     NapterAuditLogDirection:
@@ -16857,10 +17565,10 @@ components:
           $ref: '#/components/schemas/NapterAuditLogDirection'
         imsi:
           type: string
-        isTLS:
-          type: boolean
         operatorId:
           type: string
+        tls:
+          type: boolean
         type:
           enum:
           - ACCESS
@@ -16981,10 +17689,37 @@ components:
     PaymentAmount:
       description: Payment amount
       properties:
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        paymentAmount:
+          type: number
+        subTotalAmount:
+          type: number
         taxAmount:
+          description: 税額
+          format: double
+          type: number
+        taxFreeSubTotalAmount:
+          description: 非課税小計
+          format: double
+          type: number
+        taxRate:
+          type: object
+        taxableSubTotalAmount:
+          description: 課税小計
           format: double
           type: number
         totalAmount:
+          description: 合計額 (税込)
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: 源泉徴収税額
           format: double
           type: number
       type: object
@@ -17004,6 +17739,13 @@ components:
           description: 金額
           format: double
           type: number
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         paymentDateTime:
           description: 課金日時
           format: int64
@@ -17023,8 +17765,24 @@ components:
       type: object
     Placement:
       properties:
+        infrastructureProvider:
+          enum:
+          - aws
+          type: string
         region:
           default: eu-central-1
+          description: |
+            `infrastructureProvider` が `aws` の場合は、ランデブーポイントです。
+
+            - `ap-northeast-1`: 東京 (日本)
+            - `eu-central-1`: フランクフルト (ドイツ)
+            - `us-west-2`: オレゴン (米国)
+            - `ap-southeast-2`: シドニー (オーストラリア)
+          enum:
+          - ap-northeast-1
+          - eu-central-1
+          - us-west-2
+          - ap-southeast-2
           type: string
       type: object
     PortMapping:
@@ -17141,6 +17899,7 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         description:
           description: 商品詳細
@@ -17278,6 +18037,22 @@ components:
           $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
+      type: object
+    ResourceInitialSetting:
+      description: リソースに対する初期設定。
+      properties:
+        simInitialSettings:
+          additionalProperties:
+            $ref: '#/components/schemas/SimInitialSetting'
+          description: SIM のサブスクリプションごとの初期設定です。キーにサブスクリプションを表す文字列を指定します。
+          example:
+            plan01s:
+              groupId: 00000000-1111-2222-3333-444444444444
+              speedClass: s1.4xfast
+              tags:
+                date: 20221111
+                location: headquarters
+          type: object
       type: object
     ResourceInstance:
       properties:
@@ -17558,15 +18333,25 @@ components:
         imei:
           description: The IMEI of the device using the SIM.
           type: string
+        imsi:
+          description: IMSI
+          type: string
         lastUpdatedAt:
           format: int64
           type: integer
+        location:
+          type: object
         online:
           description: |
             セッション状態
             - `true`: オンライン
             - `false`: オフライン
           type: boolean
+        placement:
+          $ref: '#/components/schemas/Placement'
+        subscription:
+          description: サブスクリプション
+          type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
@@ -17619,7 +18404,7 @@ components:
       - permission
       type: object
     ShippingAddressModel:
-      description: Shipping address
+      description: お届け先
       properties:
         addressLine1:
           type: string
@@ -17654,6 +18439,18 @@ components:
     ShippingCostModel:
       description: 発送料
       properties:
+        appliedShippingOptions:
+          description: 適用済み配送オプション
+          items:
+            type: object
+          type: array
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         shippingArea:
           description: (日本カバレッジのみ) 発送先エリア
           enum:
@@ -17733,9 +18530,19 @@ components:
         capabilities:
           $ref: '#/components/schemas/Capabilities'
         createdTime:
+          description: IoT SIM (IoT SIM のプライマリサブスクリプション) が作成された UNIX 時間 (ミリ秒)
           format: int64
           type: integer
         expiryAction:
+          description: |
+            有効期限が切れたときのアクション。詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。
+
+            - `doNothing`: 保留
+            - `deleteSession`: セッション切断
+            - `deactivate`: 休止
+            - `suspend`: 利用中断
+            - `terminate`: 解約
+            - `null`: 有効期限が設定されていない
           enum:
           - doNothing
           - deleteSession
@@ -17745,23 +18552,45 @@ components:
           - (null value)
           type: string
         expiryTime:
+          description: IoT SIM の有効期限 (UNIX 時間 (ミリ秒))
           format: int64
           type: integer
         groupId:
+          description: IoT SIM が所属するグループの ID
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
         lastModifiedTime:
+          description: IoT SIM (IoT SIM のプライマリサブスクリプション) の情報が変更された UNIX 時間 (ミリ秒)
           format: int64
           type: integer
         lastPortMappingCreatedTime:
+          description: IoT SIM で Napter が利用された UNIX 時間 (ミリ秒)。 IoT SIM で一度も Napter
+            を利用したことがなければ null です。
           format: int64
           type: integer
         localInfo:
           $ref: '#/components/schemas/Map'
         moduleType:
+          description: |
+            IoT SIM の形状 (フォームファクタ)
+
+            - `mini`: 標準 (2FF) サイズ
+            - `micro`: マイクロ (3FF) サイズ
+            - `nano`: ナノ (4FF) サイズ
+            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)
+            - `embedded`: チップ型 (MFF2 とも呼ばれる組込み型 (eSIM))
+            - `virtual`: バーチャル SIM/Subscriber
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - virtual
           type: string
         operatorId:
+          description: IoT SIM を所有しているオペレーターのオペレーター ID
           type: string
         otaSerialNumber:
           type: string
@@ -17777,23 +18606,32 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/SimProfile'
           type: object
+        renewalFeeStatusSetTime:
+          description: IoT SIM のステータスが「準備完了 (ready)」、「利用開始待ち (standby)」、「利用中断中 (suspended)」のいずれかになった
+            UNIX 時間 (ミリ秒)
+          format: int64
+          type: integer
         serialNumber:
+          description: IoT SIM のシリアル番号。バーチャル SIM/Subscriber にはシリアル番号はありません。
           type: string
         sessionStatus:
           $ref: '#/components/schemas/SessionStatus'
         simId:
+          description: IoT SIM の SIM ID
           type: string
         speedClass:
+          description: IoT SIM の速度クラス
           type: string
         status:
           description: |
-            IoT SIM のステータス
-            - `ready`: 準備完了
-            - `active`: 使用中
-            - `inactive`: 休止中
-            - `standby`: 利用開始待ち
-            - `suspended`: 利用中断中
-            - `terminated`: 解約済み
+            IoT SIM (IoT SIM のプライマリサブスクリプション) のステータス
+
+            - `ready`: 準備完了 (ready)
+            - `active`: 使用中 (active)
+            - `inactive`: 休止中 (inactive)
+            - `standby`: 利用開始待ち (standby)
+            - `suspended`: 利用中断中 (suspended)
+            - `terminated`: 解約済み (terminated)
           enum:
           - ready
           - active
@@ -17801,20 +18639,53 @@ components:
           - standby
           - suspended
           - terminated
+          type: string
         tags:
           $ref: '#/components/schemas/TagSet'
         terminationEnabled:
+          description: |
+            IoT SIM の解約プロテクションの設定
+
+            - `true`: 解約プロテクション OFF (解約できる)
+            - `false`: 解約プロテクション ON
           type: boolean
         type:
+          description: |
+            IoT SIM のタイプ
+
+            - `euicc`: チップ型 (eSIM)
+            - `uicc`: カード型
+            - `virtual`: バーチャル SIM/Subscriber
           enum:
           - euicc
           - uicc
           - virtual
           type: string
       type: object
+    SimInitialSetting:
+      description: 指定のサブスクリプションに対する初期設定。
+      properties:
+        groupId:
+          description: グループ ID。
+          type: string
+        speedClass:
+          description: |-
+            速度クラス。
+            - サブスクリプションにあわせた速度クラスを指定してください。
+          type: string
+        tags:
+          additionalProperties:
+            type: string
+          description: タグ。
+          type: object
+      type: object
     SimProfile:
       properties:
         arcClientPeerPrivateKey:
+          description: |
+            WireGuard で接続するためのクライアントの PrivateKey (クライアントピア秘密鍵) です。
+            - PrivateKey (クライアントピア秘密鍵) は再表示できません。秘密鍵を紛失した場合は新しい鍵を生成し、デバイスの認証情報を更新してください。
+            - 接続情報は決して外部に公開しないでください。
           type: string
         arcClientPeerPublicKey:
           type: string
@@ -17838,6 +18709,7 @@ components:
         capabilities:
           $ref: '#/components/schemas/Capabilities'
         imsi:
+          description: IMSI
           type: string
         msisdn:
           type: string
@@ -17857,12 +18729,13 @@ components:
           default: 2
           description: |
             メッセージ本体のエンコーディングタイプ。デフォルトは `2` (`DCS_UCS2`)。
-            - `1`: GSM 7 ビット標準アルファベットを送信できます。漢字やキリル文字、アラビア文字などは送信できません。最大 160 文字 (最大 140 バイト)。
 
-                例: `{"encodingType":1, "payload":"Test message."}`
-            - `2`: UCS-2 で送信する。漢字やキリル文字、アラビア文字などを送信できます。最大 70 文字。
+            - `1`: 標準アルファベットをサポートする GSM 7 ビットで送信します。漢字やキリル文字、アラビア文字などは送信できません。最大 160 文字 (最大 140 バイト)。
 
-                例: `{"encodingType":2, "payload":"テストメッセージ"}`
+                例: `{"encodingType": 1, "payload": "Test message."}`
+            - `2`: 漢字やキリル文字、アラビア文字などをサポートする UCS-2 で送信します。最大 70 文字。
+
+                例: `{"encodingType": 2, "payload": "テストメッセージ"}`
           type: integer
         payload:
           type: string
@@ -17933,6 +18806,67 @@ components:
 
             - `storage_life`: 保存期間
           type: string
+      type: object
+    SoraCamEvent:
+      properties:
+        deviceId:
+          description: デバイスを識別するための識別子
+          type: string
+        deviceType:
+          description: デバイスのタイプ
+          format: string
+          type: string
+        eventId:
+          description: イベントを識別するための識別子
+          type: string
+        eventInfo:
+          properties:
+            atomEventV1:
+              description: イベントの詳細
+              properties:
+                endTime:
+                  description: イベントの終了時刻 (UNIX 時間 (ミリ秒))
+                  format: int64
+                  type: integer
+                labels:
+                  description: イベントで検出されたオブジェクトの一覧
+                  items:
+                    type: string
+                  type: array
+                picture:
+                  description: イベント開始時の静止画の URL。有効期限が切れていた場合、再度 API を呼び出してください。
+                  type: string
+                recordingStatus:
+                  description: イベントの録画状況
+                  enum:
+                  - completed
+                  - recording
+                  - failed
+                  type: string
+                startTime:
+                  description: イベントの開始時刻 (UNIX 時間 (ミリ秒))
+                  format: int64
+                  type: integer
+                type:
+                  description: |
+                    イベント種別
+                      - `motion`: モーション検知
+                      - `sound`: サウンド検出
+                      - `other`: その他
+                  enum:
+                  - motion
+                  - sound
+                  - other
+                  type: string
+              type: object
+            infoType:
+              description: イベント詳細のタイプ。デバイスのタイプによって変更される場合があります。
+              type: string
+          type: object
+        time:
+          description: イベントが発生した時刻 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
       type: object
     SoraCamExportUsage:
       properties:
@@ -18071,6 +19005,10 @@ components:
       type: object
     SoraCamStreamingVideo:
       properties:
+        expiryTime:
+          description: playList に含まれるすべての URL の有効期限 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
         playList:
           description: |
             ストリーミング映像 (リアルタイム映像 / 録画映像) のプレイリストエントリーの配列
@@ -18239,25 +19177,31 @@ components:
     Subscriber:
       properties:
         apn:
-          description: この SIM で使用可能な APN（アクセスポイント名）
+          description: IoT SIM で使用可能な APN (アクセスポイント名)
           type: string
         bundles:
           items:
             type: string
           type: array
         createdAt:
-          description: この SIM が作成された日時のタイムスタンプ
+          description: このサブスクリプションが作成された UNIX 時間 (ミリ秒)。たとえば、セカンダリサブスクリプションの場合は、セカンダリサブスクリプションが作成された
+            UNIX 時間 (ミリ秒) です。
           format: int64
           type: integer
         expiredAt:
-          description: この SIM の有効期限が切れた日時のタイムスタンプ
-          format: int64
-          type: integer
-        expiredTime:
-          description: この SIM の有効期限が切れた日時のタイムスタンプ
+          description: IoT SIM の有効期限 (UNIX 時間 (ミリ秒))
           format: int64
           type: integer
         expiryAction:
+          description: |
+            有効期限が切れたときのアクション。詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。
+
+            - `doNothing`: 保留
+            - `deleteSession`: セッション切断
+            - `deactivate`: 休止
+            - `suspend`: 利用中断
+            - `terminate`: 解約
+            - `null`: 有効期限が設定されていない
           enum:
           - doNothing
           - deleteSession
@@ -18266,76 +19210,123 @@ components:
           - terminate
           - (null value)
           type: string
+        expiryTime:
+          description: IoT SIM の有効期限 (UNIX 時間 (ミリ秒))
+          format: int64
+          type: integer
         groupId:
-          description: この SIM が所属しているグループの ID
+          description: IoT SIM が所属するグループの ID
           type: string
         iccid:
-          description: この SIM の ICCID
+          description: IoT SIM の ICCID
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
         imsi:
-          description: この SIM の IMSI
+          description: IoT SIM の IMSI
           type: string
         ipAddress:
           type: string
         lastModifiedAt:
-          description: この SIM の情報が変更された日時のタイムスタンプ
+          description: IoT SIM の情報が変更された UNIX 時間 (ミリ秒)
           format: int64
           type: integer
         lastPortMappingCreatedTime:
-          description: この SIM で Napter オンデマンドリモートアクセスサービスが利用された日時のタイムスタンプ（ミリ秒単位の Unix
-            時間）。 この SIM で一度も Napter を利用したことがなければ null となります。
+          description: IoT SIM で Napter が利用された UNIX 時間 (ミリ秒)。 IoT SIM で一度も Napter
+            を利用したことがなければ null です。
           format: int64
           type: integer
         locationRegistrationStatus:
           $ref: '#/components/schemas/LocationRegistrationStatus'
           description: 各ネットワークへのネットワーク登録状況
         moduleType:
-          description: 物理的な SIM の形状（フォームファクタ）。取りうる値は、標準 (2FF) サイズの "mini"、 3FF サイズの
-            "micro"、4FF サイズの "nano"、切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる "trio"、MFF2
-            とも呼ばれる組込み型 (eSIM) の "embedded" です。
+          description: |
+            IoT SIM の形状 (フォームファクタ)
+
+            - `mini`: 標準 (2FF) サイズ
+            - `micro`: マイクロ (3FF) サイズ
+            - `nano`: ナノ (4FF) サイズ
+            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)
+            - `embedded`: チップ型 (MFF2 とも呼ばれる組込み型 (eSIM))
+            - `virtual`: バーチャル SIM/Subscriber
+            - `null`: セカンダリサブスクリプションの場合は null
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - virtual
+          - (null value)
           type: string
         msisdn:
-          description: この SIM の MSISDN
+          description: IoT SIM の MSISDN
           type: string
         operatorId:
-          description: この SIM を所有しているオペレーターのオペレーター ID
+          description: IoT SIM を所有しているオペレーターのオペレーター ID
           type: string
         plan:
-          description: SMS 機能を有しているかどうか。0 なら SMS 未対応、1 なら SMS 対応。
+          description: |
+            SMS 機能を有しているかどうか。
+
+            - `0`: SMS 未対応
+            - `1`: SMS 対応
           type: integer
         previousSession:
           $ref: '#/components/schemas/PreviousSessionStatus'
         registeredTime:
-          description: この SIM が手動でオペレーターに登録された日時を表すタイムスタンプ（ミリ秒単位の Unix 時刻） ユーザーコンソールから
-            SIM を購入し、自動的に登録された場合はこのフィールドは存在しません。
+          description: IoT SIM が手動でオペレーターに登録された UNIX 時間 (ミリ秒)。ユーザーコンソールから IoT SIM
+            を購入し、自動的に登録された場合はこのフィールドは存在しません。
+          format: int64
+          type: integer
+        renewalFeeStatusSetTime:
+          description: IoT SIM のステータスが「準備完了 (ready)」、「利用開始待ち (standby)」、「利用中断中 (suspended)」のいずれかになった
+            UNIX 時間 (ミリ秒)
           format: int64
           type: integer
         serialNumber:
-          description: この SIM のシリアル番号
+          description: IoT SIM のシリアル番号。バーチャル SIM/Subscriber にはシリアル番号はありません。
           type: string
         sessionStatus:
           $ref: '#/components/schemas/SessionStatus'
         simId:
-          description: この SIM の SIM ID
+          description: IoT SIM の SIM ID
           type: string
         speedClass:
-          description: この SIM の速度クラス
+          description: IoT SIM の速度クラス
           type: string
         status:
-          description: この SIM の契約状態。取りうる値は "ready"、"active"、"inactive"、"standby"、
-            "suspended" もしくは "terminated"
+          description: |
+            IoT SIM (IoT SIM のプライマリサブスクリプション) のステータス。なお、IoT SIM に追加されたバーチャル SIM/Subscriber のステータスは、`active` または `terminated` です。
+
+            - `ready`: 準備完了 (ready)
+            - `active`: 使用中 (active)
+            - `inactive`: 休止中 (inactive)
+            - `standby`: 利用開始待ち (standby)
+            - `suspended`: 利用中断中 (suspended)
+            - `terminated`: 解約済み (terminated)
+          enum:
+          - ready
+          - active
+          - inactive
+          - standby
+          - suspended
+          - terminated
           type: string
         subscription:
-          description: この SIM のサブスクリプションの名前
+          description: IoT SIM のサブスクリプションの名前
           type: string
         tags:
           $ref: '#/components/schemas/TagSet'
         terminationEnabled:
+          description: |
+            IoT SIM の解約プロテクションの設定
+
+            - `true`: 解約プロテクション OFF (解約できる)
+            - `false`: 解約プロテクション ON
           type: boolean
         type:
-          description: この SIM の速度クラス
+          description: IoT SIM の速度クラス
           type: string
       type: object
     SubscriptionContainer:
@@ -18560,11 +19551,27 @@ components:
       type: object
     VirtualPrivateGateway:
       properties:
+        allowedOperators:
+          type: object
         createdTime:
           format: int64
           type: integer
-        id:
+        deviceSubnetCidrRange:
+          description: デバイスサブネット IP アドレスレンジ
           type: string
+        fixedIpAddressesEnabled:
+          description: |
+            固定グローバル IP アドレスオプション
+
+            - `true`: 有効
+            - `false`: 無効
+          type: boolean
+        gateVxlanId:
+          type: number
+        implicitTerminationProtected:
+          type: boolean
+        junctionEnabled:
+          type: boolean
         lastModifiedTime:
           format: int64
           type: integer
@@ -18572,23 +19579,43 @@ components:
           type: string
         placement:
           $ref: '#/components/schemas/Placement'
+        size:
+          type: string
         status:
+          enum:
+          - running
           type: string
         tags:
           $ref: '#/components/schemas/TagSet'
         type:
+          description: |
+            VPG のタイプ
+
+            - `14` : Type-E
+            - `15` : Type-F
           enum:
           - 12
           - 13
           - 14
           - 15
           type: integer
+        ueSubnetCidrRange:
+          description: デバイスサブネット IP アドレスレンジ
+          type: string
         useInternetGateway:
+          description: |
+            インターネットゲートウェイ
+
+            - `true`: 有効
+            - `false`: 無効
           type: boolean
         virtualInterfaces:
           $ref: '#/components/schemas/Map'
         vpcPeeringConnections:
           $ref: '#/components/schemas/Map'
+        vpgId:
+          description: ID
+          type: string
       type: object
     VolumeDiscountModel:
       description: Long term discount
@@ -18598,6 +19625,13 @@ components:
           description: 契約月数
           format: int32
           type: integer
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         endDate:
           description: 適用終了日
           example: yyyyMMdd
@@ -18614,6 +19648,14 @@ components:
           description: 適用開始日
           example: yyyyMMdd
           type: string
+        taxIncludedInitialCost:
+          description: 税込初期費用
+          format: double
+          type: number
+        taxIncludedUnitPrice:
+          description: 税込単価
+          format: double
+          type: number
         unitPrice:
           description: 単価
           format: double

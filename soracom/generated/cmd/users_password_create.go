@@ -26,7 +26,7 @@ var UsersPasswordCreateCmdUserName string
 var UsersPasswordCreateCmdBody string
 
 func init() {
-	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersPasswordCreateCmd.Flags().StringVar(&UsersPasswordCreateCmdPassword, "password", "", TRAPI(""))
 

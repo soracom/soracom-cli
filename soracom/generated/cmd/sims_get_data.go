@@ -38,13 +38,13 @@ func init() {
 
 	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
 
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	SimsGetDataCmd.Flags().BoolVar(&SimsGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

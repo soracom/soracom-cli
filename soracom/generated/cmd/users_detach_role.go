@@ -19,7 +19,7 @@ var UsersDetachRoleCmdRoleId string
 var UsersDetachRoleCmdUserName string
 
 func init() {
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("role_id"))
 

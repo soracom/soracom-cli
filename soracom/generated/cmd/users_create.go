@@ -28,7 +28,7 @@ var UsersCreateCmdBody string
 func init() {
 	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdDescription, "description", "", TRAPI(""))
 
-	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersCreateCmd.Flags().StringVar(&UsersCreateCmdUserName, "user-name", "", TRAPI("user_name"))
 

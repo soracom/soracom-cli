@@ -35,7 +35,7 @@ func init() {
 
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", TRAPI("Tag name of the VPG. Filters through all VPGs that exactly match the tag name. When tag_name is specified, tag_value is required."))
 
-	VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TRAPI("Tag value of the VPGs."))
+	VpgListCmd.Flags().StringVar(&VpgListCmdTagValue, "tag-value", "", TRAPI("Tag value of the VPG."))
 
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

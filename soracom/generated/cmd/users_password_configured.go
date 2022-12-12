@@ -16,7 +16,7 @@ var UsersPasswordConfiguredCmdOperatorId string
 var UsersPasswordConfiguredCmdUserName string
 
 func init() {
-	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersPasswordConfiguredCmd.Flags().StringVar(&UsersPasswordConfiguredCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersPasswordCmd.AddCommand(UsersPasswordConfiguredCmd)

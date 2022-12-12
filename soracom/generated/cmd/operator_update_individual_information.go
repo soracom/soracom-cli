@@ -59,7 +59,7 @@ func init() {
 
 	OperatorUpdateIndividualInformationCmd.Flags().StringVar(&OperatorUpdateIndividualInformationCmdFullName, "full-name", "", TRAPI(""))
 
-	OperatorUpdateIndividualInformationCmd.Flags().StringVar(&OperatorUpdateIndividualInformationCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorUpdateIndividualInformationCmd.Flags().StringVar(&OperatorUpdateIndividualInformationCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	OperatorUpdateIndividualInformationCmd.Flags().StringVar(&OperatorUpdateIndividualInformationCmdPhoneNumber, "phone-number", "", TRAPI(""))
 

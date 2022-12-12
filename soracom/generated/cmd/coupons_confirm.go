@@ -13,7 +13,7 @@ import (
 var CouponsConfirmCmdOrderId string
 
 func init() {
-	CouponsConfirmCmd.Flags().StringVar(&CouponsConfirmCmdOrderId, "order-id", "", TRAPI("order_id"))
+	CouponsConfirmCmd.Flags().StringVar(&CouponsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID."))
 	CouponsCmd.AddCommand(CouponsConfirmCmd)
 }
 

@@ -28,7 +28,7 @@ var VpgCreateCmdBody string
 func init() {
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "10.128.0.0/9", TRAPI(""))
 
-	VpgCreateCmd.Flags().Int64Var(&VpgCreateCmdType, "type", 0, TRAPI("VPG Type. - `14` : Type-E - `15` : Type-F"))
+	VpgCreateCmd.Flags().Int64Var(&VpgCreateCmdType, "type", 0, TRAPI("VPG Type.- `14` : Type-E- `15` : Type-F"))
 
 	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", true, TRAPI(""))
 

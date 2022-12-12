@@ -16,7 +16,7 @@ var RolesGetCmdOperatorId string
 var RolesGetCmdRoleId string
 
 func init() {
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("role_id"))
 	RolesCmd.AddCommand(RolesGetCmd)

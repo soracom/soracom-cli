@@ -18,7 +18,7 @@ var OperatorDeleteContractCmdOperatorId string
 func init() {
 	OperatorDeleteContractCmd.Flags().StringVar(&OperatorDeleteContractCmdContractName, "contract-name", "", TRAPI("contract_name"))
 
-	OperatorDeleteContractCmd.Flags().StringVar(&OperatorDeleteContractCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorDeleteContractCmd.Flags().StringVar(&OperatorDeleteContractCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	OperatorCmd.AddCommand(OperatorDeleteContractCmd)
 }
 

@@ -18,7 +18,7 @@ var OperatorAuthKeysDeleteCmdOperatorId string
 func init() {
 	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
-	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorAuthKeysDeleteCmd.Flags().StringVar(&OperatorAuthKeysDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysDeleteCmd)
 }
 

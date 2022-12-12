@@ -16,7 +16,7 @@ var UsersAuthKeysGenerateCmdOperatorId string
 var UsersAuthKeysGenerateCmdUserName string
 
 func init() {
-	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAuthKeysGenerateCmd.Flags().StringVar(&UsersAuthKeysGenerateCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGenerateCmd)

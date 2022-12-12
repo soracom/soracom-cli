@@ -18,7 +18,7 @@ var EmailsGetCmdOperatorId string
 func init() {
 	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdEmailId, "email-id", "", TRAPI("email_id"))
 
-	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	EmailsCmd.AddCommand(EmailsGetCmd)
 }
 

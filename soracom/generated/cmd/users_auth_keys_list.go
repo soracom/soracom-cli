@@ -19,7 +19,7 @@ var UsersAuthKeysListCmdUserName string
 var UsersAuthKeysListCmdOutputJSONL bool
 
 func init() {
-	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAuthKeysListCmd.Flags().StringVar(&UsersAuthKeysListCmdUserName, "user-name", "", TRAPI("user_name"))
 

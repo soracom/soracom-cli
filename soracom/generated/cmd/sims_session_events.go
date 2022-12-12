@@ -35,11 +35,11 @@ func init() {
 
 	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (unixtime)."))
+	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (UNIX time in milliseconds)."))
 
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
-	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
+	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (UNIX time in milliseconds)."))
 
 	SimsSessionEventsCmd.Flags().BoolVar(&SimsSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

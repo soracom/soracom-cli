@@ -13,7 +13,7 @@ import (
 var SimsGetCmdSimId string
 
 func init() {
-	SimsGetCmd.Flags().StringVar(&SimsGetCmdSimId, "sim-id", "", TRAPI("Id of the target SIM"))
+	SimsGetCmd.Flags().StringVar(&SimsGetCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 	SimsCmd.AddCommand(SimsGetCmd)
 }
 

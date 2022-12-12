@@ -25,7 +25,7 @@ var VpgListPacketCaptureSessionsCmdPaginate bool
 var VpgListPacketCaptureSessionsCmdOutputJSONL bool
 
 func init() {
-	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last group in the previous page"))
+	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "null", TRAPI("ID of the last packet capture session in the previous page. By specifying this parameter, you can continue to retrieve the list from the next packet capture session onward."))
 
 	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 

@@ -13,7 +13,7 @@ import (
 var BillsGetCmdYyyyMM string
 
 func init() {
-	BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TRAPI("year and month"))
+	BillsGetCmd.Flags().StringVar(&BillsGetCmdYyyyMM, "yyyy-mm", "", TRAPI("Target year and month"))
 	BillsCmd.AddCommand(BillsGetCmd)
 }
 

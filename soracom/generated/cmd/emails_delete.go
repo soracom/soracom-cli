@@ -18,7 +18,7 @@ var EmailsDeleteCmdOperatorId string
 func init() {
 	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdEmailId, "email-id", "", TRAPI("email_id"))
 
-	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	EmailsCmd.AddCommand(EmailsDeleteCmd)
 }
 

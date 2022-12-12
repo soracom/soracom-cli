@@ -23,9 +23,9 @@ var SimsCreateCmdType string
 var SimsCreateCmdBody string
 
 func init() {
-	SimsCreateCmd.Flags().StringVar(&SimsCreateCmdSubscription, "subscription", "", TRAPI(""))
+	SimsCreateCmd.Flags().StringVar(&SimsCreateCmdSubscription, "subscription", "", TRAPI("To create a virtual SIM/Subscriber, specify `planArc01`."))
 
-	SimsCreateCmd.Flags().StringVar(&SimsCreateCmdType, "type", "", TRAPI(""))
+	SimsCreateCmd.Flags().StringVar(&SimsCreateCmdType, "type", "", TRAPI("To create a virtual SIM/Subscriber, specify `virtual`."))
 
 	SimsCreateCmd.Flags().StringVar(&SimsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsCreateCmd)

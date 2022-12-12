@@ -13,7 +13,7 @@ import (
 var OperatorGetSupportTokenCmdOperatorId string
 
 func init() {
-	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	OperatorCmd.AddCommand(OperatorGetSupportTokenCmd)
 }
 

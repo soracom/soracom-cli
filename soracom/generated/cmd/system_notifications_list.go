@@ -16,7 +16,7 @@ var SystemNotificationsListCmdOperatorId string
 var SystemNotificationsListCmdOutputJSONL bool
 
 func init() {
-	SystemNotificationsListCmd.Flags().StringVar(&SystemNotificationsListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	SystemNotificationsListCmd.Flags().StringVar(&SystemNotificationsListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	SystemNotificationsListCmd.Flags().BoolVar(&SystemNotificationsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	SystemNotificationsCmd.AddCommand(SystemNotificationsListCmd)

@@ -25,7 +25,7 @@ var SubscribersUpdateSpeedClassCmdBody string
 func init() {
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("Speed class. You can specify one of followings based on this IoT SIM's subscription.- plan01s, plan01s - Low Data Volume, planP1, planX3, plan-D:    - `s1.minimum`    - `s1.slow`    - `s1.standard`    - `s1.fast`    - `s1.4xfast`- plan-KM1:    - `t1.standard`- plan-DU:    - `u1.standard`    - `u1.slow`- Virtual SIM/Subscriber:    - `arc.standard`"))
+	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("Speed class. Specify one of the following. Please specify the speed class that matches the subscription.- For plan01s, plan01s - Low Data Volume, planP1, planX3 X3-5MB, plan-D:    - `s1.minimum`    - `s1.slow`    - `s1.standard`    - `s1.fast`    - `s1.4xfast`- For plan-KM1:    - `t1.standard`- For plan-DU:    - `u1.standard`    - `u1.slow`- For virtual SIM/Subscriber:    - `arc.standard`"))
 
 	SubscribersUpdateSpeedClassCmd.Flags().StringVar(&SubscribersUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersUpdateSpeedClassCmd)

@@ -16,7 +16,7 @@ var UsersPermissionsGetCmdOperatorId string
 var UsersPermissionsGetCmdUserName string
 
 func init() {
-	UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersPermissionsGetCmd.Flags().StringVar(&UsersPermissionsGetCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersPermissionsCmd.AddCommand(UsersPermissionsGetCmd)

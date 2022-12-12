@@ -15,6 +15,9 @@ var SoraCamDevicesVideosListExportsCmdDeviceId string
 // SoraCamDevicesVideosListExportsCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
 var SoraCamDevicesVideosListExportsCmdLastEvaluatedKey string
 
+// SoraCamDevicesVideosListExportsCmdSort holds value of 'sort' option
+var SoraCamDevicesVideosListExportsCmdSort string
+
 // SoraCamDevicesVideosListExportsCmdLimit holds value of 'limit' option
 var SoraCamDevicesVideosListExportsCmdLimit int64
 
@@ -28,6 +31,8 @@ func init() {
 	SoraCamDevicesVideosListExportsCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device. If this ID is not specified, all compatible camera devices owned by the operator will be returned."))
 
 	SoraCamDevicesVideosListExportsCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last export request. By specifying this parameter, you can continue to retrieve the list from the last export request."))
+
+	SoraCamDevicesVideosListExportsCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending (`asc`) or descending (`desc`) order of `requestedTime`. The default is `desc` i.e. newer items are sorted first."))
 
 	SoraCamDevicesVideosListExportsCmd.Flags().Int64Var(&SoraCamDevicesVideosListExportsCmdLimit, "limit", 10, TRAPI("Maximum number of data related to export processing to be acquired in one request. Note that the number of data that can be acquired may be less than the specified number."))
 
@@ -120,6 +125,10 @@ func buildQueryForSoraCamDevicesVideosListExportsCmd() url.Values {
 
 	if SoraCamDevicesVideosListExportsCmdLastEvaluatedKey != "" {
 		result.Add("last_evaluated_key", SoraCamDevicesVideosListExportsCmdLastEvaluatedKey)
+	}
+
+	if SoraCamDevicesVideosListExportsCmdSort != "desc" {
+		result.Add("sort", SoraCamDevicesVideosListExportsCmdSort)
 	}
 
 	if SoraCamDevicesVideosListExportsCmdLimit != 10 {

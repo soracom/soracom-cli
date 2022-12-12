@@ -19,7 +19,7 @@ var UsersListRolesCmdUserName string
 var UsersListRolesCmdOutputJSONL bool
 
 func init() {
-	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdUserName, "user-name", "", TRAPI("user_name"))
 

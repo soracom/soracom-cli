@@ -16,7 +16,7 @@ var SimsDeleteTagCmdSimId string
 var SimsDeleteTagCmdTagName string
 
 func init() {
-	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
+	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 	SimsCmd.AddCommand(SimsDeleteTagCmd)

@@ -13,7 +13,7 @@ import (
 var PaymentHistoryGetCmdPaymentTransactionId string
 
 func init() {
-	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TRAPI("Payment transaction ID"))
+	PaymentHistoryGetCmd.Flags().StringVar(&PaymentHistoryGetCmdPaymentTransactionId, "payment-transaction-id", "", TRAPI("Payment transaction ID. It can be obtained via [Billing:getBillingHistory API](#/Billing/getBillingHistory) or [Billing:getBilling API](#/Billing/getBilling)."))
 	PaymentHistoryCmd.AddCommand(PaymentHistoryGetCmd)
 }
 

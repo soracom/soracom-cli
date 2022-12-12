@@ -16,7 +16,7 @@ var UsersDeleteCmdOperatorId string
 var UsersDeleteCmdUserName string
 
 func init() {
-	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersDeleteCmd.Flags().StringVar(&UsersDeleteCmdUserName, "user-name", "", TRAPI("user_name"))
 	UsersCmd.AddCommand(UsersDeleteCmd)

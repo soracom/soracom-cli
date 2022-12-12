@@ -13,7 +13,7 @@ import (
 var VolumeDiscountsConfirmCmdOrderId string
 
 func init() {
-	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("order_id"))
+	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID"))
 	VolumeDiscountsCmd.AddCommand(VolumeDiscountsConfirmCmd)
 }
 

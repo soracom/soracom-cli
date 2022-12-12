@@ -13,7 +13,7 @@ import (
 var SandboxOperatorsDeleteCmdOperatorId string
 
 func init() {
-	SandboxOperatorsDeleteCmd.Flags().StringVar(&SandboxOperatorsDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	SandboxOperatorsDeleteCmd.Flags().StringVar(&SandboxOperatorsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 	SandboxOperatorsCmd.AddCommand(SandboxOperatorsDeleteCmd)
 }
 

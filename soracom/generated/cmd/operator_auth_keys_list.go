@@ -16,7 +16,7 @@ var OperatorAuthKeysListCmdOperatorId string
 var OperatorAuthKeysListCmdOutputJSONL bool
 
 func init() {
-	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	OperatorAuthKeysListCmd.Flags().BoolVar(&OperatorAuthKeysListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)

@@ -25,11 +25,11 @@ var SimsListPacketCaptureSessionsCmdPaginate bool
 var SimsListPacketCaptureSessionsCmdOutputJSONL bool
 
 func init() {
-	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last packet capture session in the previous page"))
+	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last packet capture session in the previous page. By specifying this parameter, you can continue to retrieve the list from the next packet capture session onward."))
 
-	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID"))
+	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsListPacketCaptureSessionsCmd.Flags().Int64Var(&SimsListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response"))
+	SimsListPacketCaptureSessionsCmd.Flags().Int64Var(&SimsListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response."))
 
 	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -16,7 +16,7 @@ var RolesDeleteCmdOperatorId string
 var RolesDeleteCmdRoleId string
 
 func init() {
-	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TRAPI("role_id"))
 	RolesCmd.AddCommand(RolesDeleteCmd)

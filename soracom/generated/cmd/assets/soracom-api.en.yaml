@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: VERSION_PLACEHOLDER
+  version: 20221212-023207
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -14,7 +14,7 @@ paths:
       description: Retrieve audit logs for API calls.
       operationId: getApiAuditLogs
       parameters:
-      - description: Filter item for audit log retrieval by API kind (e.g. `/v1/auth`).
+      - description: Filter item for audit log retrieval by API kind.
         in: query
         name: api_kind
         required: false
@@ -32,11 +32,14 @@ paths:
         required: false
         schema:
           type: integer
-      - description: Maximum number of log entries to retrieve.
+      - description: Maximum number of log entries to retrieve (value range is 1 to
+          1000).
         in: query
         name: limit
         required: false
         schema:
+          maximum: 1000
+          minimum: 1
           type: integer
       - description: The value of `requestedTimeEpochMs` in the last log entry retrieved
           in the previous page. By specifying this parameter, you can continue to
@@ -50,6 +53,14 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                apiKind: /v1/bills
+                operatorId: OPXXXXXXXXXX
+                remoteIpAddress: xxx.xxx.xxx.xxx
+                requestPath: /v1/bills
+                requestedTimeEpocMs: 1234567890123
+                statusCode: 200
+                userName: SORACOMAPI
               schema:
                 items:
                   $ref: '#/components/schemas/APIAuditLogEntry'
@@ -99,11 +110,14 @@ paths:
         required: false
         schema:
           type: integer
-      - description: Maximum number of log entries to retrieve.
+      - description: Maximum number of log entries to retrieve (value range is 1 to
+          1000).
         in: query
         name: limit
         required: false
         schema:
+          maximum: 1000
+          minimum: 1
           type: integer
       - description: The value of `time` in the last log entry retrieved in the previous
           page. By specifying this parameter, you can continue to retrieve the list
@@ -117,6 +131,29 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - connectionId: 12345678-abcd-1234-abcd-123456789010
+                createdAt: 1234567890123
+                direction:
+                  destinationIPAddress: xxx.xxx.xxx.xxx
+                  destinationPort: 22
+                  sourceIPAddress: xxx.xxx.xxx.xxx
+                  sourcePort: 51720
+                imsi: "123456789012345"
+                operatorId: OPXXXXXXXXXX
+                tls: false
+                type: CLOSED
+              - connectionId: 12345678-abcd-1234-abcd-123456789011
+                createdAt: 1234567890123
+                direction:
+                  destinationIPAddress: xxx.xxx.xxx.xxx
+                  destinationPort: 22
+                  sourceIPAddress: xxx.xxx.xxx.xxx
+                  sourcePort: 51720
+                imsi: "234567890123456"
+                operatorId: OPXXXXXXXXXX
+                tls: false
+                type: EXPIRED
               schema:
                 items:
                   $ref: '#/components/schemas/NapterAuditLogEntry'
@@ -251,33 +288,47 @@ paths:
       - auth verify-password-reset-token
   /bills:
     get:
-      description: Returns past billing history (after applied discounts such as free
-        tiers, etc., inclusive of tax). This API only returns the billing amounts
-        that have been finalized at the end of the month.
+      description: |
+        Gets a list of finalized past billing history.
+
+        **Warning**: The maximum billing history you can get is for the last 18 months. If you need the billing history before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: getBillingHistory
       responses:
         "200":
           content:
             application/json:
+              example:
+                billList:
+                - amount: 28734
+                  paymentStatus: paid
+                  paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                  state: closed
+                  yearMonth: "202208"
+                - amount: 27075
+                  paymentStatus: paid
+                  paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                  state: closed
+                  yearMonth: "202207"
               schema:
                 $ref: '#/components/schemas/GetBillingHistoryResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get billing history.
+      summary: Gets a list of finalized past billing history
       tags:
       - Billing
       x-soracom-cli:
       - bills list
   /bills/{yyyyMM}:
     get:
-      description: Returns the billing history for the specified month (after applied
-        discounts such as free tiers, etc., inclusive of tax). The amounts retrieved
-        using this API correspond to the values before the invoice was finalized.
+      description: |
+        Gets a finalized past billing history for the specified month.
+
+        **Warning**: The maximum billing history you can get is for the last 18 months. If you need the billing history before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: getBilling
       parameters:
-      - description: year and month
+      - description: Target year and month
         in: path
         name: yyyyMM
         required: true
@@ -287,25 +338,37 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                amount: 28734
+                currency: JPY
+                paymentStatus: paid
+                paymentTransactionId: 12345678901234567_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                state: closed
+                yearMonth: "202208"
               schema:
                 $ref: '#/components/schemas/MonthlyBill'
           description: OK.
+        "404":
+          description: |
+            - The billing history for the specified month has not been finalized.
+            - There is no charge for the specified month.
       security:
       - api_key: []
         api_token: []
-      summary: Get bill.
+      summary: Gets a finalized past billing history for the specified month
       tags:
       - Billing
       x-soracom-cli:
       - bills get
   /bills/{yyyyMM}/daily:
     get:
-      description: Returns detailed information of billing amounts per day for the
-        specified month. This API only returns the billing amounts that have been
-        finalized.
+      description: |
+        Gets a daily bill for the specified month. Fees charged on a monthly basis cannot be retrieved.
+
+        **Warning**: The maximum billing history you can get is for the last 18 months. If you need the billing history before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: getBillingPerDay
       parameters:
-      - description: year and month
+      - description: Target year and month
         in: path
         name: yyyyMM
         required: true
@@ -315,31 +378,46 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                billList:
+                - amount: 285
+                  currency: JPY
+                  date: "20220902"
+                - amount: 580
+                  currency: JPY
+                  date: "20220901"
               schema:
                 $ref: '#/components/schemas/DailyBillResponse'
           description: OK.
+        "404":
+          description: Bill not found.
       security:
       - api_key: []
         api_token: []
-      summary: Get bill per day.
+      summary: Get a daily bill
       tags:
       - Billing
       x-soracom-cli:
       - bills get-daily
   /bills/{yyyyMM}/export:
     post:
-      description: Returns detailed information for the billing amounts for the specified
-        month. This detailed information includes billing amounts per day, subscriber,
-        and billing item.
+      description: |
+        Issues a URL to download the billing details CSV for the specified month. For more information on billing details CSV, please refer to [Understanding the CSV format](/en/docs/account/billing/#understanding-the-csv-format).
+
+        **Warning**: You can only download billing details CSV for the past 18 months. If you need the billing history before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: exportBilling
       parameters:
-      - description: yyyyMM
+      - description: Target year and month
         in: path
         name: yyyyMM
         required: true
         schema:
           type: string
-      - description: export_mode (async, sync)
+      - description: |
+          Specify how to get the URL to download the billing details CSV.
+
+          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the SORACOM platform. Specify this `exportedFieldId` in [`Files:getExportedFile API`](#/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.
+          - `sync` (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
         in: query
         name: export_mode
         required: false
@@ -352,22 +430,33 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
+        "404":
+          description: Bill not found.
       security:
       - api_key: []
         api_token: []
-      summary: Output billing CSV file to S3.
+      summary: Issues a URL to download the billing details CSV for the specified
+        month
       tags:
       - Billing
       x-soracom-cli:
       - bills export
   /bills/latest:
     get:
-      description: Returns the latest billing amounts after applied discounts such
-        as free tiers, etc. The amounts retrieved using this API correspond to the
-        values before the invoice was finalized.
+      description: Returns the latest billing amounts after applying discounts such
+        as free tiers, etc. The amount retrieved by this API is the amount before
+        the billing is finalized.
       operationId: getLatestBilling
       responses:
         "200":
@@ -379,7 +468,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get latest bill.
+      summary: Get latest bill
       tags:
       - Billing
       x-soracom-cli:
@@ -388,8 +477,8 @@ paths:
     post:
       description: Returns detailed information of the billing amounts for the latest
         month. This detailed information includes billing amounts per day, subscriber,
-        and billing item. The amounts retrieved using this API correspond to the values
-        before the invoice was finalized.
+        and billing item. The amount retrieved by this API is the amount before the
+        billing is finalized.
       operationId: exportLatestBilling
       parameters:
       - description: export_mode (async, sync)
@@ -405,65 +494,94 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Export latest billing CSV file to S3.
+      summary: Export latest billing CSV file to S3
       tags:
       - Billing
       x-soracom-cli:
       - bills export-latest
   /cell_locations:
     get:
-      description: Retrieves location information (latitude / longitude) for a cell
-        tower which is identified by Cell ID etc. Please specify MCC, MNC, LAC and
-        CID when the access radio technology is 3G. It is possible to retrieve location
-        information without CID, but the location information will be low accuracy.  For
-        LTE (4G), please specify MCC, MNC, TAC and ECID. As it is based on an open
-        database to convert cell information into location information, the location
-        information does not exist or might be incorrect.
+      description: |
+        Retrieves location information (latitude / longitude) for a cell
+        tower which is identified by Cell ID etc. Please specify MCC, MNC, LAC
+        and CID when the access radio technology is 3G. It is possible to retrieve
+        location information without CID, but the location information will be low
+        accuracy.  For LTE (4G), please specify MCC, MNC, TAC and ECID. As it is based on
+        an open database to convert cell information into location information, the
+        location information does not exist or might be incorrect.
+
+        3G example.
+        ```
+        $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&lac=195&cid=68485165' \
+        -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
+        -H "X-Soracom-Token: $X_SORACOM_TOKEN"
+        ```
+        4G example.
+        ```
+        $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&tac=5840&ecid=44668480' \
+        -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
+        -H "X-Soracom-Token: $X_SORACOM_TOKEN"
+        ```
       operationId: getCellLocation
       parameters:
       - description: MCC - Mobile Country Code
+        example: 440
         in: query
         name: mcc
         required: true
         schema:
           type: string
       - description: MNC - Mobile Network Code
+        example: 10
         in: query
         name: mnc
         required: true
         schema:
           type: string
       - description: LAC - Location Area Code (for 3G)
+        example: 195
         in: query
         name: lac
         required: false
         schema:
           type: string
       - description: CID - Cell ID (for 3G)
+        example: 68485165
         in: query
         name: cid
         required: false
         schema:
           type: string
       - description: TAC - Tracking Area Code (for 4G)
+        example: 5840
         in: query
         name: tac
         required: false
         schema:
           type: string
       - description: ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`
+        example: 44668480
         in: query
         name: ecid
         required: false
         schema:
           type: string
       - description: ECID - Enhanced Cell ID (for 4G) - specify either `ecid` or `eci`
+        example: 44668480
         in: query
         name: eci
         required: false
@@ -473,6 +591,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                lat: 35.7119449
+                lon: 139.813642
+                range: 476
+                samples: 7
+                updated: 2022-01-01T00:00:00:000Z
               schema:
                 $ref: '#/components/schemas/CellLocation'
           description: Location information for the cell tower
@@ -493,6 +620,17 @@ paths:
       requestBody:
         content:
           application/json:
+            example:
+            - cid: "68485165"
+              identifier: test001
+              lac: "195"
+              mcc: "440"
+              mnc: "10"
+            - ecid: "44668480"
+              identifier: test002
+              mcc: "440"
+              mnc: "10"
+              tac: "5840"
             schema:
               items:
                 $ref: '#/components/schemas/CellIdentifier'
@@ -503,6 +641,25 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                identifier: test001
+                lat: 35.6814383
+                lon: 139.7665133
+                range: 0
+                samples: 1
+                updated: 2022-01-01T00:00:00:000Z
+              - avg_strength: 0
+                created: "2022-01-01T00:00:00.000Z"
+                exact: 0
+                identifier: test002
+                lat: 35.7119449
+                lon: 139.813642
+                range: 476
+                samples: 7
+                updated: 2022-01-01T00:00:00:000Z
               schema:
                 items:
                   $ref: '#/components/schemas/CellLocation'
@@ -596,7 +753,7 @@ paths:
         encountered.
       operationId: confirmCouponOrder
       parameters:
-      - description: order_id
+      - description: Order ID.
         in: path
         name: order_id
         required: true
@@ -2536,11 +2693,22 @@ paths:
           header: x-soracom-next-key
   /files/exported/{exported_file_id}:
     get:
-      description: Get an exported file. The `url` field in the response will contain
-        a URL to download the exported file.
+      description: |
+        Get the progress of the process when the file is exported asynchronously. If the export is complete, you will get the URL to download the file.
+
+        The following APIs are available to export files asynchronously. The `exported_file_id` is the file output ID (the value of `exportedFileId`) obtained from the following API.
+
+        - [`Billing:exportBilling API`](#/Billing/exportBilling)
+        - [`Billing:exportLatestBilling API`](#/Billing/exportLatestBilling)
+        - [`Payment:exportPaymentStatement API`](#/Payment/exportPaymentStatement)
+        - [`Stats:exportAirStats API`](#/Stats/exportAirStats)
+        - [`Stats:exportBeamStats API`](#/Stats/exportBeamStats)
+        - [`Stats:exportFunkStats API`](#/Stats/exportFunkStats)
+        - [`Stats:exportFunnelStats API`](#/Stats/exportFunnelStats)
+        - [`Subscriber:exportSubscribers API`](#/Subscriber/exportSubscribers)
       operationId: getExportedFile
       parameters:
-      - description: file export id
+      - description: File export ID
         in: path
         name: exported_file_id
         required: true
@@ -2556,7 +2724,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get an exported file.
+      summary: Get the progress of the process when the file is exported asynchronously.
       tags:
       - Files
       x-soracom-cli:
@@ -3183,9 +3351,10 @@ paths:
             examples:
               Configuring Custom DNS for IoT SIM:
                 description: |
-                  When configuring custom DNS for the IoT SIM, please note the following
+                  If you configure [custom DNS](https://developers.soracom.io/en/docs/air/custom-dns/) for IoT SIM, please note the following points.
 
-                  - Specify `SoracomAir` in the path parameter `namespace`.
+                  - Specify `SoracomAir` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, see [About properties specified in the body](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて) (Japanese).
                 value:
                 - key: useCustomDns
                   value: true
@@ -5084,7 +5253,7 @@ paths:
       description: Returns information about the operator.
       operationId: getOperator
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5112,7 +5281,7 @@ paths:
       description: Returns the operator's AuthKey list.
       operationId: listOperatorAuthKeys
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5139,7 +5308,7 @@ paths:
       description: Generates an AuthKey for the operator.
       operationId: generateOperatorAuthKey
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5165,7 +5334,7 @@ paths:
       description: Deletes an AuthKey from the operator.
       operationId: deleteOperatorAuthKey
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5193,7 +5362,7 @@ paths:
       description: Gets the operator's company information.
       operationId: getCompanyInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5218,7 +5387,7 @@ paths:
       description: Creates the operator's company information.
       operationId: createCompanyInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5246,7 +5415,7 @@ paths:
       description: Updates the operator's company information.
       operationId: updateCompanyInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5275,7 +5444,7 @@ paths:
       description: Adds the operator's contract.
       operationId: addOperatorContract
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5308,7 +5477,7 @@ paths:
       description: Deletes the operator's contract.
       operationId: deleteOperatorContract
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5336,7 +5505,7 @@ paths:
       description: Adds the operator's coverage type.
       operationId: addCoverageType
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5364,7 +5533,7 @@ paths:
       description: Returns a list of email addresses.
       operationId: listEmails
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5395,7 +5564,7 @@ paths:
       description: Deletes an email address.
       operationId: deleteEmail
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5422,7 +5591,7 @@ paths:
       description: Returns an email address.
       operationId: getEmail
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5454,7 +5623,7 @@ paths:
       description: Gets the operator's individual information.
       operationId: getIndividualInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5479,7 +5648,7 @@ paths:
       description: Creates the operator's individual information.
       operationId: createIndividualInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5507,7 +5676,7 @@ paths:
       description: Updates the operator's individual information.
       operationId: updateIndividualInformation
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5536,12 +5705,18 @@ paths:
       description: Revokes operator's MFA without backup codes.
       operationId: revokeMFA
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MFARevokeRequest'
+        required: true
       responses:
         "204":
           description: Revoked
@@ -5561,7 +5736,7 @@ paths:
         `INACTIVE` or `UNCONFIRMED`.
       operationId: getMFAStatus
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5589,7 +5764,7 @@ paths:
         by calling `Operator:verifyMFA` API.
       operationId: enableMFA
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5620,7 +5795,7 @@ paths:
         stored.
       operationId: verifyMFA
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5655,7 +5830,7 @@ paths:
       description: Updates the operator's password.
       operationId: updateOperatorPassword
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5686,7 +5861,7 @@ paths:
       description: Returns a list of roles.
       operationId: listRoles
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5714,7 +5889,7 @@ paths:
       description: Deletes a role.
       operationId: deleteRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5729,6 +5904,10 @@ paths:
       responses:
         "204":
           description: The role was deleted.
+        "400":
+          description: The role is still in use.
+        "404":
+          description: Role not found.
       security:
       - api_key: []
         api_token: []
@@ -5741,7 +5920,7 @@ paths:
       description: Retrieves a role.
       operationId: getRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5760,6 +5939,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/RoleResponse'
           description: OK.
+        "404":
+          description: Role not found.
       security:
       - api_key: []
         api_token: []
@@ -5772,7 +5953,7 @@ paths:
       description: Adds a new role.
       operationId: createRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5798,6 +5979,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateRoleResponse'
           description: OK.
+        "400":
+          description: Failed to create a role.
       security:
       - api_key: []
         api_token: []
@@ -5810,7 +5993,7 @@ paths:
       description: Edits a role.
       operationId: updateRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5832,6 +6015,8 @@ paths:
       responses:
         "200":
           description: OK
+        "404":
+          description: Role not found.
       security:
       - api_key: []
         api_token: []
@@ -5845,7 +6030,7 @@ paths:
       description: Retrieves a list of users attached to a role.
       operationId: listRoleAttachedUsers
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5866,6 +6051,8 @@ paths:
                   $ref: '#/components/schemas/UserDetailResponse'
                 type: array
           description: OK.
+        "404":
+          description: Role not found.
       security:
       - api_key: []
         api_token: []
@@ -5879,7 +6066,7 @@ paths:
       description: Returns a list of shipping addresses.
       operationId: listShippingAddresses
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5904,7 +6091,7 @@ paths:
       description: Creates a new shipping address.
       operationId: createShippingAddress
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5937,7 +6124,7 @@ paths:
       description: Deletes a shipping address.
       operationId: deleteShippingAddress
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -5964,7 +6151,7 @@ paths:
       description: Returns a shipping address.
       operationId: getShippingAddress
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6030,7 +6217,7 @@ paths:
       description: Returns a token for accessing the support console.
       operationId: generateSupportToken
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6060,7 +6247,7 @@ paths:
       description: Returns a list of system notifications.
       operationId: listSystemNotifications
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6088,7 +6275,7 @@ paths:
       description: Deletes a system notification.
       operationId: deleteSystemNotification
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6119,7 +6306,7 @@ paths:
       description: Returns a system notification.
       operationId: getSystemNotification
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6155,7 +6342,7 @@ paths:
       description: Sets a system notification.
       operationId: setSystemNotification
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6201,7 +6388,7 @@ paths:
         new API token. You can then use the new API token in future requests.
       operationId: generateAuthToken
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6269,7 +6456,7 @@ paths:
       description: Returns a list of SAM users.
       operationId: listUsers
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6297,7 +6484,7 @@ paths:
       description: Deletes the SAM user.
       operationId: deleteUser
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6330,7 +6517,7 @@ paths:
       description: Returns a SAM user.
       operationId: getUser
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6361,7 +6548,7 @@ paths:
       description: Adds a new SAM user.
       operationId: createUser
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6383,6 +6570,8 @@ paths:
       responses:
         "201":
           description: A new user was added.
+        "400":
+          description: Failed to create a new user.
       security:
       - api_key: []
         api_token: []
@@ -6395,7 +6584,7 @@ paths:
       description: Updates the SAM user.
       operationId: updateUser
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6436,7 +6625,7 @@ paths:
       description: Returns the SAM user's AuthKey list.
       operationId: listUserAuthKeys
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6469,7 +6658,7 @@ paths:
       description: Generates an AuthKey for the SAM user.
       operationId: generateUserAuthKey
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6501,7 +6690,7 @@ paths:
       description: Deletes an AuthKey from the SAM user.
       operationId: deleteUserAuthKey
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6540,7 +6729,7 @@ paths:
       description: Returns the SAM user's AuthKey.
       operationId: getUserAuthKey
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6711,7 +6900,7 @@ paths:
       description: Deletes the user's password.
       operationId: deleteUserPassword
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6744,7 +6933,7 @@ paths:
       description: Retrieves whether the SAM user has a password or not.
       operationId: hasUserPassword
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6775,7 +6964,7 @@ paths:
       description: Creates a password for the SAM user.
       operationId: createUserPassword
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6809,7 +6998,7 @@ paths:
       description: Updates the password of the SAM user.
       operationId: updateUserPassword
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6873,7 +7062,7 @@ paths:
       description: Retrieves the SAM user's permissions.
       operationId: getUserPermission
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6904,7 +7093,7 @@ paths:
       description: Updates the SAM user's permissions.
       operationId: updateUserPermission
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6939,7 +7128,7 @@ paths:
       description: Retrieves a list of the user's roles.
       operationId: listUserRoles
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6960,6 +7149,8 @@ paths:
                   $ref: '#/components/schemas/RoleResponse'
                 type: array
           description: OK.
+        "404":
+          description: SAM user not found.
       security:
       - api_key: []
         api_token: []
@@ -6972,7 +7163,7 @@ paths:
       description: Attaches a role to a user.
       operationId: attachRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -6994,6 +7185,10 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: The role has already been attached or not found.
+        "404":
+          description: SAM user not found.
       security:
       - api_key: []
         api_token: []
@@ -7007,7 +7202,7 @@ paths:
       description: Detaches a role from a user.
       operationId: detachRole
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -7028,6 +7223,8 @@ paths:
       responses:
         "200":
           description: OK
+        "404":
+          description: SAM user or role not found.
       security:
       - api_key: []
         api_token: []
@@ -7277,7 +7474,10 @@ paths:
       - operator verify
   /orders:
     get:
-      description: Returns a list of confirmed orders.
+      description: |
+        Get a list of confirmed order history.
+
+        **Warning**: You can only obtain order history for the past 18 months. If you need the order history before that time, please contact [SORACOM Support](https://support.soracom.io).
       operationId: listOrders
       responses:
         "200":
@@ -7289,7 +7489,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List confirmed orders.
+      summary: Get a list of confirmed order history.
       tags:
       - Order
       x-soracom-cli:
@@ -7322,10 +7522,13 @@ paths:
       - orders create
   /orders/{order_id}:
     get:
-      description: Returns a confirmed order.
+      description: |
+        Returns a confirmed order.
+
+        **Warning**: You can only obtain a confirmed order for the past 18 months. If you need the confirmed order before that time, please contact [SORACOM Support](https://support.soracom.io).
       operationId: getOrder
       parameters:
-      - description: order_id
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -7341,7 +7544,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get confirmed order.
+      summary: Get a confirmed order.
       tags:
       - Order
       x-soracom-cli:
@@ -7352,7 +7555,7 @@ paths:
         error is returned.
       operationId: cancelOrder
       parameters:
-      - description: order_id
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -7379,7 +7582,7 @@ paths:
         encountered.
       operationId: confirmOrder
       parameters:
-      - description: order_id
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -7396,12 +7599,47 @@ paths:
       - Order
       x-soracom-cli:
       - orders confirm
+  /orders/{order_id}/resource_initial_setting:
+    put:
+      description: Update resource initial setting for an order
+      operationId: updateOrderedResourceInitialSetting
+      parameters:
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
+        in: path
+        name: order_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceInitialSetting'
+        description: Resource initial setting for an order
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+          description: The initial setting has been successfully updated.
+        "400":
+          description: The specified request has a problem.
+        "404":
+          description: Order ID not found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update resource initial setting for an order.
+      tags:
+      - Order
   /orders/{order_id}/subscribers:
     get:
       description: List ordered subscribers
       operationId: listOrderedSubscribers
       parameters:
-      - description: order_id
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -7446,7 +7684,7 @@ paths:
       description: Registers the ordered SIM with the operator.
       operationId: registerOrderedSim
       parameters:
-      - description: order_id
+      - description: Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -7472,7 +7710,8 @@ paths:
       description: Returns result of a payment transaction.
       operationId: getPaymentTransaction
       parameters:
-      - description: Payment transaction ID
+      - description: Payment transaction ID. It can be obtained via [Billing:getBillingHistory
+          API](#/Billing/getBillingHistory) or [Billing:getBilling API](#/Billing/getBilling).
         in: path
         name: payment_transaction_id
         required: true
@@ -8871,9 +9110,8 @@ paths:
         is returned in the 'Link' header of the response.
       operationId: listSims
       parameters:
-      - description: Maximum number of SIMs to retrieve. Setting a limit does not
-          guarantee the number of sims returned in the response (i.e. the response
-          may contain fewer sims than the specified limit).
+      - description: Maximum number of SIMs to retrieve. However, the number of SIMs
+          returned may be less than the specified value.
         in: query
         name: limit
         required: false
@@ -8895,13 +9133,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sim'
                 type: array
-          description: A list of SIMs.
+          description: List of IoT SIMs
         "404":
-          description: No such SIM found
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: List SIMs.
+      summary: List SIMs
       tags:
       - Sim
       x-soracom-cli:
@@ -8912,14 +9150,15 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Creates a SIM for example for use with Arc service.
+      description: Creates a new SORACOM Arc virtual SIM/Subscriber. For details,
+        please refer to [Creating Virtual SIMs](/en/docs/arc/configuration/).
       operationId: createSim
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateSimRequest'
-        description: A SIM creation request
+        description: Virtual SIM/Subscriber creation request.
         required: true
       responses:
         "201":
@@ -8927,21 +9166,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: SIM created.
+          description: A virtual SIM/Subscriber has been created.
       security:
       - api_key: []
         api_token: []
-      summary: Create a SIM.
+      summary: Creates a new virtual SIM/Subscriber
       tags:
       - Sim
       x-soracom-cli:
       - sims create
   /sims/{sim_id}:
     get:
-      description: Obtain a SIM record identified by the sim_id
+      description: Gets information about the IoT SIM.
       operationId: getSim
       parameters:
-      - description: Id of the target SIM
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -8953,20 +9192,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: A SIM identified by sim_id
+          description: The IoT SIM's detailed information.
         "404":
-          description: No such SIM found
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Get a SIM identified by sim_id
+      summary: Gets information about the IoT SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims get
   /sims/{sim_id}/activate:
     post:
-      description: Change status of specified SIM to active.
+      description: Changes status of specified SIM to "active".
       operationId: activateSim
       parameters:
       - description: SIM ID of the target SIM.
@@ -8984,11 +9223,11 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Activate SIM.
+      summary: Activate SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -8996,8 +9235,10 @@ paths:
   /sims/{sim_id}/credentials/arc:
     delete:
       deprecated: true
-      description: (DEPRECATED) Use this API to remove the set of credentials for
-        Arc from the specified SIM. Please do not use this API.
+      description: |
+        (DEPRECATED) Removes the credentials (public key) for Soracom Arc from the SIM.
+
+        **Warning**: Do not use this API.
       operationId: removeArcSimCredentials
       parameters:
       - description: SIM ID of the target SIM.
@@ -9012,18 +9253,20 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: (DEPRECATED) Remove the credentials for Arc from a SIM.
+      summary: (DEPRECATED) Removes the credentials for Arc from a SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims remove-arc-credentials
     post:
       deprecated: true
-      description: (DEPRECATED) Use this API to attach a set of credentials to a SIM.
-        Please use `renewArcSimCredentials` API instead.
+      description: |
+        (DEPRECATED) Attaches the credentials (public key) for Soracom Arc to the SIM.
+
+        **Warning**: Please use the `renewArcSimCredentials` API instead.
       operationId: attachArcSimCredentials
       parameters:
-      - description: SIM ID of the target SIM.
+      - description: SIM ID of the target SIM
         in: path
         name: sim_id
         required: true
@@ -9047,17 +9290,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: (DEPRECATED) Attach the credentials for Arc to a SIM.
+      summary: (DEPRECATED) Attaches the credentials for Arc to a SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims attach-arc-credentials
     put:
-      description: Use this API to attach a set of credentials to a SIM and re-initialize
-        a session at once.
+      description: Attaches Arc credential to a SIM and re-initialize a session at
+        once.
       operationId: renewArcSimCredentials
       parameters:
-      - description: SIM ID of the target SIM.
+      - description: SIM ID of the target SIM
         in: path
         name: sim_id
         required: true
@@ -9081,7 +9324,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Renew the credentials for Arc to a SIM.
+      summary: Renew the credentials for Arc to a SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -9099,20 +9342,20 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
         schema:
           type: integer
-      - description: Sort order of the data entries. Either descending (latest data
-          entry first) or ascending (oldest data entry first).
+      - description: Sort order of the data entries. Descending (latest data entry
+          first) or ascending (oldest data entry first).
         in: query
         name: sort
         required: false
@@ -9160,7 +9403,7 @@ paths:
           header: x-soracom-next-key
   /sims/{sim_id}/deactivate:
     post:
-      description: Change status of specified SIM to inactive.
+      description: Changes status of specified SIM to "inactive".
       operationId: deactivateSim
       parameters:
       - description: SIM ID of the target SIM.
@@ -9178,11 +9421,11 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Deactivate SIM.
+      summary: Deactivate SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -9206,7 +9449,7 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
@@ -9235,18 +9478,18 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Disable termination of the SIM.
+      summary: Disables termination of the SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims disable-termination
   /sims/{sim_id}/downlink/ping:
     post:
-      description: Send ICMP ping requests to a SIM.
+      description: Sends ICMP ping requests to a SIM.
       operationId: sendDownlinkPing
       parameters:
       - description: SIM ID of the target SIM.
@@ -9261,7 +9504,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DownlinkPingRequest'
-        description: ping options
+        description: Options for ping requests
         required: true
       responses:
         "200":
@@ -9273,7 +9516,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send ping requests to a SIM.
+      summary: Sends ping requests to a SIM.
       tags:
       - Sim
       x-soracom-cli:
@@ -9298,19 +9541,19 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Enable termination of the SIM.
+      summary: Enables termination of the SIM.
       tags:
       - Sim
       x-soracom-cli:
       - sims enable-termination
   /sims/{sim_id}/events/sessions:
     get:
-      description: Returns the history of session creation, change, and deletion events
-        occurred on the target SIM in the last 32 days. If the total number of events
+      description: Retrieves event history of session creation/modification/disconnection
+        for the past 32 days for the specified SIM. If the total number of events
         does not fit in one page, a URL for accessing the next page is returned in
         the `Link` header of the response.
       operationId: listSimSessionEvents
@@ -9321,13 +9564,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time for the events search range (unixtime).
+      - description: Start time for the events search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the events search range (unixtime).
+      - description: End time for the events search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -9359,7 +9602,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Session Events.
+      summary: Retrieves session history
       tags:
       - Sim
       x-soracom-cli:
@@ -9371,22 +9614,24 @@ paths:
           header: x-soracom-next-key
   /sims/{sim_id}/packet_capture_sessions:
     get:
-      description: List packet capture sessions associated with the SIM
+      description: Lists packet capture sessions associated with the SIM.
       operationId: listSimPacketCaptureSessions
       parameters:
-      - description: SIM ID
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
         schema:
           type: string
-      - description: ID of the last packet capture session in the previous page
+      - description: ID of the last packet capture session in the previous page. By
+          specifying this parameter, you can continue to retrieve the list from the
+          next packet capture session onward.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Max number of results in a response
+      - description: Max number of results in a response.
         in: query
         name: limit
         required: false
@@ -9404,11 +9649,11 @@ paths:
                 type: array
           description: List of packet capture sessions associated with the SIM
         "404":
-          description: No such sim found
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: List Packet Capture Sessions
+      summary: Lists packet capture sessions
       tags:
       - Sim
       x-soracom-cli:
@@ -9419,7 +9664,7 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Create a packet capture session associated with the SIM
+      description: Creates a packet capture session associated with the SIM.
       operationId: createSimPacketCaptureSession
       parameters:
       - description: The SIM ID for which a packet capture session is created
@@ -9441,13 +9686,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: Created a new packet capture sessions associated with the SIM
+          description: Created a new packet capture session associated with the SIM
+        "400":
+          description: Failed to create a packet capture session for the specified
+            SIM
         "404":
-          description: No such sim found
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Create Packet Capture Session
+      summary: Creates a packet capture session
       tags:
       - Sim
       x-soracom-cli:
@@ -9457,7 +9705,7 @@ paths:
       description: Delete a packet capture session associated with the SIM
       operationId: deleteSimPacketCaptureSession
       parameters:
-      - description: SIM ID
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9485,16 +9733,16 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Packet Capture Session
+      summary: Deletes a packet capture session
       tags:
       - Sim
       x-soracom-cli:
       - sims delete-packet-capture-session
     get:
-      description: Get a packet capture sessions associated the SIM
+      description: Gets a packet capture session associated the SIM
       operationId: getSimPacketCaptureSession
       parameters:
-      - description: SIM ID
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9519,17 +9767,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Packet Capture Session
+      summary: Gets a packet capture session
       tags:
       - Sim
       x-soracom-cli:
       - sims get-packet-capture-session
   /sims/{sim_id}/packet_capture_sessions/{session_id}/stop:
     post:
-      description: Stop a packet capture session associated with the SIM
+      description: Stops a packet capture session associated with the SIM.
       operationId: stopSimPacketCaptureSession
       parameters:
-      - description: SIM ID
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9559,24 +9807,25 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Stop SIM Packet Capture Session
+      summary: Stops a SIM packet capture session
       tags:
       - Sim
       x-soracom-cli:
       - sims stop-packet-capture-session
   /sims/{sim_id}/profiles/{iccid}/add_subscription:
     post:
-      description: Trigger an OTA update to add a new secondary subscription to an
-        IoT SIM.
+      description: Add a new secondary subscription ([additional subscription](/en/docs/air/subscription-containers/#adding-a-subscription)
+        or [virtual SIM/Subscriber](/en/docs/arc/configuration/#adding-a-virtual-sim-to-an-air-sim))
+        to the IoT SIM.
       operationId: addSubscription
       parameters:
-      - description: Id of the target SIM
+      - description: ID of the target SIM
         in: path
         name: sim_id
         required: true
         schema:
           type: string
-      - description: ICCID of the target IoT SIM; for IoT SIMs that do not support
+      - description: ICCID of the target IoT SIM. For IoT SIMs that do not support
           eUICC, the ICCID and SIM ID are the same.
         in: path
         name: iccid
@@ -9586,13 +9835,25 @@ paths:
       requestBody:
         content:
           application/json:
+            examples:
+              Adding planX3:
+                value:
+                  enable: true
+                  subscription: planX3
+                  type: cellular
+              Adding virtual SIM/Subscriber:
+                value:
+                  subscription: planArc01
+                  type: virtual
             schema:
               properties:
                 enable:
                   description: |
-                    Specifies whether to activate the secondary subscription as soon as it has been downloaded.
-                    - `true`: Activate immediately
-                    - `false`: Keep inactive. The secondary subscriptions will be activated at the next network registration.
+                    In the case of [additional subscriptions](/en/docs/air/subscription-containers/), specify whether to activate the additional subscription as soon as it has been downloaded. The default is `true`.
+                    - `true`: Activate immediately.
+                    - `false`: Keep inactive. Additional subscription will be activated at the next [network registration](/en/docs/air/basic-connectivity/#requesting-network-registration) or [session](/en/docs/air/basic-connectivity/#requesting-data-session) registration.
+
+                    Note that in the case of a virtual SIM/Subscriber, it is ignored.
                   type: boolean
                 subscription:
                   description: |
@@ -9683,8 +9944,8 @@ paths:
       - sims cancel-subscription-container-download
   /sims/{sim_id}/profiles/{iccid}/subscribers/{imsi}/terminate:
     post:
-      description: Terminate subscription container. Currently this API supports only
-        for virtual subscribers for SORACOM Arc service.
+      description: Terminates subscription container. Currently this API supports
+        only for virtual SIM/Subscribers for Soracom Arc.
       operationId: terminateSubscriptionContainer
       parameters:
       - description: SIM ID of the target subscription container.
@@ -9713,7 +9974,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Terminate subscription container
+      summary: Terminates subscription container
       tags:
       - Sim
       x-soracom-cli:
@@ -9889,7 +10150,7 @@ paths:
       - sims delete-country-mapping-entry
   /sims/{sim_id}/register:
     post:
-      description: Registers a SIM to an operator.
+      description: Registers an IoT SIM to an operator.
       operationId: registerSim
       parameters:
       - description: SIM ID of the target SIM.
@@ -9911,18 +10172,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: Sim registration complete.
+          description: SIM registration completed.
       security:
       - api_key: []
         api_token: []
-      summary: Register SIM.
+      summary: Registers an IoT SIM to an operator
       tags:
       - Sim
       x-soracom-cli:
       - sims register
   /sims/{sim_id}/report_local_info:
     post:
-      description: Triggers SIM to report SIM local info.
+      description: |
+        Gets SIM local information report.
+
+        **Alert**: One SMS will be sent to the IoT device per request for SIM local information report. Sending SMS to IoT devices is charged. For more information on fees, please refer to the following page
+        - [Pricing & Fee Schedule](/en/docs/reference/fees/)
+        - [SMS Function](https://soracom.jp/services/air/cellular/price_specific_area_sim/#price5) (Japan Coverage) (Japanese)
       operationId: reportSimLocalInfo
       parameters:
       - description: SIM ID of the target SIM.
@@ -9938,25 +10204,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscriber'
-          description: The local info reporting has successfully been triggered. The
-            subscriber information is asynchronously updated when the SIM reports
-            the information back.
+          description: Successful request to update SIM local information report.
+            SIM local information reports are updated asynchronously upon successful
+            reporting from the IoT SIM. Asynchronously updated information can be
+            viewed in the SORACOM user console. For details, see [Check SIM Local
+            Information Report](https://users.soracom.io/ja-jp/docs/air/get-local-info-report/)
+            (Japanese).
         "400":
-          description: The specified SIM active subscriber does not support local
-            info reporting feature.
+          description: The specified IoT SIM does not support the SIM local information
+            reporting feature.
         "404":
-          description: The specified SIM does not exist.
+          description: The specified IoT SIM does not exist for the specified coverage
+            type.
       security:
       - api_key: []
         api_token: []
-      summary: Triggers SIM to report SIM local info.
+      summary: Gets SIM local information report
       tags:
       - Sim
       x-soracom-cli:
       - sims report-local-info
   /sims/{sim_id}/send_sms:
     post:
-      description: Send SMS to the specified SIM.
+      description: Sends an SMS to the specified SIM.
       operationId: sendSmsToSim
       parameters:
       - description: SIM ID of the target SIM.
@@ -9980,11 +10250,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SmsForwardingReport'
-          description: SMS forwarding report containing message ID.
+          description: SMS transmission accepted and completed. Returns the ID assigned
+            to the message
         "400":
           description: The specified SIM does not support SMS API.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
@@ -9995,7 +10266,8 @@ paths:
       - sims send-sms
   /sims/{sim_id}/sessions/arc:
     post:
-      description: Use this API to re-activate a session for a virtual SIM.
+      description: Creates a Soracom Arc session. If the session already exists, re-create
+        it.
       operationId: createArcSession
       parameters:
       - description: SIM ID of the target SIM.
@@ -10017,14 +10289,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Re-create an Arc session.
+      summary: Creates a Soracom Arc session
       tags:
       - Sim
       x-soracom-cli:
       - sims create-arc-session
   /sims/{sim_id}/set_expiry_time:
     post:
-      description: Updates expiry time of the specified SIM.
+      description: Sets the expiration date and action for the specified IoT SIM.
       operationId: setSimExpiryTime
       parameters:
       - description: SIM ID of the target SIM.
@@ -10039,7 +10311,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExpiryTime'
-        description: 'Expiry time after the update (unixtime: in milliseconds).'
+        description: Expiration date (UNIX time in milliseconds) and action after
+          update.
         required: true
       responses:
         "200":
@@ -10049,18 +10322,18 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Update expiry time of SIM.
+      summary: Sets expiry time of IoT SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims set-expiry-time
   /sims/{sim_id}/set_group:
     post:
-      description: Sets or overwrites a group for the specified SIM.
+      description: Sets a group for the specified SIM.
       operationId: setSimGroup
       parameters:
       - description: SIM ID of the target SIM.
@@ -10074,7 +10347,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetGroupRequest'
-        description: Group (may include ID only).
+        description: Group settings (Group ID only)
         required: true
       responses:
         "200":
@@ -10084,18 +10357,18 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Set Group id of a SIM.
+      summary: Sets a group to SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims set-group
   /sims/{sim_id}/set_imei_lock:
     post:
-      description: Set IMEI that the SIM should be locked to.
+      description: Sets IMEI that the SIM should be locked to.
       operationId: setSimImeiLock
       parameters:
       - description: SIM ID of the target SIM.
@@ -10119,20 +10392,22 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "400":
-          description: Invalid IMEI string or SIM is offline and IMEI not specified.
+          description: |
+            - The IMEI string is invalid.
+            - The IMEI is not specified even though the SIM is offline.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Set IMEI lock configuration for the SIM.
+      summary: Sets IMEI lock configuration for the SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims set-imei-lock
   /sims/{sim_id}/set_to_standby:
     post:
-      description: Set the specified SIM to standby mode.
+      description: Changes status of specified SIM to "standby".
       operationId: setSimToStandby
       parameters:
       - description: SIM ID of the target SIM.
@@ -10150,9 +10425,9 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "400":
-          description: The specified SIM does not support standby mode.
+          description: The specified SIM does not support "standby."
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
@@ -10163,7 +10438,7 @@ paths:
       - sims set-to-standby
   /sims/{sim_id}/suspend:
     post:
-      description: Suspends the specified SIM
+      description: Changes status of specified SIM to "suspended".
       operationId: suspendSim
       parameters:
       - description: SIM ID of the target SIM.
@@ -10181,11 +10456,11 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Suspend SIM.
+      summary: Suspend SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -10218,11 +10493,11 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Bulk insert or update SIM tags.
+      summary: Bulk insert or update SIM tags
       tags:
       - Sim
       x-sam-operationId: putTags
@@ -10233,7 +10508,7 @@ paths:
       description: Deletes a tag from the specified SIM.
       operationId: deleteSimTag
       parameters:
-      - description: Sim Id of the target SIM.
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -10251,11 +10526,11 @@ paths:
         "204":
           description: Deletion of specified tag complete.
         "404":
-          description: The specified subscriber or the tag does not exist.
+          description: The specified SIM or tag does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Delete SIM tag.
+      summary: Deletes a tag from the specified SIM
       tags:
       - Sim
       x-sam-operationId: deleteTag
@@ -10281,11 +10556,11 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Terminate SIM.
+      summary: Terminates SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -10310,14 +10585,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete expiry time of the SIM.
+      summary: Deletes expiry time of the SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims unset-expiry-time
   /sims/{sim_id}/unset_group:
     post:
-      description: Removes the group configuration from the specified SIM.
+      description: Unsets the group setting of the specified SIM.
       operationId: unsetSimGroup
       parameters:
       - description: SIM ID of the target SIM.
@@ -10335,21 +10610,21 @@ paths:
           description: The SIM's detailed information after the update.
         "404":
           description: The specified SIM does not exist or the SIM does not belong
-            to a group.
+            to the Group.
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group to SIM.
+      summary: Unsets the group settings of SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims unset-group
   /sims/{sim_id}/unset_imei_lock:
     post:
-      description: Remove any existing IMEI lock configuration for the SIM.
+      description: Unsets the IMEI lock of the specified SIM.
       operationId: unsetSimImeiLock
       parameters:
-      - description: Sim Id of the target SIM.
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -10363,18 +10638,18 @@ paths:
                 $ref: '#/components/schemas/Sim'
           description: The SIM's detailed information after the update.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Unset IMEI lock configuration for SIM.
+      summary: Unsets IMEI lock of SIM
       tags:
       - Sim
       x-soracom-cli:
       - sims unset-imei-lock
   /sims/{sim_id}/update_speed_class:
     post:
-      description: Changes the speed class of the specified SIM.
+      description: Updates the IoT SIM speed class.
       operationId: updateSimSpeedClass
       parameters:
       - description: SIM ID of the target SIM.
@@ -10401,11 +10676,11 @@ paths:
           description: The specified speed class does not exist to the subscription.
             For example, arc.standard cannot be specified for plan01s.
         "404":
-          description: The specified SIM does not exist.
+          description: No such SIM found.
       security:
       - api_key: []
         api_token: []
-      summary: Update SIM speed class.
+      summary: Updates the IoT SIM speed class
       tags:
       - Sim
       x-soracom-cli:
@@ -10492,6 +10767,87 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get
+  /sora_cam/devices/{device_id}/events:
+    get:
+      description: Returns list of SoraCam events for the specified device.
+      operationId: listSoraCamDeviceEventsForDevice
+      parameters:
+      - description: ID of the target SoraCam device
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: Value of the X-Soracom-Next-Key header in the response to the
+          previous request. By specifying this parameter, you can continue to retrieve
+          the list from the next event onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of events to retrieve. Setting a limit does not
+          guarantee the number of events returned in the response (i.e. the response
+          may contain fewer items than the specified limit).
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      - description: Start time of the events to be searched (unix time in milliseconds).
+          If not specified, `from` is set to the oldest event time.
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: End time of the events to be searched (unix time in milliseconds).
+          If not specified, `to` is set to the current time.
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: 'Sort order of the events. Either descending ("desc": latest
+          data entry first) or ascending ("asc": oldest data entry first).'
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamEvent'
+                type: array
+          description: OK.
+        "400":
+          description: The specified argument is invalid.
+        "404":
+          description: The specified SoraCam device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List SoraCam events for the specified device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices events list-for-device
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/devices/{device_id}/exports/usage:
     get:
       description: |
@@ -10568,6 +10924,18 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: Sort order. The list in the response is sorted in ascending (`asc`)
+          or descending (`desc`) order of `requestedTime`. The default is `desc` i.e.
+          newer items are sorted first.
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
@@ -10817,15 +11185,46 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: Sort order. The list in the response is sorted in ascending (`asc`)
+          or descending (`desc`) order of `requestedTime`. The default is `desc` i.e.
+          newer items are sorted first.
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                status: initializing
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -10949,6 +11348,86 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices videos get-exported
+  /sora_cam/devices/events:
+    get:
+      description: Returns list of SoraCam events.
+      operationId: listSoraCamDeviceEvents
+      parameters:
+      - description: Device ID of the target camera device. If this ID is not specified,
+          the event history of all camera devices owned by the operator will be retrieved.
+        in: query
+        name: device_id
+        required: false
+        schema:
+          type: string
+      - description: Value of the X-Soracom-Next-Key header in the response to the
+          previous request. By specifying this parameter, you can continue to retrieve
+          the list from the next event onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: integer
+      - description: Maximum number of events to retrieve. Setting a limit does not
+          guarantee the number of events returned in the response (i.e. the response
+          may contain fewer items than the specified limit).
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          type: integer
+      - description: Start time of the events to be searched (unix time in milliseconds).
+          If not specified, `from` is set to the oldest event time.
+        in: query
+        name: from
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: End time of the events to be searched (unix time in milliseconds).
+          If not specified, `to` is set to the current time.
+        in: query
+        name: to
+        required: false
+        schema:
+          format: int64
+          type: integer
+      - description: 'Sort order of the events. Either descending ("desc": latest
+          data entry first) or ascending ("asc": oldest data entry first).'
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SoraCamEvent'
+                type: array
+          description: OK.
+        "400":
+          description: The specified argument is invalid.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List SoraCam events.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices events list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /sora_cam/devices/images/exports:
     get:
       description: |
@@ -10982,6 +11461,18 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: Sort order. The list in the response is sorted in ascending (`asc`)
+          or descending (`desc`) order of `requestedTime`. The default is `desc` i.e.
+          newer items are sorted first.
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
@@ -11059,13 +11550,25 @@ paths:
         schema:
           default: 10
           type: integer
+      - description: Sort order. The list in the response is sorted in ascending (`asc`)
+          or descending (`desc`) order of `requestedTime`. The default is `desc` i.e.
+          newer items are sorted first.
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
           content:
             application/json;charset=UTF-8:
               example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
+              - deviceId: 7CDDDEADBEEF
+                expiryTime: 1662973800000
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
                 operatorId: OP0012345678
                 requestedTime: 1662973200000
@@ -11511,7 +12014,7 @@ paths:
         is AWS S3. The file output format is CSV.
       operationId: exportAirStats
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -11537,6 +12040,14 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                (1) export_mode=async:
+                  value:
+                    exportedFileId: fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                    exportedFilePath: //files/exported/fe_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                (2) export_mode=sync:
+                  value:
+                    url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK.
@@ -11947,7 +12458,7 @@ paths:
       description: Retrieves the SORACOM Harvest usage report for the operator.
       operationId: getHarvestExportedDataStats
       parameters:
-      - description: operator_id
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -13181,7 +13692,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: Tag value of the VPGs.
+      - description: Tag value of the VPG.
         in: query
         name: tag_value
         required: false
@@ -13223,7 +13734,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Virtual Private Gateways.
+      summary: List Virtual Private Gateways
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13234,7 +13745,7 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Create new VPG.
+      description: Create a new VPG.
       operationId: createVirtualPrivateGateway
       requestBody:
         content:
@@ -13253,7 +13764,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Virtual Private Gateway.
+      summary: Create Virtual Private Gateway
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13271,20 +13782,24 @@ paths:
           type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualPrivateGateway'
           description: The specified VPG.
         "404":
           description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Get Virtual Private Gateway.
+      summary: Get Virtual Private Gateway
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg get
   /virtual_private_gateways/{vpg_id}/gate/close:
     post:
-      description: Close SORACOM Gate on the specified VPG.
+      description: Close Soracom Gate on the specified VPG.
       operationId: closeGate
       parameters:
       - description: Target VPG ID.
@@ -13295,9 +13810,9 @@ paths:
           type: string
       responses:
         "200":
-          description: SORACOM Gate is successfully closed on the VPG.
+          description: Soracom Gate is successfully closed on the VPG.
         "400":
-          description: Client side error.
+          description: Client side error in the request.
         "404":
           description: The specified VPG does not exist.
       security:
@@ -13310,8 +13825,8 @@ paths:
       - vpg close-gate
   /virtual_private_gateways/{vpg_id}/gate/disable_privacy_separator:
     post:
-      description: Disable SORACOM Gate privacy separator feature on the VPG to allow
-        the Gate D2D function.
+      description: Disables Soracom Gate's privacy separator feature on the specified
+        VPG and enables the Gate D2D feature.
       operationId: disableGatePrivacySeparator
       parameters:
       - description: VPG ID
@@ -13329,19 +13844,20 @@ paths:
                 $ref: '#/components/schemas/VirtualPrivateGateway'
           description: Disabled the privacy separator successfully
         "404":
-          description: No such VPG found
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Disable SORACOM Gate privacy separator feature on the VPG
+      summary: Disables Soracom Gate's privacy separator feature on the specified
+        VPG
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg disable-gate-privacy-separator
   /virtual_private_gateways/{vpg_id}/gate/enable_privacy_separator:
     post:
-      description: Enable SORACOM Gate privacy separator feature on the VPG to prohibit
-        the Gate D2D function.
+      description: Enables Soracom Gate's privacy separator feature on the specified
+        VPG and disables the Gate D2D feature.
       operationId: enableGatePrivacySeparator
       parameters:
       - description: VPG ID
@@ -13359,18 +13875,18 @@ paths:
                 $ref: '#/components/schemas/VirtualPrivateGateway'
           description: Enabled the privacy separator successfully
         "404":
-          description: No such VPG found
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Enable SORACOM Gate privacy separator feature on the VPG
+      summary: Enables Soracom Gate privacy separator feature on the specified VPG
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg enable-gate-privacy-separator
   /virtual_private_gateways/{vpg_id}/gate/open:
     post:
-      description: Open SORACOM Gate on the specified VPG.
+      description: Open Soracom Gate on the specified VPG.
       operationId: openGate
       parameters:
       - description: Target VPG ID.
@@ -13389,20 +13905,20 @@ paths:
         "200":
           description: SORACOM Gate is successfully opened on the VPG.
         "400":
-          description: Client side error.
+          description: Client side error in the request.
         "404":
           description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Open SORACOM Gate.
+      summary: Open Soracom Gate
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg open-gate
   /virtual_private_gateways/{vpg_id}/gate/peers:
     get:
-      description: List Gate peers registered in the Virtual Private Gateway
+      description: List Gate peers registered in the Virtual Private Gateway.
       operationId: listGatePeers
       parameters:
       - description: Target VPG ID.
@@ -13433,7 +13949,7 @@ paths:
       x-soracom-cli:
       - vpg list-gate-peers
     post:
-      description: Register a host as a gate peer in the Virtual Private Gateway
+      description: Register a host as a gate peer in the Virtual Private Gateway.
       operationId: registerGatePeer
       parameters:
       - description: Target VPG ID.
@@ -13462,14 +13978,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register VPG Gate peer
+      summary: Register VPG Gate Peer
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg register-gate-peer
   /virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:
     delete:
-      description: Unregister a gate peer from the Virtual Private Gateway
+      description: Unregister a gate peer from the Virtual Private Gateway.
       operationId: unregisterGatePeer
       parameters:
       - description: Target VPG ID.
@@ -13488,13 +14004,13 @@ paths:
         "204":
           description: Successfully deregistered the Gate peer.
         "400":
-          description: Error in the request.
+          description: Client side error in the request.
         "404":
-          description: The specified VPG or node does not exist.
+          description: The specified VPG or Peer does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Unregister VPG gate peer
+      summary: Unregister VPG Gate Peer
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13502,7 +14018,7 @@ paths:
   /virtual_private_gateways/{vpg_id}/ip_address_map:
     get:
       description: Describes the list of IP address map entries in the Virtual Private
-        Gateway
+        Gateway.
       operationId: listVirtualPrivateGatewayIpAddressMapEntries
       parameters:
       - description: Target VPG ID.
@@ -13521,9 +14037,9 @@ paths:
                 type: array
           description: Successfully fetched the list of IP address map entries.
         "400":
-          description: Error in the request.
+          description: Client side error in the request.
         "404":
-          description: The specified VPG or node does not exist.
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
@@ -13556,13 +14072,13 @@ paths:
                 $ref: '#/components/schemas/IpAddressMapEntry'
           description: Successfully put an entry for the specified key and IP address.
         "400":
-          description: Error in the request.
+          description: Client side error in the request.
         "404":
-          description: The specified VPG or node does not exist.
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Put an entry in VPG IP address map
+      summary: Puts an entry in VPG IP address map
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13592,9 +14108,9 @@ paths:
                 $ref: '#/components/schemas/IpAddressMapEntry'
           description: Successfully deleted the entry from the VPG IP address map.
         "400":
-          description: Error in the request.
+          description: Client side error in the request.
         "404":
-          description: The specified VPG or node does not exist.
+          description: The specified VPG or Key does not exist
       security:
       - api_key: []
         api_token: []
@@ -13605,7 +14121,7 @@ paths:
       - vpg delete-ip-address-map-entry
   /virtual_private_gateways/{vpg_id}/junction/mirroring/peers:
     post:
-      description: Add node in the list of Junction mirroring peers
+      description: Adds node in the list of Junction mirroring peers.
       operationId: createMirroringPeer
       parameters:
       - description: VPG ID
@@ -13629,14 +14145,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Add node in the list of Junction mirroring peers
+      summary: Adds node in the list of Junction mirroring peers
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg create-mirroring-peer
   /virtual_private_gateways/{vpg_id}/junction/mirroring/peers/{ipaddr}:
     delete:
-      description: Remove peer from the list of Junction mirroring peers
+      description: Remove peer from the list of Junction mirroring peers.
       operationId: deleteMirroringPeer
       parameters:
       - description: VPG ID
@@ -13665,7 +14181,7 @@ paths:
       x-soracom-cli:
       - vpg delete-mirroring-peer
     put:
-      description: Update a Junction mirroring peer
+      description: Updates a Junction mirroring peer.
       operationId: updateMirroringPeer
       parameters:
       - description: VPG ID
@@ -13697,14 +14213,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update a Junction mirroring peer
+      summary: Updates a Junction mirroring peer
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg update-mirroring-peer
   /virtual_private_gateways/{vpg_id}/junction/set_inspection:
     post:
-      description: Set configuration for Junction inspection feature
+      description: Sets configuration for Junction inspection feature.
       operationId: setInspectionConfiguration
       parameters:
       - description: VPG ID
@@ -13728,14 +14244,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set configuration for Junction inspection feature
+      summary: Sets configuration for Junction inspection feature
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg set-inspection
   /virtual_private_gateways/{vpg_id}/junction/set_redirection:
     post:
-      description: Set configuration for Junction redirection feature
+      description: Sets configuration for Junction redirection feature.
       operationId: setRedirectionConfiguration
       parameters:
       - description: VPG ID
@@ -13759,14 +14275,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set configuration for Junction redirection feature
+      summary: Sets configuration for Junction redirection feature
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg set-redirection
   /virtual_private_gateways/{vpg_id}/junction/unset_inspection:
     post:
-      description: Unset configuration for Junction inspection feature
+      description: Unset configuration for Junction inspection feature.
       operationId: unsetInspectionConfiguration
       parameters:
       - description: VPG ID
@@ -13790,7 +14306,7 @@ paths:
       - vpg unset-inspection
   /virtual_private_gateways/{vpg_id}/junction/unset_redirection:
     post:
-      description: Unset configuration for Junction redirection feature
+      description: Unset configuration for Junction redirection feature.
       operationId: unsetRedirectionConfiguration
       parameters:
       - description: VPG ID
@@ -13814,7 +14330,7 @@ paths:
       - vpg unset-redirection
   /virtual_private_gateways/{vpg_id}/packet_capture_sessions:
     get:
-      description: List packet capture sessions associated with the VPG
+      description: List packet capture sessions associated with the VPG.
       operationId: listPacketCaptureSessions
       parameters:
       - description: VPG ID
@@ -13823,7 +14339,9 @@ paths:
         required: true
         schema:
           type: string
-      - description: ID of the last group in the previous page
+      - description: ID of the last packet capture session in the previous page. By
+          specifying this parameter, you can continue to retrieve the list from the
+          next packet capture session onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -13850,6 +14368,8 @@ paths:
         "400":
           description: Failed to list packet capture sessions associated with the
             VPG
+        "404":
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
@@ -13864,7 +14384,7 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Create a packet capture sessions associated the VPG
+      description: Create a packet capture sessions associated the VPG.
       operationId: createPacketCaptureSession
       parameters:
       - description: VPG ID
@@ -13890,6 +14410,8 @@ paths:
         "400":
           description: Failed to create a packet capture sessions associated with
             the VPG
+        "404":
+          description: The specified VPG does not exist.
       security:
       - api_key: []
         api_token: []
@@ -13921,12 +14443,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: Deleted the packet capture sessions associated with the VPG
+          description: Deleted the packet capture session associated with the VPG
         "400":
-          description: Failed to delete the packet capture sessions associated with
-            the VPG was not found
+          description: Failed to delete the packet capture session associated with
+            the VPG
         "404":
-          description: The packet capture sessions associated with the VPG was not
+          description: The packet capture session associated with the VPG was not
             found
       security:
       - api_key: []
@@ -13937,7 +14459,7 @@ paths:
       x-soracom-cli:
       - vpg delete-packet-capture-session
     get:
-      description: Get a packet capture sessions associated the VPG
+      description: Get a packet capture sessions associated the VPG.
       operationId: getPacketCaptureSession
       parameters:
       - description: VPG ID
@@ -13960,7 +14482,7 @@ paths:
                 $ref: '#/components/schemas/PacketCaptureSession'
           description: The packet capture sessions associated with the VPG
         "404":
-          description: The packet capture sessions associated with the VPG was not
+          description: The packet capture session associated with the VPG was not
             found
       security:
       - api_key: []
@@ -14001,7 +14523,7 @@ paths:
           description: The packet capture session associated with the VPG was not
             found
         "500":
-          description: The packet capture session could not be stopped
+          description: The packet capture session could not be stopped.
       security:
       - api_key: []
         api_token: []
@@ -14040,7 +14562,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Sets Virtual Private Gateway outbound routing filter.
+      summary: Sets Virtual Private Gateway outbound routing filter
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14066,7 +14588,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Terminate Virtual Private Gateway.
+      summary: Terminate Virtual Private Gateway
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14131,7 +14653,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete VPC Peering Connection.
+      summary: Delete VPC Peering Connection
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14216,7 +14738,7 @@ paths:
         encountered.
       operationId: confirmVolumeDiscountOrder
       parameters:
-      - description: order_id
+      - description: Order ID
         in: path
         name: order_id
         required: true
@@ -14441,7 +14963,7 @@ components:
     APIAuditLogEntry:
       properties:
         apiKind:
-          description: The kind of the API (e.g. `/v1/auth`).
+          description: The kind of the API.
           type: string
         operatorId:
           description: The operator ID that called the API.
@@ -14476,8 +14998,9 @@ components:
           description: Error code.
           type: string
         message:
-          description: Error message. You can choose language by setting X-Soracom-Lang
-            (en or ja) header when issuing a request.
+          description: Error message. You can select the output language for error
+            messages by setting the language (en, ja) in the X-Soracom-Lang header
+            at request time.
           type: string
       required:
       - code
@@ -14613,7 +15136,8 @@ components:
     ArcCredentialRenewRequest:
       properties:
         arcClientPeerPublicKey:
-          description: if this parameter is missing, the sever generates keypair
+          description: Public key of the Arc client to be granted to the SIM. If this
+            parameter is missing, the server generates a key pair.
           type: string
       type: object
     ArcCredentialRenewResponse:
@@ -14641,16 +15165,20 @@ components:
     ArcSessionStatus:
       properties:
         arcAllowedIPs:
+          description: Displays the WireGuard AllowedIPs received from the Arc server.
           items:
             type: string
           type: array
         arcClientPeerIpAddress:
+          description: IP address of the client.
           type: string
         arcClientPeerPublicKey:
           type: string
         arcServerEndpoint:
+          description: WireGuard protocol endpoints on the Arc server.
           type: string
         arcServerPeerPublicKey:
+          description: Server peer public key for the Arc server.
           type: string
         gatewayPrivateIpAddress:
           type: string
@@ -14729,6 +15257,17 @@ components:
           description: Contract months
           format: int32
           type: integer
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        taxIncludedUnitPrice:
+          description: Tax included unit price
+          format: double
+          type: number
         unitPrice:
           description: Unit price
           format: double
@@ -14771,13 +15310,13 @@ components:
       properties:
         data:
           description: |
-            - `true`: with data
-            - `false`: without data
+            - `true`: with data.
+            - `false`: without data.
           type: boolean
         sms:
           description: |
-            - `true`: with SMS
-            - `false`: without SMS
+            - `true`: with SMS.
+            - `false`: without SMS.
           type: boolean
       type: object
     Cell:
@@ -14849,7 +15388,7 @@ components:
           format: int32
           type: integer
         created:
-          description: Timestamp of the time when this record was first created.
+          description: Timestamp of the time (UTC) when this record was first created.
           format: date-time
           type: string
         exact:
@@ -14878,7 +15417,8 @@ components:
           format: int32
           type: integer
         updated:
-          description: Timestamp of the time when this record was most recently modified.
+          description: Timestamp of the time (UTC) when this record was most recently
+            modified.
           format: date-time
           type: string
       type: object
@@ -14946,9 +15486,16 @@ components:
         couponCode:
           description: Coupon code
           type: string
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         expiryYearMonth:
           description: Expiry month
-          example: yyyyMM
+          format: yyyyMM
           type: string
         orderId:
           description: Order ID
@@ -15091,8 +15638,12 @@ components:
     CreateSimRequest:
       properties:
         subscription:
+          description: To create a virtual SIM/Subscriber, specify `planArc01`.
+          enum:
+          - planArc01
           type: string
         type:
+          description: To create a virtual SIM/Subscriber, specify `virtual`.
           enum:
           - virtual
           type: string
@@ -15125,10 +15676,11 @@ components:
           default: 10.128.0.0/9
           type: string
         type:
-          description: |-
+          description: |
             VPG Type.
-             - `14` : Type-E
-             - `15` : Type-F
+
+            - `14` : Type-E
+            - `15` : Type-F
           enum:
           - 14
           - 15
@@ -15196,9 +15748,16 @@ components:
           description: Amount of bills.
           format: int64
           type: integer
+        currency:
+          description: Currency of bills.
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         date:
-          description: yyyyMMdd
-          example: yyyyMMdd
+          description: Date
+          format: yyyyMMdd
           type: string
       type: object
     DailyBillResponse:
@@ -15440,10 +15999,11 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         expiryYearMonth:
           description: Expiry month
-          example: yyyyMM
+          format: yyyyMM
           type: string
         orderId:
           description: Order ID
@@ -15469,11 +16029,32 @@ components:
           description: Quantity
           format: int32
           type: integer
+        taxIncludedProductAmount:
+          type: number
       type: object
     EstimatedOrderModel:
       properties:
+        appliedShippingOptions:
+          description: Applied shipping options
+          items:
+            type: object
+          type: array
+        balanceDue:
+          description: Balance due
+          format: double
+          type: number
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         email:
           description: Email address
+          type: string
+        orderChannel:
+          description: Order channel
           type: string
         orderId:
           description: Order ID
@@ -15483,6 +16064,12 @@ components:
           items:
             $ref: '#/components/schemas/EstimatedOrderItemModel'
           type: array
+        preferredDeliveryDate:
+          description: Preferred delivery date
+          type: string
+        purchaseOrderNumber:
+          description: Purchase order number
+          type: string
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
         shippingAddressId:
@@ -15496,8 +16083,19 @@ components:
           description: Tax amount
           format: double
           type: number
+        taxIncludedInShippingCost:
+          description: Tax included in shipping cost
+          format: double
+          type: number
+        taxOnShippingCost:
+          description: Whether shipping cost is taxable
+          type: boolean
         totalAmount:
           description: Total amount
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: Withholding tax amount
           format: double
           type: number
       type: object
@@ -15508,6 +16106,7 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         orderId:
           description: Order ID
@@ -15604,9 +16203,9 @@ components:
       properties:
         expiryAction:
           description: |
-            Specify expiry action. Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify terminate as an action.
+            Action at expiration. Specify one of the following Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify `terminate` as an action.
 
-            When omitted, it is set to null value.
+            If omitted, a null value is set.
             - `doNothing` : do nothing
             - `deleteSession` : delete session of the SIM if any
             - `deactivate` : change the SIM status to Inactive
@@ -15623,8 +16222,8 @@ components:
           nullable: true
           type: string
         expiryTime:
-          description: The timestamp (in Unix milliseconds) of a date and time set
-            using the Expiration function.
+          description: Timestamp of date and time set using the Expiration function
+            (UNIX time in milliseconds)
           format: int64
           type: integer
       required:
@@ -15681,15 +16280,17 @@ components:
     FileExportResponse:
       properties:
         exportedFileId:
-          description: Exported file ID (in the case that export mode is async).
+          description: File Export ID. Specify this ID when calling [`Files:getExportedFile
+            API`](#/Files/getExportedFile) to get the URL to download the file. Included
+            only if `export_mode` is `async`.
           type: string
         exportedFilePath:
-          description: Path to the exported file (in the case that export mode is
-            async).
+          description: Path of the exported file. Included only if `export_mode` is
+            `async`.
           type: string
         url:
-          description: URL of the exported file (in the case that export mode is not
-            specified or sync).
+          description: URL to download the file. Included only if `export_mode` is
+            `sync`.
           type: string
       type: object
     FunkStatsResponse:
@@ -16157,8 +16758,15 @@ components:
           description: Amount of bills.
           format: int64
           type: integer
+        currency:
+          description: Currency of bills.
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         lastEvaluatedTime:
-          description: Date andtime when calculated.
+          description: Date and time when calculated.
           example: yyyyMMddHHmmss
           type: string
       type: object
@@ -16186,12 +16794,33 @@ components:
       type: object
     GetOrderResponse:
       properties:
+        appliedShippingOptions:
+          description: Applied shipping options
+          items:
+            type: object
+          type: array
+        balanceDue:
+          description: Balance due
+          format: double
+          type: number
+        containsTaxIncludedAmounts:
+          type: boolean
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         email:
           description: Email address
           type: string
+        orderChannel:
+          description: Order channel
+          type: string
         orderDateTime:
-          description: Order date and time
-          example: yyyyMMddHHmmss
+          description: Order date and time (yyyyMMddHHmmss)
+          format: yyyyMMddHHmmss
           type: string
         orderId:
           description: Order ID
@@ -16213,6 +16842,14 @@ components:
           - cancelled
           - failed
           type: string
+        preferredDeliveryDate:
+          description: Preferred delivery date
+          type: string
+        purchaseOrderNumber:
+          description: Purchase order number
+          type: string
+        resourceInitialSetting:
+          $ref: '#/components/schemas/ResourceInitialSetting'
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
         shippingAddressId:
@@ -16223,14 +16860,30 @@ components:
           format: double
           type: number
         shippingLabelNumber:
-          description: Shipping label number
+          description: Shipping label number (representative)
           type: string
+        shippingLabelNumbers:
+          description: Shipping label numbers
+          items:
+            type: string
+          type: array
         taxAmount:
           description: Tax amount
           format: double
           type: number
+        taxIncludedInShippingCost:
+          description: Tax included in shipping cost
+          format: double
+          type: number
+        taxOnShippingCost:
+          description: Whether shipping cost is taxable
+          type: boolean
         totalAmount:
           description: Total amount
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: Withholding tax amount
           format: double
           type: number
       type: object
@@ -16275,8 +16928,10 @@ components:
       properties:
         amount:
           $ref: '#/components/schemas/PaymentAmount'
+          description: Billing amount
         description:
           $ref: '#/components/schemas/PaymentDescription'
+          description: Billing description
         message:
           description: Message
           type: string
@@ -16370,6 +17025,13 @@ components:
           description: Contract months
           format: int32
           type: integer
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         endDate:
           description: End date
           example: yyyyMMdd
@@ -16470,8 +17132,10 @@ components:
           type: integer
       type: object
     ImeiLock:
+      description: IMEI lock configuration.
       properties:
         imei:
+          description: IMEI of the target device
           type: string
       type: object
     IndividualInformationModel:
@@ -16898,8 +17562,8 @@ components:
     LocationRegistrationStatusForNetwork:
       properties:
         lastModifiedTime:
-          description: Timestamp of the last successful location registration (Unix
-            time, in milliseconds)
+          description: Timestamp of the last successful network registration (Unix
+            time in milliseconds)
           format: int64
           type: integer
         vplmn:
@@ -17040,6 +17704,14 @@ components:
         password:
           type: string
       type: object
+    MFARevokeRequest:
+      properties:
+        password:
+          description: Root user's password
+          type: string
+      required:
+      - password
+      type: object
     MFARevokingTokenVerifyRequest:
       properties:
         backupCode:
@@ -17073,22 +17745,62 @@ components:
           description: Amount of monthly bills.
           format: int64
           type: integer
+        currency:
+          description: Currency of bills.
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         paymentStatus:
-          description: Latest payment status.
+          description: |
+            Latest payment status. For details, please refer to [Payment status of usage charges](https://support.soracom.io/hc/ja/articles/360029337031) (Japanese).
+
+            - `lessThanMinimumCharge`: Will be billed in the next month or later. (due to less than minimum charge)
+            - `paying`: Payment in progress
+            - `paid`: Paid
+            - `fail`: Process failed
+            - `refunding`: Refund in progress
+            - `refunded`: Refunded
+            - `refund_fail`: Refund failed
+            - `delegating_to_third_party`: Delegating receivables
+            - `delegated_to_third_party`: Delegated
+            - `charging`: Charging in progress
+            - `canceling`: Canceling
+            - `cancelled`: Cancelled
+            - `cancel_failed`: Failed to cancel
           enum:
           - lessThanMinimumCharge
           - paying
           - paid
+          - fail
           - refunding
           - refunded
-          - fail
+          - refund_fail
+          - delegating_to_third_party
+          - delegated_to_third_party
+          - charging
+          - canceling
+          - cancelled
+          - cancel_failed
           type: string
         paymentTransactionId:
-          description: Transaction ID to get detail of payment.
+          description: Transaction ID. Call [Payment:getPaymentTransaction API](#/Payment/getPaymentTransaction)
+            with this ID to get detail of payment.
+          type: string
+        state:
+          description: |
+            Aggregation status of the billing
+
+            - `temporary`: Aggregating
+            - `closed`: Confirmed
+          enum:
+          - temporary
+          - closed
           type: string
         yearMonth:
-          description: yyyyMM
-          example: yyyyMM
+          description: Year and month.
+          format: yyyyMM
           type: string
       type: object
     NapterAuditLogDirection:
@@ -17115,10 +17827,10 @@ components:
           $ref: '#/components/schemas/NapterAuditLogDirection'
         imsi:
           type: string
-        isTLS:
-          type: boolean
         operatorId:
           type: string
+        tls:
+          type: boolean
         type:
           enum:
           - ACCESS
@@ -17239,10 +17951,37 @@ components:
     PaymentAmount:
       description: Payment amount
       properties:
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        paymentAmount:
+          type: number
+        subTotalAmount:
+          type: number
         taxAmount:
+          description: Tax amount
+          format: double
+          type: number
+        taxFreeSubTotalAmount:
+          description: Tax free sub total amount
+          format: double
+          type: number
+        taxRate:
+          type: object
+        taxableSubTotalAmount:
+          description: Taxable sub total amount
           format: double
           type: number
         totalAmount:
+          description: Total amount (tax included)
+          format: double
+          type: number
+        withholdingTaxAmount:
+          description: Withholding tax amount
           format: double
           type: number
       type: object
@@ -17262,6 +18001,13 @@ components:
           description: Amount
           format: double
           type: number
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         paymentDateTime:
           description: Payment date time
           format: int64
@@ -17281,8 +18027,24 @@ components:
       type: object
     Placement:
       properties:
+        infrastructureProvider:
+          enum:
+          - aws
+          type: string
         region:
           default: eu-central-1
+          description: |
+            If `infrastructureProvider` is `aws`, it indicates the rendezvous point.
+
+            - `ap-northeast-1`: Tokyo (Japan)
+            - `eu-central-1`: Frankfurt (Germany)
+            - `us-west-2`: Oregon (USA)
+            - `ap-southeast-2`: Sydney (Australia)
+          enum:
+          - ap-northeast-1
+          - eu-central-1
+          - us-west-2
+          - ap-southeast-2
           type: string
       type: object
     PortMapping:
@@ -17399,6 +18161,7 @@ components:
           enum:
           - JPY
           - USD
+          - EUR
           type: string
         description:
           description: Product Description
@@ -17536,6 +18299,23 @@ components:
           $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
+      type: object
+    ResourceInitialSetting:
+      description: Initial setting for the resource.
+      properties:
+        simInitialSettings:
+          additionalProperties:
+            $ref: '#/components/schemas/SimInitialSetting'
+          description: Initial setting of SIMs for each subscription. The key specifies
+            a subscription.
+          example:
+            plan01s:
+              groupId: 00000000-1111-2222-3333-444444444444
+              speedClass: s1.4xfast
+              tags:
+                date: 20221111
+                location: headquarters
+          type: object
       type: object
     ResourceInstance:
       properties:
@@ -17817,15 +18597,25 @@ components:
         imei:
           description: The IMEI of the device using the SIM.
           type: string
+        imsi:
+          description: IMSI
+          type: string
         lastUpdatedAt:
           format: int64
           type: integer
+        location:
+          type: object
         online:
           description: |
             Session status.
             - `true`: online
             - `false`: offline
           type: boolean
+        placement:
+          $ref: '#/components/schemas/Placement'
+        subscription:
+          description: Subscription
+          type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
@@ -17913,6 +18703,18 @@ components:
     ShippingCostModel:
       description: Shipping cost
       properties:
+        appliedShippingOptions:
+          description: Applied shipping options
+          items:
+            type: object
+          type: array
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         shippingArea:
           description: (Japan coverage only) Shipping area
           enum:
@@ -17992,9 +18794,20 @@ components:
         capabilities:
           $ref: '#/components/schemas/Capabilities'
         createdTime:
+          description: UNIX time (in milliseconds) that the IoT SIM (primary subscription
+            to the IoT SIM) was created.
           format: int64
           type: integer
         expiryAction:
+          description: |
+            Action when expiration date expires. Please refer to [Soracom Air Expiration Function](/en/docs/air/expiration/) for more detail.
+
+            - `doNothing` : do nothing
+            - `deleteSession` : delete session of the SIM if any
+            - `deactivate` : change the SIM status to Inactive
+            - `suspend` : change the SIM status to Suspended
+            - `terminate` : forcibly end any existing connections, and terminate the SIM
+            - `null`: No expiration date set.
           enum:
           - doNothing
           - deleteSession
@@ -18004,23 +18817,46 @@ components:
           - (null value)
           type: string
         expiryTime:
+          description: IoT SIM expiration date (UNIX time in milliseconds)
           format: int64
           type: integer
         groupId:
+          description: The SIM group ID where the SIM belongs to.
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
         lastModifiedTime:
+          description: UNIX time (in milliseconds) that the information in the IoT
+            SIM (primary subscription to the IoT SIM) was changed
           format: int64
           type: integer
         lastPortMappingCreatedTime:
+          description: UNIX time in milliseconds that Napter was used with the SIM.
+            If Napter has never been used with the SIM, null is returned.
           format: int64
           type: integer
         localInfo:
           $ref: '#/components/schemas/Map'
         moduleType:
+          description: |
+            The form factor of the physical SIM.
+
+            - `mini`: standard (2FF) size
+            - `micro`: micro (3FF) size
+            - `nano`: nano (4FF) size
+            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it)
+            - `embedded`: Chip type (also called MFF2 (eSIM))
+            - `virtual`: Virtual SIM/Subscriber
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - virtual
           type: string
         operatorId:
+          description: The ID of the operator who owns this SIM.
           type: string
         otaSerialNumber:
           type: string
@@ -18036,17 +18872,27 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/SimProfile'
           type: object
+        renewalFeeStatusSetTime:
+          description: UNIX time (in milliseconds) that the IoT SIM status is either
+            "ready", "standby", or "suspended".
+          format: int64
+          type: integer
         serialNumber:
+          description: The serial number of the SIM. Virtual SIM/Subscriber does not
+            have a serial number.
           type: string
         sessionStatus:
           $ref: '#/components/schemas/SessionStatus'
         simId:
+          description: The SIM ID of the SIM.
           type: string
         speedClass:
+          description: The speed class of the SIM.
           type: string
         status:
           description: |
-            Status of this IoT SIM
+            Status of the IoT SIM (Primary subscription of the IoT SIM)
+
             - `ready`
             - `active`
             - `inactive`
@@ -18060,20 +18906,51 @@ components:
           - standby
           - suspended
           - terminated
+          type: string
         tags:
           $ref: '#/components/schemas/TagSet'
         terminationEnabled:
+          description: |
+            Configure IoT SIM termination protection
+
+            - `true`: Termination protection OFF (can be terminated).
+            - `false`: Termination protection ON
           type: boolean
         type:
+          description: |
+            IoT SIM Type
+
+            - `euicc`: Chip type (eSIM)
+            - `uicc`: Card type
+            - `virtual`: Virtual SIM/Subscriber
           enum:
           - euicc
           - uicc
           - virtual
           type: string
       type: object
+    SimInitialSetting:
+      description: Sim initial setting for the specific subscription.
+      properties:
+        groupId:
+          description: Group ID.
+          type: string
+        speedClass:
+          description: Speed class.
+          type: string
+        tags:
+          additionalProperties:
+            type: string
+          description: Tags.
+          type: object
+      type: object
     SimProfile:
       properties:
         arcClientPeerPrivateKey:
+          description: |
+            The client's PrivateKey (client peer private key) for connecting with WireGuard.
+            - PrivateKey (client peer private key) cannot be redisplayed. If you have lost your private key, generate a new key and update the device credentials.
+            - Never disclose connection information to outside parties.
           type: string
         arcClientPeerPublicKey:
           type: string
@@ -18097,6 +18974,7 @@ components:
         capabilities:
           $ref: '#/components/schemas/Capabilities'
         imsi:
+          description: IMSI
           type: string
         msisdn:
           type: string
@@ -18114,9 +18992,15 @@ components:
       properties:
         encodingType:
           default: 2
-          description: Encoding type of the message body. `1` indicates the body is
-            `DCS_7BIT` that only supports single byte characters. `2` is `DCS_UCS2`
-            that supports multi-byte text. When omitted, it is treated as `2` (`DCS_UCS2`).
+          description: |
+            Encoding type of the message body. Default is `2` (`DCS_UCS2`).
+
+            - `1`: Send in GSM 7-bit that only supports standard alphabet. Kanji, Cyrillic, and Arabic characters cannot be sent. Maximum 160 characters (maximum 140 bytes).
+
+                Example: `{"encodingType": 1, "payload": "Test message."}`
+            - `2`: Send in UCS-2, which supports Kanji, Cyrillic, Arabic, etc. Maximum 70 characters.
+
+                Example: `{"encodingType": 2, "payload": "テストメッセージ"}`
           type: integer
         payload:
           type: string
@@ -18188,6 +19072,68 @@ components:
 
             - `storage_life`: Storage life
           type: string
+      type: object
+    SoraCamEvent:
+      properties:
+        deviceId:
+          description: An identifier to identify the device.
+          type: string
+        deviceType:
+          description: Type of the device.
+          format: string
+          type: string
+        eventId:
+          description: An identifier to identify of the event
+          type: string
+        eventInfo:
+          properties:
+            atomEventV1:
+              description: Detail of the event
+              properties:
+                endTime:
+                  description: Timestamp when the event is ended (unix time in milliseconds).
+                  format: int64
+                  type: integer
+                labels:
+                  description: List of the detected objects in the event.
+                  items:
+                    type: string
+                  type: array
+                picture:
+                  description: URL for the picture of `startTime`. If the URL has
+                    expired, please call the API again.
+                  type: string
+                recordingStatus:
+                  description: Status of the event recording.
+                  enum:
+                  - completed
+                  - recording
+                  - failed
+                  type: string
+                startTime:
+                  description: Timestamp when the event is started (unix time in milliseconds).
+                  format: int64
+                  type: integer
+                type:
+                  description: |
+                    "Type of the event."
+                      - `motion`: Motion Alert
+                      - `sound`: Sound Alert
+                      - `other`: Others
+                  enum:
+                  - motion
+                  - sound
+                  - other
+                  type: string
+              type: object
+            infoType:
+              description: Type of the event detail. May vary depend on `deviceType`.
+              type: string
+          type: object
+        time:
+          description: Timestamp of the event (unix time in milliseconds).
+          format: int64
+          type: integer
       type: object
     SoraCamExportUsage:
       properties:
@@ -18335,6 +19281,11 @@ components:
       type: object
     SoraCamStreamingVideo:
       properties:
+        expiryTime:
+          description: Expiration timestamp of all URLs in playList (unix time in
+            milliseconds).
+          format: int64
+          type: integer
         playList:
           description: |
             Array of playlist entries for streaming video (real-time video / recorded video)
@@ -18506,25 +19457,32 @@ components:
     Subscriber:
       properties:
         apn:
-          description: The Access Point Name configured.
+          description: The APN (Access Point Name) configured.
           type: string
         bundles:
           items:
             type: string
           type: array
         createdAt:
-          description: The timestamp that the SIM was created.
+          description: UNIX time (in milliseconds) when this subscription was created.
+            For example, for a secondary subscription, it is the UNIX time (in milliseconds)
+            that the secondary subscription was created.
           format: int64
           type: integer
         expiredAt:
-          description: The timestamp of a date and time where the SIM was expired.
-          format: int64
-          type: integer
-        expiredTime:
-          description: The timestamp of a date and time where the SIM was expired.
+          description: IoT SIM expiration date (UNIX time in milliseconds)
           format: int64
           type: integer
         expiryAction:
+          description: |
+            Action when expiration date expires. Please refer to [Soracom Air Expiration Function](/en/docs/air/expiration/) for more detail.
+
+            - `doNothing` : do nothing
+            - `deleteSession` : delete session of the SIM if any
+            - `deactivate` : change the SIM status to Inactive
+            - `suspend` : change the SIM status to Suspended
+            - `terminate` : forcibly end any existing connections, and terminate the SIM
+            - `null`: No expiration date set.
           enum:
           - doNothing
           - deleteSession
@@ -18533,6 +19491,10 @@ components:
           - terminate
           - (null value)
           type: string
+        expiryTime:
+          description: IoT SIM expiration date (UNIX time in milliseconds)
+          format: int64
+          type: integer
         groupId:
           description: The SIM group ID where the SIM belongs to.
           type: string
@@ -18547,45 +19509,68 @@ components:
         ipAddress:
           type: string
         lastModifiedAt:
-          description: The timestamp when the SIM information was modified.
+          description: UNIX time in milliseconds that the IoT SIM information was
+            changed
           format: int64
           type: integer
         lastPortMappingCreatedTime:
-          description: The timestamp (in Unix milliseconds) of the last instance where
-            the Napter On-Demand Remote Access service was used with the subscriber.
-            If Napter has never been used with the subscriber, null is returned.
+          description: UNIX time in milliseconds that Napter was used with the SIM.
+            If Napter has never been used with the SIM, null is returned.
           format: int64
           type: integer
         locationRegistrationStatus:
           $ref: '#/components/schemas/LocationRegistrationStatus'
-          description: Location registration status for each network.
+          description: Network registration status for each network.
         moduleType:
-          description: The form factor of the physical SIM. Possible values are "mini"
-            for 2FF SIM card, "micro" for 3FF SIM card, "nano" for 4FF SIM card, "trio"
-            for a Universal 3-in-1 (2FF/3FF/4FF) SIM card, or "embedded" for MFF2
-            or Embedded SIM (eSIM).
+          description: |
+            The form factor of the physical SIM.
+
+            - `mini`: standard (2FF) size
+            - `micro`: micro (3FF) size
+            - `nano`: nano (4FF) size
+            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it)
+            - `embedded`: Chip type (also called MFF2 (eSIM))
+            - `virtual`: Virtual SIM/Subscriber
+            - `null`: null for secondary subscriptions
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - virtual
+          - (null value)
           type: string
         msisdn:
           description: The MSISDN of the SIM.
           type: string
         operatorId:
-          description: The Operator ID of the SIM.
+          description: The ID of the operator who owns this SIM.
           type: string
         plan:
-          description: Whether or not the subscription supports SMS functionality.
-            0 = SMS not supported; 1 = SMS supported.
+          description: |
+            Whether or not the subscription supports SMS functionality.
+
+            - `0`: SMS not supported.
+            - `1`: SMS supported.
           type: integer
         previousSession:
           $ref: '#/components/schemas/PreviousSessionStatus'
         registeredTime:
-          description: The timestamp (in Unix milliseconds) that the subscriber was
-            manually registered to your account. When purchasing SIMs directly through
-            the User Console, SIMs will automatically be registered to your account,
-            and null is returned.
+          description: UNIX time (in milliseconds) that the IoT SIM was manually registered
+            to the operator. When purchasing SIMs directly through the User Console,
+            SIMs will automatically be registered to your account, the field is not
+            present.
+          format: int64
+          type: integer
+        renewalFeeStatusSetTime:
+          description: UNIX time (in milliseconds) that the IoT SIM status is either
+            "ready", "standby", or "suspended".
           format: int64
           type: integer
         serialNumber:
-          description: The serial number of the SIM.
+          description: The serial number of the SIM. Virtual SIM/Subscriber does not
+            have a serial number.
           type: string
         sessionStatus:
           $ref: '#/components/schemas/SessionStatus'
@@ -18596,8 +19581,22 @@ components:
           description: The speed class of the SIM.
           type: string
         status:
-          description: The subscription status of the subscriber. Possible values
-            are "ready", "active", "inactive", "standby", "suspended", or "terminated".
+          description: |
+            Status of the IoT SIM (Primary subscription of the IoT SIM) Note that the status of a virtual SIM/Subscriber added to an IoT SIM is either `active` or `terminated`.
+
+            - `ready`
+            - `active`
+            - `inactive`
+            - `standby`
+            - `suspended`
+            - `terminated`
+          enum:
+          - ready
+          - active
+          - inactive
+          - standby
+          - suspended
+          - terminated
           type: string
         subscription:
           description: The name of the subscription for the SIM.
@@ -18605,6 +19604,11 @@ components:
         tags:
           $ref: '#/components/schemas/TagSet'
         terminationEnabled:
+          description: |
+            Configure IoT SIM termination protection
+
+            - `true`: Termination protection OFF (can be terminated).
+            - `false`: Termination protection ON
           type: boolean
         type:
           description: The speed class of the SIM.
@@ -18729,19 +19733,19 @@ components:
       properties:
         speedClass:
           description: |
-            Speed class. You can specify one of followings based on this IoT SIM's subscription.
-            - plan01s, plan01s - Low Data Volume, planP1, planX3, plan-D:
+            Speed class. Specify one of the following. Please specify the speed class that matches the subscription.
+            - For plan01s, plan01s - Low Data Volume, planP1, planX3 X3-5MB, plan-D:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
                 - `s1.fast`
                 - `s1.4xfast`
-            - plan-KM1:
+            - For plan-KM1:
                 - `t1.standard`
-            - plan-DU:
+            - For plan-DU:
                 - `u1.standard`
                 - `u1.slow`
-            - Virtual SIM/Subscriber:
+            - For virtual SIM/Subscriber:
                 - `arc.standard`
           enum:
           - s1.minimum
@@ -18832,11 +19836,27 @@ components:
       type: object
     VirtualPrivateGateway:
       properties:
+        allowedOperators:
+          type: object
         createdTime:
           format: int64
           type: integer
-        id:
+        deviceSubnetCidrRange:
+          description: Device Subnet IP Address Range.
           type: string
+        fixedIpAddressesEnabled:
+          description: |
+            Fixed global IP address option.
+
+            - `true`: Enabled.
+            - `false`: Disabled.
+          type: boolean
+        gateVxlanId:
+          type: number
+        implicitTerminationProtected:
+          type: boolean
+        junctionEnabled:
+          type: boolean
         lastModifiedTime:
           format: int64
           type: integer
@@ -18844,23 +19864,43 @@ components:
           type: string
         placement:
           $ref: '#/components/schemas/Placement'
+        size:
+          type: string
         status:
+          enum:
+          - running
           type: string
         tags:
           $ref: '#/components/schemas/TagSet'
         type:
+          description: |
+            VPG Type.
+
+            - `14` : Type-E
+            - `15` : Type-F
           enum:
           - 12
           - 13
           - 14
           - 15
           type: integer
+        ueSubnetCidrRange:
+          description: Device Subnet IP Address Range.
+          type: string
         useInternetGateway:
+          description: |
+            Internet Gateway.
+
+            - `true`: Enabled.
+            - `false`: Disabled.
           type: boolean
         virtualInterfaces:
           $ref: '#/components/schemas/Map'
         vpcPeeringConnections:
           $ref: '#/components/schemas/Map'
+        vpgId:
+          description: ID
+          type: string
       type: object
     VolumeDiscountModel:
       description: Long term discount
@@ -18870,6 +19910,13 @@ components:
           description: Contract months
           format: int32
           type: integer
+        currency:
+          description: Currency
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
         endDate:
           description: End date
           example: yyyyMMdd
@@ -18886,6 +19933,14 @@ components:
           description: Start date
           example: yyyyMMdd
           type: string
+        taxIncludedInitialCost:
+          description: Tax included initial cost
+          format: double
+          type: number
+        taxIncludedUnitPrice:
+          description: Tax included unit price
+          format: double
+          type: number
         unitPrice:
           description: Unit price
           format: double

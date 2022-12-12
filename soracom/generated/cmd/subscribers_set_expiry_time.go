@@ -26,11 +26,11 @@ var SubscribersSetExpiryTimeCmdExpiryTime int64
 var SubscribersSetExpiryTimeCmdBody string
 
 func init() {
-	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("Specify expiry action. Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify terminate as an action.When omitted, it is set to null value.- `doNothing` : do nothing- `deleteSession` : delete session of the SIM if any- `deactivate` : change the SIM status to Inactive- `suspend` : change the SIM status to Suspended- `terminate` : forcibly end any existing connections, and terminate the SIM- null value : not set (It works the same as `doNothing`)"))
+	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("Action at expiration. Specify one of the following Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify `terminate` as an action.If omitted, a null value is set.- `doNothing` : do nothing- `deleteSession` : delete session of the SIM if any- `deactivate` : change the SIM status to Inactive- `suspend` : change the SIM status to Suspended- `terminate` : forcibly end any existing connections, and terminate the SIM- null value : not set (It works the same as `doNothing`)"))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("The timestamp (in Unix milliseconds) of a date and time set using the Expiration function."))
+	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("Timestamp of date and time set using the Expiration function (UNIX time in milliseconds)"))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)

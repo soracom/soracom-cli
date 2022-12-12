@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: "20160218"
+  version: 20221128-042447
 servers:
 - url: https://api-sandbox.soracom.io/v1
 paths:
@@ -66,7 +66,7 @@ paths:
       description: Operator を削除します。
       operationId: sandboxDeleteOperator
       parameters:
-      - description: operator_id
+      - description: オペレーター ID
         in: path
         name: operator_id
         required: true
@@ -275,7 +275,7 @@ components:
           example: dailyDataTrafficChargeTotal
           type: string
         expiryYearMonth:
-          example: yyyyMM
+          format: yyyyMM
           type: string
       type: object
     sandboxCreateCouponResponse:
@@ -296,7 +296,7 @@ components:
           type: string
         expiryYearMonth:
           description: 有効期限
-          example: yyyyMM
+          format: yyyyMM
           type: string
       type: object
     sandboxCreateSubscriberRequest:

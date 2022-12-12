@@ -13,7 +13,7 @@ import (
 var SimsUnsetImeiLockCmdSimId string
 
 func init() {
-	SimsUnsetImeiLockCmd.Flags().StringVar(&SimsUnsetImeiLockCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
+	SimsUnsetImeiLockCmd.Flags().StringVar(&SimsUnsetImeiLockCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 	SimsCmd.AddCommand(SimsUnsetImeiLockCmd)
 }
 

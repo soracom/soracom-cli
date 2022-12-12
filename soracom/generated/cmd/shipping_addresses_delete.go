@@ -16,7 +16,7 @@ var ShippingAddressesDeleteCmdOperatorId string
 var ShippingAddressesDeleteCmdShippingAddressId string
 
 func init() {
-	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("operator_id"))
+	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
 	ShippingAddressesCmd.AddCommand(ShippingAddressesDeleteCmd)

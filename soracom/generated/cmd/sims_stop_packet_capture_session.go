@@ -18,7 +18,7 @@ var SimsStopPacketCaptureSessionCmdSimId string
 func init() {
 	SimsStopPacketCaptureSessionCmd.Flags().StringVar(&SimsStopPacketCaptureSessionCmdSessionId, "session-id", "", TRAPI("Packet capture session ID"))
 
-	SimsStopPacketCaptureSessionCmd.Flags().StringVar(&SimsStopPacketCaptureSessionCmdSimId, "sim-id", "", TRAPI("SIM ID"))
+	SimsStopPacketCaptureSessionCmd.Flags().StringVar(&SimsStopPacketCaptureSessionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 	SimsCmd.AddCommand(SimsStopPacketCaptureSessionCmd)
 }
 
