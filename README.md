@@ -51,24 +51,6 @@ brew install soracom-cli
 brew install bash-completion
 ```
 
-## Using Linux, installing with snap
-
-```shell
-sudo snap install soracom
-```
-
-In this case, you may want to connect the snap to `dot-soracom` interface which is for reading / writing profile files in `$HOME/.soracom`:
-
-```shell
-snap connect soracom:dot-soracom
-```
-
-You may also want to have the following line in your `.bashrc` etc. to use `$HOME/.soracom` as the profiles directory instead of `$SNAP_USER_DATA/.soracom` (i.e. `$HOME/snap/soracom/<revision>/.soracom`)
-
-```bash
-export SORACOM_PROFILE=$HOME/.soracom
-```
-
 ## In other cases
 
 By running one of the following commands, the latest version of `soracom` command will be installed.
@@ -284,8 +266,6 @@ VERSION=1.2.3                         # => specify a version number to be releas
 ./scripts/release.sh $VERSION         # => release the version to GitHub
 # edit the release on github.com release page
 ./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
-./scripts/build-snap.sh $VERSION
-./scripts/release-snap.sh $VERSION
 ./scripts/build-lambda-layer.sh $VERSION
 ./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE   # => this command releases the layer to all regions (except ap-east-1)
 ```

@@ -52,24 +52,6 @@ brew install soracom-cli
 brew install bash-completion
 ```
 
-## Linux をお使いで、snap によりインストールする場合
-
-```shell
-sudo snap install soracom
-```
-
-snap を使って `soracom` コマンドをインストールし、`$HOME/.soracom` ディレクトリに保存されたプロファイル情報を利用したい場合は `dot-soracom` インターフェースを `soracom` の snap パッケージに connect してください。
-
-```shell
-snap connect soracom:dot-soracom
-```
-
-さらに、snap でインストールした場合のデフォルトのプロファイルディレクトリ `$SNAP_USER_DATA/.soracom`（すなわち `$HOME/snap/soracom/<revision>/.soracom`）の代わりに `$HOME/.soracom` を利用するために以下のような行を `.bashrc` などに追加してください。
-
-```bash
-export SORACOM_PROFILE=$HOME/.soracom
-```
-
 ## それ以外の場合
 
 以下に紹介するいずれかのコマンドを実行することで、最新版の `soracom` コマンドがダウンロードされてインストールされます。
