@@ -170,7 +170,9 @@ func buildBodyForSubscribersSendSmsCmd() (string, error) {
 	}
 
 	if SubscribersSendSmsCmdEncodingType != 2 {
+
 		result["encodingType"] = SubscribersSendSmsCmdEncodingType
+
 	}
 
 	resultBytes, err := json.Marshal(result)

@@ -160,9 +160,7 @@ func buildBodyForSandboxStatsAirInsertCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if SandboxStatsAirInsertCmdUnixtime != 0 {
-		result["unixtime"] = SandboxStatsAirInsertCmdUnixtime
-	}
+	result["unixtime"] = SandboxStatsAirInsertCmdUnixtime
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

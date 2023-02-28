@@ -174,9 +174,7 @@ func buildBodyForVpgCreatePacketCaptureSessionCmd() (string, error) {
 		result["prefix"] = VpgCreatePacketCaptureSessionCmdPrefix
 	}
 
-	if VpgCreatePacketCaptureSessionCmdDuration != 0 {
-		result["duration"] = VpgCreatePacketCaptureSessionCmdDuration
-	}
+	result["duration"] = VpgCreatePacketCaptureSessionCmdDuration
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

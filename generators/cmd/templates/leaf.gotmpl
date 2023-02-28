@@ -394,25 +394,37 @@ func buildBodyFor{{$suffix}}() (string, error) {
 
   {{range .IntegerFlags}}
   {{if eq .In "body"}}
+  {{if .DefaultValueSpecified}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  {{end}}
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
+  {{if .DefaultValueSpecified}}
   }
+  {{end}}
   {{end}}
   {{end}}
 
   {{range .FloatFlags}}
   {{if eq .In "body"}}
+  {{if .DefaultValueSpecified}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  {{end}}
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
+  {{if .DefaultValueSpecified}}
   }
+  {{end}}
   {{end}}
   {{end}}
 
   {{range .BoolFlags}}
   {{if eq .In "body"}}
+  {{if .DefaultValueSpecified}}
   if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  {{end}}
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
+  {{if .DefaultValueSpecified}}
   }
+  {{end}}
   {{end}}
   {{end}}
 

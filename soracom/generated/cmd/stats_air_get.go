@@ -27,11 +27,11 @@ var StatsAirGetCmdOutputJSONL bool
 func init() {
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the history of traffic at the finest granularity. However, while the device is connected to the Soracom platform, the communication volume is recorded at approximately 5-minute intervals."))
 
-	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
+	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdFrom, "from", 0, TRAPI("Start time for the aggregate data (UNIX time in seconds)."))
 
-	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsAirGetCmd.Flags().BoolVar(&StatsAirGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsAirCmd.AddCommand(StatsAirGetCmd)

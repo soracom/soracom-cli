@@ -183,13 +183,9 @@ func buildBodyForSigfoxDevicesSetGroupCmd() (string, error) {
 		result["operatorId"] = SigfoxDevicesSetGroupCmdOperatorId
 	}
 
-	if SigfoxDevicesSetGroupCmdCreatedTime != 0 {
-		result["createdTime"] = SigfoxDevicesSetGroupCmdCreatedTime
-	}
+	result["createdTime"] = SigfoxDevicesSetGroupCmdCreatedTime
 
-	if SigfoxDevicesSetGroupCmdLastModifiedTime != 0 {
-		result["lastModifiedTime"] = SigfoxDevicesSetGroupCmdLastModifiedTime
-	}
+	result["lastModifiedTime"] = SigfoxDevicesSetGroupCmdLastModifiedTime
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

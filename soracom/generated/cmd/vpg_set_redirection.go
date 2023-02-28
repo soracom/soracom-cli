@@ -179,7 +179,9 @@ func buildBodyForVpgSetRedirectionCmd() (string, error) {
 	}
 
 	if VpgSetRedirectionCmdEnabled != false {
+
 		result["enabled"] = VpgSetRedirectionCmdEnabled
+
 	}
 
 	resultBytes, err := json.Marshal(result)

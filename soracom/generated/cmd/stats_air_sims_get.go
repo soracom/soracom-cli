@@ -25,13 +25,13 @@ var StatsAirSimsGetCmdTo int64
 var StatsAirSimsGetCmdOutputJSONL bool
 
 func init() {
-	StatsAirSimsGetCmd.Flags().StringVar(&StatsAirSimsGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+	StatsAirSimsGetCmd.Flags().StringVar(&StatsAirSimsGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the history of traffic at the finest granularity. However, while the device is connected to the Soracom platform, the communication volume is recorded at approximately 5-minute intervals."))
 
 	StatsAirSimsGetCmd.Flags().StringVar(&StatsAirSimsGetCmdSimId, "sim-id", "", TRAPI("SIM ID"))
 
-	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
+	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdFrom, "from", 0, TRAPI("Start time for the aggregate data (UNIX time in seconds)."))
 
-	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+	StatsAirSimsGetCmd.Flags().Int64Var(&StatsAirSimsGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsAirSimsGetCmd.Flags().BoolVar(&StatsAirSimsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsAirSimsCmd.AddCommand(StatsAirSimsGetCmd)

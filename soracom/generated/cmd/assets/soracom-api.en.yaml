@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20221212-023207
+  version: 20230228-033906
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -54,7 +54,7 @@ paths:
           content:
             application/json:
               example:
-                apiKind: /v1/bills
+              - apiKind: /v1/bills
                 operatorId: OPXXXXXXXXXX
                 remoteIpAddress: xxx.xxx.xxx.xxx
                 requestPath: /v1/bills
@@ -513,6 +513,109 @@ paths:
       - Billing
       x-soracom-cli:
       - bills export-latest
+  /bills/summaries/bill_items:
+    get:
+      description: |
+        Get a billing summary of bill items for the last 4 months (this month to 3 months ago). Sorted by date from newest to oldest.
+      operationId: getBillingSummaryOfBillItems
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - costBreakdownList:
+                - amount: 0.24
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                - amount: 0.09
+                  billItemCategory: Beam
+                  billItemName: soracomBeamRequestCharge-inHttp
+                currency: USD
+                updatedTime: 1682121600
+                yearMonth: "202304"
+              - costBreakdownList:
+                  amount: 1.86
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1680307200
+                yearMonth: "202303"
+              - costBreakdownList:
+                  amount: 1.8
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1677628800
+                yearMonth: "202302"
+              - costBreakdownList:
+                  amount: 1.86
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1675209600
+                yearMonth: "202301"
+              schema:
+                items:
+                  $ref: '#/components/schemas/BillingSummaryResponseOfBillItems'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Gets a billing summary of bill items.
+      tags:
+      - Billing
+      x-soracom-cli:
+      - bills summaries get-bill-items
+  /bills/summaries/sims:
+    get:
+      description: |
+        Get a billing summary of SIMs for the last 4 months (this month to 3 months ago). Sorted by date from newest to oldest.
+      operationId: getBillingSummaryOfSims
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - costBreakdownList:
+                - amount: 0.24
+                  simId: "1234567890123456780"
+                - amount: 0.12
+                  simId: "1234567890123456781"
+                currency: USD
+                updatedTime: 1682121600
+                yearMonth: "202304"
+              - costBreakdownList:
+                - amount: 1.86
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1680307200
+                yearMonth: "202303"
+              - costBreakdownList:
+                - amount: 1.8
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1677628800
+                yearMonth: "202302"
+              - costBreakdownList:
+                - amount: 1.86
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1675209600
+                yearMonth: "202301"
+              schema:
+                items:
+                  $ref: '#/components/schemas/BillingSummaryResponseOfSims'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Gets a billing summary of SIMs.
+      tags:
+      - Billing
+      x-soracom-cli:
+      - bills summaries get-sims
   /cell_locations:
     get:
       description: |
@@ -2741,6 +2844,9 @@ paths:
         name: product_id
         required: false
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Tag name for filtering the search (exact match).
         in: query
@@ -2783,6 +2889,27 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - attributes:
+                  contractEndingTime: "2022-11-08T23:59:59Z"
+                  firstClickTimestamp: "2018-11-08T09:01:11Z"
+                  remainingCount: 1499
+                createdTime: 1541668508839
+                id: button/1234567890ABCDE0
+                lastModifiedTime: 1665398234935
+                lastSeen:
+                  batteryLevel: 1
+                  clickEventPropagated: true
+                  clickTime: "2022-01-26T01:07:19.561Z"
+                  clickType: DOUBLE
+                operatorId: OP0040984956
+                productId: button
+                serialNumber: 1234567890ABCDE0
+                status: active
+                tags:
+                  name: LTE-M Button 01
+                terminatedTime: null
+                terminationEnabled: false
               schema:
                 items:
                   $ref: '#/components/schemas/Gadget'
@@ -2811,6 +2938,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -2822,6 +2952,27 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                attributes:
+                  contractEndingTime: "2022-11-08T23:59:59Z"
+                  firstClickTimestamp: "2018-11-08T09:01:11Z"
+                  remainingCount: 1499
+                createdTime: 1541668508839
+                id: button/1234567890ABCDE0
+                lastModifiedTime: 1665398234935
+                lastSeen:
+                  batteryLevel: 1
+                  clickEventPropagated: true
+                  clickTime: "2022-01-26T01:07:19.561Z"
+                  clickType: DOUBLE
+                operatorId: OP0040984956
+                productId: button
+                serialNumber: 1234567890ABCDE0
+                status: active
+                tags:
+                  name: LTE-M Button 01
+                terminatedTime: null
+                terminationEnabled: false
               schema:
                 $ref: '#/components/schemas/Gadget'
           description: The gadget's detailed information.
@@ -2845,6 +2996,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -2879,6 +3033,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -2913,6 +3070,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -2944,47 +3104,6 @@ paths:
       - Gadget
       x-soracom-cli:
       - gadgets register
-  /gadgets/{product_id}/{serial_number}/set_group:
-    post:
-      description: Sets or overwrites a group for the specified gadget.
-      operationId: setGadgetGroup
-      parameters:
-      - description: Product ID of the target gadget.
-        in: path
-        name: product_id
-        required: true
-        schema:
-          type: string
-      - description: Serial Number of the target gadget.
-        in: path
-        name: serial_number
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Group'
-        description: Group (may include ID only).
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gadget'
-          description: The gadget's detailed information after the update.
-        "404":
-          description: The specified gadget does not exist.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Set Group of gadget.
-      tags:
-      - Gadget
-      x-soracom-cli:
-      - gadgets set-group
   /gadgets/{product_id}/{serial_number}/tags:
     put:
       description: Inserts/updates tags for the specified gadget.
@@ -2995,6 +3114,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -3038,6 +3160,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -3077,6 +3202,9 @@ paths:
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
       - description: Serial Number of the target gadget.
         in: path
@@ -3101,41 +3229,6 @@ paths:
       - Gadget
       x-soracom-cli:
       - gadgets terminate
-  /gadgets/{product_id}/{serial_number}/unset_group:
-    post:
-      description: Removes the group configuration from the specified gadget.
-      operationId: unsetGadgetGroup
-      parameters:
-      - description: Product ID of the target gadget.
-        in: path
-        name: product_id
-        required: true
-        schema:
-          type: string
-      - description: Serial Number of the target gadget.
-        in: path
-        name: serial_number
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gadget'
-          description: The gadget's detailed information after the update.
-        "404":
-          description: The specified gadget does not exist or the gadget does not
-            belong to a group.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Unset Group of gadget.
-      tags:
-      - Gadget
-      x-soracom-cli:
-      - gadgets unset-group
   /groups:
     get:
       description: Returns a list of groups.
@@ -9979,175 +10072,6 @@ paths:
       - Sim
       x-soracom-cli:
       - sims terminate-subscription-container
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers:
-    get:
-      description: Returns a schema listing subscription containers and containing
-        a map of PLMN codes to subscription containers
-      operationId: listSubscriptionContainers
-      parameters:
-      - description: Sim Id of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Get subscription container status.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims list-subscription-containers
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:
-    post:
-      description: Causes the identified container to become the active one on the
-        Sim.
-      operationId: enableSubscriptionContainer
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      - description: Identifier of the target container
-        in: path
-        name: container_id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Enables a subscription container.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims enable-subscription-container
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:
-    put:
-      description: Inserts/updates Country (and optionally network) to subscription
-        container mapping entries in the mapping table.
-      operationId: putSubscriptionContainerCountryMappingEntries
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MappingEntries'
-        description: collection of country (and optionally network) to subscription
-          container mapping entries
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Updates subscription container country mapping entries.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims put-country-mapping-entries
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:
-    delete:
-      description: Delete subscription container country mapping entries
-      operationId: deleteSubscriptionContainerCountryMappingEntry
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      - description: mobile country code
-        in: path
-        name: mcc
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Delete subscription container mapping entries
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims delete-country-mapping-entry
   /sims/{sim_id}/register:
     post:
       description: Registers an IoT SIM to an operator.
@@ -10690,7 +10614,7 @@ paths:
       description: |
         Obtains a list of cameras that are compatible with the Soracom Cloud Camera Services. You can also retrieve information on cameras for which a license has not been assigned.
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDevices
       responses:
         "200":
@@ -10723,7 +10647,10 @@ paths:
       - sora-cam devices list
   /sora_cam/devices/{device_id}:
     get:
-      description: Obtain a SoraCam device record for the device identified by device_id.
+      description: |
+        Obtain a SoraCam device record for the device identified by device_id.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDevice
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -10759,36 +10686,33 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: |
-        Get the SoraCam device information identified by device_id.
-
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      summary: Get the SoraCam device information identified by device_id.
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get
   /sora_cam/devices/{device_id}/events:
     get:
-      description: Returns list of SoraCam events for the specified device.
+      description: |
+        Returns list of SoraCam events for the specified device.
       operationId: listSoraCamDeviceEventsForDevice
       parameters:
-      - description: ID of the target SoraCam device
+      - description: ID of the target SoraCam device.
         in: path
         name: device_id
         required: true
         schema:
           type: string
-      - description: Value of the X-Soracom-Next-Key header in the response to the
-          previous request. By specifying this parameter, you can continue to retrieve
-          the list from the next event onward.
+      - description: Value of the x-soracom-next-key header in the response to the
+          last listSoraCamDeviceEventsForDevice request. By specifying this parameter,
+          you can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of events to retrieve. Setting a limit does not
-          guarantee the number of events returned in the response (i.e. the response
-          may contain fewer items than the specified limit).
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -10811,8 +10735,11 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: 'Sort order of the events. Either descending ("desc": latest
-          data entry first) or ascending ("asc": oldest data entry first).'
+      - description: |
+          Sort order of the events.
+
+          - `desc`: Descending order (latest data entry first)
+          - `asc`: Ascending order (oldest data entry first)
         in: query
         name: sort
         required: false
@@ -10826,6 +10753,17 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                deviceType: atomCamV2
+                eventId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                eventInfo:
+                  endTime: 1662973203000
+                  picture: https://atom-device-alarm-file.s3.ap-northeast-1.amazonaws.com/7CDDDEADBEEF/2022-12-12/7CDDDEADBEEF131670825831_1670825831000_13_1_0/xxx.jpg?...
+                  recordingStatus: completed
+                  startTime: 1662973200000
+                  type: motion
+                time: 1662973200000
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamEvent'
@@ -10855,7 +10793,7 @@ paths:
 
         **Warning**: Exporting either still images or recorded video will consume the available video viewing time (72 hours per month).
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportUsage
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -10869,12 +10807,16 @@ paths:
           content:
             application/json;charset=UTF-8:
               example:
-              - deviceId: 7CDDDEADBEEF
+                deviceId: 7CDDDEADBEEF
                 image:
+                  billedFrames: 0
+                  limitFrames: 259200
                   remainingFrames: 259131
                   usedFrames: 69
                 meteredYearMonth: "202209"
                 video:
+                  billedSeconds: 0
+                  limitSeconds: 259200
                   remainingSeconds: 259131
                   usedSeconds: 69
               schema:
@@ -10891,14 +10833,100 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get-export-usage
+  /sora_cam/devices/{device_id}/exports/usage/limit_override:
+    delete:
+      description: |
+        Reset the monthly limit on the recorded video time available for export to the default value. By default, the limit is set to 72 hours per month.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: deleteSoraCamDeviceExportUsageLimitOverride
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: OK, deleted.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Reset the monthly limit on the recorded video time available for export
+        for compatible camera device to the default value.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices delete-export-usage-limit-override
+    put:
+      description: |
+        Set the monthly limit on the recorded video time available for export. By default, the limit is set to 72 hours per month. A maximum of 1,500 hours can be set.
+
+        **Warning**: Additional costs will be incurred for recorded video exported beyond 72 hours. Simply changing the monthly limit does not result in any charges.. However, exceeding 72 hours of export time consumption will incur charges regardless of the set export time limit. For more information about fees, see Soracom Cloud Camera Services [about fees](https://soracom.jp/sora_cam/#pricing) (Japanese).
+
+        **Warning**: The monthly limit can be set to less than 72 hours. In such cases, there will be no change in the charge.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: updateSoraCamDeviceExportUsageLimitOverride
+      parameters:
+      - description: Device ID of the target compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              limitHours: 144
+            schema:
+              $ref: '#/components/schemas/SoraCamExportUsageLimitOverrideSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                image:
+                  billedFrames: 69
+                  limitFrames: 518400
+                  remainingFrames: 259131
+                  usedFrames: 259269
+                meteredYearMonth: "202209"
+                video:
+                  billedSeconds: 69
+                  limitSeconds: 518400
+                  remainingSeconds: 259131
+                  usedSeconds: 259269
+              schema:
+                $ref: '#/components/schemas/SoraCamExportUsage'
+          description: OK, updated.
+        "400":
+          description: The specified limit override is not acceptable.
+        "404":
+          description: The specified compatible camera device could not be found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Set the monthly limit on the recorded video time available for export
+        for compatible camera device.
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices update-export-usage-limit-override
   /sora_cam/devices/{device_id}/images/exports:
     get:
       description: |
         Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one compatible camera device.
 
-        In addition, if the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceImageExports API](#/SoraCam/listSoraCamDeviceImageExports).
+        If the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceImageExports API](#/SoraCam/listSoraCamDeviceImageExports).
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceImageExportsForDevice
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -10908,16 +10936,15 @@ paths:
         schema:
           type: string
       - description: Value of the x-soracom-next-key header in the response to the
-          last export request. By specifying this parameter, you can continue to retrieve
-          the list from the last export request.
+          last listSoraCamDeviceImageExportsForDevice request. By specifying this
+          parameter, you can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of data related to export processing to be acquired
-          in one request. Note that the number of data that can be acquired may be
-          less than the specified number.
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -10955,7 +10982,6 @@ paths:
                     operatorId: OP0012345678
                     requestedTime: 1663649222739
                     status: processing
-                    url: ""
                 (3) Completed:
                   value:
                   - deviceId: 7CDDDEADBEEF
@@ -10965,6 +10991,34 @@ paths:
                     requestedTime: 1663649222739
                     status: completed
                     url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamImageExportInfo'
@@ -10988,12 +11042,12 @@ paths:
           header: x-soracom-next-key
     post:
       description: |
-        Starts the process of extracting and exporting still images from recorded video saved by cloud continuous recording. The export process is processed asynchronously.The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports). The URL has an expiration date.
+        Starts the process of extracting and exporting still images from recorded video saved by cloud continuous recording. The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports). The URL has an expiration time.
 
-        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the downloading status.
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of whether the download has started or not.
         - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: exportSoraCamDeviceRecordedImage
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11041,9 +11095,9 @@ paths:
   /sora_cam/devices/{device_id}/images/exports/{export_id}:
     get:
       description: |
-        Gets the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one export process.
+        Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one export process.
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportedImage
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11062,16 +11116,62 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
-                $ref: '#/components/schemas/SoraCamImageExportInfo'
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
           description: OK.
         "404":
           description: The specified compatible camera device or export process could
@@ -11088,7 +11188,7 @@ paths:
   /sora_cam/devices/{device_id}/stream:
     get:
       description: |
-        Get information for downloading streaming video (real-time video / recorded video). Specifically, you can get an array of URLs that support a streaming method called MPEG-DASH (Dynamic Adaptive Streaming over HTTP). The URL has an expiration date.
+        Get information for downloading streaming video (real-time video / recorded video). Specifically, you can get an array of URLs that support a streaming method called MPEG-DASH (Dynamic Adaptive Streaming over HTTP). The URL has an expiration time.
 
         - For real-time video, note the followings:
           - You can get a URL to stream 300 seconds (5 minutes) of real-time video based on the time of the API called. To continue watching, call the API again to get the next URL.
@@ -11098,6 +11198,8 @@ paths:
           - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the viewing status.
 
         **Warning**: Real-time video is a function that retrieves the latest video from recorded video saved by cloud continuous recording. Therefore, a cloud continuous recording license is required to obtain real-time video. **Live video (P2P)** that can be played on the ATOM app is a different feature from the real-time video. **Live video (P2P)** cannot be obtained using the SORACOM API.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceStreamingVideo
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11107,7 +11209,7 @@ paths:
         schema:
           type: string
       - description: |
-          Start time of recorded video (UNIX time in milliseconds)
+          Start time of recorded video (UNIX time in milliseconds).
 
           - Omit both `from` and `to` to get information for downloading real-time video.
         in: query
@@ -11117,7 +11219,7 @@ paths:
           format: int64
           type: integer
       - description: |
-          End time of recorded video (UNIX time in milliseconds)
+          End time of recorded video (UNIX time in milliseconds).
 
           - Omit both `from` and `to` to get information for downloading real-time video.
           - The maximum viewing time for a single API call is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds.
@@ -11157,9 +11259,9 @@ paths:
       description: |
         Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one compatible camera device.
 
-        In addition, if the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceVideoExports API](#/SoraCam/listSoraCamDeviceVideoExports).
+        If the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceVideoExports API](#/SoraCam/listSoraCamDeviceVideoExports).
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceVideoExportsForDevice
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11169,16 +11271,15 @@ paths:
         schema:
           type: string
       - description: Value of the x-soracom-next-key header in the response to the
-          last export request. By specifying this parameter, you can continue to retrieve
-          the list from the last export request.
+          last listSoraCamDeviceVideoExportsForDevice request. By specifying this
+          parameter, you can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of data related to export processing to be acquired
-          in one request. Note that the number of data that can be acquired may be
-          less than the specified number.
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -11225,6 +11326,34 @@ paths:
                     requestedTime: 1662973200000
                     status: completed
                     url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -11248,13 +11377,13 @@ paths:
           header: x-soracom-next-key
     post:
       description: |
-        Starts the process of exporting recorded video saved by cloud continuous recording in a format that can be downloaded (zipped mp4 files). The export process is processed asynchronously.The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports). The URL has an expiration date.
+        Starts the process of exporting recorded video saved by cloud continuous recording in a format that can be downloaded (zipped mp4 files). The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports). The URL has an expiration time.
 
         - The maximum export time for a single URL is 300 seconds (5 minutes).
-        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the downloading status.
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of whether the download has started or not.
         - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: exportSoraCamDeviceRecordedVideo
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11304,9 +11433,9 @@ paths:
   /sora_cam/devices/{device_id}/videos/exports/{export_id}:
     get:
       description: |
-        Gets the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one export process.
+        Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one export process.
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportedVideo
       parameters:
       - description: Device ID of the target compatible camera device.
@@ -11325,14 +11454,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 $ref: '#/components/schemas/SoraCamVideoExportInfo'
           description: OK.
@@ -11353,24 +11526,24 @@ paths:
       description: Returns list of SoraCam events.
       operationId: listSoraCamDeviceEvents
       parameters:
-      - description: Device ID of the target camera device. If this ID is not specified,
-          the event history of all camera devices owned by the operator will be retrieved.
+      - description: Device ID of the target compatible camera device. If this ID
+          is not specified, the event history of all camera devices owned by the operator
+          will be retrieved.
         in: query
         name: device_id
         required: false
         schema:
           type: string
-      - description: Value of the X-Soracom-Next-Key header in the response to the
-          previous request. By specifying this parameter, you can continue to retrieve
-          the list from the next event onward.
+      - description: Value of the x-soracom-next-key header in the response to the
+          last listSoraCamDeviceEvents request. By specifying this parameter, you
+          can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: integer
-      - description: Maximum number of events to retrieve. Setting a limit does not
-          guarantee the number of events returned in the response (i.e. the response
-          may contain fewer items than the specified limit).
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -11393,8 +11566,11 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: 'Sort order of the events. Either descending ("desc": latest
-          data entry first) or ascending ("asc": oldest data entry first).'
+      - description: |
+          Sort order of the events.
+
+          - `desc`: Descending order (latest data entry first)
+          - `asc`: Ascending order (oldest data entry first)
         in: query
         name: sort
         required: false
@@ -11408,6 +11584,17 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                deviceType: atomCamV2
+                eventId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                eventInfo:
+                  endTime: 1662973203000
+                  picture: https://atom-device-alarm-file.s3.ap-northeast-1.amazonaws.com/7CDDDEADBEEF/2022-12-12/7CDDDEADBEEF131670825831_1670825831000_13_1_0/filename.jpg?...
+                  recordingStatus: completed
+                  startTime: 1662973200000
+                  type: motion
+                time: 1662973200000
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamEvent'
@@ -11433,7 +11620,7 @@ paths:
       description: |
         Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage). This API can target all devices owned by the operator, or limit it to one compatible camera device.
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceImageExports
       parameters:
       - description: Device ID of the target compatible camera device. If this ID
@@ -11445,16 +11632,15 @@ paths:
         schema:
           type: string
       - description: Value of the x-soracom-next-key header in the response to the
-          last export request. By specifying this parameter, you can continue to retrieve
-          the list from the last export request.
+          last listSoraCamDeviceImageExports request. By specifying this parameter,
+          you can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of data related to export processing to be acquired
-          in one request. Note that the number of data that can be acquired may be
-          less than the specified number.
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -11477,25 +11663,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: initializing
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: processing
-                url: ""
-              - deviceId: 7CDDDEADBEEF
-                expiryTime: 1663735622739
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5c
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: completed
-                url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamImageExportInfo'
@@ -11522,7 +11741,7 @@ paths:
       description: |
         Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo). This API can target all devices owned by the operator, or limit it to one compatible camera device.
 
-        **Warning**: If you will run this API with a SAM user's API key and API token, please add the authority `OAuth2:authorize` to the SAM user in addition to the authority required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceVideoExports
       parameters:
       - description: Device ID of the target compatible camera device. If this ID
@@ -11534,16 +11753,15 @@ paths:
         schema:
           type: string
       - description: Value of the x-soracom-next-key header in the response to the
-          last export request. By specifying this parameter, you can continue to retrieve
-          the list from the last export request.
+          last listSoraCamDeviceVideoExports request. By specifying this parameter,
+          you can continue to retrieve the list from the last request.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of data related to export processing to be acquired
-          in one request. Note that the number of data that can be acquired may be
-          less than the specified number.
+      - description: Maximum number of items to retrieve in one request. Note that
+          the response may contain fewer items than the specified limit.
         in: query
         name: limit
         required: false
@@ -11566,14 +11784,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                expiryTime: 1662973800000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -12006,12 +12268,156 @@ paths:
       - Soralet
       x-soracom-cli:
       - soralets delete-version
+  /stats/air/groups/{group_id}:
+    get:
+      description: Retrieves the usage report aggregating all SIMs that belong to
+        the group.
+      operationId: getAirStatsOfGroup
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          Specify the start month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+
+          - If `period` is `month`:
+            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
+            - The actual start time of the period to be counted is 00:00:00 on the first day of the month containing the specified UNIX time (in seconds).
+          - If `period` is `day`:
+            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
+            - The actual start time of the period to be counted is 00:00:00 of the day containing the specified UNIX time (in seconds).
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+      - description: |
+          Specify the end month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+
+          - If `period` is `month`:
+            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
+            - The actual end time of the period to be counted is 24:00:00 at the end of the month containing the specified UNIX time (in seconds).
+          - If `period` is `day`:
+            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
+            - The actual end time of the period being counted is 24:00:00 on the day containing the specified UNIX time (in seconds).
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+      - description: |
+          Unit of aggregation.
+
+          - month: Aggregate by month.
+          - day: Aggregate by day.
+        in: query
+        name: period
+        required: true
+        schema:
+          enum:
+          - month
+          - day
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AirAggregatedStatsResponse'
+                type: array
+          description: OK.
+        "400":
+          description: Bad request.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get Air Usage Report of group.
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats air groups get
+  /stats/air/operators/{operator_id}:
+    get:
+      description: Retrieves the usage report aggregating all SIMs that the operator
+        have.
+      operationId: getAirStatsOfOperator
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          Specify the start month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+
+          - If `period` is `month`:
+            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
+            - The actual start time of the period to be counted is 00:00:00 on the first day of the month containing the specified UNIX time (in seconds).
+          - If `period` is `day`:
+            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
+            - The actual start time of the period to be counted is 00:00:00 of the day containing the specified UNIX time (in seconds).
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+      - description: |
+          Specify the end month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+
+          - If `period` is `month`:
+            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
+            - The actual end time of the period to be counted is 24:00:00 at the end of the month containing the specified UNIX time (in seconds).
+          - If `period` is `day`:
+            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
+            - The actual end time of the period being counted is 24:00:00 on the day containing the specified UNIX time (in seconds).
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+      - description: |
+          Unit of aggregation.
+
+          - month: Aggregate by month.
+          - day: Aggregate by day.
+        in: query
+        name: period
+        required: true
+        schema:
+          enum:
+          - month
+          - day
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AirAggregatedStatsResponse'
+                type: array
+          description: OK.
+        "400":
+          description: Bad request.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get Air Usage Report of operator.
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats air operators get
   /stats/air/operators/{operator_id}/export:
     post:
-      description: Retrieves a file containing the usage report of all subscribers
-        for the specified operator. The report data range is specified with from,
-        to in unixtime. The report contains monthly data. The file output destination
-        is AWS S3. The file output format is CSV.
+      description: |
+        Download the Air Data Traffic Actual Data CSV file that contains the usage report of all the IoT SIMs for the specified operator.
+
+        **Info**: You can also check the data traffic of the terminated IoT SIM.
       operationId: exportAirStats
       parameters:
       - description: Operator ID
@@ -12020,7 +12426,11 @@ paths:
         required: true
         schema:
           type: string
-      - description: export_mode (async, sync)
+      - description: |
+          Specify how to obtain the URL to download the Air Data Usage Report CSV.
+
+          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the Soracom platform. Specify this `exportedFieldId` in [`Files:getExportedFile API`](#/Files/getExportedFile) to get the URL. If the file size of the Air Data Usage Report CSV is huge, specify `async`.
+          - `sync` (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the Air Data Usage Report CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
         in: query
         name: export_mode
         required: false
@@ -12034,7 +12444,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExportRequest'
-        description: export time period
+        description: Export time period.
         required: true
       responses:
         "200":
@@ -12061,7 +12471,10 @@ paths:
       - stats air export
   /stats/air/sims/{sim_id}:
     get:
-      description: Retrieves the usage report for the SIM specified by the simId.
+      description: |
+        Retrieves the usage report for the SIM specified by the SIM ID.
+
+        **Warning**: The data traffic of the terminated IoT SIM cannot be confirmed.
       operationId: getAirStatsOfSim
       parameters:
       - description: SIM ID
@@ -12070,20 +12483,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the history of traffic at
+          the finest granularity. However, while the device is connected to the Soracom
+          platform, the communication volume is recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12112,8 +12527,10 @@ paths:
       - stats air sims get
   /stats/air/subscribers/{imsi}:
     get:
-      description: Retrieves the usage report for the subscriber specified by the
-        IMSI.
+      description: |
+        Retrieves the usage report for the subscriber specified by the IMSI.
+
+        **Warning**: The data traffic of the terminated IoT SIM cannot be confirmed.
       operationId: getAirStats
       parameters:
       - description: imsi
@@ -12122,20 +12539,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the history of traffic at
+          the finest granularity. However, while the device is connected to the Soracom
+          platform, the communication volume is recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12164,13 +12583,13 @@ paths:
       - stats air get
   /stats/beam/operators/{operator_id}/export:
     post:
-      description: Retrieves a file containing the SORACOM Beam usage report of all
+      description: Retrieves a file containing the Soracom Beam usage report of all
         subscribers for the specified operator. The report data range is specified
         with from, to in unixtime. The report contains monthly data. The file output
         destination is AWS S3. The file output format is CSV.
       operationId: exportBeamStats
       parameters:
-      - description: operator ID
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -12190,7 +12609,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExportRequest'
-        description: export time period
+        description: Export time period.
         required: true
       responses:
         "200":
@@ -12219,20 +12638,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the usage report at the
+          finest granularity. However, while the device is connected to the Soracom
+          platform, the amount of usage will be recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12261,13 +12682,13 @@ paths:
       - stats beam get
   /stats/funk/operators/{operator_id}/export:
     post:
-      description: Retrieves a file containing the SORACOM Funk usage report of all
+      description: Retrieves a file containing the Soracom Funk usage report of all
         subscribers for the specified operator. The report data range is specified
         with from, to in unixtime. The report contains monthly data. The file output
         destination is AWS S3. The file output format is CSV.
       operationId: exportFunkStats
       parameters:
-      - description: operator ID
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -12287,7 +12708,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExportRequest'
-        description: export time period
+        description: Export time period.
         required: true
       responses:
         "200":
@@ -12316,20 +12737,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the usage report at the
+          finest granularity. However, while the device is connected to the Soracom
+          platform, the amount of usage will be recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12364,7 +12787,7 @@ paths:
         destination is AWS S3. The file output format is CSV.
       operationId: exportFunnelStats
       parameters:
-      - description: operator ID
+      - description: Operator ID
         in: path
         name: operator_id
         required: true
@@ -12384,7 +12807,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExportRequest'
-        description: export time period
+        description: Export time period.
         required: true
       responses:
         "200":
@@ -12413,20 +12836,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the usage report at the
+          finest granularity. However, while the device is connected to the Soracom
+          platform, the amount of usage will be recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12455,7 +12880,7 @@ paths:
       - stats funnel get
   /stats/harvest/operators/{operator_id}:
     get:
-      description: Retrieves the SORACOM Harvest usage report for the operator.
+      description: Retrieves the Soracom Harvest usage report for the operator.
       operationId: getHarvestExportedDataStats
       parameters:
       - description: Operator ID
@@ -12497,20 +12922,22 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time in unixtime for the aggregate data.
+      - description: Start time for the aggregate data (UNIX time in seconds).
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: End time in unixtime for the aggregate data.
+      - description: End time for the aggregate data (UNIX time in seconds).
         in: query
         name: to
         required: true
         schema:
           type: integer
-      - description: Units of aggregate data. For minutes, the interval is around
-          5 minutes.
+      - description: Unit of aggregation. minutes outputs the usage report at the
+          finest granularity. However, while the device is connected to the Soracom
+          platform, the amount of usage will be recorded at approximately 5-minute
+          intervals.
         in: query
         name: period
         required: true
@@ -12539,7 +12966,7 @@ paths:
       - stats harvest get
   /stats/napter/audit_logs:
     get:
-      description: Get Napter audit logs' monthly exported data stats
+      description: Get Napter audit logs' monthly exported data stats.
       operationId: getNapterAuditLogsExportedDataStats
       parameters:
       - description: Year/Month in 'YYYYMM' format.
@@ -12558,7 +12985,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Napter audit logs' monthly exported data stats
+      summary: Get Napter audit logs' monthly exported data stats.
       tags:
       - Stats
       x-soracom-cli:
@@ -15107,6 +15534,23 @@ components:
       required:
       - executionDateTimeConst
       type: object
+    AirAggregatedStatsResponse:
+      properties:
+        downloadByteSizeTotal:
+          description: Number of bytes downloaded during the period covered by the
+            aggregate
+          format: int64
+          type: integer
+        unixtime:
+          description: Start date and time of the period under consideration (UNIX
+            time in seconds)
+          format: int64
+          type: integer
+        uploadByteSizeTotal:
+          description: Number of bytes uploaded during the period covered by the aggregate
+          format: int64
+          type: integer
+      type: object
     AirStatsResponse:
       properties:
         dataTrafficStatsMap:
@@ -15114,7 +15558,7 @@ components:
             $ref: '#/components/schemas/DataTrafficStats'
           type: object
         date:
-          description: A date and time in UTC time zone.
+          description: Date and time (Coordinated Universal Time (UTC))
           type: string
         unixtime:
           format: int64
@@ -15306,6 +15750,64 @@ components:
           format: int64
           type: integer
       type: object
+    BillItemCostBreakdown:
+      properties:
+        amount:
+          description: Amount.
+          format: double
+          type: number
+        billItemCategory:
+          description: Bill item category.
+          type: string
+        billItemName:
+          description: Bill item name.
+          type: string
+    BillingSummaryResponseOfBillItems:
+      properties:
+        costBreakdownList:
+          description: List of cost breakdown. The list is sorted by amount in descending
+            order.
+          items:
+            $ref: '#/components/schemas/BillItemCostBreakdown'
+          type: array
+        currency:
+          description: Currency of bills.
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        updatedTime:
+          description: Last updated time (unixtime in seconds).
+          format: int64
+          type: integer
+        yearMonth:
+          description: Year and month.
+          type: string
+      type: object
+    BillingSummaryResponseOfSims:
+      properties:
+        costBreakdownList:
+          description: List of cost breakdown. The list is sorted by amount in descending
+            order, and include up to 100 items.
+          items:
+            $ref: '#/components/schemas/SimCostBreakdown'
+          type: array
+        currency:
+          description: Currency of bills.
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        updatedTime:
+          description: Last updated time (unixtime in seconds).
+          format: int64
+          type: integer
+        yearMonth:
+          description: Year and month.
+          type: string
+      type: object
     Capabilities:
       properties:
         data:
@@ -15397,6 +15899,10 @@ components:
             a knowledgeable source (`1`).
           format: int32
           type: integer
+        identifier:
+          description: Unique identifier that is assigned by the client requesting
+            cell locations, and is included as-is in the response.
+          type: string
         lat:
           description: Latitude
           format: double
@@ -15746,8 +16252,8 @@ components:
       properties:
         amount:
           description: Amount of bills.
-          format: int64
-          type: integer
+          format: double
+          type: number
         currency:
           description: Currency of bills.
           enum:
@@ -16232,15 +16738,25 @@ components:
     ExportRequest:
       properties:
         from:
+          description: Start date and time for the aggregate data (UNIX time in seconds)
+          example: 1654009200
           format: int64
           type: integer
         period:
+          description: |
+            Degree of detail of history.
+
+            - `month`: Monthly
+            - `day`: Daily
+            - `minutes`: Every minute
           enum:
           - month
           - day
           - minutes
           type: string
         to:
+          description: End date and time of the period covered (UNIX time in seconds)
+          example: 1656601200
           format: int64
           type: integer
       type: object
@@ -16647,21 +17163,53 @@ components:
     Gadget:
       properties:
         attributes:
+          properties:
+            contractEndingTime:
+              format: date-time
+              type: string
+            firstClickTimestamp:
+              format: date-time
+              type: string
+            remainingCount:
+              type: integer
+            wimaxBillingStartDate:
+              type: string
+            wimaxIccid:
+              type: string
+            wimaxImei:
+              type: string
           type: object
-        groupId:
-          type: string
+        createdTime:
+          format: int64
+          type: integer
         id:
           type: string
         lastModifiedTime:
-          format: date-time
-          type: string
+          format: int64
+          type: integer
         lastSeen:
+          properties:
+            batteryLevel:
+              type: integer
+            clickEventPropagated:
+              type: boolean
+            clickTime:
+              format: date-time
+              type: string
+            clickType:
+              enum:
+              - SINGLE
+              - DOUBLE
+              type: string
           type: object
         operatorId:
           type: string
-        product_id:
+        productId:
+          enum:
+          - button
+          - wimax
           type: string
-        serial_number:
+        serialNumber:
           type: string
         status:
           enum:
@@ -16672,6 +17220,9 @@ components:
           additionalProperties:
             type: string
           type: object
+        terminatedTime:
+          format: int64
+          type: integer
         terminationEnabled:
           default: false
           type: boolean
@@ -16756,8 +17307,8 @@ components:
       properties:
         amount:
           description: Amount of bills.
-          format: int64
-          type: integer
+          format: double
+          type: number
         currency:
           description: Currency of bills.
           enum:
@@ -17071,19 +17622,6 @@ components:
           - SORACOM_AIR_BASIC_CHARGE
           - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
           type: string
-      type: object
-    GlobalSimAppletPLMNRecord:
-      properties:
-        containerId:
-          format: int64
-          type: integer
-        mcc:
-          type: string
-        mnc:
-          type: string
-      required:
-      - mcc
-      - containerId
       type: object
     Group:
       properties:
@@ -17732,19 +18270,15 @@ components:
       additionalProperties:
         type: string
       type: object
-    MappingEntries:
-      properties:
-        mappingEntries:
-          items:
-            $ref: '#/components/schemas/GlobalSimAppletPLMNRecord'
-          type: array
-      type: object
     MonthlyBill:
       properties:
         amount:
           description: Amount of monthly bills.
-          format: int64
-          type: integer
+          format: double
+          type: number
+        appliedCouponAmount:
+          format: double
+          type: number
         currency:
           description: Currency of bills.
           enum:
@@ -17894,6 +18428,20 @@ components:
       type: object
     OrderedSubscriber:
       properties:
+        bundles:
+          description: Bundles
+          items:
+            type: string
+          type: array
+        deviceSerialNumber:
+          description: Serial number of Device
+          type: string
+        eiccid:
+          description: eICCID
+          type: string
+        iccid:
+          description: ICCID
+          type: string
         imsi:
           description: IMSI
           type: string
@@ -17901,7 +18449,7 @@ components:
           description: MSISDN
           type: string
         serialNumber:
-          description: serialNumber
+          description: Serial number of IoT SIM
           type: string
       type: object
     PacketCaptureSession:
@@ -17919,6 +18467,8 @@ components:
           type: string
         prefix:
           type: string
+        sessionId:
+          type: string
         startedTime:
           format: date-time
           type: string
@@ -17930,6 +18480,7 @@ components:
           - POST_PROCESSING
           - DONE
           - FAILED
+          - STOPPED
           type: string
         url:
           format: uri
@@ -18545,6 +19096,10 @@ components:
         apn:
           description: The Access Point Name configured.
           type: string
+        cell:
+          $ref: '#/components/schemas/Cell'
+        createTime:
+          type: string
         dns0:
           description: First IP address of DNS servers.
           type: string
@@ -18569,6 +19124,12 @@ components:
           type: string
         operatorId:
           description: The operator ID of the session event.
+          type: string
+        sessionId:
+          type: string
+        simId:
+          type: string
+        subscription:
           type: string
         time:
           description: The timestamp of the session event.
@@ -18929,6 +19490,15 @@ components:
           - virtual
           type: string
       type: object
+    SimCostBreakdown:
+      properties:
+        amount:
+          description: Amount.
+          format: double
+          type: number
+        simId:
+          description: SIM ID.
+          type: string
     SimInitialSetting:
       description: Sim initial setting for the specific subscription.
       properties:
@@ -19070,7 +19640,7 @@ components:
 
             If `name` is `Cloud Continuous Recording`:
 
-            - `storage_life`: Storage life
+            - `storage_life`: Storage life.
           type: string
       type: object
     SoraCamEvent:
@@ -19083,12 +19653,12 @@ components:
           format: string
           type: string
         eventId:
-          description: An identifier to identify of the event
+          description: An identifier to identify of the event.
           type: string
         eventInfo:
           properties:
             atomEventV1:
-              description: Detail of the event
+              description: Detail of the event.
               properties:
                 endTime:
                   description: Timestamp when the event is ended (unix time in milliseconds).
@@ -19116,10 +19686,10 @@ components:
                   type: integer
                 type:
                   description: |
-                    "Type of the event."
-                      - `motion`: Motion Alert
-                      - `sound`: Sound Alert
-                      - `other`: Others
+                    Type of the event.
+                      - `motion`: Motion Alert.
+                      - `sound`: Sound Alert.
+                      - `other`: Others.
                   enum:
                   - motion
                   - sound
@@ -19142,15 +19712,24 @@ components:
           type: string
         image:
           $ref: '#/components/schemas/SoraCamImageExportUsage'
-          description: The remaining number of still images that can be exported.
+          description: The number of still images, assuming that all of the recorded
+            video time available for export is used for exporting still images.
         meteredYearMonth:
-          description: 'Year and month when the remaining exportable number of still
-            images and the remaining exportable time of recorded video were obtained
-            (format: ''YYYYMM'')'
+          description: 'The year and month (format: ''YYYYMM'') for which the video
+            can be exported. In the case of `202301`, this means that the available
+            export time of the video for January 2023 is output.'
           type: string
         video:
           $ref: '#/components/schemas/SoraCamVideoExportUsage'
-          description: The remaining exportable time of recorded video
+          description: The number of seconds of video, assuming that all of the recorded
+            video time available for export is used for exporting as video.
+      type: object
+    SoraCamExportUsageLimitOverrideSpecification:
+      properties:
+        limitHours:
+          description: New value for the monthly limit for the amount of hours that
+            recorded video can be exported.
+          type: integer
       type: object
     SoraCamImageExportInfo:
       properties:
@@ -19167,28 +19746,32 @@ components:
             Export ID. If you specify the export ID obtained in [`SoraCam:exportSoraCamDeviceRecordedImage API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) to [`SoraCam:getSoraCamDeviceExportedImage API`](/en-us/tools/api /reference/#/SoraCam/getSoraCamDeviceExportedImage), you can obtain the URL for downloading the jpg file.
           type: string
         operatorId:
-          description: Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedImage
-            API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage).
+          description: |
+            Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedImage API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage).
           type: string
         requestedTime:
           description: |
-            The date and time when the SORACOM platform accepted the export request from [`SoraCam:exportSoraCamDeviceRecordedImage API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) (unix time in milliseconds).
+            The date and time when the Soracom platform accepted the export request from [`SoraCam:exportSoraCamDeviceRecordedImage API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedImage) (unix time in milliseconds).
           format: int64
           type: integer
         status:
           description: |
             Current status of the export.
 
-            - `initializing`: Initial state
-            - `processing`: Processing
-            - `completed`: Export completed
-            - `failed`: Export failed
-            - `expired`: Exported URL is expired
+            - `initializing`: Initial state.
+            - `processing`: Processing.
+            - `completed`: Export completed.
+            - `retrying`: Retry export.
+            - `failed`: Export failed.
+            - `limitExceeded`: Video cannot be exported because the recorded video time available for export has been exceeded.
+            - `expired: Exported URL is expired.
           enum:
           - initializing
           - processing
           - completed
+          - retrying
           - failed
+          - limitExceeded
           - expired
           type: string
         url:
@@ -19207,7 +19790,7 @@ components:
           type: array
         time:
           description: Time to be exported (unix time in milliseconds). A still image
-            is exported from the recorded video taken at the specified time.'
+            is exported from the recorded video taken at the specified time.
           format: int64
           type: integer
       required:
@@ -19215,13 +19798,28 @@ components:
       type: object
     SoraCamImageExportUsage:
       properties:
+        billedFrames:
+          description: The number of still images, assuming that all of the recorded
+            video time available for export has been used for exporting still images.
+            In other words, when the value is 0, no charge is incurred. Note that
+            only `billedSeconds` are used in the calculation of the billing amount.
+          type: integer
+        limitFrames:
+          description: The number of still images that can be exported by assuming
+            that all of the available export time for the video is used for exporting
+            still images. The recorded video time available for export is output in
+            the number of still images that can be exported.
+          type: integer
         remainingFrames:
-          description: Remaining number of still images that can be exported in this
-            month.
+          description: The number of still images that can be exported, assuming that
+            all of the available export time for the video is used for exporting still
+            images, up to the maximum possible video export time. `limitFrames` minus
+            `usedFrames`.
           type: integer
         usedFrames:
-          description: Number of still images assuming that all of the available video
-            viewing time consumed is exported as still images in this month.
+          description: The number of still images exported, assuming that all the
+            recorded video time available for export consumed in the current month
+            was used for exporting still images.
           type: integer
       type: object
     SoraCamLicensePackQuantityUpdatingRequest:
@@ -19271,7 +19869,7 @@ components:
           type: integer
         url:
           description: |
-            URL to get mpd file of streaming video (real-time video / recorded video)
+            URL to get mpd file of streaming video (real-time video / recorded video).
 
             - No URL is returned in the following cases:
               - When trying to get real-time video, the power of the compatible camera device is not turned on.
@@ -19288,7 +19886,7 @@ components:
           type: integer
         playList:
           description: |
-            Array of playlist entries for streaming video (real-time video / recorded video)
+            Array of playlist entries for streaming video (real-time video / recorded video).
 
             - For real-time video, only one video file is always returned. In addition, `from` and `to` are omitted.
             - For recorded video, the video file may be split depending on the recording status.
@@ -19310,8 +19908,8 @@ components:
             Export ID. If you specify the export ID obtained in [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/en-us/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) to [`SoraCam:getSoraCamDeviceExportedVideo API`](/en-us/tools/api /reference/#/SoraCam/getSoraCamDeviceExportedVideo), you can obtain the URL for downloading the zipped mp4 file.
           type: string
         operatorId:
-          description: Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedVideo
-            API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo).
+          description: |
+            Operator ID that called [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo).
           type: string
         requestedTime:
           description: |
@@ -19322,16 +19920,20 @@ components:
           description: |
             Current status of the export.
 
-            - `initializing`: Initial state
-            - `processing`: Processing
-            - `completed`: Export completed
-            - `failed`: Export failed
-            - `expired: Exported URL is expired
+            - `initializing`: Initial state.
+            - `processing`: Processing.
+            - `completed`: Export completed.
+            - `retrying`: Retry export.
+            - `failed`: Export failed.
+            - `limitExceeded`: Video cannot be exported because the recorded video time available for export has been exceeded.
+            - `expired: Exported URL is expired.
           enum:
           - initializing
           - processing
           - completed
+          - retrying
           - failed
+          - limitExceeded
           - expired
           type: string
         url:
@@ -19360,14 +19962,27 @@ components:
       type: object
     SoraCamVideoExportUsage:
       properties:
+        billedSeconds:
+          description: The number of seconds of video, assuming that all of the recorded
+            video time available for export has been used for exporting video. In
+            other words, when the value is 0, no charge is incurred. Note that only
+            `billedSeconds` are used in the calculation of the billing amount.
+          type: integer
+        limitSeconds:
+          description: The number of seconds of video, assuming that all of the available
+            export time for the video is used for exporting video. The maximum available
+            export time for the video is output in seconds of video.
+          type: integer
         remainingSeconds:
-          description: Remaining seconds of recorded video that can be exported in
-            this month.
+          description: The number of seconds of video that can be exported, assuming
+            that all of  the available export time for the video is used for exporting
+            as video, up to the maximum possible video export time. `limitSeconds`
+            minus `usedSeconds`.
           type: integer
         usedSeconds:
-          description: Number of seconds that can be exported, assuming that all of
-            the video viewable time consumed is exported as recorded video in this
-            month.
+          description: The number of seconds of video exported, assuming that all
+            the recorded video time available for export consumed in the current month
+            was used for exporting video.
           type: integer
       type: object
     SoracomBeamStats:

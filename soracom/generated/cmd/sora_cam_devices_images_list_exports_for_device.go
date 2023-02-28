@@ -30,11 +30,11 @@ var SoraCamDevicesImagesListExportsForDeviceCmdOutputJSONL bool
 func init() {
 	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
 
-	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last export request. By specifying this parameter, you can continue to retrieve the list from the last export request."))
+	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceImageExportsForDevice request. By specifying this parameter, you can continue to retrieve the list from the last request."))
 
 	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending (`asc`) or descending (`desc`) order of `requestedTime`. The default is `desc` i.e. newer items are sorted first."))
 
-	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().Int64Var(&SoraCamDevicesImagesListExportsForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of data related to export processing to be acquired in one request. Note that the number of data that can be acquired may be less than the specified number."))
+	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().Int64Var(&SoraCamDevicesImagesListExportsForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
 
 	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().BoolVar(&SoraCamDevicesImagesListExportsForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

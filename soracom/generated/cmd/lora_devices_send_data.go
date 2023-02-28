@@ -170,7 +170,9 @@ func buildBodyForLoraDevicesSendDataCmd() (string, error) {
 	}
 
 	if LoraDevicesSendDataCmdFPort != 2 {
+
 		result["fPort"] = LoraDevicesSendDataCmdFPort
+
 	}
 
 	resultBytes, err := json.Marshal(result)

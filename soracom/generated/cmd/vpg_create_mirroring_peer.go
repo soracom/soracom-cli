@@ -188,7 +188,9 @@ func buildBodyForVpgCreateMirroringPeerCmd() (string, error) {
 	}
 
 	if VpgCreateMirroringPeerCmdEnabled != false {
+
 		result["enabled"] = VpgCreateMirroringPeerCmdEnabled
+
 	}
 
 	resultBytes, err := json.Marshal(result)

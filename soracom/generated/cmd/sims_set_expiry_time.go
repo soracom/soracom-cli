@@ -174,9 +174,7 @@ func buildBodyForSimsSetExpiryTimeCmd() (string, error) {
 		result["expiryAction"] = SimsSetExpiryTimeCmdExpiryAction
 	}
 
-	if SimsSetExpiryTimeCmdExpiryTime != 0 {
-		result["expiryTime"] = SimsSetExpiryTimeCmdExpiryTime
-	}
+	result["expiryTime"] = SimsSetExpiryTimeCmdExpiryTime
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

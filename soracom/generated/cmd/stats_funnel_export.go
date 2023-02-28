@@ -34,13 +34,13 @@ var StatsFunnelExportCmdBody string
 func init() {
 	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdOperatorId, "operator-id", "", TRAPI("operator ID"))
+	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdPeriod, "period", "", TRAPI(""))
+	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- `month`: Monthly- `day`: Daily- `minutes`: Every minute"))
 
-	StatsFunnelExportCmd.Flags().Int64Var(&StatsFunnelExportCmdFrom, "from", 0, TRAPI(""))
+	StatsFunnelExportCmd.Flags().Int64Var(&StatsFunnelExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
 
-	StatsFunnelExportCmd.Flags().Int64Var(&StatsFunnelExportCmdTo, "to", 0, TRAPI(""))
+	StatsFunnelExportCmd.Flags().Int64Var(&StatsFunnelExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
 
 	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	StatsFunnelCmd.AddCommand(StatsFunnelExportCmd)
@@ -183,13 +183,9 @@ func buildBodyForStatsFunnelExportCmd() (string, error) {
 		result["period"] = StatsFunnelExportCmdPeriod
 	}
 
-	if StatsFunnelExportCmdFrom != 0 {
-		result["from"] = StatsFunnelExportCmdFrom
-	}
+	result["from"] = StatsFunnelExportCmdFrom
 
-	if StatsFunnelExportCmdTo != 0 {
-		result["to"] = StatsFunnelExportCmdTo
-	}
+	result["to"] = StatsFunnelExportCmdTo
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

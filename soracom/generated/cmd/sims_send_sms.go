@@ -170,7 +170,9 @@ func buildBodyForSimsSendSmsCmd() (string, error) {
 	}
 
 	if SimsSendSmsCmdEncodingType != 2 {
+
 		result["encodingType"] = SimsSendSmsCmdEncodingType
+
 	}
 
 	resultBytes, err := json.Marshal(result)

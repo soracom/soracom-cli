@@ -174,9 +174,7 @@ func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
 		result["expiryAction"] = SubscribersSetExpiryTimeCmdExpiryAction
 	}
 
-	if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
-		result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
-	}
+	result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

@@ -5,7 +5,7 @@ Usage:
 
 Available Commands:
   audit-logs           監査ログを取得します。
-  auth                 API アクセスの認証を行い、API キーと API トークンを発行します。
+  auth                 API アクセスの認証を行い、API キーと API トークンを発行する
   bills                課金に関する情報を確認したりファイルへのエクスポートを行います。
   cell-locations       基地局の位置情報を取得します。
   completion           bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
@@ -23,7 +23,7 @@ Available Commands:
   groups               グループに関する操作を行います。
   help                 Help about any command
   lagoon               Lagoon に関する操作を行います。
-  logout               SORACOM API にアクセスするための API キーと API トークンを無効化します。
+  logout               SORACOM API にアクセスするための API キーと API トークンを無効化する
   logs                 ログに関する操作を行います。
   lora-devices         LoRa device に関する操作を行います。
   lora-gateways        LoRa gateway に関する操作を行います。

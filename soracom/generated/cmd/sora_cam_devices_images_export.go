@@ -30,7 +30,7 @@ func init() {
 
 	SoraCamDevicesImagesExportCmd.Flags().StringSliceVar(&SoraCamDevicesImagesExportCmdImageFilters, "image-filters", []string{}, TRAPI("Image filters to be applied to the exported image."))
 
-	SoraCamDevicesImagesExportCmd.Flags().Int64Var(&SoraCamDevicesImagesExportCmdTime, "time", 0, TRAPI("Time to be exported (unix time in milliseconds). A still image is exported from the recorded video taken at the specified time.'"))
+	SoraCamDevicesImagesExportCmd.Flags().Int64Var(&SoraCamDevicesImagesExportCmdTime, "time", 0, TRAPI("Time to be exported (unix time in milliseconds). A still image is exported from the recorded video taken at the specified time."))
 
 	SoraCamDevicesImagesExportCmd.Flags().StringVar(&SoraCamDevicesImagesExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SoraCamDevicesImagesCmd.AddCommand(SoraCamDevicesImagesExportCmd)
@@ -174,9 +174,7 @@ func buildBodyForSoraCamDevicesImagesExportCmd() (string, error) {
 		result["imageFilters"] = SoraCamDevicesImagesExportCmdImageFilters
 	}
 
-	if SoraCamDevicesImagesExportCmdTime != 0 {
-		result["time"] = SoraCamDevicesImagesExportCmdTime
-	}
+	result["time"] = SoraCamDevicesImagesExportCmdTime
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

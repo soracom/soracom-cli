@@ -161,7 +161,9 @@ func buildBodyForVpgSetInspectionCmd() (string, error) {
 	}
 
 	if VpgSetInspectionCmdEnabled != false {
+
 		result["enabled"] = VpgSetInspectionCmdEnabled
+
 	}
 
 	resultBytes, err := json.Marshal(result)

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20221212-031441
+  version: 20230228-033906
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               example:
-                apiKind: /v1/bills
+              - apiKind: /v1/bills
                 operatorId: OPXXXXXXXXXX
                 remoteIpAddress: xxx.xxx.xxx.xxx
                 requestPath: /v1/bills
@@ -220,7 +220,7 @@ paths:
           description: 認証成功
         "401":
           description: 認証失敗
-      summary: API アクセスの認証を行い、API キーと API トークンを発行します。
+      summary: API アクセスの認証を行い、API キーと API トークンを発行する
       tags:
       - Auth
       x-soracom-cli:
@@ -236,7 +236,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM API にアクセスするための API キーと API トークンを無効化します。
+      summary: SORACOM API にアクセスするための API キーと API トークンを無効化する
       tags:
       - Auth
       x-soracom-cli:
@@ -260,7 +260,7 @@ paths:
           description: OK.
         "400":
           description: メールアドレスが正しくありません。
-      summary: パスワードリセット用のトークンを発行します。
+      summary: パスワードリセット用のトークンを発行する
       tags:
       - Auth
       x-soracom-cli:
@@ -286,7 +286,7 @@ paths:
           description: 不正なトークンが指定されました。
         "404":
           description: トークンの有効期限が切れています。
-      summary: パスワードリセット用のトークンを検証し、パスワードを更新します。
+      summary: パスワードリセット用のトークンを検証し、パスワードを更新する
       tags:
       - Auth
       x-soracom-cli:
@@ -513,6 +513,113 @@ paths:
       - Billing
       x-soracom-cli:
       - bills export-latest
+  /bills/summaries/bill_items:
+    get:
+      description: |
+        過去 4 か月 (今月 〜 3 か月前) の課金項目ごとの課金のサマリーを取得します。新しい順にソートされます。
+
+        この API で取得できるサマリーは、利用料金ダッシュボードの [サービス別の費用] パネルに表示される利用料金と同等です。詳しくは、[利用料金ダッシュボードを確認する](/ja-jp/guides/accounting/check-usage/billing-dashboard/) を参照してください。
+      operationId: getBillingSummaryOfBillItems
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - costBreakdownList:
+                - amount: 0.24
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                - amount: 0.09
+                  billItemCategory: Beam
+                  billItemName: soracomBeamRequestCharge-inHttp
+                currency: USD
+                updatedTime: 1682121600
+                yearMonth: "202304"
+              - costBreakdownList:
+                  amount: 1.86
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1680307200
+                yearMonth: "202303"
+              - costBreakdownList:
+                  amount: 1.8
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1677628800
+                yearMonth: "202302"
+              - costBreakdownList:
+                  amount: 1.86
+                  billItemCategory: Air
+                  billItemName: basicCharge-plan01s-active
+                currency: USD
+                updatedTime: 1675209600
+                yearMonth: "202301"
+              schema:
+                items:
+                  $ref: '#/components/schemas/BillingSummaryResponseOfBillItems'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: 課金項目ごとの課金のサマリーを取得する
+      tags:
+      - Billing
+      x-soracom-cli:
+      - bills summaries get-bill-items
+  /bills/summaries/sims:
+    get:
+      description: |
+        過去 4 か月 (今月 〜 3 か月前) の IoT SIM ごとの課金のサマリーを取得します。新しい順にソートされます。
+
+        この API で取得できるサマリーは、利用料金ダッシュボードの [SIM ごとの料金 (トップ 100)] パネルに表示される利用料金と同等です。詳しくは、[利用料金ダッシュボードを確認する](/ja-jp/guides/accounting/check-usage/billing-dashboard/) を参照してください。
+      operationId: getBillingSummaryOfSims
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - costBreakdownList:
+                - amount: 0.24
+                  simId: "1234567890123456780"
+                - amount: 0.12
+                  simId: "1234567890123456781"
+                currency: USD
+                updatedTime: 1682121600
+                yearMonth: "202304"
+              - costBreakdownList:
+                - amount: 1.86
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1680307200
+                yearMonth: "202303"
+              - costBreakdownList:
+                - amount: 1.8
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1677628800
+                yearMonth: "202302"
+              - costBreakdownList:
+                - amount: 1.86
+                  simId: "1234567890123456780"
+                currency: USD
+                updatedTime: 1675209600
+                yearMonth: "202301"
+              schema:
+                items:
+                  $ref: '#/components/schemas/BillingSummaryResponseOfSims'
+                type: array
+          description: OK.
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM ごとの課金のサマリーを取得する
+      tags:
+      - Billing
+      x-soracom-cli:
+      - bills summaries get-sims
   /cell_locations:
     get:
       description: |
@@ -527,6 +634,7 @@ paths:
         -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
         -H "X-Soracom-Token: $X_SORACOM_TOKEN"
         ```
+
         4G の例
         ```
         $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&tac=5840&ecid=44668480' \
@@ -605,7 +713,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 基地局の位置情報を取得します。
+      summary: 基地局の位置情報を取得する
       tags:
       - CellLocation
       x-soracom-cli:
@@ -666,7 +774,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 複数の基地局の位置情報を一度に取得します。
+      summary: 複数の基地局の位置情報を一度に取得する
       tags:
       - CellLocation
       x-soracom-cli:
@@ -685,7 +793,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List coupons.
+      summary: クーポンの一覧を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -738,7 +846,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register Coupon.
+      summary: クーポンを登録する
       tags:
       - Payment
       x-soracom-cli:
@@ -1169,7 +1277,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスオブジェクトモデルのリストを返します。
+      summary: デバイスオブジェクトモデルのリストを返す
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1197,7 +1305,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 新しいデバイスオブジェクトモデルを作成します。
+      summary: 新しいデバイスオブジェクトモデルを作成する
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1221,7 +1329,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 対象のデバイスオブジェクトモデルを削除します。
+      summary: 対象のデバイスオブジェクトモデルを削除する
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1248,7 +1356,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスオブジェクトモデルを取得します。
+      summary: デバイスオブジェクトモデルを取得する
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1287,7 +1395,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスオブジェクトモデルを更新します。
+      summary: デバイスオブジェクトモデルを更新する
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1322,7 +1430,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 対象のデバイスオブジェクトモデルが適用される Scope をセットします。
+      summary: 対象のデバイスオブジェクトモデルが適用される Scope をセットする
       tags:
       - DeviceObjectModel
       x-soracom-cli:
@@ -1376,7 +1484,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスのリストを取得します。
+      summary: デバイスのリストを取得する
       tags:
       - Device
       x-soracom-cli:
@@ -1406,7 +1514,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 新しいデバイスを作成します。
+      summary: 新しいデバイスを作成する
       tags:
       - Device
       x-soracom-cli:
@@ -1430,7 +1538,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスを削除します。
+      summary: デバイスを削除する
       tags:
       - Device
       x-soracom-cli:
@@ -1464,7 +1572,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定されたデバイス ID のデバイスを取得します。
+      summary: 指定されたデバイス ID のデバイスを取得する
       tags:
       - Device
       x-soracom-cli:
@@ -1513,7 +1621,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスの Instance 以下のすべての Resource を Read します。
+      summary: デバイスの Instance 以下のすべての Resource を Read する
       tags:
       - Device
       x-soracom-cli:
@@ -1568,7 +1676,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定されたデバイスの Resource を Read します。
+      summary: 指定されたデバイスの Resource を Read する
       tags:
       - Device
       x-soracom-cli:
@@ -1628,7 +1736,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスの Resource に値を Write します。
+      summary: デバイスの Resource に値を Write する
       tags:
       - Device
       x-soracom-cli:
@@ -1681,7 +1789,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスの Resource を Execute します。
+      summary: デバイスの Resource を Execute する
       tags:
       - Device
       x-soracom-cli:
@@ -1734,7 +1842,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定されたデバイスの Resource の Observe を開始します。
+      summary: 指定されたデバイスの Resource の Observe を開始する
       tags:
       - Device
       x-soracom-cli:
@@ -1776,7 +1884,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスの Resource の Observe を停止します。
+      summary: デバイスの Resource の Observe を停止する
       tags:
       - Device
       x-soracom-cli:
@@ -1821,7 +1929,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定されたデバイスの Object Instance 下の Resource 全体の Observe を開始します。
+      summary: 指定されたデバイスの Object Instance 下の Resource 全体の Observe を開始する
       tags:
       - Device
       x-soracom-cli:
@@ -1857,7 +1965,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定されたデバイスの Object Instance への Observe を停止します。
+      summary: 指定されたデバイスの Object Instance への Observe を停止する
       tags:
       - Device
       x-soracom-cli:
@@ -1920,7 +2028,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスから送信されたデータを取得します。
+      summary: デバイスから送信されたデータを取得する
       tags:
       - Device
       x-soracom-cli:
@@ -1961,7 +2069,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスをグループに参加させます。
+      summary: デバイスをグループに参加させる
       tags:
       - Device
       x-soracom-cli:
@@ -1998,7 +2106,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスのタグを更新します。
+      summary: デバイスのタグを更新する
       tags:
       - Device
       x-soracom-cli:
@@ -2028,7 +2136,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスのタグを削除します。
+      summary: デバイスのタグを削除する
       tags:
       - Device
       x-soracom-cli:
@@ -2056,7 +2164,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: デバイスをグループから外します。
+      summary: デバイスをグループから外す
       tags:
       - Device
       x-soracom-cli:
@@ -2096,7 +2204,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 診断リクエストを送信します。
+      summary: 診断リクエストを送信する
       tags:
       - Diagnostic
       x-soracom-cli:
@@ -2124,7 +2232,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 診断結果を取得します。
+      summary: 診断結果を取得する
       tags:
       - Diagnostic
       x-soracom-cli:
@@ -2405,7 +2513,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と prefix にマッチするファイルを探します。
+      summary: scope と prefix にマッチするファイルを探す
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2443,7 +2551,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と path で指定されたファイルを削除します。
+      summary: scope と path で指定されたファイルを削除する
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2478,7 +2586,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と path で指定されたファイルをダウンロードします。
+      summary: scope と path で指定されたファイルをダウンロードする
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2515,7 +2623,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と path で指定されたファイルのメタデータを取得します。
+      summary: scope と path で指定されたファイルのメタデータを取得する
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2560,7 +2668,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定された scope 内の path にファイルをアップロードします。
+      summary: 指定された scope 内の path にファイルをアップロードする
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2595,7 +2703,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と path で指定されたディレクトリを削除します。
+      summary: scope と path で指定されたディレクトリを削除する
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2650,7 +2758,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: scope と path で指定されたファイルやディレクトリの一覧を取得します。
+      summary: scope と path で指定されたファイルやディレクトリの一覧を取得する
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2700,29 +2808,41 @@ paths:
       - files get-exported
   /gadgets:
     get:
-      description: 条件にマッチする Gadget のリストを返す。Gadget の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
-        URL を`Link`ヘッダに含めて返す。
+      description: 条件に一致する Gadget API 対応デバイスのデータを取得します。取得したデータのほかにも Gadget API 対応デバイスが存在する場合は、レスポンスヘッダー
+        `Link` に、前後のページを取得するためのパラメーター (`last_evaluated_key`) が含まれます。
       operationId: listGadgets
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: query
         name: product_id
         required: false
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 検索対象にするタグの名前(完全一致)
+      - description: 検索対象にするタグの名前。`tag_value_match_mode` の設定にかかわらず常に完全一致で検索されます。
         in: query
         name: tag_name
         required: false
         schema:
           type: string
-      - description: 検索対象にするタグの検索文字列。`tag_name` を指定した場合は必須
+      - description: タグの値を検索するための文字列を URL エンコード (パーセントエンコーディング) して指定します。`tag_name`
+          を指定した場合は必須です。
         in: query
         name: tag_value
         required: false
         schema:
           type: string
-      - description: タグの検索条件
+      - description: |
+          タグの値の検索条件
+
+          - `exact`: 完全一致
+          - `prefix`: 前方一致
         in: query
         name: tag_value_match_mode
         required: false
@@ -2732,14 +2852,18 @@ paths:
           - exact
           - prefix
           type: string
-      - description: 取得する Gadget の上限
+      - description: 取得する Gadget API 対応デバイスのデータの件数 (上限)
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: 現ページで取得した最後の Gadget の ID ({product_id}/{serial_number})。このパラメータを指定することで次の
-          Gadget 以降のリストを取得できる
+      - description: |
+          Gadget API 対応デバイスの ID (`{productId}/{serialNumber}`) を URL エンコード (パーセントエンコーディング) して指定します。
+
+          指定した ID (`{productId}/{serialNumber}`) の次の Gadget API 対応デバイスを取得できます。
+
+          API を呼び出したときに `Link` ヘッダーで返された `rel=next` の `last_evaluated_key` の値を、次の呼び出し時に指定することが想定されていますが、任意の ID (`{productId}/{serialNumber}`) を指定できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -2749,15 +2873,36 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - attributes:
+                  contractEndingTime: "2022-11-08T23:59:59Z"
+                  firstClickTimestamp: "2018-11-08T09:01:11Z"
+                  remainingCount: 1499
+                createdTime: 1541668508839
+                id: button/1234567890ABCDE0
+                lastModifiedTime: 1665398234935
+                lastSeen:
+                  batteryLevel: 1
+                  clickEventPropagated: true
+                  clickTime: "2022-01-26T01:07:19.561Z"
+                  clickType: DOUBLE
+                operatorId: OP0040984956
+                productId: button
+                serialNumber: 1234567890ABCDE0
+                status: active
+                tags:
+                  name: LTE-M Button 01
+                terminatedTime: null
+                terminationEnabled: false
               schema:
                 items:
                   $ref: '#/components/schemas/Gadget'
                 type: array
-          description: 条件にマッチする Gadget のリスト
+          description: 条件に一致する Gadget API 対応デバイスのデータのリスト
       security:
       - api_key: []
         api_token: []
-      summary: List Gadgets
+      summary: Gadget API 対応デバイスの一覧を取得する
       tags:
       - Gadget
       x-soracom-cli:
@@ -2769,16 +2914,23 @@ paths:
           header: x-soracom-next-key
   /gadgets/{product_id}/{serial_number}:
     get:
-      description: 指定された Gadget の情報を返す。
+      description: 指定された Gadget API 対応デバイスの詳細情報を取得します。
       operationId: getGadget
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -2788,31 +2940,59 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                attributes:
+                  contractEndingTime: "2022-11-08T23:59:59Z"
+                  firstClickTimestamp: "2018-11-08T09:01:11Z"
+                  remainingCount: 1499
+                createdTime: 1541668508839
+                id: button/1234567890ABCDE0
+                lastModifiedTime: 1665398234935
+                lastSeen:
+                  batteryLevel: 1
+                  clickEventPropagated: true
+                  clickTime: "2022-01-26T01:07:19.561Z"
+                  clickType: DOUBLE
+                operatorId: OP0040984956
+                productId: button
+                serialNumber: 1234567890ABCDE0
+                status: active
+                tags:
+                  name: LTE-M Button 01
+                terminatedTime: null
+                terminationEnabled: false
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: 指定された Gadget の詳細情報
+          description: 指定された Gadget API 対応デバイスの詳細情報
         "404":
-          description: 指定された Gadget が存在しない
+          description: 指定された Gadget API 対応デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get Gadget
+      summary: Gadget API 対応デバイスの詳細情報を取得する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets get
   /gadgets/{product_id}/{serial_number}/disable_termination:
     post:
-      description: Disables termination of specified gadget.
+      description: 指定された Gadget API 対応デバイスを解約不可能に設定します。
       operationId: disableTerminationOnGadget
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -2824,29 +3004,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
+          description: 更新後の Gadget API 対応デバイスの詳細情報
         "404":
-          description: 指定された Gadget が存在しない
+          description: 指定された Gadget API 対応デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of Gadget
+      summary: Gadget API 対応デバイスを解約不可能に設定する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets disable-termination
   /gadgets/{product_id}/{serial_number}/enable_termination:
     post:
-      description: 指定された Gadget を Terminate 可能に設定する
+      description: 指定された Gadget API 対応デバイスを解約可能に設定します。
       operationId: enableTerminationOnGadget
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -2858,29 +3045,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
+          description: 更新後の Gadget API 対応デバイスの詳細情報
         "404":
-          description: 指定された Gadget が存在しない
+          description: 指定された Gadget API 対応デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of Gadget
+      summary: Gadget API 対応デバイスを解約可能に設定する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets enable-termination
   /gadgets/{product_id}/{serial_number}/register:
     post:
-      description: Gadget を登録する
+      description: Gadget API 対応デバイスを登録する
       operationId: registerGadget
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -2899,70 +3093,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: Gadget が正しく登録されました
+          description: Gadget API 対応デバイスが正しく登録されました
         "404":
-          description: 指定された Gadget が存在しません
+          description: 指定された Gadget API 対応デバイスが存在しません
       security:
       - api_key: []
         api_token: []
-      summary: Register a Gadget.
+      summary: Gadget API 対応デバイスを登録する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets register
-  /gadgets/{product_id}/{serial_number}/set_group:
-    post:
-      description: 指定された Gadget のグループを設定する。
-      operationId: setGadgetGroup
-      parameters:
-      - description: 対象の Gadget の Product ID
-        in: path
-        name: product_id
-        required: true
-        schema:
-          type: string
-      - description: 対象の Gadget の Serial Number
-        in: path
-        name: serial_number
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Group'
-        description: Group（ID のみを含めばよい）
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
-        "404":
-          description: 指定された Gadget が存在しない
-      security:
-      - api_key: []
-        api_token: []
-      summary: Set Group to Gadget
-      tags:
-      - Gadget
-      x-soracom-cli:
-      - gadgets set-group
   /gadgets/{product_id}/{serial_number}/tags:
     put:
-      description: 指定された Gadget のタグを追加・更新
+      description: 指定された Gadget API 対応デバイスのタグを追加・更新します。
       operationId: putGadgetTags
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -2983,29 +3143,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
+          description: 更新後の Gadget API 対応デバイスの詳細情報
         "404":
-          description: 指定された Gadget が存在しない
+          description: 指定された Gadget API 対応デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update Gadget Tags
+      summary: Gadget API 対応デバイスのタグを追加・更新する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets put-tags
   /gadgets/{product_id}/{serial_number}/tags/{tag_name}:
     delete:
-      description: 指定された Gadget のタグを削除
+      description: 指定された Gadget API 対応デバイスのタグを削除します。
       operationId: deleteGadgetTag
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -3022,11 +3189,11 @@ paths:
         "204":
           description: 対象のタグの削除が完了
         "404":
-          description: 指定された Gadget あるいはタグが存在しない
+          description: 指定された Gadget API 対応デバイスあるいはタグが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete Gadget Tag
+      summary: Gadget API 対応デバイスのタグを削除する
       tags:
       - Gadget
       x-sam-operationId: deleteTag
@@ -3034,16 +3201,23 @@ paths:
       - gadgets delete-tag
   /gadgets/{product_id}/{serial_number}/terminate:
     post:
-      description: 指定された Gadget を Terminate
+      description: 指定された Gadget API 対応デバイスを解約します。
       operationId: terminateGadget
       parameters:
-      - description: 対象の Gadget の Product ID
+      - description: |
+          対象の Gadget API 対応デバイスの種類
+
+          - `button`: SORACOM LTE-M Button powered by AWS
+          - `wimax`: ソラカメ専用セルラーパック
         in: path
         name: product_id
         required: true
         schema:
+          enum:
+          - button
+          - wimax
           type: string
-      - description: 対象の Gadget の Serial Number
+      - description: 対象の Gadget API 対応デバイスのシリアル番号
         in: path
         name: serial_number
         required: true
@@ -3055,51 +3229,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
+          description: 更新後の Gadget API 対応デバイスの詳細情報
         "404":
-          description: 指定された Gadget が存在しない
+          description: 指定された Gadget API 対応デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Terminate Gadget
+      summary: Gadget API 対応デバイスを解約する
       tags:
       - Gadget
       x-soracom-cli:
       - gadgets terminate
-  /gadgets/{product_id}/{serial_number}/unset_group:
-    post:
-      description: 指定された Gadget のグループ設定を解除する。
-      operationId: unsetGadgetGroup
-      parameters:
-      - description: 対象の Gadget の Product ID
-        in: path
-        name: product_id
-        required: true
-        schema:
-          type: string
-      - description: 対象の Gadget の Serial Number
-        in: path
-        name: serial_number
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gadget'
-          description: 更新後の Gadget の詳細情報
-        "404":
-          description: 指定された Gadget が存在しないか、Gadget は Group に属していない
-      security:
-      - api_key: []
-        api_token: []
-      summary: Unset Group to Gadget
-      tags:
-      - Gadget
-      x-soracom-cli:
-      - gadgets unset-group
   /groups:
     get:
       description: Group の一覧を返す
@@ -3118,7 +3258,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: タグの検索条件。
+      - description: タグの文字列 (`tag_value`) に対する検索条件
         in: query
         name: tag_value_match_mode
         required: false
@@ -3779,7 +3919,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon サービスを有効にします。
+      summary: SORACOM Lagoon サービスを有効にする
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3798,7 +3938,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon サービスの使用を終了します。
+      summary: SORACOM Lagoon サービスの使用を終了する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3829,7 +3969,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得します。
+      summary: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3857,7 +3997,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon のユーザーを新たに作成します。
+      summary: SORACOM Lagoon のユーザーを新たに作成する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3882,7 +4022,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon のユーザーを削除します。
+      summary: SORACOM Lagoon のユーザーを削除する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3914,7 +4054,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon のユーザーのメールアドレスを変更します。
+      summary: SORACOM Lagoon のユーザーのメールアドレスを変更する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3946,7 +4086,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon のユーザーのパスワードを変更します。
+      summary: SORACOM Lagoon のユーザーのパスワードを変更する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3978,7 +4118,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Lagoon のユーザーの権限を変更します。
+      summary: SORACOM Lagoon のユーザーの権限を変更する
       tags:
       - Lagoon
       x-soracom-cli:
@@ -6351,7 +6491,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: ルートユーザーが発行した全ての API キーと API トークンを無効化します。
+      summary: ルートユーザーが発行した全ての API キーと API トークンを無効化する
       tags:
       - Operator
       x-soracom-cli:
@@ -7164,7 +7304,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化します。
+      summary: 指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化する
       tags:
       - User
       x-soracom-cli:
@@ -7525,7 +7665,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 発注した商品に対して初期設定を指定する。
+      summary: 発注した商品に対して初期設定を指定する
       tags:
       - Order
   /orders/{order_id}/subscribers:
@@ -7625,7 +7765,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get payment transaction result.
+      summary: 課金処理結果を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -7646,7 +7786,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get payment method information.
+      summary: 現在の支払い方法を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -7667,7 +7807,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Activate payment method.
+      summary: 現在の支払い方法を有効化する
       tags:
       - Payment
       x-soracom-cli:
@@ -7686,7 +7826,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List payment statements.
+      summary: 課金明細の一覧を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -7723,7 +7863,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export payment statement.
+      summary: 課金明細をエクスポートする
       tags:
       - Payment
       x-soracom-cli:
@@ -7744,7 +7884,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export payer information.
+      summary: 支払い者情報を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -7767,7 +7907,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register payer information.
+      summary: 支払い者情報を登録する
       tags:
       - Payment
       x-soracom-cli:
@@ -7921,7 +8061,7 @@ paths:
         SORACOM Inventory デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
       operationId: searchDevices
       parameters:
-      - description: 検索したい SORACOM Inventory デバイスの名前
+      - description: 検索する SORACOM Inventory デバイスの名前
         explode: true
         in: query
         name: name
@@ -7930,7 +8070,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいグループの名前
+      - description: 検索するグループの名前
         explode: true
         in: query
         name: group
@@ -7939,7 +8079,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい SORACOM Inventory デバイスの ID
+      - description: 検索する SORACOM Inventory デバイスの ID
         explode: true
         in: query
         name: deviceId
@@ -7948,7 +8088,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいタグの値の文字列
+      - description: 検索するタグの値の文字列
         explode: true
         in: query
         name: tag
@@ -7957,7 +8097,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい SORACOM Inventory デバイスの bootstrap 時の IMSI
+      - description: 検索する SORACOM Inventory デバイスの bootstrap 時の IMSI
         explode: true
         in: query
         name: imsi
@@ -7966,7 +8106,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい SORACOM Inventory デバイスの bootstrap 時の IMEI
+      - description: 検索する SORACOM Inventory デバイスの bootstrap 時の IMEI
         explode: true
         in: query
         name: imei
@@ -8015,7 +8155,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SORACOM Inventory デバイスをクエリに応じて検索します。
+      summary: SORACOM Inventory デバイスをクエリに応じて検索する
       tags:
       - Query
       x-soracom-cli:
@@ -8031,7 +8171,7 @@ paths:
         Sigfox デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
       operationId: searchSigfoxDevices
       parameters:
-      - description: 検索したい Sigfox デバイスの名前
+      - description: 検索する Sigfox デバイスの名前
         explode: true
         in: query
         name: name
@@ -8040,7 +8180,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいグループの名前
+      - description: 検索するグループの名前
         explode: true
         in: query
         name: group
@@ -8049,7 +8189,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい Sigfox デバイスの ID
+      - description: 検索する Sigfox デバイスの ID
         explode: true
         in: query
         name: deviceId
@@ -8058,7 +8198,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいタグの値の文字列
+      - description: 検索するタグの値の文字列
         explode: true
         in: query
         name: tag
@@ -8067,7 +8207,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい Sigfox デバイスの状態
+      - description: 検索する Sigfox デバイスの状態
         in: query
         name: status
         required: false
@@ -8084,7 +8224,7 @@ paths:
           - banned
           - standby
           type: string
-      - description: 検索したい Sigfox デバイスの登録状態
+      - description: 検索する Sigfox デバイスの登録状態
         in: query
         name: registration
         required: false
@@ -8135,7 +8275,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Sigfox デバイスをクエリに応じて検索します。
+      summary: Sigfox デバイスをクエリに応じて検索する
       tags:
       - Query
       x-soracom-cli:
@@ -8147,11 +8287,13 @@ paths:
           header: x-soracom-next-key
   /query/sims:
     get:
-      description: SIM をクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての SIM に対して
-        group も含めた検索/一覧取得を行える権限が与えられます。
+      description: |
+        クエリパラメーターに指定した条件で、IoT SIM を検索します。部分一致で検索できます。大文字と小文字は区別されません。
+
+        **Warning**: SAM ユーザーに、この API を呼び出す権限が付与された場合は、その SAM ユーザーにはすべての IoT SIM に対してグループも含めた検索 / 一覧取得を行う権限が与えられます。
       operationId: searchSims
       parameters:
-      - description: 検索したい SIM の名前
+      - description: IoT SIM の名前。
         explode: true
         in: query
         name: name
@@ -8160,7 +8302,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいグループの名前
+      - description: IoT SIM が所属する [グループ](/ja-jp/docs/group-configuration/) の名前。
         explode: true
         in: query
         name: group
@@ -8169,7 +8311,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい SIM ID
+      - description: '[SIM ID](/ja-jp/resources/glossary/#sim-id)。'
         explode: true
         in: query
         name: sim_id
@@ -8178,7 +8320,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい IMSI
+      - description: '[IMSI (International Mobile Subscriber Identity)](/ja-jp/resources/glossary/#imsi-international-mobile-subscriber-identity)。'
         explode: true
         in: query
         name: imsi
@@ -8187,7 +8329,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい MSISDN
+      - description: '[MSISDN (Mobile Station International Subscriber Directory Number)](/ja-jp/resources/glossary/#msisdn-mobile-station-international-subscriber-directory-number)。'
         explode: true
         in: query
         name: msisdn
@@ -8196,7 +8338,8 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい ICCID
+      - description: ICCID (Integrated Circuit Card ID)。SIM カードや仮想的な IoT SIM (バーチャル
+          SIM/Subscriber) を識別するための識別子。
         explode: true
         in: query
         name: iccid
@@ -8205,7 +8348,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい製造番号
+      - description: IoT SIM の裏面に記載された製造番号。特定地域向け IoT SIM にのみ設定されています。
         explode: true
         in: query
         name: serial_number
@@ -8214,7 +8357,8 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいタグの値の文字列
+      - description: IoT SIM のタグの値の文字列。詳しくは、[IoT SIM に付加情報 (タグ) を設定する](/ja-jp/docs/air/set-tag/)
+          を参照してください。
         explode: true
         in: query
         name: tag
@@ -8223,7 +8367,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいバンドルタイプ
+      - description: バンドル
         explode: true
         in: query
         name: bundles
@@ -8232,7 +8376,11 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいセッションステータス (ONLINE もしくは OFFLINE)
+      - description: |
+          セッションの状態
+          - `NA`: 任意
+          - `ONLINE`: オンライン
+          - `OFFLINE`: オフライン
         in: query
         name: session_status
         required: false
@@ -8259,7 +8407,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: 検索の種別 (AND 検索もしくは OR 検索)
+      - description: 検索の種別 (AND 検索もしくは OR 検索)。省略した場合は、AND 検索です。
         in: query
         name: search_type
         required: false
@@ -8283,7 +8431,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SIM をクエリに応じて検索します。
+      summary: SIM をクエリに応じて検索する
       tags:
       - Query
       x-soracom-cli:
@@ -8300,7 +8448,7 @@ paths:
         をクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての SIM に対して group も含めた検索/一覧取得を行える権限が与えられます。
       operationId: searchSubscribers
       parameters:
-      - description: 検索したい Subscriber の名前
+      - description: 検索する Subscriber の名前
         explode: true
         in: query
         name: name
@@ -8309,7 +8457,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいグループの名前
+      - description: 検索するグループの名前
         explode: true
         in: query
         name: group
@@ -8318,7 +8466,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい IMSI
+      - description: 検索する IMSI
         explode: true
         in: query
         name: imsi
@@ -8327,7 +8475,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい MSISDN
+      - description: 検索する MSISDN
         explode: true
         in: query
         name: msisdn
@@ -8336,7 +8484,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい ICCID
+      - description: 検索する ICCID
         explode: true
         in: query
         name: iccid
@@ -8345,7 +8493,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したい製造番号
+      - description: 検索する製造番号
         explode: true
         in: query
         name: serial_number
@@ -8354,7 +8502,7 @@ paths:
           items:
             type: string
           type: array
-      - description: 検索したいタグの値の文字列
+      - description: 検索するタグの値の文字列
         explode: true
         in: query
         name: tag
@@ -8363,7 +8511,7 @@ paths:
           items:
             type: string
           type: array
-      - description: '検索したいサブスクリプション (例: `plan01s`)'
+      - description: '検索するサブスクリプション (例: `plan01s`)'
         explode: true
         in: query
         name: subscription
@@ -8372,7 +8520,7 @@ paths:
           items:
             type: string
           type: array
-      - description: '検索したいモジュールタイプ (例: `mini`, `virtual`)'
+      - description: '検索するモジュールタイプ (例: `mini`, `virtual`)'
         explode: true
         in: query
         name: module_type
@@ -8420,7 +8568,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: (非推奨) Subscriber をクエリに応じて検索します。
+      summary: (非推奨) Subscriber をクエリに応じて検索する
       tags:
       - Query
       x-soracom-alternative-cli: query sims
@@ -8481,7 +8629,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Subscriber の通信量ランキングを返却します。
+      summary: Subscriber の通信量ランキングを返却する
       tags:
       - Query
       x-soracom-cli:
@@ -8515,7 +8663,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: resource_summary_type で指定された種別のリソースの要約を取得します。
+      summary: resource_summary_type で指定された種別のリソースの要約を取得する
       tags:
       - ResourceSummary
       x-soracom-cli:
@@ -9372,7 +9520,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SIM に対して ping リクエストを送信する。
+      summary: SIM に対して ping リクエストを送信する
       tags:
       - Sim
       x-soracom-cli:
@@ -9821,175 +9969,6 @@ paths:
       - Sim
       x-soracom-cli:
       - sims terminate-subscription-container
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers:
-    get:
-      description: Returns a schema listing subscription containers and containing
-        a map of PLMN codes to subscription containers
-      operationId: listSubscriptionContainers
-      parameters:
-      - description: Sim Id of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Get subscription container status.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims list-subscription-containers
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/{container_id}/enable:
-    post:
-      description: Causes the identified container to become the active one on the
-        Sim.
-      operationId: enableSubscriptionContainer
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      - description: Identifier of the target container
-        in: path
-        name: container_id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Enables a subscription container.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims enable-subscription-container
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping:
-    put:
-      description: Inserts/updates Country (and optionally network) to subscription
-        container mapping entries in the mapping table.
-      operationId: putSubscriptionContainerCountryMappingEntries
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MappingEntries'
-        description: collection of country (and optionally network) to subscription
-          container mapping entries
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Updates subscription container country mapping entries.
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims put-country-mapping-entries
-  /sims/{sim_id}/profiles/{iccid}/subscription_containers/country_mapping/{mcc}:
-    delete:
-      description: Delete subscription container country mapping entries
-      operationId: deleteSubscriptionContainerCountryMappingEntry
-      parameters:
-      - description: SIM ID of the target SIM.
-        in: path
-        name: sim_id
-        required: true
-        schema:
-          type: string
-      - description: Iccid of the target profile
-        in: path
-        name: iccid
-        required: true
-        schema:
-          type: string
-      - description: mobile country code
-        in: path
-        name: mcc
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubscriptionContainerStatus'
-          description: A schema listing subscription containers and containing a map
-            of PLMN codes to subscription containers.
-        "400":
-          description: Missing parameter
-        "404":
-          description: No such profile or sim found
-      security:
-      - api_key: []
-        api_token: []
-      summary: Delete subscription container mapping entries
-      tags:
-      - Sim
-      x-soracom-cli:
-      - sims delete-country-mapping-entry
   /sims/{sim_id}/register:
     post:
       description: オペレーターに IoT SIM を登録します。
@@ -10608,13 +10587,14 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceEventsForDevice リクエストのレスポンスに含まれていた x-soracom-next-key
+          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 一回のリクエストで取得するイベント数の最大値。なお、取得できるイベントの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -10653,6 +10633,17 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                deviceType: atomCamV2
+                eventId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                eventInfo:
+                  endTime: 1662973203000
+                  picture: https://atom-device-alarm-file.s3.ap-northeast-1.amazonaws.com/7CDDDEADBEEF/2022-12-12/7CDDDEADBEEF131670825831_1670825831000_13_1_0/xxx.jpg?...
+                  recordingStatus: completed
+                  startTime: 1662973200000
+                  type: motion
+                time: 1662973200000
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamEvent'
@@ -10696,12 +10687,16 @@ paths:
           content:
             application/json;charset=UTF-8:
               example:
-              - deviceId: 7CDDDEADBEEF
+                deviceId: 7CDDDEADBEEF
                 image:
+                  billedFrames: 0
+                  limitFrames: 259200
                   remainingFrames: 259131
                   usedFrames: 69
                 meteredYearMonth: "202209"
                 video:
+                  billedSeconds: 0
+                  limitSeconds: 259200
                   remainingSeconds: 259131
                   usedSeconds: 69
               schema:
@@ -10717,6 +10712,90 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get-export-usage
+  /sora_cam/devices/{device_id}/exports/usage/limit_override:
+    delete:
+      description: |
+        動画のエクスポート可能時間の上限をデフォルトの値に戻します。デフォルトは、72 時間です。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: deleteSoraCamDeviceExportUsageLimitOverride
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: 設定がデフォルトに戻りました。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラの動画のエクスポート可能時間の上限をデフォルトに戻す
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices delete-export-usage-limit-override
+    put:
+      description: |
+        動画のエクスポート可能時間の上限を変更します。デフォルトは、72 時間です。最大で 1,500 時間まで設定できます。
+
+        **Warning**: 動画のエクスポート可能時間の消費時間が 72 時間を超えると課金が発生します。上限を変更しただけでは、課金は発生しません。動画のエクスポート可能時間の上限の設定にかかわらず、消費時間が 72 時間を超えると課金が発生します。料金について詳しくは、Soracom Cloud Camera Services ソラカメの [料金について](https://soracom.jp/sora_cam/#pricing) を参照してください。
+
+        **Warning**: 上限を 72 時間未満に設定することもできます。その場合でも、料金は変わりません。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: updateSoraCamDeviceExportUsageLimitOverride
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              limitHours: 144
+            schema:
+              $ref: '#/components/schemas/SoraCamExportUsageLimitOverrideSpecification'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              example:
+                deviceId: 7CDDDEADBEEF
+                image:
+                  billedFrames: 69
+                  limitFrames: 518400
+                  remainingFrames: 259131
+                  usedFrames: 259269
+                meteredYearMonth: "202209"
+                video:
+                  billedSeconds: 69
+                  limitSeconds: 518400
+                  remainingSeconds: 259131
+                  usedSeconds: 259269
+              schema:
+                $ref: '#/components/schemas/SoraCamExportUsage'
+          description: 設定が変更されました。
+        "400":
+          description: 不正な上限値が指定されました。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラの動画のエクスポート可能時間の上限を変更する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices update-export-usage-limit-override
   /sora_cam/devices/{device_id}/images/exports:
     get:
       description: |
@@ -10733,13 +10812,14 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceImageExportsForDevice リクエストのレスポンスに含まれていた
+          x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -10776,7 +10856,6 @@ paths:
                     operatorId: OP0012345678
                     requestedTime: 1663649222739
                     status: processing
-                    url: ""
                 (3) Completed:
                   value:
                   - deviceId: 7CDDDEADBEEF
@@ -10786,6 +10865,34 @@ paths:
                     requestedTime: 1663649222739
                     status: completed
                     url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamImageExportInfo'
@@ -10810,7 +10917,7 @@ paths:
       description: |
         クラウド常時録画で保存された録画映像から静止画を切り出してエクスポートする処理を開始します。エクスポート処理は非同期で処理されます。エクスポート処理の進捗や、エクスポートしたファイルの URL は、[`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports) で取得できます。URL には有効期限が設定されています。
 
-        - URL を取得した時点で、ダウンロード状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+        - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
@@ -10881,16 +10988,62 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
-                $ref: '#/components/schemas/SoraCamImageExportInfo'
+                items:
+                  $ref: '#/components/schemas/SoraCamImageExportInfo'
+                type: array
           description: OK.
         "404":
           description: 指定したソラカメ対応カメラ、またはエクスポート処理が見つかりません。
@@ -10986,13 +11139,14 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceVideoExportsForDevice リクエストのレスポンスに含まれていた
+          x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -11038,6 +11192,34 @@ paths:
                     requestedTime: 1662973200000
                     status: completed
                     url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -11063,7 +11245,7 @@ paths:
         クラウド常時録画で保存された録画映像を、ダウンロードできる方式 (mp4 ファイルを zip 形式で圧縮したファイル) でエクスポートする処理を開始します。エクスポート処理は非同期で処理されます。エクスポート処理の進捗や、エクスポートしたファイルの URL は、[`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports) で取得できます。URL には有効期限が設定されています。
 
         - ひとつの URL でエクスポートできる時間は最大 300 秒 (5 分) です。
-        - URL を取得した時点で、ダウンロード状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
+        - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
@@ -11136,14 +11318,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-                deviceId: 7CDDDEADBEEF
-                expiryTime: 1663059600000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 $ref: '#/components/schemas/SoraCamVideoExportInfo'
           description: OK.
@@ -11168,13 +11394,14 @@ paths:
         required: false
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceEvents リクエストのレスポンスに含まれていた x-soracom-next-key
+          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: integer
-      - description: 一回のリクエストで取得するイベント数の最大値。なお、取得できるイベントの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -11213,6 +11440,17 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
+              example:
+              - deviceId: 7CDDDEADBEEF
+                deviceType: atomCamV2
+                eventId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                eventInfo:
+                  endTime: 1662973203000
+                  picture: https://atom-device-alarm-file.s3.ap-northeast-1.amazonaws.com/7CDDDEADBEEF/2022-12-12/7CDDDEADBEEF131670825831_1670825831000_13_1_0/filename.jpg?...
+                  recordingStatus: completed
+                  startTime: 1662973200000
+                  type: motion
+                time: 1662973200000
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamEvent'
@@ -11247,13 +11485,14 @@ paths:
         required: false
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceImageExports リクエストのレスポンスに含まれていた x-soracom-next-key
+          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -11261,7 +11500,7 @@ paths:
           default: 10
           type: integer
       - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいデータほど先に来る順でソートされます。
         in: query
         name: sort
         required: false
@@ -11275,25 +11514,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: initializing
-              - deviceId: 7CDDDEADBEEF
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: processing
-                url: ""
-              - deviceId: 7CDDDEADBEEF
-                expiryTime: 1663735622739
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5c
-                operatorId: OP0012345678
-                requestedTime: 1663649222739
-                status: completed
-                url: https://sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.jpg?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamImageExportInfo'
@@ -11328,13 +11600,14 @@ paths:
         required: false
         schema:
           type: string
-      - description: 前回のリクエストのレスポンスに含まれていた x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前回の listSoraCamDeviceVideoExports リクエストのレスポンスに含まれていた x-soracom-next-key
+          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 一回のリクエストで取得するエクスポート処理に関するデータの個数の最大値。なお、取得できるデータの個数は、指定した数を下回る可能性があります。
+      - description: 1 回のリクエストで取得するデータ数の最大値。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
@@ -11342,7 +11615,7 @@ paths:
           default: 10
           type: integer
       - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+          にソートされます。デフォルトは降順 (`desc`) すなわち新しいデータほど先に来る順でソートされます。
         in: query
         name: sort
         required: false
@@ -11356,14 +11629,58 @@ paths:
         "200":
           content:
             application/json;charset=UTF-8:
-              example:
-              - deviceId: 7CDDDEADBEEF
-                expiryTime: 1662973800000
-                exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
-                operatorId: OP0012345678
-                requestedTime: 1662973200000
-                status: completed
-                url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+              examples:
+                (1) Initializing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: initializing
+                (2) Processing:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: processing
+                (3) Completed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    expiryTime: 1662973800000
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: completed
+                    url: https://soracom-sora-cam-devices-api-export-file-prod.s3.amazonaws.com/filename.zip?...
+                (4) Retrying:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
+                    operatorId: OP0012345678
+                    requestedTime: 1662973200000
+                    status: retrying
+                (5) Failed:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: failed
+                (6) limitExceeded:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: limitExceeded
+                (7) Expired:
+                  value:
+                  - deviceId: 7CDDDEADBEEF
+                    exportId: 5ed62746-6c53-47e5-94e6-90697057cf5a
+                    operatorId: OP0012345678
+                    requestedTime: 1663649222739
+                    status: expired
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
@@ -11415,7 +11732,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soracom Cloud Camera Services のライセンスパックの一覧を取得します。
+      summary: Soracom Cloud Camera Services のライセンスパックの一覧を取得する
       tags:
       - SoraCam
       x-soracom-cli:
@@ -11447,7 +11764,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soracom Cloud Camera Services のライセンス数を更新します。
+      summary: Soracom Cloud Camera Services のライセンス数を更新する
       tags:
       - SoraCam
       x-soracom-cli:
@@ -11491,7 +11808,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet の一覧を取得します。
+      summary: Soralet の一覧を取得する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11519,7 +11836,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet を作成します。
+      summary: Soralet を作成する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11543,7 +11860,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet を削除します。
+      summary: Soralet を削除する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11570,7 +11887,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet を取得します。
+      summary: Soralet を取得する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11620,7 +11937,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet のログメッセージを取得します。
+      summary: Soralet のログメッセージを取得する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11658,7 +11975,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 引数を指定して Soralet をテスト実行します。
+      summary: 引数を指定して Soralet をテスト実行する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11709,7 +12026,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet のバージョン一覧を取得します。
+      summary: Soralet のバージョン一覧を取得する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11753,7 +12070,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: コードをアップロードし、新しいバージョンを作成します。
+      summary: コードをアップロードし、新しいバージョンを作成する
       tags:
       - Soralet
       x-soracom-cli:
@@ -11783,11 +12100,153 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Soralet のバージョンを削除します。
+      summary: Soralet のバージョンを削除する
       tags:
       - Soralet
       x-soracom-cli:
       - soralets delete-version
+  /stats/air/groups/{group_id}:
+    get:
+      description: 指定したグループに所属するすべての IoT SIM を集約したデータ通信量履歴を取得します。
+      operationId: getAirStatsOfGroup
+      parameters:
+      - description: グループ ID
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          集計対象期間の開始月/日を UNIX 時間 (秒) で指定します。なお、`period` の値によって指定できる値および動作が異なります。
+
+          - `period` が `month` の場合:
+            - 現在時刻の 3 か月前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の開始時刻は、指定した UNIX 時間 (秒) を含む月の 1 日 00:00:00 です。
+          - `period` が `day` の場合:
+            - 現在時刻の 6 日前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の開始時刻は、指定した UNIX 時間 (秒) を含む日の 00:00:00 です。
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+      - description: |
+          集計対象期間の終了月/日を UNIX 時間 (秒) で指定します。なお、`period` の値によって指定できる値および動作が異なります。
+
+          - `period` が `month` の場合:
+            - 現在時刻の 3 か月前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の終了時刻は、指定した UNIX 時間 (秒) を含む月の月末の 24:00:00 です。
+          - `period` が `day` の場合:
+            - 現在時刻の 6 日前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の終了時刻は、指定した UNIX 時間 (秒) を含む日の 24:00:00 です。
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+      - description: |
+          集計単位。
+
+          - month: 月ごとに集計します。
+          - day: 日ごとに集計します。
+        in: query
+        name: period
+        required: true
+        schema:
+          enum:
+          - month
+          - day
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AirAggregatedStatsResponse'
+                type: array
+          description: OK.
+        "400":
+          description: 不正なリクエストです。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 指定したグループに所属するすべての IoT SIM を集約したデータ通信量履歴を取得する
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats air groups get
+  /stats/air/operators/{operator_id}:
+    get:
+      description: 指定したオペレーターが保有するすべての IoT SIM を集約したデータ通信量履歴を取得します。
+      operationId: getAirStatsOfOperator
+      parameters:
+      - description: オペレーター ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          集計対象期間の開始月/日を UNIX 時間 (秒) で指定します。なお、`period` の値によって指定できる値および動作が異なります。
+
+          - `period` が `month` の場合:
+            - 現在時刻の 3 か月前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の開始時刻は、指定した UNIX 時間 (秒) を含む月の 1 日 00:00:00 です。
+          - `period` が `day` の場合:
+            - 現在時刻の 6 日前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の開始時刻は、指定した UNIX 時間 (秒) を含む日の 00:00:00 です。
+        in: query
+        name: from
+        required: true
+        schema:
+          type: integer
+      - description: |
+          集計対象期間の終了月/日を UNIX 時間 (秒) で指定します。なお、`period` の値によって指定できる値および動作が異なります。
+
+          - `period` が `month` の場合:
+            - 現在時刻の 3 か月前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の終了時刻は、指定した UNIX 時間 (秒) を含む月の月末の 24:00:00 です。
+          - `period` が `day` の場合:
+            - 現在時刻の 6 日前 〜 現在時刻の UNIX 時間 (秒) を指定してください。
+            - 実際の集計対象期間の終了時刻は、指定した UNIX 時間 (秒) を含む日の 24:00:00 です。
+        in: query
+        name: to
+        required: true
+        schema:
+          type: integer
+      - description: |
+          集計単位。
+
+          - month: 月ごとに集計します。
+          - day: 日ごとに集計します。
+        in: query
+        name: period
+        required: true
+        schema:
+          enum:
+          - month
+          - day
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AirAggregatedStatsResponse'
+                type: array
+          description: OK.
+        "400":
+          description: 不正なリクエストです。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 指定したオペレーターが保有するすべての IoT SIM を集約したデータ通信量履歴を取得する
+      tags:
+      - Stats
+      x-soracom-cli:
+      - stats air operators get
   /stats/air/operators/{operator_id}/export:
     post:
       description: |
@@ -11913,13 +12372,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -12007,13 +12466,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -12101,13 +12560,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -12195,13 +12654,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -12262,7 +12721,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Harvest の利用統計情報を取得します。
+      summary: Harvest の利用統計情報を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -12278,13 +12737,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 集計対象時刻の始まりを unixtime で与える
+      - description: 集計対象時刻の始まりを UNIX 時間 (秒) で与える
         in: query
         name: from
         required: true
         schema:
           type: integer
-      - description: 集計対象時刻の終わりを unixtime で与える
+      - description: 集計対象時刻の終わりを UNIX 時間 (秒) で与える
         in: query
         name: to
         required: true
@@ -12339,7 +12798,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Napter 監査ログの月次読み込みデータ量を取得する。
+      summary: Napter 監査ログの月次読み込みデータ量を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -12713,7 +13172,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Subscriber に対して ping リクエストを送信する。
+      summary: Subscriber に対して ping リクエストを送信する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13389,7 +13848,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IssueSubscriberTransferTokenRequest'
-        description: 移管先オペレーターのメールアドレス、オペレーターID、移管対象の IMSI
+        description: 移管先オペレーターのメールアドレス、オペレーター ID、移管対象の IMSI
         required: true
       responses:
         "200":
@@ -13597,7 +14056,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効にする。
+      summary: 指定された VPG に対して SORACOM Gate のプライバシーセパレーター機能を無効にする
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13921,7 +14380,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction ミラーリング peer を削除します。
+      summary: Junction ミラーリング peer を削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14045,7 +14504,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Junction インスペクション機能の設定を解除します。
+      summary: Junction インスペクション機能の設定を解除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14411,7 +14870,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List long term discounts.
+      summary: 契約済みの長期利用割引の一覧を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -14465,7 +14924,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get long term discount.
+      summary: 契約済みの長期利用割引を取得する
       tags:
       - Payment
       x-soracom-cli:
@@ -14841,6 +15300,21 @@ components:
       required:
       - executionDateTimeConst
       type: object
+    AirAggregatedStatsResponse:
+      properties:
+        downloadByteSizeTotal:
+          description: 集計対象期間にダウンロードしたバイト数
+          format: int64
+          type: integer
+        unixtime:
+          description: 集計対象期間の開始日時 (UNIX 時間 (秒))
+          format: int64
+          type: integer
+        uploadByteSizeTotal:
+          description: 集計対象期間にアップロードしたバイト数
+          format: int64
+          type: integer
+      type: object
     AirStatsResponse:
       properties:
         dataTrafficStatsMap:
@@ -15039,6 +15513,62 @@ components:
           format: int64
           type: integer
       type: object
+    BillItemCostBreakdown:
+      properties:
+        amount:
+          description: 合計金額
+          format: double
+          type: number
+        billItemCategory:
+          description: 課金項目カテゴリ
+          type: string
+        billItemName:
+          description: 課金項目名
+          type: string
+    BillingSummaryResponseOfBillItems:
+      properties:
+        costBreakdownList:
+          description: 利用料金のリスト。合計金額順に降順でソートされます。
+          items:
+            $ref: '#/components/schemas/BillItemCostBreakdown'
+          type: array
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        updatedTime:
+          description: サマリーの最終更新日時 (UNIX 時間 (秒))
+          format: int64
+          type: integer
+        yearMonth:
+          description: 年月
+          type: string
+      type: object
+    BillingSummaryResponseOfSims:
+      properties:
+        costBreakdownList:
+          description: 利用料金のリスト。合計金額順に降順でソートされ、上位 100 件まで出力します。
+          items:
+            $ref: '#/components/schemas/SimCostBreakdown'
+          type: array
+        currency:
+          description: 通貨
+          enum:
+          - JPY
+          - USD
+          - EUR
+          type: string
+        updatedTime:
+          description: サマリーの最終更新日時 (UNIX 時間 (秒))
+          format: int64
+          type: integer
+        yearMonth:
+          description: 年月
+          type: string
+      type: object
     Capabilities:
       properties:
         data:
@@ -15128,6 +15658,9 @@ components:
             (`1`)。
           format: int32
           type: integer
+        identifier:
+          description: リクエストとそれに対する結果を結びつけるための識別子。
+          type: string
         lat:
           description: 推定座標の緯度
           format: double
@@ -15473,8 +16006,8 @@ components:
       properties:
         amount:
           description: 金額
-          format: int64
-          type: integer
+          format: double
+          type: number
         currency:
           description: 通貨
           enum:
@@ -15964,7 +16497,7 @@ components:
     ExportRequest:
       properties:
         from:
-          description: 対象期間の開始日時 (UNIX 時間 (ミリ秒))
+          description: 対象期間の開始日時 (UNIX 時間 (秒))
           example: 1654009200
           format: int64
           type: integer
@@ -15981,7 +16514,7 @@ components:
           - minutes
           type: string
         to:
-          description: 対象期間の終了日時 (UNIX 時間 (ミリ秒))
+          description: 対象期間の終了日時 (UNIX 時間 (秒))
           example: 1656601200
           format: int64
           type: integer
@@ -16386,23 +16919,80 @@ components:
     Gadget:
       properties:
         attributes:
+          properties:
+            contractEndingTime:
+              description: SORACOM LTE-M Button powered by AWS の有効期限
+              format: date-time
+              type: string
+            firstClickTimestamp:
+              description: SORACOM LTE-M Button powered by AWS を初めてクリックした日時
+              format: date-time
+              type: string
+            remainingCount:
+              description: SORACOM LTE-M Button powered by AWS の残りクリック回数
+              type: integer
+            wimaxBillingStartDate:
+              description: ソラカメ専用セルラーパックの課金開始日。
+              type: string
+            wimaxIccid:
+              description: ソラカメ専用セルラーパックに含まれる au IC カードの ICCID (Integrated Circuit
+                Card ID)。au IC カードを識別するための識別子。
+              type: string
+            wimaxImei:
+              description: ソラカメ専用セルラーパックに含まれる Speed Wi-Fi HOME 5G L11 の [IMEI (International
+                Mobile Equipment Identity)](/ja-jp/resources/glossary/#imei-international-mobile-equipment-identity)。
+              type: string
           type: object
-        groupId:
-          type: string
+        createdTime:
+          description: Gadget API 対応デバイスを登録した UNIX 時間 (ミリ秒)
+          format: int64
+          type: integer
         id:
+          description: Gadget API 対応デバイスの ID
           type: string
         lastModifiedTime:
-          format: date-time
-          type: string
+          description: Gadget API 対応デバイスの情報が変更された UNIX 時間 (ミリ秒)
+          format: int64
+          type: integer
         lastSeen:
+          properties:
+            batteryLevel:
+              description: SORACOM LTE-M Button powered by AWS のバッテリーレベル
+              type: integer
+            clickEventPropagated:
+              type: boolean
+            clickTime:
+              description: SORACOM LTE-M Button powered by AWS をクリックした日時
+              format: date-time
+              type: string
+            clickType:
+              enum:
+              - SINGLE
+              - DOUBLE
+              type: string
           type: object
         operatorId:
+          description: Gadget API 対応デバイスを登録したオペレーター ID
           type: string
-        product_id:
+        productId:
+          description: |
+            Gadget API 対応デバイスのタイプ
+
+            - `button`: SORACOM LTE-M Button powered by AWS
+            - `wimax`: ソラカメ専用セルラーパック
+          enum:
+          - button
+          - wimax
           type: string
-        serial_number:
+        serialNumber:
+          description: Gadget API 対応デバイスのシリアル番号
           type: string
         status:
+          description: |
+            Gadget API 対応デバイスの契約状態
+
+            - `active`: 契約中
+            - `terminated`: 解約済み
           enum:
           - active
           - terminated
@@ -16410,9 +17000,19 @@ components:
         tags:
           additionalProperties:
             type: string
+          description: タグ
           type: object
+        terminatedTime:
+          description: Gadget API 対応デバイスの解約日時。解約していない場合は `null` です。
+          format: int64
+          type: integer
         terminationEnabled:
           default: false
+          description: |
+            Gadget API 対応デバイスの解約プロテクション
+
+            - `true`: OFF (解約できる)
+            - `false`: ON (解約できない)
           type: boolean
       type: object
     GadgetRegistrationRequest:
@@ -16420,6 +17020,7 @@ components:
         tags:
           additionalProperties:
             type: string
+          description: タグ
           type: object
       type: object
     GatePeer:
@@ -16495,8 +17096,8 @@ components:
       properties:
         amount:
           description: 金額
-          format: int64
-          type: integer
+          format: double
+          type: number
         currency:
           description: 通貨
           enum:
@@ -16811,19 +17412,6 @@ components:
           - SORACOM_AIR_BASIC_CHARGE
           - SORACOM_AIR_MONTHLY_FIXED_BASIC_CHARGE
           type: string
-      type: object
-    GlobalSimAppletPLMNRecord:
-      properties:
-        containerId:
-          format: int64
-          type: integer
-        mcc:
-          type: string
-        mnc:
-          type: string
-      required:
-      - mcc
-      - containerId
       type: object
     Group:
       properties:
@@ -17470,19 +18058,16 @@ components:
       additionalProperties:
         type: string
       type: object
-    MappingEntries:
-      properties:
-        mappingEntries:
-          items:
-            $ref: '#/components/schemas/GlobalSimAppletPLMNRecord'
-          type: array
-      type: object
     MonthlyBill:
       properties:
         amount:
           description: 利用料金
-          format: int64
-          type: integer
+          format: double
+          type: number
+        appliedCouponAmount:
+          description: クーポン適用金額
+          format: double
+          type: number
         currency:
           description: 通貨
           enum:
@@ -17632,6 +18217,20 @@ components:
       type: object
     OrderedSubscriber:
       properties:
+        bundles:
+          description: バンドル
+          items:
+            type: string
+          type: array
+        deviceSerialNumber:
+          description: デバイスの製造番号
+          type: string
+        eiccid:
+          description: eICCID
+          type: string
+        iccid:
+          description: ICCID
+          type: string
         imsi:
           description: IMSI
           type: string
@@ -17639,7 +18238,7 @@ components:
           description: MSISDN
           type: string
         serialNumber:
-          description: serialNumber
+          description: IoT SIM の製造番号
           type: string
       type: object
     PacketCaptureSession:
@@ -17657,6 +18256,8 @@ components:
           type: string
         prefix:
           type: string
+        sessionId:
+          type: string
         startedTime:
           format: date-time
           type: string
@@ -17668,6 +18269,7 @@ components:
           - POST_PROCESSING
           - DONE
           - FAILED
+          - STOPPED
           type: string
         url:
           format: uri
@@ -18281,6 +18883,10 @@ components:
         apn:
           description: The Access Point Name configured.
           type: string
+        cell:
+          $ref: '#/components/schemas/Cell'
+        createTime:
+          type: string
         dns0:
           description: First IP address of DNS servers.
           type: string
@@ -18305,6 +18911,12 @@ components:
           type: string
         operatorId:
           description: The operator ID of the session event.
+          type: string
+        sessionId:
+          type: string
+        simId:
+          type: string
+        subscription:
           type: string
         time:
           description: The timestamp of the session event.
@@ -18662,6 +19274,15 @@ components:
           - virtual
           type: string
       type: object
+    SimCostBreakdown:
+      properties:
+        amount:
+          description: 合計金額
+          format: double
+          type: number
+        simId:
+          description: SIM ID
+          type: string
     SimInitialSetting:
       description: 指定のサブスクリプションに対する初期設定。
       properties:
@@ -18875,13 +19496,20 @@ components:
           type: string
         image:
           $ref: '#/components/schemas/SoraCamImageExportUsage'
-          description: 静止画のエクスポート可能枚数
+          description: 動画のエクスポート可能時間について、すべて静止画でエクスポートしたとみなした場合の静止画の枚数。
         meteredYearMonth:
-          description: '静止画の残りのエクスポート可能枚数や、録画映像の残りのエクスポート可能時間などを取得した年月 (フォーマット: ''YYYYMM'')'
+          description: '動画のエクスポート可能時間の対象年月 (フォーマット: ''YYYYMM'')。`202301` の場合は、2023
+            年 1 月の動画のエクスポート可能時間が出力されていることを表します。'
           type: string
         video:
           $ref: '#/components/schemas/SoraCamVideoExportUsage'
-          description: 録画映像のエクスポート可能時間
+          description: 動画のエクスポート可能時間について、すべて動画でエクスポートしたとみなした場合の動画の秒数。
+      type: object
+    SoraCamExportUsageLimitOverrideSpecification:
+      properties:
+        limitHours:
+          description: 変更後の動画のエクスポート可能時間の上限。
+          type: integer
       type: object
     SoraCamImageExportInfo:
       properties:
@@ -18912,13 +19540,17 @@ components:
             - `initializing`: 初期状態
             - `processing`: 処理中
             - `completed`: エクスポート完了
+            - `retrying`: エクスポート再実行中
             - `failed`: エクスポート失敗
+            - `limitExceeded`: 動画のエクスポート可能時間の上限を超えたためエクスポート不可
             - `expired`: URL の有効期限切れ
           enum:
           - initializing
           - processing
           - completed
+          - retrying
           - failed
+          - limitExceeded
           - expired
           type: string
         url:
@@ -18943,11 +19575,19 @@ components:
       type: object
     SoraCamImageExportUsage:
       properties:
+        billedFrames:
+          description: 課金対象の動画のエクスポート可能時間について、すべて静止画でエクスポートしたとみなした場合の静止画の枚数。つまり、0
+            のときは課金が発生していません。なお、課金額の計算には、`billedSeconds` のみが使用されます。
+          type: integer
+        limitFrames:
+          description: 動画のエクスポート可能時間の上限まで、すべて静止画でエクスポートしたとみなした場合の静止画の枚数。動画のエクスポート可能時間の上限が、静止画の枚数で出力されます。
+          type: integer
         remainingFrames:
-          description: 今月中にエクスポート可能な静止画の残りの枚数
+          description: 動画のエクスポート可能時間の上限まで、すべて静止画でエクスポートすると仮定した場合の、エクスポート可能な静止画の枚数。`limitFrames`
+            から `usedFrames` を引いた値です。
           type: integer
         usedFrames:
-          description: 今月消費した動画の視聴可能時間をすべて静止画でエクスポートしたと仮定した場合の静止画の枚数
+          description: 当月に消費した動画のエクスポート可能時間を、すべて静止画でエクスポートしたとみなした場合の、エクスポートした静止画の枚数。
           type: integer
       type: object
     SoraCamLicensePackQuantityUpdatingRequest:
@@ -19048,13 +19688,17 @@ components:
             - `initializing`: 初期状態
             - `processing`: 処理中
             - `completed`: エクスポート完了
+            - `retrying`: エクスポート再実行中
             - `failed`: エクスポート失敗
+            - `limitExceeded`: 動画のエクスポート可能時間の上限を超えたためエクスポート不可
             - `expired`: URL の有効期限切れ
           enum:
           - initializing
           - processing
           - completed
+          - retrying
           - failed
+          - limitExceeded
           - expired
           type: string
         url:
@@ -19083,11 +19727,19 @@ components:
       type: object
     SoraCamVideoExportUsage:
       properties:
+        billedSeconds:
+          description: 課金対象の動画のエクスポート可能時間について、すべて動画でエクスポートしたとみなした場合の動画の秒数。つまり、0 のときは課金が発生していません。なお、課金額の計算には、`billedSeconds`
+            のみが使用されます。
+          type: integer
+        limitSeconds:
+          description: 動画のエクスポート可能時間の上限まで、すべて動画でエクスポートしたとみなした場合の動画の秒数。動画のエクスポート可能時間の上限が、動画の秒数で出力されます。
+          type: integer
         remainingSeconds:
-          description: 今月中にエクスポート可能な録画映像の残りの秒数
+          description: 動画のエクスポート可能時間の上限まで、すべて動画でエクスポートすると仮定した場合の、エクスポート可能な動画の秒数。`limitSeconds`
+            から `usedSeconds` を引いた値です。
           type: integer
         usedSeconds:
-          description: 今月消費した動画の視聴可能時間をすべて録画映像でエクスポートしたと仮定した場合の、エクスポート可能な秒数
+          description: 当月に消費した動画のエクスポート可能時間を、すべて動画でエクスポートしたとみなした場合の、エクスポートした動画の秒数。
           type: integer
       type: object
     SoracomBeamStats:
@@ -19741,7 +20393,7 @@ tags:
     - [Stats](/ja-jp/tools/api/reference/#/Stats)
     - [Subscriber:exportSubscribers](/ja-jp/tools/api/reference/#/Subscriber/exportSubscribers)
   name: Files
-- description: '[SORACOM LTE-M Button powered by AWS](/ja-jp/guides/soracom-lte-m-button-series/lte-m-button-aws/)'
+- description: Gadget API 対応デバイス<ul><li>[SORACOM LTE-M Button powered by AWS](/ja-jp/guides/soracom-lte-m-button-series/lte-m-button-aws/)</li><li>[ソラカメ専用セルラーパック](/ja-jp/guides/soracom-cloud-camera-services/setting-cellular-pack/)</li></ul>
   name: Gadget
 - description: '[グループ設定](/ja-jp/docs/group-configuration/)'
   name: Group

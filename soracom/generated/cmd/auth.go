@@ -205,7 +205,9 @@ func buildBodyForAuthCmd() (string, error) {
 	}
 
 	if AuthCmdTokenTimeoutSeconds != 86400 {
+
 		result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
+
 	}
 
 	resultBytes, err := json.Marshal(result)

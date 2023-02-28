@@ -194,12 +194,12 @@ func buildBodyForVolumeDiscountsCreateCmd() (string, error) {
 	}
 
 	if VolumeDiscountsCreateCmdContractTermMonth != 12 {
+
 		result["contractTermMonth"] = VolumeDiscountsCreateCmdContractTermMonth
+
 	}
 
-	if VolumeDiscountsCreateCmdQuantity != 0 {
-		result["quantity"] = VolumeDiscountsCreateCmdQuantity
-	}
+	result["quantity"] = VolumeDiscountsCreateCmdQuantity
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

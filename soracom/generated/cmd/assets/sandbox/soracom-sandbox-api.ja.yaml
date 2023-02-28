@@ -2,13 +2,13 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: 20221128-042447
+  version: 20230112-201251
 servers:
 - url: https://api-sandbox.soracom.io/v1
 paths:
   /sandbox/coupons/create:
     post:
-      description: クーポンをを新規作成します。
+      description: クーポンを新規作成します。
       operationId: sandboxCreateCoupon
       requestBody:
         content:

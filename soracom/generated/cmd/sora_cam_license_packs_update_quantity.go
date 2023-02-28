@@ -165,13 +165,9 @@ func buildBodyForSoraCamLicensePacksUpdateQuantityCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity != 0 {
-		result["currentQuantity"] = SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity
-	}
+	result["currentQuantity"] = SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity
 
-	if SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity != 0 {
-		result["desiredQuantity"] = SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity
-	}
+	result["desiredQuantity"] = SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

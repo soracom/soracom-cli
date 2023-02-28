@@ -34,13 +34,13 @@ var StatsBeamExportCmdBody string
 func init() {
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TRAPI("operator ID"))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TRAPI(""))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- `month`: Monthly- `day`: Daily- `minutes`: Every minute"))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TRAPI(""))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI(""))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	StatsBeamCmd.AddCommand(StatsBeamExportCmd)
@@ -183,13 +183,9 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
 		result["period"] = StatsBeamExportCmdPeriod
 	}
 
-	if StatsBeamExportCmdFrom != 0 {
-		result["from"] = StatsBeamExportCmdFrom
-	}
+	result["from"] = StatsBeamExportCmdFrom
 
-	if StatsBeamExportCmdTo != 0 {
-		result["to"] = StatsBeamExportCmdTo
-	}
+	result["to"] = StatsBeamExportCmdTo
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

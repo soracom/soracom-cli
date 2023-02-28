@@ -27,11 +27,11 @@ var StatsFunnelGetCmdOutputJSONL bool
 func init() {
 	StatsFunnelGetCmd.Flags().StringVar(&StatsFunnelGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsFunnelGetCmd.Flags().StringVar(&StatsFunnelGetCmdPeriod, "period", "", TRAPI("Units of aggregate data. For minutes, the interval is around 5 minutes."))
+	StatsFunnelGetCmd.Flags().StringVar(&StatsFunnelGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the usage report at the finest granularity. However, while the device is connected to the Soracom platform, the amount of usage will be recorded at approximately 5-minute intervals."))
 
-	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdFrom, "from", 0, TRAPI("Start time in unixtime for the aggregate data."))
+	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdFrom, "from", 0, TRAPI("Start time for the aggregate data (UNIX time in seconds)."))
 
-	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdTo, "to", 0, TRAPI("End time in unixtime for the aggregate data."))
+	StatsFunnelGetCmd.Flags().Int64Var(&StatsFunnelGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsFunnelGetCmd.Flags().BoolVar(&StatsFunnelGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 	StatsFunnelCmd.AddCommand(StatsFunnelGetCmd)
