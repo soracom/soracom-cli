@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -154,9 +154,9 @@ func buildBodyForVpgPutIpAddressMapEntryCmd() (string, error) {
 		if strings.HasPrefix(VpgPutIpAddressMapEntryCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgPutIpAddressMapEntryCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if VpgPutIpAddressMapEntryCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(VpgPutIpAddressMapEntryCmdBody)
 		}

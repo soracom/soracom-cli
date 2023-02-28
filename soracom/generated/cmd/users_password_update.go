@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -167,9 +167,9 @@ func buildBodyForUsersPasswordUpdateCmd() (string, error) {
 		if strings.HasPrefix(UsersPasswordUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPasswordUpdateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if UsersPasswordUpdateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(UsersPasswordUpdateCmdBody)
 		}

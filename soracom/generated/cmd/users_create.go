@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -152,9 +152,9 @@ func buildBodyForUsersCreateCmd() (string, error) {
 		if strings.HasPrefix(UsersCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersCreateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if UsersCreateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(UsersCreateCmdBody)
 		}

@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -174,9 +174,9 @@ func buildBodyForEventHandlersUpdateCmd() (string, error) {
 		if strings.HasPrefix(EventHandlersUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(EventHandlersUpdateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if EventHandlersUpdateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(EventHandlersUpdateCmdBody)
 		}

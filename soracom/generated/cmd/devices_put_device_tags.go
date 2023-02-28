@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -132,9 +132,9 @@ func buildBodyForDevicesPutDeviceTagsCmd() (string, error) {
 		if strings.HasPrefix(DevicesPutDeviceTagsCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesPutDeviceTagsCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if DevicesPutDeviceTagsCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(DevicesPutDeviceTagsCmdBody)
 		}

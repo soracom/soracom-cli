@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -152,9 +152,9 @@ func buildBodyForUsersAttachRoleCmd() (string, error) {
 		if strings.HasPrefix(UsersAttachRoleCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersAttachRoleCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if UsersAttachRoleCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(UsersAttachRoleCmdBody)
 		}

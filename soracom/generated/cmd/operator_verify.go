@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -125,9 +125,9 @@ func buildBodyForOperatorVerifyCmd() (string, error) {
 		if strings.HasPrefix(OperatorVerifyCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorVerifyCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if OperatorVerifyCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(OperatorVerifyCmdBody)
 		}

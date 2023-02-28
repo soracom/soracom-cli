@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -135,9 +135,9 @@ func buildBodyForAuthVerifyPasswordResetTokenCmd() (string, error) {
 		if strings.HasPrefix(AuthVerifyPasswordResetTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(AuthVerifyPasswordResetTokenCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if AuthVerifyPasswordResetTokenCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(AuthVerifyPasswordResetTokenCmdBody)
 		}

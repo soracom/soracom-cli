@@ -15,6 +15,8 @@ RESET="\\033[0m"
 gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
+mkdir -p "$d/.cache"
+
 docker build -t soracom-cli-build "$d/build"
 docker run --rm -t \
     --user "$(id -u):$(id -g)" \

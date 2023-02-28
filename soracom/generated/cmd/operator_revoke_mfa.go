@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -143,9 +143,9 @@ func buildBodyForOperatorRevokeMfaCmd() (string, error) {
 		if strings.HasPrefix(OperatorRevokeMfaCmdBody, "@") {
 			fname := strings.TrimPrefix(OperatorRevokeMfaCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if OperatorRevokeMfaCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(OperatorRevokeMfaCmdBody)
 		}

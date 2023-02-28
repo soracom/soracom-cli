@@ -5,7 +5,7 @@ import (
   "fmt"
 {{- if .BodyExists }}
   "encoding/json"
-  "io/ioutil"
+  "io"
 {{- end }}
   "net/url"
   "os"
@@ -355,9 +355,9 @@ func buildBodyFor{{$suffix}}() (string, error) {
     if strings.HasPrefix({{$prefix}}Body, "@") {
       fname := strings.TrimPrefix({{$prefix}}Body, "@")
       // #nosec
-      b, err = ioutil.ReadFile(fname)
+      b, err = os.ReadFile(fname)
     } else if {{$prefix}}Body == "-" {
-      b, err = ioutil.ReadAll(os.Stdin)
+      b, err = io.ReadAll(os.Stdin)
     } else {
       b = []byte({{$prefix}}Body)
     }
@@ -444,9 +444,9 @@ func buildBodyFor{{$suffix}}() (string, error) {
     if strings.HasPrefix({{$prefix}}Body, "@") {
       fname := strings.TrimPrefix({{$prefix}}Body, "@")
       // #nosec
-      b, err = ioutil.ReadFile(fname)
+      b, err = os.ReadFile(fname)
     } else if {{$prefix}}Body == "-" {
-      b, err = ioutil.ReadAll(os.Stdin)
+      b, err = io.ReadAll(os.Stdin)
     } else {
       b = []byte({{$prefix}}Body)
     }

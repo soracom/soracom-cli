@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -158,9 +158,9 @@ func buildBodyForStatsFunkExportCmd() (string, error) {
 		if strings.HasPrefix(StatsFunkExportCmdBody, "@") {
 			fname := strings.TrimPrefix(StatsFunkExportCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if StatsFunkExportCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(StatsFunkExportCmdBody)
 		}

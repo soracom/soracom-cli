@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -184,9 +184,9 @@ func buildBodyForSoraletsTestCmd() (string, error) {
 		if strings.HasPrefix(SoraletsTestCmdBody, "@") {
 			fname := strings.TrimPrefix(SoraletsTestCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SoraletsTestCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SoraletsTestCmdBody)
 		}

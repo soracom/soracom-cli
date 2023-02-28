@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -152,7 +151,7 @@ func loadProfile(profileName string) (*profile, error) {
 	}
 
 	// #nosec
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +206,7 @@ func saveProfile(profileName string, prof *profile, overwrite bool) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(path, b, 0600)
+	err = os.WriteFile(path, b, 0600)
 	if err != nil {
 		return err
 	}

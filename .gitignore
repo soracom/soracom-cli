@@ -1,16 +1,5 @@
-# wercker directories
-_builds/
-_projects/
-_steps/
-.wercker/
-
-# artifacts
-bin/
-
-# dependencies
+.cache/
 vendor/
-
-# personal preferences
 .envrc
 .DS_Store
 .node-version

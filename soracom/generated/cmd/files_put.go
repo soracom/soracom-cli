@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -146,9 +146,9 @@ func buildBodyForFilesPutCmd() (string, error) {
 		if strings.HasPrefix(FilesPutCmdBody, "@") {
 			fname := strings.TrimPrefix(FilesPutCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if FilesPutCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(FilesPutCmdBody)
 		}

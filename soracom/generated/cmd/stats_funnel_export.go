@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -158,9 +158,9 @@ func buildBodyForStatsFunnelExportCmd() (string, error) {
 		if strings.HasPrefix(StatsFunnelExportCmdBody, "@") {
 			fname := strings.TrimPrefix(StatsFunnelExportCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if StatsFunnelExportCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(StatsFunnelExportCmdBody)
 		}

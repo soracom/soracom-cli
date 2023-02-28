@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -145,9 +145,9 @@ func buildBodyForLoraNetworkSetsCreateCmd() (string, error) {
 		if strings.HasPrefix(LoraNetworkSetsCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraNetworkSetsCreateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if LoraNetworkSetsCreateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(LoraNetworkSetsCreateCmdBody)
 		}

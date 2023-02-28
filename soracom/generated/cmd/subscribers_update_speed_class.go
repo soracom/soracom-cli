@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -144,9 +144,9 @@ func buildBodyForSubscribersUpdateSpeedClassCmd() (string, error) {
 		if strings.HasPrefix(SubscribersUpdateSpeedClassCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersUpdateSpeedClassCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SubscribersUpdateSpeedClassCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SubscribersUpdateSpeedClassCmdBody)
 		}

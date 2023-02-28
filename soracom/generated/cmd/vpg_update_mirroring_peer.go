@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -146,9 +146,9 @@ func buildBodyForVpgUpdateMirroringPeerCmd() (string, error) {
 		if strings.HasPrefix(VpgUpdateMirroringPeerCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgUpdateMirroringPeerCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if VpgUpdateMirroringPeerCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(VpgUpdateMirroringPeerCmdBody)
 		}

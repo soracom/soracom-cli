@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -135,9 +135,9 @@ func buildBodyForPayerInformationRegisterCmd() (string, error) {
 		if strings.HasPrefix(PayerInformationRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(PayerInformationRegisterCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if PayerInformationRegisterCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(PayerInformationRegisterCmdBody)
 		}

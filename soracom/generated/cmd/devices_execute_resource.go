@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -176,9 +176,9 @@ func buildBodyForDevicesExecuteResourceCmd() (string, error) {
 		if strings.HasPrefix(DevicesExecuteResourceCmdBody, "@") {
 			fname := strings.TrimPrefix(DevicesExecuteResourceCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if DevicesExecuteResourceCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(DevicesExecuteResourceCmdBody)
 		}

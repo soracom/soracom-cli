@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -227,9 +227,9 @@ func buildBodyForShippingAddressesUpdateCmd() (string, error) {
 		if strings.HasPrefix(ShippingAddressesUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(ShippingAddressesUpdateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if ShippingAddressesUpdateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(ShippingAddressesUpdateCmdBody)
 		}

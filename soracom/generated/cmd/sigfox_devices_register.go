@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -139,9 +139,9 @@ func buildBodyForSigfoxDevicesRegisterCmd() (string, error) {
 		if strings.HasPrefix(SigfoxDevicesRegisterCmdBody, "@") {
 			fname := strings.TrimPrefix(SigfoxDevicesRegisterCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SigfoxDevicesRegisterCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SigfoxDevicesRegisterCmdBody)
 		}

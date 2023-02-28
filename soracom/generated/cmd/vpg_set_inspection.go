@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -139,9 +139,9 @@ func buildBodyForVpgSetInspectionCmd() (string, error) {
 		if strings.HasPrefix(VpgSetInspectionCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgSetInspectionCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if VpgSetInspectionCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(VpgSetInspectionCmdBody)
 		}

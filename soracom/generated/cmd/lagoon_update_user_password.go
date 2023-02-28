@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -142,9 +142,9 @@ func buildBodyForLagoonUpdateUserPasswordCmd() (string, error) {
 		if strings.HasPrefix(LagoonUpdateUserPasswordCmdBody, "@") {
 			fname := strings.TrimPrefix(LagoonUpdateUserPasswordCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if LagoonUpdateUserPasswordCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(LagoonUpdateUserPasswordCmdBody)
 		}

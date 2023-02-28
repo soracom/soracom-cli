@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -130,9 +130,9 @@ func buildBodyForPortMappingsCreateCmd() (string, error) {
 		if strings.HasPrefix(PortMappingsCreateCmdBody, "@") {
 			fname := strings.TrimPrefix(PortMappingsCreateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if PortMappingsCreateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(PortMappingsCreateCmdBody)
 		}

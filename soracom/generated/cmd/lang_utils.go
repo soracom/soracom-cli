@@ -3,7 +3,7 @@ package cmd
 import (
 	"embed"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -75,7 +75,7 @@ func loadLanguageResourceFile(resourceFileName string) languageResourceMap {
 		return nil
 	}
 
-	b, err := ioutil.ReadAll(f)
+	b, err := io.ReadAll(f)
 	if err != nil {
 		lib.WarnfStderr("unable to read API language resource '%s'\n", resourceFileName)
 		return nil

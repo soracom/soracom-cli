@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -139,9 +139,9 @@ func buildBodyForSimsSetGroupCmd() (string, error) {
 		if strings.HasPrefix(SimsSetGroupCmdBody, "@") {
 			fname := strings.TrimPrefix(SimsSetGroupCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SimsSetGroupCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SimsSetGroupCmdBody)
 		}

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -286,10 +285,10 @@ func (ac *apiClient) doRequest(req *http.Request, params *apiParams) (*http.Resp
 		// #nosec G104
 		res.Body.Close()
 		// #nosec G104
-		io.Copy(ioutil.Discard, res.Body)
+		io.Copy(io.Discard, res.Body)
 	}()
 
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, "", err
 	}
@@ -321,7 +320,7 @@ func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request, params *apiPara
 		}
 		if err != nil && res != nil && res.Body != nil {
 			defer func() {
-				io.Copy(ioutil.Discard, res.Body)
+				io.Copy(io.Discard, res.Body)
 				res.Body.Close()
 			}()
 		}
@@ -329,7 +328,7 @@ func (ac *apiClient) doHTTPRequestWithRetries(req *http.Request, params *apiPara
 		ac.reportWaitingBeforeRetrying(res, err, wait)
 		time.Sleep(time.Duration(wait) * time.Second)
 		ac.reportRetrying()
-		req.Body = ioutil.NopCloser(strings.NewReader(params.body)) // reload body contents
+		req.Body = io.NopCloser(strings.NewReader(params.body)) // reload body contents
 	}
 
 	return nil, errors.New("unable to receive successful response with some retires")

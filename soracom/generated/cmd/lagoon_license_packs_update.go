@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -120,9 +120,9 @@ func buildBodyForLagoonLicensePacksUpdateCmd() (string, error) {
 		if strings.HasPrefix(LagoonLicensePacksUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(LagoonLicensePacksUpdateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if LagoonLicensePacksUpdateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(LagoonLicensePacksUpdateCmdBody)
 		}

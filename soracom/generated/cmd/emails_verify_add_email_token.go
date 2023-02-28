@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -125,9 +125,9 @@ func buildBodyForEmailsVerifyAddEmailTokenCmd() (string, error) {
 		if strings.HasPrefix(EmailsVerifyAddEmailTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(EmailsVerifyAddEmailTokenCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if EmailsVerifyAddEmailTokenCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(EmailsVerifyAddEmailTokenCmdBody)
 		}

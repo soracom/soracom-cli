@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -139,9 +139,9 @@ func buildBodyForLoraNetworkSetsRevokePermissionCmd() (string, error) {
 		if strings.HasPrefix(LoraNetworkSetsRevokePermissionCmdBody, "@") {
 			fname := strings.TrimPrefix(LoraNetworkSetsRevokePermissionCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if LoraNetworkSetsRevokePermissionCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(LoraNetworkSetsRevokePermissionCmdBody)
 		}

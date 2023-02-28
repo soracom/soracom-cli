@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -132,9 +132,9 @@ func buildBodyForVpgSetRoutingFilterCmd() (string, error) {
 		if strings.HasPrefix(VpgSetRoutingFilterCmdBody, "@") {
 			fname := strings.TrimPrefix(VpgSetRoutingFilterCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if VpgSetRoutingFilterCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(VpgSetRoutingFilterCmdBody)
 		}

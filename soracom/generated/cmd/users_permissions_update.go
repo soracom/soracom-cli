@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -162,9 +162,9 @@ func buildBodyForUsersPermissionsUpdateCmd() (string, error) {
 		if strings.HasPrefix(UsersPermissionsUpdateCmdBody, "@") {
 			fname := strings.TrimPrefix(UsersPermissionsUpdateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if UsersPermissionsUpdateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(UsersPermissionsUpdateCmdBody)
 		}

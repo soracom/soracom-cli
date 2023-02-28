@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -128,9 +128,9 @@ func buildBodyForLagoonMigrationMigrateCmd() (string, error) {
 		if strings.HasPrefix(LagoonMigrationMigrateCmdBody, "@") {
 			fname := strings.TrimPrefix(LagoonMigrationMigrateCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if LagoonMigrationMigrateCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(LagoonMigrationMigrateCmdBody)
 		}

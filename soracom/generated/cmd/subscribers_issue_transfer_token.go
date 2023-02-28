@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -150,9 +150,9 @@ func buildBodyForSubscribersIssueTransferTokenCmd() (string, error) {
 		if strings.HasPrefix(SubscribersIssueTransferTokenCmdBody, "@") {
 			fname := strings.TrimPrefix(SubscribersIssueTransferTokenCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SubscribersIssueTransferTokenCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SubscribersIssueTransferTokenCmdBody)
 		}

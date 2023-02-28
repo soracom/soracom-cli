@@ -4,7 +4,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/url"
 	"os"
 
@@ -144,9 +144,9 @@ func buildBodyForSimsDownlinkPingCmd() (string, error) {
 		if strings.HasPrefix(SimsDownlinkPingCmdBody, "@") {
 			fname := strings.TrimPrefix(SimsDownlinkPingCmdBody, "@")
 			// #nosec
-			b, err = ioutil.ReadFile(fname)
+			b, err = os.ReadFile(fname)
 		} else if SimsDownlinkPingCmdBody == "-" {
-			b, err = ioutil.ReadAll(os.Stdin)
+			b, err = io.ReadAll(os.Stdin)
 		} else {
 			b = []byte(SimsDownlinkPingCmdBody)
 		}

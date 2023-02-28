@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"go/format"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -138,12 +137,12 @@ func copyPredefinedCommands(predefinedDir, outputDir string) error {
 
 	for _, path := range paths {
 		// #nosec
-		b, err := ioutil.ReadFile(path)
+		b, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
 
-		err = ioutil.WriteFile(filepath.Join(outputDir, filepath.Base(path)), b, 0644)
+		err = os.WriteFile(filepath.Join(outputDir, filepath.Base(path)), b, 0644)
 		if err != nil {
 			return err
 		}
@@ -160,7 +159,7 @@ func formatGeneratedFiles(outputDir string) error {
 	for _, path := range paths {
 		fmt.Printf("formatting %s\n", path)
 		// #nosec
-		b, err := ioutil.ReadFile(path)
+		b, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
@@ -170,7 +169,7 @@ func formatGeneratedFiles(outputDir string) error {
 			return err
 		}
 
-		err = ioutil.WriteFile(path, b2, 0644)
+		err = os.WriteFile(path, b2, 0644)
 		if err != nil {
 			return err
 		}
