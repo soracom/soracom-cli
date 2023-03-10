@@ -202,7 +202,7 @@ cli:
     summary: soracom-cli を最新のバージョンに更新します。
     description: soracom-cli を最新のバージョンに更新します。
     already_latest: "ご利用の soracom-cli のバージョンは最新 (%s) です。更新の必要はありません。\n"
-    prompt_confirmation: "新しいバージョンの soracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nパッケージマネージャーを利用して soracom-cli をインストールしている場合はそのパッケージマネージャーの提供する方法でアップデートしてください:\n\n  brew upgrade soracom-cli\n    or\n  snap refresh soracom\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\n更新しますか？ (y/N) "
+    prompt_confirmation: "新しいバージョンの soracom-cli '%[1]s' が利用可能です。\nリリースノート: https://github.com/soracom/soracom-cli/releases/tag/%[1]s\n\nパッケージマネージャーを利用して soracom-cli をインストールしている場合はそのパッケージマネージャーの提供する方法でアップデートしてください:\n\n  brew upgrade soracom-cli\n    or\n  dpkg -i soracom_%[2]s_%[3]s.deb\n\n更新しますか？ (y/N) "
     update_finished: "更新が完了しました。"
   shipping-addresses:
     summary: 出荷先情報に関する操作を行います。
