@@ -160,9 +160,7 @@ func buildBodyForOperatorGenerateApiTokenCmd() (string, error) {
 	}
 
 	if OperatorGenerateApiTokenCmdTokenTimeoutSeconds != 86400 {
-
 		result["tokenTimeoutSeconds"] = OperatorGenerateApiTokenCmdTokenTimeoutSeconds
-
 	}
 
 	resultBytes, err := json.Marshal(result)

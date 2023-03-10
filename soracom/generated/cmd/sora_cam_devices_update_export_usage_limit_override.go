@@ -160,7 +160,9 @@ func buildBodyForSoraCamDevicesUpdateExportUsageLimitOverrideCmd() (string, erro
 		result = make(map[string]interface{})
 	}
 
-	result["limitHours"] = SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours
+	if SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours != 0 {
+		result["limitHours"] = SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

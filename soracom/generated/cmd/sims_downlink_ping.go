@@ -166,15 +166,11 @@ func buildBodyForSimsDownlinkPingCmd() (string, error) {
 	}
 
 	if SimsDownlinkPingCmdNumberOfPingRequests != 1 {
-
 		result["numberOfPingRequests"] = SimsDownlinkPingCmdNumberOfPingRequests
-
 	}
 
 	if SimsDownlinkPingCmdTimeoutSeconds != 1 {
-
 		result["timeoutSeconds"] = SimsDownlinkPingCmdTimeoutSeconds
-
 	}
 
 	resultBytes, err := json.Marshal(result)

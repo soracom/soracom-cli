@@ -174,7 +174,9 @@ func buildBodyForSimsCreatePacketCaptureSessionCmd() (string, error) {
 		result["prefix"] = SimsCreatePacketCaptureSessionCmdPrefix
 	}
 
-	result["duration"] = SimsCreatePacketCaptureSessionCmdDuration
+	if SimsCreatePacketCaptureSessionCmdDuration != 0 {
+		result["duration"] = SimsCreatePacketCaptureSessionCmdDuration
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

@@ -183,9 +183,13 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
 		result["period"] = StatsBeamExportCmdPeriod
 	}
 
-	result["from"] = StatsBeamExportCmdFrom
+	if StatsBeamExportCmdFrom != 0 {
+		result["from"] = StatsBeamExportCmdFrom
+	}
 
-	result["to"] = StatsBeamExportCmdTo
+	if StatsBeamExportCmdTo != 0 {
+		result["to"] = StatsBeamExportCmdTo
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

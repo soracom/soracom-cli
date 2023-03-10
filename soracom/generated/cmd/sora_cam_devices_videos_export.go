@@ -175,9 +175,13 @@ func buildBodyForSoraCamDevicesVideosExportCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	result["from"] = SoraCamDevicesVideosExportCmdFrom
+	if SoraCamDevicesVideosExportCmdFrom != 0 {
+		result["from"] = SoraCamDevicesVideosExportCmdFrom
+	}
 
-	result["to"] = SoraCamDevicesVideosExportCmdTo
+	if SoraCamDevicesVideosExportCmdTo != 0 {
+		result["to"] = SoraCamDevicesVideosExportCmdTo
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

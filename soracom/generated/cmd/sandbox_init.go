@@ -207,9 +207,7 @@ func buildBodyForSandboxInitCmd() (string, error) {
 	}
 
 	if SandboxInitCmdRegisterPaymentMethod != true {
-
 		result["registerPaymentMethod"] = SandboxInitCmdRegisterPaymentMethod
-
 	}
 
 	resultBytes, err := json.Marshal(result)

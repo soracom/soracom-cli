@@ -174,7 +174,9 @@ func buildBodyForSoraCamDevicesImagesExportCmd() (string, error) {
 		result["imageFilters"] = SoraCamDevicesImagesExportCmdImageFilters
 	}
 
-	result["time"] = SoraCamDevicesImagesExportCmdTime
+	if SoraCamDevicesImagesExportCmdTime != 0 {
+		result["time"] = SoraCamDevicesImagesExportCmdTime
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

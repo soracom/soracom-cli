@@ -164,7 +164,9 @@ func buildBodyForSandboxCouponsCreateCmd() (string, error) {
 		result["expiryYearMonth"] = SandboxCouponsCreateCmdExpiryYearMonth
 	}
 
-	result["amount"] = SandboxCouponsCreateCmdAmount
+	if SandboxCouponsCreateCmdAmount != 0 {
+		result["amount"] = SandboxCouponsCreateCmdAmount
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

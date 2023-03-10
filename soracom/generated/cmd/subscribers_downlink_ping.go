@@ -166,15 +166,11 @@ func buildBodyForSubscribersDownlinkPingCmd() (string, error) {
 	}
 
 	if SubscribersDownlinkPingCmdNumberOfPingRequests != 1 {
-
 		result["numberOfPingRequests"] = SubscribersDownlinkPingCmdNumberOfPingRequests
-
 	}
 
 	if SubscribersDownlinkPingCmdTimeoutSeconds != 1 {
-
 		result["timeoutSeconds"] = SubscribersDownlinkPingCmdTimeoutSeconds
-
 	}
 
 	resultBytes, err := json.Marshal(result)

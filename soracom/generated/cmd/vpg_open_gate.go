@@ -166,15 +166,11 @@ func buildBodyForVpgOpenGateCmd() (string, error) {
 	}
 
 	if VpgOpenGateCmdVxlanId != 10 {
-
 		result["vxlanId"] = VpgOpenGateCmdVxlanId
-
 	}
 
 	if VpgOpenGateCmdPrivacySeparatorEnabled != false {
-
 		result["privacySeparatorEnabled"] = VpgOpenGateCmdPrivacySeparatorEnabled
-
 	}
 
 	resultBytes, err := json.Marshal(result)

@@ -183,9 +183,13 @@ func buildBodyForStatsFunkExportCmd() (string, error) {
 		result["period"] = StatsFunkExportCmdPeriod
 	}
 
-	result["from"] = StatsFunkExportCmdFrom
+	if StatsFunkExportCmdFrom != 0 {
+		result["from"] = StatsFunkExportCmdFrom
+	}
 
-	result["to"] = StatsFunkExportCmdTo
+	if StatsFunkExportCmdTo != 0 {
+		result["to"] = StatsFunkExportCmdTo
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

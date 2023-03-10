@@ -151,9 +151,13 @@ func buildBodyForPortMappingsCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	result["duration"] = PortMappingsCreateCmdDuration
+	if PortMappingsCreateCmdDuration != 0 {
+		result["duration"] = PortMappingsCreateCmdDuration
+	}
 
-	result["tlsRequired"] = PortMappingsCreateCmdTlsRequired
+	if PortMappingsCreateCmdTlsRequired != false {
+		result["tlsRequired"] = PortMappingsCreateCmdTlsRequired
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

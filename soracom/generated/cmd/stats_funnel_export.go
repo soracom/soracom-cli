@@ -183,9 +183,13 @@ func buildBodyForStatsFunnelExportCmd() (string, error) {
 		result["period"] = StatsFunnelExportCmdPeriod
 	}
 
-	result["from"] = StatsFunnelExportCmdFrom
+	if StatsFunnelExportCmdFrom != 0 {
+		result["from"] = StatsFunnelExportCmdFrom
+	}
 
-	result["to"] = StatsFunnelExportCmdTo
+	if StatsFunnelExportCmdTo != 0 {
+		result["to"] = StatsFunnelExportCmdTo
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

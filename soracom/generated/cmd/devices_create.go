@@ -259,12 +259,12 @@ func buildBodyForDevicesCreateCmd() (string, error) {
 		result["serialNumber"] = DevicesCreateCmdSerialNumber
 	}
 
-	result["registrationLifeTime"] = DevicesCreateCmdRegistrationLifeTime
+	if DevicesCreateCmdRegistrationLifeTime != 0 {
+		result["registrationLifeTime"] = DevicesCreateCmdRegistrationLifeTime
+	}
 
 	if DevicesCreateCmdOnline != false {
-
 		result["online"] = DevicesCreateCmdOnline
-
 	}
 
 	resultBytes, err := json.Marshal(result)

@@ -183,9 +183,13 @@ func buildBodyForLoraDevicesSetGroupCmd() (string, error) {
 		result["operatorId"] = LoraDevicesSetGroupCmdOperatorId
 	}
 
-	result["createdTime"] = LoraDevicesSetGroupCmdCreatedTime
+	if LoraDevicesSetGroupCmdCreatedTime != 0 {
+		result["createdTime"] = LoraDevicesSetGroupCmdCreatedTime
+	}
 
-	result["lastModifiedTime"] = LoraDevicesSetGroupCmdLastModifiedTime
+	if LoraDevicesSetGroupCmdLastModifiedTime != 0 {
+		result["lastModifiedTime"] = LoraDevicesSetGroupCmdLastModifiedTime
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

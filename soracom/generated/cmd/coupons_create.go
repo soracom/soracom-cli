@@ -151,7 +151,9 @@ func buildBodyForCouponsCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	result["amount"] = CouponsCreateCmdAmount
+	if CouponsCreateCmdAmount != 0 {
+		result["amount"] = CouponsCreateCmdAmount
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

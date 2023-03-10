@@ -202,9 +202,13 @@ func buildBodyForDiagnosticsSendRequestCmd() (string, error) {
 		result["service"] = DiagnosticsSendRequestCmdService
 	}
 
-	result["from"] = DiagnosticsSendRequestCmdFrom
+	if DiagnosticsSendRequestCmdFrom != 0 {
+		result["from"] = DiagnosticsSendRequestCmdFrom
+	}
 
-	result["to"] = DiagnosticsSendRequestCmdTo
+	if DiagnosticsSendRequestCmdTo != 0 {
+		result["to"] = DiagnosticsSendRequestCmdTo
+	}
 
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

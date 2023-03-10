@@ -165,12 +165,12 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result["deviceSubnetCidrRange"] = VpgCreateCmdDeviceSubnetCidrRange
 	}
 
-	result["type"] = VpgCreateCmdType
+	if VpgCreateCmdType != 0 {
+		result["type"] = VpgCreateCmdType
+	}
 
 	if VpgCreateCmdUseInternetGateway != true {
-
 		result["useInternetGateway"] = VpgCreateCmdUseInternetGateway
-
 	}
 
 	resultBytes, err := json.Marshal(result)
