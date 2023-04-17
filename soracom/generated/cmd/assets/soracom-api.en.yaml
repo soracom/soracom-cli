@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20230228-033906
+  version: 20230417-023612
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -783,7 +783,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListCouponResponse'
           description: OK.
@@ -809,7 +809,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedCouponModel'
           description: Created
@@ -835,7 +835,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
           description: OK.
@@ -865,7 +865,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
           description: OK.
@@ -934,7 +934,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/json;charset=UTF-8:
+          application/json:
             examples:
               API Token credentials:
                 $ref: '#/components/examples/APITokenCredentials'
@@ -1009,7 +1009,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/json;charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
         description: credentials
@@ -2205,7 +2205,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/DiagnosticResponse'
@@ -2237,7 +2237,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DiagnosticResponse'
           description: OK.
@@ -2270,7 +2270,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EventHandlerModel'
@@ -2297,7 +2297,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EventHandlerModel'
           description: Created
@@ -2346,7 +2346,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EventHandlerModel'
           description: OK.
@@ -2463,7 +2463,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EventHandlerModel'
@@ -2520,7 +2520,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/FileEntry'
@@ -2820,7 +2820,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetExportedFileResponse'
           description: OK
@@ -3444,7 +3444,7 @@ paths:
             examples:
               Configuring Custom DNS for IoT SIM:
                 description: |
-                  If you configure [custom DNS](https://developers.soracom.io/en/docs/air/custom-dns/) for IoT SIM, please note the following points.
+                  If you configure [custom DNS](/en/docs/air/custom-dns/) for IoT SIM, please note the following points.
 
                   - Specify `SoracomAir` for the `namespace` path parameter.
                   - For more information about the `key` and `value` pairs, see [About properties specified in the body](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて) (Japanese).
@@ -3455,6 +3455,29 @@ paths:
                   value:
                   - 192.168.0.5
                   - 192.168.0.6
+              Configuring Endorse:
+                description: |
+                  If you [configure Endorse](/en/docs/endorse/configuration/) for IoT SIM, please note the following points.
+
+                  - Specify `SoracomEndorse` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, see [Advanced Configuration](/en/docs/endorse/configuration/#advanced-configuration).
+                value:
+                - key: enabled
+                  value: true
+                - key: parametersToEndorse
+                  value:
+                    imei: true
+                    imsi: true
+                    msisdn: false
+                    requestParameters: true
+                - key: tokenTimeoutSeconds
+                  value: 600
+                - key: allowOrigin
+                  value: https://soracom.io
+                - key: authorizedRedirectUrls
+                  value:
+                  - https://soracom.io
+                  - http://localhost:3000
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
@@ -5282,6 +5305,8 @@ paths:
       summary: Bulk Insert or Update LoRa network set tags.
       tags:
       - LoraNetworkSet
+      x-soracom-cli:
+      - lora-network-sets put-tag
   /lora_network_sets/{ns_id}/tags/{tag_name}:
     delete:
       description: Deletes a tag from the specified LoRa network set.
@@ -5532,6 +5557,115 @@ paths:
       - Operator
       x-soracom-cli:
       - operator update-company-information
+  /operators/{operator_id}/configuration/{namespace}:
+    delete:
+      description: Deletes operator configuration of the namespace.
+      operationId: deleteOperatorConfigurationNamespace
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: Namespace of operator configuration
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Deleted.
+        "400":
+          description: Bad request.
+        "404":
+          description: Configuration not found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Delete operator configuration of the namespace.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration delete
+    get:
+      description: Gets operator configuration of the namespace.
+      operationId: getOperatorConfigurationNamespace
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: Namespace of operator configuration
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorConfigurationModel'
+          description: OK.
+        "400":
+          description: Bad request.
+        "404":
+          description: Configuration not found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get operator configuration of the namespace.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration get
+    post:
+      description: Sets operator configuration of the namespace.
+      operationId: setOperatorConfigurationNamespace
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: Namespace of operator configuration
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetOperatorConfigurationNamespaceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorConfigurationModel'
+          description: OK.
+        "400":
+          description: Bad request.
+        "409":
+          description: Update has been conflicted. Get the latest configuration, then
+            update again.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Set operator configuration of the namespace.
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration set
   /operators/{operator_id}/contracts:
     post:
       description: Adds the operator's contract.
@@ -5635,7 +5769,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EmailsModel'
@@ -5699,7 +5833,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EmailsModel'
           description: OK.
@@ -5963,7 +6097,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/ListRolesResponse'
@@ -6028,7 +6162,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/RoleResponse'
           description: OK.
@@ -6068,7 +6202,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoleResponse'
           description: OK.
@@ -6138,7 +6272,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/UserDetailResponse'
@@ -6168,7 +6302,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListShippingAddressResponse'
           description: OK.
@@ -6259,7 +6393,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetShippingAddressResponse'
           description: OK.
@@ -6349,7 +6483,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SystemNotificationsModel'
@@ -6419,7 +6553,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SystemNotificationsModel'
           description: OK.
@@ -6462,7 +6596,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SystemNotificationsModel'
           description: OK
@@ -6558,7 +6692,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/UserDetailResponse'
@@ -6594,7 +6728,7 @@ paths:
           description: The SAM user was deleted.
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: SAM User not found.
@@ -6625,7 +6759,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailResponse'
           description: OK.
@@ -6701,7 +6835,7 @@ paths:
           description: OK
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: SAM User not found.
@@ -6733,7 +6867,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/AuthKeyResponse'
@@ -6766,7 +6900,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GenerateUserAuthKeyResponse'
           description: OK.
@@ -6806,7 +6940,7 @@ paths:
           description: The AuthKey was deleted.
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: AuthKey not found.
@@ -6843,7 +6977,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/AuthKeyResponse'
           description: OK.
@@ -7010,7 +7144,7 @@ paths:
           description: The user's password was deleted.
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: Password registration is required.
@@ -7041,7 +7175,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetUserPasswordResponse'
           description: OK.
@@ -7170,7 +7304,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetUserPermissionResponse'
           description: OK.
@@ -7236,7 +7370,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/RoleResponse'
@@ -7400,7 +7534,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetDefaultPermissionsResponse'
           description: OK
@@ -7575,7 +7709,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderResponse'
           description: OK.
@@ -7601,7 +7735,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedOrderModel'
           description: A new order quotation was created.
@@ -7630,7 +7764,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: OK.
@@ -7657,7 +7791,7 @@ paths:
       responses:
         "204":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: string
           description: The order was cancelled.
@@ -7713,7 +7847,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: The initial setting has been successfully updated.
@@ -7727,6 +7861,8 @@ paths:
       summary: Update resource initial setting for an order.
       tags:
       - Order
+      x-soracom-cli:
+      - orders resource-initial-setting update
   /orders/{order_id}/subscribers:
     get:
       description: List ordered subscribers
@@ -7755,7 +7891,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderedSubscriberResponse'
           description: OK.
@@ -7786,7 +7922,7 @@ paths:
       responses:
         "204":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: string
           description: Subscribers were registered for the operator.
@@ -7813,7 +7949,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetPaymentTransactionResult'
           description: OK.
@@ -7837,7 +7973,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetPaymentMethodResult'
           description: OK.
@@ -7858,7 +7994,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: object
           description: OK.
@@ -7879,7 +8015,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListPaymentStatementResponse'
           description: OK
@@ -7914,7 +8050,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK
@@ -7935,7 +8071,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/RegisterPayerInformationModel'
           description: OK
@@ -8103,7 +8239,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListProductResponse'
           description: OK.
@@ -8207,7 +8343,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Device'
@@ -8330,7 +8466,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SigfoxDevice'
@@ -8481,7 +8617,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Sim'
@@ -8622,7 +8758,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Subscriber'
@@ -8685,7 +8821,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/TrafficVolumeRanking'
@@ -10201,6 +10337,13 @@ paths:
         schema:
           format: SimId
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+        required: true
       responses:
         "200":
           content:
@@ -10619,7 +10762,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - configuration:
                   audioAlarmEnabled: false
@@ -10662,7 +10805,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 appliedLicenses:
                 - name: Cloud Continuous Recording
@@ -10752,7 +10895,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - deviceId: 7CDDDEADBEEF
                 deviceType: atomCamV2
@@ -10805,7 +10948,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 image:
@@ -10889,7 +11032,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 image:
@@ -10966,7 +11109,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11069,7 +11212,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
@@ -11115,7 +11258,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11232,7 +11375,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 playList:
                 - from: 1658400332905
@@ -11301,7 +11444,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11404,7 +11547,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
@@ -11453,7 +11596,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11583,7 +11726,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - deviceId: 7CDDDEADBEEF
                 deviceType: atomCamV2
@@ -11662,7 +11805,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11783,7 +11926,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11959,7 +12102,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Soralet'
@@ -12039,7 +12182,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Soralet'
           description: OK.
@@ -12091,7 +12234,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SoraletLog'
@@ -12131,7 +12274,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ExecuteSoraletResponse'
           description: OK.
@@ -12182,7 +12325,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SoraletVersion'
@@ -12226,7 +12369,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SoraletVersion'
           description: Successfully created a new version.
@@ -12271,7 +12414,7 @@ paths:
   /stats/air/groups/{group_id}:
     get:
       description: Retrieves the usage report aggregating all SIMs that belong to
-        the group.
+        the specified Group.
       operationId: getAirStatsOfGroup
       parameters:
       - description: Group ID
@@ -12280,29 +12423,23 @@ paths:
         required: true
         schema:
           type: string
-      - description: |
-          Specify the start month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
-
-          - If `period` is `month`:
-            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
-            - The actual start time of the period to be counted is 00:00:00 on the first day of the month containing the specified UNIX time (in seconds).
-          - If `period` is `day`:
-            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
-            - The actual start time of the period to be counted is 00:00:00 of the day containing the specified UNIX time (in seconds).
+      - description: "Start time for the aggregate data (UNIX time in seconds).\n\n-
+          If period is set to \"month\", valid values range from 3 months ago to the
+          current time. \n- If period is set to \"day\", valid values range from 6
+          days ago to the current time.          \n- The actual start time of the
+          period is 00:00:00 on the first day of the month or day containing the specified
+          UNIX time.\n"
         in: query
         name: from
         required: true
         schema:
           type: integer
       - description: |
-          Specify the end month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+          End time for the aggregate data (UNIX time in seconds).
 
-          - If `period` is `month`:
-            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
-            - The actual end time of the period to be counted is 24:00:00 at the end of the month containing the specified UNIX time (in seconds).
-          - If `period` is `day`:
-            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
-            - The actual end time of the period being counted is 24:00:00 on the day containing the specified UNIX time (in seconds).
+          - If period is set to "month", valid values range from 3 months ago to the current time.
+          - If period is set to "day", valid values range from 6 days ago to the current time.
+          - The actual end time of the period is 24:00:00 on the last day of the month or day containing the specified UNIX time.
         in: query
         name: to
         required: true
@@ -12335,15 +12472,15 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Air Usage Report of group.
+      summary: Get Air Usage Report of a Group.
       tags:
       - Stats
       x-soracom-cli:
       - stats air groups get
   /stats/air/operators/{operator_id}:
     get:
-      description: Retrieves the usage report aggregating all SIMs that the operator
-        have.
+      description: Retrieves the usage report aggregating all SIMs that belong to
+        the specified Operator.
       operationId: getAirStatsOfOperator
       parameters:
       - description: Operator ID
@@ -12352,29 +12489,23 @@ paths:
         required: true
         schema:
           type: string
-      - description: |
-          Specify the start month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
-
-          - If `period` is `month`:
-            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
-            - The actual start time of the period to be counted is 00:00:00 on the first day of the month containing the specified UNIX time (in seconds).
-          - If `period` is `day`:
-            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
-            - The actual start time of the period to be counted is 00:00:00 of the day containing the specified UNIX time (in seconds).
+      - description: "Start time for the aggregate data (UNIX time in seconds).\n\n-
+          If period is set to \"month\", valid values range from 3 months ago to the
+          current time. \n- If period is set to \"day\", valid values range from 6
+          days ago to the current time.          \n- The actual start time of the
+          period is 00:00:00 on the first day of the month or day containing the specified
+          UNIX time.\n"
         in: query
         name: from
         required: true
         schema:
           type: integer
       - description: |
-          Specify the end month/day of the period to be aggregated in UNIX time in seconds. Note that the possible values and behavior depend on the value of `period`.
+          End time for the aggregate data (UNIX time in seconds).
 
-          - If `period` is `month`:
-            - Specify UNIX time (in seconds) from 3 months before the current time to the current time.
-            - The actual end time of the period to be counted is 24:00:00 at the end of the month containing the specified UNIX time (in seconds).
-          - If `period` is `day`:
-            - Specify UNIX time (in seconds) from 6 days before the current time to the current time.
-            - The actual end time of the period being counted is 24:00:00 on the day containing the specified UNIX time (in seconds).
+          - If period is set to "month", valid values range from 3 months ago to the current time.
+          - If period is set to "day", valid values range from 6 days ago to the current time.
+          - The actual end time of the period is 24:00:00 on the last day of the month or day containing the specified UNIX time.
         in: query
         name: to
         required: true
@@ -12407,7 +12538,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Air Usage Report of operator.
+      summary: Get Air Usage Report of an Operator.
       tags:
       - Stats
       x-soracom-cli:
@@ -12909,7 +13040,7 @@ paths:
       tags:
       - Stats
       x-soracom-cli:
-      - stats harvest get
+      - stats harvest operators get
   /stats/harvest/subscribers/{imsi}:
     get:
       description: Retrieves the Soracom Harvest usage report for the subscriber specified
@@ -12963,7 +13094,7 @@ paths:
       tags:
       - Stats
       x-soracom-cli:
-      - stats harvest get
+      - stats harvest subscribers get
   /stats/napter/audit_logs:
     get:
       description: Get Napter audit logs' monthly exported data stats.
@@ -13044,13 +13175,16 @@ paths:
         required: false
         schema:
           type: string
-      - description: Maximum number of subscribers to retrieve. Setting a limit does
-          not guarantee the number of subscribers returned in the response (i.e. the
-          response may contain fewer subscribers than the specified limit).
+      - description: Maximum number of subscribers to retrieve (value range is 1 to
+          100). Setting a limit does not guarantee the number of subscribers returned
+          in the response (i.e. the response may contain fewer subscribers than the
+          specified limit).
         in: query
         name: limit
         required: false
         schema:
+          maximum: 100
+          minimum: 1
           type: integer
       - description: The IMSI of the last subscriber retrieved on the current page.
           By specifying this parameter, you can continue to retrieve the list from
@@ -14345,7 +14479,7 @@ paths:
       - vpg open-gate
   /virtual_private_gateways/{vpg_id}/gate/peers:
     get:
-      description: List Gate peers registered in the Virtual Private Gateway.
+      description: List Gate Peers registered in the Virtual Private Gateway.
       operationId: listGatePeers
       parameters:
       - description: Target VPG ID.
@@ -14362,7 +14496,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/GatePeer'
                 type: array
-          description: List of peers registered in the VPG.
+          description: List of Gate Peers registered in the VPG.
         "400":
           description: Client side error in the request.
         "404":
@@ -14370,13 +14504,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List VPG Gate peers
+      summary: List VPG Gate Peers
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg list-gate-peers
     post:
-      description: Register a host as a gate peer in the Virtual Private Gateway.
+      description: Register a host as a Gate Peer in the Virtual Private Gateway.
       operationId: registerGatePeer
       parameters:
       - description: Target VPG ID.
@@ -14397,7 +14531,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatePeer'
-          description: Gate peer is successfully registered.
+          description: Gate Peer is successfully registered.
         "400":
           description: Client side error in the request.
         "404":
@@ -14412,7 +14546,7 @@ paths:
       - vpg register-gate-peer
   /virtual_private_gateways/{vpg_id}/gate/peers/{outer_ip_address}:
     delete:
-      description: Unregister a gate peer from the Virtual Private Gateway.
+      description: Unregister a Gate Peer from the Virtual Private Gateway.
       operationId: unregisterGatePeer
       parameters:
       - description: Target VPG ID.
@@ -14429,7 +14563,7 @@ paths:
           type: string
       responses:
         "204":
-          description: Successfully deregistered the Gate peer.
+          description: Successfully deregistered the Gate Peer.
         "400":
           description: Client side error in the request.
         "404":
@@ -15092,7 +15226,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListVolumeDiscountResponse'
           description: OK.
@@ -15119,7 +15253,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedVolumeDiscountModel'
           description: Created
@@ -15145,7 +15279,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
           description: OK.
@@ -15174,7 +15308,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
           description: OK.
@@ -15193,7 +15327,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/AvailableLongTermDiscountResponse'
           description: OK.
@@ -15343,7 +15477,7 @@ components:
   requestBodies:
     CreateAndUpdateCredentialsModel:
       content:
-        application/json;charset=UTF-8:
+        application/json:
           schema:
             $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
       description: credentials
@@ -15848,10 +15982,17 @@ components:
             represented in decimal form as an integer. (See 3GPP TS 23.003 4.2)
           type: integer
         radioType:
-          description: The Radio Access Technology or type of network that the device
-            is connected to. Possible values are "gsm" for 2G or 3G networks, or "lte"
-            for LTE networks. Unfortunately, it is not possible to differentiate 2G
-            from 3G, or LTE from LTE Cat-M1.
+          description: "The Radio Access Technology or type of network that the device\nis
+            connected to. \n\n**Warning**: In some cases, the information displayed
+            may differ from the actual wireless access technology or type of network
+            being used by the communication carrier's equipment. For example, even
+            when connected to LTE-M, it may be displayed as LTE.\n"
+          enum:
+          - 3G
+          - GSM
+          - LTE
+          - LTE-M
+          - NB-IoT
           type: string
         sac:
           description: The Service Area Code (for 2G and 3G networks), a 16 bit value
@@ -16007,6 +16148,11 @@ components:
           description: Order ID
           type: string
       type: object
+    CoverageType:
+      enum:
+      - jp
+      - g
+      type: string
     CreateAndUpdateCredentialsModel:
       properties:
         credentials:
@@ -16461,6 +16607,20 @@ components:
           type: string
         success:
           description: whether the ping was succeeded or not
+          type: boolean
+      type: object
+    EmailConfigurationOfBilling:
+      properties:
+        attachInvoicePdfEnabled:
+          description: If true, an invoice PDF is attached with a monthly billing
+            notification mail (Global coverage only).
+          type: boolean
+      type: object
+    EmailConfigurationOfNotification:
+      properties:
+        exceedBundleDisabled:
+          description: If true, disable all notification emails that the traffic volume
+            is reaching a bundled volume.
           type: boolean
       type: object
     EmailsModel:
@@ -18409,6 +18569,50 @@ components:
           format: int32
           type: integer
       type: object
+    OperatorConfigurationModel:
+      properties:
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorConfigurationOfEmail'
+          - $ref: '#/components/schemas/OperatorConfigurationOfSupport'
+        isModifiable:
+          description: If false, the operator configuration cannot be updated by setOperatorConfigurationNamespace
+            API.
+          type: boolean
+        namespace:
+          description: Each namespace has its own configuration. See configuration
+            parameter for details.
+          enum:
+          - Support
+          - Email
+          type: string
+        version:
+          description: The version of this configuration.
+          type: number
+      type: object
+    OperatorConfigurationOfEmail:
+      properties:
+        billing:
+          $ref: '#/components/schemas/EmailConfigurationOfBilling'
+        notification:
+          $ref: '#/components/schemas/EmailConfigurationOfNotification'
+      type: object
+    OperatorConfigurationOfSupport:
+      properties:
+        paymentCoverage:
+          allOf:
+          - $ref: '#/components/schemas/CoverageType'
+          description: Coverage type that pays for the support fee.
+        tier:
+          allOf:
+          - $ref: '#/components/schemas/SupportTier'
+          description: Current support tier.
+        upcomingTier:
+          allOf:
+          - $ref: '#/components/schemas/SupportTier'
+          description: Support tier that will be applied for the next month. If the
+            value is null, the current tier will continue for the next month.
+      type: object
     OperatorMFAVerifyingResponse:
       properties:
         backupCodes:
@@ -18450,6 +18654,9 @@ components:
           type: string
         serialNumber:
           description: Serial number of IoT SIM
+          type: string
+        simId:
+          description: SIM ID
           type: string
       type: object
     PacketCaptureSession:
@@ -18552,12 +18759,24 @@ components:
           description: Amount
           format: double
           type: number
+        chargedYearMonths:
+          description: A list of months of usage included in this billing. If the
+            billing is not for monthly charges, this field is omitted. If the monthly
+            charge is less than a certain amount, it may be carried over to the next
+            month. In such cases, this field may include multiple months.
+          items:
+            type: string
+          type: array
         currency:
           description: Currency
           enum:
           - JPY
           - USD
           - EUR
+          type: string
+        orderId:
+          description: Order ID. If the payment is not for an order, this field is
+            omitted.
           type: string
         paymentDateTime:
           description: Payment date time
@@ -18668,6 +18887,9 @@ components:
           type: string
         imei:
           description: The IMEI of the device using the SIM.
+          type: string
+        sessionId:
+          description: The session ID of the previous session.
           type: string
         ueIpAddress:
           description: The IP address of the device.
@@ -19126,6 +19348,7 @@ components:
           description: The operator ID of the session event.
           type: string
         sessionId:
+          description: The session ID of the session that generated this session event.
           type: string
         simId:
           type: string
@@ -19174,6 +19397,9 @@ components:
           type: boolean
         placement:
           $ref: '#/components/schemas/Placement'
+        sessionId:
+          description: The session ID of the session.
+          type: string
         subscription:
           description: Subscription
           type: string
@@ -19205,6 +19431,21 @@ components:
       properties:
         networkSetId:
           type: string
+      type: object
+    SetOperatorConfigurationNamespaceRequest:
+      properties:
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorConfigurationOfSupport'
+          - $ref: '#/components/schemas/OperatorConfigurationOfEmail'
+        expectedVersion:
+          description: This property is used to avoid update confliction.  To use
+            it, retrieve the version by getOperatorConfigurationNamespace API, then
+            specify the version here. If the expectedVersion is not specified, the
+            API does not check an update confliction.
+          type: number
+      required:
+      - configuration
       type: object
     SetSystemNotificationsRequest:
       properties:
@@ -20263,6 +20504,12 @@ components:
             type: object
           type: object
       type: object
+    SupportTier:
+      enum:
+      - basic
+      - priority
+      - enterprise
+      type: string
     SupportTokenResponse:
       properties:
         token:

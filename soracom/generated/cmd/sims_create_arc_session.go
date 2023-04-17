@@ -2,9 +2,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
+
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -12,8 +16,13 @@ import (
 // SimsCreateArcSessionCmdSimId holds value of 'sim_id' option
 var SimsCreateArcSessionCmdSimId string
 
+// SimsCreateArcSessionCmdBody holds contents of request body to be sent
+var SimsCreateArcSessionCmdBody string
+
 func init() {
 	SimsCreateArcSessionCmd.Flags().StringVar(&SimsCreateArcSessionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+
+	SimsCreateArcSessionCmd.Flags().StringVar(&SimsCreateArcSessionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 	SimsCmd.AddCommand(SimsCreateArcSessionCmd)
 }
 
@@ -68,17 +77,33 @@ var SimsCreateArcSessionCmd = &cobra.Command{
 }
 
 func collectSimsCreateArcSessionCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
 	var parsedBody interface{}
 	var err error
+	body, err = buildBodyForSimsCreateArcSessionCmd()
+	if err != nil {
+		return nil, err
+	}
+	contentType := "application/json"
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
+
 	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, SimsCreateArcSessionCmdSimId)
 	if err != nil {
 		return nil, err
 	}
 
 	return &apiParams{
-		method: "POST",
-		path:   buildPathForSimsCreateArcSessionCmd("/sims/{sim_id}/sessions/arc"),
-		query:  buildQueryForSimsCreateArcSessionCmd(),
+		method:      "POST",
+		path:        buildPathForSimsCreateArcSessionCmd("/sims/{sim_id}/sessions/arc"),
+		query:       buildQueryForSimsCreateArcSessionCmd(),
+		contentType: contentType,
+		body:        body,
 
 		noRetryOnError: noRetryOnError,
 	}, nil
@@ -97,4 +122,42 @@ func buildQueryForSimsCreateArcSessionCmd() url.Values {
 	result := url.Values{}
 
 	return result
+}
+
+func buildBodyForSimsCreateArcSessionCmd() (string, error) {
+	var result map[string]interface{}
+
+	if SimsCreateArcSessionCmdBody != "" {
+		var b []byte
+		var err error
+
+		if strings.HasPrefix(SimsCreateArcSessionCmdBody, "@") {
+			fname := strings.TrimPrefix(SimsCreateArcSessionCmdBody, "@")
+			// #nosec
+			b, err = os.ReadFile(fname)
+		} else if SimsCreateArcSessionCmdBody == "-" {
+			b, err = io.ReadAll(os.Stdin)
+		} else {
+			b = []byte(SimsCreateArcSessionCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if result == nil {
+		result = make(map[string]interface{})
+	}
+
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }

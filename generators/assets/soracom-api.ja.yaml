@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20230228-033906
+  version: 20230417-023612
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -32,7 +32,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 取得するログエントリ数の上限 (1 to 1000)
+      - description: 取得するログエントリ数の上限 (1 〜 1000)
         in: query
         name: limit
         required: false
@@ -107,7 +107,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 取得するログエントリ数の上限 (1 to 1000)
+      - description: 取得するログエントリ数の上限 (1 〜 1000)
         in: query
         name: limit
         required: false
@@ -786,7 +786,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListCouponResponse'
           description: OK.
@@ -811,14 +811,14 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedCouponModel'
           description: Created
       security:
       - api_key: []
         api_token: []
-      summary: Create coupon quotation.
+      summary: クーポンの見積もりを作成する
       tags:
       - Order
       x-soracom-cli:
@@ -837,7 +837,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
           description: OK.
@@ -865,14 +865,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Confirm coupon order.
+      summary: クーポンの発注を確定する
       tags:
       - Order
       x-soracom-cli:
@@ -934,7 +934,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/json;charset=UTF-8:
+          application/json:
             examples:
               API Token credentials:
                 $ref: '#/components/examples/APITokenCredentials'
@@ -1009,7 +1009,7 @@ paths:
           type: string
       requestBody:
         content:
-          application/json;charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
         description: credentials
@@ -1033,7 +1033,7 @@ paths:
       - credentials update
   /data/{resource_type}/{resource_id}:
     get:
-      description: 指定されたデータ送信元リソースから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定されたデータ送信元リソースから送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataEntries
       parameters:
@@ -1101,7 +1101,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a resource
+      summary: データ送信元リソースから送信されたデータを取得する
       tags:
       - DataEntry
       x-soracom-cli:
@@ -1146,7 +1146,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Deletes a data entry
+      summary: データエントリを削除する
       tags:
       - DataEntry
       x-soracom-cli:
@@ -1189,7 +1189,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Gets a data entry
+      summary: データエントリを取得する
       tags:
       - DataEntry
       x-soracom-cli:
@@ -1236,7 +1236,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get the list of data source resources
+      summary: データ送信元リソースのリストを取得する
       tags:
       - DataEntry
       x-soracom-cli:
@@ -1972,7 +1972,7 @@ paths:
       - devices unobserve-resources
   /devices/{device_id}/data:
     get:
-      description: 指定されたデバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定されたデバイスから送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataFromDevice
       parameters:
@@ -2191,7 +2191,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/DiagnosticResponse'
@@ -2223,7 +2223,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DiagnosticResponse'
           description: OK.
@@ -2239,7 +2239,7 @@ paths:
       - diagnostics get
   /event_handlers:
     get:
-      description: イベントハンドラの一覧を返す。
+      description: イベントハンドラーの一覧を返す。
       operationId: listEventHandlers
       parameters:
       - description: target
@@ -2256,7 +2256,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EventHandlerModel'
@@ -2265,13 +2265,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Event Handlers
+      summary: イベントハンドラーの一覧を取得する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers list
     post:
-      description: イベントハンドラを新規作成する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI /
+      description: イベントハンドラーを新規作成する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI /
         SORACOM API で作成する](/ja-jp/docs/event-handler/configure-with-api/) を参照してください。
       operationId: createEventHandler
       requestBody:
@@ -2279,26 +2279,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEventHandlerRequest'
-        description: イベントハンドラの設定内容
+        description: イベントハンドラーの設定内容
         required: true
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EventHandlerModel'
           description: Created
       security:
       - api_key: []
         api_token: []
-      summary: Create Event Handler
+      summary: イベントハンドラーを作成する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers create
   /event_handlers/{handler_id}:
     delete:
-      description: 指定されたイベントハンドラを削除する。
+      description: 指定されたイベントハンドラーを削除する。
       operationId: deleteEventHandler
       parameters:
       - description: handler ID
@@ -2315,13 +2315,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Event Handler
+      summary: イベントハンドラーを削除する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers delete
     get:
-      description: 指定されたイベントハンドラの情報を返す。
+      description: 指定されたイベントハンドラーの情報を返す。
       operationId: getEventHandler
       parameters:
       - description: handler ID
@@ -2333,7 +2333,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EventHandlerModel'
           description: OK.
@@ -2342,13 +2342,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Event Handler
+      summary: イベントハンドラーの情報を取得する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers get
     put:
-      description: 指定されたイベントハンドラを更新する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI
+      description: 指定されたイベントハンドラーを更新する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI
         / SORACOM API で作成する](/ja-jp/docs/event-handler/configure-with-api/) を参照してください。
       operationId: updateEventHandler
       parameters:
@@ -2363,7 +2363,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateEventHandlerRequest'
-        description: イベントハンドラの設定内容
+        description: イベントハンドラーの設定内容
         required: true
       responses:
         "200":
@@ -2373,14 +2373,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Event Handler
+      summary: イベントハンドラーの情報を更新する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers update
   /event_handlers/{handler_id}/subscribers/{imsi}/ignore:
     delete:
-      description: 指定の IMSI に対して、指定のイベントハンドラを無視する設定を削除
+      description: 指定の IMSI に対して、指定のイベントハンドラーを無視する設定を削除
       operationId: deleteIgnoreEventHandler
       parameters:
       - description: imsi
@@ -2403,13 +2403,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Ignore Event Handler
+      summary: イベントハンドラーを無視する設定を削除する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers unignore
     post:
-      description: 指定の IMSI に対して、指定のイベントハンドラを無視する設定を追加
+      description: 指定の IMSI に対して、指定のイベントハンドラーを無視する設定を追加
       operationId: setIgnoreEventHandler
       parameters:
       - description: imsi
@@ -2430,14 +2430,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Ignore Event Handler
+      summary: イベントハンドラーを無視する設定を追加する
       tags:
       - EventHandler
       x-soracom-cli:
       - event-handlers ignore
   /event_handlers/subscribers/{imsi}:
     get:
-      description: 対象 IMSI にひもづくイベントハンドラのリストを返す。
+      description: 対象 IMSI に紐づくイベントハンドラーのリストを返す。
       operationId: listEventHandlersBySubscriber
       parameters:
       - description: imsi
@@ -2449,7 +2449,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EventHandlerModel'
@@ -2460,7 +2460,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Event Handlers related to Subscriber
+      summary: IMSI に紐づくイベントハンドラーのリストを取得する
       tags:
       - EventHandler
       x-soracom-cli:
@@ -2502,7 +2502,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/FileEntry'
@@ -2794,7 +2794,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetExportedFileResponse'
           description: OK
@@ -2809,7 +2809,7 @@ paths:
   /gadgets:
     get:
       description: 条件に一致する Gadget API 対応デバイスのデータを取得します。取得したデータのほかにも Gadget API 対応デバイスが存在する場合は、レスポンスヘッダー
-        `Link` に、前後のページを取得するためのパラメーター (`last_evaluated_key`) が含まれます。
+        `Link` に、前後のページを取得するためのパラメータ (`last_evaluated_key`) が含まれます。
       operationId: listGadgets
       parameters:
       - description: |
@@ -3292,7 +3292,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Groups
+      summary: グループの一覧を取得する
       tags:
       - Group
       x-soracom-cli:
@@ -3322,7 +3322,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Group
+      summary: グループを作成する
       tags:
       - Group
       x-soracom-cli:
@@ -3373,7 +3373,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Group
+      summary: グループの情報を取得する
       tags:
       - Group
       x-soracom-cli:
@@ -3415,7 +3415,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Group Configuration Namespace
+      summary: グループのネームスペースを削除する
       tags:
       - Group
       x-soracom-cli:
@@ -3455,7 +3455,7 @@ paths:
                 description: |
                   [IoT SIM のカスタム DNS を設定する](/ja-jp/docs/air/configure-custom-dns/) 場合は、以下の点に注意してください。
 
-                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
+                  - パスパラメータの `namespace` に、`SoracomAir` を指定します。
                   - `key` と `value` のペアについて詳しくは、[ボディで指定するプロパティについて](/ja-jp/docs/air/configure-custom-dns/#ボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: useCustomDns
@@ -3464,6 +3464,29 @@ paths:
                   value:
                   - 192.168.0.5
                   - 192.168.0.6
+              Configuring Endorse:
+                description: |
+                  [Endorse を有効化する](/ja-jp/docs/endorse/validate-token/#endorse-を有効化する) 場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomEndorse` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[ボディで指定するプロパティについて](/ja-jp/docs/endorse/validate-token/#ボディで指定するプロパティについて) を参照してください。
+                value:
+                - key: enabled
+                  value: true
+                - key: parametersToEndorse
+                  value:
+                    imei: true
+                    imsi: true
+                    msisdn: false
+                    requestParameters: true
+                - key: tokenTimeoutSeconds
+                  value: 600
+                - key: allowOrigin
+                  value: https://soracom.io
+                - key: authorizedRedirectUrls
+                  value:
+                  - https://soracom.io
+                  - http://localhost:3000
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
@@ -3482,7 +3505,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Group Configuration Parameters
+      summary: グループのパラメータを更新する
       tags:
       - Group
       x-soracom-cli:
@@ -3529,7 +3552,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Group Configuration Parameters
+      summary: グループのパラメータを削除する
       tags:
       - Group
       x-soracom-cli:
@@ -3569,7 +3592,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Subscribers in a group
+      summary: グループに属する Subscriber の一覧を取得する
       tags:
       - Group
       x-sam-operationId: listSubscribers
@@ -3612,7 +3635,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Group Tags
+      summary: グループのタグを更新する
       tags:
       - Group
       x-sam-operationId: putTags
@@ -3644,7 +3667,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Group Tag
+      summary: グループのタグを削除する
       tags:
       - Group
       x-sam-operationId: deleteTag
@@ -4197,7 +4220,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Logs.
+      summary: ログを取得する
       tags:
       - Log
       x-soracom-cli:
@@ -4209,7 +4232,7 @@ paths:
           header: x-soracom-next-key
   /lora_devices:
     get:
-      description: 条件にマッチする LoRa device のリストを返す。LoRa device の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
+      description: 条件にマッチする LoRaWAN デバイスのリストを返す。LoRaWAN デバイスの総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: listLoraDevices
       parameters:
@@ -4235,14 +4258,14 @@ paths:
           - exact
           - prefix
           type: string
-      - description: 取得する LoRa device の上限
+      - description: 取得する LoRaWAN デバイスの上限
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: 現ページで取得した最後の LoRa device の Device ID。このパラメータを指定することで次の LoRa device
-          以降のリストを取得できる
+      - description: 現ページで取得した最後の LoRaWAN デバイスの Device ID。このパラメータを指定することで次の LoRaWAN
+          デバイス以降のリストを取得できる
         in: query
         name: last_evaluated_key
         required: false
@@ -4256,11 +4279,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/LoraDevice'
                 type: array
-          description: 条件にマッチする LoRa device のリスト
+          description: 条件にマッチする LoRaWAN デバイスのリスト
       security:
       - api_key: []
         api_token: []
-      summary: List LoRa devices
+      summary: LoRaWAN デバイス のリストを取得する
       tags:
       - LoraDevice
       x-soracom-cli:
@@ -4272,10 +4295,10 @@ paths:
           header: x-soracom-next-key
   /lora_devices/{device_id}:
     get:
-      description: 指定された LoRa device の情報を返す。
+      description: 指定された LoRaWAN デバイスの情報を返す。
       operationId: getLoraDevice
       parameters:
-      - description: 対象の LoRa device の Device ID
+      - description: 対象の LoRaWAN デバイスの Device ID
         in: path
         name: device_id
         required: true
@@ -4287,20 +4310,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 指定された LoRa device の詳細情報
+          description: 指定された LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get LoRa device
+      summary: LoRaWAN デバイスの情報を取得する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices get
   /lora_devices/{device_id}/data:
     get:
-      description: 指定された LoRa デバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定された LoRa デバイスから送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataFromLoraDevice
       parameters:
@@ -4356,7 +4379,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a LoRa device.
+      summary: LoRaWAN デバイスから送信されたデータを取得する
       tags:
       - LoraDevice
       x-soracom-cli:
@@ -4396,17 +4419,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send data to a LoRa device.
+      summary: LoRaWAN デバイスにデータを送信する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices send-data
   /lora_devices/{device_id}/disable_termination:
     post:
-      description: 指定された LoRa device を Terminate 不可能に設定する
+      description: 指定された LoRaWAN デバイスを Terminate 不可能に設定する
       operationId: disableTerminationOnLoraDevice
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4418,23 +4441,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of LoRa device
+      summary: LoRaWAN デバイスをターミネイト不可にする
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices disable-termination
   /lora_devices/{device_id}/enable_termination:
     post:
-      description: 指定された LoRa device を Terminate 可能に設定する
+      description: 指定された LoRaWAN デバイスを Terminate 可能に設定する
       operationId: enableTerminationOnLoraDevice
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4446,23 +4469,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of LoRa device
+      summary: LoRaWAN デバイスをターミネイト可能にする
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices enable-termination
   /lora_devices/{device_id}/register:
     post:
-      description: LoRa device を登録
+      description: LoRaWAN デバイスを登録
       operationId: registerLoraDevice
       parameters:
-      - description: 対象の LoRa device の Device ID
+      - description: 対象の LoRaWAN デバイスの Device ID
         in: path
         name: device_id
         required: true
@@ -4473,7 +4496,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterLoraDeviceRequest'
-        description: LoRa device
+        description: LoRaWAN デバイス
         required: true
       responses:
         "201":
@@ -4481,21 +4504,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: LoRa device 登録完了
+          description: LoRaWAN デバイス登録完了
       security:
       - api_key: []
         api_token: []
-      summary: Register LoRa device
+      summary: LoRaWAN デバイスを登録する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices register
   /lora_devices/{device_id}/set_group:
     post:
-      description: 指定された LoRa device のグループを設定する。
+      description: 指定された LoRaWAN デバイスのグループを設定する。
       operationId: setLoraDeviceGroup
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4514,23 +4537,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Set Group to LoRa device
+      summary: LoRaWAN デバイスのグループを設定する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices set-group
   /lora_devices/{device_id}/tags:
     put:
-      description: 指定された LoRa device のタグを追加・更新
+      description: 指定された LoRaWAN デバイスのタグを追加・更新
       operationId: putLoraDeviceTags
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4551,23 +4574,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update LoRa device Tags
+      summary: LoRaWAN デバイスのタグを追加・更新する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices put-tags
   /lora_devices/{device_id}/tags/{tag_name}:
     delete:
-      description: 指定された LoRa device のタグを削除
+      description: 指定された LoRaWAN デバイスのタグを削除
       operationId: deleteLoraDeviceTag
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4584,11 +4607,11 @@ paths:
         "204":
           description: 対象のタグの削除が完了
         "404":
-          description: 指定された LoRa device あるいはタグが存在しない
+          description: 指定された LoRaWAN デバイスあるいはタグが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete LoRa device Tag
+      summary: LoRaWAN デバイスのタグを削除する
       tags:
       - LoraDevice
       x-sam-operationId: deleteTag
@@ -4596,10 +4619,10 @@ paths:
       - lora-devices delete-tag
   /lora_devices/{device_id}/terminate:
     post:
-      description: 指定された LoRa device を Terminate
+      description: 指定された LoRaWAN デバイスを Terminate
       operationId: terminateLoraDevice
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4611,23 +4634,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しない
+          description: 指定された LoRaWAN デバイスが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Terminate LoRa device
+      summary: LoRaWAN デバイスをターミネイトする
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices terminate
   /lora_devices/{device_id}/unset_group:
     post:
-      description: 指定された LoRa device のグループ設定を解除する。
+      description: 指定された LoRaWAN デバイスのグループ設定を解除する。
       operationId: unsetLoraDeviceGroup
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: device_id
         required: true
@@ -4639,20 +4662,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: 更新後の LoRa device の詳細情報
+          description: 更新後の LoRaWAN デバイスの詳細情報
         "404":
-          description: 指定された LoRa device が存在しないか、LoRa device は Group に属していない
+          description: 指定された LoRaWAN デバイスが存在しないか、LoRaWAN デバイスは Group に属していない
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group to LoRa device
+      summary: LoRaWAN デバイスのグループ設定を解除する
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices unset-group
   /lora_gateways:
     get:
-      description: 条件にマッチする LoRa gateway のリストを返す。LoRa gateway の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
+      description: 条件にマッチする LoRaWAN ゲートウェイのリストを返す。LoRaWAN ゲートウェイの総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: listLoraGateways
       parameters:
@@ -4678,15 +4701,14 @@ paths:
           - exact
           - prefix
           type: string
-      - description: 一度に取得する LoRa gateway の数の上限
+      - description: 一度に取得する LoRaWAN ゲートウェイの数の上限
         in: query
         name: limit
         required: false
         schema:
           format: int32d
           type: integer
-      - description: 現ページで取得した最後の LoRa gateway の ID。このパラメータを指定することで次の LoRa gateway
-          以降のリストを取得できる。
+      - description: 現ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメータを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -4700,11 +4722,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/LoraGateway'
                 type: array
-          description: LoRa gateway のリスト
+          description: LoRaWAN ゲートウェイのリスト
       security:
       - api_key: []
         api_token: []
-      summary: List LoRa gateways.
+      summary: LoRaWAN ゲートウェイのリストを取得する
       tags:
       - LoraGateway
       x-soracom-cli:
@@ -4716,10 +4738,10 @@ paths:
           header: x-soracom-next-key
   /lora_gateways/{gateway_id}:
     get:
-      description: 指定された LoRa gateway の情報を返す。
+      description: 指定された LoRaWAN ゲートウェイの情報を返す。
       operationId: getLoraGateway
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4731,23 +4753,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 指定された LoRa gateway の詳細情報
+          description: 指定された LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get LoRa gateway.
+      summary: LoRaWAN ゲートウェイの情報を取得する
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways get
   /lora_gateways/{gateway_id}/disable_termination:
     post:
-      description: 指定された LoRa gateway を Terminate 不可能に設定する
+      description: 指定された LoRaWAN ゲートウェイを Terminate 不可能に設定する
       operationId: disableTerminationOnLoraGateway
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4759,23 +4781,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of LoRa gateway.
+      summary: LoRaWAN ゲートウェイをターミネイト不可にする
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways disable-termination
   /lora_gateways/{gateway_id}/enable_termination:
     post:
-      description: 指定された LoRa gateway を Terminate 可能に設定する
+      description: 指定された LoRaWAN ゲートウェイを Terminate 可能に設定する
       operationId: enableTerminationOnLoraGateway
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4787,23 +4809,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of LoRa gateway.
+      summary: LoRaWAN ゲートウェイをターミネイト可能にする
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways enable-termination
   /lora_gateways/{gateway_id}/set_network_set:
     post:
-      description: 指定された LoRa gateway の Network Set ID を指定あるいは上書き変更
+      description: 指定された LoRaWAN ゲートウェイの Network Set ID を指定あるいは上書き変更
       operationId: setLoraNetworkSet
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4814,30 +4836,30 @@ paths:
           text/plain:
             schema:
               $ref: '#/components/schemas/SetNetworkSetRequest'
-        description: LoRa Network Set ID
+        description: LoRaWAN ネットワーク ID
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Set Network Set ID of LoRa gateway.
+      summary: LoRaWAN ゲートウェイの Network Set ID を設定・更新する
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways set-network-set
   /lora_gateways/{gateway_id}/tags:
     put:
-      description: 指定された LoRa gateway のタグを追加・更新
+      description: 指定された LoRaWAN ゲートウェイのタグを追加・更新
       operationId: putLoraGatewayTags
       parameters:
-      - description: 対象の LoRa device の ID
+      - description: 対象の LoRaWAN デバイスの ID
         in: path
         name: gateway_id
         required: true
@@ -4858,23 +4880,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update LoRa gateway Tags.
+      summary: LoRaWAN ゲートウェイのタグを追加・更新する
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways put-tags
   /lora_gateways/{gateway_id}/tags/{tag_name}:
     delete:
-      description: 指定された LoRa gateway のタグを削除
+      description: 指定された LoRaWAN ゲートウェイのタグを削除
       operationId: deleteLoraGatewayTag
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4891,21 +4913,21 @@ paths:
         "204":
           description: 対象のタグの削除が完了
         "404":
-          description: 指定された LoRa gateway あるいはタグが存在しない
+          description: 指定された LoRaWAN ゲートウェイあるいはタグが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete LoRa gateway tag.
+      summary: LoRaWAN ゲートウェイのタグを削除する
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways delete-tag
   /lora_gateways/{gateway_id}/terminate:
     post:
-      description: 指定された LoRa gateway を Terminate
+      description: 指定された LoRaWAN ゲートウェイを Terminate
       operationId: terminateLoraGateway
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4917,23 +4939,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Terminate LoRa gateway.
+      summary: LoRaWAN ゲートウェイをターミネイトする
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways terminate
   /lora_gateways/{gateway_id}/unset_network_set:
     post:
-      description: 指定された LoRa gateway の Network Set ID を削除
+      description: 指定された LoRaWAN ゲートウェイの Network Set ID を削除
       operationId: unsetLoraNetworkSet
       parameters:
-      - description: 対象の LoRa gateway の ID
+      - description: 対象の LoRaWAN ゲートウェイの ID
         in: path
         name: gateway_id
         required: true
@@ -4945,20 +4967,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraGateway'
-          description: 更新後の LoRa gateway の詳細情報
+          description: 更新後の LoRaWAN ゲートウェイの詳細情報
         "404":
-          description: 指定された LoRa gateway が存在しない
+          description: 指定された LoRaWAN ゲートウェイが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Unset Network Set ID of LoRa gateway.
+      summary: LoRaWAN ゲートウェイの Network Set ID を削除する
       tags:
       - LoraGateway
       x-soracom-cli:
       - lora-gateways unset-network-set
   /lora_network_sets:
     get:
-      description: 条件にマッチする LoRa network set のリストを返す。LoRa network set の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
+      description: 条件にマッチする LoRaWAN ネットワークのリストを返す。LoRaWAN ネットワークの総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: listLoraNetworkSets
       parameters:
@@ -4984,14 +5006,14 @@ paths:
           - exact
           - prefix
           type: string
-      - description: 一度に取得する LoRa network set の数の上限
+      - description: 一度に取得する LoRaWAN ネットワークの数の上限
         in: query
         name: limit
         required: false
         schema:
           format: int32d
           type: integer
-      - description: 現ページで取得した最後の LoRa network set の ID。このパラメータを指定することで次以降のリストを取得できる。
+      - description: 現ページで取得した最後の LoRaWAN ネットワークの ID。このパラメータを指定することで次以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -5005,11 +5027,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/LoraNetworkSet'
                 type: array
-          description: LoRa network set のリスト
+          description: LoRaWAN ネットワークのリスト
       security:
       - api_key: []
         api_token: []
-      summary: List LoRa Network Sets.
+      summary: LoRaWAN ネットワークのリストを取得する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
@@ -5020,14 +5042,14 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: LoRa network set を作成する
+      description: LoRaWAN ネットワークを作成する
       operationId: createLoraNetworkSet
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/LoraNetworkSet'
-        description: タグなど作成対象の LoRa network set に設定する付加情報
+        description: タグなど作成対象の LoRaWAN ネットワークに設定する付加情報
         required: true
       responses:
         "201":
@@ -5035,21 +5057,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraNetworkSet'
-          description: LoRa network set の作成に成功.
+          description: LoRaWAN ネットワークの作成に成功.
       security:
       - api_key: []
         api_token: []
-      summary: Creates a LoRa network set
+      summary: LoRaWAN ネットワークを作成する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets create
   /lora_network_sets/{ns_id}:
     delete:
-      description: 指定された LoRa network set を削除する
+      description: 指定された LoRaWAN ネットワークを削除する
       operationId: deleteLoraNetworkSet
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5059,20 +5081,20 @@ paths:
         "204":
           description: 削除に成功
         "404":
-          description: 指定された LoRa network set が存在しない
+          description: 指定された LoRaWAN ネットワークが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete LoRa network set.
+      summary: LoRaWAN ネットワークを削除する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets delete
     get:
-      description: 指定された LoRa network set の情報を返す
+      description: 指定された LoRaWAN ネットワークの情報を返す
       operationId: getLoraNetworkSet
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5084,23 +5106,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraNetworkSet'
-          description: LoRa network set の詳細情報を取得完了
+          description: LoRaWAN ネットワークの詳細情報を取得完了
         "404":
-          description: 指定された LoRa network set が存在しない
+          description: 指定された LoRaWAN ネットワークが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get LoRa network set.
+      summary: LoRaWAN ネットワークの情報を取得する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets get
   /lora_network_sets/{ns_id}/add_permission:
     post:
-      description: 別の Operator から Network Set が利用できるようにパーミッションを追加する。
+      description: 別の Operator から LoRaWAN ネットワークが利用できるようにパーミッションを追加する。
       operationId: addPermissionToLoraNetworkSet
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5119,36 +5141,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraNetworkSet'
-          description: 指定された network set のパーミッションを更新完了
+          description: 指定された LoRaWAN ネットワークのパーミッションを更新完了
       security:
       - api_key: []
         api_token: []
-      summary: Adds permission to a LoRa network set.
+      summary: LoRaWAN ネットワークのパーミッションを追加する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets add-permission
   /lora_network_sets/{ns_id}/gateways:
     get:
-      description: 指定された Network Set に属する LoRa gateway のリストを返す。LoRa gateway の総数が 1
-        ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を`Link`ヘッダに含めて返す。
+      description: 指定された LoRaWAN ネットワークに属する LoRaWAN ゲートウェイのリストを返す。LoRaWAN ゲートウェイの総数が
+        1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を`Link`ヘッダに含めて返す。
       operationId: listGatewaysInLoraNetworkSet
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
         schema:
           type: string
-      - description: 一度に取得する LoRa gateway の数の上限
+      - description: 一度に取得する LoRaWAN ゲートウェイの数の上限
         in: query
         name: limit
         required: false
         schema:
           format: int32d
           type: integer
-      - description: 現ページで取得した最後の LoRa gateway の ID。このパラメータを指定することで次の LoRa gateway
-          以降のリストを取得できる。
+      - description: 現ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメータを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -5162,13 +5183,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/LoraGateway'
                 type: array
-          description: LoRa gateway のリスト
+          description: LoRaWAN ゲートウェイのリスト
         "404":
-          description: 指定された LoRa network set が存在しない
+          description: 指定された LoRaWAN ネットワークが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: List LoRa Gateways in a Network Set.
+      summary: LoRaWAN ネットワークに所属する LoRaWAN ゲートウェイのリストを取得する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
@@ -5180,10 +5201,10 @@ paths:
           header: x-soracom-next-key
   /lora_network_sets/{ns_id}/revoke_permission:
     post:
-      description: 指定された LoRa network set の別の Operator への利用許可を取り消す
+      description: 指定された LoRaWAN ネットワークの別の Operator への利用許可を取り消す
       operationId: revokePermissionFromLoraNetworkSet
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5202,21 +5223,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraNetworkSet'
-          description: 指定された LoRa network set のパーミッションを更新完了
+          description: 指定された LoRaWAN ネットワークのパーミッションを更新完了
       security:
       - api_key: []
         api_token: []
-      summary: Revokes a permission from a LoRa network set.
+      summary: LoRaWAN ネットワークのパーミッションを削除する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets revoke-permission
   /lora_network_sets/{ns_id}/tags:
     put:
-      description: 指定された LoRa network set のタグを追加・更新
+      description: 指定された LoRaWAN ネットワークのタグを追加・更新
       operationId: putLoraNetworkSetTags
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5237,21 +5258,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraNetworkSet'
-          description: 更新後の LoRa network set の詳細情報
+          description: 更新後の LoRaWAN ネットワークの詳細情報
         "404":
-          description: 指定された LoRa network set が存在しない
+          description: 指定された LoRaWAN ネットワークが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update LoRa network set tags.
+      summary: LoRaWAN ネットワークのタグを追加・更新する
       tags:
       - LoraNetworkSet
+      x-soracom-cli:
+      - lora-network-sets put-tag
   /lora_network_sets/{ns_id}/tags/{tag_name}:
     delete:
-      description: 指定された LoRa network set のタグを削除
+      description: 指定された LoRaWAN ネットワークのタグを削除
       operationId: deleteLoraNetworkSetTag
       parameters:
-      - description: 対象の LoRa network set の ID
+      - description: 対象の LoRaWAN ネットワークの ID
         in: path
         name: ns_id
         required: true
@@ -5268,18 +5291,18 @@ paths:
         "204":
           description: 対象のタグの削除が完了
         "404":
-          description: 指定された LoRa network set あるいはタグが存在しない
+          description: 指定された LoRaWAN ネットワークあるいはタグが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete LoRa network set tag.
+      summary: LoRaWAN ネットワークのタグを削除する
       tags:
       - LoraNetworkSet
       x-soracom-cli:
       - lora-network-sets delete-tag
   /operators:
     post:
-      description: Operator の新規登録をリクエストする。パラメーターで指定されたメールアドレスに宛てて、Operator 登録確認用のワンタイムトークンを含んだメールが送信される。
+      description: Operator の新規登録をリクエストする。パラメータで指定されたメールアドレスに宛てて、Operator 登録確認用のワンタイムトークンを含んだメールが送信される。
       operationId: createOperator
       requestBody:
         content:
@@ -5296,7 +5319,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Operator
+      summary: オペレーターを新規作成する
       tags:
       - Operator
       x-soracom-cli:
@@ -5324,14 +5347,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Operator
+      summary: オペレーターの情報を取得する
       tags:
       - Operator
       x-soracom-cli:
       - operator get
   /operators/{operator_id}/auth_keys:
     get:
-      description: Operator の AuthKey 一覧を返す。
+      description: オペレーターの認証キー一覧を返す。
       operationId: listOperatorAuthKeys
       parameters:
       - description: オペレーター ID
@@ -5352,13 +5375,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Operator AuthKeys
+      summary: オペレーターの認証キーの一覧を取得する
       tags:
       - Operator
       x-soracom-cli:
       - operator auth-keys list
     post:
-      description: Operator の AuthKey を生成する。
+      description: オペレーターの認証キーを生成する。
       operationId: generateOperatorAuthKey
       parameters:
       - description: オペレーター ID
@@ -5373,18 +5396,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenerateOperatorsAuthKeyResponse'
-          description: AuthKey が生成されました。
+          description: 認証キーが生成されました。
       security:
       - api_key: []
         api_token: []
-      summary: Generate Operator AuthKey
+      summary: オペレーターの認証キーを生成する
       tags:
       - Operator
       x-soracom-cli:
       - operator auth-keys generate
   /operators/{operator_id}/auth_keys/{auth_key_id}:
     delete:
-      description: Operator の AuthKey を削除する。
+      description: オペレーターの認証キーを削除する。
       operationId: deleteOperatorAuthKey
       parameters:
       - description: オペレーター ID
@@ -5401,18 +5424,18 @@ paths:
           type: string
       responses:
         "204":
-          description: AuthKey が削除されました。
+          description: 認証キーが削除されました。
       security:
       - api_key: []
         api_token: []
-      summary: Delete Operator AuthKey
+      summary: オペレーターの認証キーを削除する
       tags:
       - Operator
       x-soracom-cli:
       - operator auth-keys delete
   /operators/{operator_id}/company_information:
     get:
-      description: Operator の企業情報を返す。
+      description: オペレーターの契約者情報 (法人) を返す。
       operationId: getCompanyInformation
       parameters:
       - description: オペレーター ID
@@ -5431,13 +5454,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get company information
+      summary: オペレーターの契約者情報 (法人) を取得する
       tags:
       - Operator
       x-soracom-cli:
       - operator get-company-information
     post:
-      description: Operator の企業情報を設定する。
+      description: オペレーターの契約者情報 (法人) を設定する。
       operationId: createCompanyInformation
       parameters:
       - description: オペレーター ID
@@ -5459,13 +5482,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create company information
+      summary: オペレーターの契約者情報 (法人) を設定する
       tags:
       - Operator
       x-soracom-cli:
       - operator create-company-information
     put:
-      description: Operator の企業情報を更新する。
+      description: オペレーターの契約者情報 (法人) を更新する。
       operationId: updateCompanyInformation
       parameters:
       - description: オペレーター ID
@@ -5487,11 +5510,121 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update company information
+      summary: オペレーターの契約者情報 (法人) を更新する
       tags:
       - Operator
       x-soracom-cli:
       - operator update-company-information
+  /operators/{operator_id}/configuration/{namespace}:
+    delete:
+      description: オペレーターに設定された指定のコンフィグレーションを削除します。
+      operationId: deleteOperatorConfigurationNamespace
+      parameters:
+      - description: オペレーター ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: コンフィグレーションの種別を示すネームスペース
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK.
+        "204":
+          description: Deleted.
+        "400":
+          description: Bad request.
+        "404":
+          description: コンフィグレーションが存在しません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: オペレーターに設定された指定のコンフィグレーションを削除する
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration delete
+    get:
+      description: オペレーターに設定された指定のコンフィグレーションを返します。
+      operationId: getOperatorConfigurationNamespace
+      parameters:
+      - description: オペレーター ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: コンフィグレーションの種別を示すネームスペース
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorConfigurationModel'
+          description: OK.
+        "400":
+          description: 不正なリクエストです。
+        "404":
+          description: コンフィグレーションが存在しません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: オペレーターに設定された指定のコンフィグレーションを返す
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration get
+    post:
+      description: オペレーターにコンフィグレーションを設定します。
+      operationId: setOperatorConfigurationNamespace
+      parameters:
+      - description: オペレーター ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: コンフィグレーションの種別を示すネームスペース
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetOperatorConfigurationNamespaceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorConfigurationModel'
+          description: OK.
+        "400":
+          description: 不正なリクエストです。
+        "409":
+          description: コンフリクトが発生しました。最新のコンフィグレーションを取得して、再度更新してください。
+      security:
+      - api_key: []
+        api_token: []
+      summary: オペレーターにコンフィグレーションを設定する
+      tags:
+      - Operator
+      x-soracom-cli:
+      - operator configuration set
   /operators/{operator_id}/contracts:
     post:
       description: Operator のオプション契約を追加する。
@@ -5520,7 +5653,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Add Operator Contract
+      summary: オペレーターのオプション契約を追加する
       tags:
       - Operator
       x-soracom-cli:
@@ -5548,7 +5681,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Operator Contract
+      summary: オペレーターのオプション契約を削除する
       tags:
       - Operator
       x-soracom-cli:
@@ -5576,7 +5709,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Add coverage type
+      summary: オペレーターにカバレッジタイプを追加する
       tags:
       - Operator
       x-soracom-cli:
@@ -5595,7 +5728,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/EmailsModel'
@@ -5607,7 +5740,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List email addresses
+      summary: メールアドレスの一覧を取得する
       tags:
       - Email
       x-soracom-cli:
@@ -5635,13 +5768,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete email address
+      summary: メールアドレスを削除する
       tags:
       - Email
       x-soracom-cli:
       - emails delete
     get:
-      description: メールアドレスを取得する。
+      description: メールアドレスの情報を取得する。
       operationId: getEmail
       parameters:
       - description: オペレーター ID
@@ -5659,21 +5792,21 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EmailsModel'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get email address
+      summary: メールアドレスの情報を取得する
       tags:
       - Email
       x-soracom-cli:
       - emails get
   /operators/{operator_id}/individual_information:
     get:
-      description: Operator の個人情報を返す。
+      description: オペレーターの契約者情報 (個人) を取得します。
       operationId: getIndividualInformation
       parameters:
       - description: オペレーター ID
@@ -5692,13 +5825,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get individual information
+      summary: オペレーターの契約者情報 (個人) を取得する
       tags:
       - Operator
       x-soracom-cli:
       - operator get-individual-information
     post:
-      description: Operator の個人情報を設定する。
+      description: オペレーターの契約者情報 (個人) を設定する。
       operationId: createIndividualInformation
       parameters:
       - description: オペレーター ID
@@ -5720,13 +5853,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create individual information
+      summary: オペレーターの契約者情報 (個人) を設定する
       tags:
       - Operator
       x-soracom-cli:
       - operator create-individual-information
     put:
-      description: Operator の個人情報を更新する。
+      description: オペレーターの契約者情報 (個人) を更新する。
       operationId: updateIndividualInformation
       parameters:
       - description: オペレーター ID
@@ -5748,14 +5881,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update individual information
+      summary: オペレーターの契約者情報 (個人) を更新する
       tags:
       - Operator
       x-soracom-cli:
       - operator update-individual-information
   /operators/{operator_id}/mfa:
     delete:
-      description: オペレーターの MFA を無効化します。
+      description: ルートユーザーの MFA を無効化します。
       operationId: revokeMFA
       parameters:
       - description: オペレーター ID
@@ -5778,13 +5911,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: オペレーターの MFA を無効化する
+      summary: ルートユーザーの MFA を無効化する
       tags:
       - Operator
       x-soracom-cli:
       - operator revoke-mfa
     get:
-      description: オペレーターの MFA の状態を取得します。MFA の状態は `ACTIVE`, `INACTIVE` もしくは `UNCONFIRMED`
+      description: ルートユーザーの MFA の状態を取得します。MFA の状態は `ACTIVE`, `INACTIVE` もしくは `UNCONFIRMED`
         のいずれかです。
       operationId: getMFAStatus
       parameters:
@@ -5806,13 +5939,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Operator's MFA Status.
+      summary: ルートユーザーの MFA の状態を取得する
       tags:
       - Operator
       x-soracom-cli:
       - operator get-mfa-status
     post:
-      description: オペレーターの MFA を有効化します。この API を呼んだ後に、`Operator:verifyMFA` API を用いて
+      description: ルートユーザーの MFA を有効化します。この API を呼んだ後に、`Operator:verifyMFA` API を用いて
         MFA OTP を検証する必要があります。
       operationId: enableMFA
       parameters:
@@ -5834,14 +5967,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Enable Operator's MFA.
+      summary: ルートユーザーの MFA を有効化する
       tags:
       - Operator
       x-soracom-cli:
       - operator enable-mfa
   /operators/{operator_id}/mfa/verify:
     post:
-      description: オペレーターの MFA OTP を検証します。 `Operator:enableMFA` を呼んだ後に呼び出す必要があります。この
+      description: ルートユーザーの MFA OTP を検証します。 `Operator:enableMFA` を呼んだ後に呼び出す必要があります。この
         API で正しく検証が行われるまで、MFA は有効になりません。この API のレスポンスとして返ってくるバックアップコードは必ず保管してください。
       operationId: verifyMFA
       parameters:
@@ -5870,14 +6003,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Verify Operator's MFA OTP Code.
+      summary: ルートユーザーの MFA OTP コードを検証する
       tags:
       - Operator
       x-soracom-cli:
       - operator verify-mfa-otp
   /operators/{operator_id}/password:
     post:
-      description: Operator のパスワードを更新する。
+      description: ルートユーザーのパスワードを更新する。
       operationId: updateOperatorPassword
       parameters:
       - description: オペレーター ID
@@ -5901,14 +6034,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Operator Password
+      summary: ルートユーザーのパスワードを更新する
       tags:
       - Operator
       x-soracom-cli:
       - operator update-password
   /operators/{operator_id}/roles:
     get:
-      description: Role の一覧を返す。
+      description: ロールの一覧を返す。
       operationId: listRoles
       parameters:
       - description: オペレーター ID
@@ -5920,7 +6053,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/ListRolesResponse'
@@ -5929,14 +6062,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Roles
+      summary: ロールの一覧を取得する
       tags:
       - Role
       x-soracom-cli:
       - roles list
   /operators/{operator_id}/roles/{role_id}:
     delete:
-      description: Role を削除する。
+      description: ロールを削除する。
       operationId: deleteRole
       parameters:
       - description: オペレーター ID
@@ -5961,13 +6094,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Role
+      summary: ロールを削除する
       tags:
       - Role
       x-soracom-cli:
       - roles delete
     get:
-      description: Role を取得する。
+      description: ロールを取得する。
       operationId: getRole
       parameters:
       - description: オペレーター ID
@@ -5985,7 +6118,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/RoleResponse'
           description: OK.
@@ -5994,13 +6127,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Role
+      summary: ロールの情報を取得する
       tags:
       - Role
       x-soracom-cli:
       - roles get
     post:
-      description: Role を新しく追加する。
+      description: ロールを新しく追加する。
       operationId: createRole
       parameters:
       - description: オペレーター ID
@@ -6025,7 +6158,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoleResponse'
           description: OK.
@@ -6034,13 +6167,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Role
+      summary: ロールを作成する
       tags:
       - Role
       x-soracom-cli:
       - roles create
     put:
-      description: Role を編集する。
+      description: ロールを編集する。
       operationId: updateRole
       parameters:
       - description: オペレーター ID
@@ -6070,14 +6203,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Role
+      summary: ロールを更新する
       tags:
       - Role
       x-soracom-cli:
       - roles update
   /operators/{operator_id}/roles/{role_id}/users:
     get:
-      description: Role に紐づくユーザーの一覧を取得する。
+      description: ロールに紐づく SAM ユーザーの一覧を取得する。
       operationId: listRoleAttachedUsers
       parameters:
       - description: オペレーター ID
@@ -6095,7 +6228,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/UserDetailResponse'
@@ -6106,7 +6239,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Role Attached Users
+      summary: ロールに紐づく SAM ユーザーの一覧を取得する
       tags:
       - Role
       x-soracom-cli:
@@ -6125,14 +6258,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListShippingAddressResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: List shipping addresses
+      summary: 商品発送先の一覧を取得する
       tags:
       - ShippingAddress
       x-soracom-cli:
@@ -6164,7 +6297,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create shipping address
+      summary: 商品発送先を登録する
       tags:
       - ShippingAddress
       x-soracom-cli:
@@ -6192,7 +6325,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete shipping address
+      summary: 商品発送先を削除する
       tags:
       - ShippingAddress
       x-soracom-cli:
@@ -6216,14 +6349,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetShippingAddressResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get shipping address
+      summary: 商品発送先の情報を取得する
       tags:
       - ShippingAddress
       x-soracom-cli:
@@ -6257,7 +6390,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update shipping address
+      summary: 商品発送先を更新する
       tags:
       - ShippingAddress
       x-soracom-cli:
@@ -6287,14 +6420,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Generate Token for Support Console
+      summary: SORACOM サポートにアクセスするためのトークンを生成する
       tags:
       - Operator
       x-soracom-cli:
       - operator get-support-token
   /operators/{operator_id}/system_notifications:
     get:
-      description: システム通知の一覧を返す。
+      description: メールアドレス設定の一覧を返す。
       operationId: listSystemNotifications
       parameters:
       - description: オペレーター ID
@@ -6306,7 +6439,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SystemNotificationsModel'
@@ -6315,14 +6448,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List system notifications
+      summary: メールアドレス設定の一覧を取得する
       tags:
       - SystemNotification
       x-soracom-cli:
       - system-notifications list
   /operators/{operator_id}/system_notifications/{type}:
     delete:
-      description: システム通知を削除する。
+      description: メールアドレス設定からメールアドレスを削除する。
       operationId: deleteSystemNotification
       parameters:
       - description: オペレーター ID
@@ -6347,13 +6480,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete system notification
+      summary: メールアドレス設定からメールアドレスを削除する
       tags:
       - SystemNotification
       x-soracom-cli:
       - system-notifications delete
     get:
-      description: システム通知を返す。
+      description: メールアドレス設定を返す。
       operationId: getSystemNotification
       parameters:
       - description: オペレーター ID
@@ -6376,20 +6509,20 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SystemNotificationsModel'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get system notification
+      summary: メールアドレス設定の情報を取得する
       tags:
       - SystemNotification
       x-soracom-cli:
       - system-notifications get
     post:
-      description: システム通知を設定する。
+      description: メールアドレス設定にメールアドレスを設定する。
       operationId: setSystemNotification
       parameters:
       - description: オペレーター ID
@@ -6419,14 +6552,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SystemNotificationsModel'
           description: OK
       security:
       - api_key: []
         api_token: []
-      summary: Set system notification
+      summary: メールアドレス設定にメールアドレスを設定する
       tags:
       - SystemNotification
       x-soracom-cli:
@@ -6466,14 +6599,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Generate Authentication Token
+      summary: 新しい API トークンを発行する
       tags:
       - Operator
       x-soracom-cli:
       - operator generate-api-token
   /operators/{operator_id}/tokens:
     delete:
-      description: ルートユーザーが発行した全ての API キーと API トークンを無効化します。無効化したあとは、有効期間に関わらず API
+      description: ルートユーザーが発行したすべての API キーと API トークンを無効化します。無効化したあとは、有効期間に関わらず API
         キーと API トークンを用いて SORACOM API を呼び出すことはできません。
       operationId: revokeOperatorAuthTokens
       parameters:
@@ -6485,13 +6618,13 @@ paths:
           type: string
       responses:
         "204":
-          description: ルートユーザーが発行した全ての API キーと API トークンの無効化に成功しました。
+          description: ルートユーザーが発行したすべての API キーと API トークンの無効化に成功しました。
         "400":
           description: 誤ったオペレーター ID が指定されました。
       security:
       - api_key: []
         api_token: []
-      summary: ルートユーザーが発行した全ての API キーと API トークンを無効化する
+      summary: ルートユーザーが発行したすべての API キーと API トークンを無効化する
       tags:
       - Operator
       x-soracom-cli:
@@ -6510,7 +6643,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/UserDetailResponse'
@@ -6519,7 +6652,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Users
+      summary: SAM ユーザーの一覧を取得する
       tags:
       - User
       x-soracom-cli:
@@ -6546,14 +6679,14 @@ paths:
           description: 指定された SAM ユーザーは削除されました。
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: SAM ユーザーが見つかりません。
       security:
       - api_key: []
         api_token: []
-      summary: Delete User
+      summary: SAM ユーザーを削除する
       tags:
       - User
       x-soracom-cli:
@@ -6577,14 +6710,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get User
+      summary: SAM ユーザーの情報を取得する
       tags:
       - User
       x-soracom-cli:
@@ -6620,7 +6753,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create User
+      summary: SAM ユーザーを作成する
       tags:
       - User
       x-soracom-cli:
@@ -6653,21 +6786,21 @@ paths:
           description: OK
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: SAM User not found.
       security:
       - api_key: []
         api_token: []
-      summary: Update User
+      summary: SAM ユーザーの情報を更新する
       tags:
       - User
       x-soracom-cli:
       - users update
   /operators/{operator_id}/users/{user_name}/auth_keys:
     get:
-      description: SAM ユーザーの AuthKey 一覧を返す。
+      description: SAM ユーザーの認証キーの一覧を返す。
       operationId: listUserAuthKeys
       parameters:
       - description: オペレーター ID
@@ -6685,7 +6818,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/AuthKeyResponse'
@@ -6694,13 +6827,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List User AuthKeys
+      summary: SAM ユーザーの認証キーの一覧を取得する
       tags:
       - User
       x-soracom-cli:
       - users auth-keys list
     post:
-      description: SAM ユーザーの AuthKey を生成する。
+      description: SAM ユーザーの認証キーを生成する。
       operationId: generateUserAuthKey
       parameters:
       - description: オペレーター ID
@@ -6718,21 +6851,21 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GenerateUserAuthKeyResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Generate AuthKey
+      summary: SAM ユーザーの認証キーを生成する
       tags:
       - User
       x-soracom-cli:
       - users auth-keys generate
   /operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:
     delete:
-      description: SAM ユーザーの AuthKey を削除する。
+      description: SAM ユーザーの認証キーを削除する。
       operationId: deleteUserAuthKey
       parameters:
       - description: オペレーター ID
@@ -6755,23 +6888,23 @@ paths:
           type: string
       responses:
         "204":
-          description: 指定された AuthKey が削除されました。
+          description: 指定された認証キーが削除されました。
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
-          description: AuthKey が見つかりません。
+          description: 認証キーが見つかりません。
       security:
       - api_key: []
         api_token: []
-      summary: Delete User AuthKey
+      summary: SAM ユーザーの認証キーを削除する
       tags:
       - User
       x-soracom-cli:
       - users auth-keys delete
     get:
-      description: SAM ユーザーの AuthKey を返す。
+      description: SAM ユーザーの認証キーを返す。
       operationId: getUserAuthKey
       parameters:
       - description: オペレーター ID
@@ -6795,14 +6928,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/AuthKeyResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get AuthKey
+      summary: SAM ユーザーの認証キーを取得する
       tags:
       - User
       x-soracom-cli:
@@ -6962,14 +7095,14 @@ paths:
           description: ユーザーのパスワードを削除しました。
         "404":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/APICallError'
           description: パスワードが登録されていません。
       security:
       - api_key: []
         api_token: []
-      summary: Delete Password
+      summary: SAM ユーザーのパスワードを削除する
       tags:
       - User
       x-soracom-cli:
@@ -6993,14 +7126,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetUserPasswordResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Has User Password
+      summary: SAM ユーザーのパスワードの設定状態を取得する
       tags:
       - User
       x-soracom-cli:
@@ -7034,7 +7167,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Password
+      summary: SAM ユーザーのパスワードを作成する
       tags:
       - User
       x-soracom-cli:
@@ -7068,7 +7201,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Password
+      summary: SAM ユーザーのパスワードを更新する
       tags:
       - User
       x-soracom-cli:
@@ -7104,7 +7237,7 @@ paths:
       x-soracom-cli:
       - users permissions delete
     get:
-      description: SAM ユーザーの権限設定を取得する。
+      description: SAM ユーザーの権限を取得する。
       operationId: getUserPermission
       parameters:
       - description: オペレーター ID
@@ -7122,14 +7255,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetUserPermissionResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Get User Permission
+      summary: SAM ユーザーの権限を取得する
       tags:
       - User
       x-soracom-cli:
@@ -7170,7 +7303,7 @@ paths:
       - users permissions update
   /operators/{operator_id}/users/{user_name}/roles:
     get:
-      description: ユーザーのロールの一覧を取得する。
+      description: SAM ユーザーのロールの一覧を取得する。
       operationId: listUserRoles
       parameters:
       - description: オペレーター ID
@@ -7188,7 +7321,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/RoleResponse'
@@ -7199,13 +7332,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List User Roles
+      summary: SAM ユーザーに紐づくロールの一覧を取得する
       tags:
       - Role
       x-soracom-cli:
       - users list-roles
     post:
-      description: ユーザーにロールをアタッチする。
+      description: SAM ユーザーにロールをアタッチする。
       operationId: attachRole
       parameters:
       - description: オペレーター ID
@@ -7237,14 +7370,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Attach Role to User
+      summary: SAM ユーザーにロールをアタッチする (紐づける)
       tags:
       - Role
       x-soracom-cli:
       - users attach-role
   /operators/{operator_id}/users/{user_name}/roles/{role_id}:
     delete:
-      description: ユーザーからロールをデタッチする。
+      description: SAM ユーザーからロールをデタッチする。
       operationId: detachRole
       parameters:
       - description: オペレーター ID
@@ -7273,14 +7406,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Detach Role from User
+      summary: SAM ユーザーからロールをデタッチする (紐づけを解除する)
       tags:
       - Role
       x-soracom-cli:
       - users detach-role
   /operators/{operator_id}/users/{user_name}/tokens:
     delete:
-      description: 指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化します。無効化されたあとは、有効期間に関わらず
+      description: 指定された SAM ユーザーが発行したすべての API キーと API トークンを無効化します。無効化されたあとは、有効期間に関わらず
         API キーと API トークンを用いて SORACOM API を呼び出すことはできません。
       operationId: revokeUserAuthTokens
       parameters:
@@ -7298,13 +7431,13 @@ paths:
           type: string
       responses:
         "204":
-          description: 指定されたユーザーが発行した全ての API キーと API トークンの無効化に成功しました。
+          description: 指定されたユーザーが発行したすべての API キーと API トークンの無効化に成功しました。
         "400":
           description: 誤ったオペレーター ID または SAM ユーザー名が指定されました。
       security:
       - api_key: []
         api_token: []
-      summary: 指定された SAM ユーザーが発行した全ての API キーと API トークンを無効化する
+      summary: 指定された SAM ユーザーが発行したすべての API キーと API トークンを無効化する
       tags:
       - User
       x-soracom-cli:
@@ -7348,7 +7481,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetDefaultPermissionsResponse'
           description: OK
@@ -7398,7 +7531,7 @@ paths:
       - users default-permissions update
   /operators/add_email_token/issue:
     post:
-      description: メールアドレス追加用のワンタイムトークンをメールで送付する。
+      description: メールアドレス追加用のトークンをメールで送付する。
       operationId: issueAddEmailToken
       requestBody:
         content:
@@ -7415,7 +7548,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Issue a token to add an email address
+      summary: メールアドレス追加用のトークンを送付する
       tags:
       - Email
       x-soracom-cli:
@@ -7434,14 +7567,14 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Verify a token to add an email address
+      summary: メールアドレス追加用のトークンを検証する
       tags:
       - Email
       x-soracom-cli:
       - emails verify-add-email-token
   /operators/mfa_revoke_token/issue:
     post:
-      description: オペレーターの MFA を無効化するためのトークンを発行します。この API が呼ばれた後、トークンはメールで送信されます。
+      description: ルートユーザーの MFA を無効化するためのトークンを発行します。この API が呼ばれた後、トークンはメールで送信されます。
       operationId: issueMFARevokingToken
       requestBody:
         content:
@@ -7457,7 +7590,7 @@ paths:
           description: Bad request
         "404":
           description: Operator not found
-      summary: Issue Operator's MFA Revoke Token.
+      summary: ルートユーザーの MFA を無効化するためのトークンを発行する
       tags:
       - Operator
       x-soracom-cli:
@@ -7481,14 +7614,14 @@ paths:
           description: Bad request
         "403":
           description: Invalid username or password
-      summary: Verify Operator's MFA revoke token.
+      summary: ルートユーザーの MFA を無効化するためのトークンを検証して MFA を無効化する
       tags:
       - Operator
       x-soracom-cli:
       - operator verify-mfa-revoke-token
   /operators/verify:
     post:
-      description: Operator 登録の確認を行う。メールで送られてくる確認用ワンタイムトークンをパラメーターに含めて呼び出しを行う。
+      description: Operator 登録の確認を行う。メールで送られてくる確認用ワンタイムトークンをパラメータに含めて呼び出しを行う。
       operationId: verifyOperator
       requestBody:
         content:
@@ -7504,7 +7637,7 @@ paths:
           description: ワンタイムトークンが不正
         "404":
           description: ワンタイムトークンが期限切れ
-      summary: Verify Operator
+      summary: オペレーター登録を確認する
       tags:
       - Operator
       x-soracom-cli:
@@ -7519,7 +7652,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderResponse'
           description: OK.
@@ -7544,14 +7677,14 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedOrderModel'
           description: 発注見積もりが作成されました。
       security:
       - api_key: []
         api_token: []
-      summary: Create Quotation
+      summary: 見積もりを作成する
       tags:
       - Order
       x-soracom-cli:
@@ -7573,7 +7706,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: OK.
@@ -7599,14 +7732,14 @@ paths:
       responses:
         "204":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: string
           description: 発注がキャンセルされました。
       security:
       - api_key: []
         api_token: []
-      summary: Cancel order.
+      summary: 発注をキャンセルする
       tags:
       - Order
       x-soracom-cli:
@@ -7628,7 +7761,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Confirm order.
+      summary: 発注を確定する
       tags:
       - Order
       x-soracom-cli:
@@ -7654,7 +7787,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: 初期設定の更新に成功しました。
@@ -7668,9 +7801,11 @@ paths:
       summary: 発注した商品に対して初期設定を指定する
       tags:
       - Order
+      x-soracom-cli:
+      - orders resource-initial-setting update
   /orders/{order_id}/subscribers:
     get:
-      description: 発注した SIM の Subscriber 一覧を返します。
+      description: 発注した IoT SIM の一覧を返します。
       operationId: listOrderedSubscribers
       parameters:
       - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
@@ -7696,14 +7831,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderedSubscriberResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: List ordered subscribers.
+      summary: 発注した IoT SIM の一覧を取得する
       tags:
       - Order
       x-soracom-cli:
@@ -7715,7 +7850,7 @@ paths:
           header: x-soracom-next-key
   /orders/{order_id}/subscribers/register:
     post:
-      description: 発注した SIM をオペレーターに登録します。
+      description: 発注した IoT SIM をオペレーターに登録します。
       operationId: registerOrderedSim
       parameters:
       - description: 発注 ID。[`Order:listOrders API`](#/Order/listOrders) を呼び出すと取得できます。
@@ -7727,14 +7862,14 @@ paths:
       responses:
         "204":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: string
-          description: 発注した SIM がオペレーターに登録されました。
+          description: 発注した IoT SIM がオペレーターに登録されました。
       security:
       - api_key: []
         api_token: []
-      summary: Register subscribers for operator.
+      summary: IoT SIM をオペレーターに登録する
       tags:
       - Order
       x-soracom-cli:
@@ -7754,7 +7889,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetPaymentTransactionResult'
           description: OK.
@@ -7777,7 +7912,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetPaymentMethodResult'
           description: OK.
@@ -7798,7 +7933,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 type: object
           description: OK.
@@ -7819,7 +7954,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListPaymentStatementResponse'
           description: OK
@@ -7854,7 +7989,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
           description: OK
@@ -7875,7 +8010,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/RegisterPayerInformationModel'
           description: OK
@@ -7914,18 +8049,16 @@ paths:
       - payer-information register
   /port_mappings:
     get:
-      description: Returns a list of port mappings.
+      description: オンデマンドリモートアクセスのリストを返します。
       operationId: listPortMappings
       parameters:
-      - description: Maximum number of results per response page.
+      - description: 取得結果のページごとの最大表示件数
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: The last Port Mapping ID retrieved on the current page. By specifying
-          this parameter, you can continue to retrieve the list from the next group
-          onward.
+      - description: 現ページで取得した最後のオンデマンドリモートアクセスの ID。このパラメータを指定することで次のオンデマンドリモートアクセスから始まるリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -7939,11 +8072,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
-          description: A list of port mappings.
+          description: オンデマンドリモートアクセスのリスト
       security:
       - api_key: []
         api_token: []
-      summary: List Port Mapping Entries.
+      summary: オンデマンドリモートアクセスのリストを取得する
       tags:
       - PortMapping
       x-soracom-cli:
@@ -7954,14 +8087,14 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Create a new port mapping.
+      description: オンデマンドリモートアクセスを新規作成します。
       operationId: createPortMapping
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreatePortMappingRequest'
-        description: Port mapping to be created.
+        description: 作成するオンデマンドリモートアクセスの設定
         required: true
       responses:
         "201":
@@ -7969,27 +8102,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PortMapping'
-          description: Created
+          description: オンデマンドリモートアクセスが作成された
       security:
       - api_key: []
         api_token: []
-      summary: Create Port Mapping.
+      summary: オンデマンドリモートアクセスを作成する
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings create
   /port_mappings/{ip_address}/{port}:
     delete:
-      description: Deletes the specified port mapping entry
+      description: 指定したオンデマンドリモートアクセスを削除します。
       operationId: deletePortMapping
       parameters:
-      - description: IP address of the target port mapping entry
+      - description: 対象となるオンデマンドリモートアクセスの IP アドレス
         in: path
         name: ip_address
         required: true
         schema:
           type: string
-      - description: Port of the target port mapping entry
+      - description: 対象となるオンデマンドリモートアクセスのポート番号
         in: path
         name: port
         required: true
@@ -7997,23 +8130,23 @@ paths:
           type: string
       responses:
         "204":
-          description: Deletion of specified port mapping entry complete.
+          description: 指定したオンデマンドリモートアクセスの削除を完了した
         "404":
-          description: The specified port mapping entry does not exist.
+          description: 指定したオンデマンドリモートアクセスは存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete PortMapping.
+      summary: オンデマンドリモートアクセスを削除する
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings delete
   /port_mappings/subscribers/{imsi}:
     get:
-      description: Returns the port mapping entries for a subscriber.
+      description: Subscriber に紐づくオンデマンドリモートアクセスを取得します。
       operationId: listPortMappingsForSubscriber
       parameters:
-      - description: Target subscriber IMSI.
+      - description: 対象の Subscriber の IMSI
         in: path
         name: imsi
         required: true
@@ -8025,32 +8158,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PortMapping'
-          description: List of port mapping entries for the subscriber.
+          description: Subscriber に紐づくオンデマンドリモートアクセスのリスト
         "404":
-          description: The specified subscriber does not exist.
+          description: 指定した Subscriber は存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Get Port Mapping entries for a subscriber.
+      summary: Subscriber に紐づくオンデマンドリモートアクセスを取得する
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings get
   /products:
     get:
-      description: 商品一覧を返します。
+      description: 購入できる商品一覧を取得します。
       operationId: listProducts
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListProductResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: List products
+      summary: 購入できる商品一覧を取得する
       tags:
       - Order
       x-soracom-cli:
@@ -8144,7 +8277,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Device'
@@ -8264,7 +8397,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SigfoxDevice'
@@ -8288,7 +8421,7 @@ paths:
   /query/sims:
     get:
       description: |
-        クエリパラメーターに指定した条件で、IoT SIM を検索します。部分一致で検索できます。大文字と小文字は区別されません。
+        クエリパラメータに指定した条件で、IoT SIM を検索します。部分一致で検索できます。大文字と小文字は区別されません。
 
         **Warning**: SAM ユーザーに、この API を呼び出す権限が付与された場合は、その SAM ユーザーにはすべての IoT SIM に対してグループも含めた検索 / 一覧取得を行う権限が与えられます。
       operationId: searchSims
@@ -8420,7 +8553,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Sim'
@@ -8557,7 +8690,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Subscriber'
@@ -8620,7 +8753,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/TrafficVolumeRanking'
@@ -8721,7 +8854,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Sigfox devices
+      summary: Sigfox デバイスのリストを取得する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8754,14 +8887,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Sigfox device
+      summary: Sigfox デバイスの情報を取得する
       tags:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices get
   /sigfox_devices/{device_id}/data:
     get:
-      description: 指定された Sigfox デバイスから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定された Sigfox デバイスから送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataFromSigfoxDevice
       parameters:
@@ -8817,7 +8950,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a Sigfox device.
+      summary: Sigfox デバイスから送信されたデータを取得する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8853,7 +8986,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send data to a Sigfox device.
+      summary: Sigfox デバイスにデータを送信する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8881,7 +9014,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of Sigfox device
+      summary: Sigfox デバイスをターミネイト不可にする
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8909,7 +9042,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of Sigfox device
+      summary: Sigfox デバイスをターミネイト可能にする
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8944,7 +9077,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register a Sigfox device.
+      summary: Sigfox デバイスを登録する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -8979,7 +9112,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set Group to Sigfox device
+      summary: Sigfox デバイスにグループを設定する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -9016,7 +9149,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update Sigfox device Tags
+      summary: Sigfox デバイスのタグを追加・更新する
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -9047,7 +9180,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Sigfox device Tag
+      summary: Sigfox デバイスのタグを削除する
       tags:
       - SigfoxDevice
       x-sam-operationId: deleteTag
@@ -9083,7 +9216,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Terminate Sigfox device
+      summary: Sigfox デバイスをターミネイトする
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -9111,24 +9244,24 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group to Sigfox device
+      summary: Sigfox デバイスのグループ設定を解除する
       tags:
       - SigfoxDevice
       x-soracom-cli:
       - sigfox-devices unset-group
   /sims:
     get:
-      description: 条件にマッチする SIM のリストを返す。SIM の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
+      description: 条件にマッチする IoT SIM のリストを返す。IoT SIM の総数が 1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: listSims
       parameters:
-      - description: 取得する SIM の上限。ただし、返却される SIM の個数は指定された値を下回る可能性があります。
+      - description: 取得する IoT SIM の上限。ただし、返却される IoT SIM の個数は指定された値を下回る可能性があります。
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: 現ページで取得した最後の SIM ID。このパラメータを指定することで次の SIM 以降のリストを取得できる。
+      - description: 現ページで取得した最後の SIM ID。このパラメータを指定することで次の IoT SIM 以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -9144,11 +9277,11 @@ paths:
                 type: array
           description: IoT SIM の一覧
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: List SIMs
+      summary: IoT SIM のリストを取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -9214,7 +9347,7 @@ paths:
       - sims get
   /sims/{sim_id}/activate:
     post:
-      description: 指定した SIM のステータスを「使用中 (active)」に変更する。
+      description: 指定した IoT SIM のステータスを「使用中 (active)」に変更する。
       operationId: activateSim
       parameters:
       - description: 対象の SIM ID
@@ -9230,13 +9363,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Activate SIM
+      summary: IoT SIM のステータスを「使用中 (active)」に変更する
       tags:
       - Sim
       x-soracom-cli:
@@ -9245,12 +9378,12 @@ paths:
     delete:
       deprecated: true
       description: |
-        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を SIM から除去します。
+        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を IoT SIM から除去します。
 
         **Warning**: この API は利用しないでください。
       operationId: removeArcSimCredentials
       parameters:
-      - description: 対象とする SIM の SIM ID
+      - description: 対象とする IoT SIM の SIM ID
         in: path
         name: sim_id
         required: true
@@ -9258,11 +9391,11 @@ paths:
           type: string
       responses:
         "204":
-          description: Arc のクレデンシャルが SIM から除去されたことを表します
+          description: Arc のクレデンシャルが IoT SIM から除去されたことを表します
       security:
       - api_key: []
         api_token: []
-      summary: (非推奨) Arc のクレデンシャルを SIM から除去
+      summary: (非推奨) Arc のクレデンシャルを IoT SIM から除去
       tags:
       - Sim
       x-soracom-cli:
@@ -9270,12 +9403,12 @@ paths:
     post:
       deprecated: true
       description: |
-        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を SIM に付与します。
+        (非推奨) SORACOM Arc のクレデンシャル (公開鍵) を IoT SIM に付与します。
 
         **Warning**: 代わりに `renewArcSimCredentials` API を利用してください。
       operationId: attachArcSimCredentials
       parameters:
-      - description: 対象とする SIM の SIM ID
+      - description: 対象とする IoT SIM の SIM ID
         in: path
         name: sim_id
         required: true
@@ -9299,16 +9432,16 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: (非推奨) Arc のクレデンシャルを SIM へ付与
+      summary: (非推奨) Arc のクレデンシャルを IoT SIM へ付与
       tags:
       - Sim
       x-soracom-cli:
       - sims attach-arc-credentials
     put:
-      description: SIM に Arc のクレデンシャルを付与し、セッションの再初期化処理を行います
+      description: IoT SIM に Arc のクレデンシャルを付与し、セッションの再初期化処理を行います
       operationId: renewArcSimCredentials
       parameters:
-      - description: 対象とする SIM の SIM ID
+      - description: 対象とする IoT SIM の SIM ID
         in: path
         name: sim_id
         required: true
@@ -9332,18 +9465,18 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SIM に対する Arc のクレデンシャルを更新する
+      summary: IoT SIM に対する Arc のクレデンシャルを更新する
       tags:
       - Sim
       x-soracom-cli:
       - sims renew-arc-credentials
   /sims/{sim_id}/data:
     get:
-      description: 指定した SIM から送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定した IoT SIM から送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataFromSim
       parameters:
-      - description: データ取得対象の SIM の ID
+      - description: データ取得対象の IoT SIM の ID
         in: path
         name: sim_id
         required: true
@@ -9395,7 +9528,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a SIM.
+      summary: IoT SIM から送信されたデータを取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -9407,7 +9540,7 @@ paths:
           header: x-soracom-next-key
   /sims/{sim_id}/deactivate:
     post:
-      description: 指定した SIM のステータスを「休止中 (inactive)」に変更する。
+      description: 指定した IoT SIM のステータスを「休止中 (inactive)」に変更する。
       operationId: deactivateSim
       parameters:
       - description: 対象の SIM ID
@@ -9423,20 +9556,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Deactivate SIM
+      summary: IoT SIM のステータスを「休止中 (inactive)」に変更する
       tags:
       - Sim
       x-soracom-cli:
       - sims deactivate
   /sims/{sim_id}/delete_session:
     post:
-      description: 指定した SIM のセッションを切断する。
+      description: 指定した IoT SIM のセッションを切断する。
       operationId: deleteSimSession
       parameters:
       - description: 対象の SIM ID
@@ -9451,20 +9584,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete Session
+      summary: セッションを切断する
       tags:
       - Sim
       x-soracom-cli:
       - sims delete-session
   /sims/{sim_id}/disable_termination:
     post:
-      description: 指定した SIM の解約プロテクションを設定する (解約できないようにする)。
+      description: 指定した IoT SIM の解約プロテクションを設定する (解約できないようにする)。
       operationId: disableSimTermination
       parameters:
       - description: 対象の SIM ID
@@ -9480,23 +9613,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of SIM
+      summary: IoT SIM の解約プロテクションを設定する (解約できないようにする)
       tags:
       - Sim
       x-soracom-cli:
       - sims disable-termination
   /sims/{sim_id}/downlink/ping:
     post:
-      description: SIM に対して ICMP ping リクエストを送信する。
+      description: IoT SIM に対して ICMP ping リクエストを送信する。
       operationId: sendDownlinkPing
       parameters:
-      - description: 対象の SIM の SIM ID
+      - description: 対象の IoT SIM の SIM ID
         in: path
         name: sim_id
         required: true
@@ -9520,14 +9653,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SIM に対して ping リクエストを送信する
+      summary: IoT SIM に対して ping リクエストを送信する
       tags:
       - Sim
       x-soracom-cli:
       - sims downlink-ping
   /sims/{sim_id}/enable_termination:
     post:
-      description: 指定した SIM の解約プロテクションを解除する (解約できるようにする)。
+      description: 指定した IoT SIM の解約プロテクションを解除する (解約できるようにする)。
       operationId: enableSimTermination
       parameters:
       - description: 対象の SIM ID
@@ -9543,20 +9676,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of SIM
+      summary: IoT SIM の解約プロテクションを解除する (解約できるようにする)
       tags:
       - Sim
       x-soracom-cli:
       - sims enable-termination
   /sims/{sim_id}/events/sessions:
     get:
-      description: 指定した SIM に関する過去 32 日間のセッションの作成 / 変更 / 切断のイベント履歴を取得します。イベントの総数が
+      description: 指定した IoT SIM に関する過去 32 日間のセッションの作成 / 変更 / 切断のイベント履歴を取得します。イベントの総数が
         1 ページに収まらない場合は、レスポンス中に次のページにアクセスするための URL を `Link` ヘッダに含めて返す。
       operationId: listSimSessionEvents
       parameters:
@@ -9614,7 +9747,7 @@ paths:
           header: x-soracom-next-key
   /sims/{sim_id}/packet_capture_sessions:
     get:
-      description: 指定した SIM のパケットキャプチャセッションのリストを取得する。
+      description: 指定した IoT SIM のパケットキャプチャセッションのリストを取得する。
       operationId: listSimPacketCaptureSessions
       parameters:
       - description: 対象の SIM ID
@@ -9645,13 +9778,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/PacketCaptureSession'
                 type: array
-          description: 指定した SIM のパケットキャプチャセッションのリスト
+          description: 指定した IoT SIM のパケットキャプチャセッションのリスト
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: List packet capture sessions associated with the SIM
+      summary: IoT SIM のパケットキャプチャセッションのリストを取得する
       tags:
       - Sim
       x-soracom-cli:
@@ -9662,10 +9795,10 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: 指定した SIM に対するパケットキャプチャセッションを作成する。
+      description: 指定した IoT SIM に対するパケットキャプチャセッションを作成する。
       operationId: createSimPacketCaptureSession
       parameters:
-      - description: パケットキャプチャセッションを作成する SIM の ID
+      - description: パケットキャプチャセッションを作成する IoT SIM の ID
         in: path
         name: sim_id
         required: true
@@ -9684,22 +9817,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: 指定した SIM に対して作成されたパケットキャプチャセッション
+          description: 指定した IoT SIM に対して作成されたパケットキャプチャセッション
         "400":
-          description: 指定した SIM に対するパケットキャプチャセッションの作成が失敗した
+          description: 指定した IoT SIM に対するパケットキャプチャセッションの作成が失敗した
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Create Packet Capture Session
+      summary: パケットキャプチャセッションを作成する
       tags:
       - Sim
       x-soracom-cli:
       - sims create-packet-capture-session
   /sims/{sim_id}/packet_capture_sessions/{session_id}:
     delete:
-      description: 指定した SIM に対するパケットキャプチャを削除する。
+      description: 指定した IoT SIM に対するパケットキャプチャを削除する。
       operationId: deleteSimPacketCaptureSession
       parameters:
       - description: 対象の SIM ID
@@ -9728,13 +9861,13 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Packet Capture Session
+      summary: パケットキャプチャセッションを削除する
       tags:
       - Sim
       x-soracom-cli:
       - sims delete-packet-capture-session
     get:
-      description: 指定した SIM に対するパケットキャプチャセッションを取得する。
+      description: 指定した IoT SIM に対するパケットキャプチャセッションを取得する。
       operationId: getSimPacketCaptureSession
       parameters:
       - description: 対象の SIM ID
@@ -9761,14 +9894,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Packet Capture Session
+      summary: パケットキャプチャセッションを取得する
       tags:
       - Sim
       x-soracom-cli:
       - sims get-packet-capture-session
   /sims/{sim_id}/packet_capture_sessions/{session_id}/stop:
     post:
-      description: 指定した SIM に対するパケットキャプチャを停止する。
+      description: 指定した IoT SIM に対するパケットキャプチャを停止する。
       operationId: stopSimPacketCaptureSession
       parameters:
       - description: 対象の SIM ID
@@ -9800,7 +9933,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Stop SIM Packet Capture Session
+      summary: パケットキャプチャを停止する
       tags:
       - Sim
       x-soracom-cli:
@@ -9811,7 +9944,7 @@ paths:
         を IoT SIM に追加します。
       operationId: addSubscription
       parameters:
-      - description: 対象の SIM の ID
+      - description: 対象の IoT SIM の ID
         in: path
         name: sim_id
         required: true
@@ -9985,7 +10118,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterSimRequest'
-        description: SIM 登録リクエスト
+        description: IoT SIM 登録リクエスト
         required: true
       responses:
         "201":
@@ -9993,7 +10126,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: SIM 登録完了
+          description: IoT SIM 登録完了
       security:
       - api_key: []
         api_token: []
@@ -10012,7 +10145,7 @@ paths:
         - [SMS 機能](https://soracom.jp/services/air/cellular/pricing/price_specific_area_sim/#sms) (日本カバレッジ)
       operationId: reportSimLocalInfo
       parameters:
-      - description: 対象の SIM の ID
+      - description: 対象の IoT SIM の ID
         in: path
         name: sim_id
         required: true
@@ -10042,10 +10175,10 @@ paths:
       - sims report-local-info
   /sims/{sim_id}/send_sms:
     post:
-      description: 指定した SIM 宛に SMS を送信する。
+      description: 指定した IoT SIM 宛に SMS を送信する。
       operationId: sendSmsToSim
       parameters:
-      - description: SMS 送信対象の SIM の ID
+      - description: SMS 送信対象の IoT SIM の ID
         in: path
         name: sim_id
         required: true
@@ -10067,13 +10200,13 @@ paths:
                 $ref: '#/components/schemas/SmsForwardingReport'
           description: SMS 送信を受け付け完了。メッセージに割り振られた ID を返す
         "400":
-          description: 指定した SIM は SMS API をサポートしていない
+          description: 指定した IoT SIM は SMS API をサポートしていない
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Send SMS to SIM
+      summary: IoT SIM に SMS を送信する
       tags:
       - Sim
       x-soracom-cli:
@@ -10083,13 +10216,20 @@ paths:
       description: SORACOM Arc セッションの作成を行います。すでにセッションが存在する場合は再作成を行います。
       operationId: createArcSession
       parameters:
-      - description: 対象とする SIM の SIM ID
+      - description: 対象とする IoT SIM の SIM ID
         in: path
         name: sim_id
         required: true
         schema:
           format: SimId
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+        required: true
       responses:
         "200":
           content:
@@ -10132,9 +10272,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
@@ -10145,7 +10285,7 @@ paths:
       - sims set-expiry-time
   /sims/{sim_id}/set_group:
     post:
-      description: 指定した SIM のグループを設定する。
+      description: 指定した IoT SIM のグループを設定する。
       operationId: setSimGroup
       parameters:
       - description: 対象の SIM ID
@@ -10167,20 +10307,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Set Group to SIM
+      summary: IoT SIM のグループを設定する
       tags:
       - Sim
       x-soracom-cli:
       - sims set-group
   /sims/{sim_id}/set_imei_lock:
     post:
-      description: 指定した SIM の IMEI ロックを設定する。
+      description: 指定した IoT SIM の IMEI ロックを設定する。
       operationId: setSimImeiLock
       parameters:
       - description: 対象の SIM ID
@@ -10194,31 +10334,32 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetImeiLockRequest'
-        description: SIM に指定する IMEI lock の設定 (オンラインの SIM の現在の IMEI にロックするには IMEI は指定しなくてもよい)
+        description: IoT SIM に指定する IMEI lock の設定 (オンラインの IoT SIM の現在の IMEI にロックするには
+          IMEI は指定しなくてもよい)
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "400":
           description: |
             - IMEI 文字列が無効です。
-            - オフラインの SIM にも関わらず IMEI が指定されていません。
+            - オフラインの IoT SIM にも関わらず IMEI が指定されていません。
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Set IMEI lock configuration for SIM.
+      summary: IoT SIM の IMEI ロックを設定する
       tags:
       - Sim
       x-soracom-cli:
       - sims set-imei-lock
   /sims/{sim_id}/set_to_standby:
     post:
-      description: 指定した SIM のステータスを「利用開始待ち (standby)」に変更する。
+      description: 指定した IoT SIM のステータスを「利用開始待ち (standby)」に変更する。
       operationId: setSimToStandby
       parameters:
       - description: 対象の SIM ID
@@ -10234,22 +10375,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "400":
-          description: 指定した SIM は「利用開始待ち (standby)」に対応していない
+          description: 指定した IoT SIM は「利用開始待ち (standby)」に対応していない
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Set SIM to standby mode.
+      summary: IoT SIM のステータスを「利用開始待ち (standby)」に変更する
       tags:
       - Sim
       x-soracom-cli:
       - sims set-to-standby
   /sims/{sim_id}/suspend:
     post:
-      description: 指定した SIM のステータスを「利用中断中 (suspended)」に変更する。
+      description: 指定した IoT SIM のステータスを「利用中断中 (suspended)」に変更する。
       operationId: suspendSim
       parameters:
       - description: 対象の SIM ID
@@ -10265,20 +10406,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Suspend SIM
+      summary: IoT SIM のステータスを「利用中断中 (suspended)」に変更する
       tags:
       - Sim
       x-soracom-cli:
       - sims suspend
   /sims/{sim_id}/tags:
     put:
-      description: 指定した SIM のタグを追加 / 更新する。
+      description: 指定した IoT SIM のタグを追加 / 更新する。
       operationId: putSimTags
       parameters:
       - description: 対象の SIM ID
@@ -10302,13 +10443,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update SIM Tags
+      summary: IoT SIM のタグを追加 / 更新する
       tags:
       - Sim
       x-sam-operationId: putTags
@@ -10316,7 +10457,7 @@ paths:
       - sims put-tags
   /sims/{sim_id}/tags/{tag_name}:
     delete:
-      description: 指定した SIM のタグを削除する。
+      description: 指定した IoT SIM のタグを削除する。
       operationId: deleteSimTag
       parameters:
       - description: 対象の SIM ID
@@ -10336,11 +10477,11 @@ paths:
         "204":
           description: 対象のタグの削除が完了
         "404":
-          description: 指定した SIM あるいはタグが存在しない
+          description: 指定した IoT SIM あるいはタグが存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete SIM Tag
+      summary: IoT SIM のタグを削除する
       tags:
       - Sim
       x-sam-operationId: deleteTag
@@ -10348,7 +10489,7 @@ paths:
       - sims delete-tag
   /sims/{sim_id}/terminate:
     post:
-      description: 指定した SIM を解約する。
+      description: 指定した IoT SIM を解約する。
       operationId: terminateSim
       parameters:
       - description: 対象の SIM ID
@@ -10364,20 +10505,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Terminate SIM
+      summary: IoT SIM を解約する
       tags:
       - Sim
       x-soracom-cli:
       - sims terminate
   /sims/{sim_id}/unset_expiry_time:
     post:
-      description: 指定した SIM の有効期限を解除する。
+      description: 指定した IoT SIM の有効期限を解除する。
       operationId: unsetSimExpiryTime
       parameters:
       - description: 対象の SIM ID
@@ -10388,20 +10529,20 @@ paths:
           type: string
       responses:
         "204":
-          description: 当該 SIM の有効期限の解除に成功
+          description: 当該 IoT SIM の有効期限の解除に成功
         "404":
-          description: 指定した SIM が存在しないか、SIM に有効期限がない
+          description: 指定した IoT SIM が存在しないか、IoT SIM に有効期限がない
       security:
       - api_key: []
         api_token: []
-      summary: Delete Expiry Time of SIM
+      summary: IoT SIM の有効期限を解除する
       tags:
       - Sim
       x-soracom-cli:
       - sims unset-expiry-time
   /sims/{sim_id}/unset_group:
     post:
-      description: 指定した SIM のグループ設定を解除する。
+      description: 指定した IoT SIM のグループ設定を解除する。
       operationId: unsetSimGroup
       parameters:
       - description: 対象の SIM ID
@@ -10416,20 +10557,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しないか、SIM は Group に属していない
+          description: 指定した IoT SIM が存在しないか、IoT SIM は Group に属していない
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group to SIM
+      summary: IoT SIM のグループ設定を解除する
       tags:
       - Sim
       x-soracom-cli:
       - sims unset-group
   /sims/{sim_id}/unset_imei_lock:
     post:
-      description: 指定した SIM の IMEI ロックを解除する。
+      description: 指定した IoT SIM の IMEI ロックを解除する。
       operationId: unsetSimImeiLock
       parameters:
       - description: 対象の SIM ID
@@ -10444,13 +10585,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Unset IMEI lock configuration for SIM.
+      summary: IoT SIM の IMEI ロックを解除する
       tags:
       - Sim
       x-soracom-cli:
@@ -10479,12 +10620,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報
         "400":
           description: 指定された速度クラスは、このサブスクリプションに存在しません。たとえば、plan01s のときは arc.standard
             は指定できません。
         "404":
-          description: 指定した SIM が存在しない
+          description: 指定した IoT SIM が存在しない
       security:
       - api_key: []
         api_token: []
@@ -10496,14 +10637,14 @@ paths:
   /sora_cam/devices:
     get:
       description: |
-        ソラカメ対応カメラの一覧を取得します。ライセンスを割り当てていないソラカメ対応カメラの情報も取得できます。
+        ソラカメ対応カメラの一覧を取得します。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: listSoraCamDevices
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - configuration:
                   audioAlarmEnabled: false
@@ -10546,7 +10687,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 appliedLicenses:
                 - name: Cloud Continuous Recording
@@ -10588,7 +10729,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceEventsForDevice リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -10632,7 +10773,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - deviceId: 7CDDDEADBEEF
                 deviceType: atomCamV2
@@ -10685,7 +10826,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 image:
@@ -10767,7 +10908,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 image:
@@ -10813,7 +10954,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceImageExportsForDevice リクエストのレスポンスに含まれていた
-          x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          x-soracom-next-key ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -10840,7 +10981,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -10920,6 +11061,8 @@ paths:
         - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
 
+        **Warning**: クラウド常時録画ライセンスを割り当てていないソラカメ対応カメラの静止画はエクスポートできません。
+
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: exportSoraCamDeviceRecordedImage
       parameters:
@@ -10942,7 +11085,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
@@ -10987,7 +11130,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11067,7 +11210,9 @@ paths:
           - 最大 300 秒 (5 分) の録画映像をストリーミング再生できる URL を取得できます。
           - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
 
-        **Warning**: リアルタイム映像は、クラウド常時録画で保存された録画映像から最新の映像を取得する機能です。したがって、リアルタイム映像を取得するには、クラウド常時録画ライセンスが必要です。ATOM アプリで再生できる「ライブ映像 (P2P)」は、リアルタイム映像とは異なる機能です。SORACOM API を利用して「ライブ映像 (P2P)」は取得できません。
+        **Warning**: リアルタイム映像は、クラウド常時録画で保存された録画映像から最新の映像を取得する機能です。したがって、クラウド常時録画ライセンスを割り当てていないソラカメ対応カメラのリアルタイム映像は取得できません。
+
+        **Warning**: ATOM アプリで再生できる「ライブ映像 (P2P)」は、リアルタイム映像とは異なる機能です。SORACOM API を利用して「ライブ映像 (P2P)」は取得できません。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: getSoraCamDeviceStreamingVideo
@@ -11102,7 +11247,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 playList:
                 - from: 1658400332905
@@ -11140,7 +11285,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceVideoExportsForDevice リクエストのレスポンスに含まれていた
-          x-soracom-next-key ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          x-soracom-next-key ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -11167,7 +11312,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11248,6 +11393,8 @@ paths:
         - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (1 か月 72 時間) は 2 回分が消費されます。
 
+        **Warning**: クラウド常時録画ライセンスを割り当てていないソラカメ対応カメラの録画映像はエクスポートできません。
+
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: exportSoraCamDeviceRecordedVideo
       parameters:
@@ -11269,7 +11416,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
                 deviceId: 7CDDDEADBEEF
                 exportId: 5ed62746-6c53-47e5-94e6-90697057cf5b
@@ -11317,7 +11464,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11395,7 +11542,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceEvents リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -11439,7 +11586,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               example:
               - deviceId: 7CDDDEADBEEF
                 deviceType: atomCamV2
@@ -11486,7 +11633,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceImageExports リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -11513,7 +11660,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11601,7 +11748,7 @@ paths:
         schema:
           type: string
       - description: 前回の listSoraCamDeviceVideoExports リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメーターを指定することで、前回のリクエストの続きからリストを取得できます。
+          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -11628,7 +11775,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               examples:
                 (1) Initializing:
                   value:
@@ -11799,7 +11946,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/Soralet'
@@ -11878,7 +12025,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Soralet'
           description: OK.
@@ -11928,7 +12075,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SoraletLog'
@@ -11968,7 +12115,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ExecuteSoraletResponse'
           description: OK.
@@ -12017,7 +12164,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 items:
                   $ref: '#/components/schemas/SoraletVersion'
@@ -12063,7 +12210,7 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SoraletVersion'
           description: Successfully created a new version.
@@ -12299,7 +12446,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export Air Usage Report of All Subscribers
+      summary: すべての IoT SIM のデータ通信量をエクスポートする
       tags:
       - Stats
       x-soracom-cli:
@@ -12450,7 +12597,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export Beam Usage Report of All Subscribers
+      summary: すべての Subscriber の SORACOM Beam 利用量履歴をエクスポートする
       tags:
       - Stats
       x-soracom-cli:
@@ -12501,7 +12648,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Beam Usage Report of Subscriber
+      summary: IMSI で指定した Subscriber の SORACOM Beam 利用量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -12544,7 +12691,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export Funk Usage Report of All Subscribers
+      summary: すべての Subscriber の SORACOM Funk 利用量履歴をエクスポートする
       tags:
       - Stats
       x-soracom-cli:
@@ -12595,7 +12742,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Funk Usage Report of Subscriber
+      summary: IMSI で指定した Subscriber の SORACOM Funk 利用量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -12638,7 +12785,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export Funnel Usage Report of All Subscribers
+      summary: すべての Subscriber の SORACOM Funnel 利用量履歴をエクスポートする
       tags:
       - Stats
       x-soracom-cli:
@@ -12689,7 +12836,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Funnel Usage Report of Subscriber
+      summary: IMSI で指定した Subscriber の SORACOM Funnel 利用量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
@@ -12725,10 +12872,10 @@ paths:
       tags:
       - Stats
       x-soracom-cli:
-      - stats harvest get
+      - stats harvest operators get
   /stats/harvest/subscribers/{imsi}:
     get:
-      description: IMSI で指定した Subscriber の SORACOM Harvest 利用量履歴を取得する。
+      description: IMSI で指定した Subscriber の SORACOM Harvest Data 利用量履歴を取得する。
       operationId: getHarvestStats
       parameters:
       - description: imsi
@@ -12772,11 +12919,11 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Harvest Usage Report of Subscriber
+      summary: IMSI で指定した Subscriber の SORACOM Harvest Data 利用量履歴を取得する
       tags:
       - Stats
       x-soracom-cli:
-      - stats harvest get
+      - stats harvest subscribers get
   /stats/napter/audit_logs:
     get:
       description: 指定された年月における Napter 監査ログの読み込みデータ通信量を byte 単位で取得する。
@@ -12852,11 +12999,13 @@ paths:
         required: false
         schema:
           type: string
-      - description: 取得する Subscriber の上限。ただし、返却される Subscriber の個数は指定された値を下回る可能性があります。
+      - description: 取得する Subscriber の上限 (1 〜 100)。ただし、返却される Subscriber の個数は指定された値を下回る可能性があります。
         in: query
         name: limit
         required: false
         schema:
+          maximum: 100
+          minimum: 1
           type: integer
       - description: 現ページで取得した最後の Subscriber の IMSI。このパラメータを指定することで次の Subscriber 以降のリストを取得できる。
         in: query
@@ -12876,7 +13025,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Subscribers
+      summary: Subscriber のリストを取得する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -12909,7 +13058,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Subscriber
+      summary: Subscriber の情報を取得する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -12938,7 +13087,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Activate Subscriber
+      summary: Subscriber のステータスを「使用中 (active)」に変更する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -12982,7 +13131,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set Bundles to Subscriber.
+      summary: Subscriber にバンドルを設定する
       tags:
       - Subscriber
       x-sam-operationId: putBundles
@@ -12990,7 +13139,7 @@ paths:
       - subscribers put-bundles
   /subscribers/{imsi}/data:
     get:
-      description: 指定したサブスクライバーから送られたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
+      description: 指定したサブスクライバーから送信されたデータの中で、条件に合うエントリのリストを返す。データエントリの総数が 1 ページに収まらない場合は、次のページにアクセスするための
         URL を`Link`ヘッダに含めて返す。
       operationId: getDataFromSubscriber
       parameters:
@@ -13046,7 +13195,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a subscriber.
+      summary: Subscriber から送信されたデータのリストを取得する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13081,7 +13230,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Deactivate Subscriber
+      summary: Subscriber のステータスを「休止中 (inactive)」に変更する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13109,7 +13258,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Session
+      summary: Subscriber のセッションを切断する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13138,7 +13287,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of Subscriber
+      summary: Subscriber の解約プロテクションを設定する (解約できないようにする)
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13201,7 +13350,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of Subscriber
+      summary: Subscriber の解約プロテクションを解除する (解約できるようにする)
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13254,7 +13403,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Session Events
+      summary: セッション履歴リストを取得する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13292,14 +13441,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register Subscriber
+      summary: Subscriber を登録する
       tags:
       - Subscriber
       x-soracom-cli:
       - subscribers register
   /subscribers/{imsi}/report_local_info:
     post:
-      description: サブスクライバーに対し、SIM ローカル情報をレポートするように指示する。
+      description: サブスクライバーに対し、SIM ローカル情報レポートを更新するように指示する。
       operationId: reportLocalInfo
       parameters:
       - description: 対象のサブスクライバーの IMSI
@@ -13323,7 +13472,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Triggers Subscriber to report SIM local info.
+      summary: SIM ローカル情報レポートを更新する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13361,7 +13510,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send SMS to Subscriber
+      summary: Subscriber を IMSI で指定して SMS を送信する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13397,7 +13546,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Expiry Time of Subscriber
+      summary: Subscriber の有効期限とアクションを設定する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13432,7 +13581,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set Group to Subscriber
+      summary: Subscriber のグループを設定する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13469,7 +13618,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set IMEI lock configuration for Subscriber.
+      summary: Subscriber の IMEI ロックを設定する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13500,7 +13649,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Set Subscriber to standby mode.
+      summary: Subscriber のステータスを「利用開始待ち (standby)」に変更する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13529,7 +13678,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Suspend Subscriber
+      summary: Subscriber のステータスを「利用中断中 (suspended)」に変更する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13566,7 +13715,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update Subscriber Tags
+      summary: Subscriber のタグを追加 / 更新する
       tags:
       - Subscriber
       x-sam-operationId: putTags
@@ -13598,7 +13747,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Subscriber Tag
+      summary: Subscriber のタグを削除する
       tags:
       - Subscriber
       x-sam-operationId: deleteTag
@@ -13628,7 +13777,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Terminate Subscriber
+      summary: Subscriber を解約する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13652,7 +13801,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Expiry Time of Subscriber
+      summary: Subscriber の有効期限を解除する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13680,7 +13829,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group to Subscriber
+      summary: Subscriber のグループ設定を解除する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13708,7 +13857,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Unset IMEI lock configuration for Subscriber.
+      summary: Subscriber の IMEI ロックを解除する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13743,7 +13892,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update Subscriber speed class
+      summary: Subscriber の速度クラスを更新する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13773,7 +13922,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Export all subscribers.
+      summary: すべての Subscriber を CSV ファイルにエクスポートする
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13810,14 +13959,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send SMS to Subscriber by MSISDN
+      summary: Subscriber を MSISDN で指定して SMS を送信する
       tags:
       - Subscriber
       x-soracom-cli:
       - subscribers send-sms-by-msisdn
   /subscribers/transfer_token/{token}:
     delete:
-      description: Subscriber のオペレーター間移管トークンを削除し、移管をキャンセルする。
+      description: Subscriber のオペレーター間移管用トークンを削除し、移管をキャンセルする。
       operationId: deleteSubscriberTransferToken
       parameters:
       - description: token
@@ -13834,7 +13983,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Subscribers Transfer Token
+      summary: Subscriber のオペレーター間移管用トークンを削除する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13860,14 +14009,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Issue Subscribers Transfer Token
+      summary: Subscriber のオペレーター間移管用トークンを送付する
       tags:
       - Subscriber
       x-soracom-cli:
       - subscribers issue-transfer-token
   /subscribers/transfer_token/verify:
     post:
-      description: Subscriber 移管用のトークンを確認して、移管を実施する。この API は移管先の Operator で呼び出しを行う。
+      description: Subscriber のオペレーター間移管用トークンを確認して、移管を実施する。この API は移管先の Operator で呼び出しを行う。
       operationId: verifySubscriberTransferToken
       requestBody:
         content:
@@ -13886,7 +14035,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Verify Subscriber Transfer Token
+      summary: Subscriber のオペレーター間移管用トークンを検証する
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13943,7 +14092,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Virtual Private Gateways
+      summary: VPG の一覧を取得する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -13973,7 +14122,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Virtual Private Gateway
+      summary: VPG を新規作成する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14001,7 +14150,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Virtual Private Gateway
+      summary: VPG の情報を取得する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14027,7 +14176,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Close SORACOM Gate.
+      summary: SORACOM Gate を閉じる
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14117,7 +14266,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Open SORACOM Gate
+      summary: SORACOM Gate を開く
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14149,7 +14298,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List VPG Gate peers
+      summary: VPG に登録された Gate Peer の一覧を取得する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14184,7 +14333,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Register VPG Gate Peer
+      summary: VPG に Gate Peer を登録する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14216,7 +14365,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Unregister VPG Gate Peer
+      summary: VPG から Gate Peer を登録解除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14248,7 +14397,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List VPG IP address map entries
+      summary: VPG の IP アドレスマップのエントリーの一覧を取得する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14319,7 +14468,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete VPG IP address map entry
+      summary: VPG の IP アドレスマップからエントリーを削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14617,7 +14766,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Create Packet Capture Session
+      summary: パケットキャプチャセッションを作成する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14653,7 +14802,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Delete Packet Capture Session
+      summary: パケットキャプチャセッションを削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14686,7 +14835,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get Packet Capture Session
+      summary: パケットキャプチャセッションの情報を取得する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14732,7 +14881,7 @@ paths:
       - vpg stop-packet-capture-session
   /virtual_private_gateways/{vpg_id}/set_routing_filter:
     post:
-      description: VPG の Outbound ルーティングフィルタを設定する
+      description: VPG のアウトバウンドルーティングフィルタを設定する
       operationId: setRoutingFilter
       parameters:
       - description: 対象の VPG の ID
@@ -14748,11 +14897,11 @@ paths:
               items:
                 $ref: '#/components/schemas/RoutingFilterEntry'
               type: array
-        description: ルーティングフィルタエントリのリスト
+        description: アウトバウンドルーティングフィルタエントリのリスト
         required: true
       responses:
         "200":
-          description: ルーティングフィルタが正しく設定された
+          description: アウトバウンドルーティングフィルタが正しく設定された
         "400":
           description: 引数が不正
         "404":
@@ -14760,7 +14909,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Sets Virtual Private Gateway outbound routing filter.
+      summary: VPG のアウトバウンドルーティングフィルタを設定する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14786,14 +14935,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Terminate Virtual Private Gateway
+      summary: VPG を削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg terminate
   /virtual_private_gateways/{vpg_id}/vpc_peering_connections:
     post:
-      description: 指定された VPG に VPC Peering Connection を作成
+      description: 指定された VPG に VPC ピアリング接続を作成
       operationId: createVpcPeeringConnection
       parameters:
       - description: 対象の VPG の ID
@@ -14807,7 +14956,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateVpcPeeringConnectionRequest'
-        description: 作成対象の VPC Peering Connection
+        description: 作成対象の VPC ピアリング接続
         required: true
       responses:
         "201":
@@ -14815,20 +14964,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateVpcPeeringConnectionRequest'
-          description: 作成された VPC Peering Connection
+          description: 作成された VPC ピアリング接続
         "404":
-          description: 指定された VPC Peering Connection は存在しない
+          description: 指定された VPC ピアリング接続は存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Create VPC Peering Connection
+      summary: VPC ピアリング接続を作成する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg create-vpc-peering-connection
   /virtual_private_gateways/{vpg_id}/vpc_peering_connections/{pcx_id}:
     delete:
-      description: 指定された VPC Peering Connection を削除
+      description: 指定された VPC ピアリング接続を削除
       operationId: deleteVpcPeeringConnection
       parameters:
       - description: 対象の VPG の ID
@@ -14837,7 +14986,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 削除対象の VPC Peering Connection の ID
+      - description: 削除対象の VPC ピアリング接続の ID
         in: path
         name: pcx_id
         required: true
@@ -14845,13 +14994,13 @@ paths:
           type: string
       responses:
         "204":
-          description: 指定された VPC Peering Connection の削除完了
+          description: 指定された VPC ピアリング接続の削除完了
         "404":
-          description: 指定された VPC Peering Connection は存在しない
+          description: 指定された VPC ピアリング接続は存在しない
       security:
       - api_key: []
         api_token: []
-      summary: Delete VPC Peering Connection
+      summary: VPC ピアリング接続を削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -14863,7 +15012,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/ListVolumeDiscountResponse'
           description: OK.
@@ -14889,14 +15038,14 @@ paths:
       responses:
         "201":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/EstimatedVolumeDiscountModel'
           description: Created
       security:
       - api_key: []
         api_token: []
-      summary: Create long term discount quotation.
+      summary: 長期利用割引の見積もりを作成する
       tags:
       - Order
       x-soracom-cli:
@@ -14915,7 +15064,7 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
           description: OK.
@@ -14943,14 +15092,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: Confirm long term discount order.
+      summary: 長期利用割引の発注を確定する
       tags:
       - Order
       x-soracom-cli:
@@ -14962,14 +15111,14 @@ paths:
       responses:
         "200":
           content:
-            application/json;charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/AvailableLongTermDiscountResponse'
           description: OK.
       security:
       - api_key: []
         api_token: []
-      summary: List available long term discounts.
+      summary: 購入可能な長期利用割引の一覧を取得する
       tags:
       - Order
       x-soracom-cli:
@@ -15112,7 +15261,7 @@ components:
   requestBodies:
     CreateAndUpdateCredentialsModel:
       content:
-        application/json;charset=UTF-8:
+        application/json:
           schema:
             $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
       description: credentials
@@ -15171,7 +15320,7 @@ components:
           description: リクエストされた API のパス。
           type: string
         requestedTimeEpochMs:
-          description: API が呼び出された時刻。この値はページネーションのために `last_evaluated_key` リクエストパラメーターに利用することができます。
+          description: API が呼び出された時刻。この値はページネーションのために `last_evaluated_key` リクエストパラメータに利用することができます。
           format: int64
           type: integer
         userName:
@@ -15295,7 +15444,7 @@ components:
           description: SendMailAction の時のみ有効
           type: string
         url:
-          description: 接続先 URL とパラメーター ExecuteWebRequestAction の時のみ有効
+          description: 接続先 URL とパラメータ ExecuteWebRequestAction の時のみ有効
           type: string
       required:
       - executionDateTimeConst
@@ -15344,7 +15493,7 @@ components:
     ArcCredentialRenewRequest:
       properties:
         arcClientPeerPublicKey:
-          description: SIM に付与する Arc クライアントの公開鍵。もしこの値が空の場合はサーバーがキーペアを生成します。
+          description: IoT SIM に付与する Arc クライアントの公開鍵。もしこの値が空の場合はサーバーがキーペアを生成します。
           type: string
       type: object
     ArcCredentialRenewResponse:
@@ -15609,10 +15758,16 @@ components:
             represented in decimal form as an integer. (See 3GPP TS 23.003 4.2)
           type: integer
         radioType:
-          description: The Radio Access Technology or type of network that the device
-            is connected to. Possible values are "gsm" for 2G or 3G networks, or "lte"
-            for LTE networks. Unfortunately, it is not possible to differentiate 2G
-            from 3G, or LTE from LTE Cat-M1.
+          description: |
+            IoT SIM が接続されている無線アクセス技術またはネットワークの種類。
+
+            **Warning**: 通信キャリアの設備によっては、実際に利用されている無線アクセス技術またはネットワークの種類と異なる情報が表示されることがあります。たとえば、LTE-M で接続されている場合でも LTE と表示されることがあります。
+          enum:
+          - 3G
+          - GSM
+          - LTE
+          - LTE-M
+          - NB-IoT
           type: string
         sac:
           description: The Service Area Code (for 2G and 3G networks), a 16 bit value
@@ -15761,6 +15916,11 @@ components:
           description: 発注 ID
           type: string
       type: object
+    CoverageType:
+      enum:
+      - jp
+      - g
+      type: string
     CreateAndUpdateCredentialsModel:
       properties:
         credentials:
@@ -15879,13 +16039,12 @@ components:
         destination:
           $ref: '#/components/schemas/PortMappingDestination'
         duration:
-          description: Specify the duration, in seconds, that remote access should
-            be enabled.
+          description: リモートアクセスを有効にする時間 (秒単位)
           type: number
         source:
           $ref: '#/components/schemas/PortMappingSource'
         tlsRequired:
-          description: Specify whether access uses TLS.
+          description: リモートアクセスに TLS を使用するかどうか
           type: boolean
       required:
       - destination
@@ -16220,6 +16379,18 @@ components:
           description: ping の成功可否
           type: boolean
       type: object
+    EmailConfigurationOfBilling:
+      properties:
+        attachInvoicePdfEnabled:
+          description: true の場合、毎月の請求メールに請求書 PDF を添付します（グローバルカバレッジのみ）。
+          type: boolean
+      type: object
+    EmailConfigurationOfNotification:
+      properties:
+        exceedBundleDisabled:
+          description: true の場合、通信量がバンドルの容量に近づいた時に送付する通知メールを全て無効にします。
+          type: boolean
+      type: object
     EmailsModel:
       properties:
         createDateTime:
@@ -16233,7 +16404,7 @@ components:
           format: int64
           type: integer
         verified:
-          description: メールアドレス宛てに送られたトークンを用いて認証済みかどうか
+          description: メールアドレス宛てに送信されたトークンを用いて認証済みかどうか
           type: boolean
       type: object
     EnableMFAOTPResponse:
@@ -18198,6 +18369,48 @@ components:
           format: int32
           type: integer
       type: object
+    OperatorConfigurationModel:
+      properties:
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorConfigurationOfEmail'
+          - $ref: '#/components/schemas/OperatorConfigurationOfSupport'
+        isModifiable:
+          description: false の場合、コンフィグレーションを setOperatorConfigurationNamespace API
+            で更新できません。
+          type: boolean
+        namespace:
+          description: ネームスペースごとに異なる configuration を指定します。詳細は configuration プロパティを参照してください。
+          enum:
+          - Support
+          - Email
+          type: string
+        version:
+          description: コンフィグレーションのバージョン
+          type: number
+      type: object
+    OperatorConfigurationOfEmail:
+      properties:
+        billing:
+          $ref: '#/components/schemas/EmailConfigurationOfBilling'
+        notification:
+          $ref: '#/components/schemas/EmailConfigurationOfNotification'
+      type: object
+    OperatorConfigurationOfSupport:
+      properties:
+        paymentCoverage:
+          allOf:
+          - $ref: '#/components/schemas/CoverageType'
+          description: サポート費用を支払うカバレッジです。
+        tier:
+          allOf:
+          - $ref: '#/components/schemas/SupportTier'
+          description: 現在のサポートプランです。
+        upcomingTier:
+          allOf:
+          - $ref: '#/components/schemas/SupportTier'
+          description: 来月に適用される予定のサポートプランです。この値が無い場合は、翌月も現在のサポートプランが継続されます。
+      type: object
     OperatorMFAVerifyingResponse:
       properties:
         backupCodes:
@@ -18239,6 +18452,9 @@ components:
           type: string
         serialNumber:
           description: IoT SIM の製造番号
+          type: string
+        simId:
+          description: SIM ID
           type: string
       type: object
     PacketCaptureSession:
@@ -18341,12 +18557,20 @@ components:
           description: 金額
           format: double
           type: number
+        chargedYearMonths:
+          description: この請求に含まれる利用年月のリスト。請求内容が月額費用でない場合は、このフィールドは省略されます。 月額利用料金が一定金額未満の場合は翌月に繰り越されることがあり、そのようなケースでは複数月含まれることがあります。
+          items:
+            type: string
+          type: array
         currency:
           description: 通貨
           enum:
           - JPY
           - USD
           - EUR
+          type: string
+        orderId:
+          description: オーダーID。請求内容がオーダーでない場合は、このフィールドは省略されます。
           type: string
         paymentDateTime:
           description: 課金日時
@@ -18392,34 +18616,33 @@ components:
         destination:
           $ref: '#/components/schemas/PortMappingDestination'
         duration:
-          description: The duration that remote access is enabled, in seconds.
+          description: リモートアクセスが有効になっている期間 (秒)
           type: number
         endpoint:
-          description: SORACOM Napter endpoint (IP address and port number) for remote
-            access.
+          description: オンデマンドリモートアクセス (IP アドレスとポート番号)
           type: string
         hostname:
-          description: SORACOM Napter hostname for remote access.
+          description: オンデマンドリモートアクセスのホスト名
           type: string
         ipAddress:
-          description: SORACOM Napter IP Address for remote access.
+          description: オンデマンドリモートアクセスの IP アドレス
           type: string
         port:
-          description: SORACOM Napter port number for remote access.
+          description: オンデマンドリモートアクセスの ポート番号
           type: number
         source:
           $ref: '#/components/schemas/PortMappingSource'
         tlsRequired:
-          description: Indicates TLS is required.
+          description: TLS の有効/無効
           type: boolean
       type: object
     PortMappingDestination:
       properties:
         imsi:
-          description: The target IMSI of the subscriber.
+          description: 対象となる IMSI
           type: string
         port:
-          description: The port on your device used for access.
+          description: デバイスが SSH 接続を待ち受けているポート番号
           type: number
       required:
       - imsi
@@ -18428,8 +18651,7 @@ components:
     PortMappingSource:
       properties:
         ipRanges:
-          description: The range of IP addresses in CIDR notation which will be allowed
-            to access the port mapping.
+          description: オンデマンドリモートアクセスへのアクセスを許可する CIDR 表記の IP アドレスの範囲
           items:
             type: string
           type: array
@@ -18457,6 +18679,9 @@ components:
           type: string
         imei:
           description: The IMEI of the device using the SIM.
+          type: string
+        sessionId:
+          description: The session ID of the previous session.
           type: string
         ueIpAddress:
           description: The IP address of the device.
@@ -18913,6 +19138,7 @@ components:
           description: The operator ID of the session event.
           type: string
         sessionId:
+          description: The session ID of the session that generated this session event.
           type: string
         simId:
           type: string
@@ -18961,6 +19187,9 @@ components:
           type: boolean
         placement:
           $ref: '#/components/schemas/Placement'
+        sessionId:
+          description: The session ID of the session.
+          type: string
         subscription:
           description: サブスクリプション
           type: string
@@ -18992,6 +19221,19 @@ components:
       properties:
         networkSetId:
           type: string
+      type: object
+    SetOperatorConfigurationNamespaceRequest:
+      properties:
+        configuration:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorConfigurationOfSupport'
+          - $ref: '#/components/schemas/OperatorConfigurationOfEmail'
+        expectedVersion:
+          description: このプロパティは、更新時のコンフリクトを避けるために利用します。利用する場合、getOperatorConfigurationNamespace
+            API で 取得した version の値をここに指定します。 もし expectedVersion を指定しなかった場合は、更新時にコンフリクトの確認をしません。
+          type: number
+      required:
+      - configuration
       type: object
     SetSystemNotificationsRequest:
       properties:
@@ -20015,6 +20257,12 @@ components:
             type: object
           type: object
       type: object
+    SupportTier:
+      enum:
+      - basic
+      - priority
+      - enterprise
+      type: string
     SupportTokenResponse:
       properties:
         token:
