@@ -34,7 +34,7 @@ func generateLeafCommands(apiDef *openapi3.T, templateDir, outputDir string) err
 func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.Operation, tmpl *template.Template, outputDir string) error {
 	for _, commandName := range getCLICommands(op) {
 		// commandName is a space separated subcommands list. e.g. "subscribers list"
-		filename := lib.SnakeCase(commandName)
+		filename := avoidReservedFileName(lib.SnakeCase(commandName))
 		f, err := openOutputFile(outputDir, filename+".go")
 		if err != nil {
 			return err
@@ -99,6 +99,13 @@ func generateCommandFiles(apiDef *openapi3.T, path, method string, op *openapi3.
 	}
 
 	return nil
+}
+
+func avoidReservedFileName(fname string) string {
+	if strings.HasSuffix(fname, "_test") {
+		fname = fname + "_cmd"
+	}
+	return fname
 }
 
 func getLast(s string) string {
