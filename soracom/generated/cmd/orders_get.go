@@ -13,7 +13,7 @@ import (
 var OrdersGetCmdOrderId string
 
 func init() {
-	OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders)."))
+	OrdersGetCmd.Flags().StringVar(&OrdersGetCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling ['Order:listOrders API'](#/Order/listOrders)."))
 	OrdersCmd.AddCommand(OrdersGetCmd)
 }
 

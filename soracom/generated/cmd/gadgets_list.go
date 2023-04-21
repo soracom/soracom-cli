@@ -40,7 +40,7 @@ func init() {
 
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
 
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

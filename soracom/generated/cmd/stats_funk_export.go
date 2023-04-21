@@ -36,7 +36,7 @@ func init() {
 
 	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- `month`: Monthly- `day`: Daily- `minutes`: Every minute"))
+	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- 'month': Monthly- 'day': Daily- 'minutes': Every minute"))
 
 	StatsFunkExportCmd.Flags().Int64Var(&StatsFunkExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
 

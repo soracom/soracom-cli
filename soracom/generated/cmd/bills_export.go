@@ -16,7 +16,7 @@ var BillsExportCmdExportMode string
 var BillsExportCmdYyyyMM string
 
 func init() {
-	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TRAPI("Specify how to get the URL to download the billing details CSV.- `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the SORACOM platform. Specify this `exportedFieldId` in [`Files:getExportedFile API`](#/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.- `sync` (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`."))
+	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TRAPI("Specify how to get the URL to download the billing details CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the SORACOM platform. Specify this 'exportedFieldId' in ['Files:getExportedFile API'](#/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use 'async'.- 'sync' (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
 
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TRAPI("Target year and month"))
 	BillsCmd.AddCommand(BillsExportCmd)
