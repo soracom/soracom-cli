@@ -35,7 +35,7 @@ func init() {
 
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
 
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

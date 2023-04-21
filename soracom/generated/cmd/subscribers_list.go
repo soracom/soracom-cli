@@ -42,15 +42,15 @@ var SubscribersListCmdOutputJSONL bool
 func init() {
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TRAPI("Serial number for filtering the search. Can specify multiple values delimited by `|`. Returns subscribers with serial number starting with the specified value(s)."))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TRAPI("Serial number for filtering the search. Can specify multiple values delimited by '|'. Returns subscribers with serial number starting with the specified value(s)."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TRAPI("Speed class for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `s1.minimum`, `s1.slow`, `s1.standard`, `s1.fast`"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TRAPI("Speed class for filtering the search. Can specify multiple values delimited by '|'. Valid values include: 's1.minimum', 's1.slow', 's1.standard', 's1.fast'"))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TRAPI("Status for filtering the search. Can specify multiple values delimited by `|`. Valid values include: `active`, `inactive`, `ready`, `instock`, `shipped`, `suspended`, and `terminated`."))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TRAPI("Status for filtering the search. Can specify multiple values delimited by '|'. Valid values include: 'active', 'inactive', 'ready', 'instock', 'shipped', 'suspended', and 'terminated'."))
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

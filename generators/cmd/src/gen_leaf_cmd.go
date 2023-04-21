@@ -843,7 +843,7 @@ func containsString(ss []string, target string) bool {
 }
 
 func convertDescriptionToShortHelp(description string) string {
-	return trimTemplate(escapeDoubleQuotationMarks(removeLineBreaks(description)))
+	return replaceBackticksWithSingleQuotationMarks(trimTemplate(escapeDoubleQuotationMarks(removeLineBreaks(description))))
 }
 
 var lineBreaks = regexp.MustCompile(`[\r\n]`)
@@ -861,4 +861,8 @@ var templateRegex = regexp.MustCompile(`^\s*\${(.+)}\s*$`)
 func trimTemplate(s string) string {
 	b1 := templateRegex.ReplaceAll([]byte(s), []byte("$1"))
 	return string(b1)
+}
+
+func replaceBackticksWithSingleQuotationMarks(s string) string {
+	return strings.ReplaceAll(s, "`", "'")
 }

@@ -43,7 +43,7 @@ func init() {
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdPassword, "password", "", TRAPI(""))
 
-	SandboxInitCmd.Flags().StringSliceVar(&SandboxInitCmdCoverageTypes, "coverage-types", []string{}, TRAPI("Coverage type.- `g`: Global coverage- `jp`: Japan coverage"))
+	SandboxInitCmd.Flags().StringSliceVar(&SandboxInitCmdCoverageTypes, "coverage-types", []string{}, TRAPI("Coverage type.- 'g': Global coverage- 'jp': Japan coverage"))
 
 	SandboxInitCmd.Flags().BoolVar(&SandboxInitCmdRegisterPaymentMethod, "register-payment-method", true, TRAPI(""))
 

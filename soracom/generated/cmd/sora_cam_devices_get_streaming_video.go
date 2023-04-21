@@ -21,9 +21,9 @@ var SoraCamDevicesGetStreamingVideoCmdTo int64
 func init() {
 	SoraCamDevicesGetStreamingVideoCmd.Flags().StringVar(&SoraCamDevicesGetStreamingVideoCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
 
-	SoraCamDevicesGetStreamingVideoCmd.Flags().Int64Var(&SoraCamDevicesGetStreamingVideoCmdFrom, "from", 0, TRAPI("Start time of recorded video (UNIX time in milliseconds).- Omit both `from` and `to` to get information for downloading real-time video."))
+	SoraCamDevicesGetStreamingVideoCmd.Flags().Int64Var(&SoraCamDevicesGetStreamingVideoCmdFrom, "from", 0, TRAPI("Start time of recorded video (UNIX time in milliseconds).- Omit both 'from' and 'to' to get information for downloading real-time video."))
 
-	SoraCamDevicesGetStreamingVideoCmd.Flags().Int64Var(&SoraCamDevicesGetStreamingVideoCmdTo, "to", 0, TRAPI("End time of recorded video (UNIX time in milliseconds).- Omit both `from` and `to` to get information for downloading real-time video.- The maximum viewing time for a single API call is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds."))
+	SoraCamDevicesGetStreamingVideoCmd.Flags().Int64Var(&SoraCamDevicesGetStreamingVideoCmdTo, "to", 0, TRAPI("End time of recorded video (UNIX time in milliseconds).- Omit both 'from' and 'to' to get information for downloading real-time video.- The maximum viewing time for a single API call is 300 seconds (5 minutes). Make sure the difference between 'from' and 'to' does not exceed 300 seconds."))
 	SoraCamDevicesCmd.AddCommand(SoraCamDevicesGetStreamingVideoCmd)
 }
 

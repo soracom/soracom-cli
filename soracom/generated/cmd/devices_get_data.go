@@ -36,7 +36,7 @@ var DevicesGetDataCmdOutputJSONL bool
 func init() {
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 

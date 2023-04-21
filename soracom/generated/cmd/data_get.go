@@ -36,7 +36,7 @@ var DataGetCmdOutputJSONL bool
 func init() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 

@@ -34,7 +34,7 @@ var SimsGetDataCmdPaginate bool
 var SimsGetDataCmdOutputJSONL bool
 
 func init() {
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
 

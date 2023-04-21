@@ -35,7 +35,7 @@ func init() {
 
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
+	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
 
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

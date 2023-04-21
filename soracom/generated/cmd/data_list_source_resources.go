@@ -25,7 +25,7 @@ var DataListSourceResourcesCmdPaginate bool
 var DataListSourceResourcesCmdOutputJSONL bool
 
 func init() {
-	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `resourceId` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'resourceId' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 

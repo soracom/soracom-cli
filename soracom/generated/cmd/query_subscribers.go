@@ -64,7 +64,7 @@ func init() {
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdImsi, "imsi", []string{}, TRAPI("IMSI to search"))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdModuleType, "module-type", []string{}, TRAPI("Module type (e.g. `mini`, `virtual`) to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdModuleType, "module-type", []string{}, TRAPI("Module type (e.g. 'mini', 'virtual') to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search"))
 
@@ -72,7 +72,7 @@ func init() {
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. `plan01s`) to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. 'plan01s') to search"))
 
 	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
 

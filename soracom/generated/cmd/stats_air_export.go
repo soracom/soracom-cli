@@ -32,11 +32,11 @@ var StatsAirExportCmdTo int64
 var StatsAirExportCmdBody string
 
 func init() {
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TRAPI("Specify how to obtain the URL to download the Air Data Usage Report CSV.- `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the Soracom platform. Specify this `exportedFieldId` in [`Files:getExportedFile API`](#/Files/getExportedFile) to get the URL. If the file size of the Air Data Usage Report CSV is huge, specify `async`.- `sync` (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the Air Data Usage Report CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`."))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TRAPI("Specify how to obtain the URL to download the Air Data Usage Report CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the Soracom platform. Specify this 'exportedFieldId' in ['Files:getExportedFile API'](#/Files/getExportedFile) to get the URL. If the file size of the Air Data Usage Report CSV is huge, specify 'async'.- 'sync' (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the Air Data Usage Report CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
 
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- `month`: Monthly- `day`: Daily- `minutes`: Every minute"))
+	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- 'month': Monthly- 'day': Daily- 'minutes': Every minute"))
 
 	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
 

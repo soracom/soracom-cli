@@ -35,7 +35,7 @@ func init() {
 
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when `tag_name` has been specified."))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
 
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 

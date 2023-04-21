@@ -36,7 +36,7 @@ func init() {
 
 	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- `month`: Monthly- `day`: Daily- `minutes`: Every minute"))
+	StatsFunnelExportCmd.Flags().StringVar(&StatsFunnelExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- 'month': Monthly- 'day': Daily- 'minutes': Every minute"))
 
 	StatsFunnelExportCmd.Flags().Int64Var(&StatsFunnelExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
 

@@ -36,7 +36,7 @@ var LoraDevicesGetDataCmdOutputJSONL bool
 func init() {
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 

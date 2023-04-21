@@ -32,7 +32,7 @@ func init() {
 
 	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceImageExportsForDevice request. By specifying this parameter, you can continue to retrieve the list from the last request."))
 
-	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending (`asc`) or descending (`desc`) order of `requestedTime`. The default is `desc` i.e. newer items are sorted first."))
+	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsForDeviceCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending ('asc') or descending ('desc') order of 'requestedTime'. The default is 'desc' i.e. newer items are sorted first."))
 
 	SoraCamDevicesImagesListExportsForDeviceCmd.Flags().Int64Var(&SoraCamDevicesImagesListExportsForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
 

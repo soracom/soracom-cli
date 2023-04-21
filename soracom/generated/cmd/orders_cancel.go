@@ -13,7 +13,7 @@ import (
 var OrdersCancelCmdOrderId string
 
 func init() {
-	OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [`Order:listOrders API`](#/Order/listOrders)."))
+	OrdersCancelCmd.Flags().StringVar(&OrdersCancelCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling ['Order:listOrders API'](#/Order/listOrders)."))
 	OrdersCmd.AddCommand(OrdersCancelCmd)
 }
 

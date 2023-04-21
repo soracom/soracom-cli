@@ -36,7 +36,7 @@ var SigfoxDevicesGetDataCmdOutputJSONL bool
 func init() {
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
-	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 

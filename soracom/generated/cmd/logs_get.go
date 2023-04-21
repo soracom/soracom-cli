@@ -37,7 +37,7 @@ var LogsGetCmdPaginate bool
 var LogsGetCmdOutputJSONL bool
 
 func init() {
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of `time` in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceId, "resource-id", "", TRAPI("Identity of the target resource to query log entries."))
 
