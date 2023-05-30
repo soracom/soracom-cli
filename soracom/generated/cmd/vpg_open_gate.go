@@ -173,7 +173,7 @@ func buildBodyForVpgOpenGateCmd() (string, error) {
 		result["vxlanId"] = VpgOpenGateCmdVxlanId
 	}
 
-	if VpgOpenGateCmdPrivacySeparatorEnabled != false {
+	if VpgOpenGateCmd.Flags().Lookup("privacy-separator-enabled").Changed {
 		result["privacySeparatorEnabled"] = VpgOpenGateCmdPrivacySeparatorEnabled
 	}
 

@@ -173,7 +173,7 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result["type"] = VpgCreateCmdType
 	}
 
-	if VpgCreateCmdUseInternetGateway != true {
+	if VpgCreateCmd.Flags().Lookup("use-internet-gateway").Changed {
 		result["useInternetGateway"] = VpgCreateCmdUseInternetGateway
 	}
 

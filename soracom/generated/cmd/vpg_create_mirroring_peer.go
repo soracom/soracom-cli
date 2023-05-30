@@ -191,7 +191,7 @@ func buildBodyForVpgCreateMirroringPeerCmd() (string, error) {
 		result["protocol"] = VpgCreateMirroringPeerCmdProtocol
 	}
 
-	if VpgCreateMirroringPeerCmdEnabled != false {
+	if VpgCreateMirroringPeerCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgCreateMirroringPeerCmdEnabled
 	}
 

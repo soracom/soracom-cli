@@ -155,11 +155,11 @@ func buildBodyForPortMappingsCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if PortMappingsCreateCmdDuration != 0 {
+	if PortMappingsCreateCmd.Flags().Lookup("duration").Changed {
 		result["duration"] = PortMappingsCreateCmdDuration
 	}
 
-	if PortMappingsCreateCmdTlsRequired != false {
+	if PortMappingsCreateCmd.Flags().Lookup("tls-required").Changed {
 		result["tlsRequired"] = PortMappingsCreateCmdTlsRequired
 	}
 

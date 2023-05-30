@@ -177,7 +177,7 @@ func buildBodyForOperatorConfigurationSetCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if OperatorConfigurationSetCmdExpectedVersion != 0 {
+	if OperatorConfigurationSetCmd.Flags().Lookup("expected-version").Changed {
 		result["expectedVersion"] = OperatorConfigurationSetCmdExpectedVersion
 	}
 

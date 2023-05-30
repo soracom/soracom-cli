@@ -155,7 +155,7 @@ func buildBodyForCouponsCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if CouponsCreateCmdAmount != 0 {
+	if CouponsCreateCmd.Flags().Lookup("amount").Changed {
 		result["amount"] = CouponsCreateCmdAmount
 	}
 

@@ -182,7 +182,7 @@ func buildBodyForVpgSetRedirectionCmd() (string, error) {
 		result["gateway"] = VpgSetRedirectionCmdGateway
 	}
 
-	if VpgSetRedirectionCmdEnabled != false {
+	if VpgSetRedirectionCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgSetRedirectionCmdEnabled
 	}
 

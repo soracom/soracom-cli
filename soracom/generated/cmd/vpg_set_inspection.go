@@ -164,7 +164,7 @@ func buildBodyForVpgSetInspectionCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if VpgSetInspectionCmdEnabled != false {
+	if VpgSetInspectionCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgSetInspectionCmdEnabled
 	}
 

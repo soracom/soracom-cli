@@ -405,7 +405,7 @@ func buildBodyFor{{$suffix}}() (string, error) {
 
   {{range .FloatFlags}}
   {{if eq .In "body"}}
-  if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  if {{$cmdvar}}.Flags().Lookup("{{.LongOption}}").Changed {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
   {{end}}
@@ -413,7 +413,7 @@ func buildBodyFor{{$suffix}}() (string, error) {
 
   {{range .BoolFlags}}
   {{if eq .In "body"}}
-  if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  if {{$cmdvar}}.Flags().Lookup("{{.LongOption}}").Changed {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
   {{end}}

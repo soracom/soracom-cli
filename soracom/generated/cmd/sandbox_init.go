@@ -210,7 +210,7 @@ func buildBodyForSandboxInitCmd() (string, error) {
 		result["coverageTypes"] = SandboxInitCmdCoverageTypes
 	}
 
-	if SandboxInitCmdRegisterPaymentMethod != true {
+	if SandboxInitCmd.Flags().Lookup("register-payment-method").Changed {
 		result["registerPaymentMethod"] = SandboxInitCmdRegisterPaymentMethod
 	}
 

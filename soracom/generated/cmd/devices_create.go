@@ -267,7 +267,7 @@ func buildBodyForDevicesCreateCmd() (string, error) {
 		result["registrationLifeTime"] = DevicesCreateCmdRegistrationLifeTime
 	}
 
-	if DevicesCreateCmdOnline != false {
+	if DevicesCreateCmd.Flags().Lookup("online").Changed {
 		result["online"] = DevicesCreateCmdOnline
 	}
 
