@@ -15,10 +15,13 @@ var EventHandlersUnignoreCmdHandlerId string
 // EventHandlersUnignoreCmdImsi holds value of 'imsi' option
 var EventHandlersUnignoreCmdImsi string
 
-func init() {
+func InitEventHandlersUnignoreCmd() {
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
 
 	EventHandlersUnignoreCmd.Flags().StringVar(&EventHandlersUnignoreCmdImsi, "imsi", "", TRAPI("imsi"))
+
+	EventHandlersUnignoreCmd.RunE = EventHandlersUnignoreCmdRunE
+
 	EventHandlersCmd.AddCommand(EventHandlersUnignoreCmd)
 }
 
@@ -27,49 +30,50 @@ var EventHandlersUnignoreCmd = &cobra.Command{
 	Use:   "unignore",
 	Short: TRAPI("/event_handlers/{handler_id}/subscribers/{imsi}/ignore:delete:summary"),
 	Long:  TRAPI(`/event_handlers/{handler_id}/subscribers/{imsi}/ignore:delete:description`) + "\n\n" + createLinkToAPIReference("EventHandler", "deleteIgnoreEventHandler"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func EventHandlersUnignoreCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectEventHandlersUnignoreCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectEventHandlersUnignoreCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectEventHandlersUnignoreCmdParams(ac *apiClient) (*apiParams, error) {

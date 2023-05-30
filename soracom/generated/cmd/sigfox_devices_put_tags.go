@@ -19,10 +19,13 @@ var SigfoxDevicesPutTagsCmdDeviceId string
 // SigfoxDevicesPutTagsCmdBody holds contents of request body to be sent
 var SigfoxDevicesPutTagsCmdBody string
 
-func init() {
+func InitSigfoxDevicesPutTagsCmd() {
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
 	SigfoxDevicesPutTagsCmd.Flags().StringVar(&SigfoxDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SigfoxDevicesPutTagsCmd.RunE = SigfoxDevicesPutTagsCmdRunE
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesPutTagsCmd)
 }
 
@@ -31,49 +34,50 @@ var SigfoxDevicesPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/sigfox_devices/{device_id}/tags:put:summary"),
 	Long:  TRAPI(`/sigfox_devices/{device_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "putSigfoxDeviceTags"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SigfoxDevicesPutTagsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSigfoxDevicesPutTagsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSigfoxDevicesPutTagsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSigfoxDevicesPutTagsCmdParams(ac *apiClient) (*apiParams, error) {

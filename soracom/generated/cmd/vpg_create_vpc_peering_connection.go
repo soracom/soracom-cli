@@ -31,7 +31,7 @@ var VpgCreateVpcPeeringConnectionCmdVpgId string
 // VpgCreateVpcPeeringConnectionCmdBody holds contents of request body to be sent
 var VpgCreateVpcPeeringConnectionCmdBody string
 
-func init() {
+func InitVpgCreateVpcPeeringConnectionCmd() {
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdDestinationCidrBlock, "destination-cidr-block", "", TRAPI(""))
 
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdPeerOwnerId, "peer-owner-id", "", TRAPI(""))
@@ -43,6 +43,9 @@ func init() {
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgCreateVpcPeeringConnectionCmd.Flags().StringVar(&VpgCreateVpcPeeringConnectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgCreateVpcPeeringConnectionCmd.RunE = VpgCreateVpcPeeringConnectionCmdRunE
+
 	VpgCmd.AddCommand(VpgCreateVpcPeeringConnectionCmd)
 }
 
@@ -51,49 +54,50 @@ var VpgCreateVpcPeeringConnectionCmd = &cobra.Command{
 	Use:   "create-vpc-peering-connection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/vpc_peering_connections:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createVpcPeeringConnection"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgCreateVpcPeeringConnectionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgCreateVpcPeeringConnectionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgCreateVpcPeeringConnectionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgCreateVpcPeeringConnectionCmdParams(ac *apiClient) (*apiParams, error) {

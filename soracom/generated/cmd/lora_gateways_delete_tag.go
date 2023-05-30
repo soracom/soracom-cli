@@ -15,10 +15,13 @@ var LoraGatewaysDeleteTagCmdGatewayId string
 // LoraGatewaysDeleteTagCmdTagName holds value of 'tag_name' option
 var LoraGatewaysDeleteTagCmdTagName string
 
-func init() {
+func InitLoraGatewaysDeleteTagCmd() {
 	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
 	LoraGatewaysDeleteTagCmd.Flags().StringVar(&LoraGatewaysDeleteTagCmdTagName, "tag-name", "", TRAPI("Name of tag to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	LoraGatewaysDeleteTagCmd.RunE = LoraGatewaysDeleteTagCmdRunE
+
 	LoraGatewaysCmd.AddCommand(LoraGatewaysDeleteTagCmd)
 }
 
@@ -27,49 +30,50 @@ var LoraGatewaysDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/lora_gateways/{gateway_id}/tags/{tag_name}:delete:summary"),
 	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "deleteLoraGatewayTag"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LoraGatewaysDeleteTagCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLoraGatewaysDeleteTagCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLoraGatewaysDeleteTagCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLoraGatewaysDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {

@@ -25,7 +25,7 @@ var OperatorConfigurationSetCmdExpectedVersion float64
 // OperatorConfigurationSetCmdBody holds contents of request body to be sent
 var OperatorConfigurationSetCmdBody string
 
-func init() {
+func InitOperatorConfigurationSetCmd() {
 	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration"))
 
 	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
@@ -33,6 +33,9 @@ func init() {
 	OperatorConfigurationSetCmd.Flags().Float64Var(&OperatorConfigurationSetCmdExpectedVersion, "expected-version", 0, TRAPI("This property is used to avoid update confliction.  To use it, retrieve the version by getOperatorConfigurationNamespace API, then specify the version here. If the expectedVersion is not specified, the API does not check an update confliction."))
 
 	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	OperatorConfigurationSetCmd.RunE = OperatorConfigurationSetCmdRunE
+
 	OperatorConfigurationCmd.AddCommand(OperatorConfigurationSetCmd)
 }
 
@@ -41,49 +44,50 @@ var OperatorConfigurationSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: TRAPI("/operators/{operator_id}/configuration/{namespace}:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/configuration/{namespace}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "setOperatorConfigurationNamespace"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorConfigurationSetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorConfigurationSetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOperatorConfigurationSetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorConfigurationSetCmdParams(ac *apiClient) (*apiParams, error) {

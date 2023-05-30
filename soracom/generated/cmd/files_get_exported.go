@@ -12,8 +12,11 @@ import (
 // FilesGetExportedCmdExportedFileId holds value of 'exported_file_id' option
 var FilesGetExportedCmdExportedFileId string
 
-func init() {
+func InitFilesGetExportedCmd() {
 	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TRAPI("File export ID"))
+
+	FilesGetExportedCmd.RunE = FilesGetExportedCmdRunE
+
 	FilesCmd.AddCommand(FilesGetExportedCmd)
 }
 
@@ -22,49 +25,50 @@ var FilesGetExportedCmd = &cobra.Command{
 	Use:   "get-exported",
 	Short: TRAPI("/files/exported/{exported_file_id}:get:summary"),
 	Long:  TRAPI(`/files/exported/{exported_file_id}:get:description`) + "\n\n" + createLinkToAPIReference("Files", "getExportedFile"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func FilesGetExportedCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectFilesGetExportedCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectFilesGetExportedCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectFilesGetExportedCmdParams(ac *apiClient) (*apiParams, error) {

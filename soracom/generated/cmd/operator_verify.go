@@ -19,10 +19,13 @@ var OperatorVerifyCmdToken string
 // OperatorVerifyCmdBody holds contents of request body to be sent
 var OperatorVerifyCmdBody string
 
-func init() {
+func InitOperatorVerifyCmd() {
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdToken, "token", "", TRAPI(""))
 
 	OperatorVerifyCmd.Flags().StringVar(&OperatorVerifyCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	OperatorVerifyCmd.RunE = OperatorVerifyCmdRunE
+
 	OperatorCmd.AddCommand(OperatorVerifyCmd)
 }
 
@@ -31,44 +34,45 @@ var OperatorVerifyCmd = &cobra.Command{
 	Use:   "verify",
 	Short: TRAPI("/operators/verify:post:summary"),
 	Long:  TRAPI(`/operators/verify:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "verifyOperator"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorVerifyCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorVerifyCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectOperatorVerifyCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorVerifyCmdParams(ac *apiClient) (*apiParams, error) {

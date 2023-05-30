@@ -15,10 +15,13 @@ var OperatorAuthKeysListCmdOperatorId string
 // OperatorAuthKeysListCmdOutputJSONL indicates to output with jsonl format
 var OperatorAuthKeysListCmdOutputJSONL bool
 
-func init() {
+func InitOperatorAuthKeysListCmd() {
 	OperatorAuthKeysListCmd.Flags().StringVar(&OperatorAuthKeysListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	OperatorAuthKeysListCmd.Flags().BoolVar(&OperatorAuthKeysListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	OperatorAuthKeysListCmd.RunE = OperatorAuthKeysListCmdRunE
+
 	OperatorAuthKeysCmd.AddCommand(OperatorAuthKeysListCmd)
 }
 
@@ -27,53 +30,54 @@ var OperatorAuthKeysListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/operators/{operator_id}/auth_keys:get:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/auth_keys:get:description`) + "\n\n" + createLinkToAPIReference("Operator", "listOperatorAuthKeys"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorAuthKeysListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorAuthKeysListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if OperatorAuthKeysListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOperatorAuthKeysListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if OperatorAuthKeysListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorAuthKeysListCmdParams(ac *apiClient) (*apiParams, error) {

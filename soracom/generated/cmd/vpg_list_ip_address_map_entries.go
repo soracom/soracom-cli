@@ -15,10 +15,13 @@ var VpgListIpAddressMapEntriesCmdVpgId string
 // VpgListIpAddressMapEntriesCmdOutputJSONL indicates to output with jsonl format
 var VpgListIpAddressMapEntriesCmdOutputJSONL bool
 
-func init() {
+func InitVpgListIpAddressMapEntriesCmd() {
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	VpgListIpAddressMapEntriesCmd.RunE = VpgListIpAddressMapEntriesCmdRunE
+
 	VpgCmd.AddCommand(VpgListIpAddressMapEntriesCmd)
 }
 
@@ -27,53 +30,54 @@ var VpgListIpAddressMapEntriesCmd = &cobra.Command{
 	Use:   "list-ip-address-map-entries",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:get:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:get:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "listVirtualPrivateGatewayIpAddressMapEntries"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgListIpAddressMapEntriesCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgListIpAddressMapEntriesCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if VpgListIpAddressMapEntriesCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgListIpAddressMapEntriesCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if VpgListIpAddressMapEntriesCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, error) {

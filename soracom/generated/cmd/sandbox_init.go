@@ -34,7 +34,7 @@ var SandboxInitCmdRegisterPaymentMethod bool
 // SandboxInitCmdBody holds contents of request body to be sent
 var SandboxInitCmdBody string
 
-func init() {
+func InitSandboxInitCmd() {
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKey, "auth-key", "", TRAPI(""))
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
@@ -48,6 +48,9 @@ func init() {
 	SandboxInitCmd.Flags().BoolVar(&SandboxInitCmdRegisterPaymentMethod, "register-payment-method", true, TRAPI(""))
 
 	SandboxInitCmd.Flags().StringVar(&SandboxInitCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SandboxInitCmd.RunE = SandboxInitCmdRunE
+
 	SandboxCmd.AddCommand(SandboxInitCmd)
 }
 
@@ -56,44 +59,45 @@ var SandboxInitCmd = &cobra.Command{
 	Use:   "init",
 	Short: TRAPI("/sandbox/init:post:summary"),
 	Long:  TRAPI(`/sandbox/init:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxInitializeOperator"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SandboxInitCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSandboxInitCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectSandboxInitCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSandboxInitCmdParams(ac *apiClient) (*apiParams, error) {

@@ -25,7 +25,7 @@ var SubscribersSendSmsByMsisdnCmdEncodingType int64
 // SubscribersSendSmsByMsisdnCmdBody holds contents of request body to be sent
 var SubscribersSendSmsByMsisdnCmdBody string
 
-func init() {
+func InitSubscribersSendSmsByMsisdnCmd() {
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdMsisdn, "msisdn", "", TRAPI("MSISDN of the target subscriber."))
 
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdPayload, "payload", "", TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	SubscribersSendSmsByMsisdnCmd.Flags().Int64Var(&SubscribersSendSmsByMsisdnCmdEncodingType, "encoding-type", 2, TRAPI("Encoding type of the message body. Default is '2' ('DCS_UCS2').- '1': Send in GSM 7-bit that only supports standard alphabet. Kanji, Cyrillic, and Arabic characters cannot be sent. Maximum 160 characters (maximum 140 bytes).    Example: '{\"encodingType\": 1, \"payload\": \"Test message.\"}'- '2': Send in UCS-2, which supports Kanji, Cyrillic, Arabic, etc. Maximum 70 characters.    Example: '{\"encodingType\": 2, \"payload\": \"テストメッセージ\"}'"))
 
 	SubscribersSendSmsByMsisdnCmd.Flags().StringVar(&SubscribersSendSmsByMsisdnCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SubscribersSendSmsByMsisdnCmd.RunE = SubscribersSendSmsByMsisdnCmdRunE
+
 	SubscribersCmd.AddCommand(SubscribersSendSmsByMsisdnCmd)
 }
 
@@ -41,49 +44,50 @@ var SubscribersSendSmsByMsisdnCmd = &cobra.Command{
 	Use:   "send-sms-by-msisdn",
 	Short: TRAPI("/subscribers/msisdn/{msisdn}/send_sms:post:summary"),
 	Long:  TRAPI(`/subscribers/msisdn/{msisdn}/send_sms:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "sendSmsByMsisdn"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SubscribersSendSmsByMsisdnCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSubscribersSendSmsByMsisdnCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSubscribersSendSmsByMsisdnCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSubscribersSendSmsByMsisdnCmdParams(ac *apiClient) (*apiParams, error) {
@@ -169,7 +173,7 @@ func buildBodyForSubscribersSendSmsByMsisdnCmd() (string, error) {
 		result["payload"] = SubscribersSendSmsByMsisdnCmdPayload
 	}
 
-	if SubscribersSendSmsByMsisdnCmdEncodingType != 2 {
+	if SubscribersSendSmsByMsisdnCmd.Flags().Lookup("encoding-type").Changed {
 		result["encodingType"] = SubscribersSendSmsByMsisdnCmdEncodingType
 	}
 

@@ -12,8 +12,11 @@ import (
 // OperatorEnableMfaCmdOperatorId holds value of 'operator_id' option
 var OperatorEnableMfaCmdOperatorId string
 
-func init() {
+func InitOperatorEnableMfaCmd() {
 	OperatorEnableMfaCmd.Flags().StringVar(&OperatorEnableMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+
+	OperatorEnableMfaCmd.RunE = OperatorEnableMfaCmdRunE
+
 	OperatorCmd.AddCommand(OperatorEnableMfaCmd)
 }
 
@@ -22,49 +25,50 @@ var OperatorEnableMfaCmd = &cobra.Command{
 	Use:   "enable-mfa",
 	Short: TRAPI("/operators/{operator_id}/mfa:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/mfa:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "enableMFA"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorEnableMfaCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorEnableMfaCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOperatorEnableMfaCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorEnableMfaCmdParams(ac *apiClient) (*apiParams, error) {

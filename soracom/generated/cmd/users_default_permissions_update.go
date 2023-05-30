@@ -22,12 +22,15 @@ var UsersDefaultPermissionsUpdateCmdPermissions string
 // UsersDefaultPermissionsUpdateCmdBody holds contents of request body to be sent
 var UsersDefaultPermissionsUpdateCmdBody string
 
-func init() {
+func InitUsersDefaultPermissionsUpdateCmd() {
 	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdPermissions, "permissions", "", TRAPI("JSON string of permissions"))
 
 	UsersDefaultPermissionsUpdateCmd.Flags().StringVar(&UsersDefaultPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	UsersDefaultPermissionsUpdateCmd.RunE = UsersDefaultPermissionsUpdateCmdRunE
+
 	UsersDefaultPermissionsCmd.AddCommand(UsersDefaultPermissionsUpdateCmd)
 }
 
@@ -36,49 +39,50 @@ var UsersDefaultPermissionsUpdateCmd = &cobra.Command{
 	Use:   "update",
 	Short: TRAPI("/operators/{operator_id}/users/default_permissions:put:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/default_permissions:put:description`) + "\n\n" + createLinkToAPIReference("User", "updateDefaultPermissions"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func UsersDefaultPermissionsUpdateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectUsersDefaultPermissionsUpdateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectUsersDefaultPermissionsUpdateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectUsersDefaultPermissionsUpdateCmdParams(ac *apiClient) (*apiParams, error) {

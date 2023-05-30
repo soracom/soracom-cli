@@ -15,10 +15,13 @@ var DevicesDeleteDeviceTagCmdDeviceId string
 // DevicesDeleteDeviceTagCmdTagName holds value of 'tag_name' option
 var DevicesDeleteDeviceTagCmdTagName string
 
-func init() {
+func InitDevicesDeleteDeviceTagCmd() {
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
 	DevicesDeleteDeviceTagCmd.Flags().StringVar(&DevicesDeleteDeviceTagCmdTagName, "tag-name", "", TRAPI("Name of tag to delete"))
+
+	DevicesDeleteDeviceTagCmd.RunE = DevicesDeleteDeviceTagCmdRunE
+
 	DevicesCmd.AddCommand(DevicesDeleteDeviceTagCmd)
 }
 
@@ -27,49 +30,50 @@ var DevicesDeleteDeviceTagCmd = &cobra.Command{
 	Use:   "delete-device-tag",
 	Short: TRAPI("/devices/{device_id}/tags/{tag_name}:delete:summary"),
 	Long:  TRAPI(`/devices/{device_id}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Device", "deleteDeviceTag"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesDeleteDeviceTagCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesDeleteDeviceTagCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesDeleteDeviceTagCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesDeleteDeviceTagCmdParams(ac *apiClient) (*apiParams, error) {

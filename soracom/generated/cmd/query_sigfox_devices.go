@@ -42,7 +42,7 @@ var QuerySigfoxDevicesCmdPaginate bool
 // QuerySigfoxDevicesCmdOutputJSONL indicates to output with jsonl format
 var QuerySigfoxDevicesCmdOutputJSONL bool
 
-func init() {
+func InitQuerySigfoxDevicesCmd() {
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Sigfox device ID of the last Sigfox device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdRegistration, "registration", "and", TRAPI("Registration status of sigfox devices"))
@@ -64,6 +64,9 @@ func init() {
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	QuerySigfoxDevicesCmd.RunE = QuerySigfoxDevicesCmdRunE
+
 	QueryCmd.AddCommand(QuerySigfoxDevicesCmd)
 }
 
@@ -72,53 +75,54 @@ var QuerySigfoxDevicesCmd = &cobra.Command{
 	Use:   "sigfox-devices",
 	Short: TRAPI("/query/sigfox_devices:get:summary"),
 	Long:  TRAPI(`/query/sigfox_devices:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchSigfoxDevices"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func QuerySigfoxDevicesCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectQuerySigfoxDevicesCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if QuerySigfoxDevicesCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectQuerySigfoxDevicesCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if QuerySigfoxDevicesCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectQuerySigfoxDevicesCmdParams(ac *apiClient) (*apiParams, error) {

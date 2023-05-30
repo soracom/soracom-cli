@@ -21,7 +21,7 @@ var OrdersListSubscribersCmdLimit int64
 // OrdersListSubscribersCmdPaginate indicates to do pagination or not
 var OrdersListSubscribersCmdPaginate bool
 
-func init() {
+func InitOrdersListSubscribersCmd() {
 	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Serial number of the last subscriber in the previous page that is set to response header with X-Soracom-Next-Key."))
 
 	OrdersListSubscribersCmd.Flags().StringVar(&OrdersListSubscribersCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling ['Order:listOrders API'](#/Order/listOrders)."))
@@ -29,6 +29,9 @@ func init() {
 	OrdersListSubscribersCmd.Flags().Int64Var(&OrdersListSubscribersCmdLimit, "limit", 0, TRAPI("Max number of subscribers in a response."))
 
 	OrdersListSubscribersCmd.Flags().BoolVar(&OrdersListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	OrdersListSubscribersCmd.RunE = OrdersListSubscribersCmdRunE
+
 	OrdersCmd.AddCommand(OrdersListSubscribersCmd)
 }
 
@@ -37,49 +40,50 @@ var OrdersListSubscribersCmd = &cobra.Command{
 	Use:   "list-subscribers",
 	Short: TRAPI("/orders/{order_id}/subscribers:get:summary"),
 	Long:  TRAPI(`/orders/{order_id}/subscribers:get:description`) + "\n\n" + createLinkToAPIReference("Order", "listOrderedSubscribers"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OrdersListSubscribersCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOrdersListSubscribersCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOrdersListSubscribersCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOrdersListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {

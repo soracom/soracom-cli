@@ -25,7 +25,7 @@ var UsersAttachRoleCmdUserName string
 // UsersAttachRoleCmdBody holds contents of request body to be sent
 var UsersAttachRoleCmdBody string
 
-func init() {
+func InitUsersAttachRoleCmd() {
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	UsersAttachRoleCmd.RunE = UsersAttachRoleCmdRunE
+
 	UsersCmd.AddCommand(UsersAttachRoleCmd)
 }
 
@@ -41,49 +44,50 @@ var UsersAttachRoleCmd = &cobra.Command{
 	Use:   "attach-role",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/roles:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/roles:post:description`) + "\n\n" + createLinkToAPIReference("Role", "attachRole"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func UsersAttachRoleCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectUsersAttachRoleCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectUsersAttachRoleCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectUsersAttachRoleCmdParams(ac *apiClient) (*apiParams, error) {

@@ -33,7 +33,7 @@ var GadgetsListCmdPaginate bool
 // GadgetsListCmdOutputJSONL indicates to output with jsonl format
 var GadgetsListCmdOutputJSONL bool
 
-func init() {
+func InitGadgetsListCmd() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ({product_id}/{serial_number}) of the last gadget retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdProductId, "product-id", "", TRAPI("Product ID for filtering the search."))
@@ -49,6 +49,9 @@ func init() {
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	GadgetsListCmd.RunE = GadgetsListCmdRunE
+
 	GadgetsCmd.AddCommand(GadgetsListCmd)
 }
 
@@ -57,53 +60,54 @@ var GadgetsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/gadgets:get:summary"),
 	Long:  TRAPI(`/gadgets:get:description`) + "\n\n" + createLinkToAPIReference("Gadget", "listGadgets"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func GadgetsListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectGadgetsListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if GadgetsListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectGadgetsListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if GadgetsListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectGadgetsListCmdParams(ac *apiClient) (*apiParams, error) {

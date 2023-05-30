@@ -22,12 +22,15 @@ var AuthVerifyPasswordResetTokenCmdToken string
 // AuthVerifyPasswordResetTokenCmdBody holds contents of request body to be sent
 var AuthVerifyPasswordResetTokenCmdBody string
 
-func init() {
+func InitAuthVerifyPasswordResetTokenCmd() {
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdPassword, "password", "", TRAPI(""))
 
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdToken, "token", "", TRAPI(""))
 
 	AuthVerifyPasswordResetTokenCmd.Flags().StringVar(&AuthVerifyPasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	AuthVerifyPasswordResetTokenCmd.RunE = AuthVerifyPasswordResetTokenCmdRunE
+
 	AuthCmd.AddCommand(AuthVerifyPasswordResetTokenCmd)
 }
 
@@ -36,44 +39,45 @@ var AuthVerifyPasswordResetTokenCmd = &cobra.Command{
 	Use:   "verify-password-reset-token",
 	Short: TRAPI("/auth/password_reset_token/verify:post:summary"),
 	Long:  TRAPI(`/auth/password_reset_token/verify:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "verifyPasswordResetToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func AuthVerifyPasswordResetTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectAuthVerifyPasswordResetTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectAuthVerifyPasswordResetTokenCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectAuthVerifyPasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {

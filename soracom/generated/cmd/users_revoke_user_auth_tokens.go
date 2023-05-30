@@ -15,10 +15,13 @@ var UsersRevokeUserAuthTokensCmdOperatorId string
 // UsersRevokeUserAuthTokensCmdUserName holds value of 'user_name' option
 var UsersRevokeUserAuthTokensCmdUserName string
 
-func init() {
+func InitUsersRevokeUserAuthTokensCmd() {
 	UsersRevokeUserAuthTokensCmd.Flags().StringVar(&UsersRevokeUserAuthTokensCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersRevokeUserAuthTokensCmd.Flags().StringVar(&UsersRevokeUserAuthTokensCmdUserName, "user-name", "", TRAPI("SAM user name"))
+
+	UsersRevokeUserAuthTokensCmd.RunE = UsersRevokeUserAuthTokensCmdRunE
+
 	UsersCmd.AddCommand(UsersRevokeUserAuthTokensCmd)
 }
 
@@ -27,49 +30,50 @@ var UsersRevokeUserAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-user-auth-tokens",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/tokens:delete:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/tokens:delete:description`) + "\n\n" + createLinkToAPIReference("User", "revokeUserAuthTokens"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func UsersRevokeUserAuthTokensCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectUsersRevokeUserAuthTokensCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectUsersRevokeUserAuthTokensCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectUsersRevokeUserAuthTokensCmdParams(ac *apiClient) (*apiParams, error) {

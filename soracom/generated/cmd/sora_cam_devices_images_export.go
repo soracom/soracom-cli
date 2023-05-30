@@ -25,7 +25,7 @@ var SoraCamDevicesImagesExportCmdTime int64
 // SoraCamDevicesImagesExportCmdBody holds contents of request body to be sent
 var SoraCamDevicesImagesExportCmdBody string
 
-func init() {
+func InitSoraCamDevicesImagesExportCmd() {
 	SoraCamDevicesImagesExportCmd.Flags().StringVar(&SoraCamDevicesImagesExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
 
 	SoraCamDevicesImagesExportCmd.Flags().StringSliceVar(&SoraCamDevicesImagesExportCmdImageFilters, "image-filters", []string{}, TRAPI("Image filters to be applied to the exported image."))
@@ -33,6 +33,9 @@ func init() {
 	SoraCamDevicesImagesExportCmd.Flags().Int64Var(&SoraCamDevicesImagesExportCmdTime, "time", 0, TRAPI("Time to be exported (unix time in milliseconds). A still image is exported from the recorded video taken at the specified time."))
 
 	SoraCamDevicesImagesExportCmd.Flags().StringVar(&SoraCamDevicesImagesExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SoraCamDevicesImagesExportCmd.RunE = SoraCamDevicesImagesExportCmdRunE
+
 	SoraCamDevicesImagesCmd.AddCommand(SoraCamDevicesImagesExportCmd)
 }
 
@@ -41,49 +44,50 @@ var SoraCamDevicesImagesExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/sora_cam/devices/{device_id}/images/exports:post:summary"),
 	Long:  TRAPI(`/sora_cam/devices/{device_id}/images/exports:post:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "exportSoraCamDeviceRecordedImage"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraCamDevicesImagesExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraCamDevicesImagesExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraCamDevicesImagesExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraCamDevicesImagesExportCmdParams(ac *apiClient) (*apiParams, error) {
@@ -174,7 +178,7 @@ func buildBodyForSoraCamDevicesImagesExportCmd() (string, error) {
 		result["imageFilters"] = SoraCamDevicesImagesExportCmdImageFilters
 	}
 
-	if SoraCamDevicesImagesExportCmdTime != 0 {
+	if SoraCamDevicesImagesExportCmd.Flags().Lookup("time").Changed {
 		result["time"] = SoraCamDevicesImagesExportCmdTime
 	}
 

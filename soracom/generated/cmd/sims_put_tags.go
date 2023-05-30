@@ -19,10 +19,13 @@ var SimsPutTagsCmdSimId string
 // SimsPutTagsCmdBody holds contents of request body to be sent
 var SimsPutTagsCmdBody string
 
-func init() {
+func InitSimsPutTagsCmd() {
 	SimsPutTagsCmd.Flags().StringVar(&SimsPutTagsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsPutTagsCmd.Flags().StringVar(&SimsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SimsPutTagsCmd.RunE = SimsPutTagsCmdRunE
+
 	SimsCmd.AddCommand(SimsPutTagsCmd)
 }
 
@@ -31,49 +34,50 @@ var SimsPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/sims/{sim_id}/tags:put:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("Sim", "putSimTags"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsPutTagsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsPutTagsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsPutTagsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsPutTagsCmdParams(ac *apiClient) (*apiParams, error) {

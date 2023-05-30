@@ -19,10 +19,13 @@ var OrdersCreateCmdShippingAddressId string
 // OrdersCreateCmdBody holds contents of request body to be sent
 var OrdersCreateCmdBody string
 
-func init() {
+func InitOrdersCreateCmd() {
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID"))
 
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	OrdersCreateCmd.RunE = OrdersCreateCmdRunE
+
 	OrdersCmd.AddCommand(OrdersCreateCmd)
 }
 
@@ -31,49 +34,50 @@ var OrdersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/orders:post:summary"),
 	Long:  TRAPI(`/orders:post:description`) + "\n\n" + createLinkToAPIReference("Order", "createQuotation"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OrdersCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOrdersCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOrdersCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOrdersCreateCmdParams(ac *apiClient) (*apiParams, error) {

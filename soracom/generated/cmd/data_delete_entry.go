@@ -18,12 +18,15 @@ var DataDeleteEntryCmdResourceType string
 // DataDeleteEntryCmdTime holds value of 'time' option
 var DataDeleteEntryCmdTime int64
 
-func init() {
+func InitDataDeleteEntryCmd() {
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
 	DataDeleteEntryCmd.Flags().Int64Var(&DataDeleteEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to delete (unixtime in milliseconds)."))
+
+	DataDeleteEntryCmd.RunE = DataDeleteEntryCmdRunE
+
 	DataCmd.AddCommand(DataDeleteEntryCmd)
 }
 
@@ -32,49 +35,50 @@ var DataDeleteEntryCmd = &cobra.Command{
 	Use:   "delete-entry",
 	Short: TRAPI("/data/{resource_type}/{resource_id}/{time}:delete:summary"),
 	Long:  TRAPI(`/data/{resource_type}/{resource_id}/{time}:delete:description`) + "\n\n" + createLinkToAPIReference("DataEntry", "deleteDataEntry"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DataDeleteEntryCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDataDeleteEntryCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDataDeleteEntryCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDataDeleteEntryCmdParams(ac *apiClient) (*apiParams, error) {

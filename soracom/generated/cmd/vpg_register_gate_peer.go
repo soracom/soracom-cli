@@ -25,7 +25,7 @@ var VpgRegisterGatePeerCmdVpgId string
 // VpgRegisterGatePeerCmdBody holds contents of request body to be sent
 var VpgRegisterGatePeerCmdBody string
 
-func init() {
+func InitVpgRegisterGatePeerCmd() {
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdInnerIpAddress, "inner-ip-address", "", TRAPI(""))
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgRegisterGatePeerCmd.RunE = VpgRegisterGatePeerCmdRunE
+
 	VpgCmd.AddCommand(VpgRegisterGatePeerCmd)
 }
 
@@ -41,49 +44,50 @@ var VpgRegisterGatePeerCmd = &cobra.Command{
 	Use:   "register-gate-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/peers:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/peers:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "registerGatePeer"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgRegisterGatePeerCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgRegisterGatePeerCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgRegisterGatePeerCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgRegisterGatePeerCmdParams(ac *apiClient) (*apiParams, error) {

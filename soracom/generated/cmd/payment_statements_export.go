@@ -15,10 +15,13 @@ var PaymentStatementsExportCmdExportMode string
 // PaymentStatementsExportCmdPaymentStatementId holds value of 'payment_statement_id' option
 var PaymentStatementsExportCmdPaymentStatementId string
 
-func init() {
+func InitPaymentStatementsExportCmd() {
 	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdExportMode, "export-mode", "", TRAPI("Export mode (async, sync)"))
 
 	PaymentStatementsExportCmd.Flags().StringVar(&PaymentStatementsExportCmdPaymentStatementId, "payment-statement-id", "", TRAPI("Payment statement ID"))
+
+	PaymentStatementsExportCmd.RunE = PaymentStatementsExportCmdRunE
+
 	PaymentStatementsCmd.AddCommand(PaymentStatementsExportCmd)
 }
 
@@ -27,50 +30,51 @@ var PaymentStatementsExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/payment_statements/{payment_statement_id}/export:post:summary"),
 	Long:  TRAPI(`/payment_statements/{payment_statement_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Payment", "exportPaymentStatement"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func PaymentStatementsExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectPaymentStatementsExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-		rawOutput = true
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectPaymentStatementsExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+	rawOutput = true
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectPaymentStatementsExportCmdParams(ac *apiClient) (*apiParams, error) {

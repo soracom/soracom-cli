@@ -28,7 +28,7 @@ var DevicesExecuteResourceCmdResource string
 // DevicesExecuteResourceCmdBody holds contents of request body to be sent
 var DevicesExecuteResourceCmdBody string
 
-func init() {
+func InitDevicesExecuteResourceCmd() {
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdInstance, "instance", "", TRAPI("Instance ID"))
@@ -38,6 +38,9 @@ func init() {
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdResource, "resource", "", TRAPI("Resource ID"))
 
 	DevicesExecuteResourceCmd.Flags().StringVar(&DevicesExecuteResourceCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	DevicesExecuteResourceCmd.RunE = DevicesExecuteResourceCmdRunE
+
 	DevicesCmd.AddCommand(DevicesExecuteResourceCmd)
 }
 
@@ -46,49 +49,50 @@ var DevicesExecuteResourceCmd = &cobra.Command{
 	Use:   "execute-resource",
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/{resource}/execute:post:summary"),
 	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/{resource}/execute:post:description`) + "\n\n" + createLinkToAPIReference("Device", "executeDeviceResource"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesExecuteResourceCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesExecuteResourceCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesExecuteResourceCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesExecuteResourceCmdParams(ac *apiClient) (*apiParams, error) {

@@ -12,8 +12,11 @@ import (
 // SimsDeactivateCmdSimId holds value of 'sim_id' option
 var SimsDeactivateCmdSimId string
 
-func init() {
+func InitSimsDeactivateCmd() {
 	SimsDeactivateCmd.Flags().StringVar(&SimsDeactivateCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+
+	SimsDeactivateCmd.RunE = SimsDeactivateCmdRunE
+
 	SimsCmd.AddCommand(SimsDeactivateCmd)
 }
 
@@ -22,49 +25,50 @@ var SimsDeactivateCmd = &cobra.Command{
 	Use:   "deactivate",
 	Short: TRAPI("/sims/{sim_id}/deactivate:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/deactivate:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "deactivateSim"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsDeactivateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsDeactivateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsDeactivateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsDeactivateCmdParams(ac *apiClient) (*apiParams, error) {

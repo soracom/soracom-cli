@@ -30,7 +30,7 @@ var AuditLogsApiGetCmdPaginate bool
 // AuditLogsApiGetCmdOutputJSONL indicates to output with jsonl format
 var AuditLogsApiGetCmdOutputJSONL bool
 
-func init() {
+func InitAuditLogsApiGetCmd() {
 	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdApiKind, "api-kind", "", TRAPI("Filter item for audit log retrieval by API kind."))
 
 	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'requestedTimeEpochMs' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
@@ -44,6 +44,9 @@ func init() {
 	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	AuditLogsApiGetCmd.RunE = AuditLogsApiGetCmdRunE
+
 	AuditLogsApiCmd.AddCommand(AuditLogsApiGetCmd)
 }
 
@@ -52,53 +55,54 @@ var AuditLogsApiGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/audit_logs/api:get:summary"),
 	Long:  TRAPI(`/audit_logs/api:get:description`) + "\n\n" + createLinkToAPIReference("AuditLog", "getApiAuditLogs"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func AuditLogsApiGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectAuditLogsApiGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if AuditLogsApiGetCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectAuditLogsApiGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if AuditLogsApiGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectAuditLogsApiGetCmdParams(ac *apiClient) (*apiParams, error) {

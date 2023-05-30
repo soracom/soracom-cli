@@ -19,10 +19,13 @@ var EmailsVerifyAddEmailTokenCmdToken string
 // EmailsVerifyAddEmailTokenCmdBody holds contents of request body to be sent
 var EmailsVerifyAddEmailTokenCmdBody string
 
-func init() {
+func InitEmailsVerifyAddEmailTokenCmd() {
 	EmailsVerifyAddEmailTokenCmd.Flags().StringVar(&EmailsVerifyAddEmailTokenCmdToken, "token", "", TRAPI("Token sent by email"))
 
 	EmailsVerifyAddEmailTokenCmd.Flags().StringVar(&EmailsVerifyAddEmailTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	EmailsVerifyAddEmailTokenCmd.RunE = EmailsVerifyAddEmailTokenCmdRunE
+
 	EmailsCmd.AddCommand(EmailsVerifyAddEmailTokenCmd)
 }
 
@@ -31,44 +34,45 @@ var EmailsVerifyAddEmailTokenCmd = &cobra.Command{
 	Use:   "verify-add-email-token",
 	Short: TRAPI("/operators/add_email_token/verify:post:summary"),
 	Long:  TRAPI(`/operators/add_email_token/verify:post:description`) + "\n\n" + createLinkToAPIReference("Email", "verifyAddEmailToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func EmailsVerifyAddEmailTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectEmailsVerifyAddEmailTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectEmailsVerifyAddEmailTokenCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectEmailsVerifyAddEmailTokenCmdParams(ac *apiClient) (*apiParams, error) {

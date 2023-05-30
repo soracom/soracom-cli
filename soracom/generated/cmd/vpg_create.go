@@ -25,7 +25,7 @@ var VpgCreateCmdUseInternetGateway bool
 // VpgCreateCmdBody holds contents of request body to be sent
 var VpgCreateCmdBody string
 
-func init() {
+func InitVpgCreateCmd() {
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdDeviceSubnetCidrRange, "device-subnet-cidr-range", "10.128.0.0/9", TRAPI(""))
 
 	VpgCreateCmd.Flags().Int64Var(&VpgCreateCmdType, "type", 0, TRAPI("VPG Type.- '14' : Type-E- '15' : Type-F"))
@@ -33,6 +33,9 @@ func init() {
 	VpgCreateCmd.Flags().BoolVar(&VpgCreateCmdUseInternetGateway, "use-internet-gateway", true, TRAPI(""))
 
 	VpgCreateCmd.Flags().StringVar(&VpgCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgCreateCmd.RunE = VpgCreateCmdRunE
+
 	VpgCmd.AddCommand(VpgCreateCmd)
 }
 
@@ -41,49 +44,50 @@ var VpgCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/virtual_private_gateways:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createVirtualPrivateGateway"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgCreateCmdParams(ac *apiClient) (*apiParams, error) {
@@ -165,7 +169,7 @@ func buildBodyForVpgCreateCmd() (string, error) {
 		result["deviceSubnetCidrRange"] = VpgCreateCmdDeviceSubnetCidrRange
 	}
 
-	if VpgCreateCmdType != 0 {
+	if VpgCreateCmd.Flags().Lookup("type").Changed {
 		result["type"] = VpgCreateCmdType
 	}
 

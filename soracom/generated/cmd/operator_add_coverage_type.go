@@ -15,10 +15,13 @@ var OperatorAddCoverageTypeCmdCoverageType string
 // OperatorAddCoverageTypeCmdOperatorId holds value of 'operator_id' option
 var OperatorAddCoverageTypeCmdOperatorId string
 
-func init() {
+func InitOperatorAddCoverageTypeCmd() {
 	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdCoverageType, "coverage-type", "", TRAPI("coverage_type"))
 
 	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+
+	OperatorAddCoverageTypeCmd.RunE = OperatorAddCoverageTypeCmdRunE
+
 	OperatorCmd.AddCommand(OperatorAddCoverageTypeCmd)
 }
 
@@ -27,49 +30,50 @@ var OperatorAddCoverageTypeCmd = &cobra.Command{
 	Use:   "add-coverage-type",
 	Short: TRAPI("/operators/{operator_id}/coverage_type/{coverage_type}:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/coverage_type/{coverage_type}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "addCoverageType"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorAddCoverageTypeCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorAddCoverageTypeCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOperatorAddCoverageTypeCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorAddCoverageTypeCmdParams(ac *apiClient) (*apiParams, error) {

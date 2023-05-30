@@ -40,7 +40,7 @@ var AuthCmdTokenTimeoutSeconds int64
 // AuthCmdBody holds contents of request body to be sent
 var AuthCmdBody string
 
-func init() {
+func InitAuthCmd() {
 	AuthCmd.Flags().StringVar(&AuthCmdAuthKey, "auth-key", "", TRAPI(""))
 
 	AuthCmd.Flags().StringVar(&AuthCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
@@ -58,6 +58,9 @@ func init() {
 	AuthCmd.Flags().Int64Var(&AuthCmdTokenTimeoutSeconds, "token-timeout-seconds", 86400, TRAPI(""))
 
 	AuthCmd.Flags().StringVar(&AuthCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	AuthCmd.RunE = AuthCmdRunE
+
 	RootCmd.AddCommand(AuthCmd)
 }
 
@@ -66,44 +69,45 @@ var AuthCmd = &cobra.Command{
 	Use:   "auth",
 	Short: TRAPI("/auth:post:summary"),
 	Long:  TRAPI(`/auth:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "auth"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func AuthCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectAuthCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectAuthCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectAuthCmdParams(ac *apiClient) (*apiParams, error) {
@@ -204,7 +208,7 @@ func buildBodyForAuthCmd() (string, error) {
 		result["userName"] = AuthCmdUserName
 	}
 
-	if AuthCmdTokenTimeoutSeconds != 86400 {
+	if AuthCmd.Flags().Lookup("token-timeout-seconds").Changed {
 		result["tokenTimeoutSeconds"] = AuthCmdTokenTimeoutSeconds
 	}
 

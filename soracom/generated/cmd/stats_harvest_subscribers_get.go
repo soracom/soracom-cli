@@ -24,7 +24,7 @@ var StatsHarvestSubscribersGetCmdTo int64
 // StatsHarvestSubscribersGetCmdOutputJSONL indicates to output with jsonl format
 var StatsHarvestSubscribersGetCmdOutputJSONL bool
 
-func init() {
+func InitStatsHarvestSubscribersGetCmd() {
 	StatsHarvestSubscribersGetCmd.Flags().StringVar(&StatsHarvestSubscribersGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
 	StatsHarvestSubscribersGetCmd.Flags().StringVar(&StatsHarvestSubscribersGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the usage report at the finest granularity. However, while the device is connected to the Soracom platform, the amount of usage will be recorded at approximately 5-minute intervals."))
@@ -34,6 +34,9 @@ func init() {
 	StatsHarvestSubscribersGetCmd.Flags().Int64Var(&StatsHarvestSubscribersGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsHarvestSubscribersGetCmd.Flags().BoolVar(&StatsHarvestSubscribersGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	StatsHarvestSubscribersGetCmd.RunE = StatsHarvestSubscribersGetCmdRunE
+
 	StatsHarvestSubscribersCmd.AddCommand(StatsHarvestSubscribersGetCmd)
 }
 
@@ -42,53 +45,54 @@ var StatsHarvestSubscribersGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/harvest/subscribers/{imsi}:get:summary"),
 	Long:  TRAPI(`/stats/harvest/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getHarvestStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsHarvestSubscribersGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsHarvestSubscribersGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if StatsHarvestSubscribersGetCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsHarvestSubscribersGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if StatsHarvestSubscribersGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsHarvestSubscribersGetCmdParams(ac *apiClient) (*apiParams, error) {

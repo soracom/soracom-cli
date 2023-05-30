@@ -12,8 +12,11 @@ import (
 // StatsNapterAuditLogsGetCmdYearMonth holds value of 'year_month' option
 var StatsNapterAuditLogsGetCmdYearMonth string
 
-func init() {
+func InitStatsNapterAuditLogsGetCmd() {
 	StatsNapterAuditLogsGetCmd.Flags().StringVar(&StatsNapterAuditLogsGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
+
+	StatsNapterAuditLogsGetCmd.RunE = StatsNapterAuditLogsGetCmdRunE
+
 	StatsNapterAuditLogsCmd.AddCommand(StatsNapterAuditLogsGetCmd)
 }
 
@@ -22,49 +25,50 @@ var StatsNapterAuditLogsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/napter/audit_logs:get:summary"),
 	Long:  TRAPI(`/stats/napter/audit_logs:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getNapterAuditLogsExportedDataStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsNapterAuditLogsGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsNapterAuditLogsGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsNapterAuditLogsGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsNapterAuditLogsGetCmdParams(ac *apiClient) (*apiParams, error) {

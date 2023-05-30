@@ -24,7 +24,7 @@ var StatsAirGroupsGetCmdTo int64
 // StatsAirGroupsGetCmdOutputJSONL indicates to output with jsonl format
 var StatsAirGroupsGetCmdOutputJSONL bool
 
-func init() {
+func InitStatsAirGroupsGetCmd() {
 	StatsAirGroupsGetCmd.Flags().StringVar(&StatsAirGroupsGetCmdGroupId, "group-id", "", TRAPI("Group ID"))
 
 	StatsAirGroupsGetCmd.Flags().StringVar(&StatsAirGroupsGetCmdPeriod, "period", "", TRAPI("Unit of aggregation.- month: Aggregate by month.- day: Aggregate by day."))
@@ -34,6 +34,9 @@ func init() {
 	StatsAirGroupsGetCmd.Flags().Int64Var(&StatsAirGroupsGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds).- If period is set to \"month\", valid values range from 3 months ago to the current time.- If period is set to \"day\", valid values range from 6 days ago to the current time.- The actual end time of the period is 24:00:00 on the last day of the month or day containing the specified UNIX time."))
 
 	StatsAirGroupsGetCmd.Flags().BoolVar(&StatsAirGroupsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	StatsAirGroupsGetCmd.RunE = StatsAirGroupsGetCmdRunE
+
 	StatsAirGroupsCmd.AddCommand(StatsAirGroupsGetCmd)
 }
 
@@ -42,53 +45,54 @@ var StatsAirGroupsGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/air/groups/{group_id}:get:summary"),
 	Long:  TRAPI(`/stats/air/groups/{group_id}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getAirStatsOfGroup"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsAirGroupsGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsAirGroupsGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if StatsAirGroupsGetCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsAirGroupsGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if StatsAirGroupsGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsAirGroupsGetCmdParams(ac *apiClient) (*apiParams, error) {

@@ -40,7 +40,7 @@ var DevicesUpdateObjectModelCmdScope string
 // DevicesUpdateObjectModelCmdBody holds contents of request body to be sent
 var DevicesUpdateObjectModelCmdBody string
 
-func init() {
+func InitDevicesUpdateObjectModelCmd() {
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdCreatedTime, "created-time", "", TRAPI(""))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdFormat, "format", "", TRAPI(""))
@@ -58,6 +58,9 @@ func init() {
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdScope, "scope", "", TRAPI(""))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	DevicesUpdateObjectModelCmd.RunE = DevicesUpdateObjectModelCmdRunE
+
 	DevicesCmd.AddCommand(DevicesUpdateObjectModelCmd)
 }
 
@@ -66,49 +69,50 @@ var DevicesUpdateObjectModelCmd = &cobra.Command{
 	Use:   "update-object-model",
 	Short: TRAPI("/device_object_models/{model_id}:post:summary"),
 	Long:  TRAPI(`/device_object_models/{model_id}:post:description`) + "\n\n" + createLinkToAPIReference("DeviceObjectModel", "updateDeviceObjectModel"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesUpdateObjectModelCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesUpdateObjectModelCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesUpdateObjectModelCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesUpdateObjectModelCmdParams(ac *apiClient) (*apiParams, error) {

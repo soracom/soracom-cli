@@ -19,10 +19,13 @@ var CouponsCreateCmdAmount float64
 // CouponsCreateCmdBody holds contents of request body to be sent
 var CouponsCreateCmdBody string
 
-func init() {
+func InitCouponsCreateCmd() {
 	CouponsCreateCmd.Flags().Float64Var(&CouponsCreateCmdAmount, "amount", 0, TRAPI("Amount"))
 
 	CouponsCreateCmd.Flags().StringVar(&CouponsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	CouponsCreateCmd.RunE = CouponsCreateCmdRunE
+
 	CouponsCmd.AddCommand(CouponsCreateCmd)
 }
 
@@ -31,49 +34,50 @@ var CouponsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/coupons:post:summary"),
 	Long:  TRAPI(`/coupons:post:description`) + "\n\n" + createLinkToAPIReference("Order", "createCouponQuotation"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func CouponsCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectCouponsCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectCouponsCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectCouponsCreateCmdParams(ac *apiClient) (*apiParams, error) {

@@ -33,7 +33,7 @@ var SoraCamDevicesEventsListCmdPaginate bool
 // SoraCamDevicesEventsListCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesEventsListCmdOutputJSONL bool
 
-func init() {
+func InitSoraCamDevicesEventsListCmd() {
 	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device. If this ID is not specified, the event history of all camera devices owned by the operator will be retrieved."))
 
 	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdSort, "sort", "desc", TRAPI("Sort order of the events.- 'desc': Descending order (latest data entry first)- 'asc': Ascending order (oldest data entry first)"))
@@ -49,6 +49,9 @@ func init() {
 	SoraCamDevicesEventsListCmd.Flags().BoolVar(&SoraCamDevicesEventsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesEventsListCmd.Flags().BoolVar(&SoraCamDevicesEventsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	SoraCamDevicesEventsListCmd.RunE = SoraCamDevicesEventsListCmdRunE
+
 	SoraCamDevicesEventsCmd.AddCommand(SoraCamDevicesEventsListCmd)
 }
 
@@ -57,53 +60,54 @@ var SoraCamDevicesEventsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/sora_cam/devices/events:get:summary"),
 	Long:  TRAPI(`/sora_cam/devices/events:get:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "listSoraCamDeviceEvents"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraCamDevicesEventsListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraCamDevicesEventsListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if SoraCamDevicesEventsListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraCamDevicesEventsListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if SoraCamDevicesEventsListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraCamDevicesEventsListCmdParams(ac *apiClient) (*apiParams, error) {

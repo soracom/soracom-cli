@@ -18,12 +18,15 @@ var UsersAuthKeysGetCmdOperatorId string
 // UsersAuthKeysGetCmdUserName holds value of 'user_name' option
 var UsersAuthKeysGetCmdUserName string
 
-func init() {
+func InitUsersAuthKeysGetCmd() {
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdAuthKeyId, "auth-key-id", "", TRAPI("auth_key_id"))
 
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	UsersAuthKeysGetCmd.Flags().StringVar(&UsersAuthKeysGetCmdUserName, "user-name", "", TRAPI("user_name"))
+
+	UsersAuthKeysGetCmd.RunE = UsersAuthKeysGetCmdRunE
+
 	UsersAuthKeysCmd.AddCommand(UsersAuthKeysGetCmd)
 }
 
@@ -32,49 +35,50 @@ var UsersAuthKeysGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/users/{user_name}/auth_keys/{auth_key_id}:get:description`) + "\n\n" + createLinkToAPIReference("User", "getUserAuthKey"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func UsersAuthKeysGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectUsersAuthKeysGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectUsersAuthKeysGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectUsersAuthKeysGetCmdParams(ac *apiClient) (*apiParams, error) {

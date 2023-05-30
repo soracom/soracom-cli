@@ -15,10 +15,13 @@ var BillsExportCmdExportMode string
 // BillsExportCmdYyyyMM holds value of 'yyyyMM' option
 var BillsExportCmdYyyyMM string
 
-func init() {
+func InitBillsExportCmd() {
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdExportMode, "export-mode", "", TRAPI("Specify how to get the URL to download the billing details CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the SORACOM platform. Specify this 'exportedFieldId' in ['Files:getExportedFile API'](#/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use 'async'.- 'sync' (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
 
 	BillsExportCmd.Flags().StringVar(&BillsExportCmdYyyyMM, "yyyy-mm", "", TRAPI("Target year and month"))
+
+	BillsExportCmd.RunE = BillsExportCmdRunE
+
 	BillsCmd.AddCommand(BillsExportCmd)
 }
 
@@ -27,50 +30,51 @@ var BillsExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/bills/{yyyyMM}/export:post:summary"),
 	Long:  TRAPI(`/bills/{yyyyMM}/export:post:description`) + "\n\n" + createLinkToAPIReference("Billing", "exportBilling"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func BillsExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectBillsExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-		rawOutput = true
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectBillsExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+	rawOutput = true
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectBillsExportCmdParams(ac *apiClient) (*apiParams, error) {

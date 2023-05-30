@@ -22,12 +22,15 @@ var SoraletsCreateCmdSoraletId string
 // SoraletsCreateCmdBody holds contents of request body to be sent
 var SoraletsCreateCmdBody string
 
-func init() {
+func InitSoraletsCreateCmd() {
 	SoraletsCreateCmd.Flags().StringVar(&SoraletsCreateCmdDescription, "description", "", TRAPI(""))
 
 	SoraletsCreateCmd.Flags().StringVar(&SoraletsCreateCmdSoraletId, "soralet-id", "", TRAPI(""))
 
 	SoraletsCreateCmd.Flags().StringVar(&SoraletsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SoraletsCreateCmd.RunE = SoraletsCreateCmdRunE
+
 	SoraletsCmd.AddCommand(SoraletsCreateCmd)
 }
 
@@ -36,49 +39,50 @@ var SoraletsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/soralets:post:summary"),
 	Long:  TRAPI(`/soralets:post:description`) + "\n\n" + createLinkToAPIReference("Soralet", "createSoralet"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraletsCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraletsCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraletsCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraletsCreateCmdParams(ac *apiClient) (*apiParams, error) {

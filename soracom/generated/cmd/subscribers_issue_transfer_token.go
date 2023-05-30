@@ -25,7 +25,7 @@ var SubscribersIssueTransferTokenCmdTransferImsi []string
 // SubscribersIssueTransferTokenCmdBody holds contents of request body to be sent
 var SubscribersIssueTransferTokenCmdBody string
 
-func init() {
+func InitSubscribersIssueTransferTokenCmd() {
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI("Email address of the destination operator."))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI("Operator ID of the destination operator."))
@@ -33,6 +33,9 @@ func init() {
 	SubscribersIssueTransferTokenCmd.Flags().StringSliceVar(&SubscribersIssueTransferTokenCmdTransferImsi, "transfer-imsi", []string{}, TRAPI("List of IMSIs to be transferred."))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SubscribersIssueTransferTokenCmd.RunE = SubscribersIssueTransferTokenCmdRunE
+
 	SubscribersCmd.AddCommand(SubscribersIssueTransferTokenCmd)
 }
 
@@ -41,49 +44,50 @@ var SubscribersIssueTransferTokenCmd = &cobra.Command{
 	Use:   "issue-transfer-token",
 	Short: TRAPI("/subscribers/transfer_token/issue:post:summary"),
 	Long:  TRAPI(`/subscribers/transfer_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "issueSubscriberTransferToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SubscribersIssueTransferTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSubscribersIssueTransferTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSubscribersIssueTransferTokenCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSubscribersIssueTransferTokenCmdParams(ac *apiClient) (*apiParams, error) {

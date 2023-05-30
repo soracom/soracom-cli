@@ -60,7 +60,7 @@ var {{$prefix}}OutputJSONL bool
 var {{$prefix}}Body string
 {{end}}
 
-func init() {
+func Init{{$cmdvar}}() {
 {{- range .StringFlags}}
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}{{.VarName}}, "{{.LongOption}}", "{{.DefaultValue}}", TRAPI("{{.ShortHelp}}"))
 {{end}}
@@ -93,7 +93,9 @@ func init() {
   {{$cmdvar}}.Flags().StringVar(&{{$prefix}}Body, "body", "", TRCLI("cli.common_params.body.short_help"))
 {{end}}
 
-  {{- .ParentCommandVariableName}}.AddCommand({{$cmdvar}})
+  {{$cmdvar}}.RunE = {{$cmdvar}}RunE
+
+  {{.ParentCommandVariableName}}.AddCommand({{$cmdvar}})
 }
 
 // {{.CommandVariableName}} defines '{{.Use}}' subcommand
@@ -101,7 +103,9 @@ var {{ $cmdvar }} = &cobra.Command{
   Use: "{{.Use}}",
   Short: TRAPI("{{.Short}}"),
   Long: TRAPI(`{{.Long}}`) + "\n\n" + createLinkToAPIReference("{{.Tag}}", "{{.OperationID}}"),
-  RunE: func(cmd *cobra.Command, args []string) error {
+}
+
+func {{$cmdvar}}RunE(cmd *cobra.Command, args []string) error {
     {{- if .Deprecated}}
     lib.WarnfStderr(TRCLI("cli.deprecated-api")+"\n")
     {{- if ne .AlternativeCommand ""}}
@@ -162,8 +166,7 @@ var {{ $cmdvar }} = &cobra.Command{
       return prettyPrintStringAsJSON(body)
     }
     return err
-  },
-}
+  }
 
 func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
   {{- if .BodyExists }}
@@ -394,7 +397,7 @@ func buildBodyFor{{$suffix}}() (string, error) {
 
   {{range .IntegerFlags}}
   {{if eq .In "body"}}
-  if {{$prefix}}{{.VarName}} != {{.DefaultValue}} {
+  if {{$cmdvar}}.Flags().Lookup("{{.LongOption}}").Changed {
     result["{{.Name}}"] = {{$prefix}}{{.VarName}}
   }
   {{end}}

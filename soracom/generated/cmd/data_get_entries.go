@@ -36,7 +36,7 @@ var DataGetEntriesCmdPaginate bool
 // DataGetEntriesCmdOutputJSONL indicates to output with jsonl format
 var DataGetEntriesCmdOutputJSONL bool
 
-func init() {
+func InitDataGetEntriesCmd() {
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
@@ -54,6 +54,9 @@ func init() {
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	DataGetEntriesCmd.RunE = DataGetEntriesCmdRunE
+
 	DataCmd.AddCommand(DataGetEntriesCmd)
 }
 
@@ -62,53 +65,54 @@ var DataGetEntriesCmd = &cobra.Command{
 	Use:   "get-entries",
 	Short: TRAPI("/data/{resource_type}/{resource_id}:get:summary"),
 	Long:  TRAPI(`/data/{resource_type}/{resource_id}:get:description`) + "\n\n" + createLinkToAPIReference("DataEntry", "getDataEntries"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DataGetEntriesCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDataGetEntriesCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if DataGetEntriesCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDataGetEntriesCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if DataGetEntriesCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {

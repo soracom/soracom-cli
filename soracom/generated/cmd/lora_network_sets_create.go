@@ -31,7 +31,7 @@ var LoraNetworkSetsCreateCmdAllowedOperators []string
 // LoraNetworkSetsCreateCmdBody holds contents of request body to be sent
 var LoraNetworkSetsCreateCmdBody string
 
-func init() {
+func InitLoraNetworkSetsCreateCmd() {
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdCreatedTime, "created-time", "", TRAPI(""))
 
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdLastModifiedTime, "last-modified-time", "", TRAPI(""))
@@ -43,6 +43,9 @@ func init() {
 	LoraNetworkSetsCreateCmd.Flags().StringSliceVar(&LoraNetworkSetsCreateCmdAllowedOperators, "allowed-operators", []string{}, TRAPI(""))
 
 	LoraNetworkSetsCreateCmd.Flags().StringVar(&LoraNetworkSetsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	LoraNetworkSetsCreateCmd.RunE = LoraNetworkSetsCreateCmdRunE
+
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsCreateCmd)
 }
 
@@ -51,49 +54,50 @@ var LoraNetworkSetsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/lora_network_sets:post:summary"),
 	Long:  TRAPI(`/lora_network_sets:post:description`) + "\n\n" + createLinkToAPIReference("LoraNetworkSet", "createLoraNetworkSet"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LoraNetworkSetsCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLoraNetworkSetsCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLoraNetworkSetsCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLoraNetworkSetsCreateCmdParams(ac *apiClient) (*apiParams, error) {

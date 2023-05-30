@@ -15,10 +15,13 @@ var VpgStopPacketCaptureSessionCmdSessionId string
 // VpgStopPacketCaptureSessionCmdVpgId holds value of 'vpg_id' option
 var VpgStopPacketCaptureSessionCmdVpgId string
 
-func init() {
+func InitVpgStopPacketCaptureSessionCmd() {
 	VpgStopPacketCaptureSessionCmd.Flags().StringVar(&VpgStopPacketCaptureSessionCmdSessionId, "session-id", "", TRAPI("Packet capture session ID"))
 
 	VpgStopPacketCaptureSessionCmd.Flags().StringVar(&VpgStopPacketCaptureSessionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
+
+	VpgStopPacketCaptureSessionCmd.RunE = VpgStopPacketCaptureSessionCmdRunE
+
 	VpgCmd.AddCommand(VpgStopPacketCaptureSessionCmd)
 }
 
@@ -27,49 +30,50 @@ var VpgStopPacketCaptureSessionCmd = &cobra.Command{
 	Use:   "stop-packet-capture-session",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}/stop:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/packet_capture_sessions/{session_id}/stop:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "stopPacketCaptureSession"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgStopPacketCaptureSessionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgStopPacketCaptureSessionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgStopPacketCaptureSessionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgStopPacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {

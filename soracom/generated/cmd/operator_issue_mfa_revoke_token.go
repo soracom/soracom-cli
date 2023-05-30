@@ -22,12 +22,15 @@ var OperatorIssueMfaRevokeTokenCmdPassword string
 // OperatorIssueMfaRevokeTokenCmdBody holds contents of request body to be sent
 var OperatorIssueMfaRevokeTokenCmdBody string
 
-func init() {
+func InitOperatorIssueMfaRevokeTokenCmd() {
 	OperatorIssueMfaRevokeTokenCmd.Flags().StringVar(&OperatorIssueMfaRevokeTokenCmdEmail, "email", "", TRAPI(""))
 
 	OperatorIssueMfaRevokeTokenCmd.Flags().StringVar(&OperatorIssueMfaRevokeTokenCmdPassword, "password", "", TRAPI(""))
 
 	OperatorIssueMfaRevokeTokenCmd.Flags().StringVar(&OperatorIssueMfaRevokeTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	OperatorIssueMfaRevokeTokenCmd.RunE = OperatorIssueMfaRevokeTokenCmdRunE
+
 	OperatorCmd.AddCommand(OperatorIssueMfaRevokeTokenCmd)
 }
 
@@ -36,44 +39,45 @@ var OperatorIssueMfaRevokeTokenCmd = &cobra.Command{
 	Use:   "issue-mfa-revoke-token",
 	Short: TRAPI("/operators/mfa_revoke_token/issue:post:summary"),
 	Long:  TRAPI(`/operators/mfa_revoke_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "issueMFARevokingToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorIssueMfaRevokeTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorIssueMfaRevokeTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectOperatorIssueMfaRevokeTokenCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorIssueMfaRevokeTokenCmdParams(ac *apiClient) (*apiParams, error) {

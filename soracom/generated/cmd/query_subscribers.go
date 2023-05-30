@@ -53,7 +53,7 @@ var QuerySubscribersCmdPaginate bool
 // QuerySubscribersCmdOutputJSONL indicates to output with jsonl format
 var QuerySubscribersCmdOutputJSONL bool
 
-func init() {
+func InitQuerySubscribersCmd() {
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
@@ -81,6 +81,9 @@ func init() {
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	QuerySubscribersCmd.RunE = QuerySubscribersCmdRunE
+
 	QueryCmd.AddCommand(QuerySubscribersCmd)
 }
 
@@ -89,55 +92,56 @@ var QuerySubscribersCmd = &cobra.Command{
 	Use:   "subscribers",
 	Short: TRAPI("/query/subscribers:get:summary"),
 	Long:  TRAPI(`/query/subscribers:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchSubscribers"),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
-		lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func QuerySubscribersCmdRunE(cmd *cobra.Command, args []string) error {
+	lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+	lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectQuerySubscribersCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if QuerySubscribersCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectQuerySubscribersCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if QuerySubscribersCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectQuerySubscribersCmdParams(ac *apiClient) (*apiParams, error) {

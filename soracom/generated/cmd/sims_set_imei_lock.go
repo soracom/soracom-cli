@@ -22,12 +22,15 @@ var SimsSetImeiLockCmdSimId string
 // SimsSetImeiLockCmdBody holds contents of request body to be sent
 var SimsSetImeiLockCmdBody string
 
-func init() {
+func InitSimsSetImeiLockCmd() {
 	SimsSetImeiLockCmd.Flags().StringVar(&SimsSetImeiLockCmdImei, "imei", "", TRAPI(""))
 
 	SimsSetImeiLockCmd.Flags().StringVar(&SimsSetImeiLockCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsSetImeiLockCmd.Flags().StringVar(&SimsSetImeiLockCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SimsSetImeiLockCmd.RunE = SimsSetImeiLockCmdRunE
+
 	SimsCmd.AddCommand(SimsSetImeiLockCmd)
 }
 
@@ -36,49 +39,50 @@ var SimsSetImeiLockCmd = &cobra.Command{
 	Use:   "set-imei-lock",
 	Short: TRAPI("/sims/{sim_id}/set_imei_lock:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/set_imei_lock:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimImeiLock"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsSetImeiLockCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsSetImeiLockCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsSetImeiLockCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsSetImeiLockCmdParams(ac *apiClient) (*apiParams, error) {

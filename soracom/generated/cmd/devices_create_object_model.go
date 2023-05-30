@@ -37,7 +37,7 @@ var DevicesCreateObjectModelCmdScope string
 // DevicesCreateObjectModelCmdBody holds contents of request body to be sent
 var DevicesCreateObjectModelCmdBody string
 
-func init() {
+func InitDevicesCreateObjectModelCmd() {
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdCreatedTime, "created-time", "", TRAPI(""))
 
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdFormat, "format", "", TRAPI(""))
@@ -53,6 +53,9 @@ func init() {
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdScope, "scope", "", TRAPI(""))
 
 	DevicesCreateObjectModelCmd.Flags().StringVar(&DevicesCreateObjectModelCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	DevicesCreateObjectModelCmd.RunE = DevicesCreateObjectModelCmdRunE
+
 	DevicesCmd.AddCommand(DevicesCreateObjectModelCmd)
 }
 
@@ -61,49 +64,50 @@ var DevicesCreateObjectModelCmd = &cobra.Command{
 	Use:   "create-object-model",
 	Short: TRAPI("/device_object_models:post:summary"),
 	Long:  TRAPI(`/device_object_models:post:description`) + "\n\n" + createLinkToAPIReference("DeviceObjectModel", "createDeviceObjectModel"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesCreateObjectModelCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesCreateObjectModelCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesCreateObjectModelCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesCreateObjectModelCmdParams(ac *apiClient) (*apiParams, error) {
