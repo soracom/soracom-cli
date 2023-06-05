@@ -25,7 +25,7 @@ var PayerInformationRegisterCmdFullName string
 // PayerInformationRegisterCmdBody holds contents of request body to be sent
 var PayerInformationRegisterCmdBody string
 
-func init() {
+func InitPayerInformationRegisterCmd() {
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdCompanyName, "company-name", "", TRAPI("Company name"))
 
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdDepartment, "department", "", TRAPI("Department"))
@@ -33,6 +33,9 @@ func init() {
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdFullName, "full-name", "", TRAPI("Full name"))
 
 	PayerInformationRegisterCmd.Flags().StringVar(&PayerInformationRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	PayerInformationRegisterCmd.RunE = PayerInformationRegisterCmdRunE
+
 	PayerInformationCmd.AddCommand(PayerInformationRegisterCmd)
 }
 
@@ -41,49 +44,50 @@ var PayerInformationRegisterCmd = &cobra.Command{
 	Use:   "register",
 	Short: TRAPI("/payment_statements/payer_information:post:summary"),
 	Long:  TRAPI(`/payment_statements/payer_information:post:description`) + "\n\n" + createLinkToAPIReference("Payment", "registerPayerInformation"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func PayerInformationRegisterCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectPayerInformationRegisterCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectPayerInformationRegisterCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectPayerInformationRegisterCmdParams(ac *apiClient) (*apiParams, error) {

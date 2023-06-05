@@ -19,10 +19,13 @@ var DevicesSetGroupCmdDeviceId string
 // DevicesSetGroupCmdBody holds contents of request body to be sent
 var DevicesSetGroupCmdBody string
 
-func init() {
+func InitDevicesSetGroupCmd() {
 	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
 
 	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	DevicesSetGroupCmd.RunE = DevicesSetGroupCmdRunE
+
 	DevicesCmd.AddCommand(DevicesSetGroupCmd)
 }
 
@@ -31,49 +34,50 @@ var DevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TRAPI("/devices/{device_id}/set_group:post:summary"),
 	Long:  TRAPI(`/devices/{device_id}/set_group:post:description`) + "\n\n" + createLinkToAPIReference("Device", "setDeviceGroup"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesSetGroupCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesSetGroupCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesSetGroupCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {

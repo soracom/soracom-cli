@@ -21,10 +21,13 @@ var LagoonMigrationGetInfoCmdPlan string
 // LagoonMigrationGetInfoCmdBody holds contents of request body to be sent
 var LagoonMigrationGetInfoCmdBody string
 
-func init() {
+func InitLagoonMigrationGetInfoCmd() {
 	LagoonMigrationGetInfoCmd.Flags().StringVar(&LagoonMigrationGetInfoCmdPlan, "plan", "", TRAPI(""))
 
 	LagoonMigrationGetInfoCmd.Flags().StringVar(&LagoonMigrationGetInfoCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	LagoonMigrationGetInfoCmd.RunE = LagoonMigrationGetInfoCmdRunE
+
 	LagoonMigrationCmd.AddCommand(LagoonMigrationGetInfoCmd)
 }
 
@@ -33,50 +36,51 @@ var LagoonMigrationGetInfoCmd = &cobra.Command{
 	Use:   "get-info",
 	Short: TRAPI("/lagoon/migration:get:summary"),
 	Long:  TRAPI(`/lagoon/migration:get:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "getLagoonMigrationInfo"),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LagoonMigrationGetInfoCmdRunE(cmd *cobra.Command, args []string) error {
+	lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLagoonMigrationGetInfoCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLagoonMigrationGetInfoCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLagoonMigrationGetInfoCmdParams(ac *apiClient) (*apiParams, error) {

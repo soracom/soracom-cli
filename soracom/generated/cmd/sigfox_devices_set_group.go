@@ -31,7 +31,7 @@ var SigfoxDevicesSetGroupCmdLastModifiedTime int64
 // SigfoxDevicesSetGroupCmdBody holds contents of request body to be sent
 var SigfoxDevicesSetGroupCmdBody string
 
-func init() {
+func InitSigfoxDevicesSetGroupCmd() {
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
@@ -43,6 +43,9 @@ func init() {
 	SigfoxDevicesSetGroupCmd.Flags().Int64Var(&SigfoxDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SigfoxDevicesSetGroupCmd.RunE = SigfoxDevicesSetGroupCmdRunE
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesSetGroupCmd)
 }
 
@@ -51,49 +54,50 @@ var SigfoxDevicesSetGroupCmd = &cobra.Command{
 	Use:   "set-group",
 	Short: TRAPI("/sigfox_devices/{device_id}/set_group:post:summary"),
 	Long:  TRAPI(`/sigfox_devices/{device_id}/set_group:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "setSigfoxDeviceGroup"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SigfoxDevicesSetGroupCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSigfoxDevicesSetGroupCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSigfoxDevicesSetGroupCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSigfoxDevicesSetGroupCmdParams(ac *apiClient) (*apiParams, error) {
@@ -183,11 +187,11 @@ func buildBodyForSigfoxDevicesSetGroupCmd() (string, error) {
 		result["operatorId"] = SigfoxDevicesSetGroupCmdOperatorId
 	}
 
-	if SigfoxDevicesSetGroupCmdCreatedTime != 0 {
+	if SigfoxDevicesSetGroupCmd.Flags().Lookup("created-time").Changed {
 		result["createdTime"] = SigfoxDevicesSetGroupCmdCreatedTime
 	}
 
-	if SigfoxDevicesSetGroupCmdLastModifiedTime != 0 {
+	if SigfoxDevicesSetGroupCmd.Flags().Lookup("last-modified-time").Changed {
 		result["lastModifiedTime"] = SigfoxDevicesSetGroupCmdLastModifiedTime
 	}
 

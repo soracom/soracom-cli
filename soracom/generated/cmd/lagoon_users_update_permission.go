@@ -22,12 +22,15 @@ var LagoonUsersUpdatePermissionCmdLagoonUserId int64
 // LagoonUsersUpdatePermissionCmdBody holds contents of request body to be sent
 var LagoonUsersUpdatePermissionCmdBody string
 
-func init() {
+func InitLagoonUsersUpdatePermissionCmd() {
 	LagoonUsersUpdatePermissionCmd.Flags().StringVar(&LagoonUsersUpdatePermissionCmdRole, "role", "", TRAPI("A role that represents the permission."))
 
 	LagoonUsersUpdatePermissionCmd.Flags().Int64Var(&LagoonUsersUpdatePermissionCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
 
 	LagoonUsersUpdatePermissionCmd.Flags().StringVar(&LagoonUsersUpdatePermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	LagoonUsersUpdatePermissionCmd.RunE = LagoonUsersUpdatePermissionCmdRunE
+
 	LagoonUsersCmd.AddCommand(LagoonUsersUpdatePermissionCmd)
 }
 
@@ -36,49 +39,50 @@ var LagoonUsersUpdatePermissionCmd = &cobra.Command{
 	Use:   "update-permission",
 	Short: TRAPI("/lagoon/users/{lagoon_user_id}/permission:put:summary"),
 	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}/permission:put:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "updateLagoonUserPermission"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LagoonUsersUpdatePermissionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLagoonUsersUpdatePermissionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLagoonUsersUpdatePermissionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLagoonUsersUpdatePermissionCmdParams(ac *apiClient) (*apiParams, error) {

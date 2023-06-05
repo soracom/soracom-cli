@@ -55,7 +55,7 @@ var OperatorUpdateCompanyInformationCmdZipCode string
 // OperatorUpdateCompanyInformationCmdBody holds contents of request body to be sent
 var OperatorUpdateCompanyInformationCmdBody string
 
-func init() {
+func InitOperatorUpdateCompanyInformationCmd() {
 	OperatorUpdateCompanyInformationCmd.Flags().StringVar(&OperatorUpdateCompanyInformationCmdAddressLine1, "address-line1", "", TRAPI(""))
 
 	OperatorUpdateCompanyInformationCmd.Flags().StringVar(&OperatorUpdateCompanyInformationCmdAddressLine2, "address-line2", "", TRAPI(""))
@@ -83,6 +83,9 @@ func init() {
 	OperatorUpdateCompanyInformationCmd.Flags().StringVar(&OperatorUpdateCompanyInformationCmdZipCode, "zip-code", "", TRAPI(""))
 
 	OperatorUpdateCompanyInformationCmd.Flags().StringVar(&OperatorUpdateCompanyInformationCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	OperatorUpdateCompanyInformationCmd.RunE = OperatorUpdateCompanyInformationCmdRunE
+
 	OperatorCmd.AddCommand(OperatorUpdateCompanyInformationCmd)
 }
 
@@ -91,49 +94,50 @@ var OperatorUpdateCompanyInformationCmd = &cobra.Command{
 	Use:   "update-company-information",
 	Short: TRAPI("/operators/{operator_id}/company_information:put:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/company_information:put:description`) + "\n\n" + createLinkToAPIReference("Operator", "updateCompanyInformation"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func OperatorUpdateCompanyInformationCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectOperatorUpdateCompanyInformationCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectOperatorUpdateCompanyInformationCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectOperatorUpdateCompanyInformationCmdParams(ac *apiClient) (*apiParams, error) {

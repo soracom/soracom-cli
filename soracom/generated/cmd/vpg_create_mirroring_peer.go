@@ -31,7 +31,7 @@ var VpgCreateMirroringPeerCmdEnabled bool
 // VpgCreateMirroringPeerCmdBody holds contents of request body to be sent
 var VpgCreateMirroringPeerCmdBody string
 
-func init() {
+func InitVpgCreateMirroringPeerCmd() {
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdDescription, "description", "", TRAPI(""))
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdIpAddress, "ip-address", "", TRAPI(""))
@@ -43,6 +43,9 @@ func init() {
 	VpgCreateMirroringPeerCmd.Flags().BoolVar(&VpgCreateMirroringPeerCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgCreateMirroringPeerCmd.Flags().StringVar(&VpgCreateMirroringPeerCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgCreateMirroringPeerCmd.RunE = VpgCreateMirroringPeerCmdRunE
+
 	VpgCmd.AddCommand(VpgCreateMirroringPeerCmd)
 }
 
@@ -51,49 +54,50 @@ var VpgCreateMirroringPeerCmd = &cobra.Command{
 	Use:   "create-mirroring-peer",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/mirroring/peers:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "createMirroringPeer"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgCreateMirroringPeerCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgCreateMirroringPeerCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgCreateMirroringPeerCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgCreateMirroringPeerCmdParams(ac *apiClient) (*apiParams, error) {
@@ -187,7 +191,7 @@ func buildBodyForVpgCreateMirroringPeerCmd() (string, error) {
 		result["protocol"] = VpgCreateMirroringPeerCmdProtocol
 	}
 
-	if VpgCreateMirroringPeerCmdEnabled != false {
+	if VpgCreateMirroringPeerCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgCreateMirroringPeerCmdEnabled
 	}
 

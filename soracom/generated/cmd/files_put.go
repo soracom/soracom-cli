@@ -25,7 +25,7 @@ var FilesPutCmdScope string
 // FilesPutCmdBody holds contents of request body to be sent
 var FilesPutCmdBody string
 
-func init() {
+func InitFilesPutCmd() {
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdContentType, "content-type", "", TRAPI("Content type of the file to upload"))
 
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdPath, "path", "", TRAPI("Target path"))
@@ -33,6 +33,9 @@ func init() {
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdScope, "scope", "private", TRAPI("Scope of the request"))
 
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	FilesPutCmd.RunE = FilesPutCmdRunE
+
 	FilesCmd.AddCommand(FilesPutCmd)
 }
 
@@ -41,49 +44,50 @@ var FilesPutCmd = &cobra.Command{
 	Use:   "put",
 	Short: TRAPI("/files/{scope}/{path}:put:summary"),
 	Long:  TRAPI(`/files/{scope}/{path}:put:description`) + "\n\n" + createLinkToAPIReference("FileEntry", "putFile"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func FilesPutCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectFilesPutCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectFilesPutCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectFilesPutCmdParams(ac *apiClient) (*apiParams, error) {

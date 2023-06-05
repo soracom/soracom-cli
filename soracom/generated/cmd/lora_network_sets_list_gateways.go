@@ -24,7 +24,7 @@ var LoraNetworkSetsListGatewaysCmdPaginate bool
 // LoraNetworkSetsListGatewaysCmdOutputJSONL indicates to output with jsonl format
 var LoraNetworkSetsListGatewaysCmdOutputJSONL bool
 
-func init() {
+func InitLoraNetworkSetsListGatewaysCmd() {
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
@@ -34,6 +34,9 @@ func init() {
 	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	LoraNetworkSetsListGatewaysCmd.RunE = LoraNetworkSetsListGatewaysCmdRunE
+
 	LoraNetworkSetsCmd.AddCommand(LoraNetworkSetsListGatewaysCmd)
 }
 
@@ -42,53 +45,54 @@ var LoraNetworkSetsListGatewaysCmd = &cobra.Command{
 	Use:   "list-gateways",
 	Short: TRAPI("/lora_network_sets/{ns_id}/gateways:get:summary"),
 	Long:  TRAPI(`/lora_network_sets/{ns_id}/gateways:get:description`) + "\n\n" + createLinkToAPIReference("LoraNetworkSet", "listGatewaysInLoraNetworkSet"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LoraNetworkSetsListGatewaysCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLoraNetworkSetsListGatewaysCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if LoraNetworkSetsListGatewaysCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLoraNetworkSetsListGatewaysCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if LoraNetworkSetsListGatewaysCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, error) {

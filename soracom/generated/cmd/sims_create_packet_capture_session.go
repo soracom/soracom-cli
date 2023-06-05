@@ -25,7 +25,7 @@ var SimsCreatePacketCaptureSessionCmdDuration int64
 // SimsCreatePacketCaptureSessionCmdBody holds contents of request body to be sent
 var SimsCreatePacketCaptureSessionCmdBody string
 
-func init() {
+func InitSimsCreatePacketCaptureSessionCmd() {
 	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdPrefix, "prefix", "", TRAPI(""))
 
 	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdSimId, "sim-id", "", TRAPI("The SIM ID for which a packet capture session is created"))
@@ -33,6 +33,9 @@ func init() {
 	SimsCreatePacketCaptureSessionCmd.Flags().Int64Var(&SimsCreatePacketCaptureSessionCmdDuration, "duration", 0, TRAPI(""))
 
 	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SimsCreatePacketCaptureSessionCmd.RunE = SimsCreatePacketCaptureSessionCmdRunE
+
 	SimsCmd.AddCommand(SimsCreatePacketCaptureSessionCmd)
 }
 
@@ -41,49 +44,50 @@ var SimsCreatePacketCaptureSessionCmd = &cobra.Command{
 	Use:   "create-packet-capture-session",
 	Short: TRAPI("/sims/{sim_id}/packet_capture_sessions:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "createSimPacketCaptureSession"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsCreatePacketCaptureSessionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsCreatePacketCaptureSessionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsCreatePacketCaptureSessionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsCreatePacketCaptureSessionCmdParams(ac *apiClient) (*apiParams, error) {
@@ -174,7 +178,7 @@ func buildBodyForSimsCreatePacketCaptureSessionCmd() (string, error) {
 		result["prefix"] = SimsCreatePacketCaptureSessionCmdPrefix
 	}
 
-	if SimsCreatePacketCaptureSessionCmdDuration != 0 {
+	if SimsCreatePacketCaptureSessionCmd.Flags().Lookup("duration").Changed {
 		result["duration"] = SimsCreatePacketCaptureSessionCmdDuration
 	}
 

@@ -30,7 +30,7 @@ var GroupsListCmdPaginate bool
 // GroupsListCmdOutputJSONL indicates to output with jsonl format
 var GroupsListCmdOutputJSONL bool
 
-func init() {
+func InitGroupsListCmd() {
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
 
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagName, "tag-name", "", TRAPI("Tag name of the group. Filters through all groups that exactly match the tag name. When tag_name is specified, tag_value is required."))
@@ -44,6 +44,9 @@ func init() {
 	GroupsListCmd.Flags().BoolVar(&GroupsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GroupsListCmd.Flags().BoolVar(&GroupsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	GroupsListCmd.RunE = GroupsListCmdRunE
+
 	GroupsCmd.AddCommand(GroupsListCmd)
 }
 
@@ -52,53 +55,54 @@ var GroupsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/groups:get:summary"),
 	Long:  TRAPI(`/groups:get:description`) + "\n\n" + createLinkToAPIReference("Group", "listGroups"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func GroupsListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectGroupsListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if GroupsListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectGroupsListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if GroupsListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectGroupsListCmdParams(ac *apiClient) (*apiParams, error) {

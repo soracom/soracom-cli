@@ -75,7 +75,7 @@ func run() error {
 }
 
 func generateCommands(apiDef, apiSandboxDef *openapi3.T, templateDir, predefinedDir, outputDir string) error {
-	err := generateRootCommand(apiDef, templateDir, outputDir)
+	err := generateRootCommand(apiDef, apiSandboxDef, templateDir, outputDir)
 	if err != nil {
 		return err
 	}

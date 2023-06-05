@@ -24,12 +24,15 @@ var SimsAttachArcCredentialsCmdSimId string
 // SimsAttachArcCredentialsCmdBody holds contents of request body to be sent
 var SimsAttachArcCredentialsCmdBody string
 
-func init() {
+func InitSimsAttachArcCredentialsCmd() {
 	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdArcClientPeerPublicKey, "arc-client-peer-public-key", "", TRAPI("if this parameter is missing, the sever generates keypair"))
 
 	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM"))
 
 	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SimsAttachArcCredentialsCmd.RunE = SimsAttachArcCredentialsCmdRunE
+
 	SimsCmd.AddCommand(SimsAttachArcCredentialsCmd)
 }
 
@@ -38,50 +41,51 @@ var SimsAttachArcCredentialsCmd = &cobra.Command{
 	Use:   "attach-arc-credentials",
 	Short: TRAPI("/sims/{sim_id}/credentials/arc:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/credentials/arc:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "attachArcSimCredentials"),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsAttachArcCredentialsCmdRunE(cmd *cobra.Command, args []string) error {
+	lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsAttachArcCredentialsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsAttachArcCredentialsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsAttachArcCredentialsCmdParams(ac *apiClient) (*apiParams, error) {

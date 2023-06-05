@@ -25,7 +25,7 @@ var SandboxOperatorsGetSignupTokenCmdEmail string
 // SandboxOperatorsGetSignupTokenCmdBody holds contents of request body to be sent
 var SandboxOperatorsGetSignupTokenCmdBody string
 
-func init() {
+func InitSandboxOperatorsGetSignupTokenCmd() {
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdAuthKey, "auth-key", "", TRAPI(""))
 
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdEmail, "email", "", TRAPI("email"))
 
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SandboxOperatorsGetSignupTokenCmd.RunE = SandboxOperatorsGetSignupTokenCmdRunE
+
 	SandboxOperatorsCmd.AddCommand(SandboxOperatorsGetSignupTokenCmd)
 }
 
@@ -41,44 +44,45 @@ var SandboxOperatorsGetSignupTokenCmd = &cobra.Command{
 	Use:   "get-signup-token",
 	Short: TRAPI("/sandbox/operators/token/{email}:post:summary"),
 	Long:  TRAPI(`/sandbox/operators/token/{email}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxGetSignupToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SandboxOperatorsGetSignupTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSandboxOperatorsGetSignupTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectSandboxOperatorsGetSignupTokenCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSandboxOperatorsGetSignupTokenCmdParams(ac *apiClient) (*apiParams, error) {

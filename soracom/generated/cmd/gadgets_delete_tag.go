@@ -18,12 +18,15 @@ var GadgetsDeleteTagCmdSerialNumber string
 // GadgetsDeleteTagCmdTagName holds value of 'tag_name' option
 var GadgetsDeleteTagCmdTagName string
 
-func init() {
+func InitGadgetsDeleteTagCmd() {
 	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
 	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
 
 	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+
+	GadgetsDeleteTagCmd.RunE = GadgetsDeleteTagCmdRunE
+
 	GadgetsCmd.AddCommand(GadgetsDeleteTagCmd)
 }
 
@@ -32,49 +35,50 @@ var GadgetsDeleteTagCmd = &cobra.Command{
 	Use:   "delete-tag",
 	Short: TRAPI("/gadgets/{product_id}/{serial_number}/tags/{tag_name}:delete:summary"),
 	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}/tags/{tag_name}:delete:description`) + "\n\n" + createLinkToAPIReference("Gadget", "deleteGadgetTag"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func GadgetsDeleteTagCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectGadgetsDeleteTagCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectGadgetsDeleteTagCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectGadgetsDeleteTagCmdParams(ac *apiClient) (*apiParams, error) {

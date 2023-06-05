@@ -31,7 +31,7 @@ var StatsFunkExportCmdTo int64
 // StatsFunkExportCmdBody holds contents of request body to be sent
 var StatsFunkExportCmdBody string
 
-func init() {
+func InitStatsFunkExportCmd() {
 	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
 	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
@@ -43,6 +43,9 @@ func init() {
 	StatsFunkExportCmd.Flags().Int64Var(&StatsFunkExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
 
 	StatsFunkExportCmd.Flags().StringVar(&StatsFunkExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	StatsFunkExportCmd.RunE = StatsFunkExportCmdRunE
+
 	StatsFunkCmd.AddCommand(StatsFunkExportCmd)
 }
 
@@ -51,50 +54,51 @@ var StatsFunkExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/stats/funk/operators/{operator_id}/export:post:summary"),
 	Long:  TRAPI(`/stats/funk/operators/{operator_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "exportFunkStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsFunkExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsFunkExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-		rawOutput = true
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsFunkExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+	rawOutput = true
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsFunkExportCmdParams(ac *apiClient) (*apiParams, error) {
@@ -183,11 +187,11 @@ func buildBodyForStatsFunkExportCmd() (string, error) {
 		result["period"] = StatsFunkExportCmdPeriod
 	}
 
-	if StatsFunkExportCmdFrom != 0 {
+	if StatsFunkExportCmd.Flags().Lookup("from").Changed {
 		result["from"] = StatsFunkExportCmdFrom
 	}
 
-	if StatsFunkExportCmdTo != 0 {
+	if StatsFunkExportCmd.Flags().Lookup("to").Changed {
 		result["to"] = StatsFunkExportCmdTo
 	}
 

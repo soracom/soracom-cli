@@ -28,7 +28,7 @@ var VpgSetRedirectionCmdEnabled bool
 // VpgSetRedirectionCmdBody holds contents of request body to be sent
 var VpgSetRedirectionCmdBody string
 
-func init() {
+func InitVpgSetRedirectionCmd() {
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdDescription, "description", "", TRAPI(""))
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdGateway, "gateway", "", TRAPI(""))
@@ -38,6 +38,9 @@ func init() {
 	VpgSetRedirectionCmd.Flags().BoolVar(&VpgSetRedirectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetRedirectionCmd.Flags().StringVar(&VpgSetRedirectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgSetRedirectionCmd.RunE = VpgSetRedirectionCmdRunE
+
 	VpgCmd.AddCommand(VpgSetRedirectionCmd)
 }
 
@@ -46,49 +49,50 @@ var VpgSetRedirectionCmd = &cobra.Command{
 	Use:   "set-redirection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/set_redirection:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_redirection:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "setRedirectionConfiguration"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgSetRedirectionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgSetRedirectionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgSetRedirectionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgSetRedirectionCmdParams(ac *apiClient) (*apiParams, error) {
@@ -178,7 +182,7 @@ func buildBodyForVpgSetRedirectionCmd() (string, error) {
 		result["gateway"] = VpgSetRedirectionCmdGateway
 	}
 
-	if VpgSetRedirectionCmdEnabled != false {
+	if VpgSetRedirectionCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgSetRedirectionCmdEnabled
 	}
 

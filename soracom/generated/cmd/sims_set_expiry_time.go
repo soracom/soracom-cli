@@ -25,7 +25,7 @@ var SimsSetExpiryTimeCmdExpiryTime int64
 // SimsSetExpiryTimeCmdBody holds contents of request body to be sent
 var SimsSetExpiryTimeCmdBody string
 
-func init() {
+func InitSimsSetExpiryTimeCmd() {
 	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("Action at expiration. Specify one of the following Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify 'terminate' as an action.If omitted, a null value is set.- 'doNothing' : do nothing- 'deleteSession' : delete session of the SIM if any- 'deactivate' : change the SIM status to Inactive- 'suspend' : change the SIM status to Suspended- 'terminate' : forcibly end any existing connections, and terminate the SIM- null value : not set (It works the same as 'doNothing')"))
 
 	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
@@ -33,6 +33,9 @@ func init() {
 	SimsSetExpiryTimeCmd.Flags().Int64Var(&SimsSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("Timestamp of date and time set using the Expiration function (UNIX time in milliseconds)"))
 
 	SimsSetExpiryTimeCmd.Flags().StringVar(&SimsSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SimsSetExpiryTimeCmd.RunE = SimsSetExpiryTimeCmdRunE
+
 	SimsCmd.AddCommand(SimsSetExpiryTimeCmd)
 }
 
@@ -41,49 +44,50 @@ var SimsSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
 	Short: TRAPI("/sims/{sim_id}/set_expiry_time:post:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/set_expiry_time:post:description`) + "\n\n" + createLinkToAPIReference("Sim", "setSimExpiryTime"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsSetExpiryTimeCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsSetExpiryTimeCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsSetExpiryTimeCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
@@ -174,7 +178,7 @@ func buildBodyForSimsSetExpiryTimeCmd() (string, error) {
 		result["expiryAction"] = SimsSetExpiryTimeCmdExpiryAction
 	}
 
-	if SimsSetExpiryTimeCmdExpiryTime != 0 {
+	if SimsSetExpiryTimeCmd.Flags().Lookup("expiry-time").Changed {
 		result["expiryTime"] = SimsSetExpiryTimeCmdExpiryTime
 	}
 

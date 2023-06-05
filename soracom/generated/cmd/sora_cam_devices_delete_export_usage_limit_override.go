@@ -12,8 +12,11 @@ import (
 // SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId holds value of 'device_id' option
 var SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId string
 
-func init() {
+func InitSoraCamDevicesDeleteExportUsageLimitOverrideCmd() {
 	SoraCamDevicesDeleteExportUsageLimitOverrideCmd.Flags().StringVar(&SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+
+	SoraCamDevicesDeleteExportUsageLimitOverrideCmd.RunE = SoraCamDevicesDeleteExportUsageLimitOverrideCmdRunE
+
 	SoraCamDevicesCmd.AddCommand(SoraCamDevicesDeleteExportUsageLimitOverrideCmd)
 }
 
@@ -22,49 +25,50 @@ var SoraCamDevicesDeleteExportUsageLimitOverrideCmd = &cobra.Command{
 	Use:   "delete-export-usage-limit-override",
 	Short: TRAPI("/sora_cam/devices/{device_id}/exports/usage/limit_override:delete:summary"),
 	Long:  TRAPI(`/sora_cam/devices/{device_id}/exports/usage/limit_override:delete:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "deleteSoraCamDeviceExportUsageLimitOverride"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraCamDevicesDeleteExportUsageLimitOverrideCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraCamDevicesDeleteExportUsageLimitOverrideCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraCamDevicesDeleteExportUsageLimitOverrideCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraCamDevicesDeleteExportUsageLimitOverrideCmdParams(ac *apiClient) (*apiParams, error) {

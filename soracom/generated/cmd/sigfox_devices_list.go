@@ -30,7 +30,7 @@ var SigfoxDevicesListCmdPaginate bool
 // SigfoxDevicesListCmdOutputJSONL indicates to output with jsonl format
 var SigfoxDevicesListCmdOutputJSONL bool
 
-func init() {
+func InitSigfoxDevicesListCmd() {
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
@@ -44,6 +44,9 @@ func init() {
 	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	SigfoxDevicesListCmd.RunE = SigfoxDevicesListCmdRunE
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesListCmd)
 }
 
@@ -52,53 +55,54 @@ var SigfoxDevicesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/sigfox_devices:get:summary"),
 	Long:  TRAPI(`/sigfox_devices:get:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "listSigfoxDevices"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SigfoxDevicesListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSigfoxDevicesListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if SigfoxDevicesListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSigfoxDevicesListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if SigfoxDevicesListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSigfoxDevicesListCmdParams(ac *apiClient) (*apiParams, error) {

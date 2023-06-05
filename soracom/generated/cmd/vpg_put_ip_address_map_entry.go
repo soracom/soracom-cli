@@ -25,7 +25,7 @@ var VpgPutIpAddressMapEntryCmdVpgId string
 // VpgPutIpAddressMapEntryCmdBody holds contents of request body to be sent
 var VpgPutIpAddressMapEntryCmdBody string
 
-func init() {
+func InitVpgPutIpAddressMapEntryCmd() {
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI(""))
 
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgPutIpAddressMapEntryCmd.RunE = VpgPutIpAddressMapEntryCmdRunE
+
 	VpgCmd.AddCommand(VpgPutIpAddressMapEntryCmd)
 }
 
@@ -41,49 +44,50 @@ var VpgPutIpAddressMapEntryCmd = &cobra.Command{
 	Use:   "put-ip-address-map-entry",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/ip_address_map:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/ip_address_map:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "putVirtualPrivateGatewayIpAddressMapEntry"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgPutIpAddressMapEntryCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgPutIpAddressMapEntryCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgPutIpAddressMapEntryCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgPutIpAddressMapEntryCmdParams(ac *apiClient) (*apiParams, error) {

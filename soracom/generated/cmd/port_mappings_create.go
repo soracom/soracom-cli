@@ -22,12 +22,15 @@ var PortMappingsCreateCmdTlsRequired bool
 // PortMappingsCreateCmdBody holds contents of request body to be sent
 var PortMappingsCreateCmdBody string
 
-func init() {
+func InitPortMappingsCreateCmd() {
 	PortMappingsCreateCmd.Flags().Float64Var(&PortMappingsCreateCmdDuration, "duration", 0, TRAPI("Specify the duration, in seconds, that remote access should be enabled."))
 
 	PortMappingsCreateCmd.Flags().BoolVar(&PortMappingsCreateCmdTlsRequired, "tls-required", false, TRAPI("Specify whether access uses TLS."))
 
 	PortMappingsCreateCmd.Flags().StringVar(&PortMappingsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	PortMappingsCreateCmd.RunE = PortMappingsCreateCmdRunE
+
 	PortMappingsCmd.AddCommand(PortMappingsCreateCmd)
 }
 
@@ -36,49 +39,50 @@ var PortMappingsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/port_mappings:post:summary"),
 	Long:  TRAPI(`/port_mappings:post:description`) + "\n\n" + createLinkToAPIReference("PortMapping", "createPortMapping"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func PortMappingsCreateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectPortMappingsCreateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectPortMappingsCreateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectPortMappingsCreateCmdParams(ac *apiClient) (*apiParams, error) {
@@ -151,11 +155,11 @@ func buildBodyForPortMappingsCreateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if PortMappingsCreateCmdDuration != 0 {
+	if PortMappingsCreateCmd.Flags().Lookup("duration").Changed {
 		result["duration"] = PortMappingsCreateCmdDuration
 	}
 
-	if PortMappingsCreateCmdTlsRequired != false {
+	if PortMappingsCreateCmd.Flags().Lookup("tls-required").Changed {
 		result["tlsRequired"] = PortMappingsCreateCmdTlsRequired
 	}
 

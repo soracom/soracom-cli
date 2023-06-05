@@ -15,10 +15,13 @@ var LagoonUsersListCmdClassic bool
 // LagoonUsersListCmdOutputJSONL indicates to output with jsonl format
 var LagoonUsersListCmdOutputJSONL bool
 
-func init() {
+func InitLagoonUsersListCmd() {
 	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
 
 	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	LagoonUsersListCmd.RunE = LagoonUsersListCmdRunE
+
 	LagoonUsersCmd.AddCommand(LagoonUsersListCmd)
 }
 
@@ -27,53 +30,54 @@ var LagoonUsersListCmd = &cobra.Command{
 	Use:   "list",
 	Short: TRAPI("/lagoon/users:get:summary"),
 	Long:  TRAPI(`/lagoon/users:get:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "listLagoonUsers"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LagoonUsersListCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLagoonUsersListCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if LagoonUsersListCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLagoonUsersListCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if LagoonUsersListCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLagoonUsersListCmdParams(ac *apiClient) (*apiParams, error) {

@@ -22,12 +22,15 @@ var SoraletsUploadCmdSoraletId string
 // SoraletsUploadCmdBody holds contents of request body to be sent
 var SoraletsUploadCmdBody string
 
-func init() {
+func InitSoraletsUploadCmd() {
 	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdContentType, "content-type", "", TRAPI("Content type of the file to upload"))
 
 	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
 
 	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SoraletsUploadCmd.RunE = SoraletsUploadCmdRunE
+
 	SoraletsCmd.AddCommand(SoraletsUploadCmd)
 }
 
@@ -36,49 +39,50 @@ var SoraletsUploadCmd = &cobra.Command{
 	Use:   "upload",
 	Short: TRAPI("/soralets/{soralet_id}/versions:post:summary"),
 	Long:  TRAPI(`/soralets/{soralet_id}/versions:post:description`) + "\n\n" + createLinkToAPIReference("Soralet", "uploadSoraletCode"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraletsUploadCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraletsUploadCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraletsUploadCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraletsUploadCmdParams(ac *apiClient) (*apiParams, error) {

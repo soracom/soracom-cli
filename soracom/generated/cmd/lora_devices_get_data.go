@@ -33,7 +33,7 @@ var LoraDevicesGetDataCmdPaginate bool
 // LoraDevicesGetDataCmdOutputJSONL indicates to output with jsonl format
 var LoraDevicesGetDataCmdOutputJSONL bool
 
-func init() {
+func InitLoraDevicesGetDataCmd() {
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
 
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
@@ -49,6 +49,9 @@ func init() {
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	LoraDevicesGetDataCmd.RunE = LoraDevicesGetDataCmdRunE
+
 	LoraDevicesCmd.AddCommand(LoraDevicesGetDataCmd)
 }
 
@@ -57,53 +60,54 @@ var LoraDevicesGetDataCmd = &cobra.Command{
 	Use:   "get-data",
 	Short: TRAPI("/lora_devices/{device_id}/data:get:summary"),
 	Long:  TRAPI(`/lora_devices/{device_id}/data:get:description`) + "\n\n" + createLinkToAPIReference("LoraDevice", "getDataFromLoraDevice"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LoraDevicesGetDataCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLoraDevicesGetDataCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if LoraDevicesGetDataCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLoraDevicesGetDataCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if LoraDevicesGetDataCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {

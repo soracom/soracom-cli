@@ -25,7 +25,7 @@ var SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity int64
 // SoraCamLicensePacksUpdateQuantityCmdBody holds contents of request body to be sent
 var SoraCamLicensePacksUpdateQuantityCmdBody string
 
-func init() {
+func InitSoraCamLicensePacksUpdateQuantityCmd() {
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdLicensePackId, "license-pack-id", "", TRAPI("ID of the license pack"))
 
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity, "current-quantity", 0, TRAPI("Current license quantity of the license pack"))
@@ -33,6 +33,9 @@ func init() {
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity, "desired-quantity", 0, TRAPI("Desired license quantity of the license pack"))
 
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SoraCamLicensePacksUpdateQuantityCmd.RunE = SoraCamLicensePacksUpdateQuantityCmdRunE
+
 	SoraCamLicensePacksCmd.AddCommand(SoraCamLicensePacksUpdateQuantityCmd)
 }
 
@@ -41,49 +44,50 @@ var SoraCamLicensePacksUpdateQuantityCmd = &cobra.Command{
 	Use:   "update-quantity",
 	Short: TRAPI("/sora_cam/license_packs/{license_pack_id}/quantity:put:summary"),
 	Long:  TRAPI(`/sora_cam/license_packs/{license_pack_id}/quantity:put:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "updateSoraCamLicensePackQuantity"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraCamLicensePacksUpdateQuantityCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraCamLicensePacksUpdateQuantityCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraCamLicensePacksUpdateQuantityCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraCamLicensePacksUpdateQuantityCmdParams(ac *apiClient) (*apiParams, error) {
@@ -165,11 +169,11 @@ func buildBodyForSoraCamLicensePacksUpdateQuantityCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity != 0 {
+	if SoraCamLicensePacksUpdateQuantityCmd.Flags().Lookup("current-quantity").Changed {
 		result["currentQuantity"] = SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity
 	}
 
-	if SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity != 0 {
+	if SoraCamLicensePacksUpdateQuantityCmd.Flags().Lookup("desired-quantity").Changed {
 		result["desiredQuantity"] = SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity
 	}
 

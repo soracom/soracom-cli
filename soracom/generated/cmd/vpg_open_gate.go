@@ -25,7 +25,7 @@ var VpgOpenGateCmdPrivacySeparatorEnabled bool
 // VpgOpenGateCmdBody holds contents of request body to be sent
 var VpgOpenGateCmdBody string
 
-func init() {
+func InitVpgOpenGateCmd() {
 	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgOpenGateCmd.Flags().Int64Var(&VpgOpenGateCmdVxlanId, "vxlan-id", 10, TRAPI(""))
@@ -33,6 +33,9 @@ func init() {
 	VpgOpenGateCmd.Flags().BoolVar(&VpgOpenGateCmdPrivacySeparatorEnabled, "privacy-separator-enabled", false, TRAPI(""))
 
 	VpgOpenGateCmd.Flags().StringVar(&VpgOpenGateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgOpenGateCmd.RunE = VpgOpenGateCmdRunE
+
 	VpgCmd.AddCommand(VpgOpenGateCmd)
 }
 
@@ -41,49 +44,50 @@ var VpgOpenGateCmd = &cobra.Command{
 	Use:   "open-gate",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/open:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/open:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "openGate"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgOpenGateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgOpenGateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgOpenGateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgOpenGateCmdParams(ac *apiClient) (*apiParams, error) {
@@ -165,11 +169,11 @@ func buildBodyForVpgOpenGateCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if VpgOpenGateCmdVxlanId != 10 {
+	if VpgOpenGateCmd.Flags().Lookup("vxlan-id").Changed {
 		result["vxlanId"] = VpgOpenGateCmdVxlanId
 	}
 
-	if VpgOpenGateCmdPrivacySeparatorEnabled != false {
+	if VpgOpenGateCmd.Flags().Lookup("privacy-separator-enabled").Changed {
 		result["privacySeparatorEnabled"] = VpgOpenGateCmdPrivacySeparatorEnabled
 	}
 

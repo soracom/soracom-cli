@@ -28,7 +28,7 @@ var SystemNotificationsSetCmdEmailIdList []string
 // SystemNotificationsSetCmdBody holds contents of request body to be sent
 var SystemNotificationsSetCmdBody string
 
-func init() {
+func InitSystemNotificationsSetCmd() {
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdPassword, "password", "", TRAPI("Password of the operator. This is necessary when type is primary."))
@@ -38,6 +38,9 @@ func init() {
 	SystemNotificationsSetCmd.Flags().StringSliceVar(&SystemNotificationsSetCmdEmailIdList, "email-id-list", []string{}, TRAPI(""))
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SystemNotificationsSetCmd.RunE = SystemNotificationsSetCmdRunE
+
 	SystemNotificationsCmd.AddCommand(SystemNotificationsSetCmd)
 }
 
@@ -46,49 +49,50 @@ var SystemNotificationsSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: TRAPI("/operators/{operator_id}/system_notifications/{type}:post:summary"),
 	Long:  TRAPI(`/operators/{operator_id}/system_notifications/{type}:post:description`) + "\n\n" + createLinkToAPIReference("SystemNotification", "setSystemNotification"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SystemNotificationsSetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSystemNotificationsSetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSystemNotificationsSetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSystemNotificationsSetCmdParams(ac *apiClient) (*apiParams, error) {

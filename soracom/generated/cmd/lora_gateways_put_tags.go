@@ -19,10 +19,13 @@ var LoraGatewaysPutTagsCmdGatewayId string
 // LoraGatewaysPutTagsCmdBody holds contents of request body to be sent
 var LoraGatewaysPutTagsCmdBody string
 
-func init() {
+func InitLoraGatewaysPutTagsCmd() {
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
 
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	LoraGatewaysPutTagsCmd.RunE = LoraGatewaysPutTagsCmdRunE
+
 	LoraGatewaysCmd.AddCommand(LoraGatewaysPutTagsCmd)
 }
 
@@ -31,49 +34,50 @@ var LoraGatewaysPutTagsCmd = &cobra.Command{
 	Use:   "put-tags",
 	Short: TRAPI("/lora_gateways/{gateway_id}/tags:put:summary"),
 	Long:  TRAPI(`/lora_gateways/{gateway_id}/tags:put:description`) + "\n\n" + createLinkToAPIReference("LoraGateway", "putLoraGatewayTags"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LoraGatewaysPutTagsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLoraGatewaysPutTagsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLoraGatewaysPutTagsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLoraGatewaysPutTagsCmdParams(ac *apiClient) (*apiParams, error) {

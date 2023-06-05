@@ -32,4 +32,827 @@ func InitRootCmd() {
 	RootCmd.PersistentFlags().StringVar(&providedProfileCommand, "profile-command", "", TRCLI("cli.global-flags.profile-command"))
 	RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, TRCLI("cli.global-flags.raw-output"))
 	RootCmd.PersistentFlags().BoolVar(&noRetryOnError, "no-retry-on-error", false, TRCLI("cli.global-flags.no-retry-on-error"))
+
+	InitAllSubCommands()
+}
+
+func InitAllSubCommands() {
+	InitLoraDevicesGetDataCmd()
+
+	InitLoraDevicesSendDataCmd()
+
+	InitLoraDevicesUnsetGroupCmd()
+
+	InitOperatorDeleteContractCmd()
+
+	InitSimsStopPacketCaptureSessionCmd()
+
+	InitSimsUnsetImeiLockCmd()
+
+	InitSoraletsListCmd()
+
+	InitSoraletsCreateCmd()
+
+	InitSubscribersIssueTransferTokenCmd()
+
+	InitStatsAirOperatorsGetCmd()
+
+	InitCellLocationsGetCmd()
+
+	InitCellLocationsBatchGetCmd()
+
+	InitDataGetEntriesCmd()
+
+	InitDiagnosticsSendRequestCmd()
+
+	InitOperatorGetCmd()
+
+	InitOperatorAddCoverageTypeCmd()
+
+	InitShippingAddressesCreateCmd()
+
+	InitShippingAddressesListCmd()
+
+	InitProductsListCmd()
+
+	InitSubscribersSetExpiryTimeCmd()
+
+	InitSubscribersPutTagsCmd()
+
+	InitVpgCreateVpcPeeringConnectionCmd()
+
+	InitEmailsDeleteCmd()
+
+	InitEmailsGetCmd()
+
+	InitPaymentStatementsExportCmd()
+
+	InitSimsListPacketCaptureSessionsCmd()
+
+	InitSimsCreatePacketCaptureSessionCmd()
+
+	InitStatsFunnelGetCmd()
+
+	InitFilesGetCmd()
+
+	InitFilesGetMetadataCmd()
+
+	InitFilesPutCmd()
+
+	InitFilesDeleteCmd()
+
+	InitShippingAddressesDeleteCmd()
+
+	InitShippingAddressesGetCmd()
+
+	InitShippingAddressesUpdateCmd()
+
+	InitSoraCamDevicesImagesListExportsForDeviceCmd()
+
+	InitSoraCamDevicesImagesExportCmd()
+
+	InitSubscribersExportCmd()
+
+	InitSubscribersEnableTerminationCmd()
+
+	InitVpgUnsetInspectionCmd()
+
+	InitVpgDeleteVpcPeeringConnectionCmd()
+
+	InitAuthVerifyPasswordResetTokenCmd()
+
+	InitPaymentStatementsListCmd()
+
+	InitSubscribersSendSmsCmd()
+
+	InitLoraDevicesDisableTerminationCmd()
+
+	InitUsersMfaVerifyCmd()
+
+	InitSoraCamDevicesVideosListExportsForDeviceCmd()
+
+	InitSoraCamDevicesVideosExportCmd()
+
+	InitGroupsListCmd()
+
+	InitGroupsCreateCmd()
+
+	InitLoraGatewaysPutTagsCmd()
+
+	InitLoraNetworkSetsCreateCmd()
+
+	InitLoraNetworkSetsListCmd()
+
+	InitSimsDeleteTagCmd()
+
+	InitDevicesGetDataCmd()
+
+	InitOperatorVerifyMfaRevokeTokenCmd()
+
+	InitRolesGetCmd()
+
+	InitRolesCreateCmd()
+
+	InitRolesUpdateCmd()
+
+	InitRolesDeleteCmd()
+
+	InitSoraCamDevicesGetStreamingVideoCmd()
+
+	InitSoraCamLicensePacksUpdateQuantityCmd()
+
+	InitBillsExportLatestCmd()
+
+	InitDevicesDeleteCmd()
+
+	InitDevicesGetCmd()
+
+	InitLoraGatewaysDeleteTagCmd()
+
+	InitRolesListUsersCmd()
+
+	InitResourceSummariesGetCmd()
+
+	InitUsersDefaultPermissionsDeleteCmd()
+
+	InitUsersDefaultPermissionsGetCmd()
+
+	InitUsersDefaultPermissionsUpdateCmd()
+
+	InitQuerySubscribersTrafficVolumeRankingCmd()
+
+	InitQueryTrafficRankingCmd()
+
+	InitSubscribersSetGroupCmd()
+
+	InitVpgDeleteMirroringPeerCmd()
+
+	InitVpgUpdateMirroringPeerCmd()
+
+	InitVpgUnsetRedirectionCmd()
+
+	InitVpgTerminateCmd()
+
+	InitCouponsListCmd()
+
+	InitCouponsCreateCmd()
+
+	InitLoraDevicesRegisterCmd()
+
+	InitSimsDownlinkPingCmd()
+
+	InitSubscribersSuspendCmd()
+
+	InitDevicesPutDeviceTagsCmd()
+
+	InitLagoonDeleteUserCmd()
+
+	InitLagoonUsersDeleteCmd()
+
+	InitLoraGatewaysUnsetNetworkSetCmd()
+
+	InitOperatorGenerateApiTokenCmd()
+
+	InitOrdersCancelCmd()
+
+	InitSimsUnsetExpiryTimeCmd()
+
+	InitSoraCamLicensePacksListCmd()
+
+	InitAuditLogsNapterGetCmd()
+
+	InitUsersPermissionsUpdateCmd()
+
+	InitUsersPermissionsDeleteCmd()
+
+	InitUsersPermissionsGetCmd()
+
+	InitSimsSessionEventsCmd()
+
+	InitLoraGatewaysTerminateCmd()
+
+	InitSimsSetToStandbyCmd()
+
+	InitPortMappingsListCmd()
+
+	InitPortMappingsCreateCmd()
+
+	InitSigfoxDevicesUnsetGroupCmd()
+
+	InitSimsActivateCmd()
+
+	InitVpgListPacketCaptureSessionsCmd()
+
+	InitVpgCreatePacketCaptureSessionCmd()
+
+	InitGadgetsPutTagsCmd()
+
+	InitSubscribersActivateCmd()
+
+	InitEventHandlersDeleteCmd()
+
+	InitEventHandlersGetCmd()
+
+	InitEventHandlersUpdateCmd()
+
+	InitLoraDevicesTerminateCmd()
+
+	InitOperatorAuthKeysDeleteCmd()
+
+	InitVpgListGatePeersCmd()
+
+	InitVpgRegisterGatePeerCmd()
+
+	InitOperatorConfigurationDeleteCmd()
+
+	InitOperatorConfigurationGetCmd()
+
+	InitOperatorConfigurationSetCmd()
+
+	InitOperatorGetSupportTokenCmd()
+
+	InitStatsFunkGetCmd()
+
+	InitSubscribersUnsetExpiryTimeCmd()
+
+	InitVpgCloseGateCmd()
+
+	InitVolumeDiscountsGetCmd()
+
+	InitGroupsDeleteConfigCmd()
+
+	InitOperatorUpdatePasswordCmd()
+
+	InitSimsGetCmd()
+
+	InitSimsSendSmsCmd()
+
+	InitSubscribersVerifyTransferTokenCmd()
+
+	InitSubscribersSetToStandbyCmd()
+
+	InitSubscribersDeleteTagCmd()
+
+	InitBillsExportCmd()
+
+	InitDevicesObserveResourcesCmd()
+
+	InitSigfoxDevicesDisableTerminationCmd()
+
+	InitSigfoxDevicesTerminateCmd()
+
+	InitSoraCamDevicesGetExportUsageCmd()
+
+	InitSubscribersUpdateSpeedClassCmd()
+
+	InitBillsGetLatestCmd()
+
+	InitDevicesSetObjectModelScopeCmd()
+
+	InitLagoonUpdateUserEmailCmd()
+
+	InitLagoonUsersUpdateEmailCmd()
+
+	InitQueryDevicesCmd()
+
+	InitStatsHarvestOperatorsGetCmd()
+
+	InitSubscribersSendSmsByMsisdnCmd()
+
+	InitVolumeDiscountsAvailableDiscountsCmd()
+
+	InitOrdersConfirmCmd()
+
+	InitSigfoxDevicesPutTagsCmd()
+
+	InitSimsCreateArcSessionCmd()
+
+	InitSubscribersListCmd()
+
+	InitVpgDeletePacketCaptureSessionCmd()
+
+	InitVpgGetPacketCaptureSessionCmd()
+
+	InitCouponsConfirmCmd()
+
+	InitUsersDetachRoleCmd()
+
+	InitSoraCamDevicesEventsListForDeviceCmd()
+
+	InitCredentialsDeleteCmd()
+
+	InitCredentialsCreateCmd()
+
+	InitCredentialsUpdateCmd()
+
+	InitFilesGetExportedCmd()
+
+	InitLagoonGetImageLinkCmd()
+
+	InitUsersMfaEnableCmd()
+
+	InitUsersMfaRevokeCmd()
+
+	InitUsersMfaGetCmd()
+
+	InitSoraletsListVersionsCmd()
+
+	InitSoraletsUploadCmd()
+
+	InitEventHandlersListCmd()
+
+	InitEventHandlersCreateCmd()
+
+	InitSoraCamDevicesDeleteExportUsageLimitOverrideCmd()
+
+	InitSoraCamDevicesUpdateExportUsageLimitOverrideCmd()
+
+	InitSoraletsTestCmd()
+
+	InitSoraletsExecCmd()
+
+	InitStatsAirExportCmd()
+
+	InitSubscribersReportLocalInfoCmd()
+
+	InitVpgEnableGatePrivacySeparatorCmd()
+
+	InitUsersDeleteCmd()
+
+	InitUsersGetCmd()
+
+	InitUsersCreateCmd()
+
+	InitUsersUpdateCmd()
+
+	InitSimsUnsetGroupCmd()
+
+	InitSubscribersUnsetGroupCmd()
+
+	InitDevicesDeleteObjectModelCmd()
+
+	InitDevicesGetObjectModelCmd()
+
+	InitDevicesUpdateObjectModelCmd()
+
+	InitLagoonUpdateUserPermissionCmd()
+
+	InitLagoonUsersUpdatePermissionCmd()
+
+	InitLoraDevicesDeleteTagCmd()
+
+	InitOperatorRevokeMfaCmd()
+
+	InitOperatorGetMfaStatusCmd()
+
+	InitOperatorEnableMfaCmd()
+
+	InitRolesListCmd()
+
+	InitSoraCamDevicesEventsListCmd()
+
+	InitDataListSourceResourcesCmd()
+
+	InitGadgetsTerminateCmd()
+
+	InitLagoonDashboardsUpdatePermissionsCmd()
+
+	InitOperatorAuthKeysListCmd()
+
+	InitOperatorAuthKeysGenerateCmd()
+
+	InitPaymentMethodsReactivateCurrentCmd()
+
+	InitDevicesDeleteDeviceTagCmd()
+
+	InitVpgUnregisterGatePeerCmd()
+
+	InitSigfoxDevicesGetCmd()
+
+	InitSimsSetExpiryTimeCmd()
+
+	InitSimsSetGroupCmd()
+
+	InitSimsTerminateCmd()
+
+	InitVolumeDiscountsListCmd()
+
+	InitVolumeDiscountsCreateCmd()
+
+	InitLoraGatewaysSetNetworkSetCmd()
+
+	InitOperatorRevokeOperatorAuthTokensCmd()
+
+	InitUsersListRolesCmd()
+
+	InitUsersAttachRoleCmd()
+
+	InitSoraCamDevicesGetCmd()
+
+	InitStatsFunnelExportCmd()
+
+	InitAuthCmd()
+
+	InitLogoutCmd()
+
+	InitFilesFindCmd()
+
+	InitStatsAirSimsGetCmd()
+
+	InitSubscribersRegisterCmd()
+
+	InitDevicesGetInstanceCmd()
+
+	InitLagoonMigrationGetInfoCmd()
+
+	InitLagoonMigrationMigrateCmd()
+
+	InitLoraGatewaysListCmd()
+
+	InitEventHandlersIgnoreCmd()
+
+	InitEventHandlersUnignoreCmd()
+
+	InitGroupsPutTagsCmd()
+
+	InitLagoonDashboardsInitPermissionsCmd()
+
+	InitEmailsVerifyAddEmailTokenCmd()
+
+	InitUsersListCmd()
+
+	InitPortMappingsGetCmd()
+
+	InitStatsAirGetCmd()
+
+	InitLagoonUpdatedPlanCmd()
+
+	InitOperatorCreateCmd()
+
+	InitBillsSummariesGetBillItemsCmd()
+
+	InitFilesDeleteDirectoryCmd()
+
+	InitFilesListCmd()
+
+	InitLogsGetCmd()
+
+	InitUsersPasswordUpdateCmd()
+
+	InitUsersPasswordDeleteCmd()
+
+	InitUsersPasswordConfiguredCmd()
+
+	InitUsersPasswordCreateCmd()
+
+	InitDataGetCmd()
+
+	InitSubscribersGetDataCmd()
+
+	InitDevicesUnobserveResourcesCmd()
+
+	InitOperatorAddContractCmd()
+
+	InitSoraletsDeleteCmd()
+
+	InitSoraletsGetCmd()
+
+	InitSubscribersGetCmd()
+
+	InitCredentialsListCmd()
+
+	InitLoraDevicesGetCmd()
+
+	InitOperatorGetIndividualInformationCmd()
+
+	InitOperatorCreateIndividualInformationCmd()
+
+	InitOperatorUpdateIndividualInformationCmd()
+
+	InitSigfoxDevicesListCmd()
+
+	InitVpgOpenGateCmd()
+
+	InitLagoonRegisterCmd()
+
+	InitLoraNetworkSetsListGatewaysCmd()
+
+	InitSigfoxDevicesEnableTerminationCmd()
+
+	InitSubscribersDeleteSessionCmd()
+
+	InitVpgDisableGatePrivacySeparatorCmd()
+
+	InitAuditLogsApiGetCmd()
+
+	InitBillsGetDailyCmd()
+
+	InitLoraNetworkSetsPutTagCmd()
+
+	InitSubscribersDownlinkPingCmd()
+
+	InitSubscribersTerminateCmd()
+
+	InitGroupsListSubscribersCmd()
+
+	InitQuerySigfoxDevicesCmd()
+
+	InitQuerySubscribersCmd()
+
+	InitVpgSetRoutingFilterCmd()
+
+	InitVolumeDiscountsConfirmCmd()
+
+	InitBillsListCmd()
+
+	InitSimsPutTagsCmd()
+
+	InitStatsNapterAuditLogsGetCmd()
+
+	InitVpgDeleteIpAddressMapEntryCmd()
+
+	InitSubscribersSetImeiLockCmd()
+
+	InitDevicesListObjectModelsCmd()
+
+	InitDevicesCreateObjectModelCmd()
+
+	InitGroupsDeleteConfigNamespaceCmd()
+
+	InitGroupsPutConfigCmd()
+
+	InitLoraDevicesEnableTerminationCmd()
+
+	InitLoraGatewaysDisableTerminationCmd()
+
+	InitSystemNotificationsGetCmd()
+
+	InitSystemNotificationsSetCmd()
+
+	InitSystemNotificationsDeleteCmd()
+
+	InitPaymentHistoryGetCmd()
+
+	InitSimsTerminateSubscriptionContainerCmd()
+
+	InitVpgSetRedirectionCmd()
+
+	InitCouponsRegisterCmd()
+
+	InitLoraDevicesSetGroupCmd()
+
+	InitGadgetsDisableTerminationCmd()
+
+	InitEmailsIssueAddEmailTokenCmd()
+
+	InitOrdersListCmd()
+
+	InitOrdersCreateCmd()
+
+	InitSigfoxDevicesSetGroupCmd()
+
+	InitSimsSuspendCmd()
+
+	InitSoraCamDevicesImagesGetExportedCmd()
+
+	InitStatsAirGroupsGetCmd()
+
+	InitBillsGetCmd()
+
+	InitDevicesListCmd()
+
+	InitDevicesCreateCmd()
+
+	InitDevicesSetGroupCmd()
+
+	InitLoraGatewaysEnableTerminationCmd()
+
+	InitSoraCamDevicesVideosListExportsCmd()
+
+	InitSubscribersUnsetImeiLockCmd()
+
+	InitVpgListIpAddressMapEntriesCmd()
+
+	InitVpgPutIpAddressMapEntryCmd()
+
+	InitDiagnosticsGetCmd()
+
+	InitLagoonUpdateUserPasswordCmd()
+
+	InitLagoonUsersUpdatePasswordCmd()
+
+	InitOrdersRegisterSubscribersCmd()
+
+	InitSigfoxDevicesGetDataCmd()
+
+	InitSigfoxDevicesSendDataCmd()
+
+	InitVpgGetCmd()
+
+	InitGadgetsDeleteTagCmd()
+
+	InitOrdersResourceInitialSettingUpdateCmd()
+
+	InitStatsFunkExportCmd()
+
+	InitSubscribersDeactivateCmd()
+
+	InitVpgSetInspectionCmd()
+
+	InitDevicesUnsetGroupCmd()
+
+	InitOrdersGetCmd()
+
+	InitQuerySimsCmd()
+
+	InitSigfoxDevicesDeleteTagCmd()
+
+	InitGadgetsRegisterCmd()
+
+	InitPayerInformationGetCmd()
+
+	InitPayerInformationRegisterCmd()
+
+	InitSimsRegisterCmd()
+
+	InitSubscribersPutBundlesCmd()
+
+	InitLoraNetworkSetsRevokePermissionCmd()
+
+	InitOperatorVerifyCmd()
+
+	InitSimsAddSubscriptionCmd()
+
+	InitSimsCancelSubscriptionContainerDownloadCmd()
+
+	InitStatsBeamExportCmd()
+
+	InitStatsHarvestSubscribersGetCmd()
+
+	InitAuthIssuePasswordResetTokenCmd()
+
+	InitDevicesObserveResourceCmd()
+
+	InitUsersRevokeUserAuthTokensCmd()
+
+	InitSimsListCmd()
+
+	InitSimsCreateCmd()
+
+	InitSimsDeleteSessionCmd()
+
+	InitSubscribersDeleteTransferTokenCmd()
+
+	InitDataDeleteEntryCmd()
+
+	InitDataGetEntryCmd()
+
+	InitLagoonDashboardsListPermissionsCmd()
+
+	InitLagoonTerminateCmd()
+
+	InitLoraNetworkSetsDeleteTagCmd()
+
+	InitUsersAuthKeysListCmd()
+
+	InitUsersAuthKeysGenerateCmd()
+
+	InitSimsEnableTerminationCmd()
+
+	InitSoraCamDevicesListCmd()
+
+	InitGadgetsListCmd()
+
+	InitLoraDevicesPutTagsCmd()
+
+	InitLoraGatewaysGetCmd()
+
+	InitOperatorIssueMfaRevokeTokenCmd()
+
+	InitEmailsListCmd()
+
+	InitSubscribersDisableTerminationCmd()
+
+	InitGroupsDeleteTagCmd()
+
+	InitSigfoxDevicesRegisterCmd()
+
+	InitDevicesExecuteResourceCmd()
+
+	InitPaymentMethodsGetCurrentCmd()
+
+	InitSimsDeletePacketCaptureSessionCmd()
+
+	InitSimsGetPacketCaptureSessionCmd()
+
+	InitSimsUpdateSpeedClassCmd()
+
+	InitSimsRemoveArcCredentialsCmd()
+
+	InitSimsAttachArcCredentialsCmd()
+
+	InitSimsRenewArcCredentialsCmd()
+
+	InitSimsDeactivateCmd()
+
+	InitSimsReportLocalInfoCmd()
+
+	InitSubscribersSessionEventsCmd()
+
+	InitVpgCreateMirroringPeerCmd()
+
+	InitPortMappingsDeleteCmd()
+
+	InitSoraCamDevicesVideosGetExportedCmd()
+
+	InitSoraletsGetLogsCmd()
+
+	InitLagoonListUsersCmd()
+
+	InitLagoonUsersListCmd()
+
+	InitLagoonCreateUserCmd()
+
+	InitLagoonUsersCreateCmd()
+
+	InitSimsDisableTerminationCmd()
+
+	InitDevicesGetResourceCmd()
+
+	InitDevicesPutResourceCmd()
+
+	InitLoraNetworkSetsDeleteCmd()
+
+	InitLoraNetworkSetsGetCmd()
+
+	InitLoraNetworkSetsAddPermissionCmd()
+
+	InitOperatorVerifyMfaOtpCmd()
+
+	InitSimsSetImeiLockCmd()
+
+	InitSoraletsDeleteVersionCmd()
+
+	InitBillsSummariesGetSimsCmd()
+
+	InitGroupsDeleteCmd()
+
+	InitGroupsGetCmd()
+
+	InitLoraDevicesListCmd()
+
+	InitOrdersListSubscribersCmd()
+
+	InitDevicesUnobserveResourceCmd()
+
+	InitOperatorGetCompanyInformationCmd()
+
+	InitOperatorCreateCompanyInformationCmd()
+
+	InitOperatorUpdateCompanyInformationCmd()
+
+	InitSystemNotificationsListCmd()
+
+	InitSoraCamDevicesImagesListExportsCmd()
+
+	InitStatsBeamGetCmd()
+
+	InitVpgStopPacketCaptureSessionCmd()
+
+	InitEventHandlersListForSubscriberCmd()
+
+	InitGadgetsGetCmd()
+
+	InitGadgetsEnableTerminationCmd()
+
+	InitLagoonLicensePacksUpdateCmd()
+
+	InitLagoonLicensePacksListStatusCmd()
+
+	InitUsersAuthKeysDeleteCmd()
+
+	InitUsersAuthKeysGetCmd()
+
+	InitSimsGetDataCmd()
+
+	InitVpgListCmd()
+
+	InitVpgCreateCmd()
+
+	InitSandboxStatsBeamInsertCmd()
+
+	InitSandboxSubscribersCreateCmd()
+
+	InitSandboxCouponsCreateCmd()
+
+	InitSandboxInitCmd()
+
+	InitSandboxOperatorsGetSignupTokenCmd()
+
+	InitSandboxOperatorsDeleteCmd()
+
+	InitSandboxOrdersShipCmd()
+
+	InitSandboxStatsAirInsertCmd()
+
 }

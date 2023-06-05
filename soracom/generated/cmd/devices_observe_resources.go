@@ -21,7 +21,7 @@ var DevicesObserveResourcesCmdObject string
 // DevicesObserveResourcesCmdModel holds value of 'model' option
 var DevicesObserveResourcesCmdModel bool
 
-func init() {
+func InitDevicesObserveResourcesCmd() {
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdDeviceId, "device-id", "", TRAPI("Target device"))
 
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdInstance, "instance", "", TRAPI("Instance ID"))
@@ -29,6 +29,9 @@ func init() {
 	DevicesObserveResourcesCmd.Flags().StringVar(&DevicesObserveResourcesCmdObject, "object", "", TRAPI("Object ID"))
 
 	DevicesObserveResourcesCmd.Flags().BoolVar(&DevicesObserveResourcesCmdModel, "model", false, TRAPI("Whether or not to add model information"))
+
+	DevicesObserveResourcesCmd.RunE = DevicesObserveResourcesCmdRunE
+
 	DevicesCmd.AddCommand(DevicesObserveResourcesCmd)
 }
 
@@ -37,49 +40,50 @@ var DevicesObserveResourcesCmd = &cobra.Command{
 	Use:   "observe-resources",
 	Short: TRAPI("/devices/{device_id}/{object}/{instance}/observe:post:summary"),
 	Long:  TRAPI(`/devices/{device_id}/{object}/{instance}/observe:post:description`) + "\n\n" + createLinkToAPIReference("Device", "observeDeviceResources"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func DevicesObserveResourcesCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectDevicesObserveResourcesCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectDevicesObserveResourcesCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectDevicesObserveResourcesCmdParams(ac *apiClient) (*apiParams, error) {

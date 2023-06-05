@@ -24,7 +24,7 @@ var SimsListPacketCaptureSessionsCmdPaginate bool
 // SimsListPacketCaptureSessionsCmdOutputJSONL indicates to output with jsonl format
 var SimsListPacketCaptureSessionsCmdOutputJSONL bool
 
-func init() {
+func InitSimsListPacketCaptureSessionsCmd() {
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last packet capture session in the previous page. By specifying this parameter, you can continue to retrieve the list from the next packet capture session onward."))
 
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
@@ -34,6 +34,9 @@ func init() {
 	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	SimsListPacketCaptureSessionsCmd.RunE = SimsListPacketCaptureSessionsCmdRunE
+
 	SimsCmd.AddCommand(SimsListPacketCaptureSessionsCmd)
 }
 
@@ -42,53 +45,54 @@ var SimsListPacketCaptureSessionsCmd = &cobra.Command{
 	Use:   "list-packet-capture-sessions",
 	Short: TRAPI("/sims/{sim_id}/packet_capture_sessions:get:summary"),
 	Long:  TRAPI(`/sims/{sim_id}/packet_capture_sessions:get:description`) + "\n\n" + createLinkToAPIReference("Sim", "listSimPacketCaptureSessions"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SimsListPacketCaptureSessionsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSimsListPacketCaptureSessionsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if SimsListPacketCaptureSessionsCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSimsListPacketCaptureSessionsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if SimsListPacketCaptureSessionsCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSimsListPacketCaptureSessionsCmdParams(ac *apiClient) (*apiParams, error) {

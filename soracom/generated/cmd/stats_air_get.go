@@ -24,7 +24,7 @@ var StatsAirGetCmdTo int64
 // StatsAirGetCmdOutputJSONL indicates to output with jsonl format
 var StatsAirGetCmdOutputJSONL bool
 
-func init() {
+func InitStatsAirGetCmd() {
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
 	StatsAirGetCmd.Flags().StringVar(&StatsAirGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the history of traffic at the finest granularity. However, while the device is connected to the Soracom platform, the communication volume is recorded at approximately 5-minute intervals."))
@@ -34,6 +34,9 @@ func init() {
 	StatsAirGetCmd.Flags().Int64Var(&StatsAirGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsAirGetCmd.Flags().BoolVar(&StatsAirGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	StatsAirGetCmd.RunE = StatsAirGetCmdRunE
+
 	StatsAirCmd.AddCommand(StatsAirGetCmd)
 }
 
@@ -42,53 +45,54 @@ var StatsAirGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/air/subscribers/{imsi}:get:summary"),
 	Long:  TRAPI(`/stats/air/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getAirStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsAirGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsAirGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if StatsAirGetCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsAirGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if StatsAirGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsAirGetCmdParams(ac *apiClient) (*apiParams, error) {

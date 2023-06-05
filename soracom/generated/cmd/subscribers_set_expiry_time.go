@@ -25,7 +25,7 @@ var SubscribersSetExpiryTimeCmdExpiryTime int64
 // SubscribersSetExpiryTimeCmdBody holds contents of request body to be sent
 var SubscribersSetExpiryTimeCmdBody string
 
-func init() {
+func InitSubscribersSetExpiryTimeCmd() {
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdExpiryAction, "expiry-action", "", TRAPI("Action at expiration. Specify one of the following Please refer to [Soracom Air Expiration Function](https://developers.soracom.io/en/docs/air/expiration/) for more detail. You have to disable termination protection if you want to specify 'terminate' as an action.If omitted, a null value is set.- 'doNothing' : do nothing- 'deleteSession' : delete session of the SIM if any- 'deactivate' : change the SIM status to Inactive- 'suspend' : change the SIM status to Suspended- 'terminate' : forcibly end any existing connections, and terminate the SIM- null value : not set (It works the same as 'doNothing')"))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
@@ -33,6 +33,9 @@ func init() {
 	SubscribersSetExpiryTimeCmd.Flags().Int64Var(&SubscribersSetExpiryTimeCmdExpiryTime, "expiry-time", 0, TRAPI("Timestamp of date and time set using the Expiration function (UNIX time in milliseconds)"))
 
 	SubscribersSetExpiryTimeCmd.Flags().StringVar(&SubscribersSetExpiryTimeCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	SubscribersSetExpiryTimeCmd.RunE = SubscribersSetExpiryTimeCmdRunE
+
 	SubscribersCmd.AddCommand(SubscribersSetExpiryTimeCmd)
 }
 
@@ -41,49 +44,50 @@ var SubscribersSetExpiryTimeCmd = &cobra.Command{
 	Use:   "set-expiry-time",
 	Short: TRAPI("/subscribers/{imsi}/set_expiry_time:post:summary"),
 	Long:  TRAPI(`/subscribers/{imsi}/set_expiry_time:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "setExpiryTime"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SubscribersSetExpiryTimeCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSubscribersSetExpiryTimeCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSubscribersSetExpiryTimeCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSubscribersSetExpiryTimeCmdParams(ac *apiClient) (*apiParams, error) {
@@ -174,7 +178,7 @@ func buildBodyForSubscribersSetExpiryTimeCmd() (string, error) {
 		result["expiryAction"] = SubscribersSetExpiryTimeCmdExpiryAction
 	}
 
-	if SubscribersSetExpiryTimeCmdExpiryTime != 0 {
+	if SubscribersSetExpiryTimeCmd.Flags().Lookup("expiry-time").Changed {
 		result["expiryTime"] = SubscribersSetExpiryTimeCmdExpiryTime
 	}
 

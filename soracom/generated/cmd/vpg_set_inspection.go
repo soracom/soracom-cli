@@ -22,12 +22,15 @@ var VpgSetInspectionCmdEnabled bool
 // VpgSetInspectionCmdBody holds contents of request body to be sent
 var VpgSetInspectionCmdBody string
 
-func init() {
+func InitVpgSetInspectionCmd() {
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgSetInspectionCmd.Flags().BoolVar(&VpgSetInspectionCmdEnabled, "enabled", false, TRAPI(""))
 
 	VpgSetInspectionCmd.Flags().StringVar(&VpgSetInspectionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	VpgSetInspectionCmd.RunE = VpgSetInspectionCmdRunE
+
 	VpgCmd.AddCommand(VpgSetInspectionCmd)
 }
 
@@ -36,49 +39,50 @@ var VpgSetInspectionCmd = &cobra.Command{
 	Use:   "set-inspection",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/junction/set_inspection:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "setInspectionConfiguration"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgSetInspectionCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgSetInspectionCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgSetInspectionCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgSetInspectionCmdParams(ac *apiClient) (*apiParams, error) {
@@ -160,7 +164,7 @@ func buildBodyForVpgSetInspectionCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
-	if VpgSetInspectionCmdEnabled != false {
+	if VpgSetInspectionCmd.Flags().Lookup("enabled").Changed {
 		result["enabled"] = VpgSetInspectionCmdEnabled
 	}
 

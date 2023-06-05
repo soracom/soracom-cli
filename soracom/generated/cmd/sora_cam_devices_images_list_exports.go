@@ -27,7 +27,7 @@ var SoraCamDevicesImagesListExportsCmdPaginate bool
 // SoraCamDevicesImagesListExportsCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesImagesListExportsCmdOutputJSONL bool
 
-func init() {
+func InitSoraCamDevicesImagesListExportsCmd() {
 	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device. If this ID is not specified, all compatible camera devices owned by the operator will be returned."))
 
 	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceImageExports request. By specifying this parameter, you can continue to retrieve the list from the last request."))
@@ -39,6 +39,9 @@ func init() {
 	SoraCamDevicesImagesListExportsCmd.Flags().BoolVar(&SoraCamDevicesImagesListExportsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesImagesListExportsCmd.Flags().BoolVar(&SoraCamDevicesImagesListExportsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	SoraCamDevicesImagesListExportsCmd.RunE = SoraCamDevicesImagesListExportsCmdRunE
+
 	SoraCamDevicesImagesCmd.AddCommand(SoraCamDevicesImagesListExportsCmd)
 }
 
@@ -47,53 +50,54 @@ var SoraCamDevicesImagesListExportsCmd = &cobra.Command{
 	Use:   "list-exports",
 	Short: TRAPI("/sora_cam/devices/images/exports:get:summary"),
 	Long:  TRAPI(`/sora_cam/devices/images/exports:get:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "listSoraCamDeviceImageExports"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraCamDevicesImagesListExportsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraCamDevicesImagesListExportsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if SoraCamDevicesImagesListExportsCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraCamDevicesImagesListExportsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if SoraCamDevicesImagesListExportsCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraCamDevicesImagesListExportsCmdParams(ac *apiClient) (*apiParams, error) {

@@ -12,8 +12,11 @@ import (
 // LagoonUsersDeleteCmdLagoonUserId holds value of 'lagoon_user_id' option
 var LagoonUsersDeleteCmdLagoonUserId int64
 
-func init() {
+func InitLagoonUsersDeleteCmd() {
 	LagoonUsersDeleteCmd.Flags().Int64Var(&LagoonUsersDeleteCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
+
+	LagoonUsersDeleteCmd.RunE = LagoonUsersDeleteCmdRunE
+
 	LagoonUsersCmd.AddCommand(LagoonUsersDeleteCmd)
 }
 
@@ -22,49 +25,50 @@ var LagoonUsersDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/lagoon/users/{lagoon_user_id}:delete:summary"),
 	Long:  TRAPI(`/lagoon/users/{lagoon_user_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Lagoon", "deleteLagoonUser"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func LagoonUsersDeleteCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectLagoonUsersDeleteCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectLagoonUsersDeleteCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectLagoonUsersDeleteCmdParams(ac *apiClient) (*apiParams, error) {

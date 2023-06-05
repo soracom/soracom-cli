@@ -27,7 +27,7 @@ var SoraletsGetLogsCmdPaginate bool
 // SoraletsGetLogsCmdOutputJSONL indicates to output with jsonl format
 var SoraletsGetLogsCmdOutputJSONL bool
 
-func init() {
+func InitSoraletsGetLogsCmd() {
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last log message retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next log message onward."))
 
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
@@ -39,6 +39,9 @@ func init() {
 	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	SoraletsGetLogsCmd.RunE = SoraletsGetLogsCmdRunE
+
 	SoraletsCmd.AddCommand(SoraletsGetLogsCmd)
 }
 
@@ -47,53 +50,54 @@ var SoraletsGetLogsCmd = &cobra.Command{
 	Use:   "get-logs",
 	Short: TRAPI("/soralets/{soralet_id}/logs:get:summary"),
 	Long:  TRAPI(`/soralets/{soralet_id}/logs:get:description`) + "\n\n" + createLinkToAPIReference("Soralet", "getSoraletLogs"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SoraletsGetLogsCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSoraletsGetLogsCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if SoraletsGetLogsCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSoraletsGetLogsCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if SoraletsGetLogsCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSoraletsGetLogsCmdParams(ac *apiClient) (*apiParams, error) {

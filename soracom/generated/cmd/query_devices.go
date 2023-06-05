@@ -42,7 +42,7 @@ var QueryDevicesCmdPaginate bool
 // QueryDevicesCmdOutputJSONL indicates to output with jsonl format
 var QueryDevicesCmdOutputJSONL bool
 
-func init() {
+func InitQueryDevicesCmd() {
 	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
 
 	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
@@ -64,6 +64,9 @@ func init() {
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	QueryDevicesCmd.RunE = QueryDevicesCmdRunE
+
 	QueryCmd.AddCommand(QueryDevicesCmd)
 }
 
@@ -72,53 +75,54 @@ var QueryDevicesCmd = &cobra.Command{
 	Use:   "devices",
 	Short: TRAPI("/query/devices:get:summary"),
 	Long:  TRAPI(`/query/devices:get:description`) + "\n\n" + createLinkToAPIReference("Query", "searchDevices"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func QueryDevicesCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectQueryDevicesCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if QueryDevicesCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectQueryDevicesCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if QueryDevicesCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectQueryDevicesCmdParams(ac *apiClient) (*apiParams, error) {

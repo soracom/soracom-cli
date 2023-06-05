@@ -19,10 +19,13 @@ var AuthIssuePasswordResetTokenCmdEmail string
 // AuthIssuePasswordResetTokenCmdBody holds contents of request body to be sent
 var AuthIssuePasswordResetTokenCmdBody string
 
-func init() {
+func InitAuthIssuePasswordResetTokenCmd() {
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdEmail, "email", "", TRAPI(""))
 
 	AuthIssuePasswordResetTokenCmd.Flags().StringVar(&AuthIssuePasswordResetTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	AuthIssuePasswordResetTokenCmd.RunE = AuthIssuePasswordResetTokenCmdRunE
+
 	AuthCmd.AddCommand(AuthIssuePasswordResetTokenCmd)
 }
 
@@ -31,44 +34,45 @@ var AuthIssuePasswordResetTokenCmd = &cobra.Command{
 	Use:   "issue-password-reset-token",
 	Short: TRAPI("/auth/password_reset_token/issue:post:summary"),
 	Long:  TRAPI(`/auth/password_reset_token/issue:post:description`) + "\n\n" + createLinkToAPIReference("Auth", "issuePasswordResetToken"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func AuthIssuePasswordResetTokenCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectAuthIssuePasswordResetTokenCmdParams(ac)
-		if err != nil {
-			return err
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
 
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	param, err := collectAuthIssuePasswordResetTokenCmdParams(ac)
+	if err != nil {
 		return err
-	},
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectAuthIssuePasswordResetTokenCmdParams(ac *apiClient) (*apiParams, error) {

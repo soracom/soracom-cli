@@ -12,8 +12,11 @@ import (
 // VpgCloseGateCmdVpgId holds value of 'vpg_id' option
 var VpgCloseGateCmdVpgId string
 
-func init() {
+func InitVpgCloseGateCmd() {
 	VpgCloseGateCmd.Flags().StringVar(&VpgCloseGateCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgCloseGateCmd.RunE = VpgCloseGateCmdRunE
+
 	VpgCmd.AddCommand(VpgCloseGateCmd)
 }
 
@@ -22,49 +25,50 @@ var VpgCloseGateCmd = &cobra.Command{
 	Use:   "close-gate",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/close:post:summary"),
 	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/close:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "closeGate"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func VpgCloseGateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectVpgCloseGateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectVpgCloseGateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectVpgCloseGateCmdParams(ac *apiClient) (*apiParams, error) {

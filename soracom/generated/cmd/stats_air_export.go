@@ -31,7 +31,7 @@ var StatsAirExportCmdTo int64
 // StatsAirExportCmdBody holds contents of request body to be sent
 var StatsAirExportCmdBody string
 
-func init() {
+func InitStatsAirExportCmd() {
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdExportMode, "export-mode", "", TRAPI("Specify how to obtain the URL to download the Air Data Usage Report CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the Soracom platform. Specify this 'exportedFieldId' in ['Files:getExportedFile API'](#/Files/getExportedFile) to get the URL. If the file size of the Air Data Usage Report CSV is huge, specify 'async'.- 'sync' (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the Air Data Usage Report CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
 
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
@@ -43,6 +43,9 @@ func init() {
 	StatsAirExportCmd.Flags().Int64Var(&StatsAirExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
 
 	StatsAirExportCmd.Flags().StringVar(&StatsAirExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	StatsAirExportCmd.RunE = StatsAirExportCmdRunE
+
 	StatsAirCmd.AddCommand(StatsAirExportCmd)
 }
 
@@ -51,50 +54,51 @@ var StatsAirExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/stats/air/operators/{operator_id}/export:post:summary"),
 	Long:  TRAPI(`/stats/air/operators/{operator_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "exportAirStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsAirExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsAirExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-		rawOutput = true
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsAirExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+	rawOutput = true
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsAirExportCmdParams(ac *apiClient) (*apiParams, error) {
@@ -183,11 +187,11 @@ func buildBodyForStatsAirExportCmd() (string, error) {
 		result["period"] = StatsAirExportCmdPeriod
 	}
 
-	if StatsAirExportCmdFrom != 0 {
+	if StatsAirExportCmd.Flags().Lookup("from").Changed {
 		result["from"] = StatsAirExportCmdFrom
 	}
 
-	if StatsAirExportCmdTo != 0 {
+	if StatsAirExportCmd.Flags().Lookup("to").Changed {
 		result["to"] = StatsAirExportCmdTo
 	}
 

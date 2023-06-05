@@ -31,7 +31,7 @@ var StatsBeamExportCmdTo int64
 // StatsBeamExportCmdBody holds contents of request body to be sent
 var StatsBeamExportCmdBody string
 
-func init() {
+func InitStatsBeamExportCmd() {
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdExportMode, "export-mode", "", TRAPI("export_mode (async, sync)"))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
@@ -43,6 +43,9 @@ func init() {
 	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
+
+	StatsBeamExportCmd.RunE = StatsBeamExportCmdRunE
+
 	StatsBeamCmd.AddCommand(StatsBeamExportCmd)
 }
 
@@ -51,50 +54,51 @@ var StatsBeamExportCmd = &cobra.Command{
 	Use:   "export",
 	Short: TRAPI("/stats/beam/operators/{operator_id}/export:post:summary"),
 	Long:  TRAPI(`/stats/beam/operators/{operator_id}/export:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "exportBeamStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsBeamExportCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsBeamExportCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-		rawOutput = true
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsBeamExportCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+	rawOutput = true
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsBeamExportCmdParams(ac *apiClient) (*apiParams, error) {
@@ -183,11 +187,11 @@ func buildBodyForStatsBeamExportCmd() (string, error) {
 		result["period"] = StatsBeamExportCmdPeriod
 	}
 
-	if StatsBeamExportCmdFrom != 0 {
+	if StatsBeamExportCmd.Flags().Lookup("from").Changed {
 		result["from"] = StatsBeamExportCmdFrom
 	}
 
-	if StatsBeamExportCmdTo != 0 {
+	if StatsBeamExportCmd.Flags().Lookup("to").Changed {
 		result["to"] = StatsBeamExportCmdTo
 	}
 

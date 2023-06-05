@@ -18,12 +18,15 @@ var GroupsDeleteConfigCmdName string
 // GroupsDeleteConfigCmdNamespace holds value of 'namespace' option
 var GroupsDeleteConfigCmdNamespace string
 
-func init() {
+func InitGroupsDeleteConfigCmd() {
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
 
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdName, "name", "", TRAPI("Parameter name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	GroupsDeleteConfigCmd.Flags().StringVar(&GroupsDeleteConfigCmdNamespace, "namespace", "", TRAPI("Namespace of target parameters."))
+
+	GroupsDeleteConfigCmd.RunE = GroupsDeleteConfigCmdRunE
+
 	GroupsCmd.AddCommand(GroupsDeleteConfigCmd)
 }
 
@@ -32,49 +35,50 @@ var GroupsDeleteConfigCmd = &cobra.Command{
 	Use:   "delete-config",
 	Short: TRAPI("/groups/{group_id}/configuration/{namespace}/{name}:delete:summary"),
 	Long:  TRAPI(`/groups/{group_id}/configuration/{namespace}/{name}:delete:description`) + "\n\n" + createLinkToAPIReference("Group", "deleteConfigurationParameter"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func GroupsDeleteConfigCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectGroupsDeleteConfigCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectGroupsDeleteConfigCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectGroupsDeleteConfigCmdParams(ac *apiClient) (*apiParams, error) {

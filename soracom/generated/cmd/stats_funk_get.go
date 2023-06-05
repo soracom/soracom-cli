@@ -24,7 +24,7 @@ var StatsFunkGetCmdTo int64
 // StatsFunkGetCmdOutputJSONL indicates to output with jsonl format
 var StatsFunkGetCmdOutputJSONL bool
 
-func init() {
+func InitStatsFunkGetCmd() {
 	StatsFunkGetCmd.Flags().StringVar(&StatsFunkGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
 	StatsFunkGetCmd.Flags().StringVar(&StatsFunkGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the usage report at the finest granularity. However, while the device is connected to the Soracom platform, the amount of usage will be recorded at approximately 5-minute intervals."))
@@ -34,6 +34,9 @@ func init() {
 	StatsFunkGetCmd.Flags().Int64Var(&StatsFunkGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
 
 	StatsFunkGetCmd.Flags().BoolVar(&StatsFunkGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
+
+	StatsFunkGetCmd.RunE = StatsFunkGetCmdRunE
+
 	StatsFunkCmd.AddCommand(StatsFunkGetCmd)
 }
 
@@ -42,53 +45,54 @@ var StatsFunkGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: TRAPI("/stats/funk/subscribers/{imsi}:get:summary"),
 	Long:  TRAPI(`/stats/funk/subscribers/{imsi}:get:description`) + "\n\n" + createLinkToAPIReference("Stats", "getFunkStats"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func StatsFunkGetCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectStatsFunkGetCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			if StatsFunkGetCmdOutputJSONL {
-				return printStringAsJSONL(body)
-			}
-
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectStatsFunkGetCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		if StatsFunkGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectStatsFunkGetCmdParams(ac *apiClient) (*apiParams, error) {

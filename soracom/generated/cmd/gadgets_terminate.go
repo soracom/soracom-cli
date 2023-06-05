@@ -15,10 +15,13 @@ var GadgetsTerminateCmdProductId string
 // GadgetsTerminateCmdSerialNumber holds value of 'serial_number' option
 var GadgetsTerminateCmdSerialNumber string
 
-func init() {
+func InitGadgetsTerminateCmd() {
 	GadgetsTerminateCmd.Flags().StringVar(&GadgetsTerminateCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
 
 	GadgetsTerminateCmd.Flags().StringVar(&GadgetsTerminateCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+
+	GadgetsTerminateCmd.RunE = GadgetsTerminateCmdRunE
+
 	GadgetsCmd.AddCommand(GadgetsTerminateCmd)
 }
 
@@ -27,49 +30,50 @@ var GadgetsTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TRAPI("/gadgets/{product_id}/{serial_number}/terminate:post:summary"),
 	Long:  TRAPI(`/gadgets/{product_id}/{serial_number}/terminate:post:description`) + "\n\n" + createLinkToAPIReference("Gadget", "terminateGadget"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func GadgetsTerminateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectGadgetsTerminateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectGadgetsTerminateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectGadgetsTerminateCmdParams(ac *apiClient) (*apiParams, error) {

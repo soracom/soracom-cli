@@ -7,7 +7,7 @@ import (
 
 // RootCmd defines 'soracom' command
 var RootCmd = &cobra.Command{
-  Use: "soracom",
+  Use: "{{.Use}}",
   Short: "{{.Short}}",
   Long: `{{.Long}}`,
 }
@@ -32,4 +32,12 @@ func InitRootCmd() {
   RootCmd.PersistentFlags().StringVar(&providedProfileCommand, "profile-command", "", TRCLI("cli.global-flags.profile-command"))
   RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, TRCLI("cli.global-flags.raw-output"))
   RootCmd.PersistentFlags().BoolVar(&noRetryOnError, "no-retry-on-error", false, TRCLI("cli.global-flags.no-retry-on-error"))
+
+  InitAllSubCommands()
+}
+
+func InitAllSubCommands() {
+{{- range .Subcommands }}
+  Init{{.CommandVariableName}}()
+{{end}}
 }

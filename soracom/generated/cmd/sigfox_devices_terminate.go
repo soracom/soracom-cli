@@ -15,10 +15,13 @@ var SigfoxDevicesTerminateCmdDeviceId string
 // SigfoxDevicesTerminateCmdDeleteImmediately holds value of 'delete_immediately' option
 var SigfoxDevicesTerminateCmdDeleteImmediately bool
 
-func init() {
+func InitSigfoxDevicesTerminateCmd() {
 	SigfoxDevicesTerminateCmd.Flags().StringVar(&SigfoxDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
 	SigfoxDevicesTerminateCmd.Flags().BoolVar(&SigfoxDevicesTerminateCmdDeleteImmediately, "delete-immediately", false, TRAPI("If the Sigfox device is deleted immediately"))
+
+	SigfoxDevicesTerminateCmd.RunE = SigfoxDevicesTerminateCmdRunE
+
 	SigfoxDevicesCmd.AddCommand(SigfoxDevicesTerminateCmd)
 }
 
@@ -27,49 +30,50 @@ var SigfoxDevicesTerminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: TRAPI("/sigfox_devices/{device_id}/terminate:post:summary"),
 	Long:  TRAPI(`/sigfox_devices/{device_id}/terminate:post:description`) + "\n\n" + createLinkToAPIReference("SigfoxDevice", "terminateSigfoxDevice"),
-	RunE: func(cmd *cobra.Command, args []string) error {
+}
 
-		if len(args) > 0 {
-			return fmt.Errorf("unexpected arguments passed => %v", args)
-		}
+func SigfoxDevicesTerminateCmdRunE(cmd *cobra.Command, args []string) error {
 
-		opt := &apiClientOptions{
-			BasePath: "/v1",
-			Language: getSelectedLanguage(),
-		}
+	if len(args) > 0 {
+		return fmt.Errorf("unexpected arguments passed => %v", args)
+	}
 
-		ac := newAPIClient(opt)
-		if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
-			ac.SetVerbose(true)
-		}
-		err := authHelper(ac, cmd, args)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
+	opt := &apiClientOptions{
+		BasePath: "/v1",
+		Language: getSelectedLanguage(),
+	}
 
-		param, err := collectSigfoxDevicesTerminateCmdParams(ac)
-		if err != nil {
-			return err
-		}
-
-		body, err := ac.callAPI(param)
-		if err != nil {
-			cmd.SilenceUsage = true
-			return err
-		}
-
-		if body == "" {
-			return nil
-		}
-
-		if rawOutput {
-			_, err = os.Stdout.Write([]byte(body))
-		} else {
-			return prettyPrintStringAsJSON(body)
-		}
+	ac := newAPIClient(opt)
+	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
+		ac.SetVerbose(true)
+	}
+	err := authHelper(ac, cmd, args)
+	if err != nil {
+		cmd.SilenceUsage = true
 		return err
-	},
+	}
+
+	param, err := collectSigfoxDevicesTerminateCmdParams(ac)
+	if err != nil {
+		return err
+	}
+
+	body, err := ac.callAPI(param)
+	if err != nil {
+		cmd.SilenceUsage = true
+		return err
+	}
+
+	if body == "" {
+		return nil
+	}
+
+	if rawOutput {
+		_, err = os.Stdout.Write([]byte(body))
+	} else {
+		return prettyPrintStringAsJSON(body)
+	}
+	return err
 }
 
 func collectSigfoxDevicesTerminateCmdParams(ac *apiClient) (*apiParams, error) {
