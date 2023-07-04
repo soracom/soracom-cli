@@ -39,5 +39,5 @@ func InitRootCmd() {
 func InitAllSubCommands() {
 {{- range .Subcommands }}
   Init{{.CommandVariableName}}()
-{{end}}
+{{- end}}
 }

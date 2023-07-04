@@ -1,6 +1,8 @@
 package main
 
 import (
+	"sort"
+
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -23,6 +25,9 @@ func generateRootCommand(apiDef, apiSandboxDef *openapi3.T, templateDir, outputD
 
 	subcommands := getAllSubcommands(apiDef)
 	subcommands = append(subcommands, getAllSubcommands(apiSandboxDef)...)
+	sort.Slice(subcommands, func(i, j int) bool {
+		return subcommands[i].CommandVariableName < subcommands[j].CommandVariableName
+	})
 
 	w, err := openOutputFile(outputDir, "root.go")
 	if err != nil {
