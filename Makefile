@@ -17,6 +17,7 @@ help:
 
 install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
+	go install github.com/tc-hib/go-winres@v0.3.1
 	go install honnef.co/go/tools/cmd/staticcheck@v0.4.2
 	go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
 	go install golang.org/x/tools/cmd/goimports@v0.1.7
@@ -38,6 +39,8 @@ generate: ## Generate source code for soracom-cli
 	./generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
 	@echo 'Copying assets to embed ...'
 	cp -r generators/assets/ soracom/generated/cmd/assets/
+	rm -rf soracom/winres/
+	cp -r generators/winres/ soracom/winres/
 	make format
 .PHONY:generate
 
@@ -57,6 +60,10 @@ lint: ## Lint codes
 metrics-gocyclo: ## Metrics with gocyclo
 	gocyclo -over $(GOCYCLO_OVER) .
 .PHONY:metrics-gocyclo
+
+winres:
+	@(cd ./soracom && go-winres make)
+.PHONY:winres
 
 build: ## Build codes
 	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build \

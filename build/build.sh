@@ -84,7 +84,7 @@ License: MIT
 License: MIT
 ${license_text}
 EOD
-  
+
 
   fsize="$( find $tmpdir -type f -not -path "$tmpdir/DEBIAN/*" -exec du -cb {} + | tail -1 | cut -f1 )"
   fsize="$(( fsize / 1024 ))"
@@ -142,6 +142,9 @@ build() {
   bin="$binbase$ext"
 
   printf "  %-7s - %-7s  bin" "$goos" "$goarch"
+  if [ "$goos" == "windows" ]; then
+    make winres
+  fi
   make build GOOS="$goos" GOARCH="$goarch" VERSION="$VERSION" OUTPUT="$bindir/$bin"
 
   printf ", archive"
