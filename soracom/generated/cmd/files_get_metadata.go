@@ -16,9 +16,9 @@ var FilesGetMetadataCmdPath string
 var FilesGetMetadataCmdScope string
 
 func InitFilesGetMetadataCmd() {
-	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdPath, "path", "", TRAPI("Target path"))
+	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdPath, "path", "", TRAPI("Target path."))
 
-	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdScope, "scope", "private", TRAPI("Scope of the request"))
+	FilesGetMetadataCmd.Flags().StringVar(&FilesGetMetadataCmdScope, "scope", "private", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
 	FilesGetMetadataCmd.RunE = FilesGetMetadataCmdRunE
 

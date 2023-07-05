@@ -31,7 +31,7 @@ var LoraDevicesListCmdPaginate bool
 var LoraDevicesListCmdOutputJSONL bool
 
 func InitLoraDevicesListCmd() {
-	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
+	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last LoRaWAN device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next LoRaWAN device onward."))
 
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
@@ -39,7 +39,7 @@ func InitLoraDevicesListCmd() {
 
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
-	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN devices to retrieve."))
 
 	LoraDevicesListCmd.Flags().BoolVar(&LoraDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -16,9 +16,9 @@ var FilesDeleteDirectoryCmdPath string
 var FilesDeleteDirectoryCmdScope string
 
 func InitFilesDeleteDirectoryCmd() {
-	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdPath, "path", "", TRAPI("Target directory path"))
+	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdPath, "path", "", TRAPI("Target path."))
 
-	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdScope, "scope", "private", TRAPI("Scope of the request"))
+	FilesDeleteDirectoryCmd.Flags().StringVar(&FilesDeleteDirectoryCmdScope, "scope", "private", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
 	FilesDeleteDirectoryCmd.RunE = FilesDeleteDirectoryCmdRunE
 

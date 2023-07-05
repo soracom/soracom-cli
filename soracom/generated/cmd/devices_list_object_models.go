@@ -22,7 +22,7 @@ var DevicesListObjectModelsCmdPaginate bool
 var DevicesListObjectModelsCmdOutputJSONL bool
 
 func InitDevicesListObjectModelsCmd() {
-	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page"))
+	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page. By specifying this parameter, you can continue to retrieve the list from the next device object models onward."))
 
 	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", -1, TRAPI("Max number of device object models in a response"))
 

@@ -36,15 +36,15 @@ var DataGetCmdOutputJSONL bool
 func InitDataGetCmd() {
 	DataGetCmd.Flags().StringVar(&DataGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataGetCmd.Flags().StringVar(&DataGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. The key for data entries in this API is '${UNIX time in milliseconds}_${IMSI}'. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	DataGetCmd.Flags().StringVar(&DataGetCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve. The default is '10'."))
 
-	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

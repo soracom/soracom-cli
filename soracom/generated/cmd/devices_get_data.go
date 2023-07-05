@@ -40,11 +40,11 @@ func InitDevicesGetDataCmd() {
 
 	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

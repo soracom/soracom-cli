@@ -37,19 +37,19 @@ var DataGetEntriesCmdPaginate bool
 var DataGetEntriesCmdOutputJSONL bool
 
 func InitDataGetEntriesCmd() {
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource. The ID to be specified depends on the value of 'resource_type'.| 'resource_type' | The ID you specify ||-|-|| 'Subscriber' | IMSI of the IoT SIM || 'LoraDevice' | ID of the LoRaWAN device || 'Sim' | SIM ID of the IoT SIM || 'SigfoxDevice' | ID of the Sigfox device || 'Device' | ID of the Inventory device |"))
 
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource."))
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve. The default is '10'."))
 
-	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

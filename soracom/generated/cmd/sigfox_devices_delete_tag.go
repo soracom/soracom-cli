@@ -16,7 +16,7 @@ var SigfoxDevicesDeleteTagCmdDeviceId string
 var SigfoxDevicesDeleteTagCmdTagName string
 
 func InitSigfoxDevicesDeleteTagCmd() {
-	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target Sigfox device."))
+	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
 	SigfoxDevicesDeleteTagCmd.Flags().StringVar(&SigfoxDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 

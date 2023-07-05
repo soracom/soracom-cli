@@ -30,7 +30,7 @@ func InitSoraCamDevicesVideosExportCmd() {
 
 	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdFrom, "from", 0, TRAPI("Start time for exporting (unix time in milliseconds)."))
 
-	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdTo, "to", 0, TRAPI("End time for exporting (unix time in milliseconds).- The maximum time for a single API call to export is 300 seconds (5 minutes). Make sure the difference between 'from' and 'to' does not exceed 300 seconds."))
+	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdTo, "to", 0, TRAPI("End time for exporting (unix time in milliseconds).- The maximum time for a single API call to export is 900 seconds (15 minutes). Make sure the difference between 'from' and 'to' does not exceed 900 seconds."))
 
 	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

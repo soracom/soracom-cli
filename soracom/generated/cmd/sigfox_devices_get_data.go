@@ -34,17 +34,17 @@ var SigfoxDevicesGetDataCmdPaginate bool
 var SigfoxDevicesGetDataCmdOutputJSONL bool
 
 func InitSigfoxDevicesGetDataCmd() {
-	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
+	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device that generated data entries."))
 
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	SigfoxDevicesGetDataCmd.Flags().StringVar(&SigfoxDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -26,7 +26,7 @@ var LoraDevicesRegisterCmdRegistrationSecret string
 var LoraDevicesRegisterCmdBody string
 
 func InitLoraDevicesRegisterCmd() {
-	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesRegisterCmd.Flags().StringVar(&LoraDevicesRegisterCmdGroupId, "group-id", "", TRAPI(""))
 

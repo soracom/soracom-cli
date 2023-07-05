@@ -32,7 +32,7 @@ var LoraDevicesSetGroupCmdLastModifiedTime int64
 var LoraDevicesSetGroupCmdBody string
 
 func InitLoraDevicesSetGroupCmd() {
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
 

@@ -13,7 +13,7 @@ import (
 var FilesGetExportedCmdExportedFileId string
 
 func InitFilesGetExportedCmd() {
-	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TRAPI("File export ID"))
+	FilesGetExportedCmd.Flags().StringVar(&FilesGetExportedCmdExportedFileId, "exported-file-id", "", TRAPI("File export ID."))
 
 	FilesGetExportedCmd.RunE = FilesGetExportedCmdRunE
 

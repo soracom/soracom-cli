@@ -33,13 +33,13 @@ var SubscribersSessionEventsCmdOutputJSONL bool
 func InitSubscribersSessionEventsCmd() {
 	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
+	SubscribersSessionEventsCmd.Flags().StringVar(&SubscribersSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
 
-	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (unixtime)."))
+	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (UNIX time in milliseconds)."))
 
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
-	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (unixtime)."))
+	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (UNIX time in milliseconds)."))
 
 	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

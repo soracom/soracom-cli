@@ -13,6 +13,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// OrdersCreateCmdPreferredDeliveryDate holds value of 'preferredDeliveryDate' option
+var OrdersCreateCmdPreferredDeliveryDate string
+
 // OrdersCreateCmdShippingAddressId holds value of 'shippingAddressId' option
 var OrdersCreateCmdShippingAddressId string
 
@@ -20,6 +23,8 @@ var OrdersCreateCmdShippingAddressId string
 var OrdersCreateCmdBody string
 
 func InitOrdersCreateCmd() {
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdPreferredDeliveryDate, "preferred-delivery-date", "", TRAPI("Preferred delivery date"))
+
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID"))
 
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
@@ -148,6 +153,10 @@ func buildBodyForOrdersCreateCmd() (string, error) {
 
 	if result == nil {
 		result = make(map[string]interface{})
+	}
+
+	if OrdersCreateCmdPreferredDeliveryDate != "" {
+		result["preferredDeliveryDate"] = OrdersCreateCmdPreferredDeliveryDate
 	}
 
 	if OrdersCreateCmdShippingAddressId != "" {

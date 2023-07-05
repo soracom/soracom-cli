@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20230417-023612
+  version: 20230704-081118
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -174,12 +174,14 @@ paths:
           header: x-soracom-next-key
   /auth:
     post:
-      description: Performs authentication to access to the SORACOM API. To perform
-        authentication by a root account, specify `email` and `password`. To perform
-        authentication by an AuthKey, specify `authKeyId` and `authKey`. To perform
-        authentication by a SAM user, specify `operatorId`, `userName` and `password`.
-        An API Key and an API Token will be included in the response if successful.
-        Specify the API Key and the API Token to requests afterwards
+      description: |
+        Performs authentication to access to the SORACOM API. Please include the following information in your request.
+
+        - To perform authentication by a root account, specify `email` and `password`.
+        - To perform authentication by an AuthKey, specify `authKeyId` and `authKey`.
+        - To perform authentication by a SAM user, specify `operatorId`, `userName` and `password`.
+
+        An API key and API token will be included in the response if successful. Use the API key and API token to perform subsequent requests.
       operationId: auth
       requestBody:
         content:
@@ -218,10 +220,10 @@ paths:
       - auth
   /auth/logout:
     post:
-      description: Revoke the API key and API token that are used to call this API.
-        Once revoked, the API key and API token cannot be used to call the SORACOM
-        API, regardless of their expiration time. This API can be called regardless
-        of permission settings.
+      description: Revokes the API key and API token that was used to call this API.
+        Once revoked, the API key and API token cannot be used to make further requests
+        to the API, regardless of the key and token's original expiration time. This
+        API can be called regardless of any permission settings.
       operationId: logout
       responses:
         "204":
@@ -229,16 +231,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Revoke API key and API token to access to the SORACOM API.
+      summary: Revokes an API key and API token in order to remove access to the SORACOM
+        API.
       tags:
       - Auth
       x-soracom-cli:
       - logout
   /auth/password_reset_token/issue:
     post:
-      description: Generates a password reset token and send it to the operator's
-        mail address. After receiving the password reset token, call /v1/auth/password_reset_token/verify
-        API with the token to update operator's password.
+      description: Generates a password reset token and sends it to the operator's
+        primary email address. After receiving the password reset token, call /v1/auth/password_reset_token/verify
+        API with the token to update the operator's password.
       operationId: issuePasswordResetToken
       requestBody:
         content:
@@ -286,6 +289,39 @@ paths:
       - Auth
       x-soracom-cli:
       - auth verify-password-reset-token
+  /auth/switch_user:
+    post:
+      description: Using the API key and API token of the original user, call this
+        API to issue an API key and API token of the target user that you are switching
+        to. The original user should already be registered in the target user's trust
+        policy. See [User:updateUserTrustPolicy](#/User/updateUserTrustPolicy) for
+        information on updating the trust policy.
+      operationId: switchUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwitchUserRequest'
+        description: Specify the user to switch to and the validity period of the
+          API token to be issued.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          description: Authentication successful.
+        "400":
+          description: Switch user not allowed.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Generates an API key and an API token to call APIs as a different user.
+      tags:
+      - Auth
+      x-soracom-cli:
+      - auth switch-user
   /bills:
     get:
       description: |
@@ -1035,13 +1071,11 @@ paths:
       - credentials update
   /data/{resource_type}/{resource_id}:
     get:
-      description: Returns a list of data entries sent from a resource that match
-        certain criteria. If the total number of entries does not fit in one page,
-        a URL for accessing the next page is returned in the 'Link' header of the
-        response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataEntries
       parameters:
-      - description: Type of data source resource
+      - description: Type of data source resource.
         in: path
         name: resource_type
         required: true
@@ -1049,23 +1083,32 @@ paths:
           enum:
           - Subscriber
           - LoraDevice
-          - SubscriberIdentityModule
+          - Sim
           - SigfoxDevice
           - Device
           type: string
-      - description: ID of data source resource
+      - description: |
+          ID of data source resource. The ID to be specified depends on the value of `resource_type`.
+
+          | `resource_type` | The ID you specify |
+          |-|-|
+          | `Subscriber` | IMSI of the IoT SIM |
+          | `LoraDevice` | ID of the LoRaWAN device |
+          | `Sim` | SIM ID of the IoT SIM |
+          | `SigfoxDevice` | ID of the Sigfox device |
+          | `Device` | ID of the Inventory device |
         in: path
         name: resource_id
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -1082,15 +1125,15 @@ paths:
           - desc
           - asc
           type: string
-      - description: Maximum number of data entries to retrieve.
+      - description: Maximum number of data entries to retrieve. The default is `10`.
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: The value of `time` in the last log entry retrieved in the previous
-          page. By specifying this parameter, you can continue to retrieve the list
-          from the next page onward.
+      - description: Key in the last data entry retrieved in the previous page. By
+          specifying this parameter, you can continue to retrieve the list from the
+          next page onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -1108,7 +1151,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a resource.
+      summary: Get data sent to Harvest Data from a resource.
       tags:
       - DataEntry
       x-soracom-cli:
@@ -1123,7 +1166,7 @@ paths:
       description: Deletes a data entry identified with resource ID and timestamp
       operationId: deleteDataEntry
       parameters:
-      - description: Type of data source resource
+      - description: Type of data source resource.
         in: path
         name: resource_type
         required: true
@@ -1131,7 +1174,7 @@ paths:
           enum:
           - Subscriber
           - LoraDevice
-          - SubscriberIdentityModule
+          - Sim
           - SigfoxDevice
           - Device
           type: string
@@ -1141,7 +1184,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: Timestamp of the target data entry to delete (unixtime in milliseconds).
+      - description: Timestamp of the target data entry to delete (UNIX time in milliseconds).
         in: path
         name: time
         required: true
@@ -1162,7 +1205,7 @@ paths:
       description: Gets a data entry identified with resource ID and timestamp
       operationId: getDataEntry
       parameters:
-      - description: Type of data source resource
+      - description: Type of data source resource.
         in: path
         name: resource_type
         required: true
@@ -1170,7 +1213,7 @@ paths:
           enum:
           - Subscriber
           - LoraDevice
-          - SubscriberIdentityModule
+          - Sim
           - SigfoxDevice
           - Device
           type: string
@@ -1180,7 +1223,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: Timestamp of the target data entry to get (unixtime in milliseconds).
+      - description: Timestamp of the target data entry to get (UNIX time in milliseconds).
         in: path
         name: time
         required: true
@@ -1201,10 +1244,8 @@ paths:
       - data get-entry
   /data/resources:
     get:
-      description: Returns a list of data source resources that have sent data from
-        resources that belong to the operator. If the total number of entries does
-        not fit in one page, a URL for accessing the next page is returned in the
-        'Link' header of the response.
+      description: |
+        Returns a list of data source resources that have sent data from resources that belong to the operator. If the total number of data source resources does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listDataSourceResources
       parameters:
       - description: Type of data source resource
@@ -1215,7 +1256,7 @@ paths:
           enum:
           - Subscriber
           - LoraDevice
-          - SubscriberIdentityModule
+          - Sim
           - SigfoxDevice
           - Device
           type: string
@@ -1260,7 +1301,9 @@ paths:
       description: Returns a list of device object models
       operationId: listDeviceObjectModels
       parameters:
-      - description: ID of the last device object model in the previous page
+      - description: ID of the last device object model in the previous page. By specifying
+          this parameter, you can continue to retrieve the list from the next device
+          object models onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -1323,7 +1366,7 @@ paths:
       description: Deletes a device object model
       operationId: deleteDeviceObjectModel
       parameters:
-      - description: Device object model ID
+      - description: Target device object model ID
         in: path
         name: model_id
         required: true
@@ -1346,7 +1389,7 @@ paths:
       description: Gets a device object model
       operationId: getDeviceObjectModel
       parameters:
-      - description: Device object model ID
+      - description: Target device object model ID
         in: path
         name: model_id
         required: true
@@ -1373,22 +1416,14 @@ paths:
       description: Updates a device object model
       operationId: updateDeviceObjectModel
       parameters:
-      - description: Device object model ID
+      - description: Target device object model ID
         in: path
         name: model_id
         required: true
         schema:
           type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceObjectModel'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/DeviceObjectModel'
-        description: Device object model definition in either XML or JSON format.
-        required: true
+        $ref: '#/components/requestBodies/DeviceObjectModel'
       responses:
         "200":
           content:
@@ -1466,7 +1501,8 @@ paths:
         required: false
         schema:
           type: string
-      - description: ID of the last Device in the previous page
+      - description: ID of the last Device in the previous page. By specifying this
+          parameter, you can continue to retrieve the list from the next device onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -1623,7 +1659,8 @@ paths:
                 $ref: '#/components/schemas/ObjectInstance'
           description: Resources under the specified object instance
         "400":
-          description: Object instance is not readable
+          description: Object instance is not readable (including cases of connection
+            errors such as device offline).
         "404":
           description: Object instance is not found
       security:
@@ -1678,7 +1715,8 @@ paths:
                 $ref: '#/components/schemas/ResourceInstance'
           description: Resource
         "400":
-          description: Resource is not readable
+          description: Resource is not readable (including cases of connection errors
+            such as device offline).
         "404":
           description: Resource is not found
       security:
@@ -1742,8 +1780,8 @@ paths:
           description: Resource is not found
         "500":
           description: Error response from the device. (It includes the case where
-            the LwM2M response message is error from the device, and the error message
-            from the device is included in the response 'message'.)
+            the LwM2M response message is error from the device. The error message
+            from the device is included in the response 'message'. )
       security:
       - api_key: []
         api_token: []
@@ -1794,7 +1832,8 @@ paths:
         "202":
           description: Execution request is accepted
         "400":
-          description: Resource is not executable
+          description: Resource is not executable (including cases of connection errors
+            such as device offline)
         "404":
           description: Resource is not found
       security:
@@ -1807,7 +1846,9 @@ paths:
       - devices execute-resource
   /devices/{device_id}/{object}/{instance}/{resource}/observe:
     post:
-      description: Triggers observation of the specified resource of a device
+      description: Triggers observation of the specified resource of a device. Once
+        observation is started, the server will be notified when there is a change
+        in value on the device side.
       operationId: observeDeviceResource
       parameters:
       - description: Target device
@@ -1845,7 +1886,8 @@ paths:
         "202":
           description: Observation started.
         "400":
-          description: Resource is not readable
+          description: Resource is not readable (including cases of connection errors
+            such as device offline).
         "404":
           description: Resource is not found
       security:
@@ -1933,7 +1975,8 @@ paths:
         "202":
           description: Observation started.
         "400":
-          description: Resource is not readable
+          description: Resource is not readable (including cases of connection errors
+            such as device offline).
         "404":
           description: Resource is not found
       security:
@@ -1982,9 +2025,8 @@ paths:
       - devices unobserve-resources
   /devices/{device_id}/data:
     get:
-      description: Returns a list of data entries sent from a device that match certain
-        criteria. If the total number of entries does not fit in one page, a URL for
-        accessing the next page is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataFromDevice
       parameters:
       - description: Device ID of the target subscriber that generated data entries.
@@ -1993,13 +2035,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -2042,7 +2084,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a device.
+      summary: Get data sent from a device to Harvest Data.
       tags:
       - Device
       x-soracom-cli:
@@ -2487,7 +2529,8 @@ paths:
         match with any paths of file entries.
       operationId: findFiles
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: query
         name: scope
         required: true
@@ -2496,20 +2539,20 @@ paths:
           - private
           - public
           type: string
-      - description: Prefix to match with file path
+      - description: Prefix to match with file path.
         in: query
         name: prefix
         required: true
         schema:
           type: string
-      - description: Num of entries
+      - description: Maximum number of file entries to be returned.
         in: query
         name: limit
         required: false
         schema:
           default: 10
           type: integer
-      - description: The filePath of the last file entry retrieved on the current
+      - description: The filePath of the last file entry retrieved on the previous
           page. By specifying this parameter, you can continue to retrieve the list
           from the next file entry onward.
         in: query
@@ -2525,10 +2568,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/FileEntry'
                 type: array
-          description: List of file entries found with query parameters, which can
-            be empty if the prefix does not match with any paths of file entries.
+          description: List of file entries found with query parameters. Empty list
+            if there is no file entry matching prefix.
         "404":
-          description: The specified scope does not exist
+          description: The specified scope does not exist.
       security:
       - api_key: []
         api_token: []
@@ -2544,11 +2587,12 @@ paths:
           header: x-soracom-next-key
   /files/{scope}/{path}:
     delete:
-      description: Deletes the specified file in the scope. Only `private` scope is
-        allowed for the operation.
+      description: Deletes the file specified by scope and path. Only `private` scope
+        is allowed for the operation.
       operationId: deleteFile
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2557,7 +2601,7 @@ paths:
           enum:
           - private
           type: string
-      - description: Target path
+      - description: Target path.
         in: path
         name: path
         required: true
@@ -2565,24 +2609,25 @@ paths:
           type: string
       responses:
         "204":
-          description: The specified file is successfully deleted
+          description: The specified file is successfully deleted.
         "404":
-          description: No such file
+          description: No such file.
       security:
       - api_key: []
         api_token: []
-      summary: Delete specified file in the scope.
+      summary: Deletes the file specified by scope and path.
       tags:
       - FileEntry
       x-soracom-cli:
       - files delete
     get:
-      description: Redirects the client to URL for the link to download the file specified
-        by the scope and the path. By issuing HTTP GET request to the link returned
-        in the response, the client is able to download the file.
+      description: Download file specified by the path and the scope. Note that [`FileEntry:listFiles
+        API`](/en/api/#!/FileEntry/listFiles) will be called if the path ends with
+        `/`.
       operationId: getFile
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2592,7 +2637,7 @@ paths:
           - private
           - public
           type: string
-      - description: Target path
+      - description: Target path.
         in: path
         name: path
         required: true
@@ -2600,9 +2645,10 @@ paths:
           type: string
       responses:
         "302":
-          description: Client is redirected to the link to download the file.
+          description: Redirection to a link to download a file. If the specified
+            path is a directory, redirection to the listFiles API.
         "404":
-          description: No such file
+          description: No such file.
       security:
       - api_key: []
         api_token: []
@@ -2612,10 +2658,11 @@ paths:
       x-soracom-cli:
       - files get
     head:
-      description: Gets metadata of the file specified by the path and the scope.
+      description: Gets the metadata of the file specified by the path and the scope.
       operationId: getFileMetadata
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2625,7 +2672,7 @@ paths:
           - private
           - public
           type: string
-      - description: Target path
+      - description: Target path.
         in: path
         name: path
         required: true
@@ -2639,11 +2686,11 @@ paths:
                 $ref: '#/components/schemas/FileEntry'
           description: Metadata of the file
         "404":
-          description: No such file
+          description: No such file.
       security:
       - api_key: []
         api_token: []
-      summary: Get the metadata of the file specified by the path and the scope
+      summary: Gets the metadata of the file specified by the path and the scope
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2653,7 +2700,8 @@ paths:
         scope is allowed for the operation.
       operationId: putFile
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2662,13 +2710,13 @@ paths:
           enum:
           - private
           type: string
-      - description: Target path
+      - description: Target path.
         in: path
         name: path
         required: true
         schema:
           type: string
-      - description: Content type of the file to upload
+      - description: Content-Type of the file to be uploaded.
         in: header
         name: content-type
         schema:
@@ -2679,28 +2727,29 @@ paths:
             schema:
               format: binary
               type: string
-        description: Content of the file to upload
+        description: Contents of the file to be updated.
         required: true
       responses:
         "200":
-          description: File is successfully updated with the content
+          description: File is successfully updated with the content.
         "201":
-          description: File is successfully created
+          description: File is successfully created.
       security:
       - api_key: []
         api_token: []
-      summary: Upload file to the path in the scope.
+      summary: Uploads the file to the specified path in the scope.
       tags:
       - FileEntry
       x-soracom-cli:
       - files put
   /files/{scope}/{path}/:
     delete:
-      description: Deletes the specified directory in the scope. Only `private` scope
-        is allowed for the operation.
+      description: Deletes the directory specified by scope and path. Only `private`
+        scope is allowed for the operation.
       operationId: deleteDirectory
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2709,7 +2758,7 @@ paths:
           enum:
           - private
           type: string
-      - description: Target directory path
+      - description: Target path.
         in: path
         name: path
         required: true
@@ -2717,28 +2766,26 @@ paths:
           type: string
       responses:
         "204":
-          description: The specified directory is successfully deleted
+          description: The specified directory is successfully deleted.
         "400":
-          description: The specified directory is not empty
+          description: The specified directory is not empty.
         "404":
-          description: No such directory
+          description: No such directory.
       security:
       - api_key: []
         api_token: []
-      summary: Delete specified directory in the scope.
+      summary: Deletes the directory specified by scope and path
       tags:
       - FileEntry
       x-soracom-cli:
       - files delete-directory
     get:
-      description: Returns a list of file entries under the path in the scope. This
-        operation works only for directories and an error will be retrurned if the
-        file entry corresponds to the given path is not a directory. If the total
-        number of entries does not fit in one page, a URL for accessing the next page
-        is returned in the 'Link' header of the response.
+      description: |
+        Returns files and directories from the directory specified by the scope and path. Note that [`FileEntry:getFile API`](/en/api/#!/FileEntry/getFile) will be called if the path does not end in `/`. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listFiles
       parameters:
-      - description: Scope of the request
+      - description: Scope of the request. Specify `private` to handle files uploaded
+          to Harvest Files.
         in: path
         name: scope
         required: true
@@ -2748,21 +2795,21 @@ paths:
           - private
           - public
           type: string
-      - description: Target path
+      - description: Target path.
         in: path
         name: path
         required: true
         schema:
           default: /
           type: string
-      - description: Num of entries
+      - description: Maximum number of file entries to be returned.
         in: query
         name: limit
         required: false
         schema:
           default: 10
           type: integer
-      - description: The filename  of the last file entry retrieved on the current
+      - description: The filename of the last file entry retrieved on the previous
           page. By specifying this parameter, you can continue to retrieve the list
           from the next file entry onward.
         in: query
@@ -2778,13 +2825,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/FileEntry'
                 type: array
-          description: A list of file entries.
+          description: Files and directories from the directory specified by the scope
+            and path.
         "404":
-          description: No such directory
+          description: No such directory.
       security:
       - api_key: []
         api_token: []
-      summary: List files and directories on the path in the scope
+      summary: Returns files and directories from the directory specified by the scope
+        and path.
       tags:
       - FileEntry
       x-soracom-cli:
@@ -2797,7 +2846,7 @@ paths:
   /files/exported/{exported_file_id}:
     get:
       description: |
-        Get the progress of the process when the file is exported asynchronously. If the export is complete, you will get the URL to download the file.
+        Get the progress of the process when the file is exported asynchronously. If the export is complete, you will get the URL to download the file. You can download the file from the URL.
 
         The following APIs are available to export files asynchronously. The `exported_file_id` is the file output ID (the value of `exportedFileId`) obtained from the following API.
 
@@ -2811,7 +2860,7 @@ paths:
         - [`Subscriber:exportSubscribers API`](#/Subscriber/exportSubscribers)
       operationId: getExportedFile
       parameters:
-      - description: File export ID
+      - description: File export ID.
         in: path
         name: exported_file_id
         required: true
@@ -3567,7 +3616,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The IMSI of the last subscriber retrieved on the current page.
+      - description: The IMSI of the last subscriber retrieved on the previous page.
           By specifying this parameter, you can continue to retrieve the list from
           the next subscriber onward.
         in: query
@@ -3671,7 +3720,10 @@ paths:
       - groups delete-tag
   /lagoon/dashboards/{dashboard_id}/permissions:
     put:
-      description: Update permissions for a dashboard of SORACOM Lagoon
+      description: |
+        Update permissions for a SORACOM Lagoon 2 dashboard.
+
+        **Warning**: A SORACOM Lagoon 3 dashboard cannot be updated with this API.
       operationId: updateLagoonDashboardPermissions
       parameters:
       - description: dashboard_id
@@ -3681,10 +3733,11 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: If the value is true, a request will be issued to Lagoon Classic.
-          This is only valid if both Lagoon and Lagoon Classic are enabled.
+      - description: |
+          If the value is true, a request will be issued to Lagoon 2.
+          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
         in: query
-        name: classic
+        name: v2
         required: false
         schema:
           type: boolean
@@ -3705,15 +3758,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update permissions for a dashboard of SORACOM Lagoon
+      summary: Update permissions for a SORACOM Lagoon 2 dashboard
       tags:
       - Lagoon
       x-soracom-cli:
       - lagoon dashboards update-permissions
   /lagoon/dashboards/{dashboard_id}/permissions/init:
     post:
-      description: Update permissions to the initial state for a dashboard of SORACOM
-        Lagoon
+      description: |
+        Update permissions to the initial state for a SORACOM Lagoon 2 dashboard.
+
+        **Warning**: This API cannot update permissions for a SORACOM Lagoon 3 dashboard.
       operationId: initializeLagoonDashboardPermissions
       parameters:
       - description: dashboard_id
@@ -3723,10 +3778,10 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: If the value is true, a request will be issued to Lagoon Classic.
-          This is only valid if both Lagoon and Lagoon Classic are enabled.
+      - description: If the value is true, a request will be issued to Lagoon 2. This
+          is only valid if both Lagoon 3 and Lagoon 2 are enabled.
         in: query
-        name: classic
+        name: v2
         required: false
         schema:
           type: boolean
@@ -3740,21 +3795,20 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update permissions to the initial state for a dashboard of SORACOM
-        Lagoon
+      summary: Update permissions to the initial state for a SORACOM Lagoon 2 dashboard
       tags:
       - Lagoon
       x-soracom-cli:
       - lagoon dashboards init-permissions
   /lagoon/dashboards/permissions:
     get:
-      description: List permissions for all SORACOM Lagoon dashboards
+      description: List permissions for all SORACOM Lagoon 2 dashboards
       operationId: listLagoonDashboardsPermissions
       parameters:
-      - description: If the value is true, a request will be issued to Lagoon Classic.
-          This is only valid if both Lagoon and Lagoon Classic are enabled.
+      - description: If the value is true, a request will be issued to Lagoon 2. This
+          is only valid if both Lagoon 3 and Lagoon 2 are enabled.
         in: query
-        name: classic
+        name: v2
         required: false
         schema:
           type: boolean
@@ -3772,20 +3826,20 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List permissions for all SORACOM Lagoon dashboards
+      summary: List permissions for all SORACOM Lagoon 2 dashboards
       tags:
       - Lagoon
       x-soracom-cli:
       - lagoon dashboards list-permissions
   /lagoon/image/link:
     get:
-      description: Get a custom icon image link of SORACOM Lagoon
+      description: Get a custom icon image link of SORACOM Lagoon Console
       operationId: getImageLink
       parameters:
-      - description: If the value is true, a request will be issued to Lagoon Classic.
-          This is only valid if both Lagoon and Lagoon Classic are enabled.
+      - description: If the value is true, a request will be issued to Lagoon 2. This
+          is only valid if both Lagoon 3 and Lagoon 2 are enabled.
         in: query
-        name: classic
+        name: v2
         required: false
         schema:
           type: boolean
@@ -3801,7 +3855,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get a custom icon image link of SORACOM Lagoon
+      summary: Get a custom icon image link of SORACOM Lagoon Console
       tags:
       - Lagoon
       x-soracom-cli:
@@ -3830,8 +3884,10 @@ paths:
       x-soracom-cli:
       - lagoon license-packs list-status
     put:
-      description: Update the quantities for license packs of SORACOM Lagoon. This
-        API is only allowed to operate by root account.
+      description: |
+        Update the quantities for license packs of SORACOM Lagoon.
+
+        **Warning**: This API must be called with the root user credentials. The quantities for license packs of SORACOM Lagoon cannot be updated with SAM user credentials.
       operationId: updateLagoonLicensePack
       requestBody:
         content:
@@ -3857,53 +3913,50 @@ paths:
       - lagoon license-packs update
   /lagoon/migration:
     get:
-      deprecated: true
-      description: '(OBSOLETE) This API always returns `410 GONE`: Get the version
-        migration information for SORACOM Lagoon. Only the root account can operate
-        this.'
+      description: Get the version migration information for SORACOM Lagoon. Only
+        the root account can operate this.
       operationId: getLagoonMigrationInfo
       requestBody:
         $ref: '#/components/requestBodies/LagoonPlanChangingRequest'
       responses:
-        "410":
-          description: No longer migration supported
+        "200":
+          description: OK. The response body contains the Lagoon migration information.
       security:
       - api_key: []
         api_token: []
-      summary: '(OBSOLETE) This API always returns `410 GONE`: Get the version migration
-        information for SORACOM Lagoon'
+      summary: Get the version migration information for SORACOM Lagoon
       tags:
       - Lagoon
       x-soracom-cli:
       - lagoon migration get-info
     post:
-      deprecated: true
-      description: '(OBSOLETE) This API always returns `410 GONE`: Migrate SORACOM
-        Lagoon version. Only the root account can operate this.'
+      description: Migrate SORACOM Lagoon version. Only the root account can operate
+        this.
       operationId: migrateLagoon
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LagoonMigrationFromClassicRequest'
+              $ref: '#/components/schemas/LagoonMigrationRequest'
         description: req
         required: true
       responses:
-        "410":
-          description: No longer migration supported
+        "200":
+          description: OK. It has finished the Lagoon migration.
       security:
       - api_key: []
         api_token: []
-      summary: '(OBSOLETE) This API always returns `410 GONE`: Migrate SORACOM Lagoon
-        version'
+      summary: Migrate SORACOM Lagoon version
       tags:
       - Lagoon
       x-soracom-cli:
       - lagoon migration migrate
   /lagoon/plan:
     put:
-      description: Update the plan of SORACOM Lagoon. This API is only allowed to
-        operate by root account.
+      description: |
+        Update the plan of SORACOM Lagoon.
+
+        **Warning**: This API must be called with the root user credentials. The plan of Lagoon cannot be updated with SAM user credentials.
       operationId: updateLagoonPlan
       requestBody:
         $ref: '#/components/requestBodies/LagoonPlanChangingRequest'
@@ -3924,8 +3977,10 @@ paths:
       - lagoon updated-plan
   /lagoon/register:
     post:
-      description: Register (activate) SORACOM Lagoon. This API is only allowed to
-        operate by root account.
+      description: |
+        Register (activate) SORACOM Lagoon.
+
+        **Warning**: This API must be called with the root user credentials. Lagoon cannot be registered with SAM user credentials.
       operationId: registerLagoon
       requestBody:
         content:
@@ -3953,7 +4008,10 @@ paths:
       - lagoon register
   /lagoon/terminate:
     post:
-      description: Terminate (deactivate) SORACOM Lagoon.
+      description: |
+        Terminate (deactivate) SORACOM Lagoon.
+
+        **Warning**: This API must be called with the root user credentials. Lagoon cannot be terminated with SAM user credentials.
       operationId: terminateLagoon
       responses:
         "204":
@@ -3975,10 +4033,10 @@ paths:
       description: List SORACOM Lagoon users that belong to operator.
       operationId: listLagoonUsers
       parameters:
-      - description: If the value is true, a request will be issued to Lagoon Classic.
-          This is only valid if both Lagoon and Lagoon Classic are enabled.
+      - description: If the value is true, a request will be issued to Lagoon 2. This
+          is only valid if both Lagoon 3 and Lagoon 2 are enabled.
         in: query
-        name: classic
+        name: v2
         required: false
         schema:
           type: boolean
@@ -4239,9 +4297,8 @@ paths:
           header: x-soracom-next-key
   /lora_devices:
     get:
-      description: Returns a list of LoRa devices that match certain criteria. If
-        the total number of LoRa devices does not fit in one page, a URL for accessing
-        the next page is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of LoRaWAN devices that match certain criteria. If the total number of LoRaWAN devices does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listLoraDevices
       parameters:
       - description: Tag name for filtering the search (exact match).
@@ -4267,15 +4324,15 @@ paths:
           - exact
           - prefix
           type: string
-      - description: Maximum number of LoRa devices to retrieve.
+      - description: Maximum number of LoRaWAN devices to retrieve.
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: The device ID of the last device retrieved on the current page.
-          By specifying this parameter, you can continue to retrieve the list from
-          the next device onward.
+      - description: The device ID of the last LoRaWAN device retrieved on the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next LoRaWAN device onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -4289,11 +4346,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/LoraDevice'
                 type: array
-          description: A list of LoRa devices.
+          description: A list of LoRaWAN devices matching the criteria.
       security:
       - api_key: []
         api_token: []
-      summary: List LoRa devices.
+      summary: List LoRaWAN devices.
       tags:
       - LoraDevice
       x-soracom-cli:
@@ -4305,10 +4362,10 @@ paths:
           header: x-soracom-next-key
   /lora_devices/{device_id}:
     get:
-      description: Returns information about the specified LoRa device.
+      description: Returns information about the specified LoRaWAN device.
       operationId: getLoraDevice
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4320,38 +4377,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information.
+          description: The LoRaWAN device's detailed information.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Get LoRa device.
+      summary: Get LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices get
   /lora_devices/{device_id}/data:
     get:
-      description: Returns a list of data entries sent from a LoRa device that match
-        certain criteria. If the total number of entries does not fit in one page,
-        a URL for accessing the next page is returned in the 'Link' header of the
-        response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a LoRaWAN device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataFromLoraDevice
       parameters:
-      - description: Device ID of the target subscriber that generated data entries.
+      - description: Device ID of the target LoRaWAN device that generated data entries.
         in: path
         name: device_id
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -4394,7 +4449,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a LoRa device.
+      summary: Get data sent from a LoRaWAN device to Harvest Data.
       tags:
       - LoraDevice
       x-soracom-cli:
@@ -4405,11 +4460,12 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Sends data to the specified LoRa device. The data is sent to the
-        LoRa network server, to be sent out to the device using the next available
-        slot. If another message destined for the same LoRa device ID is already waiting
-        to be sent, the existing message will be discarded, and the new message will
-        be sent instead.
+      description: Sends data to the specified LoRaWAN device. The data is sent to
+        the LoRa network server, to be sent out to the device using the next available
+        slot. If another message destined for the same LoRaWAN device ID is already
+        waiting to be sent on the LoRa Network Server, the existing message will be
+        discarded, and the new message will be sent instead. Data is discarded if
+        it is not received by the device for a certain period of time (2 hours).
       operationId: sendDataToLoraDevice
       parameters:
       - description: ID of the recipient device.
@@ -4425,11 +4481,11 @@ paths:
               $ref: '#/components/schemas/LoraData'
         description: Binary data encoded as a hexadecimal string. Maximum length of
           original binary data is 11 octets (22 characters when encoded as a hexadecimal
-          string). The number of characters must be even. fPort MUST be equal to or
-          greater than 0. 0 is used for the control plane and 1 or greater values
-          should be used in general. It defaults to 2 to avoid the issues of some
-          devices from some vendors and all invalid values that can not be parsed
-          fallback to 2.
+          string). The number of characters must be even. fPort can be specified optionally.
+          fPort MUST be equal to or greater than 0. 0 is used for the control plane
+          and 1 or greater values should be used in general. It defaults to 2 to avoid
+          the issues of some devices from some vendors and all invalid values that
+          can not be parsed fallback to 2.
         required: true
       responses:
         "204":
@@ -4442,17 +4498,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Send data to a LoRa device.
+      summary: Send data to a LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices send-data
   /lora_devices/{device_id}/disable_termination:
     post:
-      description: Disables termination of specified LoRa device.
+      description: Disables termination of specified LoRaWAN device.
       operationId: disableTerminationOnLoraDevice
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4464,23 +4520,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Disable Termination of LoRa device.
+      summary: Disable Termination of LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices disable-termination
   /lora_devices/{device_id}/enable_termination:
     post:
-      description: Enables termination of specified LoRa device.
+      description: Enables termination of specified LoRaWAN device.
       operationId: enableTerminationOnLoraDevice
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4492,23 +4548,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Enable Termination of LoRa device.
+      summary: Enable Termination of LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices enable-termination
   /lora_devices/{device_id}/register:
     post:
-      description: Registers a LoRa device.
+      description: Register a LoRaWAN device.
       operationId: registerLoraDevice
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4519,7 +4575,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterLoraDeviceRequest'
-        description: LoRa device
+        description: LoRaWAN Device
         required: true
       responses:
         "201":
@@ -4527,21 +4583,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: LoRa device registration complete.
+          description: LoRaWAN device registration complete.
       security:
       - api_key: []
         api_token: []
-      summary: Register LoRa device.
+      summary: Register LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices register
   /lora_devices/{device_id}/set_group:
     post:
-      description: Sets or overwrites a group for the specified LoRa device.
+      description: Sets or overwrites a group for the specified LoRaWAN device.
       operationId: setLoraDeviceGroup
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4560,23 +4616,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Set Group of LoRa device.
+      summary: Set Group of LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices set-group
   /lora_devices/{device_id}/tags:
     put:
-      description: Inserts/updates tags for the specified LoRa device.
+      description: Inserts/updates tags for the specified LoRaWAN device.
       operationId: putLoraDeviceTags
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4597,23 +4653,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Bulk Insert or Update LoRa device Tags.
+      summary: Bulk Insert or Update LoRaWAN device Tags.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices put-tags
   /lora_devices/{device_id}/tags/{tag_name}:
     delete:
-      description: Deletes a tag from the specified LoRa device.
+      description: Deletes a tag from the specified LoRaWAN device.
       operationId: deleteLoraDeviceTag
       parameters:
-      - description: device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4631,11 +4687,11 @@ paths:
         "204":
           description: Deletion of specified tag complete.
         "404":
-          description: The specified LoRa device or the tag does not exist.
+          description: The specified LoRaWAN device or the tag does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Delete LoRa device Tag.
+      summary: Delete LoRaWAN device Tag.
       tags:
       - LoraDevice
       x-sam-operationId: deleteTag
@@ -4643,10 +4699,10 @@ paths:
       - lora-devices delete-tag
   /lora_devices/{device_id}/terminate:
     post:
-      description: Terminates the specified LoRa device
+      description: Terminates the specified LoRaWAN device.
       operationId: terminateLoraDevice
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4658,23 +4714,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist.
+          description: The specified LoRaWAN device does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Terminate LoRa device.
+      summary: Terminate LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
       - lora-devices terminate
   /lora_devices/{device_id}/unset_group:
     post:
-      description: Removes the group configuration from the specified LoRa device.
+      description: Removes the group configuration from the specified LoRaWAN device.
       operationId: unsetLoraDeviceGroup
       parameters:
-      - description: Device ID of the target LoRa device.
+      - description: Device ID of the target LoRaWAN device.
         in: path
         name: device_id
         required: true
@@ -4686,14 +4742,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoraDevice'
-          description: The LoRa device's detailed information after the update.
+          description: The LoRaWAN device's detailed information after the update.
         "404":
-          description: The specified LoRa device does not exist or the LoRa device
-            does not belong to a group.
+          description: The specified LoRaWAN device does not exist or the LoRaWAN
+            device does not belong to a group.
       security:
       - api_key: []
         api_token: []
-      summary: Unset Group of LoRa device.
+      summary: Unset Group of LoRaWAN device.
       tags:
       - LoraDevice
       x-soracom-cli:
@@ -7010,7 +7066,7 @@ paths:
         "204":
           description: Revoked
         "400":
-          description: Bad request
+          description: Bad request.
       security:
       - api_key: []
         api_token: []
@@ -7043,7 +7099,7 @@ paths:
                 $ref: '#/components/schemas/MFAStatusOfUseResponse'
           description: OK
         "400":
-          description: Bad request
+          description: Bad request.
       security:
       - api_key: []
         api_token: []
@@ -7076,7 +7132,7 @@ paths:
                 $ref: '#/components/schemas/EnableMFAOTPResponse'
           description: OK
         "400":
-          description: Bad request
+          description: Bad request.
       security:
       - api_key: []
         api_token: []
@@ -7113,7 +7169,7 @@ paths:
         "204":
           description: Verified
         "400":
-          description: Bad request
+          description: Bad request.
       security:
       - api_key: []
         api_token: []
@@ -7295,7 +7351,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: user_name
+      - description: SAM user name
         in: path
         name: user_name
         required: true
@@ -7326,7 +7382,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: user_name
+      - description: SAM user name
         in: path
         name: user_name
         required: true
@@ -7493,6 +7549,108 @@ paths:
       - User
       x-soracom-cli:
       - users revoke-user-auth-tokens
+  /operators/{operator_id}/users/{user_name}/trust_policy:
+    delete:
+      description: Deletes user trust policy for switching user.
+      operationId: deleteUserTrustPolicy
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: SAM user name.
+        in: path
+        name: user_name
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successfully deleted a trust policy for the user.
+        "400":
+          description: Bad request.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Deletes user trust policy.
+      tags:
+      - User
+      x-soracom-cli:
+      - users trust-policy delete
+    get:
+      description: Gets user trust policy for switching user.
+      operationId: getUserTrustPolicy
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: SAM user name.
+        in: path
+        name: user_name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserTrustPolicyResponse'
+          description: Successfully obtained trust policy.
+        "400":
+          description: Bad request.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Gets user trust policy.
+      tags:
+      - User
+      x-soracom-cli:
+      - users trust-policy get
+    put:
+      description: |
+        Updates the trust policy of the user specified by `operator_id` and `user_name` parameters.
+
+        **Warning**: Setting a trust policy will allow the operator(s) or user(s) specified in the request body to switch to this SAM user. When switching, the trusted operator(s) or user(s) will be granted the same permissions as this SAM user, and may be able to see session history, traffic history, and other account information.
+      operationId: updateUserTrustPolicy
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: SAM user name.
+        in: path
+        name: user_name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUserTrustPolicyRequest'
+        description: Specify a trust policy.
+        required: true
+      responses:
+        "204":
+          description: Successfully updated a trust policy for the user.
+        "400":
+          description: Bad request.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Updates user trust policy.
+      tags:
+      - User
+      x-soracom-cli:
+      - users trust-policy update
   /operators/{operator_id}/users/default_permissions:
     delete:
       description: Delete the default permissions rule that is applied to all of the
@@ -7507,11 +7665,11 @@ paths:
           type: string
       responses:
         "204":
-          description: Deleted
+          description: Deleted.
         "403":
           description: Not privileged
         "404":
-          description: Operator not found
+          description: Operator Not Found
       security:
       - api_key: []
         api_token: []
@@ -7572,7 +7730,7 @@ paths:
         "202":
           description: Accepted
         "400":
-          description: Bad Request
+          description: Bad request.
         "403":
           description: Not privileged
       security:
@@ -8018,7 +8176,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListPaymentStatementResponse'
-          description: OK
+          description: OK.
       security:
       - api_key: []
         api_token: []
@@ -8053,7 +8211,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
-          description: OK
+          description: OK.
         "400":
           description: Invalid payment statement ID.
       security:
@@ -8074,7 +8232,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterPayerInformationModel'
-          description: OK
+          description: OK.
         "400":
           description: Payer information not found.
       security:
@@ -8871,9 +9029,8 @@ paths:
       - resource-summaries get
   /sigfox_devices:
     get:
-      description: Returns a list of Sigfox devices that match certain criteria. If
-        the total number of Sigfox devices does not fit in one page, a URL for accessing
-        the next page is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of Sigfox devices that match certain criteria. If the total number of Sigfox devices does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listSigfoxDevices
       parameters:
       - description: Tag name for filtering the search (exact match).
@@ -8905,9 +9062,9 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The device ID of the last device retrieved on the current page.
-          By specifying this parameter, you can continue to retrieve the list from
-          the next device onward.
+      - description: The device ID of the last Sigfox device retrieved on the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next Sigfox device onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -8965,25 +9122,23 @@ paths:
       - sigfox-devices get
   /sigfox_devices/{device_id}/data:
     get:
-      description: Returns a list of data entries sent from a Sigfox device that match
-        certain criteria. If the total number of entries does not fit in one page,
-        a URL for accessing the next page is returned in the 'Link' header of the
-        response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a Sigfox device that match certain criteria. If the total number of entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataFromSigfoxDevice
       parameters:
-      - description: Device ID of the target subscriber that generated data entries.
+      - description: Device ID of the target Sigfox device that generated data entries.
         in: path
         name: device_id
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -9026,7 +9181,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a Sigfox device.
+      summary: Get data sent from a Sigfox device to Harvest Data.
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -9130,10 +9285,10 @@ paths:
       - sigfox-devices enable-termination
   /sigfox_devices/{device_id}/register:
     post:
-      description: Registers a Sigfox device
+      description: Registers a Sigfox device.
       operationId: registerSigfoxDevice
       parameters:
-      - description: Device ID of the target sigfox device to register
+      - description: Device ID of the target Sigfox device to register.
         in: path
         name: device_id
         required: true
@@ -9144,7 +9299,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SigfoxRegistrationRequest'
-        description: Sigfox device registration request
+        description: Sigfox device registration request.
         required: true
       responses:
         "200":
@@ -9152,13 +9307,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SigfoxDevice'
-          description: Sigfox device successfully registered
+          description: Sigfox device successfully registered.
         "400":
-          description: PAC code is missing
+          description: PAC code is missing.
       security:
       - api_key: []
         api_token: []
-      summary: Register a Sigfox device.
+      summary: Registers a Sigfox device.
       tags:
       - SigfoxDevice
       x-soracom-cli:
@@ -9240,7 +9395,7 @@ paths:
       description: Deletes a tag from the specified Sigfox device.
       operationId: deleteSigfoxDeviceTag
       parameters:
-      - description: device ID of the target Sigfox device.
+      - description: Device ID of the target Sigfox device.
         in: path
         name: device_id
         required: true
@@ -9270,7 +9425,7 @@ paths:
       - sigfox-devices delete-tag
   /sigfox_devices/{device_id}/terminate:
     post:
-      description: Terminates the specified Sigfox device
+      description: Terminates the specified Sigfox device.
       operationId: terminateSigfoxDevice
       parameters:
       - description: Device ID of the target Sigfox device.
@@ -9279,7 +9434,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: If the Sigfox device is deleted immediately
+      - description: If the Sigfox device is deleted immediately.
         in: query
         name: delete_immediately
         required: false
@@ -9334,9 +9489,8 @@ paths:
       - sigfox-devices unset-group
   /sims:
     get:
-      description: Returns a list of SIMs that match certain criteria. If the total
-        number of SIMs does not fit in one page, a URL for accessing the next page
-        is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of SIMs that match certain criteria. If the total number of SIMs does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listSims
       parameters:
       - description: Maximum number of SIMs to retrieve. However, the number of SIMs
@@ -9346,7 +9500,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The ID of the last SIM retrieved on the current page. By specifying
+      - description: The ID of the last SIM retrieved on the previous page. By specifying
           this parameter, you can continue to retrieve the list from the next SIM
           onward.
         in: query
@@ -9495,7 +9649,7 @@ paths:
         **Warning**: Please use the `renewArcSimCredentials` API instead.
       operationId: attachArcSimCredentials
       parameters:
-      - description: SIM ID of the target SIM
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9529,7 +9683,7 @@ paths:
         once.
       operationId: renewArcSimCredentials
       parameters:
-      - description: SIM ID of the target SIM
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9560,12 +9714,11 @@ paths:
       - sims renew-arc-credentials
   /sims/{sim_id}/data:
     get:
-      description: Returns a list of data entries sent from a SIM that match certain
-        criteria. If the total number of entries does not fit in one page, a URL for
-        accessing the next page is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a SIM that match certain criteria. If the total number of data entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataFromSim
       parameters:
-      - description: Sim Id of the target SIM.
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -9583,8 +9736,8 @@ paths:
         required: false
         schema:
           type: integer
-      - description: Sort order of the data entries. Descending (latest data entry
-          first) or ascending (oldest data entry first).
+      - description: Sort order of the data entries. Either descending (latest data
+          entry first) or ascending (oldest data entry first).
         in: query
         name: sort
         required: false
@@ -9594,15 +9747,14 @@ paths:
           - desc
           - asc
           type: string
-      - description: Maximum number of data entries to retrieve.
+      - description: Maximum number of data entries to retrieve. The default is `10`.
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: The value of `time` in the last log entry retrieved in the previous
-          page. By specifying this parameter, you can continue to retrieve the list
-          from the next page onward.
+      - description: |
+          Key in the last data entry retrieved in the previous page. The key for data entries in this API is `${UNIX time in milliseconds}_${IMSI}`. By specifying this parameter, you can continue to retrieve the list from the next page onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -9620,7 +9772,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a SIM.
+      summary: Get data sent from a SIM to Harvest Data.
       tags:
       - Sim
       x-soracom-cli:
@@ -9781,10 +9933,8 @@ paths:
       - sims enable-termination
   /sims/{sim_id}/events/sessions:
     get:
-      description: Retrieves event history of session creation/modification/disconnection
-        for the past 32 days for the specified SIM. If the total number of events
-        does not fit in one page, a URL for accessing the next page is returned in
-        the `Link` header of the response.
+      description: |
+        Retrieves event history of session creation/modification/disconnection for the past 32 days for the specified SIM. If the total number of events does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listSimSessionEvents
       parameters:
       - description: SIM ID of the target SIM.
@@ -9811,7 +9961,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The time stamp of the last event retrieved on the current page.
+      - description: The time stamp of the last event retrieved on the previous page.
           By specifying this parameter, you can continue to retrieve the list from
           the next event onward.
         in: query
@@ -9882,7 +10032,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Lists packet capture sessions
+      summary: Lists packet capture sessions associated with the SIM.
       tags:
       - Sim
       x-soracom-cli:
@@ -9924,14 +10074,14 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Creates a packet capture session
+      summary: Creates a packet capture session associated with the SIM.
       tags:
       - Sim
       x-soracom-cli:
       - sims create-packet-capture-session
   /sims/{sim_id}/packet_capture_sessions/{session_id}:
     delete:
-      description: Delete a packet capture session associated with the SIM
+      description: Deletes a packet capture session associated with the SIM
       operationId: deleteSimPacketCaptureSession
       parameters:
       - description: SIM ID of the target SIM.
@@ -9962,7 +10112,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Deletes a packet capture session
+      summary: Deletes a packet capture session associated with the SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -9996,7 +10146,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Gets a packet capture session
+      summary: Gets a packet capture session associated the SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -10048,7 +10198,7 @@ paths:
         to the IoT SIM.
       operationId: addSubscription
       parameters:
-      - description: ID of the target SIM
+      - description: SIM ID of the target SIM.
         in: path
         name: sim_id
         required: true
@@ -10087,13 +10237,14 @@ paths:
                 subscription:
                   description: |
                     Name of the secondary subscription to be added.
-                    - `planP1`, `planX1`, `planX2`, `planX3`: Additional Subscription
+                    - `planP1`, `planX1`, `planX2`, `planX3`, `plan-US-max`: Additional Subscription
                     - `planArc01`: Virtual SIM/Subscriber
                   enum:
                   - planP1
                   - planX1
                   - planX2
                   - planX3
+                  - plan-US-max
                   - planArc01
                   type: string
                 type:
@@ -10379,7 +10530,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ExpiryTime'
         description: Expiration date (UNIX time in milliseconds) and action after
-          update.
+          the update.
         required: true
       responses:
         "200":
@@ -10681,7 +10832,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Unsets the group settings of SIM
+      summary: Unsets the group setting of SIM
       tags:
       - Sim
       x-soracom-cli:
@@ -10730,7 +10881,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateSpeedClassRequest'
-        description: speed_class
+        description: The speed class of the IoT SIM.
         required: true
       responses:
         "200":
@@ -10808,7 +10959,7 @@ paths:
             application/json:
               example:
                 appliedLicenses:
-                - name: Cloud Continuous Recording
+                - name: Cloud Continuous Recording License (14 Days)
                   value: storage_life=14
                 configuration:
                   audioAlarmEnabled: false
@@ -10934,7 +11085,7 @@ paths:
       description: |
         Get the remaining number of still images that can be exported and the remaining exportable time of recorded video.
 
-        **Warning**: Exporting either still images or recorded video will consume the available video viewing time (72 hours per month).
+        **Warning**: Exporting either still images or recorded video will consume the available video viewing time (72 hours per month by default).
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportUsage
@@ -11185,10 +11336,12 @@ paths:
           header: x-soracom-next-key
     post:
       description: |
-        Starts the process of extracting and exporting still images from recorded video saved by cloud continuous recording. The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports). The URL has an expiration time.
+        Starts the process of extracting and exporting still images from recorded video saved on the cloud. The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceImageExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceImageExports). The URL has an expiration time.
 
-        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of whether the download has started or not.
-        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of whether the download has started or not.
+        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month by default).
+
+        **Warning**: Images from cameras that have not been assigned a Cloud Continuous Recording License or Cloud Motion Detection "Unlimited" Recording License cannot be exported.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: exportSoraCamDeviceRecordedImage
@@ -11230,7 +11383,7 @@ paths:
       - api_key: []
         api_token: []
       summary: Start the process of exporting still images from recorded video saved
-        by cloud continuous recording
+        on the cloud
       tags:
       - SoraCam
       x-soracom-cli:
@@ -11335,12 +11488,12 @@ paths:
 
         - For real-time video, note the followings:
           - You can get a URL to stream 300 seconds (5 minutes) of real-time video based on the time of the API called. To continue watching, call the API again to get the next URL.
-          - At the time of obtaining the URL, 5 minutes of the available video viewing time (72 hours per month) will be consumed regardless of the viewing status.
+          - At the time of obtaining the URL, 5 minutes of the available video viewing time (72 hours per month by default) will be consumed regardless of the viewing status.
         - For recorded video, note the followings:
-          - You can get a URL to stream up to 300 seconds (5 minutes) of recorded video.
-          - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of the viewing status.
+          - You can get a URL to stream up to 900 seconds (15 minutes) of recorded video.
+          - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of the viewing status.
 
-        **Warning**: Real-time video is a function that retrieves the latest video from recorded video saved by cloud continuous recording. Therefore, a cloud continuous recording license is required to obtain real-time video. **Live video (P2P)** that can be played on the ATOM app is a different feature from the real-time video. **Live video (P2P)** cannot be obtained using the SORACOM API.
+        **Warning**: Real-time video is a function that retrieves the latest video from recorded video saved on the cloud. Therefore, a Cloud Continuous Recording License or a Cloud Motion Detection "Unlimited" Recording License is required to obtain real-time video. **Live video (P2P)** that can be played on the ATOM app is a different feature from the real-time video. **Live video (P2P)** cannot be obtained using the SORACOM API.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceStreamingVideo
@@ -11365,7 +11518,7 @@ paths:
           End time of recorded video (UNIX time in milliseconds).
 
           - Omit both `from` and `to` to get information for downloading real-time video.
-          - The maximum viewing time for a single API call is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds.
+          - The maximum viewing time for a single API call is 900 seconds (15 minutes). Make sure the difference between `from` and `to` does not exceed 900 seconds.
         in: query
         name: to
         required: false
@@ -11520,11 +11673,13 @@ paths:
           header: x-soracom-next-key
     post:
       description: |
-        Starts the process of exporting recorded video saved by cloud continuous recording in a format that can be downloaded (zipped mp4 files). The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports). The URL has an expiration time.
+        Starts the process of exporting recorded video saved on the cloud in a format that can be downloaded (zipped mp4 files). The export process is processed asynchronously. The progress of the export process and the URL of the exported file can be obtained with the [`SoraCam:listSoraCamDeviceVideoExports API`](/ja-jp/tools/api/reference/#/SoraCam/listSoraCamDeviceVideoExports). The URL has an expiration time.
 
-        - The maximum export time for a single URL is 300 seconds (5 minutes).
-        - At the time of obtaining the URL, the available video viewing time (72 hours per month) will be consumed regardless of whether the download has started or not.
-        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month).
+        - The maximum export time for a single URL is 900 seconds (15 minutes).
+        - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of whether the download has started or not.
+        - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month by default).
+
+        **Warning**: Recordings from cameras that have not been assigned a Cloud Continuous Recording License or Cloud Motion Detection "Unlimited" Recording License cannot be exported.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: exportSoraCamDeviceRecordedVideo
@@ -11567,8 +11722,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Start the process of exporting recorded video saved by cloud continuous
-        recording
+      summary: Start the process of exporting recorded video saved on the cloud
       tags:
       - SoraCam
       x-soracom-cli:
@@ -12020,6 +12174,18 @@ paths:
                 salesChannel: SORACOM Inc.
               - id: CR30-SC
                 name: Cloud Recording License (30 Days)
+                quantity: 2
+                salesChannel: SORACOM Inc.
+              - id: MR7-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (7 Days)
+                quantity: 0
+                salesChannel: SORACOM Inc.
+              - id: MR14-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (14 Days)
+                quantity: 1
+                salesChannel: SORACOM Inc.
+              - id: MR30-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (30 Days)
                 quantity: 2
                 salesChannel: SORACOM Inc.
               schema:
@@ -13123,9 +13289,8 @@ paths:
       - stats napter audit-logs get
   /subscribers:
     get:
-      description: Returns a list of subscribers that match certain criteria. If the
-        total number of subscribers does not fit in one page, a URL for accessing
-        the next page is returned in the 'Link' header of the response.
+      description: |
+        Returns a list of subscribers that match certain criteria. If the total number of subscribers does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listSubscribers
       parameters:
       - description: Tag name for filtering the search (exact match).
@@ -13176,9 +13341,8 @@ paths:
         schema:
           type: string
       - description: Maximum number of subscribers to retrieve (value range is 1 to
-          100). Setting a limit does not guarantee the number of subscribers returned
-          in the response (i.e. the response may contain fewer subscribers than the
-          specified limit).
+          100). However, the number of subscribers returned may be less than the specified
+          value.
         in: query
         name: limit
         required: false
@@ -13186,7 +13350,7 @@ paths:
           maximum: 100
           minimum: 1
           type: integer
-      - description: The IMSI of the last subscriber retrieved on the current page.
+      - description: The IMSI of the last subscriber retrieved on the previous page.
           By specifying this parameter, you can continue to retrieve the list from
           the next subscriber onward.
         in: query
@@ -13289,11 +13453,12 @@ paths:
           application/json:
             schema:
               items:
-                description: Specify a bundle to be set.
+                description: Specify a bundle to be set. Specify one of the following.
                 enum:
                 - D-300MB
                 - DU-10GB
                 - DU-50GB
+                - DU-100GB
                 type: string
               type: array
         description: Array of bundles to be set.
@@ -13305,6 +13470,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscriber'
           description: The subscriber's detailed information after the update.
+        "400":
+          description: The specified bundle is not supported by this Subscriber's
+            subscription
         "404":
           description: The specified subscriber does not exist.
       security:
@@ -13318,10 +13486,8 @@ paths:
       - subscribers put-bundles
   /subscribers/{imsi}/data:
     get:
-      description: Returns a list of data entries sent from a subscriber that match
-        certain criteria. If the total number of entries does not fit in one page,
-        a URL for accessing the next page is returned in the 'Link' header of the
-        response.
+      description: |
+        Returns a list of data entries sent to Harvest Data from a subscriber that match certain criteria. If the total number of data entries does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: getDataFromSubscriber
       parameters:
       - description: IMSI of the target subscriber that generated data entries.
@@ -13330,13 +13496,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time for the data entries search range (unixtime in milliseconds).
+      - description: Start time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the data entries search range (unixtime in milliseconds).
+      - description: End time for the data entries search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -13353,15 +13519,14 @@ paths:
           - desc
           - asc
           type: string
-      - description: Maximum number of data entries to retrieve.
+      - description: Maximum number of data entries to retrieve. The default is `10`.
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: The value of `time` in the last log entry retrieved in the previous
-          page. By specifying this parameter, you can continue to retrieve the list
-          from the next page onward.
+      - description: |
+          Key in the last data entry retrieved in the previous page. The key for data entries in this API is `${UNIX time in milliseconds}_${IMSI}`. By specifying this parameter, you can continue to retrieve the list from the next page onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -13379,7 +13544,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Get data sent from a subscriber.
+      summary: Get data sent from a subscriber to Harvest Data.
       tags:
       - Subscriber
       x-soracom-cli:
@@ -13541,10 +13706,8 @@ paths:
       - subscribers enable-termination
   /subscribers/{imsi}/events/sessions:
     get:
-      description: Returns the history of session creation, change, and deletion events
-        occurred on the target SIM in the last 32 days. If the total number of events
-        does not fit in one page, a URL for accessing the next page is returned in
-        the `Link` header of the response.
+      description: |
+        Returns the event history of session creation/modification/disconnection on the specified subscriber in the last 32 days. If the total number of events does not fit in one page, a URL for accessing the next page is returned in the 'link' header of the response.
       operationId: listSessionEvents
       parameters:
       - description: IMSI of the target subscriber.
@@ -13553,13 +13716,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: Start time for the events search range (unixtime).
+      - description: Start time for the events search range (UNIX time in milliseconds).
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: End time for the events search range (unixtime).
+      - description: End time for the events search range (UNIX time in milliseconds).
         in: query
         name: to
         required: false
@@ -13571,7 +13734,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The time stamp of the last event retrieved on the current page.
+      - description: The time stamp of the last event retrieved on the previous page.
           By specifying this parameter, you can continue to retrieve the list from
           the next event onward.
         in: query
@@ -13694,7 +13857,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SmsForwardingReport'
-          description: SMS forwarding report containing message ID.
+          description: SMS transmission accepted and completed. Returns the ID assigned
+            to the message.
         "400":
           description: The specified subscriber does not support SMS API.
         "404":
@@ -13724,7 +13888,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExpiryTime'
-        description: 'Expiry time after the update (unixtime: in milliseconds).'
+        description: Expiration date (UNIX time in milliseconds) and action after
+          the update.
         required: true
       responses:
         "200":
@@ -13848,7 +14013,7 @@ paths:
       - subscribers set-to-standby
   /subscribers/{imsi}/suspend:
     post:
-      description: Suspends the specified subscriber
+      description: Suspends the specified subscriber.
       operationId: suspendSubscriber
       parameters:
       - description: IMSI of the target subscriber.
@@ -14148,7 +14313,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SmsForwardingReport'
-          description: SMS forwarding report containing message ID.
+          description: SMS transmission accepted and completed. Returns the ID assigned
+            to the message.
         "400":
           description: The specified subscriber does not support SMS API.
         "404":
@@ -14275,7 +14441,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The last group ID retrieved on the current page. By specifying
+      - description: The last VPG ID retrieved on the current page. By specifying
           this parameter, you can continue to retrieve the list from the next VPG
           onward.
         in: query
@@ -14576,6 +14742,90 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg unregister-gate-peer
+  /virtual_private_gateways/{vpg_id}/gate/routing/static/sims/disable:
+    post:
+      description: Disables SIM-Based Routing.
+      operationId: disableSimBasedRouging
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: SIM-Based Routing has been disabled.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Disable SIM-Based Routing
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg disable-sim-based-routing
+  /virtual_private_gateways/{vpg_id}/gate/routing/static/sims/enable:
+    post:
+      description: Enables SIM-Based Routing.
+      operationId: enableSimBasedRouging
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: SIM-Based Routing has been enabled.
+        "400":
+          description: SORACOM Gate is not enabled.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Enable SIM-Based Routing
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg enable-sim-based-routing
+  /virtual_private_gateways/{vpg_id}/gate/routing/static/sims/routes:
+    put:
+      description: Associates a router's LAN IP address range with its SIM ID.
+      operationId: putSimBasedRoutingRoutes
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutSimBasedRoutingRoutesRequest'
+        description: Specify the LAN IP address range of the router to associate with
+          a SIM ID.
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Client side error in the request.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Associate a router's LAN IP address range with its SIM ID.
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg put-sim-based-routing-routes
   /virtual_private_gateways/{vpg_id}/ip_address_map:
     get:
       description: Describes the list of IP address map entries in the Virtual Private
@@ -15982,8 +16232,8 @@ components:
             represented in decimal form as an integer. (See 3GPP TS 23.003 4.2)
           type: integer
         radioType:
-          description: "The Radio Access Technology or type of network that the device\nis
-            connected to. \n\n**Warning**: In some cases, the information displayed
+          description: "The Radio Access Technology or type of network that the device
+            is connected to. \n\n**Warning**: In some cases, the information displayed
             may differ from the actual wireless access technology or type of network
             being used by the communication carrier's equipment. For example, even
             when connected to LTE-M, it may be displayed as LTE.\n"
@@ -16183,9 +16433,20 @@ components:
           items:
             $ref: '#/components/schemas/OrderItemModel'
           type: array
+        preferredDeliveryDate:
+          description: Preferred delivery date
+          format: yyyyMMdd
+          type: string
         shippingAddressId:
           description: Shipping address ID
           type: string
+        shippingOptions:
+          description: Shipping options
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ShippingOptionOfNekopos'
+            - $ref: '#/components/schemas/ShippingOptionOfExpeditedShipping'
+          type: array
       type: object
     CreateEstimatedVolumeDiscountRequest:
       properties:
@@ -16588,25 +16849,25 @@ components:
       properties:
         numberOfPingRequests:
           default: 1
-          description: the number of attempt ping
+          description: The number of attempt ping
           maximum: 5
           type: integer
         timeoutSeconds:
           default: 1
-          description: the timeout duration of each ping
+          description: The timeout duration of each ping
           maximum: 3
           type: integer
       type: object
     DownlinkPingResponse:
       properties:
         rtt:
-          description: the RTT of the ping result
+          description: The RTT of the ping result
           type: string
         stat:
-          description: the stats information of the ping result
+          description: The stats information of the ping result
           type: string
         success:
-          description: whether the ping was succeeded or not
+          description: Whether the ping was succeeded or not
           type: boolean
       type: object
     EmailConfigurationOfBilling:
@@ -16703,12 +16964,17 @@ components:
         appliedShippingOptions:
           description: Applied shipping options
           items:
-            type: object
+            oneOf:
+            - $ref: '#/components/schemas/ShippingOptionOfNekopos'
+            - $ref: '#/components/schemas/ShippingOptionOfExpeditedShipping'
           type: array
         balanceDue:
           description: Balance due
           format: double
           type: number
+        containsTaxIncludedAmounts:
+          description: Contains tax included amounts
+          type: boolean
         currency:
           description: Currency
           enum:
@@ -16732,6 +16998,7 @@ components:
           type: array
         preferredDeliveryDate:
           description: Preferred delivery date
+          format: yyyyMMdd
           type: string
         purchaseOrderNumber:
           description: Purchase order number
@@ -16923,33 +17190,33 @@ components:
     FileEntry:
       properties:
         contentLength:
-          description: Content length of the file
+          description: Content length of the file.
           format: int64
           type: integer
         contentType:
-          description: Content type of the file
+          description: Content type of the file.
           type: string
         createdTime:
-          description: Created time of the file
+          description: Created time of the file.
           format: int64
           type: integer
         directory:
-          description: Parent directory name
+          description: Parent directory name.
           type: string
         etag:
-          description: Etag of the file
+          description: ETag of the file.
           type: string
         filePath:
-          description: Absolute path of the file
+          description: Absolute path of the file.
           type: string
         filename:
-          description: File name
+          description: File name.
           type: string
         isDirectory:
-          description: Whether the entry is directory or not
+          description: Whether the entry is directory or not.
           type: boolean
         lastModifiedTime:
-          description: Last modified time of the file
+          description: Last modified time of the file.
           format: int64
           type: integer
       type: object
@@ -17453,14 +17720,14 @@ components:
     GetExportedFileResponse:
       properties:
         status:
-          description: Status of the export operation
+          description: Status of the export operation.
           enum:
           - processing
           - exported
           - failed
           type: string
         url:
-          description: Download URL of the exported file
+          description: Download URL of the exported file.
           type: string
       type: object
     GetLatestBill:
@@ -17721,6 +17988,16 @@ components:
           type: string
       required:
       - permission
+      type: object
+    GetUserTrustPolicyResponse:
+      properties:
+        trustPolicy:
+          description: |
+            Trust policy that specifies which operator(s) or user(s) are allowed to switch to this SAM user. It includes the following information:
+
+            - SRN (Soracom Resource Name) representing the user of another account who is allowed to switch to this SAM user.
+            - Conditions where switching is allowed.
+          type: string
       type: object
     GetVolumeDiscountResponse:
       properties:
@@ -18067,7 +18344,7 @@ components:
             type: object
           type: array
       type: object
-    LagoonMigrationFromClassicRequest:
+    LagoonMigrationRequest:
       properties:
         dashboardIds:
           description: A list of dashboard IDs to migrate
@@ -18997,6 +19274,14 @@ components:
       - key
       - ipAddress
       type: object
+    PutSimBasedRoutingRoutesRequest:
+      additionalProperties:
+        type: string
+      description: Association a router's LAN IP address range and its SIM ID.
+      example:
+        YOUR_SIM_ID_1: 192.0.2.0/24
+        YOUR_SIM_ID_2: 192.0.2.128/25
+      type: object
     ReferenceUrl:
       properties:
         title:
@@ -19066,7 +19351,7 @@ components:
         groupId:
           type: string
         registrationSecret:
-          description: PUK or PASSCODE on SIM card
+          description: PUK or PASSCODE for IoT SIM
           type: string
         tags:
           $ref: '#/components/schemas/TagSet'
@@ -19419,8 +19704,6 @@ components:
       properties:
         groupId:
           type: string
-        tags:
-          $ref: '#/components/schemas/TagSet'
       type: object
     SetImeiLockRequest:
       properties:
@@ -19468,6 +19751,13 @@ components:
           type: string
       required:
       - permission
+      type: object
+    SetUserTrustPolicyRequest:
+      properties:
+        trustPolicy:
+          description: Trust policy that describes who can switch to this user.
+          example: '{"statements": [{"effect":"allow","principal":{"soracom":["srn:soracom:OPXXXXXXXXXX::User:accounting"]}}]}'
+          type: string
       type: object
     ShippingAddressModel:
       description: Shipping address
@@ -19545,6 +19835,26 @@ components:
           format: int32
           type: integer
       type: object
+    ShippingOptionOfExpeditedShipping:
+      description: Available for United States and Canada operators only.
+      properties:
+        useExpeditedShipping:
+          description: Specify true to ship by Expedited Shipping. (Shipping to United
+            States only)
+          type: boolean
+      type: object
+    ShippingOptionOfNekopos:
+      description: Available for Japan operators only.
+      properties:
+        allowNekopos:
+          description: Specify true to allow use of Nekopos.
+          type: boolean
+        shipmentCompany:
+          description: Shipment company
+          enum:
+          - yamato_transport
+          type: string
+      type: object
     SigfoxData:
       properties:
         data:
@@ -19619,7 +19929,7 @@ components:
           - (null value)
           type: string
         expiryTime:
-          description: IoT SIM expiration date (UNIX time in milliseconds)
+          description: IoT SIM expiration date (UNIX time in milliseconds).
           format: int64
           type: integer
         groupId:
@@ -19871,15 +20181,16 @@ components:
       properties:
         name:
           description: |
-            Name of the license applied to a comptible camera device.
+            Name of the license applied to a compatible camera device.
 
-            - `Cloud Continuous Recording`
+            - `Cloud Continuous Recording License (x Days)`
+            - `Cloud Motion Detection "Unlimited" Recording License (x Days)`
           type: string
         value:
           description: |
             Properties of the license applied to a compatible camera device.
 
-            If `name` is `Cloud Continuous Recording`:
+            If `name` is `Cloud Continuous Recording License (x Days)` or `Cloud Motion Detection "Unlimited" Recording License (x Days)`:
 
             - `storage_life`: Storage life.
           type: string
@@ -19910,6 +20221,13 @@ components:
                   items:
                     type: string
                   type: array
+                movie:
+                  description: |
+                    URL of the video recorded by the event; if it has expired, call the API again.
+
+                    - If the Cloud Motion Detection "Unlimited" Recording license is applied, the URL of the video recorded by the motion detection is not included here; use the [`SoraCam:exportSoraCamDeviceRecordedVideo API`](/ja-jp/tools/api/reference/#/SoraCam/exportSoraCamDeviceRecordedVideo) to export it.
+                    - URLs are included here for events other than motion detection, even if the Cloud Motion Detection "Unlimited" Recording license is applied.
+                  type: string
                 picture:
                   description: URL for the picture of `startTime`. If the URL has
                     expired, please call the API again.
@@ -20194,7 +20512,7 @@ components:
           description: |
             End time for exporting (unix time in milliseconds).
 
-            - The maximum time for a single API call to export is 300 seconds (5 minutes). Make sure the difference between `from` and `to` does not exceed 300 seconds.
+            - The maximum time for a single API call to export is 900 seconds (15 minutes). Make sure the difference between `from` and `to` does not exceed 900 seconds.
           format: int64
           type: integer
       required:
@@ -20348,7 +20666,7 @@ components:
           - (null value)
           type: string
         expiryTime:
-          description: IoT SIM expiration date (UNIX time in milliseconds)
+          description: IoT SIM expiration date (UNIX time in milliseconds).
           format: int64
           type: integer
         groupId:
@@ -20516,6 +20834,26 @@ components:
           type: string
       required:
       - token
+      type: object
+    SwitchUserRequest:
+      properties:
+        operatorId:
+          description: Operator ID to be switched to.
+          type: string
+        tokenTimeoutSeconds:
+          default: 3600
+          description: |
+            API key and API token validity period (in seconds) for the switched user. The default is 3600 seconds (1 hour). The minimum and maximum values are also shown below.
+
+            - Minimum: 180 seconds (3 minutes)
+            - Maximum value: 3600 seconds (1 hour)
+          maximum: 3600
+          minimum: 180
+          type: integer
+        userName:
+          description: The SAM user name of the specified operator ID to be switched
+            to.
+          type: string
       type: object
     SystemNotificationsModel:
       properties:
@@ -20713,6 +21051,13 @@ components:
             - `true`: Enabled.
             - `false`: Disabled.
           type: boolean
+        gateOpened:
+          description: |
+            The status of Soracom Gate.
+
+            - `true`: Enabled.
+            - `false`: Disabled.
+          type: boolean
         gateVxlanId:
           type: number
         implicitTerminationProtected:
@@ -20726,7 +21071,25 @@ components:
           type: string
         placement:
           $ref: '#/components/schemas/Placement'
+        primaryServiceName:
+          description: (Deprecated) This property is no longer used.
+          type: string
+        sessionStats:
+          properties:
+            lastUpdatedAt:
+              description: Date and time (Unix timestamp in milliseconds) that the
+                number of online sessions was last updated.
+              format: int64
+              type: integer
+            online:
+              description: Number of Soracom Air IoT SIMs and Soracom Arc Virtual
+                SIMs that are connected to the VPG and online. Please note that this
+                number is not updated in real-time. Use the lastUpdatedAt property
+                to check the date and time this number was updated.
+              type: integer
+          type: object
         size:
+          description: (Deprecated) This property is no longer used.
           type: string
         status:
           enum:
@@ -20762,6 +21125,10 @@ components:
           $ref: '#/components/schemas/Map'
         vpgId:
           description: ID
+          type: string
+        vpgSubnetCidrRange:
+          description: The range of IP addresses assigned to the VPG, required for
+            configuring Soracom Door or Soracom Direct.
           type: string
       type: object
     VolumeDiscountModel:

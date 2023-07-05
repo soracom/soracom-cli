@@ -36,15 +36,15 @@ var SubscribersGetDataCmdOutputJSONL bool
 func InitSubscribersGetDataCmd() {
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber that generated data entries."))
 
-	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. The key for data entries in this API is '${UNIX time in milliseconds}_${IMSI}'. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	SubscribersGetDataCmd.Flags().StringVar(&SubscribersGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve. The default is '10'."))
 
-	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

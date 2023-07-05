@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: 20221128-042447
+  version: 20230507-231147
 servers:
   - url: 'https://api-sandbox.soracom.io/v1'
 paths:
@@ -322,8 +322,9 @@ components:
             enum:
             - X3-5MB
             - D-300MB
-            - DU-10MB
-            - DU-50MB
+            - DU-10GB
+            - DU-50GB
+            - DU-100GB
             - K2-300MB
             type: string
         subscription:

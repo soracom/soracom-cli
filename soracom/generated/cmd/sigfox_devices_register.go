@@ -23,7 +23,7 @@ var SigfoxDevicesRegisterCmdRegistrationSecret string
 var SigfoxDevicesRegisterCmdBody string
 
 func InitSigfoxDevicesRegisterCmd() {
-	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target sigfox device to register"))
+	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device to register."))
 
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 

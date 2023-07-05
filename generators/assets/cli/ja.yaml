@@ -289,6 +289,9 @@ cli:
     permissions:
       summary: SAM ユーザーのパーミッションに関する操作を行います。
       description: SAM ユーザーのパーミッションに関する操作を行います。
+    trust-policy:
+      summary: SAM ユーザーの信頼ポリシーに関する操作を行います。
+      description: SAM ユーザーの信頼ポリシーに関する操作を行います。
   version:
     summary: バージョン情報を表示します。
     description: バージョン情報を表示します。

@@ -16,9 +16,9 @@ var FilesGetCmdPath string
 var FilesGetCmdScope string
 
 func InitFilesGetCmd() {
-	FilesGetCmd.Flags().StringVar(&FilesGetCmdPath, "path", "", TRAPI("Target path"))
+	FilesGetCmd.Flags().StringVar(&FilesGetCmdPath, "path", "", TRAPI("Target path."))
 
-	FilesGetCmd.Flags().StringVar(&FilesGetCmdScope, "scope", "private", TRAPI("Scope of the request"))
+	FilesGetCmd.Flags().StringVar(&FilesGetCmdScope, "scope", "private", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
 	FilesGetCmd.RunE = FilesGetCmdRunE
 

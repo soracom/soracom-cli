@@ -25,7 +25,7 @@ var SimsAddSubscriptionCmdBody string
 func InitSimsAddSubscriptionCmd() {
 	SimsAddSubscriptionCmd.Flags().StringVar(&SimsAddSubscriptionCmdIccid, "iccid", "", TRAPI("ICCID of the target IoT SIM. For IoT SIMs that do not support eUICC, the ICCID and SIM ID are the same."))
 
-	SimsAddSubscriptionCmd.Flags().StringVar(&SimsAddSubscriptionCmdSimId, "sim-id", "", TRAPI("ID of the target SIM"))
+	SimsAddSubscriptionCmd.Flags().StringVar(&SimsAddSubscriptionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsAddSubscriptionCmd.Flags().StringVar(&SimsAddSubscriptionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

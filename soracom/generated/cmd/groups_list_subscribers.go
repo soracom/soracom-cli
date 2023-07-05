@@ -24,7 +24,7 @@ var GroupsListSubscribersCmdPaginate bool
 func InitGroupsListSubscribersCmd() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
 
-	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
+	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 

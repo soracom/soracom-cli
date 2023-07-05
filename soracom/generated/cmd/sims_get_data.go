@@ -34,15 +34,15 @@ var SimsGetDataCmdPaginate bool
 var SimsGetDataCmdOutputJSONL bool
 
 func InitSimsGetDataCmd() {
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. The key for data entries in this API is '${UNIX time in milliseconds}_${IMSI}'. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("Sim Id of the target SIM."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Descending (latest data entry first) or ascending (oldest data entry first)."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve. The default is '10'."))
 
 	SimsGetDataCmd.Flags().Int64Var(&SimsGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 

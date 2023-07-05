@@ -35,7 +35,7 @@ func InitUsersPermissionsUpdateCmd() {
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdPermission, "permission", "", TRAPI("JSON string of permissions"))
 
-	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("user_name"))
+	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdUserName, "user-name", "", TRAPI("SAM user name"))
 
 	UsersPermissionsUpdateCmd.Flags().StringVar(&UsersPermissionsUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

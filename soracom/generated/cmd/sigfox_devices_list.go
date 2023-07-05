@@ -31,7 +31,7 @@ var SigfoxDevicesListCmdPaginate bool
 var SigfoxDevicesListCmdOutputJSONL bool
 
 func InitSigfoxDevicesListCmd() {
-	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
+	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last Sigfox device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 

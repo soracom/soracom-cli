@@ -20,7 +20,7 @@ var LoraDevicesPutTagsCmdDeviceId string
 var LoraDevicesPutTagsCmdBody string
 
 func InitLoraDevicesPutTagsCmd() {
-	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesPutTagsCmd.Flags().StringVar(&LoraDevicesPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

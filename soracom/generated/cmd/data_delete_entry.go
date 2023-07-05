@@ -21,9 +21,9 @@ var DataDeleteEntryCmdTime int64
 func InitDataDeleteEntryCmd() {
 	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
-	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
+	DataDeleteEntryCmd.Flags().StringVar(&DataDeleteEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource."))
 
-	DataDeleteEntryCmd.Flags().Int64Var(&DataDeleteEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to delete (unixtime in milliseconds)."))
+	DataDeleteEntryCmd.Flags().Int64Var(&DataDeleteEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to delete (UNIX time in milliseconds)."))
 
 	DataDeleteEntryCmd.RunE = DataDeleteEntryCmdRunE
 

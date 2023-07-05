@@ -31,7 +31,7 @@ var DevicesListCmdPaginate bool
 var DevicesListCmdOutputJSONL bool
 
 func InitDevicesListCmd() {
-	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page"))
+	DevicesListCmd.Flags().StringVar(&DevicesListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last Device in the previous page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
 
 	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagName, "tag-name", "", TRAPI("Tag name"))
 

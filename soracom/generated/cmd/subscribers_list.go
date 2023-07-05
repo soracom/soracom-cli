@@ -40,7 +40,7 @@ var SubscribersListCmdPaginate bool
 var SubscribersListCmdOutputJSONL bool
 
 func InitSubscribersListCmd() {
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TRAPI("Serial number for filtering the search. Can specify multiple values delimited by '|'. Returns subscribers with serial number starting with the specified value(s)."))
 
@@ -54,7 +54,7 @@ func InitSubscribersListCmd() {
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
-	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve (value range is 1 to 100). Setting a limit does not guarantee the number of subscribers returned in the response (i.e. the response may contain fewer subscribers than the specified limit)."))
+	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve (value range is 1 to 100). However, the number of subscribers returned may be less than the specified value."))
 
 	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

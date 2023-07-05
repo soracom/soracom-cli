@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// LagoonDashboardsListPermissionsCmdClassic holds value of 'classic' option
-var LagoonDashboardsListPermissionsCmdClassic bool
+// LagoonDashboardsListPermissionsCmdV2 holds value of 'v2' option
+var LagoonDashboardsListPermissionsCmdV2 bool
 
 // LagoonDashboardsListPermissionsCmdOutputJSONL indicates to output with jsonl format
 var LagoonDashboardsListPermissionsCmdOutputJSONL bool
 
 func InitLagoonDashboardsListPermissionsCmd() {
-	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdV2, "v2", false, TRAPI("If the value is true, a request will be issued to Lagoon 2. This is only valid if both Lagoon 3 and Lagoon 2 are enabled."))
 
 	LagoonDashboardsListPermissionsCmd.Flags().BoolVar(&LagoonDashboardsListPermissionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -99,8 +99,8 @@ func buildPathForLagoonDashboardsListPermissionsCmd(path string) string {
 func buildQueryForLagoonDashboardsListPermissionsCmd() url.Values {
 	result := url.Values{}
 
-	if LagoonDashboardsListPermissionsCmdClassic != false {
-		result.Add("classic", sprintf("%t", LagoonDashboardsListPermissionsCmdClassic))
+	if LagoonDashboardsListPermissionsCmdV2 != false {
+		result.Add("v2", sprintf("%t", LagoonDashboardsListPermissionsCmdV2))
 	}
 
 	return result

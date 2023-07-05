@@ -27,7 +27,7 @@ var SimsAttachArcCredentialsCmdBody string
 func InitSimsAttachArcCredentialsCmd() {
 	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdArcClientPeerPublicKey, "arc-client-peer-public-key", "", TRAPI("if this parameter is missing, the sever generates keypair"))
 
-	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM"))
+	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsAttachArcCredentialsCmd.Flags().StringVar(&SimsAttachArcCredentialsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

@@ -13,7 +13,7 @@ import (
 var LoraDevicesGetCmdDeviceId string
 
 func InitLoraDevicesGetCmd() {
-	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+	LoraDevicesGetCmd.Flags().StringVar(&LoraDevicesGetCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesGetCmd.RunE = LoraDevicesGetCmdRunE
 

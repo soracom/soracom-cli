@@ -31,7 +31,7 @@ var SimsSessionEventsCmdPaginate bool
 var SimsSessionEventsCmdOutputJSONL bool
 
 func InitSimsSessionEventsCmd() {
-	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
+	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
 
 	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 

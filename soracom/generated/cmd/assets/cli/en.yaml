@@ -310,6 +310,9 @@ cli:
     permissions:
       summary: Show, create and update SAM user's permissions.
       description: Show, create and update SAM user's permissions.
+    trust-policy:
+      summary: Get, update or delete SAM user's trust policy.
+      description: Get, update or delete SAM user's trust policy.
   version:
     summary: Show version info.
     description: Show version info.

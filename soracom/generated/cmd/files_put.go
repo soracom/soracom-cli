@@ -26,11 +26,11 @@ var FilesPutCmdScope string
 var FilesPutCmdBody string
 
 func InitFilesPutCmd() {
-	FilesPutCmd.Flags().StringVar(&FilesPutCmdContentType, "content-type", "", TRAPI("Content type of the file to upload"))
+	FilesPutCmd.Flags().StringVar(&FilesPutCmdContentType, "content-type", "", TRAPI("Content-Type of the file to be uploaded."))
 
-	FilesPutCmd.Flags().StringVar(&FilesPutCmdPath, "path", "", TRAPI("Target path"))
+	FilesPutCmd.Flags().StringVar(&FilesPutCmdPath, "path", "", TRAPI("Target path."))
 
-	FilesPutCmd.Flags().StringVar(&FilesPutCmdScope, "scope", "private", TRAPI("Scope of the request"))
+	FilesPutCmd.Flags().StringVar(&FilesPutCmdScope, "scope", "private", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
 	FilesPutCmd.Flags().StringVar(&FilesPutCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

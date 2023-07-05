@@ -47,7 +47,7 @@ func InitDevicesUpdateObjectModelCmd() {
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdLastModifiedTime, "last-modified-time", "", TRAPI(""))
 
-	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
+	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdModelId, "model-id", "", TRAPI("Target device object model ID"))
 
 	DevicesUpdateObjectModelCmd.Flags().StringVar(&DevicesUpdateObjectModelCmdObjectId, "object-id", "", TRAPI(""))
 

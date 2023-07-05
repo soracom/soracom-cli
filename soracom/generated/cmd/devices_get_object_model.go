@@ -13,7 +13,7 @@ import (
 var DevicesGetObjectModelCmdModelId string
 
 func InitDevicesGetObjectModelCmd() {
-	DevicesGetObjectModelCmd.Flags().StringVar(&DevicesGetObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
+	DevicesGetObjectModelCmd.Flags().StringVar(&DevicesGetObjectModelCmdModelId, "model-id", "", TRAPI("Target device object model ID"))
 
 	DevicesGetObjectModelCmd.RunE = DevicesGetObjectModelCmdRunE
 

@@ -18,7 +18,7 @@ var SigfoxDevicesTerminateCmdDeleteImmediately bool
 func InitSigfoxDevicesTerminateCmd() {
 	SigfoxDevicesTerminateCmd.Flags().StringVar(&SigfoxDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
 
-	SigfoxDevicesTerminateCmd.Flags().BoolVar(&SigfoxDevicesTerminateCmdDeleteImmediately, "delete-immediately", false, TRAPI("If the Sigfox device is deleted immediately"))
+	SigfoxDevicesTerminateCmd.Flags().BoolVar(&SigfoxDevicesTerminateCmdDeleteImmediately, "delete-immediately", false, TRAPI("If the Sigfox device is deleted immediately."))
 
 	SigfoxDevicesTerminateCmd.RunE = SigfoxDevicesTerminateCmdRunE
 

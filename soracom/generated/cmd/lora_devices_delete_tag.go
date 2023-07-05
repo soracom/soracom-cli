@@ -16,7 +16,7 @@ var LoraDevicesDeleteTagCmdDeviceId string
 var LoraDevicesDeleteTagCmdTagName string
 
 func InitLoraDevicesDeleteTagCmd() {
-	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("device ID of the target LoRa device."))
+	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesDeleteTagCmd.Flags().StringVar(&LoraDevicesDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 

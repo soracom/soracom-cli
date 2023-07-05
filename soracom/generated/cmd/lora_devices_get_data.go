@@ -34,17 +34,17 @@ var LoraDevicesGetDataCmdPaginate bool
 var LoraDevicesGetDataCmdOutputJSONL bool
 
 func InitLoraDevicesGetDataCmd() {
-	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
+	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device that generated data entries."))
 
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
 	LoraDevicesGetDataCmd.Flags().StringVar(&LoraDevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (unixtime in milliseconds)."))
+	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 
-	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (unixtime in milliseconds)."))
+	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -31,7 +31,7 @@ var VpgListCmdPaginate bool
 var VpgListCmdOutputJSONL bool
 
 func InitVpgListCmd() {
-	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last group ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."))
+	VpgListCmd.Flags().StringVar(&VpgListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last VPG ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next VPG onward."))
 
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagName, "tag-name", "", TRAPI("Tag name of the VPG. Filters through all VPGs that exactly match the tag name. When tag_name is specified, tag_value is required."))
 

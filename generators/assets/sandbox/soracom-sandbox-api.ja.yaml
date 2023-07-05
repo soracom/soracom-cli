@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: 20230112-201251
+  version: 20230703-214017
 servers:
 - url: https://api-sandbox.soracom.io/v1
 paths:
@@ -307,8 +307,9 @@ components:
             enum:
             - X3-5MB
             - D-300MB
-            - DU-10MB
-            - DU-50MB
+            - DU-10GB
+            - DU-50GB
+            - DU-100GB
             - K2-300MB
             type: string
           type: array
@@ -433,7 +434,7 @@ components:
               $ref: '#/components/schemas/sandboxDataTrafficStats'
           type: object
         unixtime:
-          description: UNIX 時刻（ミリ秒単位）
+          description: UNIX 時間（ミリ秒単位）
           format: int64
           type: integer
       type: object
@@ -465,7 +466,7 @@ components:
               $ref: '#/components/schemas/sandboxBeamCounts'
           type: object
         unixtime:
-          description: UNIX 時刻（ミリ秒単位）
+          description: UNIX 時間（ミリ秒単位）
           format: int64
           type: integer
       type: object

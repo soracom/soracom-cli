@@ -21,9 +21,9 @@ var DataGetEntryCmdTime int64
 func InitDataGetEntryCmd() {
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
 
-	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
+	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource."))
 
-	DataGetEntryCmd.Flags().Int64Var(&DataGetEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to get (unixtime in milliseconds)."))
+	DataGetEntryCmd.Flags().Int64Var(&DataGetEntryCmdTime, "time", 0, TRAPI("Timestamp of the target data entry to get (UNIX time in milliseconds)."))
 
 	DataGetEntryCmd.RunE = DataGetEntryCmdRunE
 

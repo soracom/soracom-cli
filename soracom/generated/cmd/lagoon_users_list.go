@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// LagoonUsersListCmdClassic holds value of 'classic' option
-var LagoonUsersListCmdClassic bool
+// LagoonUsersListCmdV2 holds value of 'v2' option
+var LagoonUsersListCmdV2 bool
 
 // LagoonUsersListCmdOutputJSONL indicates to output with jsonl format
 var LagoonUsersListCmdOutputJSONL bool
 
 func InitLagoonUsersListCmd() {
-	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdClassic, "classic", false, TRAPI("If the value is true, a request will be issued to Lagoon Classic. This is only valid if both Lagoon and Lagoon Classic are enabled."))
+	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdV2, "v2", false, TRAPI("If the value is true, a request will be issued to Lagoon 2. This is only valid if both Lagoon 3 and Lagoon 2 are enabled."))
 
 	LagoonUsersListCmd.Flags().BoolVar(&LagoonUsersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -99,8 +99,8 @@ func buildPathForLagoonUsersListCmd(path string) string {
 func buildQueryForLagoonUsersListCmd() url.Values {
 	result := url.Values{}
 
-	if LagoonUsersListCmdClassic != false {
-		result.Add("classic", sprintf("%t", LagoonUsersListCmdClassic))
+	if LagoonUsersListCmdV2 != false {
+		result.Add("v2", sprintf("%t", LagoonUsersListCmdV2))
 	}
 
 	return result

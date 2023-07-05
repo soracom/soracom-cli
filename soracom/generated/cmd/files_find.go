@@ -28,13 +28,13 @@ var FilesFindCmdPaginate bool
 var FilesFindCmdOutputJSONL bool
 
 func InitFilesFindCmd() {
-	FilesFindCmd.Flags().StringVar(&FilesFindCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filePath of the last file entry retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
+	FilesFindCmd.Flags().StringVar(&FilesFindCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The filePath of the last file entry retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next file entry onward."))
 
-	FilesFindCmd.Flags().StringVar(&FilesFindCmdPrefix, "prefix", "", TRAPI("Prefix to match with file path"))
+	FilesFindCmd.Flags().StringVar(&FilesFindCmdPrefix, "prefix", "", TRAPI("Prefix to match with file path."))
 
-	FilesFindCmd.Flags().StringVar(&FilesFindCmdScope, "scope", "", TRAPI("Scope of the request"))
+	FilesFindCmd.Flags().StringVar(&FilesFindCmdScope, "scope", "", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
-	FilesFindCmd.Flags().Int64Var(&FilesFindCmdLimit, "limit", 10, TRAPI("Num of entries"))
+	FilesFindCmd.Flags().Int64Var(&FilesFindCmdLimit, "limit", 10, TRAPI("Maximum number of file entries to be returned."))
 
 	FilesFindCmd.Flags().BoolVar(&FilesFindCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

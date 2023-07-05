@@ -13,7 +13,7 @@ import (
 var DevicesDeleteObjectModelCmdModelId string
 
 func InitDevicesDeleteObjectModelCmd() {
-	DevicesDeleteObjectModelCmd.Flags().StringVar(&DevicesDeleteObjectModelCmdModelId, "model-id", "", TRAPI("Device object model ID"))
+	DevicesDeleteObjectModelCmd.Flags().StringVar(&DevicesDeleteObjectModelCmdModelId, "model-id", "", TRAPI("Target device object model ID"))
 
 	DevicesDeleteObjectModelCmd.RunE = DevicesDeleteObjectModelCmdRunE
 

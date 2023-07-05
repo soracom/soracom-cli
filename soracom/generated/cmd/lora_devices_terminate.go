@@ -13,7 +13,7 @@ import (
 var LoraDevicesTerminateCmdDeviceId string
 
 func InitLoraDevicesTerminateCmd() {
-	LoraDevicesTerminateCmd.Flags().StringVar(&LoraDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRa device."))
+	LoraDevicesTerminateCmd.Flags().StringVar(&LoraDevicesTerminateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
 
 	LoraDevicesTerminateCmd.RunE = LoraDevicesTerminateCmdRunE
 
