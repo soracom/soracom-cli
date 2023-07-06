@@ -23,7 +23,7 @@ Available Commands:
   groups               List, create, update or delete groups.
   help                 Help about any command
   lagoon               Manage Lagoon settings.
-  logout               Revoke API key and API token to access to the SORACOM API.
+  logout               Revokes an API key and API token in order to remove access to the SORACOM API.
   logs                 List logs.
   lora-devices         Manage LoRa devices.
   lora-gateways        Manage LoRa gateways.
