@@ -27,8 +27,8 @@ The `soracom` command:
   2. use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
 
   ```
-  if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
+  if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+    . "$(brew --prefix)/etc/bash_completion"
   fi
   ```
   otherwise you might be getting the error like the following:
@@ -118,12 +118,15 @@ Please select which authentication method to use.
 1. Input AuthKeyId and AuthKey * Recommended *
 2. Input Operator credentials (Operator Email and Password)
 3. Input SAM credentials (OperatorId, User name and Password)
+4. Switch user
 
-select (1-3) >
+select (1-4) >
 ```
 
 Please select 1 if AuthKey (authentication key) has been issued to SAM user or root account.
-(For details on how to issue an authentication key to SAM users, please see [Using SORACOM Access Management to Manage Operation Access](https://dev.soracom.io/en/start/sam/).
+(For details on how to issue an authentication key to SAM users, please see [Users & Roles | SORACOM Developers](https://developers.soracom.io/en/docs/security/users-and-roles/).
+
+If you select 4. Switch user, you can specify the Operator ID and SAM user name of the switch destination user. Please create a profile for the switch source user before configuring a switch user profile. If you specify a switch user profile, soracom-cli will automatically authenticate with the switch source profile and then switch to the SAM user before making API calls.
 
 Thereafter, when executing the soracom command, an API call is made using the authentication information entered here.
 

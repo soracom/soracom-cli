@@ -27,8 +27,8 @@ soracom コマンドは以下のような特徴を備えています。
   2. `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
     そしてこの場合、`.bash_profile` または `.profile` ファイルに以下を追加します:
     ```
-    if [ -f $(brew --prefix)/etc/bash_completion ]; then
-      . $(brew --prefix)/etc/bash_completion
+    if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+      . "$(brew --prefix)/etc/bash_completion"
     fi
     ```
 
@@ -119,12 +119,19 @@ soracom configure
 1. AuthKeyId と AuthKey を入力する（推奨）
 2. オペレーターのメールアドレスとパスワードを入力する
 3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）
+4. スイッチユーザー
 
-選択してください (1-3) >
+選択してください (1-4) >
 ```
 
 SAM ユーザーもしくはルートアカウントに対し、AuthKey（認証キー）を発行している場合は 1 を選択してください。
-（SAM ユーザーに対し認証キーを発行する方法については [SORACOM Access Managementを使用して操作権限を管理する](https://dev.soracom.io/jp/start/sam/) を参照してください）
+SAM ユーザーに対し認証キーを発行する方法についてはソラコムユーザーサイトの [認証キーを生成する](https://users.soracom.io/ja-jp/docs/sam/create-sam-user/#%e8%aa%8d%e8%a8%bc%e3%82%ad%e3%83%bc%e3%82%92%e7%94%9f%e6%88%90%e3%81%99%e3%82%8b) を参照してください
+
+4 のスイッチユーザーを選択すると、スイッチ元のユーザーのプロファイルとスイッチ先のユーザーの Operator ID および SAM ユーザー名を指定することができます。
+実行前にあらかじめスイッチ元のユーザーのプロファイルを作成しておいてください。
+いったんスイッチユーザーのプロファイルを作成すると、各種サブコマンドを実行する際に soracom-cli が自動的にスイッチ元のプロファイルで認証し、スイッチ先の SAM ユーザーへスイッチしてから API の呼び出しを行うようになります。
+
+スイッチユーザーの詳細については、[スイッチユーザー | ドキュメント | ソラコムユーザーサイト - SORACOM Users](https://users.soracom.io/ja-jp/docs/switch-user/) を参照してください。
 
 以後、soracom コマンド実行時は、ここで入力した認証情報を使って API 呼び出しが行われます。
 

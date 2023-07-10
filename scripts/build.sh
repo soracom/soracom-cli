@@ -19,6 +19,7 @@ mkdir -p "$d/.cache"
 
 docker build -t soracom-cli-build "$d/build"
 docker run --rm -t \
+    --network host \
     --user "$(id -u):$(id -g)" \
     -e "VERSION=$VERSION" \
     -v "$d":/go/src/github.com/soracom/soracom-cli \

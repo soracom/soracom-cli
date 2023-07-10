@@ -189,6 +189,119 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	return resBody, nil
 }
 
+func (ac *apiClient) authenticateWithProfile(profile *profile) (*authResult, error) {
+	if profile.SourceProfile != nil && *profile.SourceProfile != "" {
+		sourceProfile, err := loadProfile(*profile.SourceProfile)
+		if err != nil {
+			lib.PrintfStderr("unable to load the specified source profile: %s\n", *profile.SourceProfile)
+			return nil, err
+		}
+		return ac.authenticateWithSwitchUser(profile, sourceProfile)
+	}
+
+	var areq *authRequest
+	if providedAuthKeyID != "" && providedAuthKey != "" {
+		areq = &authRequest{
+			AuthKeyID: &providedAuthKeyID,
+			AuthKey:   &providedAuthKey,
+		}
+	} else if providedProfileCommand != "" {
+		profile, err := getProfileFromExternalCommand(providedProfileCommand)
+		if err != nil {
+			lib.PrintfStderr("unable to get credentials from an external command.\n")
+			return nil, err
+		}
+		areq = authRequestFromProfile(profile)
+	} else {
+		areq = authRequestFromProfile(profile)
+
+		if profile.ProfileCommand != nil && *profile.ProfileCommand != "" {
+			p, err := getProfileFromExternalCommand(*profile.ProfileCommand)
+			if err != nil {
+				lib.PrintfStderr("unable to get credentials from an external command.\n")
+				return nil, err
+			}
+			areq = authRequestFromProfile(p)
+		}
+	}
+
+	params := &apiParams{
+		method:         "POST",
+		path:           "/auth",
+		query:          map[string][]string{},
+		contentType:    "application/json",
+		body:           toJSON(areq),
+		noVersionCheck: true,
+	}
+
+	res, err := ac.callAPI(params)
+	if err != nil {
+		return nil, err
+	}
+
+	dec := json.NewDecoder(bytes.NewBufferString(res))
+	var ares authResult
+	err = dec.Decode(&ares)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ares, nil
+}
+
+func (ac *apiClient) authenticateWithSwitchUser(profile, sourceProfile *profile) (*authResult, error) {
+	if sourceProfile.SourceProfile != nil {
+		return nil, errors.New("source profile should not have source profile (nested switch user is not allowed)")
+	}
+
+	if profile.OperatorID == nil || profile.Username == nil {
+		return nil, errors.New("both operatorId and username are required when authenticating using switch-user")
+	}
+
+	sourceAuthRes, err := ac.authenticateWithProfile(sourceProfile)
+	if err != nil {
+		return nil, err
+	}
+
+	switchUserReq := &switchUserRequest{
+		OperatorID:          *profile.OperatorID,
+		UserName:            *profile.Username,
+		TokenTimeoutSeconds: getProvidedTokenTimeoutSeconds(profile),
+	}
+
+	params := &apiParams{
+		method:         "POST",
+		path:           "/auth/switch_user",
+		contentType:    "application/json",
+		body:           toJSON(switchUserReq),
+		noVersionCheck: true,
+	}
+
+	// temporarily using the source profile's api key and token
+	ac.APIKey = sourceAuthRes.APIKey
+	ac.Token = sourceAuthRes.Token
+	ac.OperatorID = sourceAuthRes.OperatorID
+
+	res, err := ac.callAPI(params)
+	if err != nil {
+		return nil, err
+	}
+
+	// erase source profile's api key and token to prevent accidents
+	ac.APIKey = ""
+	ac.Token = ""
+	ac.OperatorID = ""
+
+	dec := json.NewDecoder(bytes.NewBufferString(res))
+	var ares authResult
+	err = dec.Decode(&ares)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ares, nil
+}
+
 // arr1 = "[1,2]"
 // arr2 = "[3]"
 // returns "[1,2,3]"
