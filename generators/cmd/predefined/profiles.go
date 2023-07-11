@@ -2,17 +2,18 @@ package cmd
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 
 	"github.com/kennygrant/sanitize"
 	"github.com/mattn/go-shellwords"
 	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"golang.org/x/term"
 )
@@ -29,15 +30,18 @@ type profile struct {
 	Endpoint              *string `json:"endpoint,omitempty"`
 	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
 	ProfileCommand        *string `json:"profileCommand,omitempty"`
+	SourceProfile         *string `json:"sourceProfile,omitempty"`
+	TokenTimeoutSeconds   *int    `json:"tokenTimeoutSeconds,omitempty"`
 }
 
 type authInfo struct {
-	Email      *string
-	Password   *string
-	AuthKeyID  *string
-	AuthKey    *string
-	Username   *string
-	OperatorID *string
+	Email         *string
+	Password      *string
+	AuthKeyID     *string
+	AuthKey       *string
+	Username      *string
+	OperatorID    *string
+	SourceProfile *string
 }
 
 var (
@@ -258,13 +262,14 @@ func collectProfileInfo(profileName string) (*profile, error) {
 	}
 
 	return &profile{
-		CoverageType: ct,
-		Email:        ai.Email,
-		Password:     ai.Password,
-		AuthKeyID:    ai.AuthKeyID,
-		AuthKey:      ai.AuthKey,
-		OperatorID:   ai.OperatorID,
-		Username:     ai.Username,
+		CoverageType:  ct,
+		Email:         ai.Email,
+		Password:      ai.Password,
+		AuthKeyID:     ai.AuthKeyID,
+		AuthKey:       ai.AuthKey,
+		OperatorID:    ai.OperatorID,
+		Username:      ai.Username,
+		SourceProfile: ai.SourceProfile,
 	}, nil
 }
 
@@ -345,7 +350,7 @@ func collectAuthInfo() (*authInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		if i >= 1 && i <= 3 {
+		if i >= 1 && i <= 4 {
 			break
 		}
 	}
@@ -398,9 +403,68 @@ func collectAuthInfo() (*authInfo, error) {
 			Username:   &username,
 			Password:   &password,
 		}, nil
+	case 4:
+		var sourceProfileNumber int
+		var operatorID, username, sourceProfile string
+		fmt.Print("Switch destination operator ID (OP00...): ")
+		_, err := fmt.Scanf("%s\n", &operatorID)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Print("Switch destination user name: ")
+		_, err = fmt.Scanf("%s\n", &username)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println("Source profile (switch origin)")
+		profiles, err := enumerateProfiles()
+		if err != nil {
+			return nil, err
+		}
+		for i, profileCandidate := range profiles {
+			fmt.Printf("  %d: %s\n", i+1, profileCandidate)
+		}
+		fmt.Printf("[1-%d]: ", len(profiles))
+		_, err = fmt.Scanf("%d\n", &sourceProfileNumber)
+		if err != nil {
+			return nil, err
+		}
+		if sourceProfileNumber <= 0 || sourceProfileNumber > len(profiles) {
+			return nil, errors.Errorf("unknown profile number: %d", sourceProfileNumber)
+		}
+		sourceProfile = profiles[sourceProfileNumber-1]
+		return &authInfo{
+			OperatorID:    &operatorID,
+			Username:      &username,
+			SourceProfile: &sourceProfile,
+		}, nil
 	}
 
 	return nil, errors.New("this line should not be executed")
+}
+
+func enumerateProfiles() ([]string, error) {
+	profileDir, err := getProfileDir()
+	if err != nil {
+		return nil, err
+	}
+	files, err := os.ReadDir(profileDir)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []string
+	for _, f := range files {
+		fname := f.Name()
+		if !strings.HasSuffix(fname, ".json") {
+			continue
+		}
+
+		dotIndex := strings.LastIndex(fname, ".")
+		profileName := fname[0:dotIndex]
+		result = append(result, profileName)
+	}
+	return result, nil
 }
 
 func collectProductionEnvAuthInfoForSandbox() (*authInfo, error) {

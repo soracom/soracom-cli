@@ -1,13 +1,17 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"strings"
 
 	"github.com/dvsekhvalnov/jose2go/base64url"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
+)
+
+const (
+	minTokenTimeoutSeconds = 180
+	maxTokenTimeoutSeconds = 3600
 )
 
 type authRequest struct {
@@ -36,6 +40,12 @@ type authResult struct {
 	OperatorID string `json:"operatorId"`
 }
 
+type switchUserRequest struct {
+	OperatorID          string `json:"operatorId"`
+	UserName            string `json:"userName"`
+	TokenTimeoutSeconds *int   `json:"tokenTimeoutSeconds,omitempty"`
+}
+
 func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	apiKey, apiToken, operatorID, credentialsProvided := getProvidedCredentials()
 	if credentialsProvided {
@@ -45,55 +55,14 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	var areq *authRequest
-	if providedAuthKeyID != "" && providedAuthKey != "" {
-		areq = &authRequest{
-			AuthKeyID: &providedAuthKeyID,
-			AuthKey:   &providedAuthKey,
-		}
-	} else if providedProfileCommand != "" {
-		profile, err := getProfileFromExternalCommand(providedProfileCommand)
-		if err != nil {
-			lib.PrintfStderr("unable to get credentials from an external command.\n")
-			return err
-		}
-		areq = authRequestFromProfile(profile)
-	} else {
-		profile, err := getProfile()
-		if err != nil {
-			lib.PrintfStderr("unable to load the profile.\n")
-			lib.PrintfStderr("run `soracom configure` first.\n")
-			return err
-		}
-		areq = authRequestFromProfile(profile)
-
-		if profile.ProfileCommand != nil && *profile.ProfileCommand != "" {
-			p, err := getProfileFromExternalCommand(*profile.ProfileCommand)
-			if err != nil {
-				lib.PrintfStderr("unable to get credentials from an external command.\n")
-				return err
-			}
-			areq = authRequestFromProfile(p)
-		}
-	}
-
-	params := &apiParams{
-		method:         "POST",
-		path:           "/auth",
-		query:          map[string][]string{},
-		contentType:    "application/json",
-		body:           toJSON(areq),
-		noVersionCheck: true,
-	}
-
-	res, err := ac.callAPI(params)
+	profile, err := getProfile()
 	if err != nil {
+		lib.PrintfStderr("unable to load the profile.\n")
+		lib.PrintfStderr("run `soracom configure` first.\n")
 		return err
 	}
 
-	dec := json.NewDecoder(bytes.NewBufferString(res))
-	var ares authResult
-	err = dec.Decode(&ares)
+	ares, err := ac.authenticateWithProfile(profile)
 	if err != nil {
 		return err
 	}
@@ -101,12 +70,35 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 	ac.APIKey = ares.APIKey
 	ac.Token = ares.Token
 	ac.OperatorID = ares.OperatorID
+
 	return nil
 }
 
 func getProvidedCredentials() (string, string, string, bool) {
 	operatorID := extractOperatorIDFromAPIToken(providedAPIToken)
 	return providedAPIKey, providedAPIToken, operatorID, (providedAPIKey != "" && providedAPIToken != "")
+}
+
+func getProvidedTokenTimeoutSeconds(profile *profile) *int {
+	// TODO: support providing tokenTimeoutSeconds from command line option
+	//if providedTokenTimeoutSeconds != 0 {
+	//return providedTokenTimeoutSeconds
+	//}
+	if profile.TokenTimeoutSeconds != nil && isValidTokenTimeoutSeconds(*profile.TokenTimeoutSeconds) {
+		return profile.TokenTimeoutSeconds
+	}
+	return nil
+}
+
+func isValidTokenTimeoutSeconds(tokenTimeoutSeconds int) bool {
+	if tokenTimeoutSeconds < minTokenTimeoutSeconds {
+		return false
+	}
+	if tokenTimeoutSeconds > maxTokenTimeoutSeconds {
+		return false
+	}
+
+	return true
 }
 
 type jwtPayload struct {
