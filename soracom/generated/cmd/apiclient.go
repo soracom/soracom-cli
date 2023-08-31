@@ -189,6 +189,15 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	return resBody, nil
 }
 
+func (ac *apiClient) authenticateWithAuthKey(authKeyID, authKey string) (*authResult, error) {
+	areq := &authRequest{
+		AuthKeyID: &authKeyID,
+		AuthKey:   &authKey,
+	}
+
+	return ac.authenticate(areq)
+}
+
 func (ac *apiClient) authenticateWithProfile(profile *profile) (*authResult, error) {
 	if profile.SourceProfile != nil && *profile.SourceProfile != "" {
 		sourceProfile, err := loadProfile(*profile.SourceProfile)
@@ -200,12 +209,7 @@ func (ac *apiClient) authenticateWithProfile(profile *profile) (*authResult, err
 	}
 
 	var areq *authRequest
-	if providedAuthKeyID != "" && providedAuthKey != "" {
-		areq = &authRequest{
-			AuthKeyID: &providedAuthKeyID,
-			AuthKey:   &providedAuthKey,
-		}
-	} else if providedProfileCommand != "" {
+	if providedProfileCommand != "" {
 		profile, err := getProfileFromExternalCommand(providedProfileCommand)
 		if err != nil {
 			lib.PrintfStderr("unable to get credentials from an external command.\n")
@@ -225,6 +229,10 @@ func (ac *apiClient) authenticateWithProfile(profile *profile) (*authResult, err
 		}
 	}
 
+	return ac.authenticate(areq)
+}
+
+func (ac *apiClient) authenticate(areq *authRequest) (*authResult, error) {
 	params := &apiParams{
 		method:         "POST",
 		path:           "/auth",

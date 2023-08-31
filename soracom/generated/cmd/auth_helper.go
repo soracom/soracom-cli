@@ -55,16 +55,28 @@ func authHelper(ac *apiClient, cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	profile, err := getProfile()
-	if err != nil {
-		lib.PrintfStderr("unable to load the profile.\n")
-		lib.PrintfStderr("run `soracom configure` first.\n")
-		return err
-	}
+	var (
+		ares *authResult
+		err  error
+	)
 
-	ares, err := ac.authenticateWithProfile(profile)
-	if err != nil {
-		return err
+	if providedAuthKeyID != "" && providedAuthKey != "" {
+		ares, err = ac.authenticateWithAuthKey(providedAuthKeyID, providedAuthKey)
+		if err != nil {
+			return err
+		}
+	} else {
+		profile, err := getProfile()
+		if err != nil {
+			lib.PrintfStderr("unable to load the profile.\n")
+			lib.PrintfStderr("run `soracom configure` first.\n")
+			return err
+		}
+
+		ares, err = ac.authenticateWithProfile(profile)
+		if err != nil {
+			return err
+		}
 	}
 
 	ac.APIKey = ares.APIKey
