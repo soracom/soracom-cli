@@ -197,6 +197,46 @@ In order to make it easier to use from shell scripts etc., all the parameters ne
 soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-key="$AUTHKEY" --email="$EMAIL" --password="$PASSWORD"
 ```
 
+### Priority of authentication methods specified by command line arguments
+
+The soracom-cli internally authenticates to obtain the API key and token to make calls to the SORACOM API.
+These keys and tokens are then sent along with the API requests.
+
+There are several options available to authenticate or to specify the API key and token, which are used as follows:
+
+1. Use the previously authenticated and obtained API key and token directly by specifying them with the --api-key and --api-token options to make API calls.
+
+2. Authenticate by specifying the authentication key ID and authentication key with the --auth-key-id and --auth-key options, then obtain the API key and token, and use them to make API calls.
+
+3. Generate a profile (which contains the information for authentication) by executing an external command specified by the --profile-command option, then use that profile to authenticate, obtain the API key and token, and make the API calls.
+
+4. Authenticate using a pre-configured profile specified with the --profile option, then obtain the API key and token, and use them to make the API calls.
+
+These methods are ranked in priority from 1 to 4, with 1 being the highest priority and 4 the lowest.
+For example, if a soracom-cli user specifies both the --profile-command and --profile options at the same time, the contents of the --profile-command option will take precedence.
+
+Additionally, if options that need to be specified together, like --api-key and --api-token or --auth-key-id and --auth-key, are provided singly, it will result in an error.
+
+
+### Priority of authentication methods specified in the profile
+
+Within a profile, you can specify one of the following authentication methods:
+
+1. The `profileCommand` field to specify an external command to generate profile information.
+
+2. The `sourceProfile` field to specify the original profile when using the switch user feature, and the `operatorId` and `username` fields to specify the operator ID and username for the target switch.
+
+3. The `authKeyId` and `authKey` fields to specify the authentication key ID and authentication key.
+
+4. The `email` and `password` fields to specify the root user's email address and password.
+
+5. The `operatorId`, `username`, and `password` fields to specify the SAM user's operator ID, username, and password.
+
+These methods are ranked in priority from 1 to 5, with 1 being the highest priority and 5 the lowest.
+For example, if the `profileCommand` field and both `authKeyId` and `authKey` fields are specified in a profile at the same time, the contents of the `profileCommand` will take precedence.
+
+You cannot specify a `sourceProfile` within a profile that is being referenced by `sourceProfile`.
+
 
 ### Call API via proxy
 
