@@ -42,7 +42,7 @@ func UsersDefaultPermissionsGetCmdRunE(cmd *cobra.Command, args []string) error 
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -73,7 +73,7 @@ func UsersDefaultPermissionsGetCmdRunE(cmd *cobra.Command, args []string) error 
 
 func collectUsersDefaultPermissionsGetCmdParams(ac *apiClient) (*apiParams, error) {
 	if UsersDefaultPermissionsGetCmdOperatorId == "" {
-		UsersDefaultPermissionsGetCmdOperatorId = ac.OperatorID
+		UsersDefaultPermissionsGetCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	return &apiParams{

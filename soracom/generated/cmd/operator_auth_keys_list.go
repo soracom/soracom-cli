@@ -47,7 +47,7 @@ func OperatorAuthKeysListCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -82,7 +82,7 @@ func OperatorAuthKeysListCmdRunE(cmd *cobra.Command, args []string) error {
 
 func collectOperatorAuthKeysListCmdParams(ac *apiClient) (*apiParams, error) {
 	if OperatorAuthKeysListCmdOperatorId == "" {
-		OperatorAuthKeysListCmdOperatorId = ac.OperatorID
+		OperatorAuthKeysListCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	return &apiParams{

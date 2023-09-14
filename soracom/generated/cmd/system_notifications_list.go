@@ -47,7 +47,7 @@ func SystemNotificationsListCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -82,7 +82,7 @@ func SystemNotificationsListCmdRunE(cmd *cobra.Command, args []string) error {
 
 func collectSystemNotificationsListCmdParams(ac *apiClient) (*apiParams, error) {
 	if SystemNotificationsListCmdOperatorId == "" {
-		SystemNotificationsListCmdOperatorId = ac.OperatorID
+		SystemNotificationsListCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	return &apiParams{

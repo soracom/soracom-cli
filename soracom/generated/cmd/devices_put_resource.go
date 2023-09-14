@@ -66,7 +66,7 @@ func DevicesPutResourceCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err

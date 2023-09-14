@@ -47,7 +47,7 @@ func OperatorConfigurationDeleteCmdRunE(cmd *cobra.Command, args []string) error
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -80,7 +80,7 @@ func collectOperatorConfigurationDeleteCmdParams(ac *apiClient) (*apiParams, err
 	var parsedBody interface{}
 	var err error
 	if OperatorConfigurationDeleteCmdOperatorId == "" {
-		OperatorConfigurationDeleteCmdOperatorId = ac.OperatorID
+		OperatorConfigurationDeleteCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	err = checkIfRequiredStringParameterIsSupplied("namespace", "namespace", "path", parsedBody, OperatorConfigurationDeleteCmdNamespace)
