@@ -85,6 +85,19 @@ func (s *credentialsSourceWithProfileCommand) GetAPICredentials(ac *apiClient) (
 		return nil, err
 	}
 
+	if p.SourceProfile != nil && *p.SourceProfile != "" {
+		sourceProfile, err := loadProfile(*p.SourceProfile)
+		if err != nil {
+			lib.PrintfStderr("unable to load the specified source profile: %s\n", *p.SourceProfile)
+			return nil, err
+		}
+		ares, err := ac.authenticateWithSwitchUser(p, sourceProfile)
+		if err != nil {
+			return nil, err
+		}
+		return apiCredentialsFromAuthResult(ares), nil
+	}
+
 	areq := authRequestFromProfile(p)
 	ares, err := ac.authenticate(areq)
 	if err != nil {
@@ -105,6 +118,13 @@ func (s *credentialsSourceWithProfile) GetAPICredentials(ac *apiClient) (*APICre
 	p, err := getProfile()
 	if err != nil {
 		return nil, err
+	}
+
+	if p.ProfileCommand != nil && *p.ProfileCommand != "" {
+		p, err = getProfileFromExternalCommand(*p.ProfileCommand)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if p.SourceProfile != nil && *p.SourceProfile != "" {

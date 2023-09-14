@@ -441,6 +441,38 @@ test_if_profile_command_preceeds_over_profile() {
 test_if_profile_command_preceeds_over_profile
 
 #
+# Test if Profile Command specified in profile is working
+#
+test_profile_command_in_profile() {
+    local profile_command
+    local resp
+    local opid
+
+    local profile2="$SORACOM_PROFILE_DIR/soracom-cli-test2.json"
+
+    progress "Test if profile command specified in profile is working"
+
+    # inject user3's auth key into user2's profile's profileCommand
+    profile_command="printf %s '{\\\"authKeyId\\\":\\\"$auth_key_id_for_sandbox_user3\\\",\\\"authKey\\\":\\\"$auth_key_for_sandbox_user3\\\"}'"
+    mv "$profile2" "$profile2.bak"
+    jq -r "(.profileCommand |= \"$profile_command\")" "$profile2.bak" > "$profile2"
+    chmod 600 "$profile2"
+
+    # authenticate with user2's profile, but it will be authenticated as user3, because profileCommand is preceeding
+    resp="$( invoke_soracom_command_without_profile operator get --profile "$PROFILE2" 2>/dev/null )"
+    opid="$( echo "$resp" | jq -r .operatorId )"
+    if [ "$opid3" != "$opid" ]; then
+        fail_with_message "expected authenticated as $opid3 but: $opid"
+    fi
+
+    mv "$profile2.bak" "$profile2"
+
+    print_ok
+}
+
+test_profile_command_in_profile
+
+#
 # Test if API Key / Token preceeds all other authentication methods.
 #
 test_if_api_key_and_token_preceeds_all_other_authentication_methods() {

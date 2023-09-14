@@ -107,6 +107,13 @@ func (s *credentialsSourceWithProfile) GetAPICredentials(ac *apiClient) (*APICre
 		return nil, err
 	}
 
+	if p.ProfileCommand != nil && *p.ProfileCommand != "" {
+		p, err = getProfileFromExternalCommand(*p.ProfileCommand)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if p.SourceProfile != nil && *p.SourceProfile != "" {
 		sourceProfile, err := loadProfile(*p.SourceProfile)
 		if err != nil {
