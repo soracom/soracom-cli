@@ -21,6 +21,7 @@ type authRequest struct {
 	AuthKey    *string `json:"authKey,omitempty"`
 	Username   *string `json:"userName,omitempty"`
 	OperatorID *string `json:"operatorId,omitempty"`
+	MfaOTPCode *string `json:"mfaOTPCode,omitempty"`
 }
 
 func authRequestFromProfile(p *profile) *authRequest {
@@ -31,6 +32,7 @@ func authRequestFromProfile(p *profile) *authRequest {
 		AuthKey:    p.AuthKey,
 		Username:   p.Username,
 		OperatorID: p.OperatorID,
+		MfaOTPCode: p.MfaOTPCode,
 	}
 }
 
