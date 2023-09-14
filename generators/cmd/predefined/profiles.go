@@ -32,6 +32,7 @@ type profile struct {
 	ProfileCommand        *string `json:"profileCommand,omitempty"`
 	SourceProfile         *string `json:"sourceProfile,omitempty"`
 	TokenTimeoutSeconds   *int    `json:"tokenTimeoutSeconds,omitempty"`
+	MfaOTPCode            *string `json:"mfaOTPCode,omitempty"`
 }
 
 type authInfo struct {
@@ -42,6 +43,7 @@ type authInfo struct {
 	Username      *string
 	OperatorID    *string
 	SourceProfile *string
+	MfaOTPCode    *string
 }
 
 var (
