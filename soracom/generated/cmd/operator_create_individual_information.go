@@ -96,7 +96,7 @@ func OperatorCreateIndividualInformationCmdRunE(cmd *cobra.Command, args []strin
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -130,7 +130,7 @@ func collectOperatorCreateIndividualInformationCmdParams(ac *apiClient) (*apiPar
 	var parsedBody interface{}
 	var err error
 	if OperatorCreateIndividualInformationCmdOperatorId == "" {
-		OperatorCreateIndividualInformationCmdOperatorId = ac.OperatorID
+		OperatorCreateIndividualInformationCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	body, err = buildBodyForOperatorCreateIndividualInformationCmd()

@@ -18,16 +18,19 @@ import (
 	"github.com/soracom/soracom-cli/generators/lib"
 )
 
+const (
+	minTokenTimeoutSeconds = 180
+	maxTokenTimeoutSeconds = 3600
+)
+
 // APIClient provides an access to SORACOM REST API
 type apiClient struct {
-	httpClient *http.Client
-	APIKey     string
-	Token      string
-	OperatorID string
-	endpoint   string
-	basePath   string
-	language   string
-	verbose    bool
+	httpClient     *http.Client
+	apiCredentials *APICredentials
+	endpoint       string
+	basePath       string
+	language       string
+	verbose        bool
 }
 
 var (
@@ -99,14 +102,12 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 	}
 
 	return &apiClient{
-		httpClient: hc,
-		APIKey:     "",
-		Token:      "",
-		OperatorID: "",
-		endpoint:   endpoint,
-		basePath:   basePath,
-		language:   language,
-		verbose:    verbose,
+		httpClient:     hc,
+		apiCredentials: nil,
+		endpoint:       endpoint,
+		basePath:       basePath,
+		language:       language,
+		verbose:        verbose,
 	}
 }
 
@@ -189,42 +190,32 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	return resBody, nil
 }
 
-func (ac *apiClient) authenticateWithProfile(profile *profile) (*authResult, error) {
-	if profile.SourceProfile != nil && *profile.SourceProfile != "" {
-		sourceProfile, err := loadProfile(*profile.SourceProfile)
-		if err != nil {
-			lib.PrintfStderr("unable to load the specified source profile: %s\n", *profile.SourceProfile)
-			return nil, err
-		}
-		return ac.authenticateWithSwitchUser(profile, sourceProfile)
-	}
+func (ac *apiClient) getAPICredentials() error {
+	var (
+		creds *APICredentials
+		err   error
+	)
 
-	var areq *authRequest
-	if providedAuthKeyID != "" && providedAuthKey != "" {
-		areq = &authRequest{
-			AuthKeyID: &providedAuthKeyID,
-			AuthKey:   &providedAuthKey,
-		}
-	} else if providedProfileCommand != "" {
-		profile, err := getProfileFromExternalCommand(providedProfileCommand)
+	for _, src := range apiCredentialsSources {
+		creds, err = src.GetAPICredentials(ac)
 		if err != nil {
-			lib.PrintfStderr("unable to get credentials from an external command.\n")
-			return nil, err
+			return err
 		}
-		areq = authRequestFromProfile(profile)
-	} else {
-		areq = authRequestFromProfile(profile)
 
-		if profile.ProfileCommand != nil && *profile.ProfileCommand != "" {
-			p, err := getProfileFromExternalCommand(*profile.ProfileCommand)
-			if err != nil {
-				lib.PrintfStderr("unable to get credentials from an external command.\n")
-				return nil, err
-			}
-			areq = authRequestFromProfile(p)
+		if creds != nil {
+			break
 		}
 	}
 
+	if creds == nil {
+		return errors.New("no api credentials or authentication info provided")
+	}
+
+	ac.apiCredentials = creds
+	return nil
+}
+
+func (ac *apiClient) authenticate(areq *authRequest) (*authResult, error) {
 	params := &apiParams{
 		method:         "POST",
 		path:           "/auth",
@@ -258,7 +249,8 @@ func (ac *apiClient) authenticateWithSwitchUser(profile, sourceProfile *profile)
 		return nil, errors.New("both operatorId and username are required when authenticating using switch-user")
 	}
 
-	sourceAuthRes, err := ac.authenticateWithProfile(sourceProfile)
+	sourceAuthReq := authRequestFromProfile(sourceProfile)
+	sourceAuthRes, err := ac.authenticate(sourceAuthReq)
 	if err != nil {
 		return nil, err
 	}
@@ -278,9 +270,10 @@ func (ac *apiClient) authenticateWithSwitchUser(profile, sourceProfile *profile)
 	}
 
 	// temporarily using the source profile's api key and token
-	ac.APIKey = sourceAuthRes.APIKey
-	ac.Token = sourceAuthRes.Token
-	ac.OperatorID = sourceAuthRes.OperatorID
+	ac.apiCredentials = &APICredentials{
+		APIKey:   sourceAuthRes.APIKey,
+		APIToken: sourceAuthRes.Token,
+	}
 
 	res, err := ac.callAPI(params)
 	if err != nil {
@@ -288,9 +281,7 @@ func (ac *apiClient) authenticateWithSwitchUser(profile, sourceProfile *profile)
 	}
 
 	// erase source profile's api key and token to prevent accidents
-	ac.APIKey = ""
-	ac.Token = ""
-	ac.OperatorID = ""
+	ac.apiCredentials = nil
 
 	dec := json.NewDecoder(bytes.NewBufferString(res))
 	var ares authResult
@@ -300,6 +291,28 @@ func (ac *apiClient) authenticateWithSwitchUser(profile, sourceProfile *profile)
 	}
 
 	return &ares, nil
+}
+
+func getProvidedTokenTimeoutSeconds(profile *profile) *int {
+	// TODO: support providing tokenTimeoutSeconds from command line option
+	//if providedTokenTimeoutSeconds != 0 {
+	//return providedTokenTimeoutSeconds
+	//}
+	if profile.TokenTimeoutSeconds != nil && isValidTokenTimeoutSeconds(*profile.TokenTimeoutSeconds) {
+		return profile.TokenTimeoutSeconds
+	}
+	return nil
+}
+
+func isValidTokenTimeoutSeconds(tokenTimeoutSeconds int) bool {
+	if tokenTimeoutSeconds < minTokenTimeoutSeconds {
+		return false
+	}
+	if tokenTimeoutSeconds > maxTokenTimeoutSeconds {
+		return false
+	}
+
+	return true
 }
 
 // arr1 = "[1,2]"
@@ -362,12 +375,12 @@ func (ac *apiClient) constructRequest(u *url.URL, params *apiParams) (*http.Requ
 		}
 	}
 
-	if ac.APIKey != "" {
-		req.Header.Set("X-Soracom-API-Key", ac.APIKey)
+	if ac.apiCredentials != nil && ac.apiCredentials.APIKey != "" {
+		req.Header.Set("X-Soracom-API-Key", ac.apiCredentials.APIKey)
 	}
 
-	if ac.Token != "" {
-		req.Header.Set("X-Soracom-Token", ac.Token)
+	if ac.apiCredentials != nil && ac.apiCredentials.APIToken != "" {
+		req.Header.Set("X-Soracom-Token", ac.apiCredentials.APIToken)
 	}
 
 	if ac.language != "" {

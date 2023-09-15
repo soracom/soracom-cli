@@ -129,7 +129,7 @@ func {{$cmdvar}}RunE(cmd *cobra.Command, args []string) error {
     }
 
     {{- if .RequireAuth}}
-    err := authHelper(ac, cmd, args)
+    err := ac.getAPICredentials()
     if err != nil {
       cmd.SilenceUsage = true
       return err
@@ -183,7 +183,7 @@ func collect{{$cmdvar}}Params(ac *apiClient) (*apiParams, error) {
 
   {{- if .RequireOperatorID }}
   if {{$prefix}}OperatorId == "" {
-    {{$prefix}}OperatorId = ac.OperatorID
+    {{$prefix}}OperatorId = ac.apiCredentials.getOperatorID()
   }
   {{end}}
 

@@ -111,7 +111,7 @@ func OperatorUpdateCompanyInformationCmdRunE(cmd *cobra.Command, args []string) 
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -145,7 +145,7 @@ func collectOperatorUpdateCompanyInformationCmdParams(ac *apiClient) (*apiParams
 	var parsedBody interface{}
 	var err error
 	if OperatorUpdateCompanyInformationCmdOperatorId == "" {
-		OperatorUpdateCompanyInformationCmdOperatorId = ac.OperatorID
+		OperatorUpdateCompanyInformationCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	body, err = buildBodyForOperatorUpdateCompanyInformationCmd()

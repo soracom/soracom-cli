@@ -201,6 +201,46 @@ soracom sandbox subscribers create --profile test
 soracom configure-sandbox --coverage-type jp --auth-key-id="$AUTHKEY_ID" --auth-key="$AUTHKEY" --email="$EMAIL" --password="$PASSWORD"
 ```
 
+### コマンドライン引数で指定する認証方法の優先順位
+
+soracom-cli は SORACOM API を呼び出すために、通常は内部的に認証を行って API キーとトークンを取得し、API リクエストとともにそれらを送信しています。
+
+認証を行ったり API キーとトークンを指定したりするためのオプションは複数あり、その使い方には以下のような方法があります。
+
+1. 認証を事前に行って取得しておいた API キーとトークンを`--api-key` と `--api-token` オプションで直接指定し、それらを用いて API を呼び出す
+
+2. 認証キーIDと認証キーを `--auth-key-id` と `--auth-key`オプションで指定して認証を行って API キーとトークンを取得し、それらを用いて API を呼び出す
+
+3. `--profile-command` オプションで指定された外部コマンドを実行することでプロファイル（＝認証を行うための情報）を 生成し、そのプロファイルを用いて認証を行って API キーとトークンを取得し、それらを用いて API を呼び出す
+
+4. 事前に構成されたプロファイルを`--profile` オプションで指定し、そのプロファイルを用いて認証を行って API キーとトークンを取得し、それらを用いて API を呼び出す
+
+これらは 1 から 4 の順に優先されます。すなわち、1 が最も優先され、4 の優先度が最も低くなります。
+たとえば、もし `soracom-cli` のユーザーが `--profile-command` オプションと `--profile` オプションを同時に指定してしまった場合、`--profile-command` オプションの内容が優先されます。
+
+また、`--api-key` と `--api-token` や `--auth-key-id` と `--auth-key` のように、2 つ同時に指定する必要があるオプションを片方だけ指定した場合はエラーとなります。
+
+
+### プロファイルで指定する認証方法の優先順位
+
+プロファイルの中には以下のいずれかの認証方法を指定できます。
+
+1. プロファイル情報を生成するための外部コマンドを指定する`profileCommand` フィールド
+
+2. スイッチユーザー機能でスイッチ元のプロファイルを指定する `sourceProfile` フィールドおよびスイッチ先のオペレーター ID とユーザー名を指定する `operatorId` および `username` フィールド
+
+3. 認証キーIDと認証キーを指定する `authKeyId` および `authKey` フィールド
+
+4. ルートユーザーのメールアドレスとパスワードを指定する `email` および `password` フィールド
+
+5. SAM ユーザーのオペレーター ID、ユーザー名およびパスワードを指定する `operatorId`、`username` および `password` フィールド
+
+これらは 1 か 5 の順に優先されます。すなわち、1 が最も優先され、5 の優先度が最も低くなります。
+たとえば、もし `profileCommand` フィールドと `authKeyId` および `authKey` フィールドを同時にプロファイル内に指定してしまった場合、`profileCommand` の内容が優先されます。
+
+`sourceProfile` で参照されるプロファイルの中には `sourceProfile` を指定することはできません。
+
+
 ### Proxy 経由で API を呼び出したい場合
 
 HTTP_PROXY 環境変数に `http://your-proxy-name:port` を設定した状態で soracom コマンドを実行してください。

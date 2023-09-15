@@ -111,7 +111,7 @@ func ShippingAddressesCreateCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := authHelper(ac, cmd, args)
+	err := ac.getAPICredentials()
 	if err != nil {
 		cmd.SilenceUsage = true
 		return err
@@ -145,7 +145,7 @@ func collectShippingAddressesCreateCmdParams(ac *apiClient) (*apiParams, error) 
 	var parsedBody interface{}
 	var err error
 	if ShippingAddressesCreateCmdOperatorId == "" {
-		ShippingAddressesCreateCmdOperatorId = ac.OperatorID
+		ShippingAddressesCreateCmdOperatorId = ac.apiCredentials.getOperatorID()
 	}
 
 	body, err = buildBodyForShippingAddressesCreateCmd()
