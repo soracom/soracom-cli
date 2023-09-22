@@ -44,14 +44,17 @@ cli:
         prompt: |+
 
           認証方法を選択してください。
-          
+
           1. AuthKeyId と AuthKey を入力する（推奨）
           2. オペレーターのメールアドレスとパスワードを入力する
           3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）
           4. スイッチユーザー
-        
+
         select: "選択してください (1-4) > "
       overwrite: "\nプロファイル %s はすでに存在しています。上書きしますか？ (Y/n) "
+      switch_destination_operator_id: "スイッチ先のオペレーター ID (OP00...): "
+      switch_destination_user_name: "スイッチ先のユーザー名: "
+      switch_source_profile: "スイッチ元のプロファイル: "
     get:
       summary: プロファイル情報を表示します。
       description: プロファイル情報を表示します。

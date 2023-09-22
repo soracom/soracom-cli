@@ -408,17 +408,17 @@ func collectAuthInfo() (*authInfo, error) {
 	case 4:
 		var sourceProfileNumber int
 		var operatorID, username, sourceProfile string
-		fmt.Print("Switch destination operator ID (OP00...): ")
+		fmt.Print(TRCLI("cli.configure.profile.switch_destination_operator_id"))
 		_, err := fmt.Scanf("%s\n", &operatorID)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Print("Switch destination user name: ")
+		fmt.Print(TRCLI("cli.configure.profile.switch_destination_user_name"))
 		_, err = fmt.Scanf("%s\n", &username)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("Source profile (switch origin)")
+		fmt.Println(TRCLI("cli.configure.profile.switch_source_profile"))
 		profiles, err := enumerateProfiles()
 		if err != nil {
 			return nil, err

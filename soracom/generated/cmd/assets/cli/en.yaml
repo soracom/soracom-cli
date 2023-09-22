@@ -44,14 +44,17 @@ cli:
         prompt: |+
 
           Please select which authentication method to use.
-          
+
           1. AuthKeyId and AuthKey * Recommended *
           2. Operator credentials (Operator Email and Password)
           3. SAM user credentials (OperatorId, User name and Password)
           4. Switch user
-        
+
         select: "select (1-4) > "
       overwrite: "\nProfile %s already exists. Overwrite it? (Y/n) "
+      switch_destination_operator_id: "Switch destination operator ID (OP00...): "
+      switch_destination_user_name: "Switch destination user name: "
+      switch_source_profile: "Source profile (switch origin)"
     get:
       summary: Show specified profile configurations.
       description: Show specified profile configurations.
