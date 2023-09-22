@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 var configureOverwrite bool
 
 func init() {
-	ConfigureCmd.Flags().BoolVar(&configureOverwrite, "overwrite", true, TRCLI("cli.configure.overwrite"))
+	ConfigureCmd.Flags().BoolVar(&configureOverwrite, "overwrite", false, TRCLI("cli.configure.overwrite"))
 	RootCmd.AddCommand(ConfigureCmd)
 	RootCmd.AddCommand(UnconfigureCmd)
 }
