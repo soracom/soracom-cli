@@ -258,6 +258,42 @@ soracom subscribers list
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
+### AWS Lambda Layers
+
+soracom-cli を AWS Lambda 上で利用しようと考えたことはありますか？
+Zip パッケージやコンテナイメージに soracom-cli のバイナリを含めてデプロイすることで、あなたの Lambda 関数の中から soracom-cli を呼び出すことができます。
+
+しかしながら、soracom-cli のバイナリは比較的大きいため、Zip パッケージやコンテナイメージの容量を圧迫してしまうかもしれません。
+
+そこで、私達が提供するのが soracom-cli の Layer です。
+
+以下のような ARN を指定することで、あなたの Lambda 関数の中から `soracom` コマンドを実行できるようになります。
+
+x86_64 アーキテクチャー：
+
+```
+arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}:1
+```
+
+arm64 アーキテクチャー：
+
+```
+arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}-arm64:1
+```
+
+`${ver}` の部分には、対象となる soracom-cli のバージョン番号から `.` を取り除いたものが入ります。
+
+たとえばバージョン `1.2.3` なら `123` となります。
+
+バイナリは /bin/soracom にインストールされます。PATH が通っているので Lambda 関数の中では単に `soracom` コマンドとして実行できます。
+
+Node.js 18.x ランタイムでは以下のようにして呼び出すことができます。（環境変数で AUTH_KEY_ID と AUTH_KEY を渡してください）
+
+```
+const execSync = require('child_process').execSync;
+const jpBill = execSync(`soracom --auth-key-id ${process.env.AUTH_KEY_ID} --auth-key ${process.env.AUTH_KEY} bills get-latest --coverage-type jp`).toString();
+```
+
 ### トラブルシューティング
 
 もし、以下のようなエラーメッセージが表示されてしまったら、

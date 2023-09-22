@@ -255,6 +255,39 @@ Or
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
+### Use AWS Lambda Layers
+
+Have you ever thought about using soracom-cli on AWS Lambda? By including the soracom-cli binary in your Zip package or container image and deploying it, you can use soracom-cli in your Lambda functions.
+
+However, the soracom-cli binary is relatively large and may overwhelm the space in the Zip package or container image.
+
+Therefore, we offer soracom-cli's Layer.
+
+You can execute the `soracom` command in your Lambda function by specifying the following ARN:
+
+- x86_64 architecture:
+  ```
+  arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}:1
+  ```
+
+- arm64 architecture:
+  ```
+  arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}-arm64:1
+  ```
+
+The `${ver}` part is the version number of the target soracom-cli without the `.`.
+
+For example, for version `1.2.3`, `${ver}` should be `123`.
+
+The binary is installed in /bin/soracom, which is PATHed and can be executed in Lambda functions simply as the `soracom` command.
+
+In Node.js 18.x runtime, it can be called as follows: (Pass AUTH_KEY_ID and AUTH_KEY in the environment variables)
+
+```
+const execSync = require('child_process').execSync;
+const jpBill = execSync(`soracom --auth-key-id ${process.env.AUTH_KEY_ID} --auth-key ${process.env.AUTH_KEY} bills get-latest --coverage-type jp`).toString();
+```
+
 
 ### Trouble shooting
 
