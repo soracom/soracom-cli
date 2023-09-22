@@ -67,7 +67,8 @@ winres:
 
 build: ## Build codes
 	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build \
-		-ldflags="-X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
+		-ldflags="-s -w -X 'github.com/soracom/soracom-cli/soracom/generated/cmd.version=$(VERSION)'" \
+		-trimpath \
 		-o $(OUTPUT) \
 		./soracom
 	@chmod +x $(OUTPUT)
