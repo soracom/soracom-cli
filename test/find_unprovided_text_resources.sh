@@ -66,15 +66,15 @@ check_if_all_text_resources_provided() {
     echo -n '.'
     #echo "$target_subcommand"
 
-    child_subcommands="$( get_child_subcommands "$lang" "$target_subcommand" )"
-    #echo "$child_subcommands"
-
     if ! all_text_resources_provided_for_subcommand "$lang" "$target_subcommand"; then
         echo
         echo "unprovided text resource found for 'LANG=$lang soracom $target_subcommand'"
         echo
         #exit 1
     fi
+
+    child_subcommands="$( get_child_subcommands "$lang" "$target_subcommand" )"
+    #echo "$child_subcommands"
 
     if [ -n "$child_subcommands" ]; then
         local child_subcommand
