@@ -16,6 +16,8 @@ fi
 uname_m="$(uname -m)"
 if [ "$uname_m" == "x86_64" ] || [ "$uname_m" == "amd64" ]; then
     ARCH=amd64
+elif [ "$uname_m" == "arm64" ]; then
+    ARCH=arm64
 else
     echo "Machine architecture $uname_m is not supported for a test environment"
     exit 1
