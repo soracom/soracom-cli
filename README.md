@@ -23,20 +23,20 @@ The `soracom` command:
   ```
 
   if you are a macOS user, you probably need to either:
-  1. use `bash` version >= 4.0, or
-  2. use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
+  - use `bash` version >= 4.0, or
+  - use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
 
-  ```
-  if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-    . "$(brew --prefix)/etc/bash_completion"
-  fi
-  ```
-  otherwise you might be getting the error like the following:
-  ```
-  -bash: __ltrim_colon_completions: command not found
-  ```
+    ```
+    if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+      . "$(brew --prefix)/etc/bash_completion"
+    fi
+    ```
+    otherwise you might be getting the error like the following:
+    ```
+    -bash: __ltrim_colon_completions: command not found
+    ```
 
-- supports zsh completion. The generated completion script by running the following command should be put somewhere in your $fpath named `_soracom`
+- supports zsh completion. The generated completion script by running the following command should be put somewhere in your `$fpath` named `_soracom`
   ```
   soracom completion zsh
   ```
@@ -136,7 +136,7 @@ Thereafter, when executing the soracom command, an API call is made using the au
 
 ### Use multiple profiles
 
-If you have multiple SORACOM accounts or want to use multiple SAM users differently, specify the --profile option to configure and set the profile name.
+If you have multiple SORACOM accounts or want to use multiple SAM users differently, specify the `--profile` option to configure and set the profile name.
 
 ```
 soracom configure --profile user1
@@ -149,7 +149,7 @@ soracom configure --profile user2
 ```
 
 This will create profiles named user1 and user2.
-To use the profile, specify the --profile option in addition to the normal command.
+To use the profile, specify the `--profile` option in addition to the normal command.
 
 ```
 soracom subscribers list --profile user1
@@ -204,18 +204,18 @@ These keys and tokens are then sent along with the API requests.
 
 There are several options available to authenticate or to specify the API key and token, which are used as follows:
 
-1. Use the previously authenticated and obtained API key and token directly by specifying them with the --api-key and --api-token options to make API calls.
+1. Use the previously authenticated and obtained API key and token directly by specifying them with the `--api-key` and `--api-token` options to make API calls.
 
-2. Authenticate by specifying the authentication key ID and authentication key with the --auth-key-id and --auth-key options, then obtain the API key and token, and use them to make API calls.
+2. Authenticate by specifying the authentication key ID and authentication key with the `--auth-key-id` and `--auth-key options`, then obtain the API key and token, and use them to make API calls.
 
-3. Generate a profile (which contains the information for authentication) by executing an external command specified by the --profile-command option, then use that profile to authenticate, obtain the API key and token, and make the API calls.
+3. Generate a profile (which contains the information for authentication) by executing an external command specified by the `--profile-command` option, then use that profile to authenticate, obtain the API key and token, and make the API calls.
 
-4. Authenticate using a pre-configured profile specified with the --profile option, then obtain the API key and token, and use them to make the API calls.
+4. Authenticate using a pre-configured profile specified with the `--profile` option, then obtain the API key and token, and use them to make the API calls.
 
 These methods are ranked in priority from 1 to 4, with 1 being the highest priority and 4 the lowest.
-For example, if a soracom-cli user specifies both the --profile-command and --profile options at the same time, the contents of the --profile-command option will take precedence.
+For example, if a soracom-cli user specifies both the `--profile-command` and `--profile` options at the same time, the contents of the `--profile-command` option will take precedence.
 
-Additionally, if options that need to be specified together, like --api-key and --api-token or --auth-key-id and --auth-key, are provided singly, it will result in an error.
+Additionally, if options that need to be specified together, like `--api-key` and `--api-token` or `--auth-key-id` and `--auth-key`, are provided singly, it will result in an error.
 
 
 ### Priority of authentication methods specified in the profile
@@ -255,7 +255,7 @@ Or
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
-### Use AWS Lambda Layers
+### Use AWS Lambda Layers of soracom-cli
 
 Have you ever thought about using soracom-cli on AWS Lambda? By including the soracom-cli binary in your Zip package or container image and deploying it, you can use soracom-cli in your Lambda functions.
 
@@ -331,6 +331,15 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 ./test/test.sh $VERSION
 ```
 
+### Troubleshooting Build Issues
+
+If you encounter an error like `go: could not create module cache: mkdir /go/pkg: permission denied` after building,
+
+Please check the permissions of /go/pkg inside the Docker container. In build.sh, we are mounting the host's `${GOPATH:-$HOME/go}` to /go/pkg, so you should check the permissions of `~$HOME/go` on the host. In most cases, the following command should resolve the issue:
+
+```bash
+sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
+```
 
 # How to release
 

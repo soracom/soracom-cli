@@ -23,19 +23,18 @@ soracom コマンドは以下のような特徴を備えています。
   ```
 
   macOS をお使いの場合、以下のいずれかの条件を満たす必要があるかもしれません：
-  1. `bash` のバージョン 4.0 以降を使用する
-  2. `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
+  - `bash` のバージョン 4.0 以降を使用する
+  - `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
     そしてこの場合、`.bash_profile` または `.profile` ファイルに以下を追加します:
     ```
     if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
       . "$(brew --prefix)/etc/bash_completion"
     fi
     ```
-
-  以下のようなエラーが起きた場合は上記いずれかをお試し下さい。
-  ```
-  -bash: __ltrim_colon_completions: command not found
-  ```
+    以下のようなエラーが起きた場合は上記いずれかをお試し下さい。
+    ```
+    -bash: __ltrim_colon_completions: command not found
+    ```
 
 - zsh completion（引数補完）に対応しています。以下のようなコマンドを実行して生成されるスクリプトを `_soracom` という名前で `$fpath` のどこかに配置してください。
   ```
@@ -141,7 +140,7 @@ SAM ユーザーに対し認証キーを発行する方法についてはソラ�
 
 ### 複数のプロファイルを使い分ける
 
-SORACOM アカウントを複数所有しているとか、複数の SAM ユーザーを使い分けたい場合は、configure に --profile オプションを指定し、プロファイル名を設定します。
+SORACOM アカウントを複数所有しているとか、複数の SAM ユーザーを使い分けたい場合は、configure に `--profile` オプションを指定し、プロファイル名を設定します。
 
 ```
 soracom configure --profile user1
@@ -154,7 +153,7 @@ soracom configure --profile user2
 ```
 
 このようにすると user1 および user2 という名前のプロファイルが作成されます。
-プロファイルを利用する場合は通常のコマンドの後ろに --profile オプションを指定します。
+プロファイルを利用する場合は通常のコマンドの後ろに `--profile` オプションを指定します。
 
 ```
 soracom subscribers list --profile user1
@@ -216,7 +215,7 @@ soracom-cli は SORACOM API を呼び出すために、通常は内部的に認�
 4. 事前に構成されたプロファイルを`--profile` オプションで指定し、そのプロファイルを用いて認証を行って API キーとトークンを取得し、それらを用いて API を呼び出す
 
 これらは 1 から 4 の順に優先されます。すなわち、1 が最も優先され、4 の優先度が最も低くなります。
-たとえば、もし `soracom-cli` のユーザーが `--profile-command` オプションと `--profile` オプションを同時に指定してしまった場合、`--profile-command` オプションの内容が優先されます。
+たとえば、もし soracom-cli のユーザーが `--profile-command` オプションと `--profile` オプションを同時に指定してしまった場合、`--profile-command` オプションの内容が優先されます。
 
 また、`--api-key` と `--api-token` や `--auth-key-id` と `--auth-key` のように、2 つ同時に指定する必要があるオプションを片方だけ指定した場合はエラーとなります。
 
@@ -258,7 +257,7 @@ soracom subscribers list
 HTTP_PROXY=http://10.0.1.2:8080 soracom subscribers list
 ```
 
-### AWS Lambda Layers
+### soracom-cli の AWS Lambda Layers を利用する
 
 soracom-cli を AWS Lambda 上で利用しようと考えたことはありますか？
 Zip パッケージやコンテナイメージに soracom-cli のバイナリを含めてデプロイすることで、あなたの Lambda 関数の中から soracom-cli を呼び出すことができます。
@@ -269,21 +268,21 @@ Zip パッケージやコンテナイメージに soracom-cli のバイナリを
 
 以下のような ARN を指定することで、あなたの Lambda 関数の中から `soracom` コマンドを実行できるようになります。
 
-x86_64 アーキテクチャー：
+- x86_64 アーキテクチャー：
 
-```
-arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}:1
-```
+  ```
+  arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}:1
+  ```
 
-arm64 アーキテクチャー：
+- arm64 アーキテクチャー：
 
-```
-arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}-arm64:1
-```
+  ```
+  arn:aws:lambda:ap-northeast-1:717257875195:layer:soracom-cli-${ver}-arm64:1
+  ```
 
 `${ver}` の部分には、対象となる soracom-cli のバージョン番号から `.` を取り除いたものが入ります。
 
-たとえばバージョン `1.2.3` なら `123` となります。
+たとえばバージョン `1.2.3` なら、`${ver}` は `123` となります。
 
 バイナリは /bin/soracom にインストールされます。PATH が通っているので Lambda 関数の中では単に `soracom` コマンドとして実行できます。
 
@@ -293,6 +292,7 @@ Node.js 18.x ランタイムでは以下のようにして呼び出すことが�
 const execSync = require('child_process').execSync;
 const jpBill = execSync(`soracom --auth-key-id ${process.env.AUTH_KEY_ID} --auth-key ${process.env.AUTH_KEY} bills get-latest --coverage-type jp`).toString();
 ```
+
 
 ### トラブルシューティング
 
@@ -337,4 +337,28 @@ VERSION=1.2.3
 export SORACOM_AUTHKEY_ID_FOR_TEST=...
 export SORACOM_AUTHKEY_FOR_TEST=...
 ./test/test.sh $VERSION
+```
+
+### ビルド時のトラブルシューティング
+
+ビルド後に `go: could not create module cache: mkdir /go/pkg: permission denied` のようなエラーが表示されたときは、
+
+Docker container 内の /go/pkg の権限を確認してください。build.sh では、ホストの `${GOPATH:-$HOME/go}` を /go/pkg にマウントしているため、ホストの `~$HOME/go` の権限を確認します。ほとんどの場合は、以下のコマンドで解決できるはずです。
+
+```
+sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
+```
+
+# リリースする
+
+```
+VERSION=1.2.3                         # => リリースするバージョン番号を指定します
+./scripts/build.sh $VERSION           # => 指定したバージョンをビルドします
+./test/test.sh $VERSION               # => バージョンのテストを行います
+# すべての変更を GitHub にコミットし、プッシュします
+./scripts/release.sh $VERSION         # => GitHub にバージョンをリリースします
+# github.com のリリースページでリリースを編集します
+./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
+./scripts/build-lambda-layer.sh $VERSION
+./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE   # => このコマンドはレイヤーを全リージョン（ap-east-1 を除く）にリリースします
 ```
