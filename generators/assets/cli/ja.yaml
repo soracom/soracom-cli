@@ -244,26 +244,26 @@ cli:
       summary: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
       description: Soracom Cloud Camera Services のライセンスパックに関する操作を行います。
     devices:
-      summary: ソラカメ対応カメラデバイスに関する操作を行います。
-      description: ソラカメ対応カメラデバイスに関する操作を行います。
+      summary: ソラカメ対応カメラに関する操作を行います。
+      description: ソラカメ対応カメラに関する操作を行います。
       atomcam:
-        summary: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の操作をする
-        description: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の操作を行います。
+        summary: ATOM Cam シリーズのソラカメ対応カメラに固有の操作をする
+        description: ATOM Cam シリーズのソラカメ対応カメラに固有の操作を行います。
         settings:
-          summary: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の設定を管理します。 
-          description: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の設定を管理します。 
+          summary: ATOM Cam シリーズのソラカメ対応カメラに固有の設定を管理します。 
+          description: ATOM Cam シリーズのソラカメ対応カメラに固有の設定を管理します。 
       events:
-        summary: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
-        description: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
+        summary: ソラカメ対応カメラで検出されたイベントの一覧を取得します。
+        description: ソラカメ対応カメラで検出されたイベントの一覧を取得します。
       images:
-        summary: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
-        description: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
+        summary: ソラカメ対応カメラからの静止画のエクスポートに関する操作を行います。
+        description: ソラカメ対応カメラからの静止画のエクスポートに関する操作を行います。
       recordings-and-events:
-        summary: ソラカメ対応カメラデバイスのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得する
-        description: ソラカメ対応カメラデバイスのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得します。
+        summary: ソラカメ対応カメラのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得する
+        description: ソラカメ対応カメラのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得します。
       videos:
-        summary: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
-        description: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
+        summary: ソラカメ対応カメラからの動画のエクスポートに関する操作を行います。
+        description: ソラカメ対応カメラからの動画のエクスポートに関する操作を行います。
   soralets:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。
