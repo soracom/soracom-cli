@@ -2,8 +2,6 @@
 set -Eeuo pipefail
 d="$( cd "$( dirname "$0" )"; cd ..; pwd -P )"
 
-RESET=$'\e[0m'
-BOLD=$'\e[1m'
 GREEN=$'\e[0;32m'
 RED=$'\e[0;31m'
 
