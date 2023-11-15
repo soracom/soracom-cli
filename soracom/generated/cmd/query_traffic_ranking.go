@@ -25,13 +25,13 @@ var QueryTrafficRankingCmdTo int64
 var QueryTrafficRankingCmdOutputJSONL bool
 
 func InitQueryTrafficRankingCmd() {
-	QueryTrafficRankingCmd.Flags().StringVar(&QueryTrafficRankingCmdOrder, "order", "desc", TRAPI("The order of ranking"))
+	QueryTrafficRankingCmd.Flags().StringVar(&QueryTrafficRankingCmdOrder, "order", "desc", TRAPI("The order of ranking."))
 
-	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdFrom, "from", 0, TRAPI("The beginning point of searching range (unixtime: in milliseconds)"))
+	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdFrom, "from", 0, TRAPI("The beginning point of searching range (UNIX time in milliseconds)."))
 
-	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
+	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
 
-	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdTo, "to", 0, TRAPI("The end point of searching range (unixtime: in milliseconds)"))
+	QueryTrafficRankingCmd.Flags().Int64Var(&QueryTrafficRankingCmdTo, "to", 0, TRAPI("The end point of searching range (UNIX time in milliseconds)."))
 
 	QueryTrafficRankingCmd.Flags().BoolVar(&QueryTrafficRankingCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

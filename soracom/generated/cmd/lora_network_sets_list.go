@@ -39,7 +39,7 @@ func InitLoraNetworkSetsListCmd() {
 
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
-	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN network set to retrieve."))
 
 	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

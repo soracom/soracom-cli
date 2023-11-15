@@ -43,23 +43,23 @@ var QueryDevicesCmdPaginate bool
 var QueryDevicesCmdOutputJSONL bool
 
 func InitQueryDevicesCmd() {
-	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
+	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
 
-	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdDeviceId, "device-id", []string{}, TRAPI("SORACOM Inventory device ID to search"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdDeviceId, "device-id", []string{}, TRAPI("SORACOM Inventory device ID to search."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdGroup, "group", []string{}, TRAPI("Group name to search"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdGroup, "group", []string{}, TRAPI("Group name to search."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdImei, "imei", []string{}, TRAPI("IMEI of the device that was used on bootstrapping"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdImei, "imei", []string{}, TRAPI("IMEI of the device that was used on bootstrapping."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdImsi, "imsi", []string{}, TRAPI("IMSI of the device that was used on bootstrapping"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdImsi, "imsi", []string{}, TRAPI("IMSI of the device that was used on bootstrapping."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdName, "name", []string{}, TRAPI("Name to search"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdName, "name", []string{}, TRAPI("Name to search."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
-	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
+	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

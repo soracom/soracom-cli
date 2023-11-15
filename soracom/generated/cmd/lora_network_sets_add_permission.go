@@ -23,7 +23,7 @@ var LoraNetworkSetsAddPermissionCmdOperatorId string
 var LoraNetworkSetsAddPermissionCmdBody string
 
 func InitLoraNetworkSetsAddPermissionCmd() {
-	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsAddPermissionCmd.Flags().StringVar(&LoraNetworkSetsAddPermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 

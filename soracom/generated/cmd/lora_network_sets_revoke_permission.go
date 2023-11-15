@@ -23,7 +23,7 @@ var LoraNetworkSetsRevokePermissionCmdOperatorId string
 var LoraNetworkSetsRevokePermissionCmdBody string
 
 func InitLoraNetworkSetsRevokePermissionCmd() {
-	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsRevokePermissionCmd.Flags().StringVar(&LoraNetworkSetsRevokePermissionCmdOperatorId, "operator-id", "", TRAPI(""))
 

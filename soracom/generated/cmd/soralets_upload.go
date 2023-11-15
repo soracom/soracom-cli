@@ -23,7 +23,7 @@ var SoraletsUploadCmdSoraletId string
 var SoraletsUploadCmdBody string
 
 func InitSoraletsUploadCmd() {
-	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdContentType, "content-type", "", TRAPI("Content type of the file to upload"))
+	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdContentType, "content-type", "", TRAPI("Content type of the file to upload. When uploading .wasm files, please specify 'application/json'."))
 
 	SoraletsUploadCmd.Flags().StringVar(&SoraletsUploadCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
 

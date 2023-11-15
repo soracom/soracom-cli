@@ -44,7 +44,7 @@ func InitSubscribersListCmd() {
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSerialNumberFilter, "serial-number-filter", "", TRAPI("Serial number for filtering the search. Can specify multiple values delimited by '|'. Returns subscribers with serial number starting with the specified value(s)."))
 
-	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TRAPI("Speed class for filtering the search. Can specify multiple values delimited by '|'. Valid values include: 's1.minimum', 's1.slow', 's1.standard', 's1.fast'"))
+	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdSpeedClassFilter, "speed-class-filter", "", TRAPI("Speed class for filtering the search. Can specify multiple values delimited by '|'. Valid values include:- 's1.minimum'- 's1.slow'- 's1.standard'- 's1.fast'- 's1.4xfast'- 's1.8xfast'- 'u1.standard'- 'u1.slow'- 't1.standard'- 'arc.standard'"))
 
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdStatusFilter, "status-filter", "", TRAPI("Status for filtering the search. Can specify multiple values delimited by '|'. Valid values include: 'active', 'inactive', 'ready', 'instock', 'shipped', 'suspended', and 'terminated'."))
 

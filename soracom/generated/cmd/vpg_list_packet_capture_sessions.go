@@ -29,7 +29,7 @@ func InitVpgListPacketCaptureSessionsCmd() {
 
 	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
-	VpgListPacketCaptureSessionsCmd.Flags().Int64Var(&VpgListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response"))
+	VpgListPacketCaptureSessionsCmd.Flags().Int64Var(&VpgListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response."))
 
 	VpgListPacketCaptureSessionsCmd.Flags().BoolVar(&VpgListPacketCaptureSessionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

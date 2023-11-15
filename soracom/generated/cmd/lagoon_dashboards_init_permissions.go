@@ -16,9 +16,9 @@ var LagoonDashboardsInitPermissionsCmdDashboardId int64
 var LagoonDashboardsInitPermissionsCmdV2 bool
 
 func InitLagoonDashboardsInitPermissionsCmd() {
-	LagoonDashboardsInitPermissionsCmd.Flags().Int64Var(&LagoonDashboardsInitPermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("dashboard_id"))
+	LagoonDashboardsInitPermissionsCmd.Flags().Int64Var(&LagoonDashboardsInitPermissionsCmdDashboardId, "dashboard-id", 0, TRAPI("ID of the target Dashboard."))
 
-	LagoonDashboardsInitPermissionsCmd.Flags().BoolVar(&LagoonDashboardsInitPermissionsCmdV2, "v2", false, TRAPI("If the value is true, a request will be issued to Lagoon 2. This is only valid if both Lagoon 3 and Lagoon 2 are enabled."))
+	LagoonDashboardsInitPermissionsCmd.Flags().BoolVar(&LagoonDashboardsInitPermissionsCmdV2, "v2", false, TRAPI("If the value is true, a request will be issued to Lagoon 2.This is only valid if both Lagoon 3 and Lagoon 2 are enabled."))
 
 	LagoonDashboardsInitPermissionsCmd.RunE = LagoonDashboardsInitPermissionsCmdRunE
 

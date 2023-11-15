@@ -13,7 +13,7 @@ import (
 var ShippingAddressesListCmdOperatorId string
 
 func InitShippingAddressesListCmd() {
-	ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	ShippingAddressesListCmd.Flags().StringVar(&ShippingAddressesListCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	ShippingAddressesListCmd.RunE = ShippingAddressesListCmdRunE
 

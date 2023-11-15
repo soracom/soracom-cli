@@ -25,7 +25,7 @@ var LagoonUsersUpdateEmailCmdBody string
 func InitLagoonUsersUpdateEmailCmd() {
 	LagoonUsersUpdateEmailCmd.Flags().StringVar(&LagoonUsersUpdateEmailCmdUserEmail, "user-email", "", TRAPI(""))
 
-	LagoonUsersUpdateEmailCmd.Flags().Int64Var(&LagoonUsersUpdateEmailCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
+	LagoonUsersUpdateEmailCmd.Flags().Int64Var(&LagoonUsersUpdateEmailCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user."))
 
 	LagoonUsersUpdateEmailCmd.Flags().StringVar(&LagoonUsersUpdateEmailCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

@@ -18,7 +18,7 @@ var StatsHarvestOperatorsGetCmdYearMonth string
 func InitStatsHarvestOperatorsGetCmd() {
 	StatsHarvestOperatorsGetCmd.Flags().StringVar(&StatsHarvestOperatorsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsHarvestOperatorsGetCmd.Flags().StringVar(&StatsHarvestOperatorsGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
+	StatsHarvestOperatorsGetCmd.Flags().StringVar(&StatsHarvestOperatorsGetCmdYearMonth, "year-month", "", TRAPI("Specify the year and month from 18 months before the current time to the current time in the YYYYMM format."))
 
 	StatsHarvestOperatorsGetCmd.RunE = StatsHarvestOperatorsGetCmdRunE
 

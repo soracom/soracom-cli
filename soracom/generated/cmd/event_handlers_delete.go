@@ -13,7 +13,7 @@ import (
 var EventHandlersDeleteCmdHandlerId string
 
 func InitEventHandlersDeleteCmd() {
-	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
+	EventHandlersDeleteCmd.Flags().StringVar(&EventHandlersDeleteCmdHandlerId, "handler-id", "", TRAPI("Event handler ID."))
 
 	EventHandlersDeleteCmd.RunE = EventHandlersDeleteCmdRunE
 

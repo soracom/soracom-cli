@@ -23,7 +23,7 @@ var LoraGatewaysSetNetworkSetCmdNetworkSetId string
 var LoraGatewaysSetNetworkSetCmdBody string
 
 func InitLoraGatewaysSetNetworkSetCmd() {
-	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
+	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRaWAN gateway."))
 
 	LoraGatewaysSetNetworkSetCmd.Flags().StringVar(&LoraGatewaysSetNetworkSetCmdNetworkSetId, "network-set-id", "", TRAPI(""))
 

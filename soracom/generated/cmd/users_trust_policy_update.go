@@ -26,7 +26,7 @@ var UsersTrustPolicyUpdateCmdUserName string
 var UsersTrustPolicyUpdateCmdBody string
 
 func InitUsersTrustPolicyUpdateCmd() {
-	UsersTrustPolicyUpdateCmd.Flags().StringVar(&UsersTrustPolicyUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersTrustPolicyUpdateCmd.Flags().StringVar(&UsersTrustPolicyUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	UsersTrustPolicyUpdateCmd.Flags().StringVar(&UsersTrustPolicyUpdateCmdTrustPolicy, "trust-policy", "", TRAPI("Trust policy that describes who can switch to this user."))
 

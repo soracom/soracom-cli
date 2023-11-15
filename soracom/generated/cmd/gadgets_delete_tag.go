@@ -19,9 +19,9 @@ var GadgetsDeleteTagCmdSerialNumber string
 var GadgetsDeleteTagCmdTagName string
 
 func InitGadgetsDeleteTagCmd() {
-	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
+	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
-	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 
 	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 

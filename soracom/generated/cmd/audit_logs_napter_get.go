@@ -38,7 +38,7 @@ func InitAuditLogsNapterGetCmd() {
 
 	AuditLogsNapterGetCmd.Flags().StringVar(&AuditLogsNapterGetCmdResourceId, "resource-id", "", TRAPI("Identity of the target resource to query log entries."))
 
-	AuditLogsNapterGetCmd.Flags().StringVar(&AuditLogsNapterGetCmdResourceType, "resource-type", "", TRAPI("Type of the target resource to query Napter audit log entries."))
+	AuditLogsNapterGetCmd.Flags().StringVar(&AuditLogsNapterGetCmdResourceType, "resource-type", "", TRAPI("Type of the target resource to query log entries."))
 
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime milliseconds)."))
 

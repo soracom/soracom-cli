@@ -13,7 +13,7 @@ import (
 var StatsNapterAuditLogsGetCmdYearMonth string
 
 func InitStatsNapterAuditLogsGetCmd() {
-	StatsNapterAuditLogsGetCmd.Flags().StringVar(&StatsNapterAuditLogsGetCmdYearMonth, "year-month", "", TRAPI("Year/Month in 'YYYYMM' format."))
+	StatsNapterAuditLogsGetCmd.Flags().StringVar(&StatsNapterAuditLogsGetCmdYearMonth, "year-month", "", TRAPI("Specify the year and month from 18 months before the current time to the current time in the YYYYMM format."))
 
 	StatsNapterAuditLogsGetCmd.RunE = StatsNapterAuditLogsGetCmdRunE
 

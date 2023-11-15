@@ -43,7 +43,7 @@ var EventHandlersUpdateCmdBody string
 func InitEventHandlersUpdateCmd() {
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdDescription, "description", "", TRAPI(""))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("Event handler ID."))
 
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdName, "name", "", TRAPI(""))
 

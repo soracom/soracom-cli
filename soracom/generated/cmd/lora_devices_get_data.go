@@ -42,7 +42,7 @@ func InitLoraDevicesGetDataCmd() {
 
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
 
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 

@@ -45,11 +45,11 @@ func InitLogsGetCmd() {
 
 	LogsGetCmd.Flags().StringVar(&LogsGetCmdService, "service", "", TRAPI("Service name to filter log entries."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (unixtime)."))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (UNIX time in milliseconds)."))
 
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime)."))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (UNIX time in milliseconds)."))
 
 	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

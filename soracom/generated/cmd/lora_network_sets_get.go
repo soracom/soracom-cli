@@ -13,7 +13,7 @@ import (
 var LoraNetworkSetsGetCmdNsId string
 
 func InitLoraNetworkSetsGetCmd() {
-	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsGetCmd.Flags().StringVar(&LoraNetworkSetsGetCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsGetCmd.RunE = LoraNetworkSetsGetCmdRunE
 

@@ -31,11 +31,11 @@ var RolesCreateCmdBody string
 func InitRolesCreateCmd() {
 	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdDescription, "description", "", TRAPI(""))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TRAPI("Permission as JSON"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdPermission, "permission", "", TRAPI("Permission as JSON."))
 
-	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TRAPI("role_id"))
+	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdRoleId, "role-id", "", TRAPI("Role ID."))
 
 	RolesCreateCmd.Flags().StringVar(&RolesCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

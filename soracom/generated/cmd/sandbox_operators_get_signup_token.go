@@ -30,7 +30,7 @@ func InitSandboxOperatorsGetSignupTokenCmd() {
 
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdAuthKeyId, "auth-key-id", "", TRAPI(""))
 
-	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdEmail, "email", "", TRAPI("email"))
+	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdEmail, "email", "", TRAPI("Email"))
 
 	SandboxOperatorsGetSignupTokenCmd.Flags().StringVar(&SandboxOperatorsGetSignupTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -43,7 +43,7 @@ func InitSandboxOperatorsGetSignupTokenCmd() {
 var SandboxOperatorsGetSignupTokenCmd = &cobra.Command{
 	Use:   "get-signup-token",
 	Short: TRAPI("/sandbox/operators/token/{email}:post:summary"),
-	Long:  TRAPI(`/sandbox/operators/token/{email}:post:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxGetSignupToken"),
+	Long:  TRAPI(`/sandbox/operators/token/{email}:post:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Operator", "sandboxGetSignupToken"),
 }
 
 func SandboxOperatorsGetSignupTokenCmdRunE(cmd *cobra.Command, args []string) error {

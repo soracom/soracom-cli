@@ -16,7 +16,7 @@ var UsersTrustPolicyGetCmdOperatorId string
 var UsersTrustPolicyGetCmdUserName string
 
 func InitUsersTrustPolicyGetCmd() {
-	UsersTrustPolicyGetCmd.Flags().StringVar(&UsersTrustPolicyGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersTrustPolicyGetCmd.Flags().StringVar(&UsersTrustPolicyGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	UsersTrustPolicyGetCmd.Flags().StringVar(&UsersTrustPolicyGetCmdUserName, "user-name", "", TRAPI("SAM user name."))
 

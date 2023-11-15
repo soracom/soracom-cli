@@ -16,7 +16,7 @@ var GroupsDeleteConfigNamespaceCmdGroupId string
 var GroupsDeleteConfigNamespaceCmdNamespace string
 
 func InitGroupsDeleteConfigNamespaceCmd() {
-	GroupsDeleteConfigNamespaceCmd.Flags().StringVar(&GroupsDeleteConfigNamespaceCmdGroupId, "group-id", "", TRAPI("Target group."))
+	GroupsDeleteConfigNamespaceCmd.Flags().StringVar(&GroupsDeleteConfigNamespaceCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsDeleteConfigNamespaceCmd.Flags().StringVar(&GroupsDeleteConfigNamespaceCmdNamespace, "namespace", "", TRAPI("Namespace to be deleted."))
 

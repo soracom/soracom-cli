@@ -23,9 +23,9 @@ var GadgetsRegisterCmdSerialNumber string
 var GadgetsRegisterCmdBody string
 
 func InitGadgetsRegisterCmd() {
-	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
+	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
-	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 
 	GadgetsRegisterCmd.Flags().StringVar(&GadgetsRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

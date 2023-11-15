@@ -16,9 +16,9 @@ var EmailsGetCmdEmailId string
 var EmailsGetCmdOperatorId string
 
 func InitEmailsGetCmd() {
-	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdEmailId, "email-id", "", TRAPI("email_id"))
+	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdEmailId, "email-id", "", TRAPI("Email address ID."))
 
-	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	EmailsGetCmd.Flags().StringVar(&EmailsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	EmailsGetCmd.RunE = EmailsGetCmdRunE
 

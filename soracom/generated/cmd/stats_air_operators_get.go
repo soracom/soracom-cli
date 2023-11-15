@@ -27,11 +27,11 @@ var StatsAirOperatorsGetCmdOutputJSONL bool
 func InitStatsAirOperatorsGetCmd() {
 	StatsAirOperatorsGetCmd.Flags().StringVar(&StatsAirOperatorsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsAirOperatorsGetCmd.Flags().StringVar(&StatsAirOperatorsGetCmdPeriod, "period", "", TRAPI("Unit of aggregation.- month: Aggregate by month.- day: Aggregate by day."))
+	StatsAirOperatorsGetCmd.Flags().StringVar(&StatsAirOperatorsGetCmdPeriod, "period", "", TRAPI("Unit of aggregation.- 'month': Monthly.  The 'from' and 'to' should be UNIX time (in seconds) from 3 months before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 on the first day of the month, including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the last day of the month containing the specified UNIX time (in seconds). |- 'day': Daily  The 'from' and 'to' should be UNIX time (in seconds) from 7 days before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 of the day including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the day including the specified UNIX time (in seconds). |"))
 
-	StatsAirOperatorsGetCmd.Flags().Int64Var(&StatsAirOperatorsGetCmdFrom, "from", 0, TRAPI("Start time for the aggregate data (UNIX time in seconds).- If period is set to \"month\", valid values range from 3 months ago to the current time. - If period is set to \"day\", valid values range from 6 days ago to the current time.          - The actual start time of the period is 00:00:00 on the first day of the month or day containing the specified UNIX time."))
+	StatsAirOperatorsGetCmd.Flags().Int64Var(&StatsAirOperatorsGetCmdFrom, "from", 0, TRAPI("Specify the start month/day of the period to be aggregated in UNIX time in seconds."))
 
-	StatsAirOperatorsGetCmd.Flags().Int64Var(&StatsAirOperatorsGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds).- If period is set to \"month\", valid values range from 3 months ago to the current time.- If period is set to \"day\", valid values range from 6 days ago to the current time.- The actual end time of the period is 24:00:00 on the last day of the month or day containing the specified UNIX time."))
+	StatsAirOperatorsGetCmd.Flags().Int64Var(&StatsAirOperatorsGetCmdTo, "to", 0, TRAPI("Specify the end month/day of the period to be aggregated in UNIX time in seconds."))
 
 	StatsAirOperatorsGetCmd.Flags().BoolVar(&StatsAirOperatorsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

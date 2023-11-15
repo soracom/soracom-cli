@@ -26,11 +26,11 @@ var OperatorConfigurationSetCmdExpectedVersion float64
 var OperatorConfigurationSetCmdBody string
 
 func InitOperatorConfigurationSetCmd() {
-	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration"))
+	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration."))
 
-	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	OperatorConfigurationSetCmd.Flags().Float64Var(&OperatorConfigurationSetCmdExpectedVersion, "expected-version", 0, TRAPI("This property is used to avoid update confliction.  To use it, retrieve the version by getOperatorConfigurationNamespace API, then specify the version here. If the expectedVersion is not specified, the API does not check an update confliction."))
+	OperatorConfigurationSetCmd.Flags().Float64Var(&OperatorConfigurationSetCmdExpectedVersion, "expected-version", 0, TRAPI("This property is used to avoid update confliction. To use it, retrieve the version by getOperatorConfigurationNamespace API, then specify the version here. If the expectedVersion is not specified, the API does not check an update confliction."))
 
 	OperatorConfigurationSetCmd.Flags().StringVar(&OperatorConfigurationSetCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

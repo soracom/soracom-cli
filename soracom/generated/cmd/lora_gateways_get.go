@@ -13,7 +13,7 @@ import (
 var LoraGatewaysGetCmdGatewayId string
 
 func InitLoraGatewaysGetCmd() {
-	LoraGatewaysGetCmd.Flags().StringVar(&LoraGatewaysGetCmdGatewayId, "gateway-id", "", TRAPI("Gateway ID of the target LoRa gateway."))
+	LoraGatewaysGetCmd.Flags().StringVar(&LoraGatewaysGetCmdGatewayId, "gateway-id", "", TRAPI("Gateway ID of the target LoRaWAN gateway."))
 
 	LoraGatewaysGetCmd.RunE = LoraGatewaysGetCmdRunE
 

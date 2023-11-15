@@ -16,7 +16,7 @@ var GroupsDeleteTagCmdGroupId string
 var GroupsDeleteTagCmdTagName string
 
 func InitGroupsDeleteTagCmd() {
-	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TRAPI("Target group ID."))
+	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsDeleteTagCmd.Flags().StringVar(&GroupsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 

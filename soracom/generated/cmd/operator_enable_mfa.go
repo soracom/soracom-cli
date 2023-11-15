@@ -13,7 +13,7 @@ import (
 var OperatorEnableMfaCmdOperatorId string
 
 func InitOperatorEnableMfaCmd() {
-	OperatorEnableMfaCmd.Flags().StringVar(&OperatorEnableMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorEnableMfaCmd.Flags().StringVar(&OperatorEnableMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorEnableMfaCmd.RunE = OperatorEnableMfaCmdRunE
 

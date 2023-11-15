@@ -23,9 +23,9 @@ var OperatorRevokeMfaCmdPassword string
 var OperatorRevokeMfaCmdBody string
 
 func InitOperatorRevokeMfaCmd() {
-	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdPassword, "password", "", TRAPI("Root user's password"))
+	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdPassword, "password", "", TRAPI("Root user's password."))
 
 	OperatorRevokeMfaCmd.Flags().StringVar(&OperatorRevokeMfaCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

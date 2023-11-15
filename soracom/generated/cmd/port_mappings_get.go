@@ -13,7 +13,7 @@ import (
 var PortMappingsGetCmdImsi string
 
 func InitPortMappingsGetCmd() {
-	PortMappingsGetCmd.Flags().StringVar(&PortMappingsGetCmdImsi, "imsi", "", TRAPI("Target subscriber IMSI."))
+	PortMappingsGetCmd.Flags().StringVar(&PortMappingsGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
 	PortMappingsGetCmd.RunE = PortMappingsGetCmdRunE
 

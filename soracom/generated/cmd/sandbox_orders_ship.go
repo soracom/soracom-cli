@@ -38,7 +38,7 @@ func InitSandboxOrdersShipCmd() {
 var SandboxOrdersShipCmd = &cobra.Command{
 	Use:   "ship",
 	Short: TRAPI("/sandbox/orders/ship:post:summary"),
-	Long:  TRAPI(`/sandbox/orders/ship:post:description`) + "\n\n" + createLinkToAPIReference("Order", "sandboxShipOrder"),
+	Long:  TRAPI(`/sandbox/orders/ship:post:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Order", "sandboxShipOrder"),
 }
 
 func SandboxOrdersShipCmdRunE(cmd *cobra.Command, args []string) error {

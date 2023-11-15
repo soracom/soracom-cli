@@ -25,11 +25,11 @@ var LoraNetworkSetsListGatewaysCmdPaginate bool
 var LoraNetworkSetsListGatewaysCmdOutputJSONL bool
 
 func InitLoraNetworkSetsListGatewaysCmd() {
-	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
+	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Gateway ID of the last LoRaWAN gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next LoRaWAN gateway onward."))
 
-	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
-	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa gateways to retrieve."))
+	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN gateways to retrieve."))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

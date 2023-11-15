@@ -13,7 +13,7 @@ import (
 var VolumeDiscountsConfirmCmdOrderId string
 
 func InitVolumeDiscountsConfirmCmd() {
-	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID"))
+	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID."))
 
 	VolumeDiscountsConfirmCmd.RunE = VolumeDiscountsConfirmCmdRunE
 

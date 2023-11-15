@@ -19,9 +19,9 @@ var UsersListRolesCmdUserName string
 var UsersListRolesCmdOutputJSONL bool
 
 func InitUsersListRolesCmd() {
-	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdUserName, "user-name", "", TRAPI("user_name"))
+	UsersListRolesCmd.Flags().StringVar(&UsersListRolesCmdUserName, "user-name", "", TRAPI("SAM user name."))
 
 	UsersListRolesCmd.Flags().BoolVar(&UsersListRolesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

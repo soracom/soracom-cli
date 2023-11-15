@@ -31,7 +31,7 @@ var LoraGatewaysListCmdPaginate bool
 var LoraGatewaysListCmdOutputJSONL bool
 
 func InitLoraGatewaysListCmd() {
-	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The device ID of the last device retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
+	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Gateway ID of the last LoRaWAN gateway retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next LoRaWAN gateway onward."))
 
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
 
@@ -39,7 +39,7 @@ func InitLoraGatewaysListCmd() {
 
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
-	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRa devices to retrieve."))
+	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN gateways to retrieve."))
 
 	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

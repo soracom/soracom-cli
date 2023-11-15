@@ -26,11 +26,11 @@ var UsersAttachRoleCmdUserName string
 var UsersAttachRoleCmdBody string
 
 func InitUsersAttachRoleCmd() {
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI(""))
 
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("SAM user name."))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

@@ -54,29 +54,29 @@ var QuerySubscribersCmdPaginate bool
 var QuerySubscribersCmdOutputJSONL bool
 
 func InitQuerySubscribersCmd() {
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
+	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
-	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QuerySubscribersCmd.Flags().StringVar(&QuerySubscribersCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdGroup, "group", []string{}, TRAPI("Group name to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdGroup, "group", []string{}, TRAPI("Group name to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdIccid, "iccid", []string{}, TRAPI("ICCID to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdIccid, "iccid", []string{}, TRAPI("ICCID to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdImsi, "imsi", []string{}, TRAPI("IMSI to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdImsi, "imsi", []string{}, TRAPI("IMSI to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdModuleType, "module-type", []string{}, TRAPI("Module type (e.g. 'mini', 'virtual') to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdModuleType, "module-type", []string{}, TRAPI("Module type (e.g. 'mini', 'virtual') to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdName, "name", []string{}, TRAPI("Name to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdName, "name", []string{}, TRAPI("Name to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. 'plan01s') to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdSubscription, "subscription", []string{}, TRAPI("Subscription (e.g. 'plan01s') to search."))
 
-	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
+	QuerySubscribersCmd.Flags().StringSliceVar(&QuerySubscribersCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
-	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
+	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
 
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

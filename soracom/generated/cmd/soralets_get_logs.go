@@ -32,7 +32,7 @@ func InitSoraletsGetLogsCmd() {
 
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
 
-	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSort, "sort", "desc", TRAPI("Sort order"))
+	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SoraletsGetLogsCmd.Flags().Int64Var(&SoraletsGetLogsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 

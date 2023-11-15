@@ -13,7 +13,7 @@ import (
 var EventHandlersGetCmdHandlerId string
 
 func InitEventHandlersGetCmd() {
-	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TRAPI("handler ID"))
+	EventHandlersGetCmd.Flags().StringVar(&EventHandlersGetCmdHandlerId, "handler-id", "", TRAPI("Event handler ID."))
 
 	EventHandlersGetCmd.RunE = EventHandlersGetCmdRunE
 

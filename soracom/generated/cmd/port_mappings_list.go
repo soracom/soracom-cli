@@ -22,7 +22,7 @@ var PortMappingsListCmdPaginate bool
 var PortMappingsListCmdOutputJSONL bool
 
 func InitPortMappingsListCmd() {
-	PortMappingsListCmd.Flags().StringVar(&PortMappingsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Port Mapping ID retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next group onward."))
+	PortMappingsListCmd.Flags().StringVar(&PortMappingsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Port Mapping ID retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next entry onward."))
 
 	PortMappingsListCmd.Flags().Int64Var(&PortMappingsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 

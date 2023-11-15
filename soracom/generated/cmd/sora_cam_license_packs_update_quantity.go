@@ -26,11 +26,11 @@ var SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity int64
 var SoraCamLicensePacksUpdateQuantityCmdBody string
 
 func InitSoraCamLicensePacksUpdateQuantityCmd() {
-	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdLicensePackId, "license-pack-id", "", TRAPI("ID of the license pack"))
+	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdLicensePackId, "license-pack-id", "", TRAPI("ID of the license pack."))
 
-	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity, "current-quantity", 0, TRAPI("Current license quantity of the license pack"))
+	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity, "current-quantity", 0, TRAPI("Current license quantity of the license pack."))
 
-	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity, "desired-quantity", 0, TRAPI("Desired license quantity of the license pack"))
+	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity, "desired-quantity", 0, TRAPI("Desired license quantity of the license pack."))
 
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

@@ -20,7 +20,7 @@ var GroupsPutTagsCmdGroupId string
 var GroupsPutTagsCmdBody string
 
 func InitGroupsPutTagsCmd() {
-	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TRAPI("Target group ID."))
+	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsPutTagsCmd.Flags().StringVar(&GroupsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

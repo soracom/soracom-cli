@@ -38,7 +38,7 @@ func InitSandboxSubscribersCreateCmd() {
 var SandboxSubscribersCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/sandbox/subscribers/create:post:summary"),
-	Long:  TRAPI(`/sandbox/subscribers/create:post:description`) + "\n\n" + createLinkToAPIReference("Subscriber", "sandboxCreateSubscriber"),
+	Long:  TRAPI(`/sandbox/subscribers/create:post:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Subscriber", "sandboxCreateSubscriber"),
 }
 
 func SandboxSubscribersCreateCmdRunE(cmd *cobra.Command, args []string) error {

@@ -13,7 +13,7 @@ import (
 var LoraGatewaysUnsetNetworkSetCmdGatewayId string
 
 func InitLoraGatewaysUnsetNetworkSetCmd() {
-	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
+	LoraGatewaysUnsetNetworkSetCmd.Flags().StringVar(&LoraGatewaysUnsetNetworkSetCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRaWAN gateway."))
 
 	LoraGatewaysUnsetNetworkSetCmd.RunE = LoraGatewaysUnsetNetworkSetCmdRunE
 

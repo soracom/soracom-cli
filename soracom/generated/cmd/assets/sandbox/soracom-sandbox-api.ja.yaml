@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: 20230703-214017
+  version: 20230923-005714
 servers:
 - url: https://api-sandbox.soracom.io/v1
 paths:
@@ -31,7 +31,7 @@ paths:
         api_token: []
       summary: クーポンを作成する
       tags:
-      - Coupon
+      - 'API Sandbox: Coupon'
       x-soracom-cli:
       - sandbox coupons create
   /sandbox/init:
@@ -58,7 +58,7 @@ paths:
           description: メールアドレスが不正もしくは AuthKeyId, AuthKey が誤っている。
       summary: Operator を初期化する
       tags:
-      - Operator
+      - 'API Sandbox: Operator'
       x-soracom-cli:
       - sandbox init
   /sandbox/operators/{operator_id}:
@@ -82,7 +82,7 @@ paths:
         api_token: []
       summary: Operator を削除する
       tags:
-      - Operator
+      - 'API Sandbox: Operator'
       x-soracom-cli:
       - sandbox operators delete
   /sandbox/operators/token/{email}:
@@ -115,7 +115,7 @@ paths:
           description: メールアドレス、AuthKeyId、AuthKey のいずれかが誤っている。
       summary: サインアップトークンを取得する
       tags:
-      - Operator
+      - 'API Sandbox: Operator'
       x-soracom-cli:
       - sandbox operators get-signup-token
   /sandbox/orders/ship:
@@ -139,7 +139,7 @@ paths:
         api_token: []
       summary: Order を出荷済状態にする
       tags:
-      - Order
+      - 'API Sandbox: Order'
       x-soracom-cli:
       - sandbox orders ship
   /sandbox/stats/air/subscribers/{imsi}:
@@ -170,7 +170,7 @@ paths:
         api_token: []
       summary: テスト用に Air の統計情報を登録する
       tags:
-      - Stats
+      - 'API Sandbox: Stats'
       x-soracom-cli:
       - sandbox stats air insert
   /sandbox/stats/beam/subscribers/{imsi}:
@@ -201,7 +201,7 @@ paths:
         api_token: []
       summary: テスト用に Beam の統計情報を登録する
       tags:
-      - Stats
+      - 'API Sandbox: Stats'
       x-soracom-cli:
       - sandbox stats beam insert
   /sandbox/subscribers/create:
@@ -235,7 +235,7 @@ paths:
         api_token: []
       summary: Subscriber を作成する
       tags:
-      - Subscriber
+      - 'API Sandbox: Subscriber'
       x-soracom-cli:
       - sandbox subscribers create
 components:
@@ -423,18 +423,24 @@ components:
     sandboxInsertAirStatsRequest:
       properties:
         dataTrafficStatsMap:
-          properties:
-            s1.fast:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.minimum:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.slow:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.standard:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
+          additionalProperties:
+            $ref: '#/components/schemas/sandboxDataTrafficStats'
+          description: |
+            速度クラスごとのテスト用データ (上り下りのデータ通信量、タイムスタンプ付き) です。キーに速度クラスを表す文字列を指定します。
+
+            - `s1.minimum`
+            - `s1.slow`
+            - `s1.standard`
+            - `s1.fast`
+            - `s1.4xfast`
+            - `s1.8xfast`
+            - `u1.standard`
+            - `u1.slow`
+            - `t1.standard`
+            - `arc.standard`
           type: object
         unixtime:
-          description: UNIX 時間（ミリ秒単位）
+          description: UNIX 時間 (秒)。
           format: int64
           type: integer
       type: object
@@ -466,7 +472,7 @@ components:
               $ref: '#/components/schemas/sandboxBeamCounts'
           type: object
         unixtime:
-          description: UNIX 時間（ミリ秒単位）
+          description: UNIX 時間 (秒)。
           format: int64
           type: integer
       type: object
@@ -481,4 +487,8 @@ components:
       - operatorId
       type: object
 tags:
-- name: Coupon
+- name: 'API Sandbox: Coupon'
+- name: 'API Sandbox: Operator'
+- name: 'API Sandbox: Order'
+- name: 'API Sandbox: Stats'
+- name: 'API Sandbox: Subscriber'

@@ -9,7 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ProductsListCmdCampaignCode holds value of 'campaign_code' option
+var ProductsListCmdCampaignCode string
+
 func InitProductsListCmd() {
+	ProductsListCmd.Flags().StringVar(&ProductsListCmdCampaignCode, "campaign-code", "", TRAPI(""))
 
 	ProductsListCmd.RunE = ProductsListCmdRunE
 
@@ -85,6 +89,10 @@ func buildPathForProductsListCmd(path string) string {
 
 func buildQueryForProductsListCmd() url.Values {
 	result := url.Values{}
+
+	if ProductsListCmdCampaignCode != "" {
+		result.Add("campaign_code", ProductsListCmdCampaignCode)
+	}
 
 	return result
 }
