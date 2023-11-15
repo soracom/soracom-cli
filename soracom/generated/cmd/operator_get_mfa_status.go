@@ -13,7 +13,7 @@ import (
 var OperatorGetMfaStatusCmdOperatorId string
 
 func InitOperatorGetMfaStatusCmd() {
-	OperatorGetMfaStatusCmd.Flags().StringVar(&OperatorGetMfaStatusCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorGetMfaStatusCmd.Flags().StringVar(&OperatorGetMfaStatusCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorGetMfaStatusCmd.RunE = OperatorGetMfaStatusCmdRunE
 

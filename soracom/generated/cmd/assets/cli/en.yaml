@@ -3,6 +3,9 @@ cli:
   audit-logs:
     summary: Retrieve audit logs.
     description: Retrieve audit logs.
+    api:
+      summary: Retrieve audit logs for API.
+      description: Retrieve audit logs for API.
     napter:
       summary: Retrieve audit logs for Napter.
       description: Retrieve audit logs for Napter.
@@ -12,6 +15,9 @@ cli:
   bills:
     summary: Show or export billing info.
     description: Show billing info for specified period, or export the billing info to a file
+    summaries:
+      summary: Get summarized billing information.
+      description: Get summarized billing information.
   cell-locations:
     summary: Retrieves cell tower location information.
     description: Retrieves cell tower location information.
@@ -34,6 +40,7 @@ cli:
   configure:
     summary: Show, create or update configurations (profiles).
     description: Show, create or update configurations (profiles).
+    overwrite: Overwrites profile information even if it already exists.
     profile:
       permission_is_too_open: "Permissions for the file '%s' which contains your credentials are too open.\nIt is required that your credential files are NOT accessible by others."
       prompt: "--- SORACOM CLI setup ---\nThis will create a directory %s if it does not exist yet and place '%s.json' in it."
@@ -172,9 +179,15 @@ cli:
     auth-keys:
       summary: List, create or delete operator's AuthKeys.
       description: List, create or delete operator's AuthKeys.
+    configuration:
+      summary: List, create or delete operator's configuration.
+      description: List, create or delete operator's configuration.
   orders:
     summary: List, create or cancel orders.
     description: List, create or cancel orders.
+    resource-initial-setting:
+      summary: Manage initial settings for ordered products.
+      description: Manage initial settings for ordered products.
   payer-information:
     summary: Get or edit payer information.
     description: Get or edit payer information.
@@ -254,12 +267,21 @@ cli:
     devices:
       summary: Manage SoraCam devices.
       description: Manage SoraCam devices.
+      atomcam:
+        summary: Performs operations specific to the ATOM Cam series camera devices.
+        description: Performs operations specific to the ATOM Cam series camera devices.
+        settings:
+          summary: Manage settings specific to the ATOM Cam series camera devices.  
+          description: Manage settings specific to the ATOM Cam series camera devices.  
       events:
         summary: Retrieve event history for SoraCam devices.
         description: Retrieve event history for SoraCam devices.
       images:
         summary: Manage image exports from SoraCam devices.
         description: Manage image exports from SoraCam devices.
+      recordings-and-events:
+        summary: Obtains recording status of cloud continuous recording and event occurrences for SoraCam devices.
+        description: Obtains recording status of cloud continuous recording and event occurrences for SoraCam devices.
       videos:
         summary: Manage video exports from SoraCam devices.
         description: Manage video exports from SoraCam devices.
@@ -272,15 +294,33 @@ cli:
     air:
       summary: Show or export Air statistics.
       description: Show or export Air statistics.
+      groups:
+        summary: Get data usage history aggregating all IoT SIMs belonging to the specified group.
+        description: Get data volume history aggregating all IoT SIMs belonging to the specified group.
+      operators:
+        summary: Get data usage history aggregated across all IoT SIMs owned by the specified operator.
+        description: Get data usage history aggregated across all IoT SIMs owned by the specified operator.
       sims:
         summary: Show or export Air statistics by SIM ID.
         description: Show or export Air statistics by SIM ID.
     beam:
       summary: Show or export Beam statistics.
       description: Show or export Beam statistics.
+    funk:
+      summary: Perform operations related to SORACOM Funk usage history.
+      description: Perform operations related to SORACOM Funk usage history.
+    funnel:
+      summary: Perform operations related to SORACOM Funnel usage history.
+      description: Perform operations related to SORACOM Funnel usage history.
     harvest:
       summary: Get usage report for Harvest.
       description: Get usage report for Harvest.
+      operators:
+        summary: Perform per-operator operations on SORACOM Harvest Data usage statistics.
+        description: Perform per-operator operations on SORACOM Harvest Data usage statistics.
+      subscribers:
+        summary: Get SORACOM Harvest Data usage history for the subscriber specified by IMSI.
+        description: Get SORACOM Harvest Data usage history for the subscriber specified by IMSI.
     napter:
       summary: Get usage report for Napter.
       description: Get usage report for Napter.

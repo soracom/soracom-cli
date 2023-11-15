@@ -16,9 +16,9 @@ var OperatorAddCoverageTypeCmdCoverageType string
 var OperatorAddCoverageTypeCmdOperatorId string
 
 func InitOperatorAddCoverageTypeCmd() {
-	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdCoverageType, "coverage-type", "", TRAPI("coverage_type"))
+	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdCoverageType, "coverage-type", "", TRAPI("Coverage type."))
 
-	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorAddCoverageTypeCmd.Flags().StringVar(&OperatorAddCoverageTypeCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorAddCoverageTypeCmd.RunE = OperatorAddCoverageTypeCmdRunE
 

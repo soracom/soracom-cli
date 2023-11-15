@@ -24,7 +24,7 @@ func InitVpgEnableSimBasedRoutingCmd() {
 var VpgEnableSimBasedRoutingCmd = &cobra.Command{
 	Use:   "enable-sim-based-routing",
 	Short: TRAPI("/virtual_private_gateways/{vpg_id}/gate/routing/static/sims/enable:post:summary"),
-	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/routing/static/sims/enable:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "enableSimBasedRouging"),
+	Long:  TRAPI(`/virtual_private_gateways/{vpg_id}/gate/routing/static/sims/enable:post:description`) + "\n\n" + createLinkToAPIReference("VirtualPrivateGateway", "enableSimBasedRouting"),
 }
 
 func VpgEnableSimBasedRoutingCmdRunE(cmd *cobra.Command, args []string) error {

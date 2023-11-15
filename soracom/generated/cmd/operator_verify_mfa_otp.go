@@ -25,7 +25,7 @@ var OperatorVerifyMfaOtpCmdBody string
 func InitOperatorVerifyMfaOtpCmd() {
 	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdMfaOTPCode, "mfa-otpcode", "", TRAPI(""))
 
-	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorVerifyMfaOtpCmd.Flags().StringVar(&OperatorVerifyMfaOtpCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

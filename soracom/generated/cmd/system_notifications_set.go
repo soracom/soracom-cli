@@ -33,7 +33,7 @@ func InitSystemNotificationsSetCmd() {
 
 	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdPassword, "password", "", TRAPI("Password of the operator. This is necessary when type is primary."))
 
-	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdType, "type", "", TRAPI("system notification type"))
+	SystemNotificationsSetCmd.Flags().StringVar(&SystemNotificationsSetCmdType, "type", "", TRAPI("Email address type."))
 
 	SystemNotificationsSetCmd.Flags().StringSliceVar(&SystemNotificationsSetCmdEmailIdList, "email-id-list", []string{}, TRAPI(""))
 

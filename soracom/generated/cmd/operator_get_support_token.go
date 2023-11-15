@@ -13,7 +13,7 @@ import (
 var OperatorGetSupportTokenCmdOperatorId string
 
 func InitOperatorGetSupportTokenCmd() {
-	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorGetSupportTokenCmd.Flags().StringVar(&OperatorGetSupportTokenCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorGetSupportTokenCmd.RunE = OperatorGetSupportTokenCmdRunE
 

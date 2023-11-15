@@ -13,7 +13,7 @@ import (
 var VolumeDiscountsGetCmdContractId string
 
 func InitVolumeDiscountsGetCmd() {
-	VolumeDiscountsGetCmd.Flags().StringVar(&VolumeDiscountsGetCmdContractId, "contract-id", "", TRAPI("contract_id"))
+	VolumeDiscountsGetCmd.Flags().StringVar(&VolumeDiscountsGetCmdContractId, "contract-id", "", TRAPI("Contract ID."))
 
 	VolumeDiscountsGetCmd.RunE = VolumeDiscountsGetCmdRunE
 

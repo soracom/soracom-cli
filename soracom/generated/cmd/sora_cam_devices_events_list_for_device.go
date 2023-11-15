@@ -34,7 +34,7 @@ var SoraCamDevicesEventsListForDeviceCmdPaginate bool
 var SoraCamDevicesEventsListForDeviceCmdOutputJSONL bool
 
 func InitSoraCamDevicesEventsListForDeviceCmd() {
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("ID of the target SoraCam device."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceEventsForDevice request. By specifying this parameter, you can continue to retrieve the list from the last request."))
 

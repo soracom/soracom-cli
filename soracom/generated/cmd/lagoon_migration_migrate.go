@@ -20,7 +20,7 @@ var LagoonMigrationMigrateCmdDashboardIds []string
 var LagoonMigrationMigrateCmdBody string
 
 func InitLagoonMigrationMigrateCmd() {
-	LagoonMigrationMigrateCmd.Flags().StringSliceVar(&LagoonMigrationMigrateCmdDashboardIds, "dashboard-ids", []string{}, TRAPI("A list of dashboard IDs to migrate"))
+	LagoonMigrationMigrateCmd.Flags().StringSliceVar(&LagoonMigrationMigrateCmdDashboardIds, "dashboard-ids", []string{}, TRAPI("A list of dashboard IDs to migrate."))
 
 	LagoonMigrationMigrateCmd.Flags().StringVar(&LagoonMigrationMigrateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

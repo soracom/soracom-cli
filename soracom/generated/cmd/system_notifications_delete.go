@@ -16,9 +16,9 @@ var SystemNotificationsDeleteCmdOperatorId string
 var SystemNotificationsDeleteCmdType string
 
 func InitSystemNotificationsDeleteCmd() {
-	SystemNotificationsDeleteCmd.Flags().StringVar(&SystemNotificationsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	SystemNotificationsDeleteCmd.Flags().StringVar(&SystemNotificationsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	SystemNotificationsDeleteCmd.Flags().StringVar(&SystemNotificationsDeleteCmdType, "type", "", TRAPI("system notification type"))
+	SystemNotificationsDeleteCmd.Flags().StringVar(&SystemNotificationsDeleteCmdType, "type", "", TRAPI("Email address type."))
 
 	SystemNotificationsDeleteCmd.RunE = SystemNotificationsDeleteCmdRunE
 

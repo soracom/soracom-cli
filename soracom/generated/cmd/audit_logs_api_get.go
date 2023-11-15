@@ -31,7 +31,7 @@ var AuditLogsApiGetCmdPaginate bool
 var AuditLogsApiGetCmdOutputJSONL bool
 
 func InitAuditLogsApiGetCmd() {
-	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdApiKind, "api-kind", "", TRAPI("Filter item for audit log retrieval by API kind."))
+	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdApiKind, "api-kind", "", TRAPI("Filter item for audit log retrieval by API kind (e.g. '/v1/auth')."))
 
 	AuditLogsApiGetCmd.Flags().StringVar(&AuditLogsApiGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'requestedTimeEpochMs' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 

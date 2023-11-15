@@ -30,7 +30,7 @@ func InitLagoonUsersUpdatePasswordCmd() {
 
 	LagoonUsersUpdatePasswordCmd.Flags().StringVar(&LagoonUsersUpdatePasswordCmdOldPassword, "old-password", "", TRAPI(""))
 
-	LagoonUsersUpdatePasswordCmd.Flags().Int64Var(&LagoonUsersUpdatePasswordCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
+	LagoonUsersUpdatePasswordCmd.Flags().Int64Var(&LagoonUsersUpdatePasswordCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user."))
 
 	LagoonUsersUpdatePasswordCmd.Flags().StringVar(&LagoonUsersUpdatePasswordCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

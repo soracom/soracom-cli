@@ -59,7 +59,7 @@ func InitOperatorCreateIndividualInformationCmd() {
 
 	OperatorCreateIndividualInformationCmd.Flags().StringVar(&OperatorCreateIndividualInformationCmdFullName, "full-name", "", TRAPI(""))
 
-	OperatorCreateIndividualInformationCmd.Flags().StringVar(&OperatorCreateIndividualInformationCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorCreateIndividualInformationCmd.Flags().StringVar(&OperatorCreateIndividualInformationCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorCreateIndividualInformationCmd.Flags().StringVar(&OperatorCreateIndividualInformationCmdPhoneNumber, "phone-number", "", TRAPI(""))
 

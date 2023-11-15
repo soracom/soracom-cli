@@ -31,19 +31,19 @@ var CellLocationsGetCmdMnc string
 var CellLocationsGetCmdTac string
 
 func InitCellLocationsGetCmd() {
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdCid, "cid", "", TRAPI("CID - Cell ID (for 3G)"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdCid, "cid", "", TRAPI("CID - Cell ID (for 3G)."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEci, "eci", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either 'ecid' or 'eci'"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEci, "eci", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either 'ecid' or 'eci'. The result is the same regardless of which value is specified."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEcid, "ecid", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either 'ecid' or 'eci'"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdEcid, "ecid", "", TRAPI("ECID - Enhanced Cell ID (for 4G) - specify either 'ecid' or 'eci'. The result is the same regardless of which value is specified."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdLac, "lac", "", TRAPI("LAC - Location Area Code (for 3G)"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdLac, "lac", "", TRAPI("LAC - Location Area Code (for 3G)."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdMcc, "mcc", "", TRAPI("MCC - Mobile Country Code"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdMcc, "mcc", "", TRAPI("MCC - Mobile Country Code."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdMnc, "mnc", "", TRAPI("MNC - Mobile Network Code"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdMnc, "mnc", "", TRAPI("MNC - Mobile Network Code."))
 
-	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdTac, "tac", "", TRAPI("TAC - Tracking Area Code (for 4G)"))
+	CellLocationsGetCmd.Flags().StringVar(&CellLocationsGetCmdTac, "tac", "", TRAPI("TAC - Tracking Area Code (for 4G)."))
 
 	CellLocationsGetCmd.RunE = CellLocationsGetCmdRunE
 

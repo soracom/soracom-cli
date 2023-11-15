@@ -13,7 +13,7 @@ import (
 var ResourceSummariesGetCmdResourceSummaryType string
 
 func InitResourceSummariesGetCmd() {
-	ResourceSummariesGetCmd.Flags().StringVar(&ResourceSummariesGetCmdResourceSummaryType, "resource-summary-type", "", TRAPI("The type of the resource summary.- 'simsPerStatus': The number of IoT SIMs per status"))
+	ResourceSummariesGetCmd.Flags().StringVar(&ResourceSummariesGetCmdResourceSummaryType, "resource-summary-type", "", TRAPI("The type of the resource summary.- 'simsPerStatus': The number of IoT SIMs per status."))
 
 	ResourceSummariesGetCmd.RunE = ResourceSummariesGetCmdRunE
 

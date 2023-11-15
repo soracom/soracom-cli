@@ -13,7 +13,7 @@ import (
 var LoraNetworkSetsDeleteCmdNsId string
 
 func InitLoraNetworkSetsDeleteCmd() {
-	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsDeleteCmd.Flags().StringVar(&LoraNetworkSetsDeleteCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsDeleteCmd.RunE = LoraNetworkSetsDeleteCmdRunE
 

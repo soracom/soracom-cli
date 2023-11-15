@@ -34,17 +34,17 @@ var GadgetsListCmdPaginate bool
 var GadgetsListCmdOutputJSONL bool
 
 func InitGadgetsListCmd() {
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ({product_id}/{serial_number}) of the last gadget retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next device onward."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ('{product_id}/{serial_number}') of the last gadget retrieved on the previous page in URL encoding (percent encoding).By specifying this parameter, you can continue to retrieve the list from the next Gadget API compatible device onward.The value of the 'last_evaluated_key' of 'rel=next' returned in the 'link' header when the API is called is expected to be specified in the next call, but any ID ('{productId}/{serialNumber}') can be specified."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdProductId, "product-id", "", TRAPI("Product ID for filtering the search."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device for filtering the search.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search (exact match)."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search. The search is always an exact match, regardless of the setting of 'tag_value_match_mode'."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValue, "tag-value", "", TRAPI("Tag search string for filtering the search. Required when 'tag_name' has been specified."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValue, "tag-value", "", TRAPI("Specifies a tag value to search for in a URL-encoded (percent-encoded) string. Required when 'tag_name' has been specified."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode.- 'exact': exact match.- 'prefix': prefix match."))
 
-	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of gadgets to retrieve."))
+	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of Gadget API compatible devices data to retrieve."))
 
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

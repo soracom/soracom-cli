@@ -13,7 +13,7 @@ import (
 var GroupsDeleteCmdGroupId string
 
 func InitGroupsDeleteCmd() {
-	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TRAPI("Target group ID."))
+	GroupsDeleteCmd.Flags().StringVar(&GroupsDeleteCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsDeleteCmd.RunE = GroupsDeleteCmdRunE
 

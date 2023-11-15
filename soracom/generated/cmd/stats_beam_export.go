@@ -36,11 +36,11 @@ func InitStatsBeamExportCmd() {
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
 
-	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TRAPI("Degree of detail of history.- 'month': Monthly- 'day': Daily- 'minutes': Every minute"))
+	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdPeriod, "period", "", TRAPI("Unit of aggregation.- 'month': Aggregate by month.  The 'from' and 'to' should be UNIX time (in seconds) from 18 months before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 on the first day of the month, including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the last day of the month containing the specified UNIX time (in seconds). |- 'day': Aggregate by day.  The 'from' and 'to' should be UNIX time (in seconds) from 18 months before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 of the day including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the day including the specified UNIX time (in seconds). |- 'minutes': Aggregate by approximately every 5 minutes.  The 'from' and 'to' must be between 32 days before the current time and the UNIX time (in seconds) of the current time. The actual period to be aggregated is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual Start Time | Start time of approximately 5 minutes including the specified UNIX time (seconds). |  | Actual End Time | End time of approximately 5 minutes including the specified UNIX time (seconds). |"))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TRAPI("Start date and time for the aggregate data (UNIX time in seconds)"))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdFrom, "from", 0, TRAPI("Specify the start month/day/minute of the period to be aggregated in UNIX time in seconds."))
 
-	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI("End date and time of the period covered (UNIX time in seconds)"))
+	StatsBeamExportCmd.Flags().Int64Var(&StatsBeamExportCmdTo, "to", 0, TRAPI("Specify the end month/day/minute of the period to be aggregated in UNIX time in seconds."))
 
 	StatsBeamExportCmd.Flags().StringVar(&StatsBeamExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

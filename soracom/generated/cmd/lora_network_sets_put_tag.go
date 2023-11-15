@@ -20,7 +20,7 @@ var LoraNetworkSetsPutTagCmdNsId string
 var LoraNetworkSetsPutTagCmdBody string
 
 func InitLoraNetworkSetsPutTagCmd() {
-	LoraNetworkSetsPutTagCmd.Flags().StringVar(&LoraNetworkSetsPutTagCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsPutTagCmd.Flags().StringVar(&LoraNetworkSetsPutTagCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsPutTagCmd.Flags().StringVar(&LoraNetworkSetsPutTagCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

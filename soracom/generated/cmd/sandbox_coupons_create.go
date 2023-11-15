@@ -43,7 +43,7 @@ func InitSandboxCouponsCreateCmd() {
 var SandboxCouponsCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: TRAPI("/sandbox/coupons/create:post:summary"),
-	Long:  TRAPI(`/sandbox/coupons/create:post:description`) + "\n\n" + createLinkToAPIReference("Coupon", "sandboxCreateCoupon"),
+	Long:  TRAPI(`/sandbox/coupons/create:post:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Coupon", "sandboxCreateCoupon"),
 }
 
 func SandboxCouponsCreateCmdRunE(cmd *cobra.Command, args []string) error {

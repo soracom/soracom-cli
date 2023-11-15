@@ -20,7 +20,7 @@ var LoraGatewaysPutTagsCmdGatewayId string
 var LoraGatewaysPutTagsCmdBody string
 
 func InitLoraGatewaysPutTagsCmd() {
-	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
+	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRaWAN gateway."))
 
 	LoraGatewaysPutTagsCmd.Flags().StringVar(&LoraGatewaysPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

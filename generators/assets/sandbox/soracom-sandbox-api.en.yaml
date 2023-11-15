@@ -2,26 +2,12 @@ openapi: 3.0.0
 info:
   description: SORACOM SANDBOX API v1
   title: SORACOM SANDBOX API
-  version: 20230507-231147
+  version: 20230923-005714
 servers:
-  - url: 'https://api-sandbox.soracom.io/v1'
+- url: https://api-sandbox.soracom.io/v1
 paths:
   /sandbox/coupons/create:
     post:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/sandboxCreateCouponResponse'
-          description: OK
-        '400':
-          description: Request is not correct.
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Coupon
       description: Creates a coupon.
       operationId: sandboxCreateCoupon
       requestBody:
@@ -31,29 +17,31 @@ paths:
               $ref: '#/components/schemas/sandboxCreateCouponRequest'
         description: request
         required: true
-      summary: Creates a coupon
-      x-soracom-cli:
-        - sandbox coupons create
-  /sandbox/init:
-    post:
       responses:
-        '201':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sandboxAuthResponse'
-          description: Successfully created a sandbox operator.
-        '400':
-          description: 'Email address, AuthKeyId, or AuthKey is not correct.'
+                $ref: '#/components/schemas/sandboxCreateCouponResponse'
+          description: OK
+        "400":
+          description: Request is not correct.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Creates a coupon
       tags:
-        - Operator
-      description: >-
-        Performs complex signup process at once, including registering dummy
-        payment method. Specify `email` and `password` for an operator which
-        will be created on sandbox, `authKeyId` and `authKey` for a real
-        operator on the production environment. An API Key and an API Token will
-        be included in the response if successful. Use the API Key and the API
-        Token to requests afterwards.
+      - 'API Sandbox: Coupon'
+      x-soracom-cli:
+      - sandbox coupons create
+  /sandbox/init:
+    post:
+      description: Performs complex signup process at once, including registering
+        dummy payment method. Specify `email` and `password` for an operator which
+        will be created on sandbox, `authKeyId` and `authKey` for a real operator
+        on the production environment. An API Key and an API Token will be included
+        in the response if successful. Use the API Key and the API Token to requests
+        afterwards.
       operationId: sandboxInitializeOperator
       requestBody:
         content:
@@ -62,82 +50,81 @@ paths:
               $ref: '#/components/schemas/sandboxInitRequest'
         description: request
         required: true
-      summary: Creates an operator account.
-      x-soracom-cli:
-        - sandbox init
-  '/sandbox/operators/token/{email}':
-    post:
-      parameters:
-        - description: email
-          in: path
-          name: email
-          required: true
-          schema:
-            type: string
       responses:
-        '200':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/sandboxGetSignupTokenResponse'
-          description: Successfully retrieved signup token.
-        '400':
-          description: 'Email address, AuthKeyId, or AuthKey is not correct.'
+                $ref: '#/components/schemas/sandboxAuthResponse'
+          description: Successfully created a sandbox operator.
+        "400":
+          description: Email address, AuthKeyId, or AuthKey is not correct.
+      summary: Creates an operator account
       tags:
-        - Operator
-      description: >-
-        Retrieves a 'signup token' for registration confirmation. Please specify
-        a pair of AuthKeyId and AuthKey of a SAM user on the production
-        environment to check if the caller has a valid account on it.
+      - 'API Sandbox: Operator'
+      x-soracom-cli:
+      - sandbox init
+  /sandbox/operators/{operator_id}:
+    delete:
+      description: Deletes the specified operator.
+      operationId: sandboxDeleteOperator
+      parameters:
+      - description: Operator ID
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Operator does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Deletes an operator
+      tags:
+      - 'API Sandbox: Operator'
+      x-soracom-cli:
+      - sandbox operators delete
+  /sandbox/operators/token/{email}:
+    post:
+      description: Retrieves a 'signup token' for registration confirmation. Please
+        specify a pair of AuthKeyId and AuthKey of a SAM user on the production environment
+        to check if the caller has a valid account on it.
       operationId: sandboxGetSignupToken
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/sandboxGetSignupTokenRequest'
-        description: Authentication request
+        description: Authentication request.
         required: true
-      summary: Gets a signup token
-      x-soracom-cli:
-        - sandbox operators get-signup-token
-  '/sandbox/operators/{operator_id}':
-    delete:
-      parameters:
-        - description: Operator ID
-          in: path
-          name: operator_id
-          required: true
-          schema:
-            type: string
       responses:
-        '200':
-          description: OK
-        '400':
-          description: Operator does not exist.
-      security:
-        - api_key: []
-          api_token: []
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxGetSignupTokenResponse'
+          description: Successfully retrieved signup token.
+        "400":
+          description: Email address, AuthKeyId, or AuthKey is not correct.
+      summary: Gets a signup token
       tags:
-        - Operator
-      description: Deletes the specified operator.
-      operationId: sandboxDeleteOperator
-      summary: Deletes an operator
+      - 'API Sandbox: Operator'
       x-soracom-cli:
-        - sandbox operators delete
+      - sandbox operators get-signup-token
   /sandbox/orders/ship:
     post:
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Order does not exist.
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Order
-      description: >-
-        Changes the shipping status to 'shipped' and gets ready the subscribers
+      description: Changes the shipping status to 'shipped' and gets ready the subscribers
         included in the order.
       operationId: sandboxShipOrder
       requestBody:
@@ -147,33 +134,32 @@ paths:
               $ref: '#/components/schemas/sandboxShipOrderRequest'
         description: Shipping request
         required: true
-      summary: Ships the specified order.
-      x-soracom-cli:
-        - sandbox orders ship
-  '/sandbox/stats/air/subscribers/{imsi}':
-    post:
-      parameters:
-        - description: IMSI
-          in: path
-          name: imsi
-          required: true
-          schema:
-            type: string
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
-          description: Data with the same timestamp already exists.
+        "400":
+          description: Order does not exist.
       security:
-        - api_key: []
-          api_token: []
+      - api_key: []
+        api_token: []
+      summary: Ships the specified order
       tags:
-        - Stats
-      description: >-
-        Populates Air stats for testing purpose. Inserted data are going to be
-        automatically accumulated. It is not possible to put the data multiple
+      - 'API Sandbox: Order'
+      x-soracom-cli:
+      - sandbox orders ship
+  /sandbox/stats/air/subscribers/{imsi}:
+    post:
+      description: Populates Air stats for testing purpose. Inserted data are going
+        to be automatically accumulated. It is not possible to put the data multiple
         times with the same timestamp.
       operationId: sandboxInsertAirStats
+      parameters:
+      - description: IMSI.
+        in: path
+        name: imsi
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -181,33 +167,32 @@ paths:
               $ref: '#/components/schemas/sandboxInsertAirStatsRequest'
         description: The Air stats (up/down bytes of data) with specified timestamp.
         required: true
-      summary: Inserts Air stats for testing
-      x-soracom-cli:
-        - sandbox stats air insert
-  '/sandbox/stats/beam/subscribers/{imsi}':
-    post:
-      parameters:
-        - description: IMSI
-          in: path
-          name: imsi
-          required: true
-          schema:
-            type: string
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
+        "400":
           description: Data with the same timestamp already exists.
       security:
-        - api_key: []
-          api_token: []
+      - api_key: []
+        api_token: []
+      summary: Inserts Air stats for testing
       tags:
-        - Stats
-      description: >-
-        Populates Beam stats for testing purpose. Inserted data are going to be
-        automatically accumulated. It is not possible to put the data multiple
+      - 'API Sandbox: Stats'
+      x-soracom-cli:
+      - sandbox stats air insert
+  /sandbox/stats/beam/subscribers/{imsi}:
+    post:
+      description: Populates Beam stats for testing purpose. Inserted data are going
+        to be automatically accumulated. It is not possible to put the data multiple
         times with the same timestamp.
       operationId: sandboxInsertBeamStats
+      parameters:
+      - description: IMSI.
+        in: path
+        name: imsi
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -215,43 +200,53 @@ paths:
               $ref: '#/components/schemas/sandboxInsertBeamStatsRequest'
         description: The Beam stats (number of requests) with specified timestamp.
         required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Data with the same timestamp already exists.
+      security:
+      - api_key: []
+        api_token: []
       summary: Inserts Beam stats for testing
+      tags:
+      - 'API Sandbox: Stats'
       x-soracom-cli:
-        - sandbox stats beam insert
+      - sandbox stats beam insert
   /sandbox/subscribers/create:
     post:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/sandboxCreateSubscriberResponse'
-          description: OK
-      security:
-        - api_key: []
-          api_token: []
-      tags:
-        - Subscriber
       description: Creates a new subscriber for sandbox.
       operationId: sandboxCreateSubscriber
       requestBody:
         content:
           application/json:
             examples:
-              Creating "plan01s":
-                value:
-                  subscription: plan01s
               Creating "plan-D D-300MB":
                 value:
                   bundle:
                   - D-300MB
                   subscription: plan-D
+              Creating "plan01s":
+                value:
+                  subscription: plan01s
             schema:
               $ref: '#/components/schemas/sandboxCreateSubscriberRequest'
         description: Create request
-      summary: Creates a new subscriber for sandbox.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sandboxCreateSubscriberResponse'
+          description: OK
+      security:
+      - api_key: []
+        api_token: []
+      summary: Creates a new subscriber for sandbox
+      tags:
+      - 'API Sandbox: Subscriber'
       x-soracom-cli:
-        - sandbox subscribers create
+      - sandbox subscribers create
 components:
   schemas:
     TagSet:
@@ -283,9 +278,9 @@ components:
           type: integer
         applicableBillItemName:
           enum:
-            - dailyDataTrafficChargeTotal
-            - dailyChargeTotal
-            - dailySoracomBeamRequestChargeTotal
+          - dailyDataTrafficChargeTotal
+          - dailyChargeTotal
+          - dailySoracomBeamRequestChargeTotal
           example: dailyDataTrafficChargeTotal
           type: string
         expiryYearMonth:
@@ -295,29 +290,28 @@ components:
     sandboxCreateCouponResponse:
       properties:
         amount:
-          description: Coupon amount
+          description: Coupon amount.
           format: double
           type: number
         balance:
-          description: Balance
+          description: Balance.
           format: double
           type: number
         billItemName:
-          description: Bill Item
+          description: Bill Item.
           type: string
         couponCode:
-          description: Coupon code
+          description: Coupon code.
           type: string
         expiryYearMonth:
-          description: Year and month of expiration
+          description: Year and month of expiration.
           format: yyyyMM
           type: string
       type: object
     sandboxCreateSubscriberRequest:
       properties:
         bundles:
-          description: "Bundle. If necessary, specify one of:"
-          type: array
+          description: 'Bundle. If necessary, specify one of:'
           items:
             enum:
             - X3-5MB
@@ -327,8 +321,9 @@ components:
             - DU-100GB
             - K2-300MB
             type: string
+          type: array
         subscription:
-          description: "Subscription. Specify one of:"
+          description: 'Subscription. Specify one of:'
           enum:
           - plan01s
           - plan01s-low_data_volume
@@ -343,8 +338,6 @@ components:
       type: object
     sandboxCreateSubscriberResponse:
       properties:
-        tags:
-          $ref: '#/components/schemas/TagSet'
         apn:
           type: string
         createdAt:
@@ -374,6 +367,8 @@ components:
           type: string
         subscription:
           type: string
+        tags:
+          $ref: '#/components/schemas/TagSet'
       type: object
     sandboxDataTrafficStats:
       properties:
@@ -402,7 +397,7 @@ components:
         token:
           type: string
       required:
-        - token
+      - token
       type: object
     sandboxInitRequest:
       properties:
@@ -429,26 +424,32 @@ components:
           default: true
           type: boolean
       required:
-        - email
-        - password
-        - authKeyId
-        - authKey
+      - email
+      - password
+      - authKeyId
+      - authKey
       type: object
     sandboxInsertAirStatsRequest:
       properties:
         dataTrafficStatsMap:
-          properties:
-            s1.fast:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.minimum:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.slow:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
-            s1.standard:
-              $ref: '#/components/schemas/sandboxDataTrafficStats'
+          additionalProperties:
+            $ref: '#/components/schemas/sandboxDataTrafficStats'
+          description: |
+            Test data for each speed class, including data for both upload and download, with timestamps. Specify a string representing the speed class as a key.
+
+            - `s1.minimum`
+            - `s1.slow`
+            - `s1.standard`
+            - `s1.fast`
+            - `s1.4xfast`
+            - `s1.8xfast`
+            - `u1.standard`
+            - `u1.slow`
+            - `t1.standard`
+            - `arc.standard`
           type: object
         unixtime:
-          description: UNIX time (in milliseconds)
+          description: UNIX time (in seconds).
           format: int64
           type: integer
       type: object
@@ -480,7 +481,7 @@ components:
               $ref: '#/components/schemas/sandboxBeamCounts'
           type: object
         unixtime:
-          description: UNIX time (in milliseconds)
+          description: UNIX time (in seconds).
           format: int64
           type: integer
       type: object
@@ -491,9 +492,12 @@ components:
         orderId:
           type: string
       required:
-        - orderId
-        - operatorId
+      - orderId
+      - operatorId
       type: object
-
 tags:
-- name: Coupon
+- name: 'API Sandbox: Coupon'
+- name: 'API Sandbox: Operator'
+- name: 'API Sandbox: Order'
+- name: 'API Sandbox: Stats'
+- name: 'API Sandbox: Subscriber'

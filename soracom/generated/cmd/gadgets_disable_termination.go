@@ -16,9 +16,9 @@ var GadgetsDisableTerminationCmdProductId string
 var GadgetsDisableTerminationCmdSerialNumber string
 
 func InitGadgetsDisableTerminationCmd() {
-	GadgetsDisableTerminationCmd.Flags().StringVar(&GadgetsDisableTerminationCmdProductId, "product-id", "", TRAPI("Product ID of the target gadget."))
+	GadgetsDisableTerminationCmd.Flags().StringVar(&GadgetsDisableTerminationCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
-	GadgetsDisableTerminationCmd.Flags().StringVar(&GadgetsDisableTerminationCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target gadget."))
+	GadgetsDisableTerminationCmd.Flags().StringVar(&GadgetsDisableTerminationCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 
 	GadgetsDisableTerminationCmd.RunE = GadgetsDisableTerminationCmdRunE
 

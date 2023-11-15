@@ -32,7 +32,7 @@ func InitSoraletsListVersionsCmd() {
 
 	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSoraletId, "soralet-id", "", TRAPI("The identifier of Soralet."))
 
-	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSort, "sort", "desc", TRAPI("Sort order"))
+	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SoraletsListVersionsCmd.Flags().Int64Var(&SoraletsListVersionsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 

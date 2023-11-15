@@ -28,7 +28,7 @@ var SimsCreatePacketCaptureSessionCmdBody string
 func InitSimsCreatePacketCaptureSessionCmd() {
 	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdPrefix, "prefix", "", TRAPI(""))
 
-	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdSimId, "sim-id", "", TRAPI("The SIM ID for which a packet capture session is created"))
+	SimsCreatePacketCaptureSessionCmd.Flags().StringVar(&SimsCreatePacketCaptureSessionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsCreatePacketCaptureSessionCmd.Flags().Int64Var(&SimsCreatePacketCaptureSessionCmdDuration, "duration", 0, TRAPI(""))
 

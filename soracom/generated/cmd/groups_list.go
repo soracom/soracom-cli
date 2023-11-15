@@ -37,7 +37,7 @@ func InitGroupsListCmd() {
 
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValue, "tag-value", "", TRAPI("Tag value of the groups."))
 
-	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
+	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Search criteria for tag strings ('tag_value')."))
 
 	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 

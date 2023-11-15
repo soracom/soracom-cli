@@ -16,9 +16,9 @@ var ShippingAddressesGetCmdOperatorId string
 var ShippingAddressesGetCmdShippingAddressId string
 
 func InitShippingAddressesGetCmd() {
-	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
+	ShippingAddressesGetCmd.Flags().StringVar(&ShippingAddressesGetCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID."))
 
 	ShippingAddressesGetCmd.RunE = ShippingAddressesGetCmdRunE
 

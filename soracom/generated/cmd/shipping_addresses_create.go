@@ -74,7 +74,7 @@ func InitShippingAddressesCreateCmd() {
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdFullName, "full-name", "", TRAPI(""))
 
-	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	ShippingAddressesCreateCmd.Flags().StringVar(&ShippingAddressesCreateCmdPhoneNumber, "phone-number", "", TRAPI(""))
 

@@ -16,9 +16,9 @@ var EventHandlersIgnoreCmdHandlerId string
 var EventHandlersIgnoreCmdImsi string
 
 func InitEventHandlersIgnoreCmd() {
-	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TRAPI("handler_id"))
+	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdHandlerId, "handler-id", "", TRAPI("Event handler ID."))
 
-	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TRAPI("imsi"))
+	EventHandlersIgnoreCmd.Flags().StringVar(&EventHandlersIgnoreCmdImsi, "imsi", "", TRAPI("IMSI."))
 
 	EventHandlersIgnoreCmd.RunE = EventHandlersIgnoreCmdRunE
 

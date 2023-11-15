@@ -16,9 +16,9 @@ var RolesGetCmdOperatorId string
 var RolesGetCmdRoleId string
 
 func InitRolesGetCmd() {
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("role_id"))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("Role ID."))
 
 	RolesGetCmd.RunE = RolesGetCmdRunE
 

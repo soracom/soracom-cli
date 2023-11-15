@@ -23,7 +23,7 @@ var GroupsPutConfigCmdNamespace string
 var GroupsPutConfigCmdBody string
 
 func InitGroupsPutConfigCmd() {
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("Target group."))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("ID of the target Group. It can be obtained via ['Group:listGroups API'](#/Group/listGroups)."))
 
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("Target configuration."))
 

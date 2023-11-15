@@ -25,7 +25,7 @@ var LagoonUsersUpdatePermissionCmdBody string
 func InitLagoonUsersUpdatePermissionCmd() {
 	LagoonUsersUpdatePermissionCmd.Flags().StringVar(&LagoonUsersUpdatePermissionCmdRole, "role", "", TRAPI("A role that represents the permission."))
 
-	LagoonUsersUpdatePermissionCmd.Flags().Int64Var(&LagoonUsersUpdatePermissionCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
+	LagoonUsersUpdatePermissionCmd.Flags().Int64Var(&LagoonUsersUpdatePermissionCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user."))
 
 	LagoonUsersUpdatePermissionCmd.Flags().StringVar(&LagoonUsersUpdatePermissionCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

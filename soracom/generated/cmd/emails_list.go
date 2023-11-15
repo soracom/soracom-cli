@@ -16,7 +16,7 @@ var EmailsListCmdOperatorId string
 var EmailsListCmdOutputJSONL bool
 
 func InitEmailsListCmd() {
-	EmailsListCmd.Flags().StringVar(&EmailsListCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	EmailsListCmd.Flags().StringVar(&EmailsListCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	EmailsListCmd.Flags().BoolVar(&EmailsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

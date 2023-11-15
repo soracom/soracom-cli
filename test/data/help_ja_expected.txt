@@ -9,8 +9,8 @@ Available Commands:
   bills                課金に関する情報を確認したりファイルへのエクスポートを行います。
   cell-locations       基地局の位置情報を取得します。
   completion           bash もしくは zsh 用の補完 (completion) スクリプトを生成します。
-  configure            コマンド実行環境（プロファイル）の設定や表示を行います。
-  configure-sandbox    API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
+  configure            コマンド実行環境 (プロファイル) の設定や表示を行います。
+  configure-sandbox    API Sandbox 用のコマンド実行環境 (プロファイル) の設定を行います。
   coupons              登録済みクーポンを確認したりアカウントへのクーポン登録を行います。
   credentials          認証情報に関する操作を行います。
   data                 SIM からアップロードされて格納されているデータを取得します。
@@ -36,7 +36,7 @@ Available Commands:
   payment-statements   課金明細の一覧取得または出力を行います。
   port-mappings        オンデマンドリモートアクセスのためのポートマッピング設定を管理します。
   products             商品一覧を取得します。
-  query                リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
+  query                リソース (サブスクライバー、Sigfox デバイス) をいろいろな条件で検索します。
   resource-summaries   リソースの要約を取得します。
   roles                ロールに関する操作を行います。
   sandbox              API サンドボックスに関する操作を行います。
@@ -46,13 +46,13 @@ Available Commands:
   sims                 SIM に関する操作を行います。
   sora-cam             Soracom Cloud Camera Services (ソラカメ) に関する操作を行います。
   soralets             Orbit の Soralet に関する操作を行います。
-  stats                統計情報に関する操作を行います。
+  stats                統計情報 (利用量履歴) に関する操作をする
   subscribers          サブスクライバー (SIM) に関する操作を行います。
   system-notifications システム通知に関する操作を行います。
-  unconfigure          コマンド実行環境（プロファイル）を削除します。
+  unconfigure          コマンド実行環境 (プロファイル) を削除します。
   users                SAM ユーザーに関する操作を行います。
   version              バージョン情報を表示します。
-  volume-discounts     ボリュームディスカウント（長期利用割引）に関する操作を行います。
+  volume-discounts     ボリュームディスカウント (長期利用割引) に関する操作を行います。
   vpg                  VPG に関する操作を行います。
 
 Flags:
@@ -79,7 +79,7 @@ Flags:
       --coverage-type string     カバレッジタイプを指定します。グローバルカバレッジは 'g'、日本カバレッジは 'jp' です。
 
   -h, --help                     help for soracom
-      --no-retry-on-error        このフラグを指定すると、API がエラーを返してきた場合にもリトライしません（デフォルトではバックオフしながら数回リトライします）。
+      --no-retry-on-error        このフラグを指定すると、API がエラーを返してきた場合にもリトライしません (デフォルトではバックオフしながら数回リトライします)。
 
       --profile string           プロファイル名を指定します。
 
@@ -88,6 +88,6 @@ Flags:
                                  すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなります。
                                  認証情報をパスワードマネージャーなどのより安全な場所に格納しておき、外部コマンド経由でそれを利用することができます。
 
-      --raw-output               API から返却されたレスポンスを加工せずにそのまま出力します（デフォルトでは JSON をインデントして表示します）。
+      --raw-output               API から返却されたレスポンスを加工せずにそのまま出力します (デフォルトでは JSON をインデントして表示します)。
 
 Use "soracom [command] --help" for more information about a command.

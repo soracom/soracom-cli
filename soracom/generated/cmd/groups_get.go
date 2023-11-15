@@ -13,7 +13,7 @@ import (
 var GroupsGetCmdGroupId string
 
 func InitGroupsGetCmd() {
-	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TRAPI("Target group ID."))
+	GroupsGetCmd.Flags().StringVar(&GroupsGetCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsGetCmd.RunE = GroupsGetCmdRunE
 

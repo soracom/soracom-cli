@@ -16,9 +16,9 @@ var RolesDeleteCmdOperatorId string
 var RolesDeleteCmdRoleId string
 
 func InitRolesDeleteCmd() {
-	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TRAPI("role_id"))
+	RolesDeleteCmd.Flags().StringVar(&RolesDeleteCmdRoleId, "role-id", "", TRAPI("Role ID."))
 
 	RolesDeleteCmd.RunE = RolesDeleteCmdRunE
 

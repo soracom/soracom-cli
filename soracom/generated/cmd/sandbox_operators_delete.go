@@ -24,7 +24,7 @@ func InitSandboxOperatorsDeleteCmd() {
 var SandboxOperatorsDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/sandbox/operators/{operator_id}:delete:summary"),
-	Long:  TRAPI(`/sandbox/operators/{operator_id}:delete:description`) + "\n\n" + createLinkToAPIReference("Operator", "sandboxDeleteOperator"),
+	Long:  TRAPI(`/sandbox/operators/{operator_id}:delete:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Operator", "sandboxDeleteOperator"),
 }
 
 func SandboxOperatorsDeleteCmdRunE(cmd *cobra.Command, args []string) error {

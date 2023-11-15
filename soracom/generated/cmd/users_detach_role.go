@@ -19,11 +19,11 @@ var UsersDetachRoleCmdRoleId string
 var UsersDetachRoleCmdUserName string
 
 func InitUsersDetachRoleCmd() {
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("role_id"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("Role ID."))
 
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("user_name"))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("SAM user name."))
 
 	UsersDetachRoleCmd.RunE = UsersDetachRoleCmdRunE
 

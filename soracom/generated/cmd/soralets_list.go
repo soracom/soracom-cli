@@ -27,9 +27,9 @@ var SoraletsListCmdOutputJSONL bool
 func InitSoraletsListCmd() {
 	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The identifier of the last Soralet retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next Soralet onward."))
 
-	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdSort, "sort", "asc", TRAPI("Sort order"))
+	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdSort, "sort", "asc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
-	SoraletsListCmd.Flags().Int64Var(&SoraletsListCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response"))
+	SoraletsListCmd.Flags().Int64Var(&SoraletsListCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
 
 	SoraletsListCmd.Flags().BoolVar(&SoraletsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

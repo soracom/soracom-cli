@@ -23,9 +23,9 @@ var SandboxStatsAirInsertCmdUnixtime int64
 var SandboxStatsAirInsertCmdBody string
 
 func InitSandboxStatsAirInsertCmd() {
-	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdImsi, "imsi", "", TRAPI("IMSI"))
+	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdImsi, "imsi", "", TRAPI("IMSI."))
 
-	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI("UNIX time (in milliseconds)"))
+	SandboxStatsAirInsertCmd.Flags().Int64Var(&SandboxStatsAirInsertCmdUnixtime, "unixtime", 0, TRAPI("UNIX time (in seconds)."))
 
 	SandboxStatsAirInsertCmd.Flags().StringVar(&SandboxStatsAirInsertCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -38,7 +38,7 @@ func InitSandboxStatsAirInsertCmd() {
 var SandboxStatsAirInsertCmd = &cobra.Command{
 	Use:   "insert",
 	Short: TRAPI("/sandbox/stats/air/subscribers/{imsi}:post:summary"),
-	Long:  TRAPI(`/sandbox/stats/air/subscribers/{imsi}:post:description`) + "\n\n" + createLinkToAPIReference("Stats", "sandboxInsertAirStats"),
+	Long:  TRAPI(`/sandbox/stats/air/subscribers/{imsi}:post:description`) + "\n\n" + createLinkToAPIReference("API Sandbox: Stats", "sandboxInsertAirStats"),
 }
 
 func SandboxStatsAirInsertCmdRunE(cmd *cobra.Command, args []string) error {

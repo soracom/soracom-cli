@@ -13,7 +13,7 @@ import (
 var LagoonDeleteUserCmdLagoonUserId int64
 
 func InitLagoonDeleteUserCmd() {
-	LagoonDeleteUserCmd.Flags().Int64Var(&LagoonDeleteUserCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user"))
+	LagoonDeleteUserCmd.Flags().Int64Var(&LagoonDeleteUserCmdLagoonUserId, "lagoon-user-id", 0, TRAPI("Target ID of the lagoon user."))
 
 	LagoonDeleteUserCmd.RunE = LagoonDeleteUserCmdRunE
 

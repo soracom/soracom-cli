@@ -16,7 +16,7 @@ var EventHandlersListCmdTarget string
 var EventHandlersListCmdOutputJSONL bool
 
 func InitEventHandlersListCmd() {
-	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TRAPI("target"))
+	EventHandlersListCmd.Flags().StringVar(&EventHandlersListCmdTarget, "target", "", TRAPI("The event handler target (the target for executing events)."))
 
 	EventHandlersListCmd.Flags().BoolVar(&EventHandlersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

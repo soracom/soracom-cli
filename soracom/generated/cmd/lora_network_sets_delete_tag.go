@@ -16,9 +16,9 @@ var LoraNetworkSetsDeleteTagCmdNsId string
 var LoraNetworkSetsDeleteTagCmdTagName string
 
 func InitLoraNetworkSetsDeleteTagCmd() {
-	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdNsId, "ns-id", "", TRAPI("ID of the target LoRa network set."))
+	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
-	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdTagName, "tag-name", "", TRAPI("Name of tag to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
+	LoraNetworkSetsDeleteTagCmd.Flags().StringVar(&LoraNetworkSetsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. (This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().)"))
 
 	LoraNetworkSetsDeleteTagCmd.RunE = LoraNetworkSetsDeleteTagCmdRunE
 

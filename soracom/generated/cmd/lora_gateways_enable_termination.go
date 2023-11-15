@@ -13,7 +13,7 @@ import (
 var LoraGatewaysEnableTerminationCmdGatewayId string
 
 func InitLoraGatewaysEnableTerminationCmd() {
-	LoraGatewaysEnableTerminationCmd.Flags().StringVar(&LoraGatewaysEnableTerminationCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRa gateway."))
+	LoraGatewaysEnableTerminationCmd.Flags().StringVar(&LoraGatewaysEnableTerminationCmdGatewayId, "gateway-id", "", TRAPI("ID of the target LoRaWAN gateway."))
 
 	LoraGatewaysEnableTerminationCmd.RunE = LoraGatewaysEnableTerminationCmdRunE
 

@@ -16,9 +16,9 @@ var OperatorConfigurationDeleteCmdNamespace string
 var OperatorConfigurationDeleteCmdOperatorId string
 
 func InitOperatorConfigurationDeleteCmd() {
-	OperatorConfigurationDeleteCmd.Flags().StringVar(&OperatorConfigurationDeleteCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration"))
+	OperatorConfigurationDeleteCmd.Flags().StringVar(&OperatorConfigurationDeleteCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration."))
 
-	OperatorConfigurationDeleteCmd.Flags().StringVar(&OperatorConfigurationDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorConfigurationDeleteCmd.Flags().StringVar(&OperatorConfigurationDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorConfigurationDeleteCmd.RunE = OperatorConfigurationDeleteCmdRunE
 

@@ -23,9 +23,9 @@ var OrdersCreateCmdShippingAddressId string
 var OrdersCreateCmdBody string
 
 func InitOrdersCreateCmd() {
-	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdPreferredDeliveryDate, "preferred-delivery-date", "", TRAPI("Preferred delivery date"))
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdPreferredDeliveryDate, "preferred-delivery-date", "", TRAPI("Preferred delivery date."))
 
-	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID"))
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID."))
 
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

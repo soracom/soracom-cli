@@ -32,15 +32,15 @@ var VolumeDiscountsCreateCmdQuantity int64
 var VolumeDiscountsCreateCmdBody string
 
 func InitVolumeDiscountsCreateCmd() {
-	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdStartDate, "start-date", "", TRAPI("Start date"))
+	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdStartDate, "start-date", "", TRAPI("Start date."))
 
-	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdVolumeDiscountPaymentType, "volume-discount-payment-type", "", TRAPI("Payment type"))
+	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdVolumeDiscountPaymentType, "volume-discount-payment-type", "", TRAPI("Payment type."))
 
-	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdVolumeDiscountType, "volume-discount-type", "", TRAPI("Long term discount type"))
+	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdVolumeDiscountType, "volume-discount-type", "", TRAPI("Long term discount type."))
 
-	VolumeDiscountsCreateCmd.Flags().Int64Var(&VolumeDiscountsCreateCmdContractTermMonth, "contract-term-month", 12, TRAPI("Contract months"))
+	VolumeDiscountsCreateCmd.Flags().Int64Var(&VolumeDiscountsCreateCmdContractTermMonth, "contract-term-month", 12, TRAPI("Contract months."))
 
-	VolumeDiscountsCreateCmd.Flags().Int64Var(&VolumeDiscountsCreateCmdQuantity, "quantity", 0, TRAPI("Quantity"))
+	VolumeDiscountsCreateCmd.Flags().Int64Var(&VolumeDiscountsCreateCmdQuantity, "quantity", 0, TRAPI("Quantity."))
 
 	VolumeDiscountsCreateCmd.Flags().StringVar(&VolumeDiscountsCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

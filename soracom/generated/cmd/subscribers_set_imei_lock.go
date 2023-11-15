@@ -23,7 +23,7 @@ var SubscribersSetImeiLockCmdImsi string
 var SubscribersSetImeiLockCmdBody string
 
 func InitSubscribersSetImeiLockCmd() {
-	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImei, "imei", "", TRAPI(""))
+	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImei, "imei", "", TRAPI("IMEI of the target device. If you want to establish a session even when the IMEI is temporarily not reported, append '|ANONYMOUS' to the IMEI value.For example, if the IMEI specified is '123456789012345', specifying '123456789012345|ANONYMOUS' as the parameter value will allow a session to be established even when the IMEI is temporarily not reported."))
 
 	SubscribersSetImeiLockCmd.Flags().StringVar(&SubscribersSetImeiLockCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 

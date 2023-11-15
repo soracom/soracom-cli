@@ -16,7 +16,7 @@ var UsersTrustPolicyDeleteCmdOperatorId string
 var UsersTrustPolicyDeleteCmdUserName string
 
 func InitUsersTrustPolicyDeleteCmd() {
-	UsersTrustPolicyDeleteCmd.Flags().StringVar(&UsersTrustPolicyDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	UsersTrustPolicyDeleteCmd.Flags().StringVar(&UsersTrustPolicyDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	UsersTrustPolicyDeleteCmd.Flags().StringVar(&UsersTrustPolicyDeleteCmdUserName, "user-name", "", TRAPI("SAM user name."))
 

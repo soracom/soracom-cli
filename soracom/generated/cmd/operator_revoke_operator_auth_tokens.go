@@ -13,7 +13,7 @@ import (
 var OperatorRevokeOperatorAuthTokensCmdOperatorId string
 
 func InitOperatorRevokeOperatorAuthTokensCmd() {
-	OperatorRevokeOperatorAuthTokensCmd.Flags().StringVar(&OperatorRevokeOperatorAuthTokensCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorRevokeOperatorAuthTokensCmd.Flags().StringVar(&OperatorRevokeOperatorAuthTokensCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorRevokeOperatorAuthTokensCmd.RunE = OperatorRevokeOperatorAuthTokensCmdRunE
 

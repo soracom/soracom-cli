@@ -16,9 +16,9 @@ var EmailsDeleteCmdEmailId string
 var EmailsDeleteCmdOperatorId string
 
 func InitEmailsDeleteCmd() {
-	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdEmailId, "email-id", "", TRAPI("email_id"))
+	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdEmailId, "email-id", "", TRAPI("Email address ID."))
 
-	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	EmailsDeleteCmd.Flags().StringVar(&EmailsDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	EmailsDeleteCmd.RunE = EmailsDeleteCmdRunE
 

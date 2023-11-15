@@ -16,7 +16,7 @@ var EventHandlersListForSubscriberCmdImsi string
 var EventHandlersListForSubscriberCmdOutputJSONL bool
 
 func InitEventHandlersListForSubscriberCmd() {
-	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("imsi"))
+	EventHandlersListForSubscriberCmd.Flags().StringVar(&EventHandlersListForSubscriberCmdImsi, "imsi", "", TRAPI("IMSI."))
 
 	EventHandlersListForSubscriberCmd.Flags().BoolVar(&EventHandlersListForSubscriberCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

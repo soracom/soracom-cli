@@ -13,7 +13,7 @@ import (
 var OperatorAuthKeysGenerateCmdOperatorId string
 
 func InitOperatorAuthKeysGenerateCmd() {
-	OperatorAuthKeysGenerateCmd.Flags().StringVar(&OperatorAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorAuthKeysGenerateCmd.Flags().StringVar(&OperatorAuthKeysGenerateCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorAuthKeysGenerateCmd.RunE = OperatorAuthKeysGenerateCmdRunE
 

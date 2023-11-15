@@ -21,14 +21,19 @@ var GroupsListSubscribersCmdLimit int64
 // GroupsListSubscribersCmdPaginate indicates to do pagination or not
 var GroupsListSubscribersCmdPaginate bool
 
+// GroupsListSubscribersCmdOutputJSONL indicates to output with jsonl format
+var GroupsListSubscribersCmdOutputJSONL bool
+
 func InitGroupsListSubscribersCmd() {
-	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("Target group ID."))
+	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdGroupId, "group-id", "", TRAPI("ID of the target Group."))
 
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
 
 	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
+	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
 	GroupsListSubscribersCmd.RunE = GroupsListSubscribersCmdRunE
 
@@ -81,6 +86,10 @@ func GroupsListSubscribersCmdRunE(cmd *cobra.Command, args []string) error {
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if GroupsListSubscribersCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
 		return prettyPrintStringAsJSON(body)
 	}
 	return err

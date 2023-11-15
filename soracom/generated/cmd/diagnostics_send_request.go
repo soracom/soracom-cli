@@ -35,15 +35,15 @@ var DiagnosticsSendRequestCmdOutputJSONL bool
 var DiagnosticsSendRequestCmdBody string
 
 func InitDiagnosticsSendRequestCmd() {
-	DiagnosticsSendRequestCmd.Flags().StringVar(&DiagnosticsSendRequestCmdResourceId, "resource-id", "", TRAPI("resourceId according to resourceType"))
+	DiagnosticsSendRequestCmd.Flags().StringVar(&DiagnosticsSendRequestCmdResourceId, "resource-id", "", TRAPI("Identifier according to resourceType.- If resourceType is 'sim', specify the SIM ID."))
 
 	DiagnosticsSendRequestCmd.Flags().StringVar(&DiagnosticsSendRequestCmdResourceType, "resource-type", "", TRAPI(""))
 
 	DiagnosticsSendRequestCmd.Flags().StringVar(&DiagnosticsSendRequestCmdService, "service", "", TRAPI(""))
 
-	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdFrom, "from", 0, TRAPI("Start time for diagnostic (unixtime milliseconds)"))
+	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdFrom, "from", 0, TRAPI("Start time for diagnostic (UNIX time in milliseconds)."))
 
-	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdTo, "to", 0, TRAPI("End time for diagnostic (unixtime milliseconds)"))
+	DiagnosticsSendRequestCmd.Flags().Int64Var(&DiagnosticsSendRequestCmdTo, "to", 0, TRAPI("End time for diagnostic (UNIX time in milliseconds)."))
 
 	DiagnosticsSendRequestCmd.Flags().BoolVar(&DiagnosticsSendRequestCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

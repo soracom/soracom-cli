@@ -16,9 +16,9 @@ var ShippingAddressesDeleteCmdOperatorId string
 var ShippingAddressesDeleteCmdShippingAddressId string
 
 func InitShippingAddressesDeleteCmd() {
-	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("shipping_address_id"))
+	ShippingAddressesDeleteCmd.Flags().StringVar(&ShippingAddressesDeleteCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID."))
 
 	ShippingAddressesDeleteCmd.RunE = ShippingAddressesDeleteCmdRunE
 

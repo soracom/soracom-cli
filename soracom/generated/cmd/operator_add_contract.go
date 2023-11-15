@@ -25,7 +25,7 @@ var OperatorAddContractCmdBody string
 func InitOperatorAddContractCmd() {
 	OperatorAddContractCmd.Flags().StringVar(&OperatorAddContractCmdContractName, "contract-name", "", TRAPI(""))
 
-	OperatorAddContractCmd.Flags().StringVar(&OperatorAddContractCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorAddContractCmd.Flags().StringVar(&OperatorAddContractCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorAddContractCmd.Flags().StringVar(&OperatorAddContractCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

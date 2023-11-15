@@ -16,9 +16,9 @@ var OperatorConfigurationGetCmdNamespace string
 var OperatorConfigurationGetCmdOperatorId string
 
 func InitOperatorConfigurationGetCmd() {
-	OperatorConfigurationGetCmd.Flags().StringVar(&OperatorConfigurationGetCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration"))
+	OperatorConfigurationGetCmd.Flags().StringVar(&OperatorConfigurationGetCmdNamespace, "namespace", "", TRAPI("Namespace of operator configuration."))
 
-	OperatorConfigurationGetCmd.Flags().StringVar(&OperatorConfigurationGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	OperatorConfigurationGetCmd.Flags().StringVar(&OperatorConfigurationGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
 	OperatorConfigurationGetCmd.RunE = OperatorConfigurationGetCmdRunE
 

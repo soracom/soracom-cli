@@ -16,9 +16,9 @@ var SystemNotificationsGetCmdOperatorId string
 var SystemNotificationsGetCmdType string
 
 func InitSystemNotificationsGetCmd() {
-	SystemNotificationsGetCmd.Flags().StringVar(&SystemNotificationsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID"))
+	SystemNotificationsGetCmd.Flags().StringVar(&SystemNotificationsGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	SystemNotificationsGetCmd.Flags().StringVar(&SystemNotificationsGetCmdType, "type", "", TRAPI("system notification type"))
+	SystemNotificationsGetCmd.Flags().StringVar(&SystemNotificationsGetCmdType, "type", "", TRAPI("Email address type."))
 
 	SystemNotificationsGetCmd.RunE = SystemNotificationsGetCmdRunE
 

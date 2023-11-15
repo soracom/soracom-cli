@@ -42,7 +42,7 @@ func InitDevicesGetDataCmd() {
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
 

@@ -27,11 +27,11 @@ var StatsFunkGetCmdOutputJSONL bool
 func InitStatsFunkGetCmd() {
 	StatsFunkGetCmd.Flags().StringVar(&StatsFunkGetCmdImsi, "imsi", "", TRAPI("imsi"))
 
-	StatsFunkGetCmd.Flags().StringVar(&StatsFunkGetCmdPeriod, "period", "", TRAPI("Unit of aggregation. minutes outputs the usage report at the finest granularity. However, while the device is connected to the Soracom platform, the amount of usage will be recorded at approximately 5-minute intervals."))
+	StatsFunkGetCmd.Flags().StringVar(&StatsFunkGetCmdPeriod, "period", "", TRAPI("Unit of aggregation.- 'month': Aggregate by month.  The 'from' and 'to' should be UNIX time (in seconds) from 18 months before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 on the first day of the month, including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the last day of the month containing the specified UNIX time (in seconds). |- 'day': Aggregate by day.  The 'from' and 'to' should be UNIX time (in seconds) from 18 months before the current time to the current time. The actual period of interest is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual start time | 00:00:00 of the day including the specified UNIX time (in seconds). |  | Actual end time | 24:00:00 of the day including the specified UNIX time (in seconds). |- 'minutes': Aggregate by approximately every 5 minutes.  The 'from' and 'to' must be between 32 days before the current time and the UNIX time (in seconds) of the current time. The actual period to be aggregated is not the time specified by 'from' and 'to'.  | Item | Description |  |-|-|  | Actual Start Time | Start time of approximately 5 minutes including the specified UNIX time (seconds). |  | Actual End Time | End time of approximately 5 minutes including the specified UNIX time (seconds). |"))
 
-	StatsFunkGetCmd.Flags().Int64Var(&StatsFunkGetCmdFrom, "from", 0, TRAPI("Start time for the aggregate data (UNIX time in seconds)."))
+	StatsFunkGetCmd.Flags().Int64Var(&StatsFunkGetCmdFrom, "from", 0, TRAPI("Specify the start month/day/minute of the period to be aggregated in UNIX time in seconds."))
 
-	StatsFunkGetCmd.Flags().Int64Var(&StatsFunkGetCmdTo, "to", 0, TRAPI("End time for the aggregate data (UNIX time in seconds)."))
+	StatsFunkGetCmd.Flags().Int64Var(&StatsFunkGetCmdTo, "to", 0, TRAPI("Specify the end month/day/minute of the period to be aggregated in UNIX time in seconds."))
 
 	StatsFunkGetCmd.Flags().BoolVar(&StatsFunkGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 

@@ -55,31 +55,31 @@ var QuerySimsCmdPaginate bool
 var QuerySimsCmdOutputJSONL bool
 
 func InitQuerySimsCmd() {
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SIM ID of the last SIM retrieved on the current page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SIM ID of the last SIM retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
 
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')"))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching'). If omitted, it is an AND search."))
 
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search (ONLINE or OFFLINE)"))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search (ONLINE or OFFLINE).- 'NA': Any.- 'ONLINE': Online.- 'OFFLINE': Offline."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdBundles, "bundles", []string{}, TRAPI("Bundles type to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdBundles, "bundles", []string{}, TRAPI("Bundles type to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroup, "group", []string{}, TRAPI("Group name to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroup, "group", []string{}, TRAPI("Group name to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdIccid, "iccid", []string{}, TRAPI("ICCID to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdIccid, "iccid", []string{}, TRAPI("ICCID to search. An identifier to identify a SIM card or virtual IoT SIM (Virtual SIM/Subscriber)."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImsi, "imsi", []string{}, TRAPI("IMSI to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImsi, "imsi", []string{}, TRAPI("IMSI to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdName, "name", []string{}, TRAPI("Name to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdName, "name", []string{}, TRAPI("Name to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search. This is set only for IoT SIMs for specific regions."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSimId, "sim-id", []string{}, TRAPI("Identifier of the SIM to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSimId, "sim-id", []string{}, TRAPI("Identifier of the SIM to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdTag, "tag", []string{}, TRAPI("String of tag values to search"))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdTag, "tag", []string{}, TRAPI("String of tag values to search. For more information, please refer to [Using Tags with Soracom Air](/docs/air/tags)."))
 
-	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve"))
+	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
 
 	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
