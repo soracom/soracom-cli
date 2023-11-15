@@ -3,6 +3,9 @@ cli:
   audit-logs:
     summary: 監査ログを取得します。
     description: 監査ログを取得します。
+    api:
+      summary: API の監査ログを取得します。
+      description: API の監査ログを取得します。
     napter:
       summary: Napter の監査ログを取得します。
       description: Napter の監査ログを取得します。
@@ -12,6 +15,9 @@ cli:
   bills:
     summary: 課金に関する情報を確認したりファイルへのエクスポートを行います。
     description: 課金に関する情報を確認したりファイルへのエクスポートを行います。
+    summaries:
+      summary: 要約された課金情報を取得します。
+      description: 要約された課金情報を取得します。
   cell-locations:
     summary: 基地局の位置情報を取得します。
     description: 基地局の位置情報を取得します。
@@ -32,8 +38,9 @@ cli:
       summary: zsh 用の補完 (completion) スクリプトを生成します。
       description: zsh 用の補完 (completion) スクリプトを生成します。
   configure:
-    summary: コマンド実行環境（プロファイル）の設定や表示を行います。
-    description: コマンド実行環境（プロファイル）の設定や表示を行います。
+    summary: コマンド実行環境 (プロファイル) の設定や表示を行います。
+    description: コマンド実行環境 (プロファイル) の設定や表示を行います。
+    overwrite: プロファイル情報がすでに存在していても上書きします。
     profile:
       permission_is_too_open: "認証情報ファイル %s へのアクセス権が十分に絞り込まれていません。\n認証情報ファイルへは、soracom コマンドを実行しているユーザーのみがアクセス可能なように設定する必要があります。"
       prompt: "--- SORACOM CLI セットアップ ---\n%s ディレクトリがなければ作成し、そこにファイル '%s.json' を作成します。"
@@ -45,9 +52,9 @@ cli:
 
           認証方法を選択してください。
 
-          1. AuthKeyId と AuthKey を入力する（推奨）
+          1. AuthKeyId と AuthKey を入力する (推奨)
           2. オペレーターのメールアドレスとパスワードを入力する
-          3. SAM ユーザーの認証情報を入力する（オペレーターID、ユーザー名、パスワード）
+          3. SAM ユーザーの認証情報を入力する (オペレーターID、ユーザー名、パスワード)
           4. スイッチユーザー
 
         select: "選択してください (1-4) > "
@@ -59,10 +66,10 @@ cli:
       summary: プロファイル情報を表示します。
       description: プロファイル情報を表示します。
   configure_sandbox:
-    summary: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
-    description: API Sandbox 用のコマンド実行環境（プロファイル）の設定を行います。
-    auth_key: 本番環境のアカウントの AuthKey（本番環境のアカウントを持っているかどうかを確認するために使われます）
-    auth_key_id: 本番環境のアカウントの AuthKeyId（本番環境のアカウントを持っているかどうかを確認するために使われます）
+    summary: API Sandbox 用のコマンド実行環境 (プロファイル) の設定を行います。
+    description: API Sandbox 用のコマンド実行環境 (プロファイル) の設定を行います。
+    auth_key: 本番環境のアカウントの AuthKey (本番環境のアカウントを持っているかどうかを確認するために使われます)
+    auth_key_id: 本番環境のアカウントの AuthKeyId (本番環境のアカウントを持っているかどうかを確認するために使われます)
     email: API Sandbox 環境に作られるユーザーのメールアドレス
     overwrite: プロファイルが既に存在する場合、それを上書きするかどうかを指定します。
     password: API Sandbox 環境に作られるユーザーのパスワード
@@ -125,7 +132,7 @@ cli:
     coverage-type: |
       カバレッジタイプを指定します。グローバルカバレッジは 'g'、日本カバレッジは 'jp' です。
     no-retry-on-error: |
-      このフラグを指定すると、API がエラーを返してきた場合にもリトライしません（デフォルトではバックオフしながら数回リトライします）。
+      このフラグを指定すると、API がエラーを返してきた場合にもリトライしません (デフォルトではバックオフしながら数回リトライします)。
     profile: |
       プロファイル名を指定します。
     profile-command: |
@@ -134,7 +141,7 @@ cli:
       すなわち事前に 'soracom configure' コマンドを実行しておく必要がなくなります。
       認証情報をパスワードマネージャーなどのより安全な場所に格納しておき、外部コマンド経由でそれを利用することができます。
     raw-output: |
-      API から返却されたレスポンスを加工せずにそのまま出力します（デフォルトでは JSON をインデントして表示します）。
+      API から返却されたレスポンスを加工せずにそのまま出力します (デフォルトでは JSON をインデントして表示します)。
   groups:
     summary: グループに関する操作を行います。
     description: グループに関する操作を行います。
@@ -172,9 +179,15 @@ cli:
     auth-keys:
       summary: オペレーターの認証キーに関する操作を行います。
       description: オペレーターの認証キーに関する操作を行います。
+    configuration:
+      summary: オペレーター全体に関わるコンフィグレーションに関する操作を行います。
+      description: オペレーター全体に関わるコンフィグレーションに関する操作を行います。
   orders:
     summary: 商品の注文に関する操作を行います。
     description: 商品の注文に関する操作を行います。
+    resource-initial-setting:
+      summary: 発注した商品に対する初期設定を管理する
+      description: 発注した商品に対する初期設定を管理します。
   payer-information:
     summary: 課金明細に出力する支払い者情報を取得または設定します。
     description: 課金明細に出力する支払い者情報を取得または設定します。
@@ -197,8 +210,8 @@ cli:
     summary: 商品一覧を取得します。
     description: 商品一覧を取得します。
   query:
-    summary: リソース（サブスクライバー、Sigfox デバイス）をいろいろな条件で検索します。
-    description: いろいろな条件を指定して、その条件に適合するリソース（サブスクライバー、Sigfox デバイス）を抽出します。
+    summary: リソース (サブスクライバー、Sigfox デバイス) をいろいろな条件で検索します。
+    description: いろいろな条件を指定して、その条件に適合するリソース (サブスクライバー、Sigfox デバイス) を抽出します。
   refer-api-reference: このコマンドの引数およびレスポンスについての詳細は、https://users.soracom.io/ja-jp/tools/api/reference/#/%s/%s を参照してください。
   resource-summaries:
     summary: リソースの要約を取得します。
@@ -233,12 +246,21 @@ cli:
     devices:
       summary: ソラカメ対応カメラデバイスに関する操作を行います。
       description: ソラカメ対応カメラデバイスに関する操作を行います。
+      atomcam:
+        summary: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の操作をする
+        description: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の操作を行います。
+        settings:
+          summary: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の設定を管理します。 
+          description: ATOM Cam シリーズのソラカメ対応カメラデバイスに固有の設定を管理します。 
       events:
         summary: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
         description: ソラカメ対応カメラデバイスで検出されたイベントの一覧を取得します。
       images:
         summary: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
         description: ソラカメ対応カメラデバイスからの静止画のエクスポートに関する操作を行います。
+      recordings-and-events:
+        summary: ソラカメ対応カメラデバイスのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得する
+        description: ソラカメ対応カメラデバイスのクラウド常時録画の録画状況とイベント発生日時の情報を合わせて取得します。
       videos:
         summary: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
         description: ソラカメ対応カメラデバイスからの動画のエクスポートに関する操作を行います。
@@ -246,23 +268,41 @@ cli:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。
   stats:
-    summary: 統計情報に関する操作を行います。
-    description: 統計情報に関する操作を行います。
+    summary: 統計情報 (利用量履歴) に関する操作をする
+    description: 統計情報 (利用量履歴) に関する操作を行います。
     air:
-      summary: Air の統計情報に関する操作を行います。
-      description: Air の統計情報に関する操作を行います。
+      summary: SORACOM Air の通信量履歴に関する操作をする
+      description: SORACOM Air の通信量履歴に関する操作をします。
+      groups:
+        summary: 指定したグループに所属するすべての IoT SIM を集約したデータ通信量履歴を取得する
+        description: 指定したグループに所属するすべての IoT SIM を集約したデータ通信量履歴を取得します。
+      operators:
+        summary: 指定したオペレーターが保有するすべての IoT SIM を集約したデータ通信量履歴を取得する
+        description: 指定したオペレーターが保有するすべての IoT SIM を集約したデータ通信量履歴を取得します。
       sims:
-        summary: SIM ID で Air の統計情報に関する操作を行います。
-        description: SIM ID で Air の統計情報に関する操作を行います。
+        summary: SIM ID で指定した IoT SIM の通信量履歴を取得する
+        description: SIM ID で指定した IoT SIM の通信量履歴を取得します。
     beam:
-      summary: Beam の統計情報に関する操作を行います。
-      description: Beam の統計情報に関する操作を行います。
+      summary: SORACOM Beam の利用量履歴に関する操作をする
+      description: SORACOM Beam の利用量履歴に関する操作をします。
+    funk:
+      summary: SORACOM Funk の利用量履歴に関する操作をする
+      description: SORACOM Funk の利用量履歴に関する操作をします。
+    funnel:
+      summary: SORACOM Funnel の利用量履歴に関する操作をする
+      description: SORACOM Funk の利用量履歴に関する操作をします。
     harvest:
-      summary: Harvest の利用統計情報を取得します。
-      description: Harvest の利用統計情報を取得します。
+      summary: SORACOM Harvest の利用統計情報に関する操作をする
+      description: SORACOM Harvest の利用統計情報に関する操作をします。
+      operators:
+        summary: オペレーター単位の SORACOM Harvest Data 利用統計情報に関する操作をする
+        description: オペレーター単位の SORACOM Harvest Data 利用統計情報に関する操作をします。
+      subscribers:
+        summary: IMSI で指定した Subscriber の SORACOM Harvest Data 利用量履歴を取得する
+        description: IMSI で指定した Subscriber の SORACOM Harvest Data 利用量履歴を取得します。
     napter:
-      summary: Napter の利用統計情報を取得します。
-      description: Napter の利用統計情報を取得します。
+      summary: SORACOM Napter の利用統計情報を取得する。
+      description: SORACOM Napter の利用統計情報を取得します。
       audit-logs:
         summary: Napter 監査ログの利用統計情報を取得します。
         description: Napter 監査ログの利用統計情報を取得します。
@@ -279,8 +319,8 @@ cli:
       summary: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。
       description: 常に 500 Internal server error を返す API を呼び、リトライ処理が期待通りに動作するかどうかを確認します。環境変数 SORACOM_VERBOSE=1 を指定した状態で実行するとよいでしょう。
   unconfigure:
-    summary: コマンド実行環境（プロファイル）を削除します。
-    description: コマンド実行環境（プロファイル）を削除します。
+    summary: コマンド実行環境 (プロファイル) を削除します。
+    description: コマンド実行環境 (プロファイル) を削除します。
     prompt: "プロファイル %s を削除します。よろしいですか？ (y/N) "
   users:
     summary: SAM ユーザーに関する操作を行います。
@@ -307,8 +347,8 @@ cli:
     summary: バージョン情報を表示します。
     description: バージョン情報を表示します。
   volume-discounts:
-    summary: ボリュームディスカウント（長期利用割引）に関する操作を行います。
-    description: ボリュームディスカウント（長期利用割引）に関する操作を行います。
+    summary: ボリュームディスカウント (長期利用割引) に関する操作を行います。
+    description: ボリュームディスカウント (長期利用割引) に関する操作を行います。
   vpg:
     summary: VPG に関する操作を行います。
     description: VPG (Virtual Private Gateways) に関する操作を行います。

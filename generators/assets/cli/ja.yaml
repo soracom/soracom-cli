@@ -268,8 +268,8 @@ cli:
     summary: Orbit の Soralet に関する操作を行います。
     description: Orbit の Soralet に関する操作を行います。
   stats:
-    summary: 統計情報（利用量履歴）に関する操作をする
-    description: 統計情報（利用量履歴）に関する操作を行います。
+    summary: 統計情報 (利用量履歴) に関する操作をする
+    description: 統計情報 (利用量履歴) に関する操作を行います。
     air:
       summary: SORACOM Air の通信量履歴に関する操作をする
       description: SORACOM Air の通信量履歴に関する操作をします。
