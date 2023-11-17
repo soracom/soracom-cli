@@ -4,7 +4,7 @@
 
 # soracom-cli
 
-A command line tool `soracom` to invoke SORACOM API.
+Provides `soracom` command, a command line tool for calling SORACOM APIs.
 
 # Feature
 
@@ -14,7 +14,7 @@ The `soracom` command:
 
 - just works by copying the cross-compiled binary file into the target environment. There is no need to build an environment or solve dependencies.
 
-- constructs a request based on the specified argument and calls the SORACOM API. Response (JSON) from the API is output directly to standard output.
+- constructs a request based on the specified arguments and calls the SORACOM API. Response (JSON) from the API is output directly to standard output.
   - This makes it easier to process the output of the soracom command and pass it to another command
 
 - supports bash completion. Please write the following line in .bashrc etc
