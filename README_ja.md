@@ -22,19 +22,22 @@ soracom コマンドは以下のような特徴を備えています。
   eval "$(soracom completion)"
   ```
 
-  macOS をお使いの場合、以下のいずれかの条件を満たす必要があるかもしれません：
-  - `bash` のバージョン 4.0 以降を使用する
-  - `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
-    そしてこの場合、`.bash_profile` または `.profile` ファイルに以下を追加します:
-    ```
-    if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-      . "$(brew --prefix)/etc/bash_completion"
-    fi
-    ```
-    以下のようなエラーが起きた場合は上記いずれかをお試し下さい。
+  - 以下のようなエラーが起きたときは:
+
     ```
     -bash: __ltrim_colon_completions: command not found
     ```
+
+    このエラーは macOS をお使いの場合に表示されることがあります。以下のいずれかの条件を満たす必要があるかもしれません：
+    - `bash` のバージョン 4.0 以降を使用する
+    - `brew install bash-completion` でインストールした bash-completion を使う（Xcode に付属の bash-completion では動作しない場合があります。）
+
+      そしてこの場合、`.bash_profile` または `.profile` ファイルに以下を追加します:
+      ```
+      if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+        . "$(brew --prefix)/etc/bash_completion"
+      fi
+      ```
 
 - zsh completion（引数補完）に対応しています。以下のようなコマンドを実行して生成されるスクリプトを `_soracom` という名前で `$fpath` のどこかに配置してください。
   ```
@@ -341,24 +344,8 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 
 ### ビルド時のトラブルシューティング
 
-ビルド後に `go: could not create module cache: mkdir /go/pkg: permission denied` のようなエラーが表示されたときは、
-
-Docker container 内の /go/pkg の権限を確認してください。build.sh では、ホストの `${GOPATH:-$HOME/go}` を /go/pkg にマウントしているため、ホストの `~$HOME/go` の権限を確認します。ほとんどの場合は、以下のコマンドで解決できるはずです。
+ビルド時に `go: could not create module cache: mkdir /go/pkg: permission denied` のようなエラーが表示されたときは、Docker container 内の /go/pkg の権限を確認してください。build.sh では、ホストの `${GOPATH:-$HOME/go}` を /go/pkg にマウントしているため、ホストの `$GOPATH` または `$HOME/go` の権限を確認します。ほとんどの場合は、以下のコマンドで解決できるはずです。
 
 ```
 sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
-```
-
-# リリースする
-
-```
-VERSION=1.2.3                         # => リリースするバージョン番号を指定します
-./scripts/build.sh $VERSION           # => 指定したバージョンをビルドします
-./test/test.sh $VERSION               # => バージョンのテストを行います
-# すべての変更を GitHub にコミットし、プッシュします
-./scripts/release.sh $VERSION         # => GitHub にバージョンをリリースします
-# github.com のリリースページでリリースを編集します
-./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
-./scripts/build-lambda-layer.sh $VERSION
-./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE   # => このコマンドはレイヤーを全リージョン（ap-east-1 を除く）にリリースします
 ```

@@ -22,19 +22,22 @@ The `soracom` command:
   eval "$(soracom completion bash)"
   ```
 
-  if you are a macOS user, you probably need to either:
-  - use `bash` version >= 4.0, or
-  - use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
+  - If you get an error like this:
 
-    ```
-    if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-      . "$(brew --prefix)/etc/bash_completion"
-    fi
-    ```
-    otherwise you might be getting the error like the following:
     ```
     -bash: __ltrim_colon_completions: command not found
     ```
+
+    This error may appear if you are using macOS. You might need to satisfy one of the following conditions:
+
+    - use `bash` version >= 4.0, or
+    - use `brew install bash-completion` instead of using Xcode version of bash-completion and then add the following to either your `.bash_profile` or `.profile`:
+
+      ```
+      if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+        . "$(brew --prefix)/etc/bash_completion"
+      fi
+      ```
 
 - supports zsh completion. The generated completion script by running the following command should be put somewhere in your `$fpath` named `_soracom`
   ```
@@ -333,24 +336,10 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 
 ### Troubleshooting Build Issues
 
-If you encounter an error like `go: could not create module cache: mkdir /go/pkg: permission denied` after building,
+If you encounter an error like `go: could not create module cache: mkdir /go/pkg: permission denied` during the build process, please check the permissions of /go/pkg inside the Docker container. In the build.sh script, we mount the host's `${GOPATH:-$HOME/go}` to /go/pkg, so you should check the permissions of `$GOPATH` or `$HOME/go` on the host. In most cases, the following command should resolve the issue:
 
-Please check the permissions of /go/pkg inside the Docker container. In build.sh, we are mounting the host's `${GOPATH:-$HOME/go}` to /go/pkg, so you should check the permissions of `~$HOME/go` on the host. In most cases, the following command should resolve the issue:
+
 
 ```bash
 sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
-```
-
-# How to release
-
-```
-VERSION=1.2.3                         # => specify a version number to be released
-./scripts/build.sh $VERSION           # => build a version to be released
-./test/test.sh $VERSION               # => test the version
-# commit & push all changes to github
-./scripts/release.sh $VERSION         # => release the version to GitHub
-# edit the release on github.com release page
-./scripts/update-homebrew-formula.sh $VERSION $GITHUB_USERNAME $GITHUB_EMAIL
-./scripts/build-lambda-layer.sh $VERSION
-./scripts/release-lambda-layer.sh $VERSION $AWS_PROFILE   # => this command releases the layer to all regions (except ap-east-1)
 ```
