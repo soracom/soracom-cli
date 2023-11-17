@@ -59,7 +59,7 @@ brew install bash-completion
 以下に紹介するいずれかのコマンドを実行することで、最新版の `soracom` コマンドがダウンロードされてインストールされます。
 
 
-もし `/usr/local/bin` にファイルを書き込む権限のあるユーザー（root など）でインストールする場合はいかのコマンドを実行してください。
+もし `/usr/local/bin` にファイルを書き込む権限のあるユーザー（root など）でインストールする場合は以下のコマンドを実行してください。
 
 ```shell
 curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.sh | bash
