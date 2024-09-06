@@ -8,8 +8,6 @@ else
 endif
 OUTPUT ?= soracom/dist/$(VERSION)/soracom_$(VERSION)_$(GOOS)_$(GOARCH)$(EXT)
 
-GOCYCLO_OVER ?= 23
-
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -19,7 +17,6 @@ install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
 	go install github.com/tc-hib/go-winres@v0.3.1
 	go install honnef.co/go/tools/cmd/staticcheck@v0.4.2
-	go install github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
 	go install golang.org/x/tools/cmd/goimports@v0.1.7
 .PHONY:install-dev-deps
 
@@ -57,10 +54,6 @@ lint: ## Lint codes
 	staticcheck ./soracom/...
 .PHONY:lint
 
-metrics-gocyclo: ## Metrics with gocyclo
-	gocyclo -over $(GOCYCLO_OVER) .
-.PHONY:metrics-gocyclo
-
 winres:
 	@(cd ./soracom && go-winres make)
 .PHONY:winres
@@ -82,7 +75,7 @@ cross-build:
 	done
 .PHONY:cross-build
 
-ci-build-artifacts: install-dev-deps test generate test-generated lint metrics-gocyclo ## Run `build-artifacts` action
+ci-build-artifacts: install-dev-deps test generate test-generated lint ## Run `build-artifacts` action
 	make cross-build OS_LIST="linux" ARCH_LIST="amd64 arm64 386 arm"
 	make cross-build OS_LIST="darwin" ARCH_LIST="amd64 arm64"
 	make cross-build OS_LIST="windows" ARCH_LIST="amd64 386" EXT=".exe"

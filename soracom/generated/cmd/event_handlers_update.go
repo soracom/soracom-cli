@@ -41,21 +41,21 @@ var EventHandlersUpdateCmdTargetSimId string
 var EventHandlersUpdateCmdBody string
 
 func InitEventHandlersUpdateCmd() {
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdDescription, "description", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdDescription, "description", "", TRAPI("Summary."))
 
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdHandlerId, "handler-id", "", TRAPI("Event handler ID."))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdName, "name", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdName, "name", "", TRAPI("Event name."))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdStatus, "status", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdStatus, "status", "", TRAPI("The status of the event handler, whether it is active or inactive.- 'active': Active- 'inactive': Inactive"))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetGroupId, "target-group-id", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetGroupId, "target-group-id", "", TRAPI("The target group. All IoT SIMs belonging to the group are monitored.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetImsi, "target-imsi", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetImsi, "target-imsi", "", TRAPI("The target IMSI of the IoT SIM.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetOperatorId, "target-operator-id", "", TRAPI("The target operator. All IoT SIMs in your account.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetSimId, "target-sim-id", "", TRAPI(""))
+	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdTargetSimId, "target-sim-id", "", TRAPI("The target SIM ID of the IoT SIM.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
 	EventHandlersUpdateCmd.Flags().StringVar(&EventHandlersUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -133,6 +133,11 @@ func collectEventHandlersUpdateCmdParams(ac *apiClient) (*apiParams, error) {
 	}
 
 	err = checkIfRequiredStringParameterIsSupplied("handler_id", "handler-id", "path", parsedBody, EventHandlersUpdateCmdHandlerId)
+	if err != nil {
+		return nil, err
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("name", "name", "body", parsedBody, EventHandlersUpdateCmdName)
 	if err != nil {
 		return nil, err
 	}

@@ -23,9 +23,9 @@ var GroupsPutConfigCmdNamespace string
 var GroupsPutConfigCmdBody string
 
 func InitGroupsPutConfigCmd() {
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("ID of the target Group. It can be obtained via ['Group:listGroups API'](#/Group/listGroups)."))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdGroupId, "group-id", "", TRAPI("ID of the target group. The group ID can be obtained via the [Group:listGroups API](#!/Group/listGroups)."))
 
-	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("Target configuration."))
+	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdNamespace, "namespace", "", TRAPI("A string indicating the configuration target. It varies depending on the configuration content.- 'SoracomAir': Custom DNS, Metadata service, VPG (Virtual Private Gateway), CHAP authentication, Simple Location function, Binary Parser.- 'SoracomBeam': SORACOM Beam.- 'SoracomEndorse': SORACOM Endorse.- 'SoracomFunk': SORACOM Funk.- 'SoracomFunnel': SORACOM Funnel.- 'SoracomHarvest': SORACOM Harvest Data.- 'SoracomHarvestFiles': SORACOM Harvest Files.- 'SoracomKrypton': SORACOM Krypton.- 'SoracomOrbit': SORACOM Orbit.- 'UnifiedEndpoint': Unified Endpoint."))
 
 	GroupsPutConfigCmd.Flags().StringVar(&GroupsPutConfigCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

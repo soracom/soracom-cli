@@ -9,14 +9,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VpgListIpAddressMapEntriesCmdLastEvaluatedKey holds value of 'last_evaluated_key' option
+var VpgListIpAddressMapEntriesCmdLastEvaluatedKey string
+
 // VpgListIpAddressMapEntriesCmdVpgId holds value of 'vpg_id' option
 var VpgListIpAddressMapEntriesCmdVpgId string
+
+// VpgListIpAddressMapEntriesCmdLimit holds value of 'limit' option
+var VpgListIpAddressMapEntriesCmdLimit int64
+
+// VpgListIpAddressMapEntriesCmdPaginate indicates to do pagination or not
+var VpgListIpAddressMapEntriesCmdPaginate bool
 
 // VpgListIpAddressMapEntriesCmdOutputJSONL indicates to output with jsonl format
 var VpgListIpAddressMapEntriesCmdOutputJSONL bool
 
 func InitVpgListIpAddressMapEntriesCmd() {
+	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last IP address returned from the previous page. By specifying this parameter, the API will return the next page of IP Address Map entries."))
+
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
+
+	VpgListIpAddressMapEntriesCmd.Flags().Int64Var(&VpgListIpAddressMapEntriesCmdLimit, "limit", 0, TRAPI("The maximum number of IP Address Map entries to return."))
+
+	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -83,6 +98,7 @@ func VpgListIpAddressMapEntriesCmdRunE(cmd *cobra.Command, args []string) error 
 func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 	var parsedBody interface{}
 	var err error
+
 	err = checkIfRequiredStringParameterIsSupplied("vpg_id", "vpg-id", "path", parsedBody, VpgListIpAddressMapEntriesCmdVpgId)
 	if err != nil {
 		return nil, err
@@ -92,6 +108,10 @@ func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, erro
 		method: "GET",
 		path:   buildPathForVpgListIpAddressMapEntriesCmd("/virtual_private_gateways/{vpg_id}/ip_address_map"),
 		query:  buildQueryForVpgListIpAddressMapEntriesCmd(),
+
+		doPagination:                      VpgListIpAddressMapEntriesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil
@@ -108,6 +128,14 @@ func buildPathForVpgListIpAddressMapEntriesCmd(path string) string {
 
 func buildQueryForVpgListIpAddressMapEntriesCmd() url.Values {
 	result := url.Values{}
+
+	if VpgListIpAddressMapEntriesCmdLastEvaluatedKey != "" {
+		result.Add("last_evaluated_key", VpgListIpAddressMapEntriesCmdLastEvaluatedKey)
+	}
+
+	if VpgListIpAddressMapEntriesCmdLimit != 0 {
+		result.Add("limit", sprintf("%d", VpgListIpAddressMapEntriesCmdLimit))
+	}
 
 	return result
 }

@@ -20,7 +20,7 @@ var SubscribersPutBundlesCmdImsi string
 var SubscribersPutBundlesCmdBody string
 
 func InitSubscribersPutBundlesCmd() {
-	SubscribersPutBundlesCmd.Flags().StringVar(&SubscribersPutBundlesCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
+	SubscribersPutBundlesCmd.Flags().StringVar(&SubscribersPutBundlesCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber. The IMSI can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SubscribersPutBundlesCmd.Flags().StringVar(&SubscribersPutBundlesCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

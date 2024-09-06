@@ -107,6 +107,11 @@ func collectSoraCamDevicesUpdateExportUsageLimitOverrideCmdParams(ac *apiClient)
 		return nil, err
 	}
 
+	err = checkIfRequiredIntegerParameterIsSupplied("limitHours", "limit-hours", "body", parsedBody, SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "PUT",
 		path:        buildPathForSoraCamDevicesUpdateExportUsageLimitOverrideCmd("/sora_cam/devices/{device_id}/exports/usage/limit_override"),

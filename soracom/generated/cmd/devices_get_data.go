@@ -34,17 +34,17 @@ var DevicesGetDataCmdPaginate bool
 var DevicesGetDataCmdOutputJSONL bool
 
 func InitDevicesGetDataCmd() {
-	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("Device ID of the target subscriber that generated data entries."))
+	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdDeviceId, "device-id", "", TRAPI("ID of the Inventory device from which to retrieve data. The ID of an Inventory device can be obtained using the [Device:listDevices API](#!/Device/listDevices)."))
 
-	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Timestamp of the last data entry retrieved on the previous page. By specifying this parameter, the list starting from the next data entry can be obtained."))
 
-	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
+	DevicesGetDataCmd.Flags().StringVar(&DevicesGetDataCmdSort, "sort", "desc", TRAPI("Sort order of data entries. Either descending order (latest data entry first) or ascending order (oldest data entry first)."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time for the data entries search range (UNIX time in milliseconds)."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdFrom, "from", 0, TRAPI("Start time of the target period (UNIX time in milliseconds)."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (1 to 1000). The default is '10'."))
 
-	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
+	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time of the target period (UNIX time in milliseconds)."))
 
 	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

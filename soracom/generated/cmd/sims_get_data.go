@@ -36,7 +36,7 @@ var SimsGetDataCmdOutputJSONL bool
 func InitSimsGetDataCmd() {
 	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. The key for data entries in this API is '${UNIX time in milliseconds}_${IMSI}'. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsGetDataCmd.Flags().StringVar(&SimsGetDataCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 

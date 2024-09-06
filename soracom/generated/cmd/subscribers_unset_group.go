@@ -13,7 +13,7 @@ import (
 var SubscribersUnsetGroupCmdImsi string
 
 func InitSubscribersUnsetGroupCmd() {
-	SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
+	SubscribersUnsetGroupCmd.Flags().StringVar(&SubscribersUnsetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target SIM. The IMSI can be obtained using the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SubscribersUnsetGroupCmd.RunE = SubscribersUnsetGroupCmdRunE
 

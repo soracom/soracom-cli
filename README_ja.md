@@ -321,11 +321,27 @@ soracom configure
 
 ソースからビルドしたい開発者の方や、バグ修正/機能追加等の Pull Request をしたい場合は以下のいずれかの方法でビルドおよびテストを行ってください。
 
+## API 定義ファイル/ヘルプメッセージの更新
+
+以下の API 定義ファイルを更新します。
+
+- generators/assets/soracom-api.en.yaml
+- generators/assets/soracom-api.ja.yaml
+- generators/assets/sandbox/soracom-sandbox-api.en.yaml
+- generators/assets/sandbox/soracom-sandbox-api.ja.yaml
+
+`configure --help` で表示されるメッセージを更新するには以下のファイルを更新します。
+
+- generators/assets/cli/en.yaml
+- generators/assets/cli/ja.yaml
+
 ## ローカル環境でビルドする方法 (Linux / Mac OS X)
 
 Go がインストールされている状態で、以下のようにビルドスクリプトを実行します。
 
 ```
+./scripts/copy-apidef-files.sh # Before running this script, please copy API definitions before hand.
+aws ecr-public get-login-password --profile {your AWS profile} --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 VERSION=1.2.3
 ./scripts/build.sh $VERSION
 ```

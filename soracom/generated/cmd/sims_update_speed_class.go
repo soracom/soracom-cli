@@ -25,7 +25,7 @@ var SimsUpdateSpeedClassCmdBody string
 func InitSimsUpdateSpeedClassCmd() {
 	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
-	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("Speed class. Specify one of the following. Please specify the speed class that matches the subscription.- For plan01s, plan01s - Low Data Volume, planX3 X3-5MB, planP1, plan-D, plan-D D-300MB, plan-K2 K2-300MB, plan-K:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'- For plan-US:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'    - 's1.8xfast'- For plan-DU:    - 'u1.standard'    - 'u1.slow'- For plan-KM1:    - 't1.standard'- For virtual SIM/Subscriber:    - 'arc.standard'"))
+	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdSpeedClass, "speed-class", "", TRAPI("Speed class. Specify one of the following. Please specify the speed class that matches the subscription.- For plan01s, plan01s - Low Data Volume, planX3 X3-5MB, planP1, plan-D, plan-D D-300MB, plan-K2 K2-300MB, plan-K:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'- For plan-US:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'    - 's1.8xfast'- For plan-DU:    - 'u1.standard'    - 'u1.slow'**Warning**: Speed class for plan-KM1 and virtual SIM/Subscriber cannot be changed as there is only one speed class available."))
 
 	SimsUpdateSpeedClassCmd.Flags().StringVar(&SimsUpdateSpeedClassCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

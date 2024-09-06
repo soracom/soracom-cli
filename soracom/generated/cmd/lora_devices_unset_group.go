@@ -13,7 +13,7 @@ import (
 var LoraDevicesUnsetGroupCmdDeviceId string
 
 func InitLoraDevicesUnsetGroupCmd() {
-	LoraDevicesUnsetGroupCmd.Flags().StringVar(&LoraDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
+	LoraDevicesUnsetGroupCmd.Flags().StringVar(&LoraDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("ID of the target LoRaWAN device. The ID of a LoRaWAN device can be obtained using the [LoraDevice:listLoraDevices API](#!/LoraDevice/listLoraDevices)."))
 
 	LoraDevicesUnsetGroupCmd.RunE = LoraDevicesUnsetGroupCmdRunE
 

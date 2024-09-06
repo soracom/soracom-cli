@@ -43,6 +43,7 @@ Available Commands:
   self-update          Updates soracom-cli to the latest version.
   shipping-addresses   List, create, update or delete shipping addresses.
   sigfox-devices       Manage Sigfox devices.
+  sim-profile-orders   Manage eSIM profile orders.
   sims                 Manage SIMs.
   sora-cam             Manage Soracom Cloud Camera Services (SoraCam) devices and licenses.
   soralets             Manage Soralets for Orbit.

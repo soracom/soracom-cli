@@ -19,11 +19,11 @@ var SimsCancelSubscriptionContainerDownloadCmdImsi string
 var SimsCancelSubscriptionContainerDownloadCmdSimId string
 
 func InitSimsCancelSubscriptionContainerDownloadCmd() {
-	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdIccid, "iccid", "", TRAPI("ICCID of the target subscription container."))
+	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdIccid, "iccid", "", TRAPI("The ICCID of the target subscription container."))
 
-	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdImsi, "imsi", "", TRAPI("IMSI of the target subscription container."))
+	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdImsi, "imsi", "", TRAPI("The IMSI of the target additional subscription."))
 
-	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdSimId, "sim-id", "", TRAPI("SIM ID of the target subscription container."))
+	SimsCancelSubscriptionContainerDownloadCmd.Flags().StringVar(&SimsCancelSubscriptionContainerDownloadCmdSimId, "sim-id", "", TRAPI("The SIM ID of the target SIM."))
 
 	SimsCancelSubscriptionContainerDownloadCmd.RunE = SimsCancelSubscriptionContainerDownloadCmdRunE
 

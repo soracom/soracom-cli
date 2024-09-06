@@ -26,11 +26,11 @@ var SubscribersIssueTransferTokenCmdTransferImsi []string
 var SubscribersIssueTransferTokenCmdBody string
 
 func InitSubscribersIssueTransferTokenCmd() {
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI("Email address of the destination operator."))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorEmail, "transfer-destination-operator-email", "", TRAPI("Primary email address of the destination operator. Please confirm with the owner of the destination operator."))
 
-	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI("Operator ID of the destination operator."))
+	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdTransferDestinationOperatorId, "transfer-destination-operator-id", "", TRAPI("Operator ID of the destination operator. Please confirm with the owner of the destination operator."))
 
-	SubscribersIssueTransferTokenCmd.Flags().StringSliceVar(&SubscribersIssueTransferTokenCmdTransferImsi, "transfer-imsi", []string{}, TRAPI("List of IMSIs to be transferred."))
+	SubscribersIssueTransferTokenCmd.Flags().StringSliceVar(&SubscribersIssueTransferTokenCmdTransferImsi, "transfer-imsi", []string{}, TRAPI("IMSI of the SIM to be transferred. The IMSI can be obtained from the [Sim:listSims API](#!/Sim/listSims).If there is a possibility of canceling SIMs one by one, please specify only one IMSI."))
 
 	SubscribersIssueTransferTokenCmd.Flags().StringVar(&SubscribersIssueTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

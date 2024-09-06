@@ -31,7 +31,6 @@ gopath=${gopath%%:*}
 : "Test the generated source code" && {
   make test-generated
   make lint
-  make metrics-gocyclo
 }
 
 remove_tmpdir() {

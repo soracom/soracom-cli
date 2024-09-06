@@ -315,11 +315,26 @@ i.e. perform `unconfigure` and then `configure` again in order to re-create a cr
 
 For developers who want to build from source or for those who wish to make a pull request such as bug fix / function addition, please build and test in one of the following ways.
 
+## Update API definitions / help messages
+
+Update the following API definition files:
+
+- generators/assets/soracom-api.en.yaml
+- generators/assets/soracom-api.ja.yaml
+- generators/assets/sandbox/soracom-sandbox-api.en.yaml
+- generators/assets/sandbox/soracom-sandbox-api.ja.yaml
+
+To update the message displayed with `configure --help`, update the following files:
+
+- generators/assets/cli/en.yaml
+- generators/assets/cli/ja.yaml
+
 ## How to build in a local environment (Linux / Mac OS X)
 
 In the environment where Go is installed, run the build script as follows:
 
 ```
+aws ecr-public get-login-password --profile {your AWS profile} --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 VERSION=1.2.3
 ./scripts/build.sh $VERSION
 ```

@@ -107,6 +107,11 @@ func collectSoraCamDevicesSetNameCmdParams(ac *apiClient) (*apiParams, error) {
 		return nil, err
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("name", "name", "body", parsedBody, SoraCamDevicesSetNameCmdName)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSoraCamDevicesSetNameCmd("/sora_cam/devices/{device_id}/name"),

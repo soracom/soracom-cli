@@ -43,6 +43,7 @@ Available Commands:
   self-update          soracom-cli を最新のバージョンに更新します。
   shipping-addresses   出荷先情報に関する操作を行います。
   sigfox-devices       Sigfox デバイスに関する操作を行います。
+  sim-profile-orders   eSIM プロファイルの注文に関する操作を行います。
   sims                 SIM に関する操作を行います。
   sora-cam             Soracom Cloud Camera Services (ソラカメ) に関する操作を行います。
   soralets             Orbit の Soralet に関する操作を行います。

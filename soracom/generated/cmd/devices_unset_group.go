@@ -13,7 +13,7 @@ import (
 var DevicesUnsetGroupCmdDeviceId string
 
 func InitDevicesUnsetGroupCmd() {
-	DevicesUnsetGroupCmd.Flags().StringVar(&DevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
+	DevicesUnsetGroupCmd.Flags().StringVar(&DevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Inventory device."))
 
 	DevicesUnsetGroupCmd.RunE = DevicesUnsetGroupCmdRunE
 
