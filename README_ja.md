@@ -330,7 +330,7 @@ soracom configure
 - generators/assets/sandbox/soracom-sandbox-api.en.yaml
 - generators/assets/sandbox/soracom-sandbox-api.ja.yaml
 
-`configure --help` で表示されるメッセージを更新するには以下のファイルを更新します。
+`soracom --help` や `soracom xxxxx --help` などで表示されるメッセージを更新するには以下のファイルを更新します。
 
 - generators/assets/cli/en.yaml
 - generators/assets/cli/ja.yaml
@@ -340,7 +340,6 @@ soracom configure
 Go がインストールされている状態で、以下のようにビルドスクリプトを実行します。
 
 ```
-./scripts/copy-apidef-files.sh # Before running this script, please copy API definitions before hand.
 aws ecr-public get-login-password --profile {your AWS profile} --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 VERSION=1.2.3
 ./scripts/build.sh $VERSION

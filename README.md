@@ -324,7 +324,7 @@ Update the following API definition files:
 - generators/assets/sandbox/soracom-sandbox-api.en.yaml
 - generators/assets/sandbox/soracom-sandbox-api.ja.yaml
 
-To update the message displayed with `configure --help`, update the following files:
+To update the message displayed with `soracom --help` or `soracom xxxxx --help`, update the following files:
 
 - generators/assets/cli/en.yaml
 - generators/assets/cli/ja.yaml
