@@ -340,7 +340,6 @@ soracom configure
 Go がインストールされている状態で、以下のようにビルドスクリプトを実行します。
 
 ```
-aws ecr-public get-login-password --profile {your AWS profile} --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 VERSION=1.2.3
 ./scripts/build.sh $VERSION
 ```
@@ -359,8 +358,14 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 
 ### ビルド時のトラブルシューティング
 
-ビルド時に `go: could not create module cache: mkdir /go/pkg: permission denied` のようなエラーが表示されたときは、Docker container 内の /go/pkg の権限を確認してください。build.sh では、ホストの `${GOPATH:-$HOME/go}` を /go/pkg にマウントしているため、ホストの `$GOPATH` または `$HOME/go` の権限を確認します。ほとんどの場合は、以下のコマンドで解決できるはずです。
+- ビルド時に `go: could not create module cache: mkdir /go/pkg: permission denied` のようなエラーが表示されたときは、Docker container 内の /go/pkg の権限を確認してください。build.sh では、ホストの `${GOPATH:-$HOME/go}` を /go/pkg にマウントしているため、ホストの `$GOPATH` または `$HOME/go` の権限を確認します。ほとんどの場合は、以下のコマンドで解決できるはずです。
 
-```
-sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
-```
+  ```
+  sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
+  ```
+
+- ビルド時に `ERROR: failed to solve: public.ecr.aws/bitnami/golang:x.x.x: failed to resolve source metadata for public.ecr.aws/bitnami/golang:x.x.x: unexpected status from HEAD request to https://public.ecr.aws/v2/bitnami/golang/manifests/x.x.x: 403 Forbidden` のようなエラーが表示されたときは、以下のコマンドを実行して認証情報を削除してください。
+
+  ```
+  docker logout public.ecr.aws
+  ```
