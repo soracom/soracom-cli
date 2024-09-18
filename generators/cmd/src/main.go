@@ -183,20 +183,17 @@ func getCLICommands(op *openapi3.Operation) []string {
 		return nil
 	}
 
-	sliceOfAny, ok := xSoracomCliField.([]any)
-	if !ok {
+	b, err := json.Marshal(xSoracomCliField)
+	if err != nil {
 		lib.WarnfStderr("invalid x-soracom-cli: %v (%T)\n", op.Extensions["x-soracom-cli"], op.Extensions["x-soracom-cli"])
 		return nil
 	}
 
 	var result []string
-	for _, v := range sliceOfAny {
-		s, ok := v.(string)
-		if !ok {
-			lib.WarnfStderr("invalid value of x-soracom-cli: %v (%T) in %v\n", v, v, sliceOfAny)
-			continue
-		}
-		result = append(result, s)
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		lib.WarnfStderr("invalid x-soracom-cli: %v (%T)\n", op.Extensions["x-soracom-cli"], op.Extensions["x-soracom-cli"])
+		return nil
 	}
 
 	return result
