@@ -738,6 +738,7 @@ func getXSoracomAlternativeCli(op *openapi3.Operation) string {
 
 	b, err := json.Marshal(altCLIRaw)
 	if err != nil {
+		lib.WarnfStderr("invalid x-soracom-alternative-cli: %v (%T)\n", altCLIRaw, altCLIRaw)
 		return ""
 	}
 
