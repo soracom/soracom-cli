@@ -701,13 +701,14 @@ func getXSoracomCliPagination(op *openapi3.Operation) *Pagination {
 		return nil
 	}
 
-	jr, ok := paginationRaw.(json.RawMessage)
-	if !ok {
+	b, err := json.Marshal(paginationRaw)
+	if err != nil {
+		lib.WarnfStderr("invalid x-soracom-cli-pagination: %v (%T)\n", paginationRaw, paginationRaw)
 		return nil
 	}
 
 	var p Pagination
-	err := json.Unmarshal(jr, &p)
+	err = json.Unmarshal(b, &p)
 	if err != nil {
 		lib.WarnfStderr("expected pagination info is defined in `x-soracom-cli-pagination`, but it was not\n")
 		return nil
@@ -735,13 +736,13 @@ func getXSoracomAlternativeCli(op *openapi3.Operation) string {
 		return ""
 	}
 
-	jr, ok := altCLIRaw.(json.RawMessage)
-	if !ok {
+	b, err := json.Marshal(altCLIRaw)
+	if err != nil {
 		return ""
 	}
 
 	var altCLI string
-	err := json.Unmarshal(jr, &altCLI)
+	err = json.Unmarshal(b, &altCLI)
 	if err != nil {
 		lib.WarnfStderr("expected string in `x-soracom-alternative-cli`, but it was not\n")
 		return ""

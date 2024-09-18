@@ -27,6 +27,9 @@ var SoraCamDevicesEventsListForDeviceCmdLimit int64
 // SoraCamDevicesEventsListForDeviceCmdTo holds value of 'to' option
 var SoraCamDevicesEventsListForDeviceCmdTo int64
 
+// SoraCamDevicesEventsListForDeviceCmdPaginate indicates to do pagination or not
+var SoraCamDevicesEventsListForDeviceCmdPaginate bool
+
 // SoraCamDevicesEventsListForDeviceCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesEventsListForDeviceCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func InitSoraCamDevicesEventsListForDeviceCmd() {
 	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer items than the specified limit."))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the events to be searched (unix time in milliseconds). If not specified, 'to' is set to the current time."))
+
+	SoraCamDevicesEventsListForDeviceCmd.Flags().BoolVar(&SoraCamDevicesEventsListForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().BoolVar(&SoraCamDevicesEventsListForDeviceCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -117,6 +122,10 @@ func collectSoraCamDevicesEventsListForDeviceCmdParams(ac *apiClient) (*apiParam
 		method: "GET",
 		path:   buildPathForSoraCamDevicesEventsListForDeviceCmd("/sora_cam/devices/{device_id}/events"),
 		query:  buildQueryForSoraCamDevicesEventsListForDeviceCmd(),
+
+		doPagination:                      SoraCamDevicesEventsListForDeviceCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

@@ -24,6 +24,9 @@ var SigfoxDevicesListCmdTagValueMatchMode string
 // SigfoxDevicesListCmdLimit holds value of 'limit' option
 var SigfoxDevicesListCmdLimit int64
 
+// SigfoxDevicesListCmdPaginate indicates to do pagination or not
+var SigfoxDevicesListCmdPaginate bool
+
 // SigfoxDevicesListCmdOutputJSONL indicates to output with jsonl format
 var SigfoxDevicesListCmdOutputJSONL bool
 
@@ -37,6 +40,8 @@ func InitSigfoxDevicesListCmd() {
 	SigfoxDevicesListCmd.Flags().StringVar(&SigfoxDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	SigfoxDevicesListCmd.Flags().Int64Var(&SigfoxDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of Sigfox devices to retrieve."))
+
+	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SigfoxDevicesListCmd.Flags().BoolVar(&SigfoxDevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,6 +111,10 @@ func collectSigfoxDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSigfoxDevicesListCmd("/sigfox_devices"),
 		query:  buildQueryForSigfoxDevicesListCmd(),
+
+		doPagination:                      SigfoxDevicesListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

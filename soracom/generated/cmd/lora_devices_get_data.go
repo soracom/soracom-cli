@@ -27,6 +27,9 @@ var LoraDevicesGetDataCmdLimit int64
 // LoraDevicesGetDataCmdTo holds value of 'to' option
 var LoraDevicesGetDataCmdTo int64
 
+// LoraDevicesGetDataCmdPaginate indicates to do pagination or not
+var LoraDevicesGetDataCmdPaginate bool
+
 // LoraDevicesGetDataCmdOutputJSONL indicates to output with jsonl format
 var LoraDevicesGetDataCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func InitLoraDevicesGetDataCmd() {
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (1 to 1000). The default is '10'."))
 
 	LoraDevicesGetDataCmd.Flags().Int64Var(&LoraDevicesGetDataCmdTo, "to", 0, TRAPI("End time of the target period (UNIX time in milliseconds)."))
+
+	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraDevicesGetDataCmd.Flags().BoolVar(&LoraDevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -117,6 +122,10 @@ func collectLoraDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraDevicesGetDataCmd("/lora_devices/{device_id}/data"),
 		query:  buildQueryForLoraDevicesGetDataCmd(),
+
+		doPagination:                      LoraDevicesGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

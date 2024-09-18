@@ -27,6 +27,9 @@ var SubscribersGetDataCmdLimit int64
 // SubscribersGetDataCmdTo holds value of 'to' option
 var SubscribersGetDataCmdTo int64
 
+// SubscribersGetDataCmdPaginate indicates to do pagination or not
+var SubscribersGetDataCmdPaginate bool
+
 // SubscribersGetDataCmdOutputJSONL indicates to output with jsonl format
 var SubscribersGetDataCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func InitSubscribersGetDataCmd() {
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
 
 	SubscribersGetDataCmd.Flags().Int64Var(&SubscribersGetDataCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
+
+	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersGetDataCmd.Flags().BoolVar(&SubscribersGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -117,6 +122,10 @@ func collectSubscribersGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSubscribersGetDataCmd("/subscribers/{imsi}/data"),
 		query:  buildQueryForSubscribersGetDataCmd(),
+
+		doPagination:                      SubscribersGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

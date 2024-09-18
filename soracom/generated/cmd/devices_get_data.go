@@ -27,6 +27,9 @@ var DevicesGetDataCmdLimit int64
 // DevicesGetDataCmdTo holds value of 'to' option
 var DevicesGetDataCmdTo int64
 
+// DevicesGetDataCmdPaginate indicates to do pagination or not
+var DevicesGetDataCmdPaginate bool
+
 // DevicesGetDataCmdOutputJSONL indicates to output with jsonl format
 var DevicesGetDataCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func InitDevicesGetDataCmd() {
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (1 to 1000). The default is '10'."))
 
 	DevicesGetDataCmd.Flags().Int64Var(&DevicesGetDataCmdTo, "to", 0, TRAPI("End time of the target period (UNIX time in milliseconds)."))
+
+	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesGetDataCmd.Flags().BoolVar(&DevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -117,6 +122,10 @@ func collectDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesGetDataCmd("/devices/{device_id}/data"),
 		query:  buildQueryForDevicesGetDataCmd(),
+
+		doPagination:                      DevicesGetDataCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

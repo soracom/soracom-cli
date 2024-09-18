@@ -18,6 +18,9 @@ var SimsListPacketCaptureSessionsCmdSimId string
 // SimsListPacketCaptureSessionsCmdLimit holds value of 'limit' option
 var SimsListPacketCaptureSessionsCmdLimit int64
 
+// SimsListPacketCaptureSessionsCmdPaginate indicates to do pagination or not
+var SimsListPacketCaptureSessionsCmdPaginate bool
+
 // SimsListPacketCaptureSessionsCmdOutputJSONL indicates to output with jsonl format
 var SimsListPacketCaptureSessionsCmdOutputJSONL bool
 
@@ -27,6 +30,8 @@ func InitSimsListPacketCaptureSessionsCmd() {
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 
 	SimsListPacketCaptureSessionsCmd.Flags().Int64Var(&SimsListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response."))
+
+	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimsListPacketCaptureSessionsCmd.Flags().BoolVar(&SimsListPacketCaptureSessionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -103,6 +108,10 @@ func collectSimsListPacketCaptureSessionsCmdParams(ac *apiClient) (*apiParams, e
 		method: "GET",
 		path:   buildPathForSimsListPacketCaptureSessionsCmd("/sims/{sim_id}/packet_capture_sessions"),
 		query:  buildQueryForSimsListPacketCaptureSessionsCmd(),
+
+		doPagination:                      SimsListPacketCaptureSessionsCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

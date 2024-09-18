@@ -24,6 +24,9 @@ var LoraGatewaysListCmdTagValueMatchMode string
 // LoraGatewaysListCmdLimit holds value of 'limit' option
 var LoraGatewaysListCmdLimit int64
 
+// LoraGatewaysListCmdPaginate indicates to do pagination or not
+var LoraGatewaysListCmdPaginate bool
+
 // LoraGatewaysListCmdOutputJSONL indicates to output with jsonl format
 var LoraGatewaysListCmdOutputJSONL bool
 
@@ -37,6 +40,8 @@ func InitLoraGatewaysListCmd() {
 	LoraGatewaysListCmd.Flags().StringVar(&LoraGatewaysListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraGatewaysListCmd.Flags().Int64Var(&LoraGatewaysListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN gateways to retrieve."))
+
+	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraGatewaysListCmd.Flags().BoolVar(&LoraGatewaysListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,6 +111,10 @@ func collectLoraGatewaysListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraGatewaysListCmd("/lora_gateways"),
 		query:  buildQueryForLoraGatewaysListCmd(),
+
+		doPagination:                      LoraGatewaysListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

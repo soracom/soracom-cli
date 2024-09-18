@@ -18,6 +18,9 @@ var VpgListIpAddressMapEntriesCmdVpgId string
 // VpgListIpAddressMapEntriesCmdLimit holds value of 'limit' option
 var VpgListIpAddressMapEntriesCmdLimit int64
 
+// VpgListIpAddressMapEntriesCmdPaginate indicates to do pagination or not
+var VpgListIpAddressMapEntriesCmdPaginate bool
+
 // VpgListIpAddressMapEntriesCmdOutputJSONL indicates to output with jsonl format
 var VpgListIpAddressMapEntriesCmdOutputJSONL bool
 
@@ -27,6 +30,8 @@ func InitVpgListIpAddressMapEntriesCmd() {
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
 	VpgListIpAddressMapEntriesCmd.Flags().Int64Var(&VpgListIpAddressMapEntriesCmdLimit, "limit", 0, TRAPI("The maximum number of IP Address Map entries to return."))
+
+	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -103,6 +108,10 @@ func collectVpgListIpAddressMapEntriesCmdParams(ac *apiClient) (*apiParams, erro
 		method: "GET",
 		path:   buildPathForVpgListIpAddressMapEntriesCmd("/virtual_private_gateways/{vpg_id}/ip_address_map"),
 		query:  buildQueryForVpgListIpAddressMapEntriesCmd(),
+
+		doPagination:                      VpgListIpAddressMapEntriesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

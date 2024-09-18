@@ -24,6 +24,9 @@ var SoraCamDevicesRecordingsAndEventsListForDeviceCmdFrom int64
 // SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo holds value of 'to' option
 var SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo int64
 
+// SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate indicates to do pagination or not
+var SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate bool
+
 func InitSoraCamDevicesRecordingsAndEventsListForDeviceCmd() {
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the compatible camera device."))
 
@@ -34,6 +37,8 @@ func InitSoraCamDevicesRecordingsAndEventsListForDeviceCmd() {
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the list to be searched (unix time in milliseconds). If not specified, 'from' is set to the oldest time within the retention period of the license assigned to the compatible camera device."))
 
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the list to be searched (unix time in milliseconds). If not specified, 'to' is set to the current time."))
+
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().BoolVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.RunE = SoraCamDevicesRecordingsAndEventsListForDeviceCmdRunE
 
@@ -103,6 +108,10 @@ func collectSoraCamDevicesRecordingsAndEventsListForDeviceCmdParams(ac *apiClien
 		method: "GET",
 		path:   buildPathForSoraCamDevicesRecordingsAndEventsListForDeviceCmd("/sora_cam/devices/{device_id}/recordings_and_events"),
 		query:  buildQueryForSoraCamDevicesRecordingsAndEventsListForDeviceCmd(),
+
+		doPagination:                      SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

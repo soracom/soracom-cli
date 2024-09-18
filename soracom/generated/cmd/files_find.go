@@ -21,6 +21,9 @@ var FilesFindCmdScope string
 // FilesFindCmdLimit holds value of 'limit' option
 var FilesFindCmdLimit int64
 
+// FilesFindCmdPaginate indicates to do pagination or not
+var FilesFindCmdPaginate bool
+
 // FilesFindCmdOutputJSONL indicates to output with jsonl format
 var FilesFindCmdOutputJSONL bool
 
@@ -32,6 +35,8 @@ func InitFilesFindCmd() {
 	FilesFindCmd.Flags().StringVar(&FilesFindCmdScope, "scope", "", TRAPI("Scope of the request. Specify 'private' to handle files uploaded to Harvest Files."))
 
 	FilesFindCmd.Flags().Int64Var(&FilesFindCmdLimit, "limit", 10, TRAPI("Maximum number of file entries to be returned."))
+
+	FilesFindCmd.Flags().BoolVar(&FilesFindCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	FilesFindCmd.Flags().BoolVar(&FilesFindCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -113,6 +118,10 @@ func collectFilesFindCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForFilesFindCmd("/files"),
 		query:  buildQueryForFilesFindCmd(),
+
+		doPagination:                      FilesFindCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

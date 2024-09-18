@@ -27,6 +27,9 @@ var SimsListStatusHistoryCmdLimit int64
 // SimsListStatusHistoryCmdTo holds value of 'to' option
 var SimsListStatusHistoryCmdTo int64
 
+// SimsListStatusHistoryCmdPaginate indicates to do pagination or not
+var SimsListStatusHistoryCmdPaginate bool
+
 // SimsListStatusHistoryCmdOutputJSONL indicates to output with jsonl format
 var SimsListStatusHistoryCmdOutputJSONL bool
 
@@ -42,6 +45,8 @@ func InitSimsListStatusHistoryCmd() {
 	SimsListStatusHistoryCmd.Flags().Int64Var(&SimsListStatusHistoryCmdLimit, "limit", 30, TRAPI("Maximum number of items to retrieve in one request. The response may contain fewer items than the specified limit."))
 
 	SimsListStatusHistoryCmd.Flags().Int64Var(&SimsListStatusHistoryCmdTo, "to", 0, TRAPI("End time of the status operation history entry to be searched (UNIX time in milliseconds). If not specified, 'to' is set to the current time."))
+
+	SimsListStatusHistoryCmd.Flags().BoolVar(&SimsListStatusHistoryCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimsListStatusHistoryCmd.Flags().BoolVar(&SimsListStatusHistoryCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -118,6 +123,10 @@ func collectSimsListStatusHistoryCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsListStatusHistoryCmd("/sims/{sim_id}/statuses/history"),
 		query:  buildQueryForSimsListStatusHistoryCmd(),
+
+		doPagination:                      SimsListStatusHistoryCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

@@ -21,6 +21,9 @@ var SoraletsListVersionsCmdSort string
 // SoraletsListVersionsCmdLimit holds value of 'limit' option
 var SoraletsListVersionsCmdLimit int64
 
+// SoraletsListVersionsCmdPaginate indicates to do pagination or not
+var SoraletsListVersionsCmdPaginate bool
+
 // SoraletsListVersionsCmdOutputJSONL indicates to output with jsonl format
 var SoraletsListVersionsCmdOutputJSONL bool
 
@@ -32,6 +35,8 @@ func InitSoraletsListVersionsCmd() {
 	SoraletsListVersionsCmd.Flags().StringVar(&SoraletsListVersionsCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SoraletsListVersionsCmd.Flags().Int64Var(&SoraletsListVersionsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
+
+	SoraletsListVersionsCmd.Flags().BoolVar(&SoraletsListVersionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraletsListVersionsCmd.Flags().BoolVar(&SoraletsListVersionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -108,6 +113,10 @@ func collectSoraletsListVersionsCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSoraletsListVersionsCmd("/soralets/{soralet_id}/versions"),
 		query:  buildQueryForSoraletsListVersionsCmd(),
+
+		doPagination:                      SoraletsListVersionsCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

@@ -18,6 +18,9 @@ var SoraletsListCmdSort string
 // SoraletsListCmdLimit holds value of 'limit' option
 var SoraletsListCmdLimit int64
 
+// SoraletsListCmdPaginate indicates to do pagination or not
+var SoraletsListCmdPaginate bool
+
 // SoraletsListCmdOutputJSONL indicates to output with jsonl format
 var SoraletsListCmdOutputJSONL bool
 
@@ -27,6 +30,8 @@ func InitSoraletsListCmd() {
 	SoraletsListCmd.Flags().StringVar(&SoraletsListCmdSort, "sort", "asc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SoraletsListCmd.Flags().Int64Var(&SoraletsListCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
+
+	SoraletsListCmd.Flags().BoolVar(&SoraletsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraletsListCmd.Flags().BoolVar(&SoraletsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -96,6 +101,10 @@ func collectSoraletsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSoraletsListCmd("/soralets"),
 		query:  buildQueryForSoraletsListCmd(),
+
+		doPagination:                      SoraletsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

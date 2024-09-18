@@ -47,6 +47,9 @@ var QuerySubscribersCmdTag []string
 // QuerySubscribersCmdLimit holds value of 'limit' option
 var QuerySubscribersCmdLimit int64
 
+// QuerySubscribersCmdPaginate indicates to do pagination or not
+var QuerySubscribersCmdPaginate bool
+
 // QuerySubscribersCmdOutputJSONL indicates to output with jsonl format
 var QuerySubscribersCmdOutputJSONL bool
 
@@ -75,6 +78,8 @@ func InitQuerySubscribersCmd() {
 
 	QuerySubscribersCmd.Flags().Int64Var(&QuerySubscribersCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
 
+	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
+
 	QuerySubscribersCmd.Flags().BoolVar(&QuerySubscribersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
 	QuerySubscribersCmd.RunE = QuerySubscribersCmdRunE
@@ -91,6 +96,7 @@ var QuerySubscribersCmd = &cobra.Command{
 
 func QuerySubscribersCmdRunE(cmd *cobra.Command, args []string) error {
 	lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
+	lib.WarnfStderr(TRCLI("cli.alternative-api-suggestion")+"\n", "query sims")
 
 	if len(args) > 0 {
 		return fmt.Errorf("unexpected arguments passed => %v", args)
@@ -144,6 +150,10 @@ func collectQuerySubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQuerySubscribersCmd("/query/subscribers"),
 		query:  buildQueryForQuerySubscribersCmd(),
+
+		doPagination:                      QuerySubscribersCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

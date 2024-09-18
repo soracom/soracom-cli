@@ -21,6 +21,9 @@ var SoraCamDevicesImagesListExportsCmdSort string
 // SoraCamDevicesImagesListExportsCmdLimit holds value of 'limit' option
 var SoraCamDevicesImagesListExportsCmdLimit int64
 
+// SoraCamDevicesImagesListExportsCmdPaginate indicates to do pagination or not
+var SoraCamDevicesImagesListExportsCmdPaginate bool
+
 // SoraCamDevicesImagesListExportsCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesImagesListExportsCmdOutputJSONL bool
 
@@ -32,6 +35,8 @@ func InitSoraCamDevicesImagesListExportsCmd() {
 	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending ('asc') or descending ('desc') order of 'requestedTime'. The default is 'desc' i.e. newer items are sorted first."))
 
 	SoraCamDevicesImagesListExportsCmd.Flags().Int64Var(&SoraCamDevicesImagesListExportsCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
+
+	SoraCamDevicesImagesListExportsCmd.Flags().BoolVar(&SoraCamDevicesImagesListExportsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesImagesListExportsCmd.Flags().BoolVar(&SoraCamDevicesImagesListExportsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -101,6 +106,10 @@ func collectSoraCamDevicesImagesListExportsCmdParams(ac *apiClient) (*apiParams,
 		method: "GET",
 		path:   buildPathForSoraCamDevicesImagesListExportsCmd("/sora_cam/devices/images/exports"),
 		query:  buildQueryForSoraCamDevicesImagesListExportsCmd(),
+
+		doPagination:                      SoraCamDevicesImagesListExportsCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

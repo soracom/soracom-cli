@@ -24,6 +24,9 @@ var LoraNetworkSetsListCmdTagValueMatchMode string
 // LoraNetworkSetsListCmdLimit holds value of 'limit' option
 var LoraNetworkSetsListCmdLimit int64
 
+// LoraNetworkSetsListCmdPaginate indicates to do pagination or not
+var LoraNetworkSetsListCmdPaginate bool
+
 // LoraNetworkSetsListCmdOutputJSONL indicates to output with jsonl format
 var LoraNetworkSetsListCmdOutputJSONL bool
 
@@ -37,6 +40,8 @@ func InitLoraNetworkSetsListCmd() {
 	LoraNetworkSetsListCmd.Flags().StringVar(&LoraNetworkSetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraNetworkSetsListCmd.Flags().Int64Var(&LoraNetworkSetsListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN network set to retrieve."))
+
+	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraNetworkSetsListCmd.Flags().BoolVar(&LoraNetworkSetsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,6 +111,10 @@ func collectLoraNetworkSetsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraNetworkSetsListCmd("/lora_network_sets"),
 		query:  buildQueryForLoraNetworkSetsListCmd(),
+
+		doPagination:                      LoraNetworkSetsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

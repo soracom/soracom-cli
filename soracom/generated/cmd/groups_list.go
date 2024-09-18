@@ -24,6 +24,9 @@ var GroupsListCmdTagValueMatchMode string
 // GroupsListCmdLimit holds value of 'limit' option
 var GroupsListCmdLimit int64
 
+// GroupsListCmdPaginate indicates to do pagination or not
+var GroupsListCmdPaginate bool
+
 // GroupsListCmdOutputJSONL indicates to output with jsonl format
 var GroupsListCmdOutputJSONL bool
 
@@ -37,6 +40,8 @@ func InitGroupsListCmd() {
 	GroupsListCmd.Flags().StringVar(&GroupsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Search criteria for tag strings ('tag_value')."))
 
 	GroupsListCmd.Flags().Int64Var(&GroupsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	GroupsListCmd.Flags().BoolVar(&GroupsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GroupsListCmd.Flags().BoolVar(&GroupsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,6 +111,10 @@ func collectGroupsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGroupsListCmd("/groups"),
 		query:  buildQueryForGroupsListCmd(),
+
+		doPagination:                      GroupsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

@@ -18,6 +18,9 @@ var GroupsListSubscribersCmdLastEvaluatedKey string
 // GroupsListSubscribersCmdLimit holds value of 'limit' option
 var GroupsListSubscribersCmdLimit int64
 
+// GroupsListSubscribersCmdPaginate indicates to do pagination or not
+var GroupsListSubscribersCmdPaginate bool
+
 // GroupsListSubscribersCmdOutputJSONL indicates to output with jsonl format
 var GroupsListSubscribersCmdOutputJSONL bool
 
@@ -27,6 +30,8 @@ func InitGroupsListSubscribersCmd() {
 	GroupsListSubscribersCmd.Flags().StringVar(&GroupsListSubscribersCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The IMSI of the last subscriber retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next subscriber onward."))
 
 	GroupsListSubscribersCmd.Flags().Int64Var(&GroupsListSubscribersCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GroupsListSubscribersCmd.Flags().BoolVar(&GroupsListSubscribersCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -102,6 +107,10 @@ func collectGroupsListSubscribersCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGroupsListSubscribersCmd("/groups/{group_id}/subscribers"),
 		query:  buildQueryForGroupsListSubscribersCmd(),
+
+		doPagination:                      GroupsListSubscribersCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

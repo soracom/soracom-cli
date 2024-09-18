@@ -30,6 +30,9 @@ var DataGetEntriesCmdLimit int64
 // DataGetEntriesCmdTo holds value of 'to' option
 var DataGetEntriesCmdTo int64
 
+// DataGetEntriesCmdPaginate indicates to do pagination or not
+var DataGetEntriesCmdPaginate bool
+
 // DataGetEntriesCmdOutputJSONL indicates to output with jsonl format
 var DataGetEntriesCmdOutputJSONL bool
 
@@ -47,6 +50,8 @@ func InitDataGetEntriesCmd() {
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
 
 	DataGetEntriesCmd.Flags().Int64Var(&DataGetEntriesCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
+
+	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataGetEntriesCmd.Flags().BoolVar(&DataGetEntriesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -128,6 +133,10 @@ func collectDataGetEntriesCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDataGetEntriesCmd("/data/{resource_type}/{resource_id}"),
 		query:  buildQueryForDataGetEntriesCmd(),
+
+		doPagination:                      DataGetEntriesCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

@@ -33,6 +33,9 @@ var SubscribersListCmdTagValueMatchMode string
 // SubscribersListCmdLimit holds value of 'limit' option
 var SubscribersListCmdLimit int64
 
+// SubscribersListCmdPaginate indicates to do pagination or not
+var SubscribersListCmdPaginate bool
+
 // SubscribersListCmdOutputJSONL indicates to output with jsonl format
 var SubscribersListCmdOutputJSONL bool
 
@@ -52,6 +55,8 @@ func InitSubscribersListCmd() {
 	SubscribersListCmd.Flags().StringVar(&SubscribersListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	SubscribersListCmd.Flags().Int64Var(&SubscribersListCmdLimit, "limit", 0, TRAPI("Maximum number of subscribers to retrieve (value range is 1 to 100). However, the number of subscribers returned may be less than the specified value."))
+
+	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersListCmd.Flags().BoolVar(&SubscribersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -121,6 +126,10 @@ func collectSubscribersListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSubscribersListCmd("/subscribers"),
 		query:  buildQueryForSubscribersListCmd(),
+
+		doPagination:                      SubscribersListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

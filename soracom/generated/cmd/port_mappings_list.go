@@ -15,6 +15,9 @@ var PortMappingsListCmdLastEvaluatedKey string
 // PortMappingsListCmdLimit holds value of 'limit' option
 var PortMappingsListCmdLimit int64
 
+// PortMappingsListCmdPaginate indicates to do pagination or not
+var PortMappingsListCmdPaginate bool
+
 // PortMappingsListCmdOutputJSONL indicates to output with jsonl format
 var PortMappingsListCmdOutputJSONL bool
 
@@ -22,6 +25,8 @@ func InitPortMappingsListCmd() {
 	PortMappingsListCmd.Flags().StringVar(&PortMappingsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last Port Mapping ID retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next entry onward."))
 
 	PortMappingsListCmd.Flags().Int64Var(&PortMappingsListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
+
+	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	PortMappingsListCmd.Flags().BoolVar(&PortMappingsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -91,6 +96,10 @@ func collectPortMappingsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForPortMappingsListCmd("/port_mappings"),
 		query:  buildQueryForPortMappingsListCmd(),
+
+		doPagination:                      PortMappingsListCmdPaginate,
+		paginationKeyHeaderInResponse:     "x-soracom-next-key",
+		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil
