@@ -18,9 +18,6 @@ var DataListSourceResourcesCmdResourceType string
 // DataListSourceResourcesCmdLimit holds value of 'limit' option
 var DataListSourceResourcesCmdLimit int64
 
-// DataListSourceResourcesCmdPaginate indicates to do pagination or not
-var DataListSourceResourcesCmdPaginate bool
-
 // DataListSourceResourcesCmdOutputJSONL indicates to output with jsonl format
 var DataListSourceResourcesCmdOutputJSONL bool
 
@@ -30,8 +27,6 @@ func InitDataListSourceResourcesCmd() {
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
 
 	DataListSourceResourcesCmd.Flags().Int64Var(&DataListSourceResourcesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
-
-	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataListSourceResourcesCmd.Flags().BoolVar(&DataListSourceResourcesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -101,10 +96,6 @@ func collectDataListSourceResourcesCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForDataListSourceResourcesCmd("/data/resources"),
 		query:  buildQueryForDataListSourceResourcesCmd(),
-
-		doPagination:                      DataListSourceResourcesCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

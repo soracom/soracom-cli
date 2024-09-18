@@ -36,9 +36,6 @@ var QueryDevicesCmdTag []string
 // QueryDevicesCmdLimit holds value of 'limit' option
 var QueryDevicesCmdLimit int64
 
-// QueryDevicesCmdPaginate indicates to do pagination or not
-var QueryDevicesCmdPaginate bool
-
 // QueryDevicesCmdOutputJSONL indicates to output with jsonl format
 var QueryDevicesCmdOutputJSONL bool
 
@@ -60,8 +57,6 @@ func InitQueryDevicesCmd() {
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
 	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
-
-	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -131,10 +126,6 @@ func collectQueryDevicesCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQueryDevicesCmd("/query/devices"),
 		query:  buildQueryForQueryDevicesCmd(),
-
-		doPagination:                      QueryDevicesCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

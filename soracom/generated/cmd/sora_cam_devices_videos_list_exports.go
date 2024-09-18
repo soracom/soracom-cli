@@ -21,9 +21,6 @@ var SoraCamDevicesVideosListExportsCmdSort string
 // SoraCamDevicesVideosListExportsCmdLimit holds value of 'limit' option
 var SoraCamDevicesVideosListExportsCmdLimit int64
 
-// SoraCamDevicesVideosListExportsCmdPaginate indicates to do pagination or not
-var SoraCamDevicesVideosListExportsCmdPaginate bool
-
 // SoraCamDevicesVideosListExportsCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesVideosListExportsCmdOutputJSONL bool
 
@@ -35,8 +32,6 @@ func InitSoraCamDevicesVideosListExportsCmd() {
 	SoraCamDevicesVideosListExportsCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending ('asc') or descending ('desc') order of 'requestedTime'. The default is 'desc' i.e. newer items are sorted first."))
 
 	SoraCamDevicesVideosListExportsCmd.Flags().Int64Var(&SoraCamDevicesVideosListExportsCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
-
-	SoraCamDevicesVideosListExportsCmd.Flags().BoolVar(&SoraCamDevicesVideosListExportsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesVideosListExportsCmd.Flags().BoolVar(&SoraCamDevicesVideosListExportsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,10 +101,6 @@ func collectSoraCamDevicesVideosListExportsCmdParams(ac *apiClient) (*apiParams,
 		method: "GET",
 		path:   buildPathForSoraCamDevicesVideosListExportsCmd("/sora_cam/devices/videos/exports"),
 		query:  buildQueryForSoraCamDevicesVideosListExportsCmd(),
-
-		doPagination:                      SoraCamDevicesVideosListExportsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

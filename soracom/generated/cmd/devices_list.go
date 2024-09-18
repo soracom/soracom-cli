@@ -24,9 +24,6 @@ var DevicesListCmdTagValueMatchMode string
 // DevicesListCmdLimit holds value of 'limit' option
 var DevicesListCmdLimit int64
 
-// DevicesListCmdPaginate indicates to do pagination or not
-var DevicesListCmdPaginate bool
-
 // DevicesListCmdOutputJSONL indicates to output with jsonl format
 var DevicesListCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitDevicesListCmd() {
 	DevicesListCmd.Flags().StringVar(&DevicesListCmdTagValueMatchMode, "tag-value-match-mode", "", TRAPI("Tag value match mode (exact | prefix)"))
 
 	DevicesListCmd.Flags().Int64Var(&DevicesListCmdLimit, "limit", -1, TRAPI("Max number of Devices in a response"))
-
-	DevicesListCmd.Flags().BoolVar(&DevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesListCmd.Flags().BoolVar(&DevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -111,10 +106,6 @@ func collectDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDevicesListCmd("/devices"),
 		query:  buildQueryForDevicesListCmd(),
-
-		doPagination:                      DevicesListCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

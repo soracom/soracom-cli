@@ -21,9 +21,6 @@ var SoraletsGetLogsCmdSort string
 // SoraletsGetLogsCmdLimit holds value of 'limit' option
 var SoraletsGetLogsCmdLimit int64
 
-// SoraletsGetLogsCmdPaginate indicates to do pagination or not
-var SoraletsGetLogsCmdPaginate bool
-
 // SoraletsGetLogsCmdOutputJSONL indicates to output with jsonl format
 var SoraletsGetLogsCmdOutputJSONL bool
 
@@ -35,8 +32,6 @@ func InitSoraletsGetLogsCmd() {
 	SoraletsGetLogsCmd.Flags().StringVar(&SoraletsGetLogsCmdSort, "sort", "desc", TRAPI("Sort order of the data entries. Either descending (latest data entry first) or ascending (oldest data entry first)."))
 
 	SoraletsGetLogsCmd.Flags().Int64Var(&SoraletsGetLogsCmdLimit, "limit", 0, TRAPI("The maximum number of items in a response."))
-
-	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraletsGetLogsCmd.Flags().BoolVar(&SoraletsGetLogsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -113,10 +108,6 @@ func collectSoraletsGetLogsCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSoraletsGetLogsCmd("/soralets/{soralet_id}/logs"),
 		query:  buildQueryForSoraletsGetLogsCmd(),
-
-		doPagination:                      SoraletsGetLogsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

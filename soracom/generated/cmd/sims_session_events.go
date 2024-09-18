@@ -24,9 +24,6 @@ var SimsSessionEventsCmdLimit int64
 // SimsSessionEventsCmdTo holds value of 'to' option
 var SimsSessionEventsCmdTo int64
 
-// SimsSessionEventsCmdPaginate indicates to do pagination or not
-var SimsSessionEventsCmdPaginate bool
-
 // SimsSessionEventsCmdOutputJSONL indicates to output with jsonl format
 var SimsSessionEventsCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitSimsSessionEventsCmd() {
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of event histories to retrieve. However, the number of event histories returned may be less than the specified value."))
 
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time (UNIX time in milliseconds) of the period to retrieve the session event history."))
-
-	SimsSessionEventsCmd.Flags().BoolVar(&SimsSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimsSessionEventsCmd.Flags().BoolVar(&SimsSessionEventsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -118,10 +113,6 @@ func collectSimsSessionEventsCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimsSessionEventsCmd("/sims/{sim_id}/events/sessions"),
 		query:  buildQueryForSimsSessionEventsCmd(),
-
-		doPagination:                      SimsSessionEventsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

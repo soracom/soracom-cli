@@ -18,9 +18,6 @@ var LoraNetworkSetsListGatewaysCmdNsId string
 // LoraNetworkSetsListGatewaysCmdLimit holds value of 'limit' option
 var LoraNetworkSetsListGatewaysCmdLimit int64
 
-// LoraNetworkSetsListGatewaysCmdPaginate indicates to do pagination or not
-var LoraNetworkSetsListGatewaysCmdPaginate bool
-
 // LoraNetworkSetsListGatewaysCmdOutputJSONL indicates to output with jsonl format
 var LoraNetworkSetsListGatewaysCmdOutputJSONL bool
 
@@ -30,8 +27,6 @@ func InitLoraNetworkSetsListGatewaysCmd() {
 	LoraNetworkSetsListGatewaysCmd.Flags().StringVar(&LoraNetworkSetsListGatewaysCmdNsId, "ns-id", "", TRAPI("ID of the target LoRaWAN network set."))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().Int64Var(&LoraNetworkSetsListGatewaysCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN gateways to retrieve."))
-
-	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraNetworkSetsListGatewaysCmd.Flags().BoolVar(&LoraNetworkSetsListGatewaysCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -108,10 +103,6 @@ func collectLoraNetworkSetsListGatewaysCmdParams(ac *apiClient) (*apiParams, err
 		method: "GET",
 		path:   buildPathForLoraNetworkSetsListGatewaysCmd("/lora_network_sets/{ns_id}/gateways"),
 		query:  buildQueryForLoraNetworkSetsListGatewaysCmd(),
-
-		doPagination:                      LoraNetworkSetsListGatewaysCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

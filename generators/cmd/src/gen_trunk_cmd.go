@@ -55,7 +55,7 @@ func generateArgsForTrunkCommands(apiDef *openapi3.T) []commandArgs {
 func extractTrunkCommands(apiDef *openapi3.T) []string {
 	commands := map[string]interface{}{}
 
-	for _, path := range apiDef.Paths {
+	for _, path := range apiDef.Paths.Map() {
 		for _, op := range path.Operations() {
 			cliCommands := getCLICommands(op)
 			for _, cmd := range cliCommands {

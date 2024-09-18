@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/tj/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 const apiDef1String = `
@@ -90,15 +90,8 @@ func TestGenerateArgsForTrunkCommands(t *testing.T) {
 	}
 
 	for _, data := range testData {
-		data := data // capture
-		t.Run(data.Name, func(t *testing.T) {
-			t.Parallel()
-
-			a := generateArgsForTrunkCommands(data.APIDef)
-			if !reflect.DeepEqual(a, data.CommandArgs) {
-				t.Errorf("result of generateArgsForTrunkCommands() is unmatched with expected.\nExpected: %#v\nActual:   %#v\n", data.CommandArgs, a)
-			}
-		})
+		a := generateArgsForTrunkCommands(data.APIDef)
+		assert.Equal(t, data.CommandArgs, a)
 	}
 }
 

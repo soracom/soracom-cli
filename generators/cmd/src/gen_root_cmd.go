@@ -50,7 +50,7 @@ func generateRootCommand(apiDef, apiSandboxDef *openapi3.T, templateDir, outputD
 func getAllSubcommands(apiDef *openapi3.T) []subcommand {
 	var result []subcommand
 
-	for _, pathItem := range apiDef.Paths {
+	for _, pathItem := range apiDef.Paths.Map() {
 		for _, op := range pathItem.Operations() {
 			for _, commandName := range getCLICommands(op) {
 				result = append(result, subcommand{

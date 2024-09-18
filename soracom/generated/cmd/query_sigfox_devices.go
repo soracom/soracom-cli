@@ -36,9 +36,6 @@ var QuerySigfoxDevicesCmdTag []string
 // QuerySigfoxDevicesCmdLimit holds value of 'limit' option
 var QuerySigfoxDevicesCmdLimit int64
 
-// QuerySigfoxDevicesCmdPaginate indicates to do pagination or not
-var QuerySigfoxDevicesCmdPaginate bool
-
 // QuerySigfoxDevicesCmdOutputJSONL indicates to output with jsonl format
 var QuerySigfoxDevicesCmdOutputJSONL bool
 
@@ -60,8 +57,6 @@ func InitQuerySigfoxDevicesCmd() {
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
 	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
-
-	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -131,10 +126,6 @@ func collectQuerySigfoxDevicesCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQuerySigfoxDevicesCmd("/query/sigfox_devices"),
 		query:  buildQueryForQuerySigfoxDevicesCmd(),
-
-		doPagination:                      QuerySigfoxDevicesCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

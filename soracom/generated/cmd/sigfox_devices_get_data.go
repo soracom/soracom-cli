@@ -27,9 +27,6 @@ var SigfoxDevicesGetDataCmdLimit int64
 // SigfoxDevicesGetDataCmdTo holds value of 'to' option
 var SigfoxDevicesGetDataCmdTo int64
 
-// SigfoxDevicesGetDataCmdPaginate indicates to do pagination or not
-var SigfoxDevicesGetDataCmdPaginate bool
-
 // SigfoxDevicesGetDataCmdOutputJSONL indicates to output with jsonl format
 var SigfoxDevicesGetDataCmdOutputJSONL bool
 
@@ -45,8 +42,6 @@ func InitSigfoxDevicesGetDataCmd() {
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (1 to 1000). The default is '10'."))
 
 	SigfoxDevicesGetDataCmd.Flags().Int64Var(&SigfoxDevicesGetDataCmdTo, "to", 0, TRAPI("End time of the target period (UNIX time in milliseconds)."))
-
-	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SigfoxDevicesGetDataCmd.Flags().BoolVar(&SigfoxDevicesGetDataCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -122,10 +117,6 @@ func collectSigfoxDevicesGetDataCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSigfoxDevicesGetDataCmd("/sigfox_devices/{device_id}/data"),
 		query:  buildQueryForSigfoxDevicesGetDataCmd(),
-
-		doPagination:                      SigfoxDevicesGetDataCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

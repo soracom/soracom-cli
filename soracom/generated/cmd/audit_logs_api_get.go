@@ -24,9 +24,6 @@ var AuditLogsApiGetCmdLimit int64
 // AuditLogsApiGetCmdToEpochMs holds value of 'to_epoch_ms' option
 var AuditLogsApiGetCmdToEpochMs int64
 
-// AuditLogsApiGetCmdPaginate indicates to do pagination or not
-var AuditLogsApiGetCmdPaginate bool
-
 // AuditLogsApiGetCmdOutputJSONL indicates to output with jsonl format
 var AuditLogsApiGetCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitAuditLogsApiGetCmd() {
 	AuditLogsApiGetCmd.Flags().Int64Var(&AuditLogsApiGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve (value range is 1 to 1000)."))
 
 	AuditLogsApiGetCmd.Flags().Int64Var(&AuditLogsApiGetCmdToEpochMs, "to-epoch-ms", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
-
-	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	AuditLogsApiGetCmd.Flags().BoolVar(&AuditLogsApiGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -111,10 +106,6 @@ func collectAuditLogsApiGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForAuditLogsApiGetCmd("/audit_logs/api"),
 		query:  buildQueryForAuditLogsApiGetCmd(),
-
-		doPagination:                      AuditLogsApiGetCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

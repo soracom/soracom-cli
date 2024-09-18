@@ -30,9 +30,6 @@ var LogsGetCmdLimit int64
 // LogsGetCmdTo holds value of 'to' option
 var LogsGetCmdTo int64
 
-// LogsGetCmdPaginate indicates to do pagination or not
-var LogsGetCmdPaginate bool
-
 // LogsGetCmdOutputJSONL indicates to output with jsonl format
 var LogsGetCmdOutputJSONL bool
 
@@ -50,8 +47,6 @@ func InitLogsGetCmd() {
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("The maximum number of error logs to retrieve."))
 
 	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time of the period for which to retrieve error logs (UNIX time in milliseconds)."))
-
-	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LogsGetCmd.Flags().BoolVar(&LogsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -121,10 +116,6 @@ func collectLogsGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLogsGetCmd("/logs"),
 		query:  buildQueryForLogsGetCmd(),
-
-		doPagination:                      LogsGetCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

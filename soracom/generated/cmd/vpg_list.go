@@ -24,9 +24,6 @@ var VpgListCmdTagValueMatchMode string
 // VpgListCmdLimit holds value of 'limit' option
 var VpgListCmdLimit int64
 
-// VpgListCmdPaginate indicates to do pagination or not
-var VpgListCmdPaginate bool
-
 // VpgListCmdOutputJSONL indicates to output with jsonl format
 var VpgListCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitVpgListCmd() {
 	VpgListCmd.Flags().StringVar(&VpgListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	VpgListCmd.Flags().Int64Var(&VpgListCmdLimit, "limit", 0, TRAPI("Maximum number of results per response page."))
-
-	VpgListCmd.Flags().BoolVar(&VpgListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	VpgListCmd.Flags().BoolVar(&VpgListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -111,10 +106,6 @@ func collectVpgListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForVpgListCmd("/virtual_private_gateways"),
 		query:  buildQueryForVpgListCmd(),
-
-		doPagination:                      VpgListCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

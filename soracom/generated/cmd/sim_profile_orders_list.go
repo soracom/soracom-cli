@@ -15,9 +15,6 @@ var SimProfileOrdersListCmdLastEvaluatedKey string
 // SimProfileOrdersListCmdLimit holds value of 'limit' option
 var SimProfileOrdersListCmdLimit int64
 
-// SimProfileOrdersListCmdPaginate indicates to do pagination or not
-var SimProfileOrdersListCmdPaginate bool
-
 // SimProfileOrdersListCmdOutputJSONL indicates to output with jsonl format
 var SimProfileOrdersListCmdOutputJSONL bool
 
@@ -25,8 +22,6 @@ func InitSimProfileOrdersListCmd() {
 	SimProfileOrdersListCmd.Flags().StringVar(&SimProfileOrdersListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last eSIM profile order retrieved on the previous page. By repeating the API call while specifying this parameter, the next page of eSIM profile orders will be returned."))
 
 	SimProfileOrdersListCmd.Flags().Int64Var(&SimProfileOrdersListCmdLimit, "limit", 100, TRAPI("Maximum number of eSIM profile orders to retrieve. However, the number of eSIM profile orders returned may be less than the specified value."))
-
-	SimProfileOrdersListCmd.Flags().BoolVar(&SimProfileOrdersListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SimProfileOrdersListCmd.Flags().BoolVar(&SimProfileOrdersListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -96,10 +91,6 @@ func collectSimProfileOrdersListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForSimProfileOrdersListCmd("/sim_profile_orders"),
 		query:  buildQueryForSimProfileOrdersListCmd(),
-
-		doPagination:                      SimProfileOrdersListCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

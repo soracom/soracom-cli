@@ -21,9 +21,6 @@ var SoraCamDevicesVideosListExportsForDeviceCmdSort string
 // SoraCamDevicesVideosListExportsForDeviceCmdLimit holds value of 'limit' option
 var SoraCamDevicesVideosListExportsForDeviceCmdLimit int64
 
-// SoraCamDevicesVideosListExportsForDeviceCmdPaginate indicates to do pagination or not
-var SoraCamDevicesVideosListExportsForDeviceCmdPaginate bool
-
 // SoraCamDevicesVideosListExportsForDeviceCmdOutputJSONL indicates to output with jsonl format
 var SoraCamDevicesVideosListExportsForDeviceCmdOutputJSONL bool
 
@@ -35,8 +32,6 @@ func InitSoraCamDevicesVideosListExportsForDeviceCmd() {
 	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsForDeviceCmdSort, "sort", "desc", TRAPI("Sort order. The list in the response is sorted in ascending ('asc') or descending ('desc') order of 'requestedTime'. The default is 'desc' i.e. newer items are sorted first."))
 
 	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().Int64Var(&SoraCamDevicesVideosListExportsForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
-
-	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().BoolVar(&SoraCamDevicesVideosListExportsForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().BoolVar(&SoraCamDevicesVideosListExportsForDeviceCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -112,10 +107,6 @@ func collectSoraCamDevicesVideosListExportsForDeviceCmdParams(ac *apiClient) (*a
 		method: "GET",
 		path:   buildPathForSoraCamDevicesVideosListExportsForDeviceCmd("/sora_cam/devices/{device_id}/videos/exports"),
 		query:  buildQueryForSoraCamDevicesVideosListExportsForDeviceCmd(),
-
-		doPagination:                      SoraCamDevicesVideosListExportsForDeviceCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

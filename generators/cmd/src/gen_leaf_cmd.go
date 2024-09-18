@@ -19,7 +19,7 @@ func generateLeafCommands(apiDef *openapi3.T, templateDir, outputDir string) err
 		return err
 	}
 
-	for path, pathItem := range apiDef.Paths {
+	for path, pathItem := range apiDef.Paths.Map() {
 		for method, op := range pathItem.Operations() {
 			err := generateCommandFiles(apiDef, path, method, op, subCommandTemplate, outputDir)
 			if err != nil {
@@ -179,7 +179,12 @@ func getTypeOfParam(param *openapi3.ParameterRef) string {
 		return ""
 	}
 
-	return param.Value.Schema.Value.Type
+	typ := param.Value.Schema.Value.Type
+	if typ == nil || len(typ.Slice()) != 1 {
+		return ""
+	}
+
+	return typ.Slice()[0]
 }
 
 func getTypeOfArrayItem(param *openapi3.ParameterRef) string {
@@ -191,7 +196,12 @@ func getTypeOfArrayItem(param *openapi3.ParameterRef) string {
 		return ""
 	}
 
-	return param.Value.Schema.Value.Items.Value.Type
+	typ := param.Value.Schema.Value.Items.Value.Type
+	if typ == nil || len(typ.Slice()) != 1 {
+		return ""
+	}
+
+	return typ.Slice()[0]
 }
 
 func isTypeOfParamArrayOfString(param *openapi3.ParameterRef) bool {
@@ -264,7 +274,7 @@ func isBodyArray(body *openapi3.RequestBodyRef) bool {
 		return false
 	}
 	for _, content := range body.Value.Content {
-		if content.Schema.Value.Type == "array" {
+		if content.Schema.Value.Type.Is("array") {
 			return true
 		}
 	}
@@ -276,7 +286,7 @@ func isBodyBinary(body *openapi3.RequestBodyRef) bool {
 		return false
 	}
 	for _, content := range body.Value.Content {
-		if content.Schema.Value.Type == "string" && content.Schema.Value.Format == "binary" {
+		if content.Schema.Value.Type.Is("string") && content.Schema.Value.Format == "binary" {
 			return true
 		}
 	}
@@ -363,7 +373,7 @@ func getStringFlagsFromStruct(schema *openapi3.SchemaRef) []stringFlag {
 	result := []stringFlag{}
 
 	for propName, prop := range getPropertiesFromSchema(schema) {
-		if prop.Value.Type != "string" {
+		if !prop.Value.Type.Is("string") {
 			continue
 		}
 		f := stringFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
@@ -404,7 +414,7 @@ func getStringSliceFlags(apiDef *openapi3.T, path string, parameters openapi3.Pa
 func getStringSliceFlagsFromStruct(schema *openapi3.SchemaRef) []stringFlag {
 	result := []stringFlag{}
 	for propName, prop := range getPropertiesFromSchema(schema) {
-		if prop.Value.Type != "array" || prop.Value.Items == nil || prop.Value.Items.Value.Type != "string" {
+		if !prop.Value.Type.Is("array") || prop.Value.Items == nil || !prop.Value.Items.Value.Type.Is("string") {
 			continue
 		}
 		f := stringFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
@@ -443,7 +453,7 @@ func getIntegerFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody
 func getIntegerFlagsFromStruct(schema *openapi3.SchemaRef) []integerFlag {
 	result := []integerFlag{}
 	for propName, prop := range getPropertiesFromSchema(schema) {
-		if prop.Value.Type != "integer" {
+		if !prop.Value.Type.Is("integer") {
 			continue
 		}
 		f := integerFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
@@ -482,7 +492,7 @@ func getFloatFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *
 func getFloatFlagsFromStruct(schema *openapi3.SchemaRef) []floatFlag {
 	result := []floatFlag{}
 	for propName, prop := range getPropertiesFromSchema(schema) {
-		if prop.Value.Type != "number" {
+		if !prop.Value.Type.Is("number") {
 			continue
 		}
 		f := floatFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
@@ -521,7 +531,7 @@ func getBoolFlags(apiDef *openapi3.T, parameters openapi3.Parameters, reqBody *o
 func getBoolFlagsFromStruct(schema *openapi3.SchemaRef) []boolFlag {
 	result := []boolFlag{}
 	for propName, prop := range getPropertiesFromSchema(schema) {
-		if prop.Value.Type != "boolean" {
+		if !prop.Value.Type.Is("boolean") {
 			continue
 		}
 		f := boolFlagFromProperty(propName, prop, "body", containsString(schema.Value.Required, propName))
@@ -686,7 +696,7 @@ func doesRequiredFlagExist(apiDef *openapi3.T, path string, params openapi3.Para
 }
 
 func getXSoracomCliPagination(op *openapi3.Operation) *Pagination {
-	paginationRaw, found := op.ExtensionProps.Extensions["x-soracom-cli-pagination"]
+	paginationRaw, found := op.Extensions["x-soracom-cli-pagination"]
 	if !found {
 		return nil
 	}
@@ -720,7 +730,7 @@ func getPaginationRequestParam(p *Pagination) string {
 }
 
 func getXSoracomAlternativeCli(op *openapi3.Operation) string {
-	altCLIRaw, found := op.ExtensionProps.Extensions["x-soracom-alternative-cli"]
+	altCLIRaw, found := op.Extensions["x-soracom-alternative-cli"]
 	if !found {
 		return ""
 	}
@@ -740,10 +750,10 @@ func getXSoracomAlternativeCli(op *openapi3.Operation) string {
 	return altCLI
 }
 
-func hasArrayResponse(responses openapi3.Responses) bool {
-	for _, res := range responses {
+func hasArrayResponse(responses *openapi3.Responses) bool {
+	for _, res := range responses.Map() {
 		for _, content := range res.Value.Content {
-			if content.Schema != nil && content.Schema.Value.Type == "array" {
+			if content.Schema != nil && content.Schema.Value.Type.Is("array") {
 				return true
 			}
 		}

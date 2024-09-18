@@ -27,9 +27,6 @@ var DataGetCmdLimit int64
 // DataGetCmdTo holds value of 'to' option
 var DataGetCmdTo int64
 
-// DataGetCmdPaginate indicates to do pagination or not
-var DataGetCmdPaginate bool
-
 // DataGetCmdOutputJSONL indicates to output with jsonl format
 var DataGetCmdOutputJSONL bool
 
@@ -45,8 +42,6 @@ func InitDataGetCmd() {
 	DataGetCmd.Flags().Int64Var(&DataGetCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve (value range is 1 to 1000). The default is '10'."))
 
 	DataGetCmd.Flags().Int64Var(&DataGetCmdTo, "to", 0, TRAPI("End time for the data entries search range (UNIX time in milliseconds)."))
-
-	DataGetCmd.Flags().BoolVar(&DataGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DataGetCmd.Flags().BoolVar(&DataGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -122,10 +117,6 @@ func collectDataGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForDataGetCmd("/subscribers/{imsi}/data"),
 		query:  buildQueryForDataGetCmd(),
-
-		doPagination:                      DataGetCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

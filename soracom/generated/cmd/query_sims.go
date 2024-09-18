@@ -57,9 +57,6 @@ var QuerySimsCmdTag []string
 // QuerySimsCmdLimit holds value of 'limit' option
 var QuerySimsCmdLimit int64
 
-// QuerySimsCmdPaginate indicates to do pagination or not
-var QuerySimsCmdPaginate bool
-
 // QuerySimsCmdOutputJSONL indicates to output with jsonl format
 var QuerySimsCmdOutputJSONL bool
 
@@ -95,8 +92,6 @@ func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdTag, "tag", []string{}, TRAPI("String of tag values to search. For more information, please refer to [Using Tags with Soracom Air](/docs/air/tags)."))
 
 	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
-
-	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -166,10 +161,6 @@ func collectQuerySimsCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForQuerySimsCmd("/query/sims"),
 		query:  buildQueryForQuerySimsCmd(),
-
-		doPagination:                      QuerySimsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

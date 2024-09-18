@@ -15,9 +15,6 @@ var DevicesListObjectModelsCmdLastEvaluatedKey string
 // DevicesListObjectModelsCmdLimit holds value of 'limit' option
 var DevicesListObjectModelsCmdLimit int64
 
-// DevicesListObjectModelsCmdPaginate indicates to do pagination or not
-var DevicesListObjectModelsCmdPaginate bool
-
 // DevicesListObjectModelsCmdOutputJSONL indicates to output with jsonl format
 var DevicesListObjectModelsCmdOutputJSONL bool
 
@@ -25,8 +22,6 @@ func InitDevicesListObjectModelsCmd() {
 	DevicesListObjectModelsCmd.Flags().StringVar(&DevicesListObjectModelsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last device object model in the previous page. By specifying this parameter, you can continue to retrieve the list from the next device object models onward."))
 
 	DevicesListObjectModelsCmd.Flags().Int64Var(&DevicesListObjectModelsCmdLimit, "limit", -1, TRAPI("Max number of device object models in a response"))
-
-	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	DevicesListObjectModelsCmd.Flags().BoolVar(&DevicesListObjectModelsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -96,10 +91,6 @@ func collectDevicesListObjectModelsCmdParams(ac *apiClient) (*apiParams, error) 
 		method: "GET",
 		path:   buildPathForDevicesListObjectModelsCmd("/device_object_models"),
 		query:  buildQueryForDevicesListObjectModelsCmd(),
-
-		doPagination:                      DevicesListObjectModelsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

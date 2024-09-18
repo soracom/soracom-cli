@@ -27,9 +27,6 @@ var GadgetsListCmdTagValueMatchMode string
 // GadgetsListCmdLimit holds value of 'limit' option
 var GadgetsListCmdLimit int64
 
-// GadgetsListCmdPaginate indicates to do pagination or not
-var GadgetsListCmdPaginate bool
-
 // GadgetsListCmdOutputJSONL indicates to output with jsonl format
 var GadgetsListCmdOutputJSONL bool
 
@@ -45,8 +42,6 @@ func InitGadgetsListCmd() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode.- 'exact': exact match.- 'prefix': prefix match."))
 
 	GadgetsListCmd.Flags().Int64Var(&GadgetsListCmdLimit, "limit", 0, TRAPI("Maximum number of Gadget API compatible devices data to retrieve."))
-
-	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	GadgetsListCmd.Flags().BoolVar(&GadgetsListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -116,10 +111,6 @@ func collectGadgetsListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForGadgetsListCmd("/gadgets"),
 		query:  buildQueryForGadgetsListCmd(),
-
-		doPagination:                      GadgetsListCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

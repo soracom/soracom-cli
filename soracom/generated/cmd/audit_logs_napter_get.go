@@ -27,9 +27,6 @@ var AuditLogsNapterGetCmdLimit int64
 // AuditLogsNapterGetCmdTo holds value of 'to' option
 var AuditLogsNapterGetCmdTo int64
 
-// AuditLogsNapterGetCmdPaginate indicates to do pagination or not
-var AuditLogsNapterGetCmdPaginate bool
-
 // AuditLogsNapterGetCmdOutputJSONL indicates to output with jsonl format
 var AuditLogsNapterGetCmdOutputJSONL bool
 
@@ -45,8 +42,6 @@ func InitAuditLogsNapterGetCmd() {
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve (value range is 1 to 1000)."))
 
 	AuditLogsNapterGetCmd.Flags().Int64Var(&AuditLogsNapterGetCmdTo, "to", 0, TRAPI("End time for the log search range (unixtime milliseconds)."))
-
-	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	AuditLogsNapterGetCmd.Flags().BoolVar(&AuditLogsNapterGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -116,10 +111,6 @@ func collectAuditLogsNapterGetCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForAuditLogsNapterGetCmd("/audit_logs/napter"),
 		query:  buildQueryForAuditLogsNapterGetCmd(),
-
-		doPagination:                      AuditLogsNapterGetCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

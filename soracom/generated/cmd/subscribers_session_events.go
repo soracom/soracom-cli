@@ -24,9 +24,6 @@ var SubscribersSessionEventsCmdLimit int64
 // SubscribersSessionEventsCmdTo holds value of 'to' option
 var SubscribersSessionEventsCmdTo int64
 
-// SubscribersSessionEventsCmdPaginate indicates to do pagination or not
-var SubscribersSessionEventsCmdPaginate bool
-
 // SubscribersSessionEventsCmdOutputJSONL indicates to output with jsonl format
 var SubscribersSessionEventsCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitSubscribersSessionEventsCmd() {
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
 
 	SubscribersSessionEventsCmd.Flags().Int64Var(&SubscribersSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (UNIX time in milliseconds)."))
-
-	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	SubscribersSessionEventsCmd.Flags().BoolVar(&SubscribersSessionEventsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -117,10 +112,6 @@ func collectSubscribersSessionEventsCmdParams(ac *apiClient) (*apiParams, error)
 		method: "GET",
 		path:   buildPathForSubscribersSessionEventsCmd("/subscribers/{imsi}/events/sessions"),
 		query:  buildQueryForSubscribersSessionEventsCmd(),
-
-		doPagination:                      SubscribersSessionEventsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

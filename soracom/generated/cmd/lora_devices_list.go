@@ -24,9 +24,6 @@ var LoraDevicesListCmdTagValueMatchMode string
 // LoraDevicesListCmdLimit holds value of 'limit' option
 var LoraDevicesListCmdLimit int64
 
-// LoraDevicesListCmdPaginate indicates to do pagination or not
-var LoraDevicesListCmdPaginate bool
-
 // LoraDevicesListCmdOutputJSONL indicates to output with jsonl format
 var LoraDevicesListCmdOutputJSONL bool
 
@@ -40,8 +37,6 @@ func InitLoraDevicesListCmd() {
 	LoraDevicesListCmd.Flags().StringVar(&LoraDevicesListCmdTagValueMatchMode, "tag-value-match-mode", "exact", TRAPI("Tag match mode."))
 
 	LoraDevicesListCmd.Flags().Int64Var(&LoraDevicesListCmdLimit, "limit", 0, TRAPI("Maximum number of LoRaWAN devices to retrieve."))
-
-	LoraDevicesListCmd.Flags().BoolVar(&LoraDevicesListCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	LoraDevicesListCmd.Flags().BoolVar(&LoraDevicesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -111,10 +106,6 @@ func collectLoraDevicesListCmdParams(ac *apiClient) (*apiParams, error) {
 		method: "GET",
 		path:   buildPathForLoraDevicesListCmd("/lora_devices"),
 		query:  buildQueryForLoraDevicesListCmd(),
-
-		doPagination:                      LoraDevicesListCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil

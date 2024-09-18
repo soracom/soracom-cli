@@ -18,9 +18,6 @@ var VpgListPacketCaptureSessionsCmdVpgId string
 // VpgListPacketCaptureSessionsCmdLimit holds value of 'limit' option
 var VpgListPacketCaptureSessionsCmdLimit int64
 
-// VpgListPacketCaptureSessionsCmdPaginate indicates to do pagination or not
-var VpgListPacketCaptureSessionsCmdPaginate bool
-
 // VpgListPacketCaptureSessionsCmdOutputJSONL indicates to output with jsonl format
 var VpgListPacketCaptureSessionsCmdOutputJSONL bool
 
@@ -30,8 +27,6 @@ func InitVpgListPacketCaptureSessionsCmd() {
 	VpgListPacketCaptureSessionsCmd.Flags().StringVar(&VpgListPacketCaptureSessionsCmdVpgId, "vpg-id", "", TRAPI("VPG ID"))
 
 	VpgListPacketCaptureSessionsCmd.Flags().Int64Var(&VpgListPacketCaptureSessionsCmdLimit, "limit", 10, TRAPI("Max number of results in a response."))
-
-	VpgListPacketCaptureSessionsCmd.Flags().BoolVar(&VpgListPacketCaptureSessionsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
 	VpgListPacketCaptureSessionsCmd.Flags().BoolVar(&VpgListPacketCaptureSessionsCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -108,10 +103,6 @@ func collectVpgListPacketCaptureSessionsCmdParams(ac *apiClient) (*apiParams, er
 		method: "GET",
 		path:   buildPathForVpgListPacketCaptureSessionsCmd("/virtual_private_gateways/{vpg_id}/packet_capture_sessions"),
 		query:  buildQueryForVpgListPacketCaptureSessionsCmd(),
-
-		doPagination:                      VpgListPacketCaptureSessionsCmdPaginate,
-		paginationKeyHeaderInResponse:     "x-soracom-next-key",
-		paginationRequestParameterInQuery: "last_evaluated_key",
 
 		noRetryOnError: noRetryOnError,
 	}, nil
