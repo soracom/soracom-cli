@@ -9,7 +9,7 @@ require (
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.2.1
+	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tj/assert v0.0.3
 	golang.org/x/sys v0.25.0
@@ -22,7 +22,7 @@ require (
 	github.com/elazarl/goproxy/ext v0.0.0-20200809112317-0581fc3aee2d // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/invopop/yaml v0.1.0 // indirect
 	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
