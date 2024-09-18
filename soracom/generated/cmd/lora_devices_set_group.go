@@ -19,28 +19,13 @@ var LoraDevicesSetGroupCmdDeviceId string
 // LoraDevicesSetGroupCmdGroupId holds value of 'groupId' option
 var LoraDevicesSetGroupCmdGroupId string
 
-// LoraDevicesSetGroupCmdOperatorId holds value of 'operatorId' option
-var LoraDevicesSetGroupCmdOperatorId string
-
-// LoraDevicesSetGroupCmdCreatedTime holds value of 'createdTime' option
-var LoraDevicesSetGroupCmdCreatedTime int64
-
-// LoraDevicesSetGroupCmdLastModifiedTime holds value of 'lastModifiedTime' option
-var LoraDevicesSetGroupCmdLastModifiedTime int64
-
 // LoraDevicesSetGroupCmdBody holds contents of request body to be sent
 var LoraDevicesSetGroupCmdBody string
 
 func InitLoraDevicesSetGroupCmd() {
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target LoRaWAN device."))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("ID of the target LoRaWAN device. The ID of a LoRaWAN device can be obtained using the [LoraDevice:listLoraDevices API](#!/LoraDevice/listLoraDevices)."))
 
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
-
-	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
-
-	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdCreatedTime, "created-time", 0, TRAPI(""))
-
-	LoraDevicesSetGroupCmd.Flags().Int64Var(&LoraDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
+	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdGroupId, "group-id", "", TRAPI("Group ID. The group ID can be obtained using the [Group:listGroups API](#!/Group/listGroups)."))
 
 	LoraDevicesSetGroupCmd.Flags().StringVar(&LoraDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -181,18 +166,6 @@ func buildBodyForLoraDevicesSetGroupCmd() (string, error) {
 
 	if LoraDevicesSetGroupCmdGroupId != "" {
 		result["groupId"] = LoraDevicesSetGroupCmdGroupId
-	}
-
-	if LoraDevicesSetGroupCmdOperatorId != "" {
-		result["operatorId"] = LoraDevicesSetGroupCmdOperatorId
-	}
-
-	if LoraDevicesSetGroupCmd.Flags().Lookup("created-time").Changed {
-		result["createdTime"] = LoraDevicesSetGroupCmdCreatedTime
-	}
-
-	if LoraDevicesSetGroupCmd.Flags().Lookup("last-modified-time").Changed {
-		result["lastModifiedTime"] = LoraDevicesSetGroupCmdLastModifiedTime
 	}
 
 	resultBytes, err := json.Marshal(result)

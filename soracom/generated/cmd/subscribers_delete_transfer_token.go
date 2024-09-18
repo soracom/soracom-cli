@@ -13,7 +13,7 @@ import (
 var SubscribersDeleteTransferTokenCmdToken string
 
 func InitSubscribersDeleteTransferTokenCmd() {
-	SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TRAPI("token"))
+	SubscribersDeleteTransferTokenCmd.Flags().StringVar(&SubscribersDeleteTransferTokenCmdToken, "token", "", TRAPI("Transfer token. The transfer token can be obtained from [Subscriber:issueSubscriberTransferToken](#!/Subscriber/issueSubscriberTransferToken)."))
 
 	SubscribersDeleteTransferTokenCmd.RunE = SubscribersDeleteTransferTokenCmdRunE
 

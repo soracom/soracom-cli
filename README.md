@@ -315,6 +315,20 @@ i.e. perform `unconfigure` and then `configure` again in order to re-create a cr
 
 For developers who want to build from source or for those who wish to make a pull request such as bug fix / function addition, please build and test in one of the following ways.
 
+## Update API definitions / help messages
+
+Update the following API definition files:
+
+- generators/assets/soracom-api.en.yaml
+- generators/assets/soracom-api.ja.yaml
+- generators/assets/sandbox/soracom-sandbox-api.en.yaml
+- generators/assets/sandbox/soracom-sandbox-api.ja.yaml
+
+To update the message displayed with `soracom --help` or `soracom xxxxx --help`, update the following files:
+
+- generators/assets/cli/en.yaml
+- generators/assets/cli/ja.yaml
+
 ## How to build in a local environment (Linux / Mac OS X)
 
 In the environment where Go is installed, run the build script as follows:
@@ -336,10 +350,14 @@ export SORACOM_AUTHKEY_FOR_TEST=...
 
 ### Troubleshooting Build Issues
 
-If you encounter an error like `go: could not create module cache: mkdir /go/pkg: permission denied` during the build process, please check the permissions of /go/pkg inside the Docker container. In the build.sh script, we mount the host's `${GOPATH:-$HOME/go}` to /go/pkg, so you should check the permissions of `$GOPATH` or `$HOME/go` on the host. In most cases, the following command should resolve the issue:
+- If you encounter an error like `go: could not create module cache: mkdir /go/pkg: permission denied` during the build process, please check the permissions of /go/pkg inside the Docker container. In the build.sh script, we mount the host's `${GOPATH:-$HOME/go}` to /go/pkg, so you should check the permissions of `$GOPATH` or `$HOME/go` on the host. In most cases, the following command should resolve the issue:
 
+  ```bash
+  sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
+  ```
 
+- If you see an error like `ERROR: failed to solve: public.ecr.aws/bitnami/golang:x.x.x: failed to resolve source metadata for public.ecr.aws/bitnami/golang:x.x.x: unexpected status from HEAD request to https://public.ecr.aws/v2/bitnami/golang/manifests/x.x.x: 403 Forbidden` during the build process, please run the following command to clear authentication credentials:
 
-```bash
-sudo chown -R $USER:$USER ${GOPATH:-$HOME/go}
-```
+  ```
+  docker logout public.ecr.aws
+  ```

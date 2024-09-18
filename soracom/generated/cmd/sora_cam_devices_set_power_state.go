@@ -107,6 +107,11 @@ func collectSoraCamDevicesSetPowerStateCmdParams(ac *apiClient) (*apiParams, err
 		return nil, err
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("powerState", "power-state", "body", parsedBody, SoraCamDevicesSetPowerStateCmdPowerState)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForSoraCamDevicesSetPowerStateCmd("/sora_cam/devices/{device_id}/power_state"),

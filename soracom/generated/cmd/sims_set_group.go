@@ -23,9 +23,9 @@ var SimsSetGroupCmdSimId string
 var SimsSetGroupCmdBody string
 
 func InitSimsSetGroupCmd() {
-	SimsSetGroupCmd.Flags().StringVar(&SimsSetGroupCmdGroupId, "group-id", "", TRAPI(""))
+	SimsSetGroupCmd.Flags().StringVar(&SimsSetGroupCmdGroupId, "group-id", "", TRAPI("Group ID. The group ID can be obtained using the [Group:listGroups API](#!/Group/listGroups)."))
 
-	SimsSetGroupCmd.Flags().StringVar(&SimsSetGroupCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsSetGroupCmd.Flags().StringVar(&SimsSetGroupCmdSimId, "sim-id", "", TRAPI("ID of the target SIM. The SIM ID can be obtained using the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsSetGroupCmd.Flags().StringVar(&SimsSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

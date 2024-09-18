@@ -42,7 +42,7 @@ func InitSoraCamDevicesEventsListForDeviceCmd() {
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the events to be searched (unix time in milliseconds). If not specified, 'from' is set to the oldest event time."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request. Note that the response may contain fewer items than the specified limit."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer items than the specified limit."))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the events to be searched (unix time in milliseconds). If not specified, 'to' is set to the current time."))
 

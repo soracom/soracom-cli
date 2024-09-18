@@ -30,6 +30,9 @@ var QuerySimsCmdIccid []string
 // QuerySimsCmdImsi holds multiple values of 'imsi' option
 var QuerySimsCmdImsi []string
 
+// QuerySimsCmdModuleType holds multiple values of 'module_type' option
+var QuerySimsCmdModuleType []string
+
 // QuerySimsCmdMsisdn holds multiple values of 'msisdn' option
 var QuerySimsCmdMsisdn []string
 
@@ -41,6 +44,12 @@ var QuerySimsCmdSerialNumber []string
 
 // QuerySimsCmdSimId holds multiple values of 'sim_id' option
 var QuerySimsCmdSimId []string
+
+// QuerySimsCmdStatus holds multiple values of 'status' option
+var QuerySimsCmdStatus []string
+
+// QuerySimsCmdSubscription holds multiple values of 'subscription' option
+var QuerySimsCmdSubscription []string
 
 // QuerySimsCmdTag holds multiple values of 'tag' option
 var QuerySimsCmdTag []string
@@ -57,17 +66,19 @@ var QuerySimsCmdOutputJSONL bool
 func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SIM ID of the last SIM retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
 
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching'). If omitted, it is an AND search."))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("The type of search condition.- AND: SIMs which match all of the search parameters will be returned (default if not specified).- OR: SIMs which match any of the search parameters will be returned.If the value of a search parameter contains a comma ',' (or '%2C' when URL-encoded), the value will be split at each comma and treated as multiple search values, and each resulting search value will be evaluated individually according to the AND or OR search condition."))
 
 	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search (ONLINE or OFFLINE).- 'NA': Any.- 'ONLINE': Online.- 'OFFLINE': Offline."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdBundles, "bundles", []string{}, TRAPI("Bundles type to search."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroup, "group", []string{}, TRAPI("Group name to search."))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroup, "group", []string{}, TRAPI("Name of the [group](/en/docs/groups/) to which the IoT SIM belongs."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdIccid, "iccid", []string{}, TRAPI("ICCID to search. An identifier to identify a SIM card or virtual IoT SIM (Virtual SIM/Subscriber)."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImsi, "imsi", []string{}, TRAPI("IMSI to search."))
+
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdModuleType, "module-type", []string{}, TRAPI("Module type of the IoT SIM to search.- 'mini'- 'micro'- 'nano'- 'trio': 3 in 1.- 'embedded'- 'virtual'- 'integrated'"))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdMsisdn, "msisdn", []string{}, TRAPI("MSISDN to search."))
 
@@ -76,6 +87,10 @@ func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSerialNumber, "serial-number", []string{}, TRAPI("Serial number to search. This is set only for IoT SIMs for specific regions."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSimId, "sim-id", []string{}, TRAPI("Identifier of the SIM to search."))
+
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdStatus, "status", []string{}, TRAPI("Status of the IoT SIM to search.- 'ready'- 'active'- 'inactive'- 'standby'- 'suspended'- 'terminated'- 'shipped'"))
+
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdSubscription, "subscription", []string{}, TRAPI("Subscription of the IoT SIM to search.Global coverage:- 'plan01s'- 'plan01s-low_data_volume': plan01s - Low Data Volume.- 'planP1'- 'planX1'- 'planX2'- 'planX3': planX3 X3-5MB, planX3.- 'planX3-EU'- 'plan-NA1-package'- 'plan-US'- 'plan-US-NA'- 'plan-US-max'- 'planArc01': Virtual SIM/Subscriber.Japan coverage:- 'plan-D': plan-D D-300MB, plan-D (no bundle).- 'plan-K2': plan-K2 K2-300MB.- 'plan-KM1'- 'plan-DU'- 'plan-K'- 'planArc01': Virtual SIM/Subscriber."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdTag, "tag", []string{}, TRAPI("String of tag values to search. For more information, please refer to [Using Tags with Soracom Air](/docs/air/tags)."))
 
@@ -204,6 +219,12 @@ func buildQueryForQuerySimsCmd() url.Values {
 		}
 	}
 
+	for _, s := range QuerySimsCmdModuleType {
+		if s != "" {
+			result.Add("module_type", s)
+		}
+	}
+
 	for _, s := range QuerySimsCmdMsisdn {
 		if s != "" {
 			result.Add("msisdn", s)
@@ -225,6 +246,18 @@ func buildQueryForQuerySimsCmd() url.Values {
 	for _, s := range QuerySimsCmdSimId {
 		if s != "" {
 			result.Add("sim_id", s)
+		}
+	}
+
+	for _, s := range QuerySimsCmdStatus {
+		if s != "" {
+			result.Add("status", s)
+		}
+	}
+
+	for _, s := range QuerySimsCmdSubscription {
+		if s != "" {
+			result.Add("subscription", s)
 		}
 	}
 

@@ -16,11 +16,16 @@ import (
 // DevicesSetGroupCmdDeviceId holds value of 'device_id' option
 var DevicesSetGroupCmdDeviceId string
 
+// DevicesSetGroupCmdGroupId holds value of 'groupId' option
+var DevicesSetGroupCmdGroupId string
+
 // DevicesSetGroupCmdBody holds contents of request body to be sent
 var DevicesSetGroupCmdBody string
 
 func InitDevicesSetGroupCmd() {
-	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device to update"))
+	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Inventory device."))
+
+	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdGroupId, "group-id", "", TRAPI("Group ID. The group ID can be obtained using the [Group:listGroups API](#!/Group/listGroups)."))
 
 	DevicesSetGroupCmd.Flags().StringVar(&DevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -157,6 +162,10 @@ func buildBodyForDevicesSetGroupCmd() (string, error) {
 
 	if result == nil {
 		result = make(map[string]interface{})
+	}
+
+	if DevicesSetGroupCmdGroupId != "" {
+		result["groupId"] = DevicesSetGroupCmdGroupId
 	}
 
 	resultBytes, err := json.Marshal(result)

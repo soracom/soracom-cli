@@ -13,7 +13,7 @@ import (
 var SimsSetToStandbyCmdSimId string
 
 func InitSimsSetToStandbyCmd() {
-	SimsSetToStandbyCmd.Flags().StringVar(&SimsSetToStandbyCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsSetToStandbyCmd.Flags().StringVar(&SimsSetToStandbyCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsSetToStandbyCmd.RunE = SimsSetToStandbyCmdRunE
 

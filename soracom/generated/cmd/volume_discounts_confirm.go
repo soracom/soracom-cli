@@ -13,7 +13,7 @@ import (
 var VolumeDiscountsConfirmCmdOrderId string
 
 func InitVolumeDiscountsConfirmCmd() {
-	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID."))
+	VolumeDiscountsConfirmCmd.Flags().StringVar(&VolumeDiscountsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID. The order ID can be obtained from the [Order:createVolumeDiscountQuotation API](#!/Order/createVolumeDiscountQuotation)."))
 
 	VolumeDiscountsConfirmCmd.RunE = VolumeDiscountsConfirmCmdRunE
 

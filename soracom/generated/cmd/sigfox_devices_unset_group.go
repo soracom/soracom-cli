@@ -13,7 +13,7 @@ import (
 var SigfoxDevicesUnsetGroupCmdDeviceId string
 
 func InitSigfoxDevicesUnsetGroupCmd() {
-	SigfoxDevicesUnsetGroupCmd.Flags().StringVar(&SigfoxDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
+	SigfoxDevicesUnsetGroupCmd.Flags().StringVar(&SigfoxDevicesUnsetGroupCmdDeviceId, "device-id", "", TRAPI("ID of the target Sigfox device. The ID of a Sigfox device can be obtained using the [SigfoxDevice:listSigfoxDevices API](#!/SigfoxDevice/listSigfoxDevices)."))
 
 	SigfoxDevicesUnsetGroupCmd.RunE = SigfoxDevicesUnsetGroupCmdRunE
 

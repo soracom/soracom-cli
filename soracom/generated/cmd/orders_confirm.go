@@ -13,7 +13,7 @@ import (
 var OrdersConfirmCmdOrderId string
 
 func InitOrdersConfirmCmd() {
-	OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling ['Order:listOrders API'](#!/Order/listOrders)."))
+	OrdersConfirmCmd.Flags().StringVar(&OrdersConfirmCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders)."))
 
 	OrdersConfirmCmd.RunE = OrdersConfirmCmdRunE
 

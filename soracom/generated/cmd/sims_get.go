@@ -13,7 +13,7 @@ import (
 var SimsGetCmdSimId string
 
 func InitSimsGetCmd() {
-	SimsGetCmd.Flags().StringVar(&SimsGetCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsGetCmd.Flags().StringVar(&SimsGetCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsGetCmd.RunE = SimsGetCmdRunE
 

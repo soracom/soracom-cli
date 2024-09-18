@@ -106,6 +106,11 @@ func collectOperatorAddContractCmdParams(ac *apiClient) (*apiParams, error) {
 		}
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("contractName", "contract-name", "body", parsedBody, OperatorAddContractCmdContractName)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOperatorAddContractCmd("/operators/{operator_id}/contracts"),

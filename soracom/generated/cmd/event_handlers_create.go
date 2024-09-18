@@ -38,19 +38,19 @@ var EventHandlersCreateCmdTargetSimId string
 var EventHandlersCreateCmdBody string
 
 func InitEventHandlersCreateCmd() {
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdDescription, "description", "", TRAPI("Summary."))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdName, "name", "", TRAPI("Event name."))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdStatus, "status", "", TRAPI("The status of the event handler, whether it is active or inactive.- 'active': Active- 'inactive': Inactive"))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetGroupId, "target-group-id", "", TRAPI("The target group. All IoT SIMs belonging to the group are monitored.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetImsi, "target-imsi", "", TRAPI("The target IMSI of the IoT SIM.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetOperatorId, "target-operator-id", "", TRAPI("The target operator. All IoT SIMs in your account.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
-	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetSimId, "target-sim-id", "", TRAPI(""))
+	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdTargetSimId, "target-sim-id", "", TRAPI("The target SIM ID of the IoT SIM.Specify only one of 'targetGroupId', 'targetImsi', 'targetOperatorId', or 'targetSimId'."))
 
 	EventHandlersCreateCmd.Flags().StringVar(&EventHandlersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -125,6 +125,11 @@ func collectEventHandlersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
 		}
+	}
+
+	err = checkIfRequiredStringParameterIsSupplied("name", "name", "body", parsedBody, EventHandlersCreateCmdName)
+	if err != nil {
+		return nil, err
 	}
 
 	err = checkIfRequiredStringParameterIsSupplied("status", "status", "body", parsedBody, EventHandlersCreateCmdStatus)

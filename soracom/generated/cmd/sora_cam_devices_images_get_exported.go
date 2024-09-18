@@ -15,15 +15,10 @@ var SoraCamDevicesImagesGetExportedCmdDeviceId string
 // SoraCamDevicesImagesGetExportedCmdExportId holds value of 'export_id' option
 var SoraCamDevicesImagesGetExportedCmdExportId string
 
-// SoraCamDevicesImagesGetExportedCmdOutputJSONL indicates to output with jsonl format
-var SoraCamDevicesImagesGetExportedCmdOutputJSONL bool
-
 func InitSoraCamDevicesImagesGetExportedCmd() {
 	SoraCamDevicesImagesGetExportedCmd.Flags().StringVar(&SoraCamDevicesImagesGetExportedCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
 
 	SoraCamDevicesImagesGetExportedCmd.Flags().StringVar(&SoraCamDevicesImagesGetExportedCmdExportId, "export-id", "", TRAPI("Export ID of the target export operation."))
-
-	SoraCamDevicesImagesGetExportedCmd.Flags().BoolVar(&SoraCamDevicesImagesGetExportedCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
 	SoraCamDevicesImagesGetExportedCmd.RunE = SoraCamDevicesImagesGetExportedCmdRunE
 
@@ -76,10 +71,6 @@ func SoraCamDevicesImagesGetExportedCmdRunE(cmd *cobra.Command, args []string) e
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
-		if SoraCamDevicesImagesGetExportedCmdOutputJSONL {
-			return printStringAsJSONL(body)
-		}
-
 		return prettyPrintStringAsJSON(body)
 	}
 	return err

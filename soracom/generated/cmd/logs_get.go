@@ -37,19 +37,19 @@ var LogsGetCmdPaginate bool
 var LogsGetCmdOutputJSONL bool
 
 func InitLogsGetCmd() {
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'time' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value contained in the 'x-soracom-next-key' header returned when fetching the previous page. Specify this to retrieve the next page. For more information, see [Retrieving Large Amounts of Data (Paging)](/en/docs/tools/api/paging/)."))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceId, "resource-id", "", TRAPI("Identity of the target resource to query log entries."))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceId, "resource-id", "", TRAPI("The ID of the resource for which to retrieve error logs. The ID to specify varies depending on the value of 'resource_type'.| 'resource_type' | ID to specify ||-|-|| 'Subscriber' | The IMSI of the IoT SIM. The IMSI can be obtained from the [Sim:listSims API](#!/Sim/listSims). || 'Device' | The ID of the Inventory device. The ID can be obtained from the [Device:listDevices API](#!/Device/listDevices). || 'LoraDevice' | The ID of the LoRaWAN device. The ID can be obtained from the [LoraDevice:listLoraDevices API](#!/LoraDevice/listLoraDevices). || 'SigfoxDevice' | The ID of the Sigfox device. The ID can be obtained from the [SigfoxDevice:listSigfoxDevices API](#!/SigfoxDevice/listSigfoxDevices). |"))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceType, "resource-type", "", TRAPI("Type of the target resource to query log entries."))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdResourceType, "resource-type", "", TRAPI("The type of resource for which to retrieve error logs.- 'Subscriber': IoT SIM.- 'Device': Inventory device.- 'LoraDevice': LoRaWAN device.- 'SigfoxDevice': Sigfox device."))
 
-	LogsGetCmd.Flags().StringVar(&LogsGetCmdService, "service", "", TRAPI("Service name to filter log entries."))
+	LogsGetCmd.Flags().StringVar(&LogsGetCmdService, "service", "", TRAPI("The service name to filter error logs.- 'Air': SORACOM Air- 'Beam': SORACOM Beam- 'Funk': SORACOM Funk- 'Funnel': SORACOM Funnel- 'Harvest': SORACOM Harvest Data/Files- 'Napter': SORACOM Napter- 'Orbit': SORACOM Orbit- 'Unified': Unified Endpoint"))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TRAPI("Start time for the log search range (UNIX time in milliseconds)."))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdFrom, "from", 0, TRAPI("Start time of the period for which to retrieve error logs (UNIX time in milliseconds)."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("Maximum number of log entries to retrieve."))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdLimit, "limit", 0, TRAPI("The maximum number of error logs to retrieve."))
 
-	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time for the log search range (UNIX time in milliseconds)."))
+	LogsGetCmd.Flags().Int64Var(&LogsGetCmdTo, "to", 0, TRAPI("End time of the period for which to retrieve error logs (UNIX time in milliseconds)."))
 
 	LogsGetCmd.Flags().BoolVar(&LogsGetCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

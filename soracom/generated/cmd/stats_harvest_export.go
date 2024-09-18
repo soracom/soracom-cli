@@ -32,7 +32,7 @@ var StatsHarvestExportCmdTo int64
 var StatsHarvestExportCmdBody string
 
 func InitStatsHarvestExportCmd() {
-	StatsHarvestExportCmd.Flags().StringVar(&StatsHarvestExportCmdExportMode, "export-mode", "", TRAPI("Specify how to obtain the URL to download the Harvest Data Write Count Results Data CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the Soracom platform. Specify this 'exportedFieldId' in ['Files:getExportedFile API'](#!/Files/getExportedFile) to get the URL. If the file size of the Harvest Data Write Count Results Data CSV is huge, specify 'async'.- 'sync' (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the Harvest Data Write Count Results Data CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
+	StatsHarvestExportCmd.Flags().StringVar(&StatsHarvestExportCmdExportMode, "export-mode", "", TRAPI("Specify how to obtain the URL to download the Harvest Data Write Count Results Data CSV.- 'async': Get the 'exportedFieldId' without waiting for the URL to be issued on the Soracom platform. Specify this 'exportedFieldId' in [Files:getExportedFile API](#!/Files/getExportedFile) to get the URL for downloading. If the file size of the Harvest Data Write Count Results Data CSV is huge, specify 'async'.- 'sync' (default): Wait for the URL for downloading to be issued on the Soracom platform. However, if the file size of the Harvest Data Write Count Results Data CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify 'async'."))
 
 	StatsHarvestExportCmd.Flags().StringVar(&StatsHarvestExportCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 

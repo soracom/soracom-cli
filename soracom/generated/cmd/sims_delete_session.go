@@ -13,7 +13,7 @@ import (
 var SimsDeleteSessionCmdSimId string
 
 func InitSimsDeleteSessionCmd() {
-	SimsDeleteSessionCmd.Flags().StringVar(&SimsDeleteSessionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsDeleteSessionCmd.Flags().StringVar(&SimsDeleteSessionCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsDeleteSessionCmd.RunE = SimsDeleteSessionCmdRunE
 

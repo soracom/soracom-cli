@@ -20,7 +20,7 @@ var SimsPutTagsCmdSimId string
 var SimsPutTagsCmdBody string
 
 func InitSimsPutTagsCmd() {
-	SimsPutTagsCmd.Flags().StringVar(&SimsPutTagsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsPutTagsCmd.Flags().StringVar(&SimsPutTagsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SimsPutTagsCmd.Flags().StringVar(&SimsPutTagsCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

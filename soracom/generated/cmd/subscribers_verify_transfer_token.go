@@ -20,7 +20,7 @@ var SubscribersVerifyTransferTokenCmdToken string
 var SubscribersVerifyTransferTokenCmdBody string
 
 func InitSubscribersVerifyTransferTokenCmd() {
-	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI("Transfer token."))
+	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdToken, "token", "", TRAPI("Transfer token. When a transfer token is issued using the [Subscriber:issueSubscriberTransferToken API](#!/Subscriber/issueSubscriberTransferToken), it is sent to the primary email address of the destination operator."))
 
 	SubscribersVerifyTransferTokenCmd.Flags().StringVar(&SubscribersVerifyTransferTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

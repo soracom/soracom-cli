@@ -12,8 +12,13 @@ import (
 // PortMappingsGetCmdImsi holds value of 'imsi' option
 var PortMappingsGetCmdImsi string
 
+// PortMappingsGetCmdOutputJSONL indicates to output with jsonl format
+var PortMappingsGetCmdOutputJSONL bool
+
 func InitPortMappingsGetCmd() {
-	PortMappingsGetCmd.Flags().StringVar(&PortMappingsGetCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
+	PortMappingsGetCmd.Flags().StringVar(&PortMappingsGetCmdImsi, "imsi", "", TRAPI("IMSI of the target."))
+
+	PortMappingsGetCmd.Flags().BoolVar(&PortMappingsGetCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
 	PortMappingsGetCmd.RunE = PortMappingsGetCmdRunE
 
@@ -66,6 +71,10 @@ func PortMappingsGetCmdRunE(cmd *cobra.Command, args []string) error {
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if PortMappingsGetCmdOutputJSONL {
+			return printStringAsJSONL(body)
+		}
+
 		return prettyPrintStringAsJSON(body)
 	}
 	return err

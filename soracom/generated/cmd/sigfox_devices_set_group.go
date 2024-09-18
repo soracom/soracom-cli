@@ -19,28 +19,13 @@ var SigfoxDevicesSetGroupCmdDeviceId string
 // SigfoxDevicesSetGroupCmdGroupId holds value of 'groupId' option
 var SigfoxDevicesSetGroupCmdGroupId string
 
-// SigfoxDevicesSetGroupCmdOperatorId holds value of 'operatorId' option
-var SigfoxDevicesSetGroupCmdOperatorId string
-
-// SigfoxDevicesSetGroupCmdCreatedTime holds value of 'createdTime' option
-var SigfoxDevicesSetGroupCmdCreatedTime int64
-
-// SigfoxDevicesSetGroupCmdLastModifiedTime holds value of 'lastModifiedTime' option
-var SigfoxDevicesSetGroupCmdLastModifiedTime int64
-
 // SigfoxDevicesSetGroupCmdBody holds contents of request body to be sent
 var SigfoxDevicesSetGroupCmdBody string
 
 func InitSigfoxDevicesSetGroupCmd() {
-	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device."))
+	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdDeviceId, "device-id", "", TRAPI("ID of the target Sigfox device. The ID of a Sigfox device can be obtained using the [SigfoxDevice:listSigfoxDevices API](#!/SigfoxDevice/listSigfoxDevices)."))
 
-	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdGroupId, "group-id", "", TRAPI(""))
-
-	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdOperatorId, "operator-id", "", TRAPI(""))
-
-	SigfoxDevicesSetGroupCmd.Flags().Int64Var(&SigfoxDevicesSetGroupCmdCreatedTime, "created-time", 0, TRAPI(""))
-
-	SigfoxDevicesSetGroupCmd.Flags().Int64Var(&SigfoxDevicesSetGroupCmdLastModifiedTime, "last-modified-time", 0, TRAPI(""))
+	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdGroupId, "group-id", "", TRAPI("Group ID. The group ID can be obtained using the [Group:listGroups API](#!/Group/listGroups)."))
 
 	SigfoxDevicesSetGroupCmd.Flags().StringVar(&SigfoxDevicesSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -181,18 +166,6 @@ func buildBodyForSigfoxDevicesSetGroupCmd() (string, error) {
 
 	if SigfoxDevicesSetGroupCmdGroupId != "" {
 		result["groupId"] = SigfoxDevicesSetGroupCmdGroupId
-	}
-
-	if SigfoxDevicesSetGroupCmdOperatorId != "" {
-		result["operatorId"] = SigfoxDevicesSetGroupCmdOperatorId
-	}
-
-	if SigfoxDevicesSetGroupCmd.Flags().Lookup("created-time").Changed {
-		result["createdTime"] = SigfoxDevicesSetGroupCmdCreatedTime
-	}
-
-	if SigfoxDevicesSetGroupCmd.Flags().Lookup("last-modified-time").Changed {
-		result["lastModifiedTime"] = SigfoxDevicesSetGroupCmdLastModifiedTime
 	}
 
 	resultBytes, err := json.Marshal(result)

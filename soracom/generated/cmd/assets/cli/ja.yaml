@@ -234,6 +234,9 @@ cli:
   sigfox-devices:
     summary: Sigfox デバイスに関する操作を行います。
     description: Sigfox デバイスに関する操作を行います。
+  sim-profile-orders:
+    summary: eSIM プロファイルの注文に関する操作を行います。
+    description: eSIM プロファイルの注文に関する操作を行います。
   sims:
     summary: SIM に関する操作を行います。
     description: SIM に関する操作を行います。

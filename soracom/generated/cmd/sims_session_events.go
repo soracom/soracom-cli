@@ -31,15 +31,15 @@ var SimsSessionEventsCmdPaginate bool
 var SimsSessionEventsCmdOutputJSONL bool
 
 func InitSimsSessionEventsCmd() {
-	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The time stamp of the last event retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next event onward."))
+	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The timestamp of the last event history retrieved on the previous page. By specifying this parameter, the list can be retrieved starting from the next event history."))
 
-	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
+	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
 
-	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdFrom, "from", 0, TRAPI("Start time for the events search range (UNIX time in milliseconds)."))
+	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdFrom, "from", 0, TRAPI("Start time (UNIX time in milliseconds) of the period to retrieve the session event history."))
 
-	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of events to retrieve."))
+	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdLimit, "limit", 0, TRAPI("Maximum number of event histories to retrieve. However, the number of event histories returned may be less than the specified value."))
 
-	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time for the events search range (UNIX time in milliseconds)."))
+	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdTo, "to", 0, TRAPI("End time (UNIX time in milliseconds) of the period to retrieve the session event history."))
 
 	SimsSessionEventsCmd.Flags().BoolVar(&SimsSessionEventsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -255,6 +255,9 @@ cli:
   sigfox-devices:
     summary: Manage Sigfox devices.
     description: Manage Sigfox devices.
+  sim-profile-orders:
+    summary: Manage eSIM profile orders.
+    description: Manage eSIM profile orders.
   sims:
     summary: Manage SIMs.
     description: Manage SIMs.

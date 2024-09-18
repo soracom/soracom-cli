@@ -23,9 +23,9 @@ var SubscribersSetGroupCmdImsi string
 var SubscribersSetGroupCmdBody string
 
 func InitSubscribersSetGroupCmd() {
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TRAPI(""))
+	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdGroupId, "group-id", "", TRAPI("Group ID. The group ID can be obtained using the [Group:listGroups API](#!/Group/listGroups)."))
 
-	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
+	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdImsi, "imsi", "", TRAPI("IMSI of the target SIM. The IMSI can be obtained using the [Sim:listSims API](#!/Sim/listSims)."))
 
 	SubscribersSetGroupCmd.Flags().StringVar(&SubscribersSetGroupCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

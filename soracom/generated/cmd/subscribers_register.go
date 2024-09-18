@@ -30,7 +30,7 @@ func InitSubscribersRegisterCmd() {
 
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdImsi, "imsi", "", TRAPI("IMSI of the target subscriber."))
 
-	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI("PUK or PASSCODE for IoT SIM."))
+	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI("PUK or PASSCODE for SIM."))
 
 	SubscribersRegisterCmd.Flags().StringVar(&SubscribersRegisterCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
