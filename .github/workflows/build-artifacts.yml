@@ -19,6 +19,6 @@ jobs:
       - name: Run build-artifacts command
         run: make ci-build-artifacts
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: soracom/dist/ghactions/
