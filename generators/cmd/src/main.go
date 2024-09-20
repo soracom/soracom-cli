@@ -178,23 +178,24 @@ func formatGeneratedFiles(outputDir string) error {
 }
 
 func getCLICommands(op *openapi3.Operation) []string {
-	xSoracomCliField, found := op.ExtensionProps.Extensions["x-soracom-cli"]
+	xSoracomCliField, found := op.Extensions["x-soracom-cli"]
 	if !found {
 		return nil
 	}
 
-	jr, ok := xSoracomCliField.(json.RawMessage)
-	if !ok {
-		lib.WarnfStderr("invalid x-soracom-cli: %v\n", op.ExtensionProps.Extensions["x-soracom-cli"])
+	b, err := json.Marshal(xSoracomCliField)
+	if err != nil {
+		lib.WarnfStderr("invalid x-soracom-cli: %v (%T)\n", op.Extensions["x-soracom-cli"], op.Extensions["x-soracom-cli"])
 		return nil
 	}
 
 	var result []string
-	err := json.Unmarshal(jr, &result)
+	err = json.Unmarshal(b, &result)
 	if err != nil {
-		lib.WarnfStderr("expected string array as `x-soracom-cli` but it was not\n")
+		lib.WarnfStderr("invalid x-soracom-cli: %v (%T)\n", op.Extensions["x-soracom-cli"], op.Extensions["x-soracom-cli"])
 		return nil
 	}
+
 	return result
 }
 

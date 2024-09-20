@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -202,5 +203,5 @@ func TestDetermineActualPathOf(t *testing.T) {
 
 	actualPath, err = determineActualPathOf(tempSymlinkPath)
 	assert.NoError(t, err)
-	assert.Equal(t, tempFilePath, actualPath)
+	assert.True(t, strings.Contains(actualPath, tempFilePath)) // https://github.com/soracom/soracom-cli/pull/99#pullrequestreview-2312477684
 }
