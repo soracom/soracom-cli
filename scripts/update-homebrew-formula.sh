@@ -19,7 +19,7 @@ function cleanup {
 trap cleanup EXIT
 
 cd "$tmpdir"
-git clone git@github.com:soracom/homebrew-soracom-cli
+git clone https://github.com/soracom/homebrew-soracom-cli.git
 cd homebrew-soracom-cli
 git checkout master
 bash ./update-formula.sh "$version"
