@@ -34,9 +34,9 @@ popd >/dev/null 2>&1
 
 pushd "$d/soracom/dist/$VERSION/" >/dev/null 2>&1
 if [ "$OS" == "darwin" ] || [ "$OS" == "freebsd" ]; then
-    unzip -o soracom_${VERSION}_${OS}_${ARCH}.zip
+    unzip -o "soracom_${VERSION}_${OS}_${ARCH}.zip"
 elif [ "$OS" == "linux" ]; then
-    tar xvzf soracom_${VERSION}_${OS}_${ARCH}.tar.gz
+    tar xvzf "soracom_${VERSION}_${OS}_${ARCH}.tar.gz"
 fi
 
 popd >/dev/null 2>&1
