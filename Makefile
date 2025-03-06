@@ -15,9 +15,9 @@ help:
 
 install-dev-deps: ## Install dev dependencies
 	@echo 'Installing dependencies for development'
-	go install github.com/tc-hib/go-winres@v0.3.1
-	go install honnef.co/go/tools/cmd/staticcheck@v0.4.2
-	go install golang.org/x/tools/cmd/goimports@v0.1.7
+	go install github.com/tc-hib/go-winres@v0.3.3
+	go install honnef.co/go/tools/cmd/staticcheck@v0.6.0
+	go install golang.org/x/tools/cmd/goimports@v0.30.0
 .PHONY:install-dev-deps
 
 test: ## Test generator's library

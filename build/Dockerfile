@@ -1,4 +1,4 @@
-FROM public.ecr.aws/bitnami/golang:1.20.5
+FROM public.ecr.aws/docker/library/golang:1.24.0
 
 RUN apt update && apt upgrade -y && apt install -y fakeroot shellcheck zip
 
