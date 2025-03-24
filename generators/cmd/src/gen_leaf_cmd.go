@@ -567,10 +567,25 @@ func stringFlagFromParameter(param *openapi3.ParameterRef, path string, required
 	}
 }
 
+// getCliParamNameは、x-soracom-cli-param-name属性が定義されている場合はその値を使用し、
+// 定義されていない場合は元のプロパティ名を返します。
+func getCliParamName(propName string, prop *openapi3.SchemaRef) string {
+	if prop.Value.Extensions != nil {
+		if cliParamRaw, found := prop.Value.Extensions["x-soracom-cli-param-name"]; found {
+			if cliParam, ok := cliParamRaw.(string); ok {
+				return cliParam
+			}
+		}
+	}
+	return propName
+}
+
 func stringFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) stringFlag {
+	cliParamName := getCliParamName(propName, prop)
+
 	return stringFlag{
-		VarName:               lib.TitleCase(propName),
-		LongOption:            lib.OptionCase(propName),
+		VarName:               lib.TitleCase(cliParamName),
+		LongOption:            lib.OptionCase(cliParamName),
 		DefaultValueSpecified: prop.Value.Default != nil,
 		DefaultValue:          getDefaultValueAsString(prop),
 		ShortHelp:             convertDescriptionToShortHelp(prop.Value.Description),
@@ -594,9 +609,11 @@ func integerFlagFromParameter(param *openapi3.ParameterRef) integerFlag {
 }
 
 func integerFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) integerFlag {
+	cliParamName := getCliParamName(propName, prop)
+
 	return integerFlag{
-		VarName:               lib.TitleCase(propName),
-		LongOption:            lib.OptionCase(propName),
+		VarName:               lib.TitleCase(cliParamName),
+		LongOption:            lib.OptionCase(cliParamName),
 		DefaultValueSpecified: prop.Value.Default != nil,
 		DefaultValue:          getDefaultValueAsInt64(prop),
 		Format:                prop.Value.Format,
@@ -621,9 +638,11 @@ func floatFlagFromParameter(param *openapi3.ParameterRef) floatFlag {
 }
 
 func floatFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) floatFlag {
+	cliParamName := getCliParamName(propName, prop)
+
 	return floatFlag{
-		VarName:               lib.TitleCase(propName),
-		LongOption:            lib.OptionCase(propName),
+		VarName:               lib.TitleCase(cliParamName),
+		LongOption:            lib.OptionCase(cliParamName),
 		DefaultValueSpecified: prop.Value.Default != nil,
 		DefaultValue:          getDefaultValueAsFloat(prop),
 		Format:                prop.Value.Format,
@@ -648,9 +667,11 @@ func boolFlagFromParameter(param *openapi3.ParameterRef) boolFlag {
 }
 
 func boolFlagFromProperty(propName string, prop *openapi3.SchemaRef, in string, required bool) boolFlag {
+	cliParamName := getCliParamName(propName, prop)
+
 	return boolFlag{
-		VarName:               lib.TitleCase(propName),
-		LongOption:            lib.OptionCase(propName),
+		VarName:               lib.TitleCase(cliParamName),
+		LongOption:            lib.OptionCase(cliParamName),
 		DefaultValueSpecified: prop.Value.Default != nil,
 		DefaultValue:          getDefaultValueAsBool(prop),
 		Format:                prop.Value.Format,

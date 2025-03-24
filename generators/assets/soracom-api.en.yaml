@@ -24445,6 +24445,7 @@ components:
 
             **Warning**: The maximum size of an HTTP request, including the URL, headers, and body, is 5 MiB. If it exceeds 5 MiB, an error will be returned.
           type: string
+          x-soracom-cli-param-name: request-body
         headers:
           additionalProperties:
             type: string

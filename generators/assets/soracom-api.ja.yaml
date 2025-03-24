@@ -23918,6 +23918,7 @@ components:
 
             **Warning**: HTTP リクエストの最大サイズは、URL、ヘッダー、本文を含めて 5 MiB です。5 MiB を超えるとエラーが返されます。
           type: string
+          x-soracom-cli-param-name: request-body
         headers:
           additionalProperties:
             type: string
