@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20240905-064448
+  version: 20250314-063957
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -1016,6 +1016,7 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
       - description: |
           データ送信元リソースの ID。`resource_type` の値によって、指定する ID が異なります。
@@ -1027,6 +1028,7 @@ paths:
           | `Sim` | IoT SIM の SIM ID |
           | `SigfoxDevice` | Sigfox デバイスの ID |
           | `Device` | Inventory デバイスの ID |
+          | `SoraCam` | ソラカメ対応カメラのデバイス ID |
         in: path
         name: resource_id
         required: true
@@ -1106,8 +1108,19 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
-      - description: データ送信元リソースの ID
+      - description: |
+          データ送信元リソースの ID。`resource_type` の値によって、指定する ID が異なります。
+
+          | `resource_type` | 指定する ID |
+          |-|-|
+          | `Subscriber` | IoT SIM の IMSI |
+          | `LoraDevice` | LoRaWAN デバイスの ID |
+          | `Sim` | IoT SIM の SIM ID |
+          | `SigfoxDevice` | Sigfox デバイスの ID |
+          | `Device` | Inventory デバイスの ID |
+          | `SoraCam` | ソラカメ対応カメラのデバイス ID |
         in: path
         name: resource_id
         required: true
@@ -1145,8 +1158,19 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
-      - description: データ送信元リソースの ID
+      - description: |
+          データ送信元リソースの ID。`resource_type` の値によって、指定する ID が異なります。
+
+          | `resource_type` | 指定する ID |
+          |-|-|
+          | `Subscriber` | IoT SIM の IMSI |
+          | `LoraDevice` | LoRaWAN デバイスの ID |
+          | `Sim` | IoT SIM の SIM ID |
+          | `SigfoxDevice` | Sigfox デバイスの ID |
+          | `Device` | Inventory デバイスの ID |
+          | `SoraCam` | ソラカメ対応カメラのデバイス ID |
         in: path
         name: resource_id
         required: true
@@ -1177,7 +1201,15 @@ paths:
         当該オペレータに属するデータ送信元リソースのリストを返す。データ送信元リソースの総数が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: listDataSourceResources
       parameters:
-      - description: 対象のリソース Type
+      - description: |
+          対象のリソース Type。
+
+          - `Subscriber`: IoT SIM。
+          - `LoraDevice`: LoRaWAN デバイス。
+          - `Sim`: IoT SIM。
+          - `SigfoxDevice`: Sigfox デバイス。
+          - `Device`: Inventory デバイス。
+          - `SoraCam`: ソラカメ対応カメラ。
         in: query
         name: resource_type
         required: false
@@ -1188,6 +1220,7 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
       - description: 取得するデータエントリ数の上限
         in: query
@@ -4151,137 +4184,10 @@ paths:
       x-sam-operationId: deleteTag
       x-soracom-cli:
       - groups delete-tag
-  /lagoon/dashboards/{dashboard_id}/permissions:
-    put:
-      description: |
-        SORACOM Lagoon 2 の Dashboard の権限を更新します。
-
-        **Warning**: この API では、SORACOM Lagoon 3 の Dashboard の権限は更新できません。
-      operationId: updateLagoonDashboardPermissions
-      parameters:
-      - description: 対象の Dashboard の ID。
-        in: path
-        name: dashboard_id
-        required: true
-        schema:
-          format: int64
-          type: integer
-      - description: |
-          値が `true` の場合、Lagoon 2 にリクエストが発行されます。
-          このプロパティは、Lagoon 2 と Lagoon 3 を利用している場合のみ有効です。
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LagoonDashboardPermissionsUpdatingRequest'
-        description: リクエスト。
-        required: true
-      responses:
-        "204":
-          description: 更新されました。
-        "400":
-          description: 不正なリクエストです。
-        "403":
-          description: 許可されていません。
-      security:
-      - api_key: []
-        api_token: []
-      summary: SORACOM Lagoon 2 の Dashboard の権限を更新する
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards update-permissions
-  /lagoon/dashboards/{dashboard_id}/permissions/init:
-    post:
-      description: |
-        SORACOM Lagoon 2 の Dashboard の権限を初期化します。
-
-        **Warning**: この API では、SORACOM Lagoon 3 の Dashboard の権限は初期化できません。
-      operationId: initializeLagoonDashboardPermissions
-      parameters:
-      - description: 対象の Dashboard の ID。
-        in: path
-        name: dashboard_id
-        required: true
-        schema:
-          format: int64
-          type: integer
-      - description: |
-          値が `true` の場合、Lagoon 2 にリクエストが発行されます。
-          このプロパティは、Lagoon 2 と Lagoon 3 を利用している場合のみ有効です。
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      responses:
-        "204":
-          description: 更新されました。
-        "400":
-          description: 不正なリクエストです。
-        "403":
-          description: 許可されていません。
-      security:
-      - api_key: []
-        api_token: []
-      summary: SORACOM Lagoon 2 の Dashboard の権限を初期化する
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards init-permissions
-  /lagoon/dashboards/permissions:
-    get:
-      description: |
-        SORACOM Lagoon 2 の全 Dashboard の権限を取得します。
-
-        **Warning**: この API では、SORACOM Lagoon 3 の Dashboard の権限は取得できません。
-      operationId: listLagoonDashboardsPermissions
-      parameters:
-      - description: |
-          値が `true` の場合、Lagoon 2 にリクエストが発行されます。
-          このプロパティは、Lagoon 2 と Lagoon 3 を利用している場合のみ有効です。
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/LagoonDashboardPermissionsResponse'
-                type: array
-          description: OK.
-        "400":
-          description: 不正なリクエストです。
-      security:
-      - api_key: []
-        api_token: []
-      summary: SORACOM Lagoon 2 の全 Dashboard の権限を取得する
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards list-permissions
   /lagoon/image/link:
     get:
       description: SORACOM Lagoon コンソールのロゴの URL を取得します。
       operationId: getImageLink
-      parameters:
-      - description: |
-          値が `true` の場合、Lagoon 2 にリクエストが発行されます。
-          このプロパティは、Lagoon 2 と Lagoon 3 を利用している場合のみ有効です。
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
       responses:
         "200":
           content:
@@ -4350,44 +4256,6 @@ paths:
       - Lagoon
       x-soracom-cli:
       - lagoon license-packs update
-  /lagoon/migration:
-    get:
-      description: SORACOM Lagoon のバージョン移行に関連する情報を取得します。この API による操作は root アカウントのみが可能です。
-      operationId: getLagoonMigrationInfo
-      requestBody:
-        $ref: '#/components/requestBodies/LagoonPlanChangingRequest'
-      responses:
-        "200":
-          description: SORACOM Lagoon のバージョン移行に関連する情報。
-      security:
-      - api_key: []
-        api_token: []
-      summary: SORACOM Lagoon のバージョン移行に関連する情報の取得
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon migration get-info
-    post:
-      description: SORACOM Lagoon のバージョン移行を実行します。この API による操作は root アカウントのみが可能です。
-      operationId: migrateLagoon
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LagoonMigrationRequest'
-        description: リクエスト。
-        required: true
-      responses:
-        "200":
-          description: SORACOM Lagoon のバージョン移行が完了しました。
-      security:
-      - api_key: []
-        api_token: []
-      summary: SORACOM Lagoon のバージョン移行の実行
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon migration migrate
   /lagoon/plan:
     put:
       description: |
@@ -4469,15 +4337,6 @@ paths:
     get:
       description: オペレーターに属する SORACOM Lagoon のユーザー一覧を取得します。
       operationId: listLagoonUsers
-      parameters:
-      - description: |
-          値が `true` の場合、Lagoon 2 にリクエストが発行されます。
-          このプロパティは、Lagoon 2 と Lagoon 3 を利用している場合のみ有効です。
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
       responses:
         "200":
           content:
@@ -5363,7 +5222,7 @@ paths:
           type: string
       requestBody:
         content:
-          text/plain:
+          application/json:
             schema:
               $ref: '#/components/schemas/SetNetworkSetRequest'
         description: LoRaWAN ネットワーク ID。
@@ -7140,10 +6999,10 @@ paths:
       - operator revoke-operator-auth-tokens
   /operators/{operator_id}/users:
     get:
-      description: SAM ユーザー一覧を返す。
+      description: SAM ユーザーの一覧を取得します。
       operationId: listUsers
       parameters:
-      - description: オペレーター ID
+      - description: オペレーター ID。
         in: path
         name: operator_id
         required: true
@@ -8658,7 +8517,7 @@ paths:
       - payer-information register
   /port_mappings:
     get:
-      description: オンデマンドリモートアクセスのリストを返します。
+      description: Napter のオンデマンドリモートアクセスのリストを返します。
       operationId: listPortMappings
       parameters:
       - description: 取得結果のページごとの最大表示件数。
@@ -8685,7 +8544,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: オンデマンドリモートアクセスのリストを取得する
+      summary: Napter のオンデマンドリモートアクセスのリストを取得する
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8696,7 +8555,7 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: オンデマンドリモートアクセスを新規作成します。
+      description: Napter のオンデマンドリモートアクセスを新規作成します。
       operationId: createPortMapping
       requestBody:
         content:
@@ -8715,23 +8574,23 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: オンデマンドリモートアクセスを作成する
+      summary: Napter のオンデマンドリモートアクセスを作成する
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings create
   /port_mappings/{ip_address}/{port}:
     delete:
-      description: 指定したオンデマンドリモートアクセスを削除します。
+      description: Napter のオンデマンドリモートアクセスを削除します。
       operationId: deletePortMapping
       parameters:
-      - description: 対象となるオンデマンドリモートアクセスの IP アドレス。
+      - description: 削除するオンデマンドリモートアクセスの IP アドレス。
         in: path
         name: ip_address
         required: true
         schema:
           type: string
-      - description: 対象となるオンデマンドリモートアクセスのポート番号。
+      - description: 削除するオンデマンドリモートアクセスのポート番号。
         in: path
         name: port
         required: true
@@ -8739,20 +8598,20 @@ paths:
           type: string
       responses:
         "204":
-          description: 指定したオンデマンドリモートアクセスの削除を完了した。
+          description: 指定したオンデマンドリモートアクセスが削除された。
         "404":
           description: 指定したオンデマンドリモートアクセスは存在しない。
       security:
       - api_key: []
         api_token: []
-      summary: オンデマンドリモートアクセスを削除する
+      summary: Napter のオンデマンドリモートアクセスを削除する
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings delete
   /port_mappings/sims/{sim_id}:
     get:
-      description: IoT SIM に紐づくオンデマンドリモートアクセスのリストを取得します。
+      description: Napter のオンデマンドリモートアクセス (SIM ID を指定して作成されたもの) のリストを取得します。
       operationId: listPortMappingsForSim
       parameters:
       - description: 対象の IoT SIM の SIM ID。
@@ -8769,13 +8628,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
-          description: IoT SIM に紐づくオンデマンドリモートアクセスのリスト。
+          description: オンデマンドリモートアクセス (SIM ID を指定して作成されたもの) のリスト。
         "404":
-          description: 指定した IoT SIM は存在しない。
+          description: 指定した IoT SIM に紐づくオンデマンドリモートアクセスは存在しない。
       security:
       - api_key: []
         api_token: []
-      summary: IoT SIM に紐づくオンデマンドリモートアクセスのリストを取得する
+      summary: Napter のオンデマンドリモートアクセス (SIM ID を指定して作成されたもの) のリストを取得する
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8783,7 +8642,7 @@ paths:
   /port_mappings/subscribers/{imsi}:
     get:
       description: |
-        `destinationChoosingStrategy` が `IMSI_PRIORITIZED` のオンデマンドリモートアクセス (IMSI を指定して作成されたオンデマンドリモートアクセス) のリストを取得します。
+        `destinationChoosingStrategy` が `IMSI_PRIORITIZED` のオンデマンドリモートアクセス (IMSI を指定して作成されたもの) のリストを取得します。
       operationId: listPortMappingsForSubscriber
       parameters:
       - description: 対象の IMSI。
@@ -8801,13 +8660,13 @@ paths:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
           description: |
-            `destinationChoosingStrategy` が `IMSI_PRIORITIZED` のオンデマンドリモートアクセス (IMSI を指定して作成されたオンデマンドリモートアクセス) のリスト。
+            `destinationChoosingStrategy` が `IMSI_PRIORITIZED` のオンデマンドリモートアクセス (IMSI を指定して作成されたもの) のリスト。
         "404":
-          description: 指定した IMSI を指定して作成されたオンデマンドリモートアクセスは存在しない。
+          description: 指定した IMSI に紐づくオンデマンドリモートアクセスは存在しない。
       security:
       - api_key: []
         api_token: []
-      summary: IMSI を指定して作成されたオンデマンドリモートアクセスのリストを取得する
+      summary: Napter のオンデマンドリモートアクセス (IMSI を指定して作成されたもの) のリストを取得する
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8840,8 +8699,11 @@ paths:
       - products list
   /query/devices:
     get:
-      description: SORACOM Inventory デバイスをクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての
-        SORACOM Inventory デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
+      description: |
+        SORACOM Inventory デバイスをクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての
+        Inventory デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
+
+        **Warning**: この API は、目的の Inventory デバイスのデバイス ID がわからない場合や、条件に一致する Inventory デバイスの一覧を取得する用途で使用してください。デバイス ID がわかっている場合は、[Device:getDevice API](#/Device/getDevice) を使用してください。
       operationId: searchDevices
       parameters:
       - description: 検索する SORACOM Inventory デバイスの名前。
@@ -8857,6 +8719,15 @@ paths:
         explode: true
         in: query
         name: group
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: 検索するグループの ID。
+        explode: true
+        in: query
+        name: group_id
         required: false
         schema:
           items:
@@ -8950,8 +8821,11 @@ paths:
           header: x-soracom-next-key
   /query/sigfox_devices:
     get:
-      description: Sigfox デバイスをクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての
+      description: |
+        Sigfox デバイスをクエリに応じて検索します。部分一致したものを返却します。この API 権限が付与された場合、すべての
         Sigfox デバイスに対して group も含めた検索/一覧取得を行える権限が与えられます。
+
+        **Warning**: この API は、目的の Sigfox デバイスのデバイス ID がわからない場合や、条件に一致する Sigfox デバイスの一覧を取得する用途で使用してください。デバイス ID がわかっている場合は、[SigfoxDevice:getSigfoxDevice API](#/SigfoxDevice/getSigfoxDevice) を使用してください。
       operationId: searchSigfoxDevices
       parameters:
       - description: 検索する Sigfox デバイスの名前。
@@ -8967,6 +8841,15 @@ paths:
         explode: true
         in: query
         name: group
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: 検索するグループの ID。
+        explode: true
+        in: query
+        name: group_id
         required: false
         schema:
           items:
@@ -9091,6 +8974,8 @@ paths:
         - クエリパラメーターを複数指定した場合は、`search_type` で検索の種別 (AND 検索または OR 検索) を指定できます。
 
         **Warning**: SAM ユーザーに、この API を呼び出す権限が付与された場合は、その SAM ユーザーにはすべての IoT SIM に対してグループも含めた検索 / 一覧取得を行う権限が与えられます。
+
+        **Warning**: この API は、目的の IoT SIM の SIM ID がわからない場合や、条件に一致する IoT SIM の一覧を取得する用途で使用してください。SIM ID がわかっている場合は、[Sim:getSim API](#/Sim/getSim) を使用してください。
       operationId: searchSims
       parameters:
       - description: IoT SIM の名前。
@@ -9116,6 +9001,15 @@ paths:
         explode: true
         in: query
         name: group
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IoT SIM が所属する [グループ](/ja-jp/docs/group-configuration/) の ID。
+        explode: true
+        in: query
+        name: group_id
         required: false
         schema:
           items:
@@ -9205,7 +9099,7 @@ paths:
             type: string
           type: array
       - description: |
-          セッションの状態。
+          セッションの状態。以下のいずれかを指定します。
 
           - `NA`: 任意。
           - `ONLINE`: オンライン。
@@ -9222,29 +9116,28 @@ paths:
           format: string
           type: string
       - description: |
-          IoT SIM のサブスクリプション。
+          検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
 
-          グローバルカバレッジ:
-          - `plan01s`
-          - `plan01s-low_data_volume`: plan01s - Low Data Volume。
-          - `planP1`
-          - `planX1`
-          - `planX2`
-          - `planX3`: planX3 X3-5MB、planX3。
-          - `planX3-EU`
-          - `plan-NA1-package`
-          - `plan-US`
-          - `plan-US-NA`
-          - `plan-US-max`
-          - `planArc01`: バーチャル SIM/Subscriber。
-
-          日本カバレッジ:
-          - `plan-D`: plan-D D-300MB、plan-D (バンドルなし)。
-          - `plan-K2`: plan-K2 K2-300MB。
-          - `plan-KM1`
-          - `plan-DU`
-          - `plan-K`
-          - `planArc01`: バーチャル SIM/Subscriber。
+          - 日本カバレッジの場合は、以下のいずれかを指定します。
+            - `plan-D` (plan-D (バンドルなし)、plan-D D-300MB)
+            - `plan-K2` (plan-K2 K2-300MB)
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`
+          - グローバルカバレッジの場合は、以下のいずれかを指定します。
+            - `plan01s`
+            - `plan01s-low_data_volume` (plan01s - Low Data Volume)
+            - `planX3` (planX3 X3-5MB)
+            - `planP1`
+            - `plan-US`
+            - `plan-NA1-package` (plan-NA1)
+            - `plan-US-max`
+            - `planX1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`
         explode: true
         in: query
         name: subscription
@@ -9254,15 +9147,16 @@ paths:
             type: string
           type: array
       - description: |
-          IoT SIM のモジュールタイプ。
+          IoT SIM の形状 (フォームファクタ)。
 
-          - `mini`: 標準。
-          - `micro`: マイクロ。
-          - `nano`: ナノ。
-          - `trio`: 3 in 1。
+          - `mini`: 標準 (2FF) サイズ。
+          - `micro`: マイクロ (3FF) サイズ。
+          - `nano`: ナノ (4FF) サイズ。
+          - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)。
           - `embedded`: Embedded (MFF2)。
-          - `virtual`: バーチャル。
-          - `integrated`: Embedded (iSIM)
+          - `virtual`: バーチャル SIM/Subscriber。
+          - `integrated`: Embedded (iSIM)。
+          - `profilePackage`: Profile Package (eSIM プロファイル)。
         explode: true
         in: query
         name: module_type
@@ -9396,7 +9290,29 @@ paths:
           items:
             type: string
           type: array
-      - description: '検索するサブスクリプション (例: `plan01s`)。'
+      - description: |
+          検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
+
+          - 日本カバレッジの場合は、以下のいずれかを指定します。
+            - `plan-D`: plan-D (バンドルなし)、plan-D D-300MB。
+            - `plan-K2`: plan-K2 K2-300MB。
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`: バーチャル SIM/Subscriber。
+          - グローバルカバレッジの場合は、以下のいずれかを指定します。
+            - `plan01s`
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume。
+            - `planX3`: planX3 X3-5MB。
+            - `planP1`
+            - `plan-US`
+            - `plan-NA1-package`: plan-NA1。
+            - `plan-US-max`
+            - `planX1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`: バーチャル SIM/Subscriber。
         explode: true
         in: query
         name: subscription
@@ -10030,6 +9946,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - bundles: []
+                description: This is a test order
+                orderedTime: 1718756585000
+                profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
+                quantity: 10
+                speedClass: s1.4xfast
+                status: DRAFT
+                subscription: plan01s
               schema:
                 items:
                   $ref: '#/components/schemas/SimProfileOrderResponse'
@@ -10056,6 +9981,11 @@ paths:
       requestBody:
         content:
           application/json:
+            example:
+              description: This is a test order
+              quantity: 10
+              speedClass: s1.4xfast
+              subscription: plan01s
             schema:
               $ref: '#/components/schemas/CreateSimProfileOrderRequest'
       responses:
@@ -10063,10 +9993,12 @@ paths:
           content:
             application/json:
               example:
+                bundles: []
                 description: This is a test order
                 orderedTime: 1718756585000
                 profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
                 quantity: 10
+                speedClass: s1.4xfast
                 status: DRAFT
                 subscription: plan01s
               schema:
@@ -10126,6 +10058,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                bundles: []
+                description: This is a test order
+                orderedTime: 1718756585000
+                profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
+                quantity: 10
+                speedClass: s1.4xfast
+                status: DRAFT
+                subscription: plan01s
               schema:
                 $ref: '#/components/schemas/SimProfileOrderResponse'
           description: eSIM プロファイルの注文履歴を取得しました。
@@ -10158,11 +10099,13 @@ paths:
           content:
             application/json:
               example:
+                bundles: []
                 confirmedTime: 1718756585000
                 description: This is a test order
                 orderedTime: 1718756585000
                 profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
                 quantity: 10
+                speedClass: s1.4xfast
                 status: CONFIRMED
                 subscription: plan01s
               schema:
@@ -10600,6 +10543,60 @@ paths:
       - Sim
       x-soracom-cli:
       - sims disable-termination
+  /sims/{sim_id}/downlink/http:
+    post:
+      description: |
+        IoT SIM を利用するデバイスに対して HTTP リクエストを送信し、デバイスからの HTTP レスポンスを API のレスポンスボディに含めて返します。
+      operationId: sendDownlinkHttp
+      parameters:
+      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
+          で取得できます。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              method: GET
+              path: /readyz?verbose
+              port: 6443
+              skipVerify: true
+              ssl: false
+            schema:
+              $ref: '#/components/schemas/SimDownlinkHttpRequest'
+        description: デバイスへの HTTP リクエストの設定。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkHttpResponse'
+          description: |
+            デバイスへの HTTP リクエストが成功しました。デバイスからの HTTP ステータスコード、ヘッダー、本文は、レスポンスボディを確認してください。
+        "404":
+          description: 指定した IoT SIM が存在しません。
+        "422":
+          description: |
+            - デバイスへの HTTP リクエストに失敗しました。
+              - デバイスへネットワーク接続できなかった。
+              - デバイスから HTTP 接続を拒否された。
+
+            - デバイスからの HTTP レスポンスを受信できません。
+              - 規定の時間 (10 秒) 以内にデバイスから HTTP レスポンスを受信できなかった。
+              - デバイスからの HTTP レスポンスが 5MB を超えた。最大サイズは、URL、ヘッダー、本文を含めて 5MB です。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM を利用するデバイスに対して HTTP リクエストを送信する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-http
   /sims/{sim_id}/downlink/ping:
     post:
       description: IoT SIM に対して ICMP ping リクエストを送信する。
@@ -10638,6 +10635,80 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ping
+  /sims/{sim_id}/downlink/ssh:
+    post:
+      description: |
+        IoT SIM を利用するデバイスに SSH 接続し、指定したコマンドを実行して、標準出力、標準エラー出力を API のレスポンスボディに含めて返します。
+      operationId: sendDownlinkSsh
+      parameters:
+      - description: |
+          対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims) で取得できます。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            examples:
+              (1) システムログを出力する。:
+                description: |
+                  デバイスに SSH 接続し、`journalctl` コマンドでシステムログを出力する。
+
+                  ```json
+                  {
+                    "exitcode":0,
+                    "stdout":"Feb 19 09:35:49 $HOST sshd[51829]: pam_env(sshd:session): deprecated reading of user environment enabled\nFeb 19 09:35:50 $HOST sshd[51829]: pam_unix(sshd:session): session closed for user $USER\nFeb 19 09:35:50 $HOST systemd-logind[480]: Session 620 logged out. Waiting for processes to exit.\nFeb 19 09:35:50 $HOST systemd[1]: session-620.scope: Deactivated successfully.\nFeb 19 09:35:50 $HOST systemd-logind[480]: Removed session 620.\nFeb 19 09:36:32 $HOST sshd[51837]: Accepted password for $USER from 100.127.10.16 port 47281 ssh2\nFeb 19 09:36:32 $HOST sshd[51837]: pam_unix(sshd:session): session opened for user $USER(uid=1000) by (uid=0)\nFeb 19 09:36:32 $HOST systemd-logind[480]: New session 621 of user $USER.\nFeb 19 09:36:32 $HOST systemd[1]: Started session-621.scope - Session 621 of User $USER.\nFeb 19 09:36:32 $HOST sshd[51837]: pam_env(sshd:session): deprecated reading of user environment enabled\n",
+                    "stderr":""
+                  }
+                  ```
+                value:
+                  authentication:
+                    password: secret_value
+                    type: password
+                  command: journalctl -n
+                  port: 22
+                  username: pi
+              (2) ファイル一覧を取得する。:
+                description: |
+                  デバイスに SSH 接続し、ファイル一覧を取得する。
+                value:
+                  authentication:
+                    password: secret_value
+                    type: password
+                  command: ls -l
+                  port: 22
+                  username: admin
+            schema:
+              $ref: '#/components/schemas/SimDownlinkSshRequest'
+        description: デバイスへの SSH 接続とコマンドの設定。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkSshResponse'
+          description: コマンドの実行に成功しました。コマンドの終了コード、標準出力、標準エラー出力は、レスポンスボディを確認してください。
+        "422":
+          description: |
+            - コマンドの実行に失敗しました。
+              - デバイスへネットワーク接続できなかった。
+              - デバイスに SSH 接続が拒否された。
+
+            - デバイスからのレスポンスを受信できません。
+              - 規定の時間 (10 秒) 以内にデバイスからレスポンスを受信できなかった。
+              - コマンドの実行結果の出力が 5 MiB を超えた。最大サイズは、標準出力、標準エラー出力を含めて 5 MiB です。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM を利用するデバイスに SSH 接続し、指定したコマンドを実行する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-ssh
   /sims/{sim_id}/enable_termination:
     post:
       description: 指定した IoT SIM の解約プロテクションを解除します (解約できるようにします)。
@@ -11783,7 +11854,7 @@ paths:
       tags:
       - SoraCam
       x-soracom-cli:
-      - sora-cam device delete
+      - sora-cam devices delete
     get:
       description: |
         ソラカメ対応カメラの情報を取得します。
@@ -11898,6 +11969,92 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam update-firmware
+  /sora_cam/devices/{device_id}/atom_cam/license:
+    delete:
+      description: |
+        ソラカメ対応カメラのライセンス割り当てを解除します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Warning**: ライセンスが割り当てられていないデバイスは、その期間ソラカメサービスによるクラウド録画が行われません。
+
+        **Warning**: すでにクラウドに録画されている映像を見るためにはライセンスが必要になります。すでにエクスポートされた動画/静止画については影響しません。
+
+        **Warning**: ライセンスの割り当てを解除しただけでは課金は止まりません。課金を止めるには、割り当ての解除後に [SoraCam:listSoraCamLicensePacks API](#/SoraCam/listSoraCamLicensePacks) またはユーザーコンソールでライセンスを解約してください。
+      operationId: unassignSoraCamDeviceAtomCamLicense
+      parameters:
+      - in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: ライセンスが正常に割り当て解除されました。
+        "403":
+          description: |
+            ライセンスの割り当てを解除できません。以下のような原因が考えられます。
+
+            - 実行権限が不足している。
+            - ほかのオペレーターから共有されているデバイスである。
+        "404":
+          description: 指定されたデバイスがオペレーターに見つからないか、デバイスにライセンスが割り当てられていません。
+      security:
+      - api_key: []
+      - api_token: []
+      summary: ソラカメ対応カメラのライセンス割り当てを解除する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam unassign-license
+    put:
+      description: |
+        ソラカメ対応カメラにライセンスを割り当て、または割り当てられているライセンスの種類を変更します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+      operationId: assignSoraCamDeviceAtomCamLicense
+      parameters:
+      - in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoraCamDeviceLicenseUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                type: CR14-SC
+              schema:
+                $ref: '#/components/schemas/SoraCamDeviceLicenseUpdate'
+          description: 割り当てライセンスが正常に更新されました。
+        "304":
+          description: 既存の割り当てライセンスに変更はありませんでした。
+        "400":
+          description: 無効な入力データまたは無効なライセンスの種類が指定されました。
+        "403":
+          description: |
+            ライセンスを割り当てられません。以下のような原因が考えられます。
+
+            - 実行権限が不足している。
+            - 割り当て可能な購入済みライセンスが不足している。
+            - ほかのオペレーターから共有されているデバイスである。
+        "404":
+          description: 指定されたデバイスがオペレーターに見つかりませんでした。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラにライセンスを割り当てる
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam assign-license
   /sora_cam/devices/{device_id}/atom_cam/settings:
     get:
       description: |
@@ -11926,6 +12083,8 @@ paths:
                 nightVision: auto
                 quality: high
                 rotation: 0
+                sound: "off"
+                soundSensitivity: low
                 statusLight: "on"
                 timestamp: "on"
               schema:
@@ -12448,6 +12607,154 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-rotation
+  /sora_cam/devices/{device_id}/atom_cam/settings/sound:
+    get:
+      description: |
+        サウンド検出の設定を取得します。サウンド検出がオンの場合は、ソラカメ対応カメラが音を検出したときに録画が開始されます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Warning**: サウンド検出で録画された映像は、SORACOM ユーザーコンソール / SORACOM CLI / SORACOM API ではダウンロードできません。ただし、クラウド常時録画ライセンスを割り当てている場合は、サウンド検出された時間を [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) で確認して、その時間の映像をダウンロードできます。
+
+        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+      operationId: getSoraCamDeviceAtomCamSettingsSound
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                state: "on"
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSound'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: サウンド検出の設定を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-sound
+    post:
+      description: |
+        サウンド検出の設定を変更します。サウンド検出がオンの場合は、ソラカメ対応カメラが音を検出したときに録画が開始されます。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Warning**: サウンド検出で録画された映像は、SORACOM ユーザーコンソール / SORACOM CLI / SORACOM API ではダウンロードできません。ただし、クラウド常時録画ライセンスを割り当てている場合は、サウンド検出された時間を [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) で確認して、その時間の映像をダウンロードできます。
+
+        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+      operationId: setSoraCamDeviceAtomCamSettingsSound
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              state: "on"
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSound'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: 不正なリクエスト。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: サウンド検出の設定を変更する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-sound
+  /sora_cam/devices/{device_id}/atom_cam/settings/sound_sensitivity:
+    get:
+      description: |
+        サウンド検出の感度設定を取得します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+      operationId: getSoraCamDeviceAtomCamSettingsSoundSensitivity
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                state: low
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSoundSensitivity'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: サウンド検出の感度設定を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-sound-sensitivity
+    post:
+      description: |
+        サウンド検出の感度設定を変更します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+      operationId: setSoraCamDeviceAtomCamSettingsSoundSensitivity
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              state: low
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSoundSensitivity'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: 不正なリクエスト。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: サウンド検出の感度設定を変更する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-sound-sensitivity
   /sora_cam/devices/{device_id}/atom_cam/settings/status_light:
     get:
       description: |
@@ -12592,6 +12899,130 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-timestamp
+  /sora_cam/devices/{device_id}/data:
+    post:
+      description: |
+        指定したソラカメ対応カメラのデバイス ID (`device_id`) に紐づけて、Harvest Data に任意のデータを保存します。
+
+        たとえば、JSON を保存する際は、ヘッダーに `Content-Type: application/json` を設定し、リクエストボディには `{ "person_count": 5 }` を指定します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: 保存したデータエントリを取得するには [DataEntry:getDataEntry API](#/DataEntry/getDataEntry) を、削除するには [DataEntry:deleteDataEntry API](#/DataEntry/deleteDataEntry) を使用します。
+
+        **Info**: Harvest Data について詳しくは、 [SORACOM Harvest Data の特徴](/ja-jp/docs/harvest/feature-of-data/) を参照してください。
+      operationId: createSoraCamDeviceDataEntry
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          保存するデータの Content-Type。
+
+          - JSON を送信する場合は `application/json` を指定します。
+          - テキストを送信する場合は `text/plain` を指定します。
+          - バイナリを送信する場合は `application/octet-stream` を指定します。
+        in: header
+        name: content-type
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+          text/plain:
+            schema:
+              type: string
+        description: 保存するデータ。
+        required: true
+      responses:
+        "201":
+          description: データが正常に Harvest Data に保存されました。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 任意のデータをソラカメ対応カメラに紐づけて Harvest Data に保存する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices data create-entry
+  /sora_cam/devices/{device_id}/data/{time}:
+    put:
+      description: |
+        指定したソラカメ対応カメラのデバイス ID (`device_id`) に紐づけて、指定した時刻のデータとして、Harvest Data に任意のデータを保存します。
+
+        - 指定した時刻のデータが存在しない場合は、新しくデータが作成されます。
+        - 指定した時刻のデータがすでに存在する場合は、Harvest Data の仕様に従い同時刻のデータが上書きされます。
+
+        たとえば、JSON を保存する際は、ヘッダーに `Content-Type: application/json` を設定し、リクエストボディには `{ "person_count": 5 }` を指定します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: 保存したデータエントリを取得するには [DataEntry:getDataEntry API](#/DataEntry/getDataEntry) を、削除するには [DataEntry:deleteDataEntry API](#/DataEntry/deleteDataEntry) を使用します。
+
+        **Info**: Harvest Data について詳しくは、 [SORACOM Harvest Data の特徴](/ja-jp/docs/harvest/feature-of-data/) を参照してください。
+      operationId: updateSoraCamDeviceDataEntry
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: 対象のデータエントリのタイムスタンプ (UNIX 時間 (ミリ秒))。
+        in: path
+        name: time
+        required: true
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          保存するデータの Content-Type。
+
+          - JSON を送信する場合は `application/json` を指定します。
+          - テキストを送信する場合は `text/plain` を指定します。
+          - バイナリを送信する場合は `application/octet-stream` を指定します。
+        in: header
+        name: content-type
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+          text/plain:
+            schema:
+              type: string
+        description: 保存するデータ。
+        required: true
+      responses:
+        "200":
+          description: データが正常に Harvest Data に保存されました。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 任意のデータをソラカメ対応カメラと時刻に紐づけて Harvest Data に保存する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices data update-entry
   /sora_cam/devices/{device_id}/events:
     get:
       description: |
@@ -12673,7 +13104,7 @@ paths:
         "400":
           description: 指定された引数が不正です。
         "404":
-          description: 指定されたソラカメ対応カメラが見つかりませんでした。
+          description: 指定したソラカメ対応カメラが見つかりません。
       security:
       - api_key: []
         api_token: []
@@ -12942,10 +13373,11 @@ paths:
 
         - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) は 2 回分が消費されます。
+        - Harvest Files にエクスポートする際は、Harvest Files の仕様に従った保存期間が設定されます。また、エクスポートした静止画のファイルサイズ (Harvest Files へ書き込んだファイルサイズ) に応じて、料金が発生します。詳しくは、[SORACOM Harvest Files の料金プラン](https://soracom.jp/services/harvest/#pricing_files) を参照してください。
 
         **Warning**: クラウド常時録画ライセンスもしくはクラウドモーション検知 “無制限” 録画ライセンスを割り当てていないソラカメ対応カメラの静止画はエクスポートできません。
 
-        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。さらに、Harvest Files へのエクスポートする際は、[FileEntry:putFile API](#/FileEntry/putFile) を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
         **Info**: エクスポートされる静止画の画像サイズは、1920 x 1080 ピクセルです。
       operationId: exportSoraCamDeviceRecordedImage
@@ -12986,6 +13418,8 @@ paths:
           description: OK.
         "400":
           description: '`time` に指定した値が不適切です。'
+        "403":
+          description: Harvest Files にエクスポートするために必要な権限 (FileEntry:putFile) がありません。
         "404":
           description: 指定したソラカメ対応カメラが見つかりません。
       security:
@@ -13307,7 +13741,7 @@ paths:
         "400":
           description: 不正なパラメーターが指定されました。
         "404":
-          description: 指定されたソラカメ対応カメラ、または指定された期間の録画が見つかりませんでした。
+          description: 指定したソラカメ対応カメラ、または指定した期間の録画が見つかりませんでした。
       security:
       - api_key: []
         api_token: []
@@ -13324,16 +13758,16 @@ paths:
   /sora_cam/devices/{device_id}/stream:
     get:
       description: |
-        ストリーミング映像 (リアルタイム映像 / 録画映像) をダウンロードするための情報を取得します。具体的には、MPEG-DASH (Dynamic Adaptive Streaming over HTTP) と呼ばれるストリーミング方式に対応した URL の配列を取得できます。URL には有効期限が設定されています。
+        クラウドに録画した映像をストリーミング再生するための情報を取得します。具体的には、MPEG-DASH (Dynamic Adaptive Streaming over HTTP) と呼ばれるストリーミング方式に対応した URL の配列を取得できます。URL には有効期限が設定されています。
 
-        - リアルタイム映像をストリーミング再生するには、`from` と `to` をどちらも省略します。その場合は、以下の点に注意してください。
-          - API を呼び出した時刻を基準に、300 秒 (5 分) のリアルタイム映像をストリーミング再生できる URL を取得できます。続きを視聴する場合は、もう一度 API を呼び出して、次の URL を取得してください。
+        - 最新映像をストリーミング再生するには、`from` と `to` をどちらも省略します。その場合は、以下の点に注意してください。
+          - API を呼び出した時刻を基準に、300 秒 (5 分) の最新映像をストリーミング再生できる URL を取得できます。続きを視聴する場合は、もう一度 API を呼び出して、次の URL を取得してください。
           - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) が 5 分消費されます。
         - 録画映像をストリーミング再生するには、`from` または `to` を指定します。その場合は、以下の点に注意してください。
           - 最大 900 秒 (15 分) の録画映像をストリーミング再生できる URL を取得できます。
           - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) が消費されます。
 
-        **Warning**: **リアルタイム映像**は、クラウドに保存された録画映像から最新の映像を取得する機能です。したがって、クラウド常時録画ライセンスもしくはクラウドモーション検知 “無制限” 録画ライセンスを割り当てていないソラカメ対応カメラのリアルタイム映像は取得できません。ATOM アプリで再生できる**「ライブ映像 (P2P)」**は、リアルタイム映像とは異なる機能です。SORACOM API を利用して「ライブ映像 (P2P)」は取得できません。
+        **Warning**: **最新映像**は、クラウドに保存された録画映像の最新の映像を指します。この API を利用しても、ATOM アプリで再生できる**「ライブ映像 (P2P)」**は再生できません。「ライブ映像 (P2P)」を再生するには、[ライブ視聴見放題 Limited Preview](/ja-jp/docs/soracom-cloud-camera-services/unlimited-live-streaming/) を利用してください。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: getSoraCamDeviceStreamingVideo
@@ -13345,9 +13779,9 @@ paths:
         schema:
           type: string
       - description: |
-          録画映像の開始時刻 (UNIX 時間 (ミリ秒))
+          録画映像の開始時刻 (UNIX 時間 (ミリ秒))。
 
-          - リアルタイム映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+          - 最新映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
         in: query
         name: from
         required: false
@@ -13355,9 +13789,9 @@ paths:
           format: int64
           type: integer
       - description: |
-          録画映像の終了時刻 (UNIX 時間 (ミリ秒))
+          録画映像の終了時刻 (UNIX 時間 (ミリ秒))。
 
-          - リアルタイム映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+          - 最新映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
           - 一回の API 呼び出しで視聴できる時間は最大 900 秒 (15 分) です。`from` と `to` の差が、900 秒を超えないようにしてください。
         in: query
         name: to
@@ -13384,7 +13818,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: ストリーミング映像 (リアルタイム映像 / 録画映像) をダウンロードするための情報を取得する
+      summary: クラウドに録画した映像をストリーミング再生するための情報を取得する
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13515,10 +13949,11 @@ paths:
         - ひとつの URL でエクスポートできる時間は最大 900 秒 (15 分) です。
         - URL を取得した時点で、ダウンロードを開始したかどうかにかかわらず動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) が消費されます。
         - エクスポート処理の結果はキャッシュされません。同じ時間を 2 回エクスポートすると、動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) は 2 回分が消費されます。
+        - Harvest Files にエクスポートする際は、Harvest Files の仕様に従った保存期間が設定されます。また、エクスポートした動画のファイルサイズ (Harvest Files へ書き込んだファイルサイズ) に応じて、料金が発生します。詳しくは、[SORACOM Harvest Files の料金プラン](https://soracom.jp/services/harvest/#pricing_files) を参照してください。
 
         **Warning**: クラウド常時録画ライセンスもしくはクラウドモーション検知 “無制限” 録画ライセンスを割り当てていないソラカメ対応カメラの録画映像はエクスポートできません。
 
-        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。さらに、Harvest Files へのエクスポートする際は、[FileEntry:putFile API](#/FileEntry/putFile) を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: exportSoraCamDeviceRecordedVideo
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -13554,6 +13989,8 @@ paths:
             - `from` または `to` に指定した値が不適切です。
             - 指定された時刻の範囲にはエクスポート可能な録画映像が見つかりません。
             - `Content-Type: application/json` ヘッダーが指定されていません。
+        "403":
+          description: Harvest Files にエクスポートするために必要な権限 (FileEntry:putFile) がありません。
         "404":
           description: 指定したソラカメ対応カメラが見つかりません。
       security:
@@ -18571,29 +19008,36 @@ components:
     ArcSessionStatus:
       properties:
         arcAllowedIPs:
-          description: Arc サーバーから受信した WireGuard AllowedIPs が表示されます。
+          description: Arc サーバーから受信した WireGuard AllowedIPs。
           items:
             type: string
           type: array
         arcClientPeerIpAddress:
-          description: クライアントの IP アドレスです。
+          description: クライアントの IP アドレス。
           type: string
         arcClientPeerPublicKey:
           type: string
         arcServerEndpoint:
-          description: Arc サーバーの WireGuard プロトコルのエンドポイントです。
+          description: Arc サーバーの WireGuard プロトコルのエンドポイント。
           type: string
         arcServerPeerPublicKey:
-          description: Arc サーバーのサーバーピア公開鍵です。
+          description: Arc サーバーのサーバーピア公開鍵。
           type: string
         gatewayPrivateIpAddress:
+          description: VPG のプライベート IP アドレス。VPG Type-F の場合は、IoT SIM からお客様システムへの閉域網通信の送信元
+            IP アドレスが、この IP アドレスに NAT されます。
           type: string
         gatewayPublicIpAddress:
+          description: VPG の [固定グローバル IP アドレスオプション](/ja-jp/docs/vpg/configure-fixed-global-ips/)
+            を利用しているときの固定グローバル IP アドレス。
           type: string
         lastUpdatedAt:
           format: int64
           type: integer
+        placement:
+          $ref: '#/components/schemas/Placement'
         vpgId:
+          description: VPG ID。VPG を利用していない場合は出力されません。
           type: string
       type: object
     AttachRoleRequest:
@@ -18611,13 +19055,22 @@ components:
     AuthKeyResponse:
       properties:
         authKeyId:
+          description: 認証キーの ID。
+          example: keyId-xxx
           type: string
         createDateTime:
+          description: 認証キーの作成日時 (UNIX 時間 (秒))。
+          example: 1722480500
           format: int64
           type: integer
         lastUsedDateTime:
+          description: 認証キーの最終使用日時 (UNIX 時間 (秒))。
+          example: 1722480600
           format: int64
           type: integer
+      required:
+      - authKeyId
+      - createDateTime
       type: object
     AuthRequest:
       properties:
@@ -18786,6 +19239,7 @@ components:
           type: boolean
       type: object
     Cell:
+      description: IoT SIM が接続する基地局の情報。バーチャル SIM/Subscriber の場合は出力されません。
       properties:
         ci:
           description: The Cell Identity (for 2G and 3G networks), a 16 bit value
@@ -18933,7 +19387,7 @@ components:
           - extended
           type: string
         ttl:
-          description: データの保持期間（日にち）。現在は 731 のみ指定できます。
+          description: データの保存期間（日にち）。現在は 731 のみ指定できます。
           example: 731
           format: int64
           type: integer
@@ -19220,18 +19674,84 @@ components:
     CreateSimProfileOrderRequest:
       description: eSIM プロファイルの発注リクエスト。
       properties:
+        bundles:
+          description: |
+            発注する eSIM プロファイルのバンドル。以下のいずれかを指定します。ただし、サブスクリプションにあわせたバンドルを 1 つ指定してください。
+
+            - planX3 の場合:
+                - `X3-5MB`
+            - plan-US の場合:
+                - `US-1MB`
+                - `US-3MB`
+                - `US-10MB`
+                - `US-20MB`
+                - `US-50MB`
+                - `US-100MB`
+                - `US-300MB`
+                - `US-500MB`
+                - `US-1GB`
+                - `US-3GB`
+                - `US-5GB`
+                - `US-10GB`
+          items:
+            enum:
+            - X3-5MB
+            - US-1MB
+            - US-3MB
+            - US-10MB
+            - US-20MB
+            - US-50MB
+            - US-100MB
+            - US-300MB
+            - US-500MB
+            - US-1GB
+            - US-3GB
+            - US-5GB
+            - US-10GB
+            type: string
+          maxItems: 1
+          type: array
         description:
           description: 発注の説明。注文履歴を識別するために使用できます。
           example: This is a test order
           maxLength: 100
           type: string
         quantity:
-          description: 発注する eSIM プロファイルの数量。
+          description: |
+            発注する eSIM プロファイルの数量。
+
+            **Info**: 1 回の注文で発行できる eSIM プロファイル数の上限は、20 点です。より多くの eSIM プロファイルを 1 回の注文で発行するには、SORACOM サポートに上限緩和を申請してください。詳しくは、[eSIM プロファイルを注文する](/ja-jp/docs/air/issue-esim-profile/#esim-プロファイルを注文する) を参照してください。
           example: 10
           format: int32
           maximum: 100
           minimum: 1
           type: integer
+        speedClass:
+          description: |
+            発注する eSIM プロファイルの速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
+
+            - plan01s、planP1、planX1、planX2、planX3 の場合:
+                - `s1.minimum`
+                - `s1.slow`
+                - `s1.standard`
+                - `s1.fast`
+                - `s1.4xfast`
+            - plan-US の場合:
+                - `s1.minimum`
+                - `s1.slow`
+                - `s1.standard`
+                - `s1.fast`
+                - `s1.4xfast`
+                - `s1.8xfast`
+          enum:
+          - s1.minimum
+          - s1.slow
+          - s1.standard
+          - s1.fast
+          - s1.4xfast
+          - s1.8xfast
+          example: s1.4xfast
+          type: string
         subscription:
           description: |
             発注する eSIM プロファイルのサブスクリプション。以下のいずれかです。
@@ -19239,6 +19759,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`: EU および英国のお客様のみ購入できます。
+            - `plan-US`: 米国およびカナダのお客様のみ購入できます。
           example: plan01s
           type: string
       required:
@@ -21230,48 +21753,6 @@ components:
         gateway:
           type: string
       type: object
-    LagoonDashboardPermissionsResponse:
-      properties:
-        dashboardId:
-          format: int64
-          type: number
-        dashboardTitle:
-          type: string
-        permissions:
-          items:
-            properties:
-              dashboardId:
-                format: int64
-                type: number
-              dashboardTitle:
-                type: string
-              permissionName:
-                enum:
-                - View
-                - Edit
-                - Admin
-                type: string
-              userEmail:
-                type: string
-              userId:
-                format: int64
-                type: number
-            type: object
-          type: array
-      type: object
-    LagoonDashboardPermissionsUpdatingRequest:
-      properties:
-        permissions:
-          items:
-            properties:
-              permission:
-                type: string
-              userId:
-                format: int64
-                type: integer
-            type: object
-          type: array
-      type: object
     LagoonLicensePackStatusResponse:
       properties:
         licensePackName:
@@ -21298,14 +21779,6 @@ components:
                 - basicDashboard
                 type: string
             type: object
-          type: array
-      type: object
-    LagoonMigrationRequest:
-      properties:
-        dashboardIds:
-          description: バージョン移行する Dashboard の ID のリスト。
-          items:
-            type: string
           type: array
       type: object
     LagoonPlanChangingRequest:
@@ -21453,15 +21926,27 @@ components:
     ListRolesResponse:
       properties:
         createDateTime:
+          description: ロールの作成日時 (UNIX 時間 (秒))。
+          example: 1722480500
           format: int64
           type: integer
         description:
+          description: ロールの説明。
+          example: This is my role
           type: string
         roleId:
+          description: ロール ID。
+          example: my-role
           type: string
         updateDateTime:
+          description: ロールの更新日時 (UNIX 時間 (秒))。
+          example: 1722480600
           format: int64
           type: integer
+      required:
+      - createDateTime
+      - roleId
+      - updateDateTime
       type: object
     ListShippingAddressResponse:
       properties:
@@ -21978,6 +22463,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`
+            - `plan-US`
           example: plan01s
           type: string
       required:
@@ -22295,6 +22783,7 @@ components:
           type: array
       type: object
     PreviousSessionStatus:
+      description: 前のセッションの情報。
       properties:
         cell:
           $ref: '#/components/schemas/Cell'
@@ -22312,20 +22801,30 @@ components:
             type: string
           type: array
         gatewayPrivateIpAddress:
+          description: VPG のプライベート IP アドレス。VPG Type-F の場合は、IoT SIM からお客様システムへの閉域網通信の送信元
+            IP アドレスが、この IP アドレスに NAT されます。
           type: string
         gatewayPublicIpAddress:
+          description: VPG の [固定グローバル IP アドレスオプション](/ja-jp/docs/vpg/configure-fixed-global-ips/)
+            を利用しているときの固定グローバル IP アドレス。
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: IoT SIM を利用するデバイスの IMEI。バーチャル SIM/Subscriber の場合は `null` です。
+          type: string
+        imsi:
+          description: IoT SIM の IMSI。
           type: string
         sessionId:
-          description: The session ID of the previous session.
+          description: セッション ID。
+          type: string
+        subscription:
+          description: サブスクリプション。
           type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: VPG ID。VPG を利用していなかった場合は出力されません。
           type: string
       type: object
     PriceByQuantity:
@@ -22419,6 +22918,12 @@ components:
           type: number
         termsOfConsignorURL:
           description: 委託先の販売条件に関するドキュメントの URL
+          type: string
+        termsOfSolutionName:
+          description: ソリューション利用規約の名称
+          type: string
+        termsOfSolutionURL:
+          description: ソリューション利用規約の URL
           type: string
       type: object
     PutIpAddressMapEntryRequest:
@@ -22910,7 +23415,7 @@ components:
           type: string
         cell:
           $ref: '#/components/schemas/Cell'
-        createTime:
+        createdTime:
           type: string
         dns0:
           description: First IP address of DNS servers.
@@ -22929,24 +23434,29 @@ components:
             `Created` または `Modified` の場合は、セッションの状態がオンラインであることを表します。`Deleted` の場合は、セッションの状態がオフラインであることを表します。セッションの意味は、[状態 (オンライン / オフライン)](/ja-jp/resources/glossary/session/#状態-オンライン--オフライン) を参照してください。
           type: string
         gatewayPrivateIpAddress:
+          description: VPG のプライベート IP アドレス。VPG Type-F の場合は、IoT SIM からお客様システムへの閉域網通信の送信元
+            IP アドレスが、この IP アドレスに NAT されます。
           type: string
         gatewayPublicIpAddress:
+          description: VPG の [固定グローバル IP アドレスオプション](/ja-jp/docs/vpg/configure-fixed-global-ips/)
+            を利用しているときの固定グローバル IP アドレス。
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: IoT SIM を利用するデバイスの IMEI。バーチャル SIM/Subscriber の場合は `null` です。
           type: string
         imsi:
-          description: The IMSI of the SIM.
+          description: IoT SIM の IMSI。
           type: string
         operatorId:
           description: The operator ID of the session event.
           type: string
         sessionId:
-          description: The session ID of the session that generated this session event.
+          description: セッション ID。
           type: string
         simId:
           type: string
         subscription:
+          description: サブスクリプション。
           type: string
         time:
           description: The timestamp of the session event.
@@ -22956,10 +23466,11 @@ components:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: VPG ID。VPG を利用していない場合は出力されません。
           type: string
       type: object
     SessionStatus:
+      description: 現在のセッションの情報。
       properties:
         cell:
           $ref: '#/components/schemas/Cell'
@@ -22969,14 +23480,18 @@ components:
             type: string
           type: array
         gatewayPrivateIpAddress:
+          description: VPG のプライベート IP アドレス。VPG Type-F の場合は、IoT SIM からお客様システムへの閉域網通信の送信元
+            IP アドレスが、この IP アドレスに NAT されます。
           type: string
         gatewayPublicIpAddress:
+          description: VPG の [固定グローバル IP アドレスオプション](/ja-jp/docs/vpg/configure-fixed-global-ips/)
+            を利用しているときの固定グローバル IP アドレス。
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: IoT SIM を利用するデバイスの IMEI。バーチャル SIM/Subscriber の場合は `null` です。
           type: string
         imsi:
-          description: IMSI
+          description: IoT SIM の IMSI。
           type: string
         lastUpdatedAt:
           format: int64
@@ -22993,16 +23508,16 @@ components:
         placement:
           $ref: '#/components/schemas/Placement'
         sessionId:
-          description: The session ID of the session.
+          description: セッション ID。
           type: string
         subscription:
-          description: サブスクリプション
+          description: サブスクリプション。
           type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: VPG ID。VPG を利用していない場合は出力されません。
           type: string
       type: object
     SetDeviceObjectModelScopeRequest:
@@ -23250,19 +23765,19 @@ components:
         capabilities:
           $ref: '#/components/schemas/Capabilities'
         createdTime:
-          description: IoT SIM (IoT SIM のプライマリサブスクリプション) が作成された UNIX 時間 (ミリ秒)
+          description: IoT SIM (IoT SIM のプライマリサブスクリプション) が作成された UNIX 時間 (ミリ秒)。
           format: int64
           type: integer
         expiryAction:
           description: |
             有効期限が切れたときのアクション。詳しくは、[IoT SIM の有効期限とアクションを設定する](/ja-jp/docs/air/set-expiry/) を参照してください。
 
-            - `doNothing`: 保留
-            - `deleteSession`: セッション切断
-            - `deactivate`: 休止
-            - `suspend`: 利用中断
-            - `terminate`: 解約
-            - `null`: 有効期限が設定されていない
+            - `doNothing`: 保留。
+            - `deleteSession`: セッション切断。
+            - `deactivate`: 休止。
+            - `suspend`: 利用中断。
+            - `terminate`: 解約。
+            - `null`: 有効期限が設定されていない。
           enum:
           - doNothing
           - deleteSession
@@ -23272,36 +23787,37 @@ components:
           - (null value)
           type: string
         expiryTime:
-          description: IoT SIM の有効期限 (UNIX 時間 (ミリ秒))
+          description: IoT SIM の有効期限 (UNIX 時間 (ミリ秒))。
           format: int64
           type: integer
         groupId:
-          description: IoT SIM が所属するグループの ID
+          description: IoT SIM が所属するグループの ID。
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
         lastModifiedTime:
-          description: IoT SIM (IoT SIM のプライマリサブスクリプション) の情報が変更された UNIX 時間 (ミリ秒)
+          description: IoT SIM (IoT SIM のプライマリサブスクリプション) の情報が変更された UNIX 時間 (ミリ秒)。
           format: int64
           type: integer
         lastPortMappingCreatedTime:
-          description: IoT SIM で Napter が利用された UNIX 時間 (ミリ秒)。 IoT SIM で一度も Napter
-            を利用したことがなければ null です。
+          description: IoT SIM で Napter が利用された UNIX 時間 (ミリ秒)。IoT SIM で一度も Napter を利用したことがなければ
+            null です。
           format: int64
           type: integer
         localInfo:
           $ref: '#/components/schemas/Map'
         moduleType:
           description: |
-            IoT SIM の形状 (フォームファクタ)
+            IoT SIM の形状 (フォームファクタ)。
 
-            - `mini`: 標準 (2FF) サイズ
-            - `micro`: マイクロ (3FF) サイズ
-            - `nano`: ナノ (4FF) サイズ
-            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)
-            - `embedded`: Embedded (MFF2)
-            - `virtual`: バーチャル SIM/Subscriber
-            - `integrated`: Embedded (iSIM)
+            - `mini`: 標準 (2FF) サイズ。
+            - `micro`: マイクロ (3FF) サイズ。
+            - `nano`: ナノ (4FF) サイズ。
+            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)。
+            - `embedded`: Embedded (MFF2)。
+            - `virtual`: バーチャル SIM/Subscriber。
+            - `integrated`: Embedded (iSIM)。
+            - `profilePackage`: Profile Package (eSIM プロファイル)。
           enum:
           - mini
           - micro
@@ -23310,9 +23826,10 @@ components:
           - embedded
           - virtual
           - integrated
+          - profilePackage
           type: string
         operatorId:
-          description: IoT SIM を所有しているオペレーターのオペレーター ID
+          description: IoT SIM を所有しているオペレーターのオペレーター ID。
           type: string
         otaSerialNumber:
           type: string
@@ -23330,7 +23847,7 @@ components:
           type: object
         renewalFeeStatusSetTime:
           description: IoT SIM のステータスが「準備完了 (ready)」、「利用開始待ち (standby)」、「利用中断中 (suspended)」のいずれかになった
-            UNIX 時間 (ミリ秒)
+            UNIX 時間 (ミリ秒)。
           format: int64
           type: integer
         serialNumber:
@@ -23339,21 +23856,21 @@ components:
         sessionStatus:
           $ref: '#/components/schemas/SessionStatus'
         simId:
-          description: IoT SIM の SIM ID
+          description: IoT SIM の SIM ID。
           type: string
         speedClass:
-          description: IoT SIM の速度クラス
+          description: IoT SIM の速度クラス。
           type: string
         status:
           description: |
-            IoT SIM (IoT SIM のプライマリサブスクリプション) のステータス。なお、IoT SIM に追加されたバーチャル SIM/Subscriber のステータスは、`active` または `terminated` です。
+            IoT SIM (IoT SIM のプライマリサブスクリプション) のステータス。なお、バーチャル SIM/Subscriber のステータスは、`active` または `terminated` です。
 
-            - `ready`: 準備完了 (ready)
-            - `active`: 使用中 (active)
-            - `inactive`: 休止中 (inactive)
-            - `standby`: 利用開始待ち (standby)
-            - `suspended`: 利用中断中 (suspended)
-            - `terminated`: 解約済み (terminated)
+            - `ready`: 準備完了 (ready)。
+            - `active`: 使用中 (active)。
+            - `inactive`: 休止中 (inactive)。
+            - `standby`: 利用開始待ち (standby)。
+            - `suspended`: 利用中断中 (suspended)。
+            - `terminated`: 解約済み (terminated)。
           enum:
           - ready
           - active
@@ -23368,16 +23885,16 @@ components:
           description: |
             IoT SIM を解約できるかどうかを表す値 (解約プロテクションの設定)。
 
-            - `true`: 解約できる (解約プロテクション OFF)
-            - `false`: 解約できない (解約プロテクション ON)
+            - `true`: 解約できる (解約プロテクション OFF)。
+            - `false`: 解約できない (解約プロテクション ON)。
           type: boolean
         type:
           description: |
-            IoT SIM のタイプ
+            IoT SIM のタイプ。
 
-            - `euicc`: チップ型 (eSIM)
-            - `uicc`: カード型
-            - `virtual`: バーチャル SIM/Subscriber
+            - `euicc`: チップ型 (eSIM)。
+            - `uicc`: カード型。
+            - `virtual`: バーチャル SIM/Subscriber。
           enum:
           - euicc
           - uicc
@@ -23393,6 +23910,196 @@ components:
         simId:
           description: SIM ID
           type: string
+    SimDownlinkHttpRequest:
+      properties:
+        body:
+          description: |
+            HTTP リクエストボディ。
+
+            **Warning**: HTTP リクエストの最大サイズは、URL、ヘッダー、本文を含めて 5 MiB です。5 MiB を超えるとエラーが返されます。
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: HTTP リクエストヘッダー。ヘッダー名と値をペアで指定します。
+          type: object
+        host:
+          description: ホスト名。省略すると、IoT SIM の IP アドレスが使用されます。
+          type: string
+        method:
+          description: HTTP メソッド。
+          enum:
+          - GET
+          - HEAD
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+          - TRACE
+          type: string
+        path:
+          description: |
+            URL パス (例: `/path/to/resource`)。
+          type: string
+        port:
+          default: 80
+          description: HTTP 接続のポート番号。
+          maximum: 65535
+          minimum: 1
+          type: integer
+        skipVerify:
+          default: false
+          description: |
+            HTTPS 接続時の SSL 証明書の検証をスキップするかどうか。
+
+            - `true`: 検証をスキップします。
+            - `false`: 検証を行います。ただし、`ssl` が `false` (SSL 通信を行わない) の場合は無視されます。
+          type: boolean
+        ssl:
+          default: false
+          description: |
+            SSL 通信を行うかどうか。
+
+            - `true`: SSL 通信を行う (HTTPS を使用する)。
+            - `false`: SSL 通信を行わない (HTTP を使用する)。
+          type: boolean
+      type: object
+    SimDownlinkHttpResponse:
+      properties:
+        body:
+          description: |
+            デバイスからの HTTP レスポンスボディ。
+
+            - 有効な UTF-8 文字列の場合は、そのまま返されます。
+            - それ以外の場合は、Base64 エンコードされます。このとき、`isBase64Encoded` は `true` になります。
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: デバイスからの HTTP レスポンスヘッダー。
+          type: object
+        isBase64Encoded:
+          description: |
+            `body` の値が Base64 エンコードされているかどうか。
+          type: boolean
+        statusCode:
+          description: デバイスからの HTTP ステータスコード。
+          type: integer
+      required:
+      - statusCode
+      type: object
+    SimDownlinkSshNoAuthentication:
+      description: |
+        SSH 接続の認証なし (`"type": "none"`) で SSH 接続する場合の設定。
+      properties:
+        type:
+          enum:
+          - none
+          type: string
+      type: object
+    SimDownlinkSshPasswordAuthentication:
+      description: |
+        パスワード認証 (`"type": "password"`) を利用して SSH 接続する場合の設定。`password` または `passwordCredentialsId` のいずれかを指定します。
+      properties:
+        password:
+          description: SSH 接続のパスワード。`passwordCredentialsId` が指定されている場合は無視されます。
+          type: string
+        passwordCredentialsId:
+          description: |
+            SORACOM の認証情報ストアに登録した認証情報の ID。認証情報は以下のように設定してください。
+
+            - **[種別]**: 「事前共有鍵」を選択します。
+            - **[事前共有鍵]**: SSH 接続のパスワードを入力します。
+          type: string
+        type:
+          enum:
+          - password
+          type: string
+      type: object
+    SimDownlinkSshPublicKeyAuthentication:
+      description: |
+        公開鍵認証 (`"type": "publickey"`) を利用して SSH 接続する場合の設定。
+      properties:
+        key:
+          description: |
+            公開鍵認証で利用する秘密鍵 (PEM)。`keyCredentialsId` が指定されている場合は無視されます。
+          type: string
+        keyCredentialsId:
+          description: |
+            SORACOM の認証情報ストアに登録した認証情報の ID。認証情報は以下のように設定してください。
+
+            - **[種別]**: 「秘密鍵 (PEM)」を選択します。
+            - **[秘密鍵 (PEM)]**: 公開鍵認証で利用する秘密鍵 (PEM) を入力します。
+          type: string
+        passphrase:
+          description: |
+            公開鍵認証で利用する秘密鍵 (PEM) がパスフレーズで保護されている場合は、パスフレーズを指定します。
+          type: string
+        type:
+          enum:
+          - publickey
+          type: string
+      type: object
+    SimDownlinkSshRequest:
+      properties:
+        authentication:
+          description: |
+            SSH 接続の認証方法。`type` に以下のいずれかを指定し、認証方式にあわせて必要な情報を指定します。
+
+            - `password`: パスワード認証。
+            - `publickey`: 公開鍵認証。
+            - `none`: 認証なし。
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkSshPasswordAuthentication'
+          - $ref: '#/components/schemas/SimDownlinkSshPublicKeyAuthentication'
+          - $ref: '#/components/schemas/SimDownlinkSshNoAuthentication'
+        command:
+          description: SSH 接続を利用してデバイスで実行されるコマンド。最大サイズは 8192 バイトです。
+          type: string
+        port:
+          default: 22
+          description: SSH 接続のポート番号。
+          maximum: 65535
+          minimum: 1
+          type: integer
+        username:
+          description: SSH 接続のユーザー名。
+          type: string
+      required:
+      - username
+      - authentication
+      - command
+      type: object
+    SimDownlinkSshResponse:
+      properties:
+        exitcode:
+          description: コマンドの終了コード。
+          type: integer
+        isStderrBase64Encoded:
+          description: '`stderr` の値が Base64 エンコードされているかどうか。'
+          type: boolean
+        isStdoutBase64Encoded:
+          description: |
+            `stdout` の値が Base64 エンコードされているかどうか。
+          type: boolean
+        stderr:
+          description: |
+            コマンドの標準エラー出力。
+
+            - 有効な UTF-8 文字列の場合は、そのまま返されます。
+            - それ以外の場合は、Base64 エンコードされます。このとき、`isStderrBase64Encoded` は `true` になります。
+          type: string
+        stdout:
+          description: |
+            コマンドの標準出力。
+
+            - 有効な UTF-8 文字列の場合は、そのまま返されます。
+            - それ以外の場合は、Base64 エンコードされます。このとき、`isStdoutBase64Encoded` は `true` になります。
+          type: string
+      required:
+      - exitcode
+      type: object
     SimInitialSetting:
       description: 指定のサブスクリプションに対する初期設定。
       properties:
@@ -23452,6 +24159,13 @@ components:
     SimProfileOrderResponse:
       description: eSIM プロファイルの発注。
       properties:
+        bundles:
+          description: 注文した eSIM プロファイルのバンドル。
+          example:
+          - X3-5MB
+          items:
+            type: string
+          type: array
         completedTime:
           description: 注文処理完了日時 (UNIX 時間 (ミリ秒))。
           example: 1718756585000
@@ -23480,6 +24194,10 @@ components:
           example: 10
           format: int32
           type: integer
+        speedClass:
+          description: 注文した eSIM プロファイルの速度クラス。
+          example: s1.4xfast
+          type: string
         status:
           description: |
             注文のステータス。
@@ -23504,6 +24222,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`
+            - `plan-US`
           example: plan01s
           type: string
       required:
@@ -23552,6 +24273,33 @@ components:
         msisdn:
           type: string
         status:
+          description: |
+            IoT SIM (IoT SIM のプライマリサブスクリプション) のステータス、または追加サブスクリプションのステータス。
+
+            プライマリサブスクリプションの場合は、IoT SIM のステータスです。
+
+            - `ready`: 準備完了 (ready)。
+            - `active`: 使用中 (active)。
+            - `inactive`: 休止中 (inactive)。
+            - `standby`: 利用開始待ち (standby)。
+            - `suspended`: 利用中断中 (suspended)。
+            - `terminated`: 解約済み (terminated)。
+
+            追加サブスクリプションの場合は、追加サブスクリプションのステータスです。
+
+            - `shipped`: OTA の準備完了、または OTA の実行中 (前半)。
+            - `delivered`: OTA の実行中 (後半)。
+            - `ready`: OTA が完了。
+            - `active`: 追加サブスクリプションによる接続が確認できました。IoT SIM のステータスではありません。
+            - `terminated`: 解約済み (terminated)。
+
+            なお、バーチャル SIM/Subscriber のステータスは、`active` または `terminated` です。
+          enum:
+          - shipped
+          - delivered
+          - ready
+          - active
+          - terminated
           type: string
         subscription:
           type: string
@@ -23656,6 +24404,28 @@ components:
           - 0
           - 180
           type: integer
+        sound:
+          description: |
+            サウンドの検出設定。
+
+            - `on`: 有効。
+            - `off`: 無効。
+          enum:
+          - "on"
+          - "off"
+          type: string
+        soundSensitivity:
+          description: |
+            サウンド検出の感度設定。感度が高いほど、小さな音を検出しやすくなります。
+
+            - `high`: 高。
+            - `medium`: 中。
+            - `low`: 低。
+          enum:
+          - high
+          - medium
+          - low
+          type: string
         statusLight:
           description: |
             ステータスライト (カメラ本体の状態を示すランプ) の点灯設定。
@@ -23684,6 +24454,8 @@ components:
       - motion
       - motionSensitivity
       - motionTagging
+      - sound
+      - soundSensitivity
       - nightVision
       type: object
     SoraCamAtomCamSettingsLogo:
@@ -23794,6 +24566,38 @@ components:
           - 0
           - 180
           type: integer
+      required:
+      - state
+      type: object
+    SoraCamAtomCamSettingsSound:
+      properties:
+        state:
+          description: |
+            サウンドの検出設定。
+
+            - `on`: 有効。
+            - `off`: 無効。
+          enum:
+          - "on"
+          - "off"
+          type: string
+      required:
+      - state
+      type: object
+    SoraCamAtomCamSettingsSoundSensitivity:
+      properties:
+        state:
+          description: |
+            サウンド検出の感度設定。感度が高いほど、小さな音を検出しやすくなります。
+
+            - `high`: 高。
+            - `medium`: 中。
+            - `low`: 低。
+          enum:
+          - high
+          - medium
+          - low
+          type: string
       required:
       - state
       type: object
@@ -23912,6 +24716,25 @@ components:
       - name
       - value
       type: object
+    SoraCamDeviceLicenseUpdate:
+      properties:
+        type:
+          description: |
+            割り当てるライセンスの種類。
+
+            - `CR7-SC`: クラウド常時録画ライセンス (7 日間)。
+            - `CR14-SC`: クラウド常時録画ライセンス (14 日間)。
+            - `CR30-SC`: クラウド常時録画ライセンス (30 日間)。
+            - `MR7-SC`: クラウドモーション検知無制限録画ライセンス (7 日間)。
+            - `MR14-SC`: クラウドモーション検知無制限録画ライセンス (14 日間)。
+          enum:
+          - CR7-SC
+          - CR14-SC
+          - CR30-SC
+          - MR7-SC
+          - MR14-SC
+          type: string
+      type: object
     SoraCamDeviceName:
       properties:
         name:
@@ -24014,6 +24837,32 @@ components:
       - time
       - deviceType
       type: object
+    SoraCamExportImageToHarvestFiles:
+      description: |
+        Harvest Files に静止画をエクスポートする場合に指定します。
+
+        例: `harvestFiles: { pathPrefix: "/sora_cam/{device_id}" }`
+
+        `pathPrefix` を省略した場合や、空文字を指定した場合は、Harvest Files のルートディレクトリにエクスポートされます。
+
+        ルートディレクトリにエクスポートする例: `harvestFiles: { pathPrefix: "" }`
+      properties:
+        pathPrefix:
+          description: |
+            Harvest Files にエクスポートするときに静止画が保存されるディレクトリ名。
+
+            以下の文字を入力すると、エクスポート時にルールに従って置き換えられます。
+
+            - `{export_id}`: エクスポート ID (例: `123e4567-e89b-12d3-a456-426614174000`)。
+            - `{device_id}`: デバイス ID (例: `001A2B3C4D5E`)。
+            - `{date}`: エクスポートのリクエスト日時 (例: `2024/10/01/12/34`)。
+            - `{time}`: 静止画の撮影日時 (UNIX 時間 (ミリ秒)) (例: `1728393803000`)。
+
+            たとえば、`/sora_cam/{device_id}` を入力すると、ソラカメ対応カメラごとに異なるディレクトリにエクスポートされます。また、`{date}` や `{time}` は、複数のソラカメ対応カメラで同じ時刻にエクスポート/撮影された静止画を、同じディレクトリに保存する場合に便利です。
+
+            **Info**: 省略した場合や、空文字を指定した場合は、Harvest Files のルートディレクトリにエクスポートされます。
+          type: string
+      type: object
     SoraCamExportUsage:
       properties:
         deviceId:
@@ -24042,6 +24891,33 @@ components:
           type: integer
       required:
       - limitHours
+      type: object
+    SoraCamExportVideoToHarvestFiles:
+      description: |
+        Harvest Files に動画をエクスポートする場合に指定します。
+
+        例: `harvestFiles: { pathPrefix: "/sora_cam/{device_id}" }`
+
+        `pathPrefix` を省略した場合や、空文字を指定した場合は、Harvest Files のルートディレクトリにエクスポートされます。
+
+        ルートディレクトリにエクスポートする例: `harvestFiles: { pathPrefix: "" }`
+      properties:
+        pathPrefix:
+          description: |
+            Harvest Files にエクスポートするときに動画が保存されるディレクトリ名。
+
+            以下の文字を入力すると、エクスポート時にルールに従って置き換えられます。
+
+            - `{export_id}`: エクスポート ID (例: `123e4567-e89b-12d3-a456-426614174000`)。
+            - `{device_id}`: デバイス ID (例: `001A2B3C4D5E`)。
+            - `{date}`: エクスポートのリクエスト日時 (例: `2024/10/01/12/34`)。
+            - `{from}`: 動画の開始時刻 (UNIX 時間 (ミリ秒)) (例: `1728393803000`)。
+            - `{to}`: 動画の終了時刻 (UNIX 時間 (ミリ秒)) (例: `1728394700000`)。
+
+            たとえば、`/sora_cam/{device_id}` を入力すると、ソラカメ対応カメラごとに異なるディレクトリにエクスポートされます。また、`{date}`、`{from}`、`{to}` は、複数のソラカメ対応カメラで同じ時刻にエクスポート/撮影された動画を、同じディレクトリに保存する場合に便利です。
+
+            **Info**: 省略した場合や、空文字を指定した場合は、Harvest Files のルートディレクトリにエクスポートされます。
+          type: string
       type: object
     SoraCamImageExportInfo:
       properties:
@@ -24098,6 +24974,8 @@ components:
       type: object
     SoraCamImageExportSpecification:
       properties:
+        harvestFiles:
+          $ref: '#/components/schemas/SoraCamExportImageToHarvestFiles'
         imageFilters:
           description: エクスポートした静止画に適用するフィルタ
           items:
@@ -24175,20 +25053,20 @@ components:
     SoraCamPlayListEntry:
       properties:
         from:
-          description: 録画映像の開始時刻 (UNIX 時間 (ミリ秒))。リアルタイム映像の場合は省略されます。
+          description: 録画映像の開始時刻 (UNIX 時間 (ミリ秒))。最新映像の場合は省略されます。
           format: int64
           type: integer
         to:
-          description: 録画映像の終了時刻 (UNIX 時間 (ミリ秒))。リアルタイム映像の場合は省略されます。
+          description: 録画映像の終了時刻 (UNIX 時間 (ミリ秒))。最新映像の場合は省略されます。
           format: int64
           type: integer
         url:
           description: |
-            ストリーミング映像 (リアルタイム映像 / 録画映像) の mpd ファイルを取得するための URL
+            ストリーミング映像 (最新映像 / 録画映像) の mpd ファイルを取得するための URL
 
             - 以下の場合は URL が返されません。
-              - リアルタイム映像を取得しようとした場合に、ソラカメ対応カメラの電源が入っていない。
-              - リアルタイム映像を取得しようとした場合に、ソラカメ対応カメラでクラウド録画が開始されていない。
+              - 最新映像を取得しようとした場合に、ソラカメ対応カメラの電源が入っていない。
+              - 最新映像を取得しようとした場合に、ソラカメ対応カメラでクラウド録画が開始されていない。
               - 録画映像を取得しようとした場合に、指定した `from` から `to` の間に録画映像が存在しない。
           type: string
       required:
@@ -24266,9 +25144,9 @@ components:
           type: integer
         playList:
           description: |
-            ストリーミング映像 (リアルタイム映像 / 録画映像) のプレイリストエントリーの配列
+            ストリーミング映像 (最新映像 / 録画映像) のプレイリストエントリーの配列
 
-            - リアルタイム映像の場合は、返却される動画ファイルは常にひとつです。また、`from` および `to` は省略されます。
+            - 最新映像の場合は、返却される動画ファイルは常にひとつです。また、`from` および `to` は省略されます。
             - 録画映像の場合は、録画の状態によって動画ファイルが分割されていることがあります。
           items:
             $ref: '#/components/schemas/SoraCamPlayListEntry'
@@ -24338,6 +25216,8 @@ components:
           description: エクスポート対象の開始時刻 (UNIX 時間 (ミリ秒))
           format: int64
           type: integer
+        harvestFiles:
+          $ref: '#/components/schemas/SoraCamExportVideoToHarvestFiles'
         to:
           description: |
             エクスポート対象の終了時刻 (UNIX 時間 (ミリ秒))
@@ -24548,16 +25428,17 @@ components:
           description: 各ネットワークへのネットワーク登録状況
         moduleType:
           description: |
-            IoT SIM の形状 (フォームファクタ)
+            IoT SIM の形状 (フォームファクタ)。
 
-            - `mini`: 標準 (2FF) サイズ
-            - `micro`: マイクロ (3FF) サイズ
-            - `nano`: ナノ (4FF) サイズ
-            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)
-            - `embedded`: Embedded (MFF2)
-            - `virtual`: バーチャル SIM/Subscriber
-            - `integrated`: Embedded (iSIM)
-            - `null`: セカンダリサブスクリプションの場合は null
+            - `mini`: 標準 (2FF) サイズ。
+            - `micro`: マイクロ (3FF) サイズ。
+            - `nano`: ナノ (4FF) サイズ。
+            - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)。
+            - `embedded`: Embedded (MFF2)。
+            - `virtual`: バーチャル SIM/Subscriber。
+            - `integrated`: Embedded (iSIM)。
+            - `profilePackage`: Profile Package (eSIM プロファイル)。
+            - `null`: セカンダリサブスクリプションの場合は null。
           enum:
           - mini
           - micro
@@ -24566,6 +25447,7 @@ components:
           - embedded
           - virtual
           - integrated
+          - profilePackage
           - (null value)
           type: string
         msisdn:
@@ -24940,27 +25822,47 @@ components:
     UserDetailResponse:
       properties:
         authKeyList:
+          description: 認証キーのリスト。
           items:
             $ref: '#/components/schemas/AuthKeyResponse'
           type: array
         createDateTime:
+          description: SAM ユーザーの作成日時 (UNIX 時間 (秒))。
+          example: 1722480500
           format: int64
           type: integer
         description:
+          description: SAM ユーザーの説明。
+          example: This is my user
           type: string
         hasPassword:
+          description: SORACOM ユーザーコンソールのログインパスワードが設定されているかどうか。
           type: boolean
         permission:
+          description: SAM ユーザーの権限。
+          example: '{"statements":[{"api":"*","effect":"allow"}]}'
           type: string
         roleList:
+          description: SAM ユーザーに割り当てられているロールのリスト。
           items:
             $ref: '#/components/schemas/ListRolesResponse'
           type: array
         updateDateTime:
+          description: SAM ユーザーの更新日時 (UNIX 時間 (秒))。
+          example: 1722480600
           format: int64
           type: integer
         userName:
+          description: SAM ユーザーの名前。
+          example: my-user
           type: string
+      required:
+      - authKeyList
+      - createDateTime
+      - hasPassword
+      - roleList
+      - updateDateTime
+      - userName
       type: object
     VerifyAddEmailTokenRequest:
       properties:
@@ -25310,7 +26212,7 @@ tags:
 - description: '[グループ設定](/ja-jp/docs/group-configuration/)'
   name: Group
 - description: |
-    [SORACOM Lagoon](/ja-jp/docs/lagoon-v2/)
+    [SORACOM Lagoon](/ja-jp/docs/lagoon-v3/)
     ユーザーやプランの制御
   name: Lagoon
 - description: エラーログ
