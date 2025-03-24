@@ -28,15 +28,15 @@ var SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo int64
 var SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate bool
 
 func InitSoraCamDevicesRecordingsAndEventsListForDeviceCmd() {
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the compatible camera device."))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceRecordingsAndEvents request. By specifying this parameter, you can continue to retrieve the list from the last request."))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the listSoraCamDeviceRecordingsAndEvents request response. By specifying this parameter, you can retrieve the next page of recordings and events."))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the recordings and events.- 'desc': Descending order (latest data entry first)- 'asc': Ascending order (oldest data entry first)"))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the recordings and events.- 'desc': Descending order (newest recordings and events first)- 'asc': Ascending order (oldest recordings and events first)"))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the list to be searched (unix time in milliseconds). If not specified, 'from' is set to the oldest time within the retention period of the license assigned to the compatible camera device."))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the recordings and events to retrieve (unix time in milliseconds). If not specified, 'from' is set to the oldest time within the retention period of the license that is assigned to the SoraCam compatible camera device."))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the list to be searched (unix time in milliseconds). If not specified, 'to' is set to the current time."))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the recordings and events to retrieve (unix time in milliseconds). If not specified, 'to' is set to the current time."))
 
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().BoolVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

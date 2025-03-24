@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmdDeviceId string
 
 func InitSoraCamDevicesAtomCamSettingsGetMotionSensitivityCmd() {
-	SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmd.RunE = SoraCamDevicesAtomCamSettingsGetMotionSensitivityCmdRunE
 

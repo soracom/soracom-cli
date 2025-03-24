@@ -27,6 +27,9 @@ var QuerySigfoxDevicesCmdDeviceId []string
 // QuerySigfoxDevicesCmdGroup holds multiple values of 'group' option
 var QuerySigfoxDevicesCmdGroup []string
 
+// QuerySigfoxDevicesCmdGroupId holds multiple values of 'group_id' option
+var QuerySigfoxDevicesCmdGroupId []string
+
 // QuerySigfoxDevicesCmdName holds multiple values of 'name' option
 var QuerySigfoxDevicesCmdName []string
 
@@ -45,21 +48,23 @@ var QuerySigfoxDevicesCmdOutputJSONL bool
 func InitQuerySigfoxDevicesCmd() {
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Sigfox device ID of the last Sigfox device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next Sigfox device onward."))
 
-	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdRegistration, "registration", "and", TRAPI("Registration status of sigfox devices."))
+	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdRegistration, "registration", "and", TRAPI("Registration status of Sigfox devices."))
 
 	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')."))
 
-	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdStatus, "status", "and", TRAPI("Status of sigfox devices."))
+	QuerySigfoxDevicesCmd.Flags().StringVar(&QuerySigfoxDevicesCmdStatus, "status", "and", TRAPI("Status of Sigfox devices."))
 
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdDeviceId, "device-id", []string{}, TRAPI("Sigfox device ID to search."))
 
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdGroup, "group", []string{}, TRAPI("Group name to search."))
 
+	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdGroupId, "group-id", []string{}, TRAPI("Group ID to search."))
+
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdName, "name", []string{}, TRAPI("Name to search."))
 
 	QuerySigfoxDevicesCmd.Flags().StringSliceVar(&QuerySigfoxDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
-	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
+	QuerySigfoxDevicesCmd.Flags().Int64Var(&QuerySigfoxDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of items to retrieve."))
 
 	QuerySigfoxDevicesCmd.Flags().BoolVar(&QuerySigfoxDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
@@ -173,6 +178,12 @@ func buildQueryForQuerySigfoxDevicesCmd() url.Values {
 	for _, s := range QuerySigfoxDevicesCmdGroup {
 		if s != "" {
 			result.Add("group", s)
+		}
+	}
+
+	for _, s := range QuerySigfoxDevicesCmdGroupId {
+		if s != "" {
+			result.Add("group_id", s)
 		}
 	}
 

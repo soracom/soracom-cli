@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId string
 
 func InitSoraCamDevicesDeleteExportUsageLimitOverrideCmd() {
-	SoraCamDevicesDeleteExportUsageLimitOverrideCmd.Flags().StringVar(&SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesDeleteExportUsageLimitOverrideCmd.Flags().StringVar(&SoraCamDevicesDeleteExportUsageLimitOverrideCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesDeleteExportUsageLimitOverrideCmd.RunE = SoraCamDevicesDeleteExportUsageLimitOverrideCmdRunE
 

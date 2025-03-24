@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesRebootCmdDeviceId string
 
 func InitSoraCamDevicesRebootCmd() {
-	SoraCamDevicesRebootCmd.Flags().StringVar(&SoraCamDevicesRebootCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesRebootCmd.Flags().StringVar(&SoraCamDevicesRebootCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesRebootCmd.RunE = SoraCamDevicesRebootCmdRunE
 

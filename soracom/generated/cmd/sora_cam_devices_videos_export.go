@@ -26,7 +26,7 @@ var SoraCamDevicesVideosExportCmdTo int64
 var SoraCamDevicesVideosExportCmdBody string
 
 func InitSoraCamDevicesVideosExportCmd() {
-	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdFrom, "from", 0, TRAPI("Start time for exporting (unix time in milliseconds)."))
 

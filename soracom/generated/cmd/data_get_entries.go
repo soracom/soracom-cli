@@ -39,7 +39,7 @@ var DataGetEntriesCmdOutputJSONL bool
 func InitDataGetEntriesCmd() {
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource. The ID to be specified depends on the value of 'resource_type'.| 'resource_type' | The ID you specify ||-|-|| 'Subscriber' | IMSI of the IoT SIM || 'LoraDevice' | ID of the LoRaWAN device || 'Sim' | SIM ID of the IoT SIM || 'SigfoxDevice' | ID of the Sigfox device || 'Device' | ID of the Inventory device |"))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource. The ID to be specified depends on the value of 'resource_type'.| 'resource_type' | The ID you specify ||-|-|| 'Subscriber' | IMSI of the IoT SIM || 'LoraDevice' | ID of the LoRaWAN device || 'Sim' | SIM ID of the IoT SIM || 'SigfoxDevice' | ID of the Sigfox device || 'Device' | ID of the Inventory device || 'SoraCam' | Device ID of the compatible camera device |"))
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource."))
 

@@ -26,7 +26,7 @@ var SoraCamDevicesImagesExportCmdTime int64
 var SoraCamDevicesImagesExportCmdBody string
 
 func InitSoraCamDevicesImagesExportCmd() {
-	SoraCamDevicesImagesExportCmd.Flags().StringVar(&SoraCamDevicesImagesExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesImagesExportCmd.Flags().StringVar(&SoraCamDevicesImagesExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesImagesExportCmd.Flags().StringSliceVar(&SoraCamDevicesImagesExportCmdImageFilters, "image-filters", []string{}, TRAPI("Image filters to be applied to the exported image."))
 

@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesGetExportUsageCmdDeviceId string
 
 func InitSoraCamDevicesGetExportUsageCmd() {
-	SoraCamDevicesGetExportUsageCmd.Flags().StringVar(&SoraCamDevicesGetExportUsageCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesGetExportUsageCmd.Flags().StringVar(&SoraCamDevicesGetExportUsageCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesGetExportUsageCmd.RunE = SoraCamDevicesGetExportUsageCmdRunE
 

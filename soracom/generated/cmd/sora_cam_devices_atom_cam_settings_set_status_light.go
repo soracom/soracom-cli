@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetStatusLightCmdState string
 var SoraCamDevicesAtomCamSettingsSetStatusLightCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetStatusLightCmd() {
-	SoraCamDevicesAtomCamSettingsSetStatusLightCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetStatusLightCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetStatusLightCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetStatusLightCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetStatusLightCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetStatusLightCmdState, "state", "", TRAPI("Settings for the status light (indicator light that shows the status of the camera).- 'on'- 'off'"))
 

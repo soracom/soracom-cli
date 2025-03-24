@@ -23,9 +23,9 @@ var SoraCamDevicesAtomCamSettingsSetRotationCmdState int64
 var SoraCamDevicesAtomCamSettingsSetRotationCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetRotationCmd() {
-	SoraCamDevicesAtomCamSettingsSetRotationCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetRotationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetRotationCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetRotationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesAtomCamSettingsSetRotationCmd.Flags().Int64Var(&SoraCamDevicesAtomCamSettingsSetRotationCmdState, "state", 0, TRAPI("Settings for rotating the image by 180 degrees. Set to '180' when installing the compatible camera device upside down.- '0': OFF (no rotation).- '180': ON (180-degree rotation)."))
+	SoraCamDevicesAtomCamSettingsSetRotationCmd.Flags().Int64Var(&SoraCamDevicesAtomCamSettingsSetRotationCmdState, "state", 0, TRAPI("Settings for rotating the image by 180 degrees. Set to '180' when installing the SoraCam compatible camera device upside down.- '0': OFF (no rotation).- '180': ON (180-degree rotation)."))
 
 	SoraCamDevicesAtomCamSettingsSetRotationCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetRotationCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

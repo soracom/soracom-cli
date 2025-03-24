@@ -26,7 +26,7 @@ var CredentialsCreateCmdType string
 var CredentialsCreateCmdBody string
 
 func InitCredentialsCreateCmd() {
-	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TRAPI("Credentials set ID."))
+	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdCredentialsId, "credentials-id", "", TRAPI("Credential set ID."))
 
 	CredentialsCreateCmd.Flags().StringVar(&CredentialsCreateCmdDescription, "description", "", TRAPI(""))
 

@@ -13,7 +13,7 @@ import (
 var CredentialsDeleteCmdCredentialsId string
 
 func InitCredentialsDeleteCmd() {
-	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TRAPI("Credentials set ID."))
+	CredentialsDeleteCmd.Flags().StringVar(&CredentialsDeleteCmdCredentialsId, "credentials-id", "", TRAPI("Credential set ID."))
 
 	CredentialsDeleteCmd.RunE = CredentialsDeleteCmdRunE
 

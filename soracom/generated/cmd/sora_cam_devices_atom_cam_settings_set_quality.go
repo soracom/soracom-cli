@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetQualityCmdState string
 var SoraCamDevicesAtomCamSettingsSetQualityCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetQualityCmd() {
-	SoraCamDevicesAtomCamSettingsSetQualityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetQualityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetQualityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetQualityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetQualityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetQualityCmdState, "state", "", TRAPI("Settings for the live video and cloud recording quality. Note that for cloud recordings, the resolution is 1080p (1920 x 1080 pixels), regardless of the quality setting.- 'low': The same quality as selecting \"360p\" in the ATOM app.- 'medium': The same quality as selecting \"SD\" in the ATOM app.- 'high': The same quality as selecting \"HD (1080p)\" in the ATOM app."))
 

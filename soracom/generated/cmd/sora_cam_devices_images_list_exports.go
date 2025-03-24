@@ -28,7 +28,7 @@ var SoraCamDevicesImagesListExportsCmdPaginate bool
 var SoraCamDevicesImagesListExportsCmdOutputJSONL bool
 
 func InitSoraCamDevicesImagesListExportsCmd() {
-	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device. If this ID is not specified, all compatible camera devices owned by the operator will be returned."))
+	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device. If this ID is not specified, all SoraCam compatible camera devices owned by the operator will be returned."))
 
 	SoraCamDevicesImagesListExportsCmd.Flags().StringVar(&SoraCamDevicesImagesListExportsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceImageExports request. By specifying this parameter, you can continue to retrieve the list from the last request."))
 

@@ -16,7 +16,7 @@ var SoraCamDevicesVideosGetExportedCmdDeviceId string
 var SoraCamDevicesVideosGetExportedCmdExportId string
 
 func InitSoraCamDevicesVideosGetExportedCmd() {
-	SoraCamDevicesVideosGetExportedCmd.Flags().StringVar(&SoraCamDevicesVideosGetExportedCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesVideosGetExportedCmd.Flags().StringVar(&SoraCamDevicesVideosGetExportedCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesVideosGetExportedCmd.Flags().StringVar(&SoraCamDevicesVideosGetExportedCmdExportId, "export-id", "", TRAPI("Export ID of the target export operation."))
 

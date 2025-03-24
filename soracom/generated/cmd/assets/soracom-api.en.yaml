@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20240905-064448
+  version: 20250314-063957
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
@@ -870,7 +870,7 @@ paths:
       - coupons confirm
   /credentials:
     get:
-      description: Returns a list of credentials set.
+      description: Returns a list of credential sets.
       operationId: listCredentials
       responses:
         "200":
@@ -884,17 +884,17 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List of credentials set
+      summary: List credential sets
       tags:
       - Credential
       x-soracom-cli:
       - credentials list
   /credentials/{credentials_id}:
     delete:
-      description: Deletes a credentials set.
+      description: Deletes a credential set.
       operationId: deleteCredential
       parameters:
-      - description: Credentials set ID.
+      - description: Credential set ID.
         in: path
         name: credentials_id
         required: true
@@ -902,22 +902,22 @@ paths:
           type: string
       responses:
         "204":
-          description: Credentials set has been deleted.
+          description: Credential set has been deleted.
         "404":
           description: Not Found.
       security:
       - api_key: []
         api_token: []
-      summary: Delete a credentials set
+      summary: Delete a credential set
       tags:
       - Credential
       x-soracom-cli:
       - credentials delete
     post:
-      description: Creates a new credentials set.
+      description: Creates a new credential set.
       operationId: createCredential
       parameters:
-      - description: Credentials set ID.
+      - description: Credential set ID.
         in: path
         name: credentials_id
         required: true
@@ -967,7 +967,7 @@ paths:
                 $ref: '#/components/examples/MmcloudCredentials'
             schema:
               $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
-        description: Credentials set.
+        description: Credential set.
         required: true
       responses:
         "201":
@@ -975,20 +975,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CredentialsModel'
-          description: Credentials set has been created.
+          description: Credential set has been created.
       security:
       - api_key: []
         api_token: []
-      summary: Create a credentials set
+      summary: Create a credential set
       tags:
       - Credential
       x-soracom-cli:
       - credentials create
     put:
-      description: Updates a credentials set.
+      description: Updates a credential set.
       operationId: updateCredential
       parameters:
-      - description: Credentials set ID.
+      - description: Credential set ID.
         in: path
         name: credentials_id
         required: true
@@ -999,7 +999,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
-        description: Credentials set.
+        description: Credential set.
         required: true
       responses:
         "200":
@@ -1015,7 +1015,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Update a credentials set
+      summary: Update a credential set
       tags:
       - Credential
       x-soracom-cli:
@@ -1037,6 +1037,7 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
       - description: |
           ID of data source resource. The ID to be specified depends on the value of `resource_type`.
@@ -1048,6 +1049,7 @@ paths:
           | `Sim` | SIM ID of the IoT SIM |
           | `SigfoxDevice` | ID of the Sigfox device |
           | `Device` | ID of the Inventory device |
+          | `SoraCam` | Device ID of the compatible camera device |
         in: path
         name: resource_id
         required: true
@@ -1131,8 +1133,19 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
-      - description: ID of data source resource
+      - description: |
+          ID of data source resource. The ID to be specified depends on the value of `resource_type`.
+
+          | `resource_type` | The ID you specify |
+          |-|-|
+          | `Subscriber` | IMSI of the IoT SIM |
+          | `LoraDevice` | ID of the LoRaWAN device |
+          | `Sim` | SIM ID of the IoT SIM |
+          | `SigfoxDevice` | ID of the Sigfox device |
+          | `Device` | ID of the Inventory device |
+          | `SoraCam` | Device ID of the compatible camera device |
         in: path
         name: resource_id
         required: true
@@ -1170,8 +1183,19 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
-      - description: ID of data source resource
+      - description: |
+          ID of data source resource. The ID to be specified depends on the value of `resource_type`.
+
+          | `resource_type` | The ID you specify |
+          |-|-|
+          | `Subscriber` | IMSI of the IoT SIM |
+          | `LoraDevice` | ID of the LoRaWAN device |
+          | `Sim` | SIM ID of the IoT SIM |
+          | `SigfoxDevice` | ID of the Sigfox device |
+          | `Device` | ID of the Inventory device |
+          | `SoraCam` | Device ID of the compatible camera device |
         in: path
         name: resource_id
         required: true
@@ -1202,7 +1226,15 @@ paths:
         Returns a list of data source resources that have sent data from resources that belong to the operator. If the total number of data source resources does not fit in one page, a URL for accessing the next page is returned in the `link` header of the response.
       operationId: listDataSourceResources
       parameters:
-      - description: Type of data source resource
+      - description: |
+          Type of data source resource.
+
+          - `Subscriber`: IoT SIM.
+          - `LoraDevice`: LoRaWAN device.
+          - `Sim`: IoT SIM.
+          - `SigfoxDevice`: Sigfox device.
+          - `Device`: Inventory device.
+          - `SoraCam`: Compatible camera device.
         in: query
         name: resource_type
         required: false
@@ -1213,6 +1245,7 @@ paths:
           - Sim
           - SigfoxDevice
           - Device
+          - SoraCam
           type: string
       - description: Maximum number of data entries to retrieve.
         in: query
@@ -4233,137 +4266,10 @@ paths:
       x-sam-operationId: deleteTag
       x-soracom-cli:
       - groups delete-tag
-  /lagoon/dashboards/{dashboard_id}/permissions:
-    put:
-      description: |
-        Update permissions for a Soracom Lagoon 2 dashboard.
-
-        **Warning**: A Soracom Lagoon 3 dashboard cannot be updated with this API.
-      operationId: updateLagoonDashboardPermissions
-      parameters:
-      - description: ID of the target Dashboard.
-        in: path
-        name: dashboard_id
-        required: true
-        schema:
-          format: int64
-          type: integer
-      - description: |
-          If the value is true, a request will be issued to Lagoon 2.
-          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LagoonDashboardPermissionsUpdatingRequest'
-        description: Request.
-        required: true
-      responses:
-        "204":
-          description: Updated.
-        "400":
-          description: Bad request.
-        "403":
-          description: Unauthorized operation.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Update permissions for a Soracom Lagoon 2 dashboard
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards update-permissions
-  /lagoon/dashboards/{dashboard_id}/permissions/init:
-    post:
-      description: |
-        Update permissions to the initial state for a Soracom Lagoon 2 dashboard.
-
-        **Warning**: This API cannot update permissions for a Soracom Lagoon 3 dashboard.
-      operationId: initializeLagoonDashboardPermissions
-      parameters:
-      - description: ID of the target Dashboard.
-        in: path
-        name: dashboard_id
-        required: true
-        schema:
-          format: int64
-          type: integer
-      - description: |
-          If the value is true, a request will be issued to Lagoon 2.
-          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      responses:
-        "204":
-          description: Updated.
-        "400":
-          description: Bad request.
-        "403":
-          description: Unauthorized operation.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Update permissions to the initial state for a Soracom Lagoon 2 dashboard
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards init-permissions
-  /lagoon/dashboards/permissions:
-    get:
-      description: |
-        List permissions for all Soracom Lagoon 2 dashboards.
-
-        **Warning**: This API cannot obtain Dashboard permissions for Soracom Lagoon 3.
-      operationId: listLagoonDashboardsPermissions
-      parameters:
-      - description: |
-          If the value is true, a request will be issued to Lagoon 2.
-          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/LagoonDashboardPermissionsResponse'
-                type: array
-          description: OK.
-        "400":
-          description: Bad request.
-      security:
-      - api_key: []
-        api_token: []
-      summary: List permissions for all Soracom Lagoon 2 dashboards
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon dashboards list-permissions
   /lagoon/image/link:
     get:
       description: Get a custom icon image link of Soracom Lagoon Console.
       operationId: getImageLink
-      parameters:
-      - description: |
-          If the value is true, a request will be issued to Lagoon 2.
-          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
       responses:
         "200":
           content:
@@ -4432,46 +4338,6 @@ paths:
       - Lagoon
       x-soracom-cli:
       - lagoon license-packs update
-  /lagoon/migration:
-    get:
-      description: Get the version migration information for Soracom Lagoon. Only
-        the root account can operate this.
-      operationId: getLagoonMigrationInfo
-      requestBody:
-        $ref: '#/components/requestBodies/LagoonPlanChangingRequest'
-      responses:
-        "200":
-          description: The response body contains the Lagoon migration information.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Get the version migration information for Soracom Lagoon
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon migration get-info
-    post:
-      description: Migrate Soracom Lagoon version. Only the root account can operate
-        this.
-      operationId: migrateLagoon
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LagoonMigrationRequest'
-        description: Request.
-        required: true
-      responses:
-        "200":
-          description: It has finished the Lagoon migration.
-      security:
-      - api_key: []
-        api_token: []
-      summary: Migrate Soracom Lagoon version
-      tags:
-      - Lagoon
-      x-soracom-cli:
-      - lagoon migration migrate
   /lagoon/plan:
     put:
       description: |
@@ -4553,15 +4419,6 @@ paths:
     get:
       description: List Soracom Lagoon users that belong to operator.
       operationId: listLagoonUsers
-      parameters:
-      - description: |
-          If the value is true, a request will be issued to Lagoon 2.
-          This is only valid if both Lagoon 3 and Lagoon 2 are enabled.
-        in: query
-        name: v2
-        required: false
-        schema:
-          type: boolean
       responses:
         "200":
           content:
@@ -5470,7 +5327,7 @@ paths:
           type: string
       requestBody:
         content:
-          text/plain:
+          application/json:
             schema:
               $ref: '#/components/schemas/SetNetworkSetRequest'
         description: LoRaWAN Network Set ID.
@@ -7264,10 +7121,10 @@ paths:
       - operator revoke-operator-auth-tokens
   /operators/{operator_id}/users:
     get:
-      description: Returns a list of SAM users.
+      description: Retrieves a list of SAM users.
       operationId: listUsers
       parameters:
-      - description: Operator ID
+      - description: The operator ID.
         in: path
         name: operator_id
         required: true
@@ -7285,7 +7142,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List Users.
+      summary: Retrieve a list of SAM users
       tags:
       - User
       x-soracom-cli:
@@ -8793,7 +8650,7 @@ paths:
       - payer-information register
   /port_mappings:
     get:
-      description: Returns a list of port mappings.
+      description: Returns a list of Napter On-Demand Remote Access entries.
       operationId: listPortMappings
       parameters:
       - description: Maximum number of results per response page.
@@ -8802,9 +8659,9 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The last Port Mapping ID retrieved on the previous page. By specifying
-          this parameter, you can continue to retrieve the list from the next entry
-          onward.
+      - description: The last On-Demand Remote Access ID retrieved on the previous
+          page. By specifying this parameter, you can continue to retrieve the list
+          from the next entry onward.
         in: query
         name: last_evaluated_key
         required: false
@@ -8818,11 +8675,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
-          description: A list of port mappings.
+          description: A list of On-Demand Remote Access entries.
       security:
       - api_key: []
         api_token: []
-      summary: List Port Mapping Entries
+      summary: Retrieve a list of Napter On-Demand Remote Access entries
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8833,14 +8690,14 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: Create a new port mapping.
+      description: Create a new Napter On-Demand Remote Access entry.
       operationId: createPortMapping
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreatePortMappingRequest'
-        description: Port mapping to be created.
+        description: Settings for the On-Demand Remote Access to be created.
         required: true
       responses:
         "201":
@@ -8848,27 +8705,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PortMapping'
-          description: Created.
+          description: The On-Demand Remote Access entry has been created.
       security:
       - api_key: []
         api_token: []
-      summary: Create Port Mapping
+      summary: Create Napter On-Demand Remote Access entry
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings create
   /port_mappings/{ip_address}/{port}:
     delete:
-      description: Deletes the specified port mapping entry.
+      description: Deletes the specified Napter On-Demand Remote Access entry.
       operationId: deletePortMapping
       parameters:
-      - description: IP address of the target port mapping entry.
+      - description: IP address of the On-Demand Remote Access entry to be deleted.
         in: path
         name: ip_address
         required: true
         schema:
           type: string
-      - description: Port of the target port mapping entry.
+      - description: Port number of the On-Demand Remote Access entry to be deleted.
         in: path
         name: port
         required: true
@@ -8876,21 +8733,21 @@ paths:
           type: string
       responses:
         "204":
-          description: Deletion of specified port mapping entry complete.
+          description: The specified On-Demand Remote Access entry has been deleted.
         "404":
-          description: The specified port mapping entry does not exist.
+          description: The specified On-Demand Remote Access entry does not exist.
       security:
       - api_key: []
         api_token: []
-      summary: Delete Port Mapping
+      summary: Delete Napter On-Demand Remote Access entry
       tags:
       - PortMapping
       x-soracom-cli:
       - port-mappings delete
   /port_mappings/sims/{sim_id}:
     get:
-      description: Retrieves a list of Port Mapping entries associated with an IoT
-        SIM.
+      description: Retrieves a list of Napter On-Demand Remote Access entries created
+        with the specified SIM ID.
       operationId: listPortMappingsForSim
       parameters:
       - description: SIM ID of the target IoT SIM.
@@ -8907,13 +8764,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
-          description: List of Port Mapping entries associated with the IoT SIM.
+          description: A list of On-Demand Remote Access entries created with the
+            specified SIM ID.
         "404":
-          description: The specified IoT SIM does not exist.
+          description: No On-Demand Remote Access entries exist for the specified
+            SIM ID.
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve a list of Port Mapping entries associated with an IoT SIM
+      summary: Retrieve a list of Napter On-Demand Remote Access entries created with
+        specified SIM ID
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8921,7 +8781,7 @@ paths:
   /port_mappings/subscribers/{imsi}:
     get:
       description: |
-        Retrieves a list of Port Mapping entries where the `destinationChoosingStrategy` is `IMSI_PRIORITIZED` (Port Mapping entries created with specified IMSI).
+        Retrieves a list of Napter On-Demand Remote Access entries where `destinationChoosingStrategy` is `IMSI_PRIORITIZED` (entries created with specified IMSI).
       operationId: listPortMappingsForSubscriber
       parameters:
       - description: IMSI of the target.
@@ -8939,13 +8799,15 @@ paths:
                   $ref: '#/components/schemas/PortMapping'
                 type: array
           description: |
-            List of Port Mapping entries where `destinationChoosingStrategy` is `IMSI_PRIORITIZED` (Port Mapping entries created with specified IMSI).
+            A list of On-Demand Remote Access entries where `destinationChoosingStrategy` is `IMSI_PRIORITIZED`.
         "404":
-          description: No Port Mapping entries exist created with the specified IMSI.
+          description: No On-Demand Remote Access entries exist for the specified
+            IMSI.
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve a list of Port Mapping entries created with specified IMSI
+      summary: Retrieve a list of Napter On-Demand Remote Access entries created with
+        specified IMSI
       tags:
       - PortMapping
       x-soracom-cli:
@@ -8978,10 +8840,10 @@ paths:
       - products list
   /query/devices:
     get:
-      description: Search SORACOM Inventory devices by query terms. It returns partial
-        match results. When this API permission is allowed, it grants the authority
-        to search and retrieve all SORACOM Inventory devices that includes their group
-        information.
+      description: |
+        Search Soracom Inventory devices by query terms. It returns partial match results. When this API permission is allowed, it grants the authority to search and retrieve all Soracom Inventory devices that include their group information.
+
+        **Warning**: Use this API when the device ID of the target Inventory device is unknown, or when you want to retrieve a list of Inventory devices that match conditions. If you know the device ID, use the [Device:getDevice API](#/Device/getDevice).
       operationId: searchDevices
       parameters:
       - description: Name to search.
@@ -9002,7 +8864,16 @@ paths:
           items:
             type: string
           type: array
-      - description: SORACOM Inventory device ID to search.
+      - description: Group ID to search.
+        explode: true
+        in: query
+        name: group_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Soracom Inventory device ID to search.
         explode: true
         in: query
         name: deviceId
@@ -9038,7 +8909,7 @@ paths:
           items:
             type: string
           type: array
-      - description: The maximum number of item to retrieve.
+      - description: The maximum number of items to retrieve.
         in: query
         name: limit
         required: false
@@ -9047,7 +8918,7 @@ paths:
           format: int32
           maximum: 100
           type: integer
-      - description: The SORACOM Inventory device ID of the last Inventory device
+      - description: The Soracom Inventory device ID of the last Inventory device
           retrieved on the previous page. By specifying this parameter, you can continue
           to retrieve the list from the next Inventory device onward.
         in: query
@@ -9079,7 +8950,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Search SORACOM Inventory devices by query
+      summary: Search Soracom Inventory devices by query
       tags:
       - Query
       x-soracom-cli:
@@ -9091,9 +8962,10 @@ paths:
           header: x-soracom-next-key
   /query/sigfox_devices:
     get:
-      description: Search Sigfox devices by query terms. It returns partial match
-        results. When this API permission is allowed, it grants the authority to search
-        and retrieve all Sigfox devices that includes their group information.
+      description: |
+        Search Sigfox devices by query terms. It returns partial match results. When this API permission is allowed, it grants the authority to search and retrieve all Sigfox devices that includes their group information.
+
+        **Warning**: Use this API when the device ID of the target Sigfox device is unknown, or when you want to retrieve a list of Sigfox devices that match conditions. If you know the device ID, use the [SigfoxDevice:getSigfoxDevice API](#/SigfoxDevice/getSigfoxDevice).
       operationId: searchSigfoxDevices
       parameters:
       - description: Name to search.
@@ -9109,6 +8981,15 @@ paths:
         explode: true
         in: query
         name: group
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Group ID to search.
+        explode: true
+        in: query
+        name: group_id
         required: false
         schema:
           items:
@@ -9132,7 +9013,7 @@ paths:
           items:
             type: string
           type: array
-      - description: Status of sigfox devices.
+      - description: Status of Sigfox devices.
         in: query
         name: status
         required: false
@@ -9149,7 +9030,7 @@ paths:
           - banned
           - standby
           type: string
-      - description: Registration status of sigfox devices.
+      - description: Registration status of Sigfox devices.
         in: query
         name: registration
         required: false
@@ -9161,7 +9042,7 @@ paths:
           - success
           - failed
           type: string
-      - description: The maximum number of item to retrieve.
+      - description: The maximum number of items to retrieve.
         in: query
         name: limit
         required: false
@@ -9231,10 +9112,12 @@ paths:
             - `status`
             - `subscription`
             - `module_type`
-        - Must be at least 2 characters long. When using a comma `,` to specify multiple search values, each value must also be at least 2 characters long (for example: `ab,c` is invalid as `c` is only 1 character long).
-        - When multiple query parameters are specified, the search type (AND search or OR search) can be specified with `search_type`.
+        - Each search value must be at least 2 characters long. When using a comma `,` to specify multiple search values, each value must also be at least 2 characters long (e.g., `ab,c` is invalid because `c` is only 1 character long).
+        - When multiple query parameters are specified, the search type (AND search or OR search) can be specified using `search_type`.
 
-        **Warning**: When this API permission is allowed, it grants the authority to search and retrieve all SIMs that includes their group information.
+        **Warning**: When this API permission is allowed, it grants the authority to search and retrieve all SIMs that include their group information.
+
+        **Warning**: Use this API when the SIM ID of the target IoT SIM is unknown, or when you want to retrieve a list of SIMs that match certain conditions. If you know the SIM ID, please use the [Sim:getSim API](#/Sim/getSim) instead.
       operationId: searchSims
       parameters:
       - description: Name to search.
@@ -9260,6 +9143,15 @@ paths:
         explode: true
         in: query
         name: group
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Search for IoT SIMs whose group ID matches the specified value.
+        explode: true
+        in: query
+        name: group_id
         required: false
         schema:
           items:
@@ -9292,8 +9184,8 @@ paths:
           items:
             type: string
           type: array
-      - description: ICCID to search. An identifier to identify a SIM card or virtual
-          IoT SIM (Virtual SIM/Subscriber).
+      - description: ICCID to search. An identifier used to identify a SIM card or
+          virtual IoT SIM (Virtual SIM/Subscriber).
         explode: true
         in: query
         name: iccid
@@ -9350,7 +9242,7 @@ paths:
             type: string
           type: array
       - description: |
-          Status of the session to search (ONLINE or OFFLINE).
+          Status of the session to search. Specify one of the following:
 
           - `NA`: Any.
           - `ONLINE`: Online.
@@ -9367,29 +9259,28 @@ paths:
           format: string
           type: string
       - description: |
-          Subscription of the IoT SIM to search.
+          Subscription to search. Use exact match for the search. If specifying multiple subscriptions, please set `search_type` to `OR`.
 
-          Global coverage:
-          - `plan01s`
-          - `plan01s-low_data_volume`: plan01s - Low Data Volume.
-          - `planP1`
-          - `planX1`
-          - `planX2`
-          - `planX3`: planX3 X3-5MB, planX3.
-          - `planX3-EU`
-          - `plan-NA1-package`
-          - `plan-US`
-          - `plan-US-NA`
-          - `plan-US-max`
-          - `planArc01`: Virtual SIM/Subscriber.
-
-          Japan coverage:
-          - `plan-D`: plan-D D-300MB, plan-D (no bundle).
-          - `plan-K2`: plan-K2 K2-300MB.
-          - `plan-KM1`
-          - `plan-DU`
-          - `plan-K`
-          - `planArc01`: Virtual SIM/Subscriber.
+          - For Japan coverage, specify one of the following:
+            - `plan-D`: plan-D (without bundle), plan-D D-300MB.
+            - `plan-K2`: plan-K2 K2-300MB.
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`: Virtual SIM/Subscriber.
+          - For global coverage, specify one of the following:
+            - `plan01s`
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume.
+            - `planX3`: planX3 X3-5MB, planX3.
+            - `planP1`
+            - `plan-US`
+            - `plan-NA1-package`: plan-NA1.
+            - `plan-US-max`
+            - `planX1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`: Virtual SIM/Subscriber.
         explode: true
         in: query
         name: subscription
@@ -9399,15 +9290,16 @@ paths:
             type: string
           type: array
       - description: |
-          Module type of the IoT SIM to search.
+          The form factor of the physical SIM to search.
 
-          - `mini`
-          - `micro`
-          - `nano`
-          - `trio`: 3 in 1.
-          - `embedded`
-          - `virtual`
-          - `integrated`
+          - `mini`: standard (2FF) size.
+          - `micro`: micro (3FF) size.
+          - `nano`: nano (4FF) size.
+          - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it).
+          - `embedded`: Embedded (MFF2).
+          - `virtual`: Virtual SIM/Subscriber.
+          - `integrated`: Embedded (iSIM).
+          - `profilePackage`: Profile Package (eSIM profile).
         explode: true
         in: query
         name: module_type
@@ -9416,7 +9308,7 @@ paths:
           items:
             type: string
           type: array
-      - description: The maximum number of item to retrieve.
+      - description: The maximum number of items to retrieve.
         in: query
         name: limit
         required: false
@@ -9436,10 +9328,10 @@ paths:
       - description: |
           The type of search condition.
 
-          - AND: SIMs which match all of the search parameters will be returned (default if not specified).
+          - AND: SIMs which match all of the search parameters will be returned (default).
           - OR: SIMs which match any of the search parameters will be returned.
 
-          If the value of a search parameter contains a comma `,` (or `%2C` when URL-encoded), the value will be split at each comma and treated as multiple search values, and each resulting search value will be evaluated individually according to the AND or OR search condition.
+          If the value of a search parameter contains a comma `,` (or `%2C` when URL-encoded), the value will be split at each comma and treated as multiple search values, each of which will be evaluated based on the specified AND or OR condition.
         in: query
         name: search_type
         required: false
@@ -9545,7 +9437,29 @@ paths:
           items:
             type: string
           type: array
-      - description: Subscription (e.g. `plan01s`) to search.
+      - description: |
+          Subscription to search. Use exact match for the search. If specifying multiple subscriptions, please set `search_type` to `OR`.
+
+          - For Japan coverage, specify one of the following:
+            - `plan-D` (plan-D (without bundle), plan-D D-300MB)
+            - `plan-K2` (plan-K2 K2-300MB)
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`
+          - For global coverage, specify one of the following:
+            - `plan01s`
+            - `plan01s-low_data_volume` (plan01s - Low Data Volume)
+            - `planX3` (planX3 X3-5MB)
+            - `planP1`
+            - `plan-US`
+            - `plan-NA1-package` (plan-NA1)
+            - `plan-US-max`
+            - `planX1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`
         explode: true
         in: query
         name: subscription
@@ -10197,6 +10111,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+              - bundles: []
+                description: This is a test order
+                orderedTime: 1718756585000
+                profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
+                quantity: 10
+                speedClass: s1.4xfast
+                status: DRAFT
+                subscription: plan01s
               schema:
                 items:
                   $ref: '#/components/schemas/SimProfileOrderResponse'
@@ -10223,6 +10146,11 @@ paths:
       requestBody:
         content:
           application/json:
+            example:
+              description: This is a test order
+              quantity: 10
+              speedClass: s1.4xfast
+              subscription: plan01s
             schema:
               $ref: '#/components/schemas/CreateSimProfileOrderRequest'
       responses:
@@ -10230,10 +10158,12 @@ paths:
           content:
             application/json:
               example:
+                bundles: []
                 description: This is a test order
                 orderedTime: 1718756585000
                 profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
                 quantity: 10
+                speedClass: s1.4xfast
                 status: DRAFT
                 subscription: plan01s
               schema:
@@ -10275,6 +10205,8 @@ paths:
       x-soracom-cli:
       - sim-profile-orders delete
     get:
+      description: |
+        Get an eSIM profile order.
       operationId: getProfileOrder
       parameters:
       - description: The ID of the eSIM profile order.
@@ -10287,6 +10219,15 @@ paths:
         "200":
           content:
             application/json:
+              example:
+                bundles: []
+                description: This is a test order
+                orderedTime: 1718756585000
+                profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
+                quantity: 10
+                speedClass: s1.4xfast
+                status: DRAFT
+                subscription: plan01s
               schema:
                 $ref: '#/components/schemas/SimProfileOrderResponse'
           description: Returned the eSIM profile order.
@@ -10318,11 +10259,13 @@ paths:
           content:
             application/json:
               example:
+                bundles: []
                 confirmedTime: 1718756585000
                 description: This is a test order
                 orderedTime: 1718756585000
                 profileOrderId: 01902ddd-1cf3-77d9-afc0-fe8d410cadb1
                 quantity: 10
+                speedClass: s1.4xfast
                 status: CONFIRMED
                 subscription: plan01s
               schema:
@@ -10767,6 +10710,60 @@ paths:
       - Sim
       x-soracom-cli:
       - sims disable-termination
+  /sims/{sim_id}/downlink/http:
+    post:
+      description: |
+        Sends an HTTP request to a device using an IoT SIM and returns the HTTP response from the device in the API response body.
+      operationId: sendDownlinkHttp
+      parameters:
+      - description: SIM ID of the target IoT SIM. The SIM ID can be obtained from
+          the [Sim:listSims API](#/Sim/listSims).
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              method: GET
+              path: /readyz?verbose
+              port: 6443
+              skipVerify: true
+              ssl: false
+            schema:
+              $ref: '#/components/schemas/SimDownlinkHttpRequest'
+        description: Configuration of the HTTP request to send to the device.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkHttpResponse'
+          description: |
+            The HTTP request to the device was successful. The HTTP status code, headers, and body returned by the device can be checked in the response body.
+        "404":
+          description: The specified IoT SIM does not exist.
+        "422":
+          description: |
+            - The HTTP request to the device failed for one of the following reasons:
+              - Could not establish a network connection with the device.
+              - The device refused the HTTP connection.
+
+            - The HTTP response from the device was not received for one of the following reasons:
+              - The device did not return a response within 10 seconds.
+              - The HTTP response (including URL, headers, and body) exceeded 5 MiB.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Send an HTTP request to a device using an IoT SIM
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-http
   /sims/{sim_id}/downlink/ping:
     post:
       description: Sends ICMP ping requests to a SIM.
@@ -10805,6 +10802,83 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ping
+  /sims/{sim_id}/downlink/ssh:
+    post:
+      description: |
+        Connects to a device using an IoT SIM via SSH, executes a specified command, and returns the standard output and standard error output in the API response body.
+      operationId: sendDownlinkSsh
+      parameters:
+      - description: |
+          SIM ID of the target IoT SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims).
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            examples:
+              (1) Output system logs:
+                description: |
+                  Connects to the device via SSH and outputs system logs using the `journalctl` command.
+
+                  ```json
+                  {
+                    "exitcode":0,
+                    "stdout":"Feb 19 09:35:49 $HOST sshd[51829]: pam_env(sshd:session): deprecated reading of user environment enabled\nFeb 19 09:35:50 $HOST sshd[51829]: pam_unix(sshd:session): session closed for user $USER\nFeb 19 09:35:50 $HOST systemd-logind[480]: Session 620 logged out. Waiting for processes to exit.\nFeb 19 09:35:50 $HOST systemd[1]: session-620.scope: Deactivated successfully.\nFeb 19 09:35:50 $HOST systemd-logind[480]: Removed session 620.\nFeb 19 09:36:32 $HOST sshd[51837]: Accepted password for $USER from 100.127.10.16 port 47281 ssh2\nFeb 19 09:36:32 $HOST sshd[51837]: pam_unix(sshd:session): session opened for user $USER(uid=1000) by (uid=0)\nFeb 19 09:36:32 $HOST systemd-logind[480]: New session 621 of user $USER.\nFeb 19 09:36:32 $HOST systemd[1]: Started session-621.scope - Session 621 of User $USER.\nFeb 19 09:36:32 $HOST sshd[51837]: pam_env(sshd:session): deprecated reading of user environment enabled\n",
+                    "stderr":""
+                  }
+                  ```
+                value:
+                  authentication:
+                    password: secret_value
+                    type: password
+                  command: journalctl -n
+                  port: 22
+                  username: pi
+              (2) Retrieve file list:
+                description: |
+                  Connects to the device via SSH and retrieves a list of files.
+                value:
+                  authentication:
+                    password: secret_value
+                    type: password
+                  command: ls -l
+                  port: 22
+                  username: admin
+            schema:
+              $ref: '#/components/schemas/SimDownlinkSshRequest'
+        description: Configuration of the SSH connection and the command to execute.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkSshResponse'
+          description: The command was executed successfully. The command's exit code,
+            standard output, and standard error output can be checked in the response
+            body.
+        "422":
+          description: |
+            - The command execution failed for one of the following reasons:
+              - Could not establish a network connection with the device.
+              - The device refused the SSH connection.
+
+            - The response from the device was not received for one of the following reasons:
+              - The device did not return a response within 10 seconds.
+              - The command output (including standard output and standard error output) exceeded 5 MiB.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connect to a device using an IoT SIM via SSH and execute a specified
+        command
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-ssh
   /sims/{sim_id}/enable_termination:
     post:
       description: Disables termination protection for the specified IoT SIM (enables
@@ -11955,7 +12029,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: List compatible camera devices.
+      summary: List SoraCam compatible camera devices.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -11968,7 +12042,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: handleDeleteSoraCamDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -11978,7 +12052,8 @@ paths:
         "200":
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -11986,7 +12061,7 @@ paths:
       tags:
       - SoraCam
       x-soracom-cli:
-      - sora-cam device delete
+      - sora-cam devices delete
     get:
       description: |
         Obtain a SoraCam device record for the device identified by device_id.
@@ -11994,7 +12069,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12025,7 +12100,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamDevice'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12037,7 +12113,7 @@ paths:
   /sora_cam/devices/{device_id}/atom_cam/firmware/update:
     get:
       description: |
-        Returns available firmware update information for a compatible camera device.
+        Returns available firmware update information for a SoraCam compatible camera device.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceAtomCamFirmwareUpdate
@@ -12062,20 +12138,22 @@ paths:
           description: OK.
         "204":
           description: There are no firmware versions available for update for the
-            specified compatible camera device.
+            specified SoraCam compatible camera device.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve firmware update information for a compatible camera device
+      summary: Retrieve firmware update information for a SoraCam compatible camera
+        device
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam get-firmware-update
     post:
-      description: "Update a firmware for a compatible camera device if it is available.
-        The compatible camera device will be offline while updating.\n\n**Warning**:
+      description: "Update a firmware for a SoraCam compatible camera device if it
+        is available. The SoraCam compatible camera device will be offline while updating.\n\n**Warning**:
         Please do not turn off the power while updating. \n\n**Warning**: If you will
         run this API with a SAM user's API key and API token, please add the `OAuth2:authorize`
         permission to the SAM user in addition to the permission required to call
@@ -12094,15 +12172,103 @@ paths:
         "400":
           description: No firmware update found.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Update a firmware for a compatible camera device
+      summary: Update a firmware for a SoraCam compatible camera device
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam update-firmware
+  /sora_cam/devices/{device_id}/atom_cam/license:
+    delete:
+      description: |
+        Unassigns the license from a specified SoraCam compatible camera device.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Warning**: Devices will not undergo cloud recording by Soracom Cloud Camera Services unless a license is assigned.
+
+        **Warning**: A license is required to view footage already recorded to the cloud. This does not affect already exported videos/still images.
+
+        **Warning**: Unassigning the license will not stop license charges from being applied. To stop billing, cancel the license after unassigning it via the [SoraCam:listSoraCamLicensePacks API](#/SoraCam/listSoraCamLicensePacks) or the User Console.
+      operationId: unassignSoraCamDeviceAtomCamLicense
+      parameters:
+      - in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: License successfully unassigned.
+        "403":
+          description: |
+            Unable to unassign the license. Possible reasons include:
+
+            - Insufficient permissions.
+            - The device is shared by another operator.
+        "404":
+          description: The specified device could not be found under the operator
+            or has no assigned license.
+      security:
+      - api_key: []
+      - api_token: []
+      summary: Unassign the license from a SoraCam compatible camera device
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam unassign-license
+    put:
+      description: |
+        Updates the license for a specified SoraCam compatible camera device.
+
+        **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+      operationId: assignSoraCamDeviceAtomCamLicense
+      parameters:
+      - in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoraCamDeviceLicenseUpdate'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                type: CR14-SC
+              schema:
+                $ref: '#/components/schemas/SoraCamDeviceLicenseUpdate'
+          description: License successfully updated.
+        "304":
+          description: No changes were made to the existing license.
+        "400":
+          description: Invalid input data or license type specified.
+        "403":
+          description: |
+            Unable to assign the license. Possible reasons include:
+
+            - Insufficient permissions.
+            - No available purchased licenses.
+            - The device is shared by another operator.
+        "404":
+          description: The specified device could not be found under the operator.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update the assigned license for a SoraCam compatible camera device
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam assign-license
   /sora_cam/devices/{device_id}/atom_cam/settings:
     get:
       description: |
@@ -12113,7 +12279,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettings
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12131,13 +12297,16 @@ paths:
                 nightVision: auto
                 quality: high
                 rotation: 0
+                sound: "off"
+                soundSensitivity: low
                 statusLight: "on"
                 timestamp: "on"
               schema:
                 $ref: '#/components/schemas/SoraCamAtomCamSettings'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12156,7 +12325,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsLogo
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12172,7 +12341,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsLogo'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12191,7 +12361,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsLogo
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12210,7 +12380,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12223,16 +12394,16 @@ paths:
   /sora_cam/devices/{device_id}/atom_cam/settings/motion:
     get:
       description: |
-        Retrieve the settings for motion detection. If motion detection is enabled, recording will start when the compatible camera device detects moving objects.
+        Retrieve the settings for motion detection. If motion detection is enabled, recording will start when the SoraCam compatible camera device detects moving objects.
 
-        **Warning**: Even if a Cloud Motion Detection "Unlimited" Recording License is assigned to the compatible camera device, no recording will occur if motion detection is disabled, as it will not detect any moving objects.
+        **Warning**: Even if a Cloud Motion Detection "Unlimited" Recording License is assigned to the SoraCam compatible camera device, no recording will occur if motion detection is disabled, as it will not detect any moving objects.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
 
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsMotion
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12248,7 +12419,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsMotion'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12259,16 +12431,16 @@ paths:
       - sora-cam devices atom-cam settings get-motion
     post:
       description: |
-        Change the settings for motion detection. If motion detection is enabled, recording will start when the compatible camera device detects moving objects.
+        Change the settings for motion detection. If motion detection is enabled, recording will start when the SoraCam compatible camera device detects moving objects.
 
-        **Warning**: Even if a Cloud Motion Detection "Unlimited" Recording License is assigned to the compatible camera device, no recording will occur if motion detection is disabled, as it will not detect any moving objects.
+        **Warning**: Even if a Cloud Motion Detection "Unlimited" Recording License is assigned to the SoraCam compatible camera device, no recording will occur if motion detection is disabled, as it will not detect any moving objects.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
 
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsMotion
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12287,7 +12459,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12306,7 +12479,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsMotionSensitivity
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12322,7 +12495,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsMotionSensitivity'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12340,7 +12514,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsMotionSensitivity
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12359,7 +12533,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12378,7 +12553,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsMotionTagging
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12394,7 +12569,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsMotionTagging'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12412,7 +12588,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsMotionTagging
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12431,7 +12607,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12450,7 +12627,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsNightVision
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12466,7 +12643,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsNightVision'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12484,7 +12662,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsNightVision
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12503,7 +12681,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12522,7 +12701,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsQuality
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12538,7 +12717,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsQuality'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12549,14 +12729,14 @@ paths:
       - sora-cam devices atom-cam settings get-quality
     post:
       description: |
-        Changes the quality settings. The quality settings will be applied to all videos and still images captured by the specified compatible camera device. Note that if the Wi-Fi bandwidth is insufficient, the quality settings may automatically be adjusted.
+        Changes the quality settings. The quality settings will be applied to all videos and still images captured by the specified SoraCam compatible camera device. Note that if the Wi-Fi bandwidth is insufficient, the quality settings may automatically be adjusted.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
 
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsQuality
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12575,7 +12755,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12594,7 +12775,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsRotation
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12610,7 +12791,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsRotation'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12628,7 +12810,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsRotation
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12647,7 +12829,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12656,6 +12839,158 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-rotation
+  /sora_cam/devices/{device_id}/atom_cam/settings/sound:
+    get:
+      description: |
+        Retrieve the settings for sound detection. If sound detection is enabled, recording will start when the SoraCam compatible camera device detects sound.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Warning**: Video recorded via sound detection cannot be downloaded separately via the Soracom User Console, Soracom CLI, or Soracom API. However, if a Cloud Continuous Recording License is assigned, you can check the time that sound was detected using [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) and then download the video recorded during that time.
+
+        **Info**: This API is currently available as a beta release. Functionality may be subject to change.
+      operationId: getSoraCamDeviceAtomCamSettingsSound
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                state: "on"
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSound'
+          description: OK.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Retrieve the settings for sound detection
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-sound
+    post:
+      description: |
+        Change the settings for sound detection. If sound detection is enabled, recording will start when the SoraCam compatible camera device detects sound.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Warning**: Video recorded via sound detection cannot be downloaded separately via the Soracom User Console, Soracom CLI, or Soracom API. However, if a Cloud Continuous Recording License is assigned, you can check the time that sound was detected using [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) and then download the video recorded during that time.
+
+        **Info**: This API is currently available as a beta release. Functionality may be subject to change.
+      operationId: setSoraCamDeviceAtomCamSettingsSound
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              state: "on"
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSound'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: The specified value is invalid.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Change the settings for sound detection
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-sound
+  /sora_cam/devices/{device_id}/atom_cam/settings/sound_sensitivity:
+    get:
+      description: |
+        Retrieve the settings for sound sensitivity.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Info**: This API is currently available as a beta release. Functionality may be subject to change.
+      operationId: getSoraCamDeviceAtomCamSettingsSoundSensitivity
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                state: low
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSoundSensitivity'
+          description: OK.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Retrieve the settings for sound sensitivity
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-sound-sensitivity
+    post:
+      description: |
+        Change the settings for sound sensitivity.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Info**: This API is currently available as a beta release. Functionality may be subject to change.
+      operationId: setSoraCamDeviceAtomCamSettingsSoundSensitivity
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              state: low
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSoundSensitivity'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: The specified value is invalid.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Change the settings for sound sensitivity
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-sound-sensitivity
   /sora_cam/devices/{device_id}/atom_cam/settings/status_light:
     get:
       description: |
@@ -12666,7 +13001,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsStatusLight
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12682,7 +13017,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsStatusLight'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12701,7 +13037,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsStatusLight
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12720,7 +13056,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12740,7 +13077,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: getSoraCamDeviceAtomCamSettingsTimestamp
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12756,7 +13093,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamAtomCamSettingsTimestamp'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12775,7 +13113,7 @@ paths:
         **Info**: This API is currently available as a beta release. Functionality may be subject to change.
       operationId: setSoraCamDeviceAtomCamSettingsTimestamp
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12794,7 +13132,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12804,6 +13143,134 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-timestamp
+  /sora_cam/devices/{device_id}/data:
+    post:
+      description: |
+        Saves arbitrary data to Harvest Data that will be associated to a SoraCam compatible camera device specified by its device ID (`device_id`).
+
+        For example, to save JSON data, set `Content-Type: application/json` in the header and specify `{ "person_count": 5 }` in the request body.
+
+        **Warning**: When using a SAM user's API key and API token to execute this API, you must grant the SAM user the `OAuth2:authorize` permission in addition to the permissions required to call this API (e.g., `SoraCam:*`). For details about permission settings, refer to [Configuring SAM User Permissions](/en/docs/sam/set-permissions/).
+
+        **Info**: To retrieve saved data entries, use the [DataEntry:getDataEntry API](#/DataEntry/getDataEntry). To delete data entries, use the [DataEntry:deleteDataEntry API](#/DataEntry/deleteDataEntry).
+
+        **Info**: For more information about Harvest Data, please refer to [Soracom Harvest](/en/docs/harvest/).
+      operationId: createSoraCamDeviceDataEntry
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          The Content-Type of the data to be saved.
+
+          - For JSON data, specify `application/json`.
+          - For text data, specify `text/plain`.
+          - For binary data, specify `application/octet-stream`.
+        in: header
+        name: content-type
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+          text/plain:
+            schema:
+              type: string
+        description: The data to be saved.
+        required: true
+      responses:
+        "201":
+          description: Data has been successfully saved to Harvest Data.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Save arbitrary data to Harvest Data linked to a SoraCam compatible
+        camera device
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices data create-entry
+  /sora_cam/devices/{device_id}/data/{time}:
+    put:
+      description: |
+        Saves arbitrary data to Harvest Data with a particular timestamp that will be associated to a SoraCam compatible camera device specified by its device ID (`device_id`).
+
+        - If no data exists for the specified timestamp, a new data entry will be created.
+        - If data already exists for the specified timestamp, it will be overwritten according to the specifications of Harvest Data.
+
+        For example, to save JSON data, set `Content-Type: application/json` in the header and specify `{ "person_count": 5 }` in the request body.
+
+        **Warning**: When using a SAM user's API key and API token to execute this API, you must grant the SAM user the `OAuth2:authorize` permission in addition to the permissions required to call this API (e.g., `SoraCam:*`). For details about permission settings, refer to [Configuring SAM User Permissions](/en/docs/sam/set-permissions/).
+
+        **Info**: To retrieve saved data entries, use the [DataEntry:getDataEntry API](#/DataEntry/getDataEntry). To delete data entries, use the [DataEntry:deleteDataEntry API](#/DataEntry/deleteDataEntry).
+
+        **Info**: For more information about Harvest Data, please refer to [Soracom Harvest](/en/docs/harvest/).
+      operationId: updateSoraCamDeviceDataEntry
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      - description: The timestamp of the target data entry (UNIX time in milliseconds).
+        in: path
+        name: time
+        required: true
+        schema:
+          format: int64
+          type: integer
+      - description: |
+          The Content-Type of the data to be saved.
+
+          - For JSON data, specify `application/json`.
+          - For text data, specify `text/plain`.
+          - For binary data, specify `application/octet-stream`.
+        in: header
+        name: content-type
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+          text/plain:
+            schema:
+              type: string
+        description: The data to be saved.
+        required: true
+      responses:
+        "200":
+          description: Data was successfully saved to Harvest Data.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Save arbitrary data to Harvest Data linked to a SoraCam compatible
+        camera device and timestamp
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices data update-entry
   /sora_cam/devices/{device_id}/events:
     get:
       description: |
@@ -12812,23 +13279,23 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceEventsForDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
         schema:
           type: string
-      - description: Value of the x-soracom-next-key header in the response to the
-          last listSoraCamDeviceEventsForDevice request. By specifying this parameter,
-          you can continue to retrieve the list from the last request.
+      - description: Value of the x-soracom-next-key header in the listSoraCamDeviceEventsForDevice
+          request response. By specifying this parameter, you can retrieve the next
+          page of events.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Maximum number of items to retrieve in one request (value range
-          is 1 to 1000). Note that the response may contain fewer items than the specified
-          limit.
+      - description: Maximum number of events to retrieve in one request (value range
+          is 1 to 1000). Note that the response may contain fewer events than the
+          specified limit.
         in: query
         name: limit
         required: false
@@ -12837,7 +13304,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: Start time of the events to be searched (unix time in milliseconds).
+      - description: Start time of the events to retrieve (unix time in milliseconds).
           If not specified, `from` is set to the oldest event time.
         in: query
         name: from
@@ -12845,7 +13312,7 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: End time of the events to be searched (unix time in milliseconds).
+      - description: End time of the events to retrieve (unix time in milliseconds).
           If not specified, `to` is set to the current time.
         in: query
         name: to
@@ -12856,8 +13323,8 @@ paths:
       - description: |
           Sort order of the events.
 
-          - `desc`: Descending order (latest data entry first)
-          - `asc`: Ascending order (oldest data entry first)
+          - `desc`: Descending order (newest event first)
+          - `asc`: Ascending order (oldest event first)
         in: query
         name: sort
         required: false
@@ -12890,7 +13357,8 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12914,7 +13382,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportUsage
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12941,7 +13409,8 @@ paths:
                 $ref: '#/components/schemas/SoraCamExportUsage'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -12959,7 +13428,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: deleteSoraCamDeviceExportUsageLimitOverride
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -12969,12 +13438,13 @@ paths:
         "204":
           description: OK, deleted.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Reset the monthly limit on the recorded video time available for export
-        for compatible camera device to the default value.
+        for SoraCam compatible camera device to the default value.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -12990,7 +13460,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: updateSoraCamDeviceExportUsageLimitOverride
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13027,12 +13497,13 @@ paths:
         "400":
           description: The specified limit override is not acceptable.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Set the monthly limit on the recorded video time available for export
-        for compatible camera device.
+        for SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13040,16 +13511,16 @@ paths:
   /sora_cam/devices/{device_id}/images/exports:
     get:
       description: |
-        Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one compatible camera device.
+        Gets the list of the current status of the process of exporting still image from recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one SoraCam compatible camera device.
 
-        If the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceImageExports API](#!/SoraCam/listSoraCamDeviceImageExports).
+        If the target is not limited to one SoraCam compatible camera device, but all SoraCam compatible camera devices owned by the operator, use [SoraCam:listSoraCamDeviceImageExports API](#!/SoraCam/listSoraCamDeviceImageExports).
 
         **Warning**: The URL becomes unusable 10 minutes after export completion. The time until the URL becomes unusable can be checked with `expiryTime`. Additionally, over time, it will be removed from the list.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceImageExportsForDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13145,12 +13616,13 @@ paths:
                 type: array
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Get a list of the current status of the process of exporting still
-        image from recorded video taken with a compatible camera device.
+        image from recorded video taken with a SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13166,15 +13638,16 @@ paths:
 
         - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of whether the download has started or not.
         - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month by default).
+        - Exporting to Harvest Files will incur costs according to Harvest Files fees, and files will be retained for a period according to the Harvest Files retention period. For details, refer to [Pricing & Fee Schedule](/en/docs/reference/fees/#soracom-harvest-files).
 
         **Warning**: Images from cameras that have not been assigned a Cloud Continuous Recording License or Cloud Motion Detection "Unlimited" Recording License cannot be exported.
 
-        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. Additionally, to export to Harvest Files, the [FileEntry:putFile API](#/FileEntry/putFile) permission must be granted. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
 
         **Info**: The image size of the exported still images is 1920 x 1080 pixels.
       operationId: exportSoraCamDeviceRecordedImage
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13210,8 +13683,12 @@ paths:
           description: OK.
         "400":
           description: The value specified for `time` is invalid.
+        "403":
+          description: You do not have the required permission (FileEntry:putFile)
+            to export to Harvest Files.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -13224,12 +13701,12 @@ paths:
   /sora_cam/devices/{device_id}/images/exports/{export_id}:
     get:
       description: |
-        Gets the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one export process.
+        Gets the current status of the process of exporting still image from recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API limits the target to one export process.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportedImage
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13301,23 +13778,23 @@ paths:
                 $ref: '#/components/schemas/SoraCamImageExportInfo'
           description: OK.
         "404":
-          description: The specified compatible camera device or export process could
-            not be found.
+          description: The specified SoraCam compatible camera device or export process
+            could not be found.
       security:
       - api_key: []
         api_token: []
       summary: Get the current status of the process of exporting still images from
-        recorded video taken with a compatible camera device
+        recorded video taken with a SoraCam compatible camera device
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices images get-exported
   /sora_cam/devices/{device_id}/name:
     get:
-      description: Get the current name of the compatible camera device.
+      description: Get the current name of the SoraCam compatible camera device.
       operationId: getSoraCamDeviceName
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13333,20 +13810,21 @@ paths:
                 $ref: '#/components/schemas/SoraCamDeviceName'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Get the current name of the compatible camera device.
+      summary: Get the current name of the SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get-name
     post:
-      description: Changes the name of the compatible camera device.
+      description: Changes the name of the SoraCam compatible camera device.
       operationId: setSoraCamDeviceName
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13365,21 +13843,22 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Changes the name of the compatible camera device.
+      summary: Changes the name of the SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices set-name
   /sora_cam/devices/{device_id}/power_state:
     get:
-      description: Get the current power state of the compatible camera device.
+      description: Get the current power state of the SoraCam compatible camera device.
       operationId: getSoraCamDevicePowerState
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13395,20 +13874,21 @@ paths:
                 $ref: '#/components/schemas/SoraCamPowerState'
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Get the current power state of the compatible camera device.
+      summary: Get the current power state of the SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices get-power-state
     post:
-      description: Changes the power state of the compatible camera device.
+      description: Changes the power state of the SoraCam compatible camera device.
       operationId: setSoraCamDevicePowerState
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13427,21 +13907,22 @@ paths:
         "400":
           description: The specified value is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Changes the power state of the compatible camera device.
+      summary: Changes the power state of the SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices set-power-state
   /sora_cam/devices/{device_id}/reboot:
     post:
-      description: Reboot the compatible camera device.
+      description: Reboot the SoraCam compatible camera device.
       operationId: rebootSoraCamDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13451,11 +13932,12 @@ paths:
         "200":
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Reboot the compatible camera device.
+      summary: Reboot the SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13463,36 +13945,37 @@ paths:
   /sora_cam/devices/{device_id}/recordings_and_events:
     get:
       description: |
-        Returns a list of recording periods and events for a compatible camera device.
+        Returns a list of recordings and events for a SoraCam compatible camera device.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceRecordingsAndEvents
       parameters:
-      - description: Device ID of the compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
         schema:
           type: string
-      - description: Value of the x-soracom-next-key header in the response to the
-          last listSoraCamDeviceRecordingsAndEvents request. By specifying this parameter,
-          you can continue to retrieve the list from the last request.
+      - description: Value of the x-soracom-next-key header in the listSoraCamDeviceRecordingsAndEvents
+          request response. By specifying this parameter, you can retrieve the next
+          page of recordings and events.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: Start time of the list to be searched (unix time in milliseconds).
-          If not specified, `from` is set to the oldest time within the retention
-          period of the license assigned to the compatible camera device.
+      - description: Start time of the recordings and events to retrieve (unix time
+          in milliseconds). If not specified, `from` is set to the oldest time within
+          the retention period of the license that is assigned to the SoraCam compatible
+          camera device.
         in: query
         name: from
         required: false
         schema:
           format: int64
           type: integer
-      - description: End time of the list to be searched (unix time in milliseconds).
-          If not specified, `to` is set to the current time.
+      - description: End time of the recordings and events to retrieve (unix time
+          in milliseconds). If not specified, `to` is set to the current time.
         in: query
         name: to
         required: false
@@ -13502,8 +13985,8 @@ paths:
       - description: |
           Sort order of the recordings and events.
 
-          - `desc`: Descending order (latest data entry first)
-          - `asc`: Ascending order (oldest data entry first)
+          - `desc`: Descending order (newest recordings and events first)
+          - `asc`: Ascending order (oldest recordings and events first)
         in: query
         name: sort
         required: false
@@ -13538,13 +14021,13 @@ paths:
         "400":
           description: The specified argument is invalid.
         "404":
-          description: The specified compatible camera device, or the recordings for
-            the specified period, could not be found.
+          description: The specified SoraCam compatible camera device, or the recordings
+            for the specified period, could not be found.
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve a list of recording periods and events for a compatible camera
-        device
+      summary: Retrieve a list of recording periods and events for a SoraCam compatible
+        camera device
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13557,21 +14040,21 @@ paths:
   /sora_cam/devices/{device_id}/stream:
     get:
       description: |
-        Get information for downloading streaming video (real-time video / recorded video). Specifically, you can get an array of URLs that support a streaming method called MPEG-DASH (Dynamic Adaptive Streaming over HTTP). The URL has an expiration time.
+        Get information for streaming recorded video from the cloud. Specifically, you can get an array of URLs that support a streaming method called MPEG-DASH (Dynamic Adaptive Streaming over HTTP). The URL has an expiration time.
 
-        - To stream real-time video, omit both `from` and `to`. Please be aware of the following points in that case:
-          - You can get a URL to stream 300 seconds (5 minutes) of real-time video based on the time of the API called. To continue watching, call the API again to get the next URL.
+        - To stream the latest video, omit both `from` and `to`. Please be aware of the following points in that case:
+          - You can get a URL to stream the latest 300 seconds (5 minutes) of video based on the time of the API called. To continue watching, call the API again to get the next URL.
           - At the time of obtaining the URL, 5 minutes of the available video viewing time (72 hours per month by default) will be consumed regardless of the viewing status.
-        - To stream recorded video, specify either `from` or `to`. Please be aware of the following points:
+        - To stream recorded video at a specific point in time, specify either `from` or `to`. Please be aware of the following points:
           - You can get a URL to stream up to 900 seconds (15 minutes) of recorded video.
           - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of the viewing status.
 
-        **Warning**: Real-time video is a function that retrieves the latest video from recorded video saved on the cloud. Therefore, a Cloud Continuous Recording License or a Cloud Motion Detection "Unlimited" Recording License is required to obtain real-time video. **Live video (P2P)** that can be played on the ATOM app is a different feature from the real-time video. **Live video (P2P)** cannot be obtained using the SORACOM API.
+        **Warning**: **Latest video** refers to the most recent recorded footage saved in the cloud. This API cannot be used to play **Live video (P2P)** that can be played on the ATOM app. To view **Live video (P2P)**, please use Unlimited Live Streaming (Limited Preview).
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceStreamingVideo
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13580,7 +14063,7 @@ paths:
       - description: |
           Start time of recorded video (UNIX time in milliseconds).
 
-          - Omit both `from` and `to` to get information for downloading real-time video.
+          - Omit both `from` and `to` to get information for streaming the latest video.
         in: query
         name: from
         required: false
@@ -13590,7 +14073,7 @@ paths:
       - description: |
           End time of recorded video (UNIX time in milliseconds).
 
-          - Omit both `from` and `to` to get information for downloading real-time video.
+          - Omit both `from` and `to` to get information for streaming the latest video.
           - The maximum viewing time for a single API call is 900 seconds (15 minutes). Make sure the difference between `from` and `to` does not exceed 900 seconds.
         in: query
         name: to
@@ -13613,12 +14096,12 @@ paths:
         "400":
           description: The value specified for `from` or `to` is invalid.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
-      summary: Get information for downloading streaming video (real-time video /
-        recorded video).
+      summary: Get information for streaming recorded video from the cloud.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13626,16 +14109,16 @@ paths:
   /sora_cam/devices/{device_id}/videos/exports:
     get:
       description: |
-        Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one compatible camera device.
+        Gets the list of the current status of the process of exporting recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one SoraCam compatible camera device.
 
-        If the target is not limited to one compatible camera device, but all compatible camera device owned by the operator, use [SoraCam:listSoraCamDeviceVideoExports API](#!/SoraCam/listSoraCamDeviceVideoExports).
+        If the target is not limited to one SoraCam compatible camera device, but all SoraCam compatible camera devices owned by the operator, use [SoraCam:listSoraCamDeviceVideoExports API](#!/SoraCam/listSoraCamDeviceVideoExports).
 
         **Warning**: The URL becomes unusable 10 minutes after export completion. The time until the URL becomes unusable can be checked with `expiryTime`. Additionally, over time, it will be removed from the list.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceVideoExportsForDevice
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13731,12 +14214,13 @@ paths:
                 type: array
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Get a list of the current status of the process of exporting recorded
-        video taken with a compatible camera device.
+        video taken with a SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13753,13 +14237,14 @@ paths:
         - The maximum export time for a single URL is 900 seconds (15 minutes).
         - At the time of obtaining the URL, the available video viewing time (72 hours per month by default) will be consumed regardless of whether the download has started or not.
         - Exporting results are not cached. If you export the same time twice, it will consume twice the available video viewing time (72 hours per month by default).
+        - Exporting to Harvest Files will incur costs according to Harvest Files fees, and files will be retained for a period according to the Harvest Files retention period. For details, refer to [Pricing & Fee Schedule](/en/docs/reference/fees/#soracom-harvest-files).
 
         **Warning**: Recordings from cameras that have not been assigned a Cloud Continuous Recording License or Cloud Motion Detection "Unlimited" Recording License cannot be exported.
 
-        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. Additionally, to export to Harvest Files, the [FileEntry:putFile API](#/FileEntry/putFile) permission must be granted. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: exportSoraCamDeviceRecordedVideo
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13792,8 +14277,12 @@ paths:
             - The value specified for `from` or `to` is invalid.
             - No exportable recordings were found in the specified time range.
             - `Content-Type: application/json` header is not specified.
+        "403":
+          description: You do not have the required permission (FileEntry:putFile)
+            to export to Harvest Files.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
@@ -13805,12 +14294,12 @@ paths:
   /sora_cam/devices/{device_id}/videos/exports/{export_id}:
     get:
       description: |
-        Gets the current status of the process of exporting recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one export process.
+        Gets the current status of the process of exporting recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API limits the target to one export process.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: getSoraCamDeviceExportedVideo
       parameters:
-      - description: Device ID of the target compatible camera device.
+      - description: Device ID of the target SoraCam compatible camera device.
         in: path
         name: device_id
         required: true
@@ -13882,13 +14371,13 @@ paths:
                 $ref: '#/components/schemas/SoraCamVideoExportInfo'
           description: OK.
         "404":
-          description: The specified compatible camera device or export process could
-            not be found.
+          description: The specified SoraCam compatible camera device or export process
+            could not be found.
       security:
       - api_key: []
         api_token: []
       summary: Get the current status of the process of exporting recorded video taken
-        with a compatible camera device
+        with a SoraCam compatible camera device
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13896,7 +14385,7 @@ paths:
   /sora_cam/devices/atom_cam/firmware/updates:
     get:
       description: |
-        Returns a list of compatible camera devices that can update the firmware.
+        Returns a list of SoraCam compatible camera devices that can update the firmware.
 
         **Warning**: If you will run this API with a SAM user's API key and API token, please add the `OAuth2:authorize` permission to the SAM user in addition to the permission required to call this API (e.g. `SoraCam:*`). For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceAtomCamFirmwareUpdates
@@ -13916,7 +14405,8 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve a list of compatible camera devices that can update the firmware
+      summary: Retrieve a list of SoraCam compatible camera devices that can update
+        the firmware
       tags:
       - SoraCam
       x-soracom-cli:
@@ -13926,25 +14416,25 @@ paths:
       description: Returns list of SoraCam events.
       operationId: listSoraCamDeviceEvents
       parameters:
-      - description: Device ID of the target compatible camera device. If this ID
-          is not specified, the event history of all camera devices owned by the operator
-          will be retrieved.
+      - description: Device ID of the target SoraCam compatible camera device. If
+          this ID is not specified, the event history of all camera devices owned
+          by the operator will be retrieved.
         in: query
         name: device_id
         required: false
         schema:
           type: string
-      - description: Value of the x-soracom-next-key header in the response to the
-          last listSoraCamDeviceEvents request. By specifying this parameter, you
-          can continue to retrieve the list from the last request.
+      - description: Value of the x-soracom-next-key header in the listSoraCamDeviceEvents
+          request response. By specifying this parameter, you can retrieve the next
+          page of events.
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: integer
-      - description: Maximum number of items to retrieve in one request (value range
-          is 1 to 1000). Note that the response may contain fewer items than the specified
-          limit.
+      - description: Maximum number of events to retrieve in one request (value range
+          is 1 to 1000). Note that the response may contain fewer events than the
+          specified limit.
         in: query
         name: limit
         required: false
@@ -13953,7 +14443,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: Start time of the events to be searched (unix time in milliseconds).
+      - description: Start time of the events to retrieve (unix time in milliseconds).
           If not specified, `from` is set to the oldest event time.
         in: query
         name: from
@@ -13961,7 +14451,7 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: End time of the events to be searched (unix time in milliseconds).
+      - description: End time of the events to retrieve (unix time in milliseconds).
           If not specified, `to` is set to the current time.
         in: query
         name: to
@@ -13972,8 +14462,8 @@ paths:
       - description: |
           Sort order of the events.
 
-          - `desc`: Descending order (latest data entry first)
-          - `asc`: Ascending order (oldest data entry first)
+          - `desc`: Descending order (newest events first)
+          - `asc`: Ascending order (oldest events first)
         in: query
         name: sort
         required: false
@@ -14021,16 +14511,16 @@ paths:
   /sora_cam/devices/images/exports:
     get:
       description: |
-        Gets the list of the current status of the process of exporting still image from recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API can target all devices owned by the operator, or limit it to one compatible camera device.
+        Gets the list of the current status of the process of exporting still image from recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedImage API](#!/SoraCam/exportSoraCamDeviceRecordedImage). This API can target all devices owned by the operator, or limit it to one SoraCam compatible camera device.
 
         **Warning**: The URL becomes unusable 10 minutes after export completion. The time until the URL becomes unusable can be checked with `expiryTime`. Additionally, over time, it will be removed from the list.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceImageExports
       parameters:
-      - description: Device ID of the target compatible camera device. If this ID
-          is not specified, all compatible camera devices owned by the operator will
-          be returned.
+      - description: Device ID of the target SoraCam compatible camera device. If
+          this ID is not specified, all SoraCam compatible camera devices owned by
+          the operator will be returned.
         in: query
         name: device_id
         required: false
@@ -14126,12 +14616,13 @@ paths:
                 type: array
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Get a list of the current status of the process of exporting still
-        image from recorded video taken with a compatible camera device.
+        image from recorded video taken with a SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -14144,16 +14635,16 @@ paths:
   /sora_cam/devices/videos/exports:
     get:
       description: |
-        Gets the list of the current status of the process of exporting recorded video taken with a compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API can target all devices owned by the operator, or limit it to one compatible camera device.
+        Gets the list of the current status of the process of exporting recorded video taken with a SoraCam compatible camera device started by [SoraCam:exportSoraCamDeviceRecordedVideo API](#!/SoraCam/exportSoraCamDeviceRecordedVideo). This API can target all devices owned by the operator, or limit it to one SoraCam compatible camera device.
 
         **Warning**: The URL becomes unusable 10 minutes after export completion. The time until the URL becomes unusable can be checked with `expiryTime`. Additionally, over time, it will be removed from the list.
 
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
       operationId: listSoraCamDeviceVideoExports
       parameters:
-      - description: Device ID of the target compatible camera device. If this ID
-          is not specified, all compatible camera devices owned by the operator will
-          be returned.
+      - description: Device ID of the target SoraCam compatible camera device. If
+          this ID is not specified, all SoraCam compatible camera devices owned by
+          the operator will be returned.
         in: query
         name: device_id
         required: false
@@ -14249,12 +14740,13 @@ paths:
                 type: array
           description: OK.
         "404":
-          description: The specified compatible camera device could not be found.
+          description: The specified SoraCam compatible camera device could not be
+            found.
       security:
       - api_key: []
         api_token: []
       summary: Get a list of the current status of the process of exporting recorded
-        video taken with a compatible camera device.
+        video taken with a SoraCam compatible camera device.
       tags:
       - SoraCam
       x-soracom-cli:
@@ -17395,6 +17887,7 @@ paths:
       - vpg put-sim-based-routing-routes
   /virtual_private_gateways/{vpg_id}/gate/set_vxlan_id:
     post:
+      description: Set VXLAN ID for Gate.
       operationId: setVirtualPrivateGatewayVxLanId
       parameters:
       - in: path
@@ -17416,6 +17909,7 @@ paths:
       security:
       - api_key: []
         api_token: []
+      summary: Set VXLAN ID for Gate
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -17989,6 +18483,7 @@ paths:
       - vpg set-routing-filter
   /virtual_private_gateways/{vpg_id}/tags:
     put:
+      description: Adds/updates tags of the specified VPG.
       operationId: updateVirtualPrivateGatewayTags
       parameters:
       - in: path
@@ -18010,12 +18505,14 @@ paths:
       security:
       - api_key: []
         api_token: []
+      summary: Update VPG tags
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg update-tags
   /virtual_private_gateways/{vpg_id}/tags/{tag_name}:
     delete:
+      description: Deletes a tag from the specified VPG.
       operationId: deleteVirtualPrivateGatewayTag
       parameters:
       - in: path
@@ -18036,6 +18533,7 @@ paths:
       security:
       - api_key: []
         api_token: []
+      summary: Delete a VPG Tag
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -18578,7 +19076,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
-      description: Credentials set.
+      description: Credential set.
       required: true
     DeviceObjectModel:
       content:
@@ -18947,13 +19445,21 @@ components:
           description: Server peer public key for the Arc server.
           type: string
         gatewayPrivateIpAddress:
+          description: The private IP address of the VPG. In the case of VPG Type-F,
+            the source IP address of the closed network communication from the IoT
+            SIM to the customer's system is NAT-ed to this IP address.
           type: string
         gatewayPublicIpAddress:
+          description: The fixed global IP address when using the VPG [Fixed Global
+            IP Address Option](/en/docs/vpg/fixed-global-ip/).
           type: string
         lastUpdatedAt:
           format: int64
           type: integer
+        placement:
+          $ref: '#/components/schemas/Placement'
         vpgId:
+          description: The VPG ID. If the VPG was not used, this will not be output.
           type: string
       type: object
     AttachRoleRequest:
@@ -18971,13 +19477,24 @@ components:
     AuthKeyResponse:
       properties:
         authKeyId:
+          description: The ID of the authentication key.
+          example: keyId-xxx
           type: string
         createDateTime:
+          description: The creation date and time of the authentication key (UNIX
+            time in seconds).
+          example: 1722480500
           format: int64
           type: integer
         lastUsedDateTime:
+          description: The last used date and time of the authentication key (UNIX
+            time in seconds).
+          example: 1722480600
           format: int64
           type: integer
+      required:
+      - authKeyId
+      - createDateTime
       type: object
     AuthRequest:
       properties:
@@ -19148,6 +19665,8 @@ components:
           type: boolean
       type: object
     Cell:
+      description: Information about the base station to which the IoT SIM is connected.
+        It will not be output for virtual SIM/subscribers.
       properties:
         ci:
           description: The Cell Identity (for 2G and 3G networks), a 16 bit value
@@ -19565,7 +20084,7 @@ components:
           $ref: '#/components/schemas/PortMappingDestination'
         duration:
           description: |
-            The duration (in seconds) to maintain the Port Mapping entry (the time to allow remote access). After the specified time has elapsed, the Port Mapping entry will be automatically deleted. Maximum duration is 8 hours.
+            The duration (in seconds) to maintain the On-Demand Remote Access entry (the time to allow remote access). After the specified time has passed, the On-Demand Remote Access entry will be automatically deleted. The maximum duration is 8 hours.
           type: number
         source:
           $ref: '#/components/schemas/PortMappingSource'
@@ -19588,6 +20107,43 @@ components:
       description: Represents a request to place a eSIM profile order without confirming
         it.
       properties:
+        bundles:
+          description: |
+            Bundles of the eSIM profile to be ordered. Specify one of the following. Please specify the bundle that matches the subscription.
+
+            - For planX3:
+                - `X3-5MB`
+            - For plan-US:
+                - `US-1MB`
+                - `US-3MB`
+                - `US-10MB`
+                - `US-20MB`
+                - `US-50MB`
+                - `US-100MB`
+                - `US-300MB`
+                - `US-500MB`
+                - `US-1GB`
+                - `US-3GB`
+                - `US-5GB`
+                - `US-10GB`
+          items:
+            enum:
+            - X3-5MB
+            - US-1MB
+            - US-3MB
+            - US-10MB
+            - US-20MB
+            - US-50MB
+            - US-100MB
+            - US-300MB
+            - US-500MB
+            - US-1GB
+            - US-3GB
+            - US-5GB
+            - US-10GB
+            type: string
+          maxItems: 1
+          type: array
         description:
           description: The description of the order. You can use this to identify
             the order in the order history.
@@ -19595,12 +20151,41 @@ components:
           maxLength: 100
           type: string
         quantity:
-          description: The quantity of the eSIM profile to be ordered.
+          description: |
+            The quantity of the eSIM profile to be ordered.
+
+            **Info**: A maximum of 20 eSIM profiles may be purchased per order. If you would like to purchase more, please [contact us](https://www.soracom.io/contact/).
           example: 10
           format: int32
           maximum: 100
           minimum: 1
           type: integer
+        speedClass:
+          description: |-
+            The speed class of the eSIM profile to be ordered. Specify one of the following. Please specify the speed class that matches the subscription.
+
+            - For plan01s, planP1, planX1, planX2, planX3:
+                - `s1.minimum`
+                - `s1.slow`
+                - `s1.standard`
+                - `s1.fast`
+                - `s1.4xfast`
+            - For plan-US:
+                - `s1.minimum`
+                - `s1.slow`
+                - `s1.standard`
+                - `s1.fast`
+                - `s1.4xfast`
+                - `s1.8xfast`
+          enum:
+          - s1.minimum
+          - s1.slow
+          - s1.standard
+          - s1.fast
+          - s1.4xfast
+          - s1.8xfast
+          example: s1.4xfast
+          type: string
         subscription:
           description: |
             The subscription of the eSIM profile to be ordered.
@@ -19608,6 +20193,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`: Only available for customers located in the European Union and United Kingdom.
+            - `plan-US`: Only available for customers located in in the United States and Canada.
           example: plan01s
           type: string
       required:
@@ -21604,48 +22192,6 @@ components:
         gateway:
           type: string
       type: object
-    LagoonDashboardPermissionsResponse:
-      properties:
-        dashboardId:
-          format: int64
-          type: number
-        dashboardTitle:
-          type: string
-        permissions:
-          items:
-            properties:
-              dashboardId:
-                format: int64
-                type: number
-              dashboardTitle:
-                type: string
-              permissionName:
-                enum:
-                - View
-                - Edit
-                - Admin
-                type: string
-              userEmail:
-                type: string
-              userId:
-                format: int64
-                type: number
-            type: object
-          type: array
-      type: object
-    LagoonDashboardPermissionsUpdatingRequest:
-      properties:
-        permissions:
-          items:
-            properties:
-              permission:
-                type: string
-              userId:
-                format: int64
-                type: integer
-            type: object
-          type: array
-      type: object
     LagoonLicensePackStatusResponse:
       properties:
         licensePackName:
@@ -21672,14 +22218,6 @@ components:
                 - basicDashboard
                 type: string
             type: object
-          type: array
-      type: object
-    LagoonMigrationRequest:
-      properties:
-        dashboardIds:
-          description: A list of dashboard IDs to migrate.
-          items:
-            type: string
           type: array
       type: object
     LagoonPlanChangingRequest:
@@ -21827,15 +22365,27 @@ components:
     ListRolesResponse:
       properties:
         createDateTime:
+          description: The creation date and time of the role (UNIX time in seconds).
+          example: 1722480500
           format: int64
           type: integer
         description:
+          description: The description of the role.
+          example: This is my role
           type: string
         roleId:
+          description: The role ID.
+          example: my-role
           type: string
         updateDateTime:
+          description: The update date and time of the role (UNIX time in seconds).
+          example: 1722480600
           format: int64
           type: integer
+      required:
+      - createDateTime
+      - roleId
+      - updateDateTime
       type: object
     ListShippingAddressResponse:
       properties:
@@ -22363,6 +22913,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`
+            - `plan-US`
           example: plan01s
           type: string
       required:
@@ -22564,35 +23117,36 @@ components:
     PortMapping:
       properties:
         createdTime:
-          description: The UNIX time (in milliseconds) when the Port Mapping entry
-            was created.
+          description: The UNIX time (in milliseconds) when the On-Demand Remote Access
+            entry was created.
           format: int64
           type: integer
         destination:
           $ref: '#/components/schemas/PortMappingDestination'
         duration:
-          description: The duration (in seconds) to maintain the Port Mapping entry.
+          description: The duration (in seconds) to maintain the On-Demand Remote
+            Access entry.
           type: number
         endpoint:
-          description: The endpoint (IP address and port number) of the Port Mapping
-            entry.
+          description: The endpoint (IP address and port number) of the On-Demand
+            Remote Access entry.
           type: string
         expired:
           type: boolean
         expiredTime:
-          description: The date and time (UNIX time in milliseconds) when the Port
-            Mapping entry will be automatically deleted.
+          description: The date and time (UNIX time in milliseconds) when the On-Demand
+            Remote Access entry will be automatically deleted.
           format: int64
           type: integer
         hostname:
-          description: The hostname of the Port Mapping entry.
+          description: The hostname of the On-Demand Remote Access entry.
           type: string
         imsi:
           description: |
             IMSI. Included only when `destination.destinationChoosingStrategy` is `IMSI_PRIORITIZED`.
           type: string
         ipAddress:
-          description: The IP address of the Port Mapping entry.
+          description: The IP address of the On-Demand Remote Access entry.
           type: string
         operatorId:
           description: The operator ID.
@@ -22608,7 +23162,7 @@ components:
             - `aws:ap-southeast-2`: Sydney (Australia).
           type: string
         port:
-          description: The port number of the Port Mapping entry.
+          description: The port number of the On-Demand Remote Access entry.
           type: number
         simId:
           description: |
@@ -22626,18 +23180,18 @@ components:
       type: object
     PortMappingDestination:
       description: |
-        When creating a Port Mapping entry, you must specify either `imsi` or `simId`.
+        When creating an On-Demand Remote Access entry, you must specify either `imsi` or `simId`.
       properties:
         destinationChoosingStrategy:
           description: |
-            A string indicating the method by which the Port Mapping entry was created. Ignored at creation time.
+            A string indicating how the On-Demand Remote Access was created. Ignored at creation time.
 
-            - `AIR_PRIORITIZED`: Port Mapping entry created by specifying SIM ID and setting `service` to `air`.
-            - `ARC_PRIORITIZED`: Port Mapping entry created by specifying SIM ID and setting `service` to `arc`.
-            - `DYNAMIC`: Port Mapping entry created by specifying only SIM ID.
+            - `AIR_PRIORITIZED`: On-Demand Remote Access created by specifying SIM ID and setting `service` to `air`.
+            - `ARC_PRIORITIZED`: On-Demand Remote Access created by specifying SIM ID and setting `service` to `arc`.
+            - `DYNAMIC`: On-Demand Remote Access created by specifying only SIM ID.
 
-                Online subscribers' sessions will be the target for creating a Port Mapping entry. If multiple online subscriber sessions exist, i.e., both Soracom Air and Soracom Arc sessions are online, it is not guaranteed which will be the target for creating a Port Mapping entry.
-            - `IMSI_PRIORITIZED`: Port Mapping entry created by specifying IMSI.
+                Online subscribers' sessions will be the target for creating an On-Demand Remote Access entry. If multiple online subscriber sessions exist (for example, both Soracom Air and Soracom Arc sessions are online), it is not guaranteed which will be used to create the On-Demand Remote Access entry.
+            - `IMSI_PRIORITIZED`: On-Demand Remote Access created by specifying IMSI.
           enum:
           - AIR_PRIORITIZED
           - ARC_PRIORITIZED
@@ -22646,7 +23200,7 @@ components:
           type: string
         imsi:
           description: |
-            IMSI. If `simId` is specified when creating a Port Mapping entry, `imsi` will be ignored.
+            IMSI. If `simId` is specified when creating an On-Demand Remote Access entry, `imsi` will be ignored.
           type: string
         port:
           description: The port number on the device using IoT SIM or virtual SIM/Subscriber,
@@ -22654,21 +23208,21 @@ components:
           type: number
         service:
           description: |
-            The target for creating a Port Mapping entry. Valid when `simId` is specified.
+            The target for creating an On-Demand Remote Access entry. Valid when `simId` is specified.
 
-            - `air`: Target online Soracom Air subscribers' sessions.
+            - `air`: Target Soracom Air subscribers' sessions that are online.
             - `arc`: Target Soracom Arc virtual SIM/Subscriber.
 
-            **Warning**: If `service` is omitted, online subscriber sessions will be the target for creating a Port Mapping entry. If multiple online subscriber sessions exist (both Soracom Air and Soracom Arc sessions are online), it is not guaranteed which will be the target for creating a Port Mapping entry. Please specify either `air` or `arc`.
+            **Warning**: If `service` is omitted, online subscriber sessions will be the target for creating an On-Demand Remote Access entry. If multiple online subscriber sessions exist (e.g., both Soracom Air and Soracom Arc sessions are online), it is not guaranteed which session will be used. Please specify either `air` or `arc`.
 
-            **Warning**: A necessary property for creating a Port Mapping entry. Not included in the response.
+            **Warning**: This property is required when creating an On-Demand Remote Access entry. It will not be included in the response.
           enum:
           - air
           - arc
           type: string
         simId:
           description: |
-            SIM ID. When specifying `simId` for creating a Port Mapping entry, also specify `service`. Note that if `simId` is specified, `imsi` will be ignored.
+            SIM ID. When specifying `simId` for creating an On-Demand Remote Access entry, also specify `service`. Note that if `simId` is specified, `imsi` will be ignored.
           type: string
       required:
       - port
@@ -22677,12 +23231,13 @@ components:
       properties:
         ipRanges:
           description: |
-            The range of IP addresses, in CIDR notation, allowed to access the Port Mapping entry. Specified using global IP addresses. Only devices from IP addresses within the specified range can remotely access the device.
+            The IP address ranges (in CIDR notation) allowed to access the On-Demand Remote Access. Specify global IP addresses. Only devices from IP addresses within the specified ranges will be able to access the device remotely.
           items:
             type: string
           type: array
       type: object
     PreviousSessionStatus:
+      description: Information about the previous session.
       properties:
         cell:
           $ref: '#/components/schemas/Cell'
@@ -22700,20 +23255,31 @@ components:
             type: string
           type: array
         gatewayPrivateIpAddress:
+          description: The private IP address of the VPG. In the case of VPG Type-F,
+            the source IP address of the closed network communication from the IoT
+            SIM to the customer's system is NAT-ed to this IP address.
           type: string
         gatewayPublicIpAddress:
+          description: The fixed global IP address when using the VPG [Fixed Global
+            IP Address Option](/en/docs/vpg/fixed-global-ip/).
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: The IMEI of the device using the IoT SIM. If using a virtual
+            SIM/subscriber, this will be `null`.
+          type: string
+        imsi:
+          description: The IMSI of the IoT SIM.
           type: string
         sessionId:
-          description: The session ID of the previous session.
+          description: The session ID.
+          type: string
+        subscription:
           type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: The VPG ID. If the VPG was not used, this will not be output.
           type: string
       type: object
     PriceByQuantity:
@@ -22807,6 +23373,12 @@ components:
           type: number
         termsOfConsignorURL:
           description: The URL of terms of conditions for the consignor product.
+          type: string
+        termsOfSolutionName:
+          description: The name of terms and conditions for the solution.
+          type: string
+        termsOfSolutionURL:
+          description: The URL of terms and conditions for the solution.
           type: string
       type: object
     PutIpAddressMapEntryRequest:
@@ -23361,7 +23933,7 @@ components:
           type: string
         cell:
           $ref: '#/components/schemas/Cell'
-        createTime:
+        createdTime:
           type: string
         dns0:
           description: First IP address of DNS servers.
@@ -23380,24 +23952,31 @@ components:
             In the case of `Created` or `Modified`, it indicates that the session state is online. In the case of `Deleted`, it indicates that the session state is offline. For the meaning of a session, refer to [State (Online/Offline)](/en-us/resources/glossary/session/#state-online-offline).
           type: string
         gatewayPrivateIpAddress:
+          description: The private IP address of the VPG. In the case of VPG Type-F,
+            the source IP address of the closed network communication from the IoT
+            SIM to the customer's system is NAT-ed to this IP address.
           type: string
         gatewayPublicIpAddress:
+          description: The fixed global IP address when using the VPG [Fixed Global
+            IP Address Option](/en/docs/vpg/fixed-global-ip/).
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: The IMEI of the device using the IoT SIM. If using a virtual
+            SIM/subscriber, this will be `null`.
           type: string
         imsi:
-          description: The IMSI of the SIM.
+          description: The IMSI of the IoT SIM.
           type: string
         operatorId:
           description: The operator ID of the session event.
           type: string
         sessionId:
-          description: The session ID of the session that generated this session event.
+          description: The session ID.
           type: string
         simId:
           type: string
         subscription:
+          description: The subscription.
           type: string
         time:
           description: The timestamp of the session event.
@@ -23407,10 +23986,11 @@ components:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: The VPG ID. If the VPG was not used, this will not be output.
           type: string
       type: object
     SessionStatus:
+      description: Information about the current session.
       properties:
         cell:
           $ref: '#/components/schemas/Cell'
@@ -23420,14 +24000,20 @@ components:
             type: string
           type: array
         gatewayPrivateIpAddress:
+          description: The private IP address of the VPG. In the case of VPG Type-F,
+            the source IP address of the closed network communication from the IoT
+            SIM to the customer's system is NAT-ed to this IP address.
           type: string
         gatewayPublicIpAddress:
+          description: The fixed global IP address when using the VPG [Fixed Global
+            IP Address Option](/en/docs/vpg/fixed-global-ip/).
           type: string
         imei:
-          description: The IMEI of the device using the SIM.
+          description: The IMEI of the device using the IoT SIM. If using a virtual
+            SIM/subscriber, this will be `null`.
           type: string
         imsi:
-          description: IMSI
+          description: The IMSI of the IoT SIM.
           type: string
         lastUpdatedAt:
           format: int64
@@ -23443,16 +24029,16 @@ components:
         placement:
           $ref: '#/components/schemas/Placement'
         sessionId:
-          description: The session ID of the session.
+          description: The session ID.
           type: string
         subscription:
-          description: Subscription
+          description: The subscription.
           type: string
         ueIpAddress:
           description: The IP address of the device.
           type: string
         vpgId:
-          description: The Virtual Private Gateway IP address configured.
+          description: The VPG ID. If the VPG was not used, this will not be output.
           type: string
       type: object
     SetDeviceObjectModelScopeRequest:
@@ -23750,13 +24336,14 @@ components:
           description: |
             The form factor of the physical SIM.
 
-            - `mini`: standard (2FF) size
-            - `micro`: micro (3FF) size
-            - `nano`: nano (4FF) size
-            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it)
-            - `embedded`: Embedded (MFF2)
-            - `virtual`: Virtual SIM/Subscriber
-            - `integrated`: Embedded (iSIM)
+            - `mini`: standard (2FF) size.
+            - `micro`: micro (3FF) size.
+            - `nano`: nano (4FF) size.
+            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it).
+            - `embedded`: Embedded (MFF2).
+            - `virtual`: Virtual SIM/Subscriber.
+            - `integrated`: Embedded (iSIM).
+            - `profilePackage`: Profile Package (eSIM profile).
           enum:
           - mini
           - micro
@@ -23765,6 +24352,7 @@ components:
           - embedded
           - virtual
           - integrated
+          - profilePackage
           type: string
         operatorId:
           description: The ID of the operator who owns this SIM.
@@ -23849,6 +24437,202 @@ components:
         simId:
           description: SIM ID.
           type: string
+    SimDownlinkHttpRequest:
+      properties:
+        body:
+          description: |
+            HTTP request body.
+
+            **Warning**: The maximum size of an HTTP request, including the URL, headers, and body, is 5 MiB. If it exceeds 5 MiB, an error will be returned.
+          type: string
+          x-soracom-cli-param-name: request-body
+        headers:
+          additionalProperties:
+            type: string
+          description: HTTP request headers. Specify header names and values as key-value
+            pairs.
+          type: object
+        host:
+          description: Hostname. If not specified, the IP address of the IoT SIM will
+            be used.
+          type: string
+        method:
+          description: HTTP method.
+          enum:
+          - GET
+          - HEAD
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - OPTIONS
+          - TRACE
+          type: string
+        path:
+          description: |
+            URL path (e.g., `/path/to/resource`).
+          type: string
+        port:
+          default: 80
+          description: Port number for the HTTP connection.
+          maximum: 65535
+          minimum: 1
+          type: integer
+        skipVerify:
+          default: false
+          description: |
+            Whether to skip SSL certificate verification for HTTPS connections.
+
+            - `true`: Skip verification.
+            - `false`: Perform verification. However, if `ssl` is `false` (not using SSL communication), this setting will be ignored.
+          type: boolean
+        ssl:
+          default: false
+          description: |
+            Whether to use SSL communication.
+
+            - `true`: Use SSL communication (HTTPS).
+            - `false`: Do not use SSL communication (HTTP).
+          type: boolean
+      type: object
+    SimDownlinkHttpResponse:
+      properties:
+        body:
+          description: |
+            HTTP response body from the device.
+
+            - If it is a valid UTF-8 string, it will be returned as-is.
+            - Otherwise, it will be Base64 encoded. In this case, `isBase64Encoded` will be `true`.
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: HTTP response headers from the device.
+          type: object
+        isBase64Encoded:
+          description: |
+            Indicates whether the `body` value is Base64 encoded.
+          type: boolean
+        statusCode:
+          description: HTTP status code from the device.
+          type: integer
+      required:
+      - statusCode
+      type: object
+    SimDownlinkSshNoAuthentication:
+      description: |
+        Configuration for SSH connection with no authentication (`"type": "none"`).
+      properties:
+        type:
+          enum:
+          - none
+          type: string
+      type: object
+    SimDownlinkSshPasswordAuthentication:
+      description: |
+        Configuration for SSH connection using password authentication (`"type": "password"`). Specify either `password` or `passwordCredentialsId`.
+      properties:
+        password:
+          description: Password for the SSH connection. Ignored if `passwordCredentialsId`
+            is specified.
+          type: string
+        passwordCredentialsId:
+          description: |
+            Soracom credential set ID where the authentication credentials are registered.
+
+            - **Type**: Select "Pre-Shared key".
+            - **Pre-Shared Key**: Enter the password for the SSH connection.
+          type: string
+        type:
+          enum:
+          - password
+          type: string
+      type: object
+    SimDownlinkSshPublicKeyAuthentication:
+      description: |
+        Configuration for SSH connection using public key authentication (`"type": "publickey"`).
+      properties:
+        key:
+          description: |
+            Private key (PEM) used for public key authentication. Ignored if `keyCredentialsId` is specified.
+          type: string
+        keyCredentialsId:
+          description: |
+            Soracom credential set ID where the authentication credentials are registered.
+
+            - **Type**: Select "Private Key (PEM)".
+            - **Private Key (PEM)**: Enter the private key (PEM) used for public key authentication.
+          type: string
+        passphrase:
+          description: |
+            If the private key (PEM) used for public key authentication is protected by a passphrase, specify the passphrase.
+          type: string
+        type:
+          enum:
+          - publickey
+          type: string
+      type: object
+    SimDownlinkSshRequest:
+      properties:
+        authentication:
+          description: |
+            Authentication method for SSH connection. Specify one of the following for `type`, and provide the required information according to the authentication method.
+
+            - `password`: Password authentication.
+            - `publickey`: Public key authentication.
+            - `none`: No authentication.
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkSshPasswordAuthentication'
+          - $ref: '#/components/schemas/SimDownlinkSshPublicKeyAuthentication'
+          - $ref: '#/components/schemas/SimDownlinkSshNoAuthentication'
+        command:
+          description: Command to be executed on the device via SSH connection. Maximum
+            size is 8192 bytes.
+          type: string
+        port:
+          default: 22
+          description: Port number for SSH connection.
+          maximum: 65535
+          minimum: 1
+          type: integer
+        username:
+          description: Username for SSH connection.
+          type: string
+      required:
+      - username
+      - authentication
+      - command
+      type: object
+    SimDownlinkSshResponse:
+      properties:
+        exitcode:
+          description: The exit code of the command.
+          type: integer
+        isStderrBase64Encoded:
+          description: |
+            Indicates whether the `stderr` value is Base64 encoded.
+          type: boolean
+        isStdoutBase64Encoded:
+          description: |
+            Indicates whether the `stdout` value is Base64 encoded.
+          type: boolean
+        stderr:
+          description: |
+            The standard error output of the command.
+
+            - If it is a valid UTF-8 string, it will be returned as-is.
+            - Otherwise, it will be Base64 encoded. In this case, `isStderrBase64Encoded` will be `true`.
+          type: string
+        stdout:
+          description: |
+            The standard output of the command.
+
+            - If it is a valid UTF-8 string, it will be returned as-is.
+            - Otherwise, it will be Base64 encoded. In this case, `isStdoutBase64Encoded` will be `true`.
+          type: string
+      required:
+      - exitcode
+      type: object
     SimInitialSetting:
       description: Sim initial setting for the specific subscription.
       properties:
@@ -23908,6 +24692,13 @@ components:
     SimProfileOrderResponse:
       description: Represents an eSIM profile order.
       properties:
+        bundles:
+          description: Bundles of the eSIM profile ordered.
+          example:
+          - X3-5MB
+          items:
+            type: string
+          type: array
         completedTime:
           description: The time the order was completed (unix time in milliseconds).
           example: 1718756585000
@@ -23936,6 +24727,10 @@ components:
           example: 10
           format: int32
           type: integer
+        speedClass:
+          description: The speed class of the eSIM profile ordered.
+          example: s1.4xfast
+          type: string
         status:
           description: |
             The status of the eSIM profile order.
@@ -23960,6 +24755,9 @@ components:
             - `plan01s`
             - `planP1`
             - `planX1`
+            - `planX2`
+            - `planX3`
+            - `plan-US`
           example: plan01s
           type: string
       required:
@@ -24008,6 +24806,33 @@ components:
         msisdn:
           type: string
         status:
+          description: |
+            Status of the IoT SIM (primary subscription of the IoT SIM) or status of the additional subscription.
+
+            For primary subscriptions, it refers to the status of the IoT SIM.
+
+            - `ready`
+            - `active`
+            - `inactive`
+            - `standby`
+            - `suspended`
+            - `terminated`
+
+            For additional subscriptions, it refers to the status of the additional subscription.
+
+            - `shipped`: OTA is ready or in progress (first half).
+            - `delivered`: OTA is in progress (second half).
+            - `ready`: OTA is complete.
+            - `active`: A connection via the additional subscription has been confirmed. This does not refer to the status of the IoT SIM.
+            - `terminated`
+
+            The status of the virtual SIM/subscriber is either `active` or `terminated`.
+          enum:
+          - shipped
+          - delivered
+          - ready
+          - active
+          - terminated
           type: string
         subscription:
           type: string
@@ -24104,7 +24929,7 @@ components:
           type: string
         rotation:
           description: |
-            Settings for rotating the image by 180 degrees. Set to `180` when installing the compatible camera device upside down.
+            Settings for rotating the image by 180 degrees. Set to `180` when installing the SoraCam compatible camera device upside down.
 
             - `0`: OFF (no rotation).
             - `180`: ON (180-degree rotation).
@@ -24112,6 +24937,28 @@ components:
           - 0
           - 180
           type: integer
+        sound:
+          description: |
+            Settings for sound detection.
+
+            - `on`
+            - `off`
+          enum:
+          - "on"
+          - "off"
+          type: string
+        soundSensitivity:
+          description: |
+            Settings for sound detection sensitivity. The higher the sensitivity, the easier it is to detect small sounds.
+
+            - `high`
+            - `medium`
+            - `low`
+          enum:
+          - high
+          - medium
+          - low
+          type: string
         statusLight:
           description: |
             Settings for the status light (indicator light that shows the status of the camera).
@@ -24140,6 +24987,8 @@ components:
       - motion
       - motionSensitivity
       - motionTagging
+      - sound
+      - soundSensitivity
       - nightVision
       type: object
     SoraCamAtomCamSettingsLogo:
@@ -24242,7 +25091,7 @@ components:
       properties:
         state:
           description: |
-            Settings for rotating the image by 180 degrees. Set to `180` when installing the compatible camera device upside down.
+            Settings for rotating the image by 180 degrees. Set to `180` when installing the SoraCam compatible camera device upside down.
 
             - `0`: OFF (no rotation).
             - `180`: ON (180-degree rotation).
@@ -24250,6 +25099,38 @@ components:
           - 0
           - 180
           type: integer
+      required:
+      - state
+      type: object
+    SoraCamAtomCamSettingsSound:
+      properties:
+        state:
+          description: |
+            Settings for sound detection.
+
+            - `on`
+            - `off`
+          enum:
+          - "on"
+          - "off"
+          type: string
+      required:
+      - state
+      type: object
+    SoraCamAtomCamSettingsSoundSensitivity:
+      properties:
+        state:
+          description: |
+            Settings for sound detection sensitivity. The higher the sensitivity, the easier it is to detect small sounds.
+
+            - `high`
+            - `medium`
+            - `low`
+          enum:
+          - high
+          - medium
+          - low
+          type: string
       required:
       - state
       type: object
@@ -24293,31 +25174,32 @@ components:
           type: array
         configuration:
           $ref: '#/components/schemas/SoraCamDeviceConfiguration'
-          description: Current configuration of the compatible camera device.
+          description: Current configuration of the SoraCam compatible camera device.
         connected:
-          description: Whether the compatible camera device is connected to the cloud.
+          description: Whether the SoraCam compatible camera device is connected to
+            the cloud.
           type: boolean
         deviceCategory:
           description: |
-            Category of the compatible camera device
+            Category of the SoraCam compatible camera device
 
             - `Camera`
           type: string
         deviceId:
-          description: Device ID of the compatible camera device.
+          description: Device ID of the SoraCam compatible camera device.
           type: string
         firmwareVersion:
-          description: Current firmware version of the compatible camera device.
+          description: Current firmware version of the SoraCam compatible camera device.
           type: string
         isShared:
           type: boolean
         lastConnectedTime:
-          description: UNIX time in milliseconds when the compatible camera device
-            was last connected to the cloud.
+          description: UNIX time in milliseconds when the SoraCam compatible camera
+            device was last connected to the cloud.
           format: int64
           type: integer
         name:
-          description: Name of the compatible camera device.
+          description: Name of the SoraCam compatible camera device.
           type: string
         powerState:
           enum:
@@ -24325,7 +25207,7 @@ components:
           - sleep
           type: string
         productDisplayName:
-          description: Product name of the compatible camera device.
+          description: Product name of the SoraCam compatible camera device.
           type: string
       required:
       - deviceId
@@ -24335,7 +25217,7 @@ components:
       - powerState
       type: object
     SoraCamDeviceConfiguration:
-      description: Configuration of the compatible camera device.
+      description: Configuration of the SoraCam compatible camera device.
       properties:
         audioAlarmEnabled:
           description: Whether audio alarm is enabled or not.
@@ -24351,14 +25233,14 @@ components:
       properties:
         name:
           description: |
-            Name of the license applied to a compatible camera device.
+            Name of the license applied to a SoraCam compatible camera device.
 
             - `Cloud Continuous Recording License (x Days)`
             - `Cloud Motion Detection "Unlimited" Recording License (x Days)`
           type: string
         value:
           description: |
-            Properties of the license applied to a compatible camera device.
+            Properties of the license applied to a SoraCam compatible camera device.
 
             If `name` is `Cloud Continuous Recording License (x Days)` or
             `Cloud Motion Detection "Unlimited" Recording License (x Days)`:
@@ -24368,6 +25250,25 @@ components:
       required:
       - name
       - value
+      type: object
+    SoraCamDeviceLicenseUpdate:
+      properties:
+        type:
+          description: |
+            Type of license to assign.
+
+            - `CR7-SC`: Cloud Continuous Recording License (7 Days).
+            - `CR14-SC`: Cloud Continuous Recording License (14 Days).
+            - `CR30-SC`: Cloud Continuous Recording License (30 Days).
+            - `MR7-SC`: Cloud Motion Detection "Unlimited" Recording License (7 Days).
+            - `MR14-SC`: Cloud Motion Detection "Unlimited" Recording License (14 Days).
+          enum:
+          - CR7-SC
+          - CR14-SC
+          - CR30-SC
+          - MR7-SC
+          - MR14-SC
+          type: string
       type: object
     SoraCamDeviceName:
       properties:
@@ -24380,11 +25281,11 @@ components:
       properties:
         deviceId:
           description: |
-            Device ID of the compatible camera device.
+            Device ID of the SoraCam compatible camera device.
           type: string
         firmwareVersion:
           description: |
-            Available firmware version for the compatible camera device.
+            Available firmware version for the SoraCam compatible camera device.
           type: string
         timeout:
           description: |
@@ -24472,10 +25373,36 @@ components:
       - time
       - deviceType
       type: object
+    SoraCamExportImageToHarvestFiles:
+      description: |
+        Specifies the settings for exporting images to Harvest Files.
+
+        Example: `harvestFiles: { pathPrefix: "/sora_cam/{device_id}" }`
+
+        If the `pathPrefix` is omitted or set to an empty string, the export will be saved in the root directory of Harvest Files.
+
+        Example of exporting to the root directory: `harvestFiles: { pathPrefix: "" }`
+      properties:
+        pathPrefix:
+          description: |
+            The directory name where the images will be saved when exporting to Harvest Files.
+
+            The following strings can be entered, and they will be replaced according to the rules during export:
+
+            - `{export_id}`: The export ID (e.g., `123e4567-e89b-12d3-a456-426614174000`).
+            - `{device_id}`: The device ID (e.g., `001A2B3C4D5E`).
+            - `{date}`: The request date and time of the export (e.g., `2024/10/01/12/34`).
+            - `{time}`: The capture time of the image (UNIX time in milliseconds) (e.g., `1728393803000`).
+
+            For example, if you enter `/sora_cam/{device_id}`, the images will be exported to a directory unique to each SoraCam compatible camera device. `{date}` and `{time}` are useful when saving images captured/exported at the same time from multiple SoraCam compatible camera devices to the same directory.
+
+            **Info**: If omitted or set to an empty string, the export will be saved in the root directory of Harvest Files.
+          type: string
+      type: object
     SoraCamExportUsage:
       properties:
         deviceId:
-          description: Device ID of the compatible camera device.
+          description: Device ID of the SoraCam compatible camera device.
           type: string
         image:
           $ref: '#/components/schemas/SoraCamImageExportUsage'
@@ -24505,10 +25432,37 @@ components:
       required:
       - limitHours
       type: object
+    SoraCamExportVideoToHarvestFiles:
+      description: |
+        Specifies the settings for exporting video to Harvest Files.
+
+        Example: `harvestFiles: { pathPrefix: "/sora_cam/{device_id}" }`
+
+        If the `pathPrefix` is omitted or set to an empty string, the export will be saved in the root directory of Harvest Files.
+
+        Example of exporting to the root directory: `harvestFiles: { pathPrefix: "" }`
+      properties:
+        pathPrefix:
+          description: |
+            The directory name where the video will be saved when exporting to Harvest Files.
+
+            The following strings can be entered, and they will be replaced according to the rules during export:
+
+            - `{export_id}`: The export ID (e.g., `123e4567-e89b-12d3-a456-426614174000`).
+            - `{device_id}`: The device ID (e.g., `001A2B3C4D5E`).
+            - `{date}`: The request date and time of the export (e.g., `2024/10/01/12/34`).
+            - `{from}`: The start time of the video (UNIX time in milliseconds) (e.g., `1728393803000`).
+            - `{to}`: The end time of the video (UNIX time in milliseconds) (e.g., `1728394700000`).
+
+            For example, if you enter `/sora_cam/{device_id}`, the video will be exported to a directory unique to each SoraCam compatible camera device. `{date}`, `{from}`, and `{to}` are useful when saving videos recorded/exported at the same time from multiple SoraCam compatible camera devices to the same directory.
+
+            **Info**: If omitted or set to an empty string, the export will be saved in the root directory of Harvest Files.
+          type: string
+      type: object
     SoraCamImageExportInfo:
       properties:
         deviceId:
-          description: Device ID of the compatible camera device.
+          description: Device ID of the SoraCam compatible camera device.
           type: string
         expiryTime:
           description: Expiration timestamp of the URL (unix time in milliseconds).
@@ -24562,6 +25516,8 @@ components:
       type: object
     SoraCamImageExportSpecification:
       properties:
+        harvestFiles:
+          $ref: '#/components/schemas/SoraCamExportImageToHarvestFiles'
         imageFilters:
           description: Image filters to be applied to the exported image.
           items:
@@ -24649,22 +25605,22 @@ components:
     SoraCamPlayListEntry:
       properties:
         from:
-          description: The start time of the recorded video (unix time in milliseconds).
-            Omitted for real-time video.
+          description: The start time of the recorded video (UNIX time in milliseconds).
+            Omitted for the latest video.
           format: int64
           type: integer
         to:
-          description: The end time of the recorded video (unix time in milliseconds).
-            Omitted for real-time video.
+          description: The end time of the recorded video (UNIX time in milliseconds).
+            Omitted for the latest video.
           format: int64
           type: integer
         url:
           description: |
-            URL to get mpd file of streaming video (real-time video / recorded video).
+            URL to get mpd file of streaming video (latest video / recorded video).
 
             - No URL is returned in the following cases:
-              - When trying to get real-time video, the power of the compatible camera device is not turned on.
-              - When trying to get real-time video, cloud recording has not started on a compatible camera device.
+              - When trying to get the latest video, the power of the SoraCam compatible camera device is not turned on.
+              - When trying to get the latest video, cloud recording has not started on a SoraCam compatible camera device.
               - When trying to get recorded video, there is no recorded video between the specified `from` and `to`.
           type: string
       required:
@@ -24674,7 +25630,7 @@ components:
       properties:
         powerState:
           description: |
-            Power state of the compatible camera device.
+            Power state of the SoraCam compatible camera device.
 
             - `on`
             - `sleep`
@@ -24739,15 +25695,15 @@ components:
     SoraCamStreamingVideo:
       properties:
         expiryTime:
-          description: Expiration timestamp of all URLs in playList (unix time in
+          description: Expiration timestamp of all URLs in playList (UNIX time in
             milliseconds).
           format: int64
           type: integer
         playList:
           description: |
-            Array of playlist entries for streaming video (real-time video / recorded video).
+            Array of playlist entries for streaming video (latest video / recorded video).
 
-            - For real-time video, only one video file is always returned. In addition, `from` and `to` are omitted.
+            - For the latest video, only one video file is always returned. In addition, `from` and `to` are omitted.
             - For recorded video, the video file may be split depending on the recording status.
           items:
             $ref: '#/components/schemas/SoraCamPlayListEntry'
@@ -24758,7 +25714,7 @@ components:
     SoraCamVideoExportInfo:
       properties:
         deviceId:
-          description: Device ID of the compatible camera device.
+          description: Device ID of the SoraCam compatible camera device.
           type: string
         expiryTime:
           description: Expiration timestamp of the URL (unix time in milliseconds).
@@ -24818,6 +25774,8 @@ components:
           description: Start time for exporting (unix time in milliseconds).
           format: int64
           type: integer
+        harvestFiles:
+          $ref: '#/components/schemas/SoraCamExportVideoToHarvestFiles'
         to:
           description: |
             End time for exporting (unix time in milliseconds).
@@ -25042,14 +26000,15 @@ components:
           description: |
             The form factor of the physical SIM.
 
-            - `mini`: standard (2FF) size
-            - `micro`: micro (3FF) size
-            - `nano`: nano (4FF) size
-            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it)
-            - `embedded`: Embedded (MFF2)
-            - `virtual`: Virtual SIM/Subscriber
-            - `integrated`: Embedded (iSIM)
-            - `null`: null for secondary subscriptions
+            - `mini`: standard (2FF) size.
+            - `micro`: micro (3FF) size.
+            - `nano`: nano (4FF) size.
+            - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it).
+            - `embedded`: Embedded (MFF2).
+            - `virtual`: Virtual SIM/Subscriber.
+            - `integrated`: Embedded (iSIM).
+            - `profilePackage`: Profile Package (eSIM profile).
+            - `null`: null for secondary subscriptions.
           enum:
           - mini
           - micro
@@ -25058,6 +26017,7 @@ components:
           - embedded
           - virtual
           - integrated
+          - profilePackage
           - (null value)
           type: string
         msisdn:
@@ -25443,27 +26403,48 @@ components:
     UserDetailResponse:
       properties:
         authKeyList:
+          description: A list of authentication keys.
           items:
             $ref: '#/components/schemas/AuthKeyResponse'
           type: array
         createDateTime:
+          description: The creation date and time of the SAM user (UNIX time in seconds).
+          example: 1722480500
           format: int64
           type: integer
         description:
+          description: The description of the SAM user.
+          example: This is my user
           type: string
         hasPassword:
+          description: Whether the login password for the Soracom User Console has
+            been set.
           type: boolean
         permission:
+          description: The permission of the SAM user.
+          example: '{"statements":[{"api":"*","effect":"allow"}]}'
           type: string
         roleList:
+          description: A list of roles assigned to the SAM user.
           items:
             $ref: '#/components/schemas/ListRolesResponse'
           type: array
         updateDateTime:
+          description: The update date and time of the SAM user (UNIX time in seconds).
+          example: 1722480600
           format: int64
           type: integer
         userName:
+          description: The name of the SAM user.
+          example: my-user
           type: string
+      required:
+      - authKeyList
+      - createDateTime
+      - hasPassword
+      - roleList
+      - updateDateTime
+      - userName
       type: object
     VerifyAddEmailTokenRequest:
       properties:

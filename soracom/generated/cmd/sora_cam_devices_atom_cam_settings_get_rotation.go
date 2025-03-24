@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesAtomCamSettingsGetRotationCmdDeviceId string
 
 func InitSoraCamDevicesAtomCamSettingsGetRotationCmd() {
-	SoraCamDevicesAtomCamSettingsGetRotationCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetRotationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsGetRotationCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetRotationCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsGetRotationCmd.RunE = SoraCamDevicesAtomCamSettingsGetRotationCmdRunE
 

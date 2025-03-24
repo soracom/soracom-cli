@@ -19,7 +19,7 @@ var DataGetEntryCmdResourceType string
 var DataGetEntryCmdTime int64
 
 func InitDataGetEntryCmd() {
-	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource"))
+	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceId, "resource-id", "", TRAPI("ID of data source resource. The ID to be specified depends on the value of 'resource_type'.| 'resource_type' | The ID you specify ||-|-|| 'Subscriber' | IMSI of the IoT SIM || 'LoraDevice' | ID of the LoRaWAN device || 'Sim' | SIM ID of the IoT SIM || 'SigfoxDevice' | ID of the Sigfox device || 'Device' | ID of the Inventory device || 'SoraCam' | Device ID of the compatible camera device |"))
 
 	DataGetEntryCmd.Flags().StringVar(&DataGetEntryCmdResourceType, "resource-type", "", TRAPI("Type of data source resource."))
 

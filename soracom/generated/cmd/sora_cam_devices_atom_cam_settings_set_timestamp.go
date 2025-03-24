@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetTimestampCmdState string
 var SoraCamDevicesAtomCamSettingsSetTimestampCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetTimestampCmd() {
-	SoraCamDevicesAtomCamSettingsSetTimestampCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetTimestampCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetTimestampCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetTimestampCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetTimestampCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetTimestampCmdState, "state", "", TRAPI("Display settings for the timestamp shown on the bottom right of the captured image.- 'on'- 'off'"))
 

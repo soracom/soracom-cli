@@ -16,9 +16,9 @@ var PortMappingsDeleteCmdIpAddress string
 var PortMappingsDeleteCmdPort string
 
 func InitPortMappingsDeleteCmd() {
-	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdIpAddress, "ip-address", "", TRAPI("IP address of the target port mapping entry."))
+	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdIpAddress, "ip-address", "", TRAPI("IP address of the On-Demand Remote Access entry to be deleted."))
 
-	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdPort, "port", "", TRAPI("Port of the target port mapping entry."))
+	PortMappingsDeleteCmd.Flags().StringVar(&PortMappingsDeleteCmdPort, "port", "", TRAPI("Port number of the On-Demand Remote Access entry to be deleted."))
 
 	PortMappingsDeleteCmd.RunE = PortMappingsDeleteCmdRunE
 

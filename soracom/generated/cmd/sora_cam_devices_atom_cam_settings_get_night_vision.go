@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesAtomCamSettingsGetNightVisionCmdDeviceId string
 
 func InitSoraCamDevicesAtomCamSettingsGetNightVisionCmd() {
-	SoraCamDevicesAtomCamSettingsGetNightVisionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetNightVisionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsGetNightVisionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetNightVisionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsGetNightVisionCmd.RunE = SoraCamDevicesAtomCamSettingsGetNightVisionCmdRunE
 
