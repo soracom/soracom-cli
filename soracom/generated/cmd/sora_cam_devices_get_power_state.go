@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesGetPowerStateCmdDeviceId string
 
 func InitSoraCamDevicesGetPowerStateCmd() {
-	SoraCamDevicesGetPowerStateCmd.Flags().StringVar(&SoraCamDevicesGetPowerStateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesGetPowerStateCmd.Flags().StringVar(&SoraCamDevicesGetPowerStateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesGetPowerStateCmd.RunE = SoraCamDevicesGetPowerStateCmdRunE
 

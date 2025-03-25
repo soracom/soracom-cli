@@ -28,7 +28,7 @@ var SoraCamDevicesVideosListExportsForDeviceCmdPaginate bool
 var SoraCamDevicesVideosListExportsForDeviceCmdOutputJSONL bool
 
 func InitSoraCamDevicesVideosListExportsForDeviceCmd() {
-	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesVideosListExportsForDeviceCmd.Flags().StringVar(&SoraCamDevicesVideosListExportsForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceVideoExportsForDevice request. By specifying this parameter, you can continue to retrieve the list from the last request."))
 

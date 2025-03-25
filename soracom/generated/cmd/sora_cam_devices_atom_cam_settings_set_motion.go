@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetMotionCmdState string
 var SoraCamDevicesAtomCamSettingsSetMotionCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetMotionCmd() {
-	SoraCamDevicesAtomCamSettingsSetMotionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetMotionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetMotionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionCmdState, "state", "", TRAPI("Settings for motion detection.- 'on'- 'off'"))
 

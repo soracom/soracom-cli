@@ -23,7 +23,7 @@ var SoraCamDevicesSetNameCmdName string
 var SoraCamDevicesSetNameCmdBody string
 
 func InitSoraCamDevicesSetNameCmd() {
-	SoraCamDevicesSetNameCmd.Flags().StringVar(&SoraCamDevicesSetNameCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesSetNameCmd.Flags().StringVar(&SoraCamDevicesSetNameCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesSetNameCmd.Flags().StringVar(&SoraCamDevicesSetNameCmdName, "name", "", TRAPI(""))
 

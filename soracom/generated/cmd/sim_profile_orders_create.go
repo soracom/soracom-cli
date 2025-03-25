@@ -16,8 +16,14 @@ import (
 // SimProfileOrdersCreateCmdDescription holds value of 'description' option
 var SimProfileOrdersCreateCmdDescription string
 
+// SimProfileOrdersCreateCmdSpeedClass holds value of 'speedClass' option
+var SimProfileOrdersCreateCmdSpeedClass string
+
 // SimProfileOrdersCreateCmdSubscription holds value of 'subscription' option
 var SimProfileOrdersCreateCmdSubscription string
+
+// SimProfileOrdersCreateCmdBundles holds multiple values of 'bundles' option
+var SimProfileOrdersCreateCmdBundles []string
 
 // SimProfileOrdersCreateCmdQuantity holds value of 'quantity' option
 var SimProfileOrdersCreateCmdQuantity int64
@@ -28,9 +34,13 @@ var SimProfileOrdersCreateCmdBody string
 func InitSimProfileOrdersCreateCmd() {
 	SimProfileOrdersCreateCmd.Flags().StringVar(&SimProfileOrdersCreateCmdDescription, "description", "", TRAPI("The description of the order. You can use this to identify the order in the order history."))
 
-	SimProfileOrdersCreateCmd.Flags().StringVar(&SimProfileOrdersCreateCmdSubscription, "subscription", "", TRAPI("The subscription of the eSIM profile to be ordered.- 'plan01s'- 'planP1'- 'planX1'"))
+	SimProfileOrdersCreateCmd.Flags().StringVar(&SimProfileOrdersCreateCmdSpeedClass, "speed-class", "", TRAPI("The speed class of the eSIM profile to be ordered. Specify one of the following. Please specify the speed class that matches the subscription.- For plan01s, planP1, planX1, planX2, planX3:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'- For plan-US:    - 's1.minimum'    - 's1.slow'    - 's1.standard'    - 's1.fast'    - 's1.4xfast'    - 's1.8xfast'"))
 
-	SimProfileOrdersCreateCmd.Flags().Int64Var(&SimProfileOrdersCreateCmdQuantity, "quantity", 0, TRAPI("The quantity of the eSIM profile to be ordered."))
+	SimProfileOrdersCreateCmd.Flags().StringVar(&SimProfileOrdersCreateCmdSubscription, "subscription", "", TRAPI("The subscription of the eSIM profile to be ordered.- 'plan01s'- 'planP1'- 'planX1'- 'planX2'- 'planX3': Only available for customers located in the European Union and United Kingdom.- 'plan-US': Only available for customers located in in the United States and Canada."))
+
+	SimProfileOrdersCreateCmd.Flags().StringSliceVar(&SimProfileOrdersCreateCmdBundles, "bundles", []string{}, TRAPI("Bundles of the eSIM profile to be ordered. Specify one of the following. Please specify the bundle that matches the subscription.- For planX3:    - 'X3-5MB'- For plan-US:    - 'US-1MB'    - 'US-3MB'    - 'US-10MB'    - 'US-20MB'    - 'US-50MB'    - 'US-100MB'    - 'US-300MB'    - 'US-500MB'    - 'US-1GB'    - 'US-3GB'    - 'US-5GB'    - 'US-10GB'"))
+
+	SimProfileOrdersCreateCmd.Flags().Int64Var(&SimProfileOrdersCreateCmdQuantity, "quantity", 0, TRAPI("The quantity of the eSIM profile to be ordered.**Info**: A maximum of 20 eSIM profiles may be purchased per order. If you would like to purchase more, please [contact us](https://www.soracom.io/contact/)."))
 
 	SimProfileOrdersCreateCmd.Flags().StringVar(&SimProfileOrdersCreateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -174,8 +184,16 @@ func buildBodyForSimProfileOrdersCreateCmd() (string, error) {
 		result["description"] = SimProfileOrdersCreateCmdDescription
 	}
 
+	if SimProfileOrdersCreateCmdSpeedClass != "" {
+		result["speedClass"] = SimProfileOrdersCreateCmdSpeedClass
+	}
+
 	if SimProfileOrdersCreateCmdSubscription != "" {
 		result["subscription"] = SimProfileOrdersCreateCmdSubscription
+	}
+
+	if len(SimProfileOrdersCreateCmdBundles) != 0 {
+		result["bundles"] = SimProfileOrdersCreateCmdBundles
 	}
 
 	if SimProfileOrdersCreateCmd.Flags().Lookup("quantity").Changed {

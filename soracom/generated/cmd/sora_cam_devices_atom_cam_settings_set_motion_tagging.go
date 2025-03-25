@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetMotionTaggingCmdState string
 var SoraCamDevicesAtomCamSettingsSetMotionTaggingCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetMotionTaggingCmd() {
-	SoraCamDevicesAtomCamSettingsSetMotionTaggingCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionTaggingCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetMotionTaggingCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionTaggingCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetMotionTaggingCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionTaggingCmdState, "state", "", TRAPI("Display settings for motion tagging.- 'on'- 'off'"))
 

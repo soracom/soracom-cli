@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmdState string
 var SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetMotionSensitivityCmd() {
-	SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetMotionSensitivityCmdState, "state", "", TRAPI("Settings for the motion detection sensitivity. The higher the sensitivity, the smaller the image changes that can be detected.- 'high'- 'medium'- 'low'"))
 

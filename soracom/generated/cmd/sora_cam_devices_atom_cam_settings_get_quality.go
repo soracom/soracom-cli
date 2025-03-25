@@ -13,7 +13,7 @@ import (
 var SoraCamDevicesAtomCamSettingsGetQualityCmdDeviceId string
 
 func InitSoraCamDevicesAtomCamSettingsGetQualityCmd() {
-	SoraCamDevicesAtomCamSettingsGetQualityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetQualityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsGetQualityCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsGetQualityCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsGetQualityCmd.RunE = SoraCamDevicesAtomCamSettingsGetQualityCmdRunE
 

@@ -21,6 +21,9 @@ var QueryDevicesCmdDeviceId []string
 // QueryDevicesCmdGroup holds multiple values of 'group' option
 var QueryDevicesCmdGroup []string
 
+// QueryDevicesCmdGroupId holds multiple values of 'group_id' option
+var QueryDevicesCmdGroupId []string
+
 // QueryDevicesCmdImei holds multiple values of 'imei' option
 var QueryDevicesCmdImei []string
 
@@ -43,13 +46,15 @@ var QueryDevicesCmdPaginate bool
 var QueryDevicesCmdOutputJSONL bool
 
 func InitQueryDevicesCmd() {
-	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SORACOM Inventory device ID of the last Inventory device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
+	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The Soracom Inventory device ID of the last Inventory device retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next Inventory device onward."))
 
 	QueryDevicesCmd.Flags().StringVar(&QueryDevicesCmdSearchType, "search-type", "and", TRAPI("Type of the search ('AND searching' or 'OR searching')."))
 
-	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdDeviceId, "device-id", []string{}, TRAPI("SORACOM Inventory device ID to search."))
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdDeviceId, "device-id", []string{}, TRAPI("Soracom Inventory device ID to search."))
 
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdGroup, "group", []string{}, TRAPI("Group name to search."))
+
+	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdGroupId, "group-id", []string{}, TRAPI("Group ID to search."))
 
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdImei, "imei", []string{}, TRAPI("IMEI of the device that was used on bootstrapping."))
 
@@ -59,7 +64,7 @@ func InitQueryDevicesCmd() {
 
 	QueryDevicesCmd.Flags().StringSliceVar(&QueryDevicesCmdTag, "tag", []string{}, TRAPI("String of tag values to search."))
 
-	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of item to retrieve."))
+	QueryDevicesCmd.Flags().Int64Var(&QueryDevicesCmdLimit, "limit", 10, TRAPI("The maximum number of items to retrieve."))
 
 	QueryDevicesCmd.Flags().BoolVar(&QueryDevicesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
@@ -165,6 +170,12 @@ func buildQueryForQueryDevicesCmd() url.Values {
 	for _, s := range QueryDevicesCmdGroup {
 		if s != "" {
 			result.Add("group", s)
+		}
+	}
+
+	for _, s := range QueryDevicesCmdGroupId {
+		if s != "" {
+			result.Add("group_id", s)
 		}
 	}
 

@@ -34,17 +34,17 @@ var SoraCamDevicesEventsListForDeviceCmdPaginate bool
 var SoraCamDevicesEventsListForDeviceCmdOutputJSONL bool
 
 func InitSoraCamDevicesEventsListForDeviceCmd() {
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the response to the last listSoraCamDeviceEventsForDevice request. By specifying this parameter, you can continue to retrieve the list from the last request."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the listSoraCamDeviceEventsForDevice request response. By specifying this parameter, you can retrieve the next page of events."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the events.- 'desc': Descending order (latest data entry first)- 'asc': Ascending order (oldest data entry first)"))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the events.- 'desc': Descending order (newest event first)- 'asc': Ascending order (oldest event first)"))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the events to be searched (unix time in milliseconds). If not specified, 'from' is set to the oldest event time."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the events to retrieve (unix time in milliseconds). If not specified, 'from' is set to the oldest event time."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of items to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer items than the specified limit."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdLimit, "limit", 10, TRAPI("Maximum number of events to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer events than the specified limit."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the events to be searched (unix time in milliseconds). If not specified, 'to' is set to the current time."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdTo, "to", 0, TRAPI("End time of the events to retrieve (unix time in milliseconds). If not specified, 'to' is set to the current time."))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().BoolVar(&SoraCamDevicesEventsListForDeviceCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

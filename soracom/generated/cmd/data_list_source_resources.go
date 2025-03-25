@@ -27,7 +27,7 @@ var DataListSourceResourcesCmdOutputJSONL bool
 func InitDataListSourceResourcesCmd() {
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'resourceId' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
 
-	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource"))
+	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource.- 'Subscriber': IoT SIM.- 'LoraDevice': LoRaWAN device.- 'Sim': IoT SIM.- 'SigfoxDevice': Sigfox device.- 'Device': Inventory device.- 'SoraCam': Compatible camera device."))
 
 	DataListSourceResourcesCmd.Flags().Int64Var(&DataListSourceResourcesCmdLimit, "limit", 0, TRAPI("Maximum number of data entries to retrieve."))
 

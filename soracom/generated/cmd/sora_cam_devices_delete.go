@@ -9,25 +9,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// SoraCamDeviceDeleteCmdDeviceId holds value of 'device_id' option
-var SoraCamDeviceDeleteCmdDeviceId string
+// SoraCamDevicesDeleteCmdDeviceId holds value of 'device_id' option
+var SoraCamDevicesDeleteCmdDeviceId string
 
-func InitSoraCamDeviceDeleteCmd() {
-	SoraCamDeviceDeleteCmd.Flags().StringVar(&SoraCamDeviceDeleteCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+func InitSoraCamDevicesDeleteCmd() {
+	SoraCamDevicesDeleteCmd.Flags().StringVar(&SoraCamDevicesDeleteCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDeviceDeleteCmd.RunE = SoraCamDeviceDeleteCmdRunE
+	SoraCamDevicesDeleteCmd.RunE = SoraCamDevicesDeleteCmdRunE
 
-	SoraCamDeviceCmd.AddCommand(SoraCamDeviceDeleteCmd)
+	SoraCamDevicesCmd.AddCommand(SoraCamDevicesDeleteCmd)
 }
 
-// SoraCamDeviceDeleteCmd defines 'delete' subcommand
-var SoraCamDeviceDeleteCmd = &cobra.Command{
+// SoraCamDevicesDeleteCmd defines 'delete' subcommand
+var SoraCamDevicesDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: TRAPI("/sora_cam/devices/{device_id}:delete:summary"),
 	Long:  TRAPI(`/sora_cam/devices/{device_id}:delete:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "handleDeleteSoraCamDevice"),
 }
 
-func SoraCamDeviceDeleteCmdRunE(cmd *cobra.Command, args []string) error {
+func SoraCamDevicesDeleteCmdRunE(cmd *cobra.Command, args []string) error {
 
 	if len(args) > 0 {
 		return fmt.Errorf("unexpected arguments passed => %v", args)
@@ -48,7 +48,7 @@ func SoraCamDeviceDeleteCmdRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	param, err := collectSoraCamDeviceDeleteCmdParams(ac)
+	param, err := collectSoraCamDevicesDeleteCmdParams(ac)
 	if err != nil {
 		return err
 	}
@@ -71,33 +71,33 @@ func SoraCamDeviceDeleteCmdRunE(cmd *cobra.Command, args []string) error {
 	return err
 }
 
-func collectSoraCamDeviceDeleteCmdParams(ac *apiClient) (*apiParams, error) {
+func collectSoraCamDevicesDeleteCmdParams(ac *apiClient) (*apiParams, error) {
 	var parsedBody interface{}
 	var err error
-	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SoraCamDeviceDeleteCmdDeviceId)
+	err = checkIfRequiredStringParameterIsSupplied("device_id", "device-id", "path", parsedBody, SoraCamDevicesDeleteCmdDeviceId)
 	if err != nil {
 		return nil, err
 	}
 
 	return &apiParams{
 		method: "DELETE",
-		path:   buildPathForSoraCamDeviceDeleteCmd("/sora_cam/devices/{device_id}"),
-		query:  buildQueryForSoraCamDeviceDeleteCmd(),
+		path:   buildPathForSoraCamDevicesDeleteCmd("/sora_cam/devices/{device_id}"),
+		query:  buildQueryForSoraCamDevicesDeleteCmd(),
 
 		noRetryOnError: noRetryOnError,
 	}, nil
 }
 
-func buildPathForSoraCamDeviceDeleteCmd(path string) string {
+func buildPathForSoraCamDevicesDeleteCmd(path string) string {
 
-	escapedDeviceId := url.PathEscape(SoraCamDeviceDeleteCmdDeviceId)
+	escapedDeviceId := url.PathEscape(SoraCamDevicesDeleteCmdDeviceId)
 
 	path = strReplace(path, "{"+"device_id"+"}", escapedDeviceId, -1)
 
 	return path
 }
 
-func buildQueryForSoraCamDeviceDeleteCmd() url.Values {
+func buildQueryForSoraCamDevicesDeleteCmd() url.Values {
 	result := url.Values{}
 
 	return result

@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetNightVisionCmdState string
 var SoraCamDevicesAtomCamSettingsSetNightVisionCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetNightVisionCmd() {
-	SoraCamDevicesAtomCamSettingsSetNightVisionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetNightVisionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetNightVisionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetNightVisionCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetNightVisionCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetNightVisionCmdState, "state", "", TRAPI("Settings for night vision mode.- 'on': Night vision mode.- 'off': Normal mode.- 'auto': Auto-switching."))
 

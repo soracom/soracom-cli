@@ -23,9 +23,9 @@ var SoraCamDevicesSetPowerStateCmdPowerState string
 var SoraCamDevicesSetPowerStateCmdBody string
 
 func InitSoraCamDevicesSetPowerStateCmd() {
-	SoraCamDevicesSetPowerStateCmd.Flags().StringVar(&SoraCamDevicesSetPowerStateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesSetPowerStateCmd.Flags().StringVar(&SoraCamDevicesSetPowerStateCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesSetPowerStateCmd.Flags().StringVar(&SoraCamDevicesSetPowerStateCmdPowerState, "power-state", "", TRAPI("Power state of the compatible camera device.- 'on'- 'sleep'"))
+	SoraCamDevicesSetPowerStateCmd.Flags().StringVar(&SoraCamDevicesSetPowerStateCmdPowerState, "power-state", "", TRAPI("Power state of the SoraCam compatible camera device.- 'on'- 'sleep'"))
 
 	SoraCamDevicesSetPowerStateCmd.Flags().StringVar(&SoraCamDevicesSetPowerStateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

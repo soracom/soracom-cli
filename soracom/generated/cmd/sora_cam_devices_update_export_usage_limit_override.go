@@ -23,7 +23,7 @@ var SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours int64
 var SoraCamDevicesUpdateExportUsageLimitOverrideCmdBody string
 
 func InitSoraCamDevicesUpdateExportUsageLimitOverrideCmd() {
-	SoraCamDevicesUpdateExportUsageLimitOverrideCmd.Flags().StringVar(&SoraCamDevicesUpdateExportUsageLimitOverrideCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesUpdateExportUsageLimitOverrideCmd.Flags().StringVar(&SoraCamDevicesUpdateExportUsageLimitOverrideCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesUpdateExportUsageLimitOverrideCmd.Flags().Int64Var(&SoraCamDevicesUpdateExportUsageLimitOverrideCmdLimitHours, "limit-hours", 0, TRAPI("New value for the monthly limit for the amount of hours that recorded video can be exported."))
 

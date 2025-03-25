@@ -26,7 +26,7 @@ var CredentialsUpdateCmdType string
 var CredentialsUpdateCmdBody string
 
 func InitCredentialsUpdateCmd() {
-	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TRAPI("Credentials set ID."))
+	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdCredentialsId, "credentials-id", "", TRAPI("Credential set ID."))
 
 	CredentialsUpdateCmd.Flags().StringVar(&CredentialsUpdateCmdDescription, "description", "", TRAPI(""))
 

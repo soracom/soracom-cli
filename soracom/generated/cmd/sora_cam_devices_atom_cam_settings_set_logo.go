@@ -23,7 +23,7 @@ var SoraCamDevicesAtomCamSettingsSetLogoCmdState string
 var SoraCamDevicesAtomCamSettingsSetLogoCmdBody string
 
 func InitSoraCamDevicesAtomCamSettingsSetLogoCmd() {
-	SoraCamDevicesAtomCamSettingsSetLogoCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetLogoCmdDeviceId, "device-id", "", TRAPI("Device ID of the target compatible camera device."))
+	SoraCamDevicesAtomCamSettingsSetLogoCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetLogoCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesAtomCamSettingsSetLogoCmd.Flags().StringVar(&SoraCamDevicesAtomCamSettingsSetLogoCmdState, "state", "", TRAPI("Display settings for the ATOM tech Inc. logo shown on the bottom left of the captured image.- 'on'- 'off'"))
 

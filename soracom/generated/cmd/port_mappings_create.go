@@ -23,7 +23,7 @@ var PortMappingsCreateCmdTlsRequired bool
 var PortMappingsCreateCmdBody string
 
 func InitPortMappingsCreateCmd() {
-	PortMappingsCreateCmd.Flags().Float64Var(&PortMappingsCreateCmdDuration, "duration", 0, TRAPI("The duration (in seconds) to maintain the Port Mapping entry (the time to allow remote access). After the specified time has elapsed, the Port Mapping entry will be automatically deleted. Maximum duration is 8 hours."))
+	PortMappingsCreateCmd.Flags().Float64Var(&PortMappingsCreateCmdDuration, "duration", 0, TRAPI("The duration (in seconds) to maintain the On-Demand Remote Access entry (the time to allow remote access). After the specified time has passed, the On-Demand Remote Access entry will be automatically deleted. The maximum duration is 8 hours."))
 
 	PortMappingsCreateCmd.Flags().BoolVar(&PortMappingsCreateCmdTlsRequired, "tls-required", false, TRAPI("Whether to encrypt the connection from the source to Soracom using TLS.- 'true': Encrypt using TLS. Specify this if the device is listening on HTTP.- 'false': Do not use TLS. Specify this when connecting to the device via SSH or if the device is listening on HTTPS. Note that communication from the source to the device is encrypted in SSH and HTTPS."))
 
