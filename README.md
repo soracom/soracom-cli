@@ -58,6 +58,8 @@ brew install bash-completion
 
 By running one of the following commands, the latest version of `soracom` command will be installed.
 
+> **Note for Windows users**: You may receive a security warning stating, "Windows protected your PC." When installing the Soracom CLI, you can continue the installation by clicking "More info," followed by "Run anyway."
+
 If you have a permission to write a file into `/usr/local/bin` directory (e.g. you are `root` user), please run the command below:
 
 ```shell
@@ -292,7 +294,7 @@ const jpBill = execSync(`soracom --auth-key-id ${process.env.AUTH_KEY_ID} --auth
 ```
 
 
-### Trouble shooting
+### Troubleshooting
 
 If you get an error message like the following:
 
