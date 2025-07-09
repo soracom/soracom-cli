@@ -19,20 +19,21 @@ import (
 )
 
 type profile struct {
-	Sandbox               bool    `json:"sandbox"`
-	CoverageType          string  `json:"coverageType"`
-	Email                 *string `json:"email,omitempty"`
-	Password              *string `json:"password,omitempty"`
-	AuthKeyID             *string `json:"authKeyId,omitempty"`
-	AuthKey               *string `json:"authKey,omitempty"`
-	Username              *string `json:"username,omitempty"`
-	OperatorID            *string `json:"operatorId,omitempty"`
-	Endpoint              *string `json:"endpoint,omitempty"`
-	RegisterPaymentMethod bool    `json:"registerPaymentMethod"`
-	ProfileCommand        *string `json:"profileCommand,omitempty"`
-	SourceProfile         *string `json:"sourceProfile,omitempty"`
-	TokenTimeoutSeconds   *int    `json:"tokenTimeoutSeconds,omitempty"`
-	MfaOTPCode            *string `json:"mfaOTPCode,omitempty"`
+	Sandbox               bool              `json:"sandbox"`
+	CoverageType          string            `json:"coverageType"`
+	Email                 *string           `json:"email,omitempty"`
+	Password              *string           `json:"password,omitempty"`
+	AuthKeyID             *string           `json:"authKeyId,omitempty"`
+	AuthKey               *string           `json:"authKey,omitempty"`
+	Username              *string           `json:"username,omitempty"`
+	OperatorID            *string           `json:"operatorId,omitempty"`
+	Endpoint              *string           `json:"endpoint,omitempty"`
+	RegisterPaymentMethod bool              `json:"registerPaymentMethod"`
+	ProfileCommand        *string           `json:"profileCommand,omitempty"`
+	SourceProfile         *string           `json:"sourceProfile,omitempty"`
+	TokenTimeoutSeconds   *int              `json:"tokenTimeoutSeconds,omitempty"`
+	MfaOTPCode            *string           `json:"mfaOTPCode,omitempty"`
+	Headers               map[string]string `json:"headers,omitempty"`
 }
 
 type authInfo struct {
@@ -67,6 +68,20 @@ func getProfile() (*profile, error) {
 
 	loadedProfile = profile
 	return loadedProfile, nil
+}
+
+func getProfileIfExist() *profile {
+	profile, err := getProfile()
+	if err != nil {
+		if os.IsNotExist(err) {
+			// if profile does not exist, just return nil
+			return nil
+		}
+		// if any other error occurs, print the error and return nil
+		lib.PrintfStderr("failed to get profile: %v\n", err)
+		return nil
+	}
+	return profile
 }
 
 func getProfileFromExternalCommand(command string) (*profile, error) {
