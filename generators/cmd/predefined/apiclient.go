@@ -31,6 +31,7 @@ type apiClient struct {
 	basePath       string
 	language       string
 	verbose        bool
+	profile        *profile
 }
 
 var (
@@ -57,6 +58,7 @@ type apiClientOptions struct {
 	BasePath string
 	Language string
 	Endpoint string
+	Profile  *profile
 }
 
 // New creates an instance of APIClient
@@ -108,6 +110,7 @@ func newAPIClient(options *apiClientOptions) *apiClient {
 		basePath:       basePath,
 		language:       language,
 		verbose:        verbose,
+		profile:        options.Profile,
 	}
 }
 
@@ -385,6 +388,12 @@ func (ac *apiClient) constructRequest(u *url.URL, params *apiParams) (*http.Requ
 
 	if ac.language != "" {
 		req.Header.Set("X-Soracom-Lang", ac.language)
+	}
+
+	if ac.profile != nil {
+		for k, v := range ac.profile.Headers {
+			req.Header.Add(k, v)
+		}
 	}
 
 	return req, nil

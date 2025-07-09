@@ -56,6 +56,7 @@ func QuerySubscribersTrafficVolumeRankingCmdRunE(cmd *cobra.Command, args []stri
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

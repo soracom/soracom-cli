@@ -50,6 +50,7 @@ func SoraCamDevicesAtomCamSettingsSetMotionCmdRunE(cmd *cobra.Command, args []st
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

@@ -50,6 +50,7 @@ func LoraNetworkSetsAddPermissionCmdRunE(cmd *cobra.Command, args []string) erro
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

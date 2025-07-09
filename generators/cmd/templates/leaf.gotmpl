@@ -121,6 +121,7 @@ func {{$cmdvar}}RunE(cmd *cobra.Command, args []string) error {
     opt := &apiClientOptions{
       BasePath: "{{.BasePath}}",
       Language: getSelectedLanguage(),
+      Profile: getProfileIfExists(),
     }
 
     ac := newAPIClient(opt)

@@ -50,6 +50,7 @@ func SoraCamDevicesUpdateExportUsageLimitOverrideCmdRunE(cmd *cobra.Command, arg
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

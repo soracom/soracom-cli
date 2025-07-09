@@ -105,6 +105,7 @@ func OperatorUpdateCompanyInformationCmdRunE(cmd *cobra.Command, args []string) 
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

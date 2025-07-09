@@ -256,7 +256,7 @@ get_api_key_and_token_for_user1() {
 
     progress "Obtaining api key and token for the user1 on the sandbox"
 
-    auth_result="$( invoke_soracom_command_without_profile auth --auth-key-id "$auth_key_id_for_sandbox_user1" --auth-key "$auth_key_for_sandbox_user1" 2>/dev/null )"
+    auth_result="$( invoke_soracom_command_without_profile auth --auth-key-id "$auth_key_id_for_sandbox_user1" --auth-key "$auth_key_for_sandbox_user1"  )"
 
     api_key_for_sandbox_user1="$( echo "$auth_result" | jq -r .apiKey )"
     api_token_for_sandbox_user1="$( echo "$auth_result" | jq -r .token )"
