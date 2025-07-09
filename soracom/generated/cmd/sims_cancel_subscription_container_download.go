@@ -43,12 +43,10 @@ func SimsCancelSubscriptionContainerDownloadCmdRunE(cmd *cobra.Command, args []s
 		return fmt.Errorf("unexpected arguments passed => %v", args)
 	}
 
-	profile := getProfileIfExist()
-
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
-		Profile:  profile,
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

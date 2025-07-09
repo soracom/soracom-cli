@@ -38,12 +38,10 @@ func SoraCamDevicesImagesGetExportedCmdRunE(cmd *cobra.Command, args []string) e
 		return fmt.Errorf("unexpected arguments passed => %v", args)
 	}
 
-	profile := getProfileIfExist()
-
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
-		Profile:  profile,
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

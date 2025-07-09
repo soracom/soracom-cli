@@ -70,7 +70,7 @@ func getProfile() (*profile, error) {
 	return loadedProfile, nil
 }
 
-func getProfileIfExist() *profile {
+func getProfileIfExists() *profile {
 	profile, err := getProfile()
 	if err != nil {
 		if os.IsNotExist(err) {
