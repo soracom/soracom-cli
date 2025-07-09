@@ -38,9 +38,12 @@ func VpgAcceptTransitGatewayVpcAttachmentCmdRunE(cmd *cobra.Command, args []stri
 		return fmt.Errorf("unexpected arguments passed => %v", args)
 	}
 
+	profile := getProfileIfExist()
+
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  profile,
 	}
 
 	ac := newAPIClient(opt)

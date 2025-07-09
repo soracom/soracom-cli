@@ -77,9 +77,12 @@ func AuthCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unexpected arguments passed => %v", args)
 	}
 
+	profile := getProfileIfExist()
+
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  profile,
 	}
 
 	ac := newAPIClient(opt)
