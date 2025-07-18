@@ -41,6 +41,7 @@ func EventHandlersListForSubscriberCmdRunE(cmd *cobra.Command, args []string) er
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

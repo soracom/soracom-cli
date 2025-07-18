@@ -36,6 +36,7 @@ func SoraCamDevicesAtomCamSettingsGetSoundCmdRunE(cmd *cobra.Command, args []str
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

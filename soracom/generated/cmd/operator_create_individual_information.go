@@ -90,6 +90,7 @@ func OperatorCreateIndividualInformationCmdRunE(cmd *cobra.Command, args []strin
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

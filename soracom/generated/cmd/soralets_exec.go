@@ -75,6 +75,7 @@ func SoraletsExecCmdRunE(cmd *cobra.Command, args []string) error {
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

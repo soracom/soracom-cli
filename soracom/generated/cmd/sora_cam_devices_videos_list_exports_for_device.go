@@ -61,6 +61,7 @@ func SoraCamDevicesVideosListExportsForDeviceCmdRunE(cmd *cobra.Command, args []
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

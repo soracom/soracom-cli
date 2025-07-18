@@ -50,6 +50,7 @@ func UsersDefaultPermissionsUpdateCmdRunE(cmd *cobra.Command, args []string) err
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)

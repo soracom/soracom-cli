@@ -61,6 +61,7 @@ func SoraCamDevicesRecordingsAndEventsListForDeviceCmdRunE(cmd *cobra.Command, a
 	opt := &apiClientOptions{
 		BasePath: "/v1",
 		Language: getSelectedLanguage(),
+		Profile:  getProfileIfExists(),
 	}
 
 	ac := newAPIClient(opt)
