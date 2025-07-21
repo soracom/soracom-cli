@@ -20,7 +20,10 @@ cli:
     description: "Performs authentication to access to the SORACOM API.\nTo perform authentication by a root account, specify `--email` and `--password`.\nTo perform authentication by an AuthKey, specify `--auth-key-id` and `--auth-key`.\nTo perform authentication by a SAM user, specify `--operator-id`, `--user-name` and `--password`. An API Key and an API Token will be shown if successful."
   batch-groups:
     summary: Manage batch processing.
-    description: "Manage batch processing."
+    description: Manage batch processing.
+    jobs:
+      summary: Manage batch jobs.
+      description: Manage batch jobs.
   bills:
     summary: Show or export billing info.
     description: Show billing info for specified period, or export the billing info to a file
