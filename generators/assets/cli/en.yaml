@@ -1,5 +1,8 @@
 cli:
   alternative-api-suggestion: "Please consider to use the alternative API (command: `%s`)."
+  analysis:
+    summary: Manage database queries.
+    description: Manage database queries.
   audit-logs:
     summary: Retrieve audit logs.
     description: Retrieve audit logs.

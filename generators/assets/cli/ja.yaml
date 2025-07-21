@@ -1,5 +1,8 @@
 cli:
   alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"
+  analysis:
+    summary: データベースクエリに関する操作を行います。
+    description: データベースクエリに関する操作を行います。
   audit-logs:
     summary: 監査ログを取得します。
     description: 監査ログを取得します。
