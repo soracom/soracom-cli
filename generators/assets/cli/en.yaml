@@ -3,6 +3,9 @@ cli:
   analysis:
     summary: Manage database queries.
     description: Manage database queries.
+    queries:
+      summary: Execute and retrieve the status of database queries.
+      description: Execute and retrieve the status of database queries.
   audit-logs:
     summary: Retrieve audit logs.
     description: Retrieve audit logs.
