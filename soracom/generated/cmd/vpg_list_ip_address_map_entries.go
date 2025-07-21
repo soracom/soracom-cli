@@ -25,11 +25,11 @@ var VpgListIpAddressMapEntriesCmdPaginate bool
 var VpgListIpAddressMapEntriesCmdOutputJSONL bool
 
 func InitVpgListIpAddressMapEntriesCmd() {
-	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last IP address returned from the previous page. By specifying this parameter, the API will return the next page of IP Address Map entries."))
+	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The last IP address retrieved in the previous page. Use this parameter to retrieve the next page of IP address map entries."))
 
 	VpgListIpAddressMapEntriesCmd.Flags().StringVar(&VpgListIpAddressMapEntriesCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 
-	VpgListIpAddressMapEntriesCmd.Flags().Int64Var(&VpgListIpAddressMapEntriesCmdLimit, "limit", 0, TRAPI("The maximum number of IP Address Map entries to return."))
+	VpgListIpAddressMapEntriesCmd.Flags().Int64Var(&VpgListIpAddressMapEntriesCmdLimit, "limit", 0, TRAPI("The maximum number of IP address map entries to retrieve. The response may contain fewer entries than the specified value."))
 
 	VpgListIpAddressMapEntriesCmd.Flags().BoolVar(&VpgListIpAddressMapEntriesCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -26,9 +26,9 @@ var VpgPutIpAddressMapEntryCmdVpgId string
 var VpgPutIpAddressMapEntryCmdBody string
 
 func InitVpgPutIpAddressMapEntryCmd() {
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI(""))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdIpAddress, "ip-address", "", TRAPI("IP address to assign to the specified 'key'."))
 
-	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI(""))
+	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdKey, "key", "", TRAPI("IMSI of the IoT SIM to assign the fixed IP address to."))
 
 	VpgPutIpAddressMapEntryCmd.Flags().StringVar(&VpgPutIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 

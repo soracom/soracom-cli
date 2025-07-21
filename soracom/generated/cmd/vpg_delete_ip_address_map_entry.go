@@ -16,7 +16,7 @@ var VpgDeleteIpAddressMapEntryCmdKey string
 var VpgDeleteIpAddressMapEntryCmdVpgId string
 
 func InitVpgDeleteIpAddressMapEntryCmd() {
-	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TRAPI("Target key to remove."))
+	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdKey, "key", "", TRAPI("Identifier of the IP address map entry to delete (IMSI of the IoT SIM)."))
 
 	VpgDeleteIpAddressMapEntryCmd.Flags().StringVar(&VpgDeleteIpAddressMapEntryCmdVpgId, "vpg-id", "", TRAPI("Target VPG ID."))
 

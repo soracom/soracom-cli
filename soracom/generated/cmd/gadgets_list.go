@@ -36,7 +36,7 @@ var GadgetsListCmdOutputJSONL bool
 func InitGadgetsListCmd() {
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID ('{product_id}/{serial_number}') of the last gadget retrieved on the previous page in URL encoding (percent encoding).By specifying this parameter, you can continue to retrieve the list from the next Gadget API compatible device onward.The value of the 'last_evaluated_key' of 'rel=next' returned in the 'link' header when the API is called is expected to be specified in the next call, but any ID ('{productId}/{serialNumber}') can be specified."))
 
-	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device for filtering the search.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
+	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device for filtering the search.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
 	GadgetsListCmd.Flags().StringVar(&GadgetsListCmdTagName, "tag-name", "", TRAPI("Tag name for filtering the search. The search is always an exact match, regardless of the setting of 'tag_value_match_mode'."))
 

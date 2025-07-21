@@ -2,13 +2,156 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20250314-063957
+  version: 20250714-070728
 servers:
 - description: Japan coverage production API
   url: https://api.soracom.io/v1
 - description: Global coverage production API
   url: https://g.api.soracom.io/v1
 paths:
+  /analysis/queries:
+    post:
+      description: データベースクエリを非同期で実行します。データベースクエリの実行状態は、[Analysis:getAnalysisQueries
+        API](#/Analysis/getAnalysisQueries) で確認してください。
+      operationId: startAnalysisQueries
+      requestBody:
+        content:
+          application/json:
+            example:
+              from: 1743465600
+              sql: SELECT * FROM SIM_SESSION_EVENTS LIMIT 10
+              to: 1743552000
+            schema:
+              $ref: '#/components/schemas/StartAnalysisQueriesRequest'
+        description: データベースクエリ実行リクエスト。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                queryId: ffa91d0c371d45c4bf53d55ab5c14955
+              schema:
+                $ref: '#/components/schemas/StartAnalysisQueriesResponse'
+          description: 新しいデータベースクエリの実行が開始されました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 新しいデータベースクエリを非同期で実行する
+      tags:
+      - Analysis
+      x-soracom-cli:
+      - analysis queries start
+  /analysis/queries/{query_id}:
+    get:
+      description: データベースクエリの実行状態を取得します。
+      operationId: getAnalysisQueries
+      parameters:
+      - description: データベースクエリ ID。
+        in: path
+        name: query_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                columnInfo:
+                - databaseType: FIXED
+                  name: ICCID
+                  type: string
+                - databaseType: TEXT
+                  name: IMEI
+                  type: string
+                - databaseType: NUMBER
+                  name: IMSI
+                  type: number
+                fileSize: 12345678
+                rowCount: 12345
+                status: COMPLETED
+                url: https://soracom-analysis-export.s3.amazonaws.com/ffa91d0c-371d-45c4-bf53-d55ab5c14955.csv.gz
+              schema:
+                $ref: '#/components/schemas/GetAnalysisQueriesResponse'
+          description: データベースクエリの実行状態、結果、およびダウンロード URL。
+      security:
+      - api_key: []
+        api_token: []
+      summary: データベースクエリの実行状態を取得する
+      tags:
+      - Analysis
+      x-soracom-cli:
+      - analysis queries get
+  /analysis/schemas:
+    get:
+      description: |
+        利用可能なデータベースのスキーマとそのカラム情報を取得します。この情報を参考にして、[Analysis:startAnalysisQueries API](#/Analysis/startAnalysisQueries) で取得したデータのデータ型変換を行うことができます。
+
+        例: 以下のようにカラムの `type` が `string` の場合、文字列として扱うことができます。
+
+        ```json
+        {
+          "name": "SIM_SESSION_EVENTS",
+          "columnInfo": [
+            {
+              "name": "APN",
+              "type": "string",
+              "databaseType": "TEXT",
+              "description": "Access Point Name indicating the network gateway for the SIM session."
+            }
+          ]
+        }
+        ```
+      operationId: getAnalysisSchemas
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+              - columnInfo:
+                - databaseType: TEXT
+                  description: Access Point Name indicating the network gateway for
+                    the SIM session.
+                  name: APN
+                  type: string
+                - databaseType: TEXT
+                  description: The primary DNS server IP address used during the SIM
+                    session.
+                  name: DNS0
+                  type: string
+                - databaseType: TEXT
+                  description: The secondary DNS server IP address used during the
+                    SIM session.
+                  name: DNS1
+                  type: string
+                - databaseType: TEXT
+                  description: Describes the type of event associated with the SIM
+                    session, such as Created, Deleted, or Updated.
+                  name: EVENT
+                  type: string
+                - databaseType: TEXT
+                  description: Home Public Land Mobile Network code that identifies
+                    the home network operator.
+                  name: HPLMN
+                  type: string
+                - databaseType: TEXT
+                  description: The Integrated Circuit Card Identifier, a unique number
+                    assigned to the SIM card.
+                  name: ICCID
+                  type: string
+                name: SIM_SESSION_EVENTS
+              schema:
+                $ref: '#/components/schemas/GetAnalysisSchemasResponse'
+          description: 利用可能なデータベースのスキーマとそのカラム情報。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 利用可能なデータベースのスキーマを取得する
+      tags:
+      - Analysis
+      x-soracom-cli:
+      - analysis schemas
   /audit_logs/api:
     get:
       description: SORACOM API 呼び出しの監査ログを新しいものから順に取得する
@@ -181,16 +324,16 @@ paths:
         content:
           application/json:
             examples:
-              To perform authentication by a SAM user:
+              SAM ユーザー認証の場合:
                 value:
                   operatorId: OPXXXXXXXXXX
                   password: p@$$w0rd
                   userName: SORACOMAPI
-              To perform authentication by a root account:
+              ルートユーザーで認証する場合:
                 value:
                   email: soracomapi@example.com
                   password: p@$$w0rd
-              To perform authentication by an AuthKeyId and AuthKey:
+              ルートユーザーまたは SAM ユーザーの認証キーで認証する場合:
                 value:
                   authKey: secret-abcde12345fghij67890klmno12345pqrst67890uvwxy12345abcde67890fghi...
                   authKeyId: keyId-abcde12345fghij67890klmno12345pq
@@ -308,6 +451,360 @@ paths:
       - Auth
       x-soracom-cli:
       - auth switch-user
+  /batch_groups:
+    get:
+      description: オペレーターに関連付けられたバッチグループの一覧を取得します。
+      operationId: listBatchGroups
+      parameters:
+      - description: 取得するバッチグループの上限。ただし、返却されるバッチグループの個数は指定された値を下回る可能性があります。
+        example: 10
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BatchGroupResponse'
+                type: array
+          description: バッチグループの一覧が正常に取得されました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチグループの一覧を取得する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        新しいバッチグループを作成します。バッチグループは、バッチジョブを整理/管理するためのコンテナです。バッチジョブを作成するには、[Batch:createBatchJob API](#/Batch/createBatchJob) を使用します。
+      operationId: createBatchGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBatchGroupRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGroupResponse'
+          description: バッチグループが作成されました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチグループを作成する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups create
+  /batch_groups/{batch_group_id}:
+    delete:
+      description: |
+        バッチグループを削除します。削除するバッチグループに、実行中のバッチジョブがない場合のみ削除できます。
+      operationId: deleteBatchGroup
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: バッチグループが削除されました。
+        "400":
+          description: 実行中のバッチジョブが存在するため、バッチグループを削除できません。
+        "404":
+          description: バッチグループが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチグループを削除する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups delete
+    get:
+      description: |
+        バッチグループの詳細情報を取得します。
+      operationId: getBatchGroup
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGroupResponse'
+          description: バッチグループが見つかりました。
+        "404":
+          description: バッチグループが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチグループを取得する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups get
+    put:
+      description: |
+        バッチグループ名または説明を更新します。
+      operationId: updateBatchGroup
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBatchGroupRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGroupResponse'
+          description: バッチグループが更新されました。
+        "404":
+          description: バッチグループが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチグループを更新する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups update
+  /batch_groups/{batch_group_id}/jobs:
+    get:
+      description: 指定したバッチグループ内のバッチジョブの一覧を取得します。
+      operationId: listBatchJobs
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      - description: 取得するバッチジョブの上限。ただし、返却されるバッチジョブの個数は指定された値を下回る可能性があります。
+        example: 10
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BatchJobResponse'
+                type: array
+          description: バッチジョブの一覧が正常に取得されました。
+        "404":
+          description: バッチグループが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチジョブ一覧を取得する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups jobs list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        新しいバッチジョブを作成し、実行を開始します。バッチジョブは非同期に実行される複数のタスクで構成されます。各タスクは実行される API 操作を表します。
+
+        バッチジョブの情報は 32 日間保持されます。タスクの実行は、この API を実行するユーザーの権限で実行されます。
+
+        **システム制限:**
+
+        - 1 つのバッチジョブには同一 API のタスクのみ指定可能です。異なる API を混在させることはできません。
+        - 各オペレーターは同一 API のバッチジョブを同時に 1 つまで実行可能です。
+        - システム全体の負荷が高い場合、バッチジョブの実行は一時的に制限されることがあります。その場合は、しばらくしてから再度実行してください。
+      operationId: createBatchJob
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBatchJobRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJobResponse'
+          description: バッチジョブが作成され、実行が開始されました。
+        "400":
+          description: |
+            不正なリクエストです。以下の場合にこのエラーが発生します。
+            - 1 つのバッチジョブに異なる API を混在させようとした場合
+            - 同一 API のバッチジョブが既に実行中の場合
+        "404":
+          description: バッチグループが見つかりません。
+        "429":
+          description: システム全体の負荷が高いため、バッチジョブの実行が制限されています。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチジョブを作成して実行する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups jobs create
+  /batch_groups/{batch_group_id}/jobs/{job_id}:
+    get:
+      description: |
+        指定したバッチジョブの詳細情報を取得します。
+      operationId: getBatchJob
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      - description: バッチジョブ ID。
+        in: path
+        name: job_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJobResponse'
+          description: バッチジョブが見つかりました。
+        "404":
+          description: バッチジョブが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチジョブを取得する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups jobs get
+  /batch_groups/{batch_group_id}/jobs/{job_id}/tasks:
+    get:
+      description: |
+        指定したバッチジョブ内のタスクの一覧を取得します。各タスクはバッチジョブの一部として実行された個々の API 操作を表します。
+      operationId: listTasksOfBatchJob
+      parameters:
+      - description: バッチグループ ID。
+        in: path
+        name: batch_group_id
+        required: true
+        schema:
+          type: string
+      - description: バッチジョブ ID。
+        in: path
+        name: job_id
+        required: true
+        schema:
+          type: string
+      - description: 取得するタスクの上限。ただし、返却されるタスクの個数は指定された値を下回る可能性があります。
+        example: 10
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+      - description: タスクのステータスでフィルター。
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - pending
+          - success
+          - error
+          type: string
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BatchTaskResponse'
+                type: array
+          description: バッチタスクの一覧が正常に取得されました。
+        "404":
+          description: バッチジョブが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: バッチジョブのタスク一覧を取得する
+      tags:
+      - Batch
+      x-soracom-cli:
+      - batch-groups jobs list-tasks
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /bills:
     get:
       description: |
@@ -592,7 +1089,7 @@ paths:
 
             3G の例
             ```
-            $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&lac=195&cid=68485165' \
+            $ curl -X GET "https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&lac=196" \
             -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
             -H "X-Soracom-Token: $X_SORACOM_TOKEN"
             ```
@@ -601,7 +1098,7 @@ paths:
 
             4G の例
             ```
-            $ curl -X GET 'https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&tac=5840&ecid=44668480' \
+            $ curl -X GET "https://api.soracom.io/v1/cell_locations?mcc=440&mnc=10&tac=5680&ecid=48872466" \
             -H "X-Soracom-API-Key: $X_SORACOM_API_KEY" \
             -H "X-Soracom-Token: $X_SORACOM_TOKEN"
             ```
@@ -626,35 +1123,32 @@ paths:
         schema:
           type: string
       - description: LAC (Location Area Code) - エリアコード (3G 用)。
-        example: 195
         in: query
         name: lac
         required: false
         schema:
           type: string
       - description: CID (Cell ID) - セル ID (3G 用)。
-        example: 68485165
         in: query
         name: cid
         required: false
         schema:
           type: string
       - description: TAC (Tracking Area Code) - エリアコード (LTE 用)。
-        example: 5840
+        example: 5680
         in: query
         name: tac
         required: false
         schema:
           type: string
       - description: ECID (Enhanced Cell ID) - セル ID (LTE 用) - `ecid` もしくは `eci` のいずれかを指定してください。どちらに値を指定しても結果は同一です。
-        example: 44668480
+        example: 48872466
         in: query
         name: ecid
         required: false
         schema:
           type: string
       - description: ECID (Enhanced Cell ID) - セル ID (LTE 用) - `ecid` もしくは `eci` のいずれかを指定してください。どちらに値を指定しても結果は同一です。
-        example: 44668480
         in: query
         name: eci
         required: false
@@ -1005,7 +1499,7 @@ paths:
         指定されたデータ送信元リソースから Harvest Data に送信されたデータの中で、条件に合うデータを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: getDataEntries
       parameters:
-      - description: データ送信元リソースの Type
+      - description: データ送信元リソースの Type。
         in: path
         name: resource_type
         required: true
@@ -1034,13 +1528,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 取得対象の期間の始まり (UNIX 時間 (ミリ秒))
+      - description: 取得対象の期間の始まり (UNIX 時間 (ミリ秒))。
         in: query
         name: from
         required: false
         schema:
           type: integer
-      - description: 取得対象の期間の終わり (UNIX 時間 (ミリ秒))
+      - description: 取得対象の期間の終わり (UNIX 時間 (ミリ秒))。
         in: query
         name: to
         required: false
@@ -1056,7 +1550,7 @@ paths:
           - desc
           - asc
           type: string
-      - description: 取得するデータエントリ数の上限 (1 〜 1000)。デフォルトは、`10` です。
+      - description: 取得するデータエントリ数の上限。 (1 〜 1000)。デフォルトは、`10` です。
         in: query
         name: limit
         required: false
@@ -1064,7 +1558,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前のページで取得した最後のデータエントリのキー。このパラメータを指定することで次のデータエントリを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -1078,7 +1572,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DataEntry'
                 type: array
-          description: データエントリのリスト
+          description: 指定されたリソースから Harvest Data に送信されたデータエントリのリスト
       security:
       - api_key: []
         api_token: []
@@ -1094,10 +1588,10 @@ paths:
           header: x-soracom-next-key
   /data/{resource_type}/{resource_id}/{time}:
     delete:
-      description: リソース ID とタイムスタンプで指定されたデータエントリを削除する。
+      description: リソース ID とタイムスタンプで指定されたデータエントリを削除します。
       operationId: deleteDataEntry
       parameters:
-      - description: データ送信元リソースの Type
+      - description: データ送信元リソースの Type。
         in: path
         name: resource_type
         required: true
@@ -1126,7 +1620,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 削除対象のデータエントリのタイムスタンプ (UNIX 時間 (ミリ秒))
+      - description: 削除対象のデータエントリのタイムスタンプ (UNIX 時間 (ミリ秒))。
         in: path
         name: time
         required: true
@@ -1134,7 +1628,7 @@ paths:
           type: integer
       responses:
         "204":
-          description: データエントリは正常に削除されました
+          description: データエントリは正常に削除されました。
       security:
       - api_key: []
         api_token: []
@@ -1144,10 +1638,10 @@ paths:
       x-soracom-cli:
       - data delete-entry
     get:
-      description: リソース ID とタイムスタンプで指定されたデータエントリを取得する。
+      description: リソース ID とタイムスタンプで指定されたデータエントリを取得します。
       operationId: getDataEntry
       parameters:
-      - description: データ送信元リソースの Type
+      - description: データ送信元リソースの Type。
         in: path
         name: resource_type
         required: true
@@ -1176,7 +1670,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 取得対象のデータエントリのタイムスタンプ (UNIX 時間 (ミリ秒))
+      - description: 取得対象のデータエントリのタイムスタンプ (UNIX 時間 (ミリ秒))。
         in: path
         name: time
         required: true
@@ -1184,9 +1678,13 @@ paths:
           type: integer
       responses:
         "200":
-          description: リソース ID とタイムスタンプで特定されるデータエントリ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEntry'
+          description: リソース ID とタイムスタンプで特定されるデータエントリ。
         "404":
-          description: 対象のデータエントリが存在しない
+          description: 対象のデータエントリが存在しない。
       security:
       - api_key: []
         api_token: []
@@ -1195,10 +1693,142 @@ paths:
       - DataEntry
       x-soracom-cli:
       - data get-entry
-  /data/resources:
+  /data/categories/{category}:
     get:
       description: |
-        当該オペレータに属するデータ送信元リソースのリストを返す。データ送信元リソースの総数が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
+        指定されたカテゴリに属するデータエントリを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
+      operationId: getDataEntriesByCategory
+      parameters:
+      - description: 取得対象のカテゴリ名。
+        in: path
+        name: category
+        required: true
+        schema:
+          type: string
+      - description: 取得対象の期間の始まり (UNIX 時間 (ミリ秒))。
+        in: query
+        name: from
+        required: false
+        schema:
+          type: integer
+      - description: 取得対象の期間の終わり (UNIX 時間 (ミリ秒))。
+        in: query
+        name: to
+        required: false
+        schema:
+          type: integer
+      - description: データエントリのソート順。下降順 (最新のデータが先頭) もしくは上昇順 (最も古いデータが先頭)。
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      - description: 取得するデータエントリ数の上限。 (1 〜 1000)。デフォルトは、`10` です。
+        in: query
+        name: limit
+        required: false
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DataEntry'
+                type: array
+          description: 指定されたカテゴリに属するデータエントリのリスト。
+      security:
+      - api_key: []
+        api_token: []
+      summary: カテゴリを指定して Harvest Data に送信したデータを取得する
+      tags:
+      - DataEntry
+      x-soracom-cli:
+      - data get-entries-by-category
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /data/metadata/resources:
+    get:
+      description: |
+        データ送信元リソースのリストを取得します。データ送信元リソースの総数が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
+      operationId: listDataResourceMetadata
+      parameters:
+      - description: |
+          対象のリソース Type。
+
+          - `Subscriber`: IoT SIM。
+          - `LoraDevice`: LoRaWAN デバイス。
+          - `Sim`: IoT SIM。
+          - `SigfoxDevice`: Sigfox デバイス。
+          - `Device`: Inventory デバイス。
+          - `SoraCam`: ソラカメ対応カメラ。
+        in: query
+        name: resource_type
+        required: false
+        schema:
+          enum:
+          - Subscriber
+          - LoraDevice
+          - Sim
+          - SigfoxDevice
+          - Device
+          - SoraCam
+          type: string
+      - description: 取得するデータエントリ数の上限。
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DataResourceMetadata'
+                type: array
+          description: データ送信元リソースのリスト。
+      security:
+      - api_key: []
+        api_token: []
+      summary: データ送信元リソースのリストを取得する
+      tags:
+      - DataEntry
+      x-soracom-cli:
+      - data list-resource-metadata
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /data/resources:
+    get:
+      deprecated: true
+      description: |
+        データ送信元リソースのリストを取得します。データ送信元リソースの総数が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: listDataSourceResources
       parameters:
       - description: |
@@ -1222,13 +1852,13 @@ paths:
           - Device
           - SoraCam
           type: string
-      - description: 取得するデータエントリ数の上限
+      - description: 取得するデータエントリ数の上限。
         in: query
         name: limit
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後のデータ送信元リソースの ID。このパラメータを指定することで次のデータ送信元リソース以降のリストを取得できる。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -1240,9 +1870,9 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/DataSourceResourceMetadata'
+                  $ref: '#/components/schemas/DataResourceMetadata'
                 type: array
-          description: データ送信元リソースのリスト
+          description: データ送信元リソースのリスト。
       security:
       - api_key: []
         api_token: []
@@ -1301,7 +1931,14 @@ paths:
       description: 新しいデバイスオブジェクトモデルを作成します。
       operationId: createDeviceObjectModel
       requestBody:
-        $ref: '#/components/requestBodies/DeviceObjectModel'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceObjectModel'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DeviceObjectModel'
+        required: true
       responses:
         "200":
           content:
@@ -1381,7 +2018,14 @@ paths:
         schema:
           type: string
       requestBody:
-        $ref: '#/components/requestBodies/DeviceObjectModel'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceObjectModel'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DeviceObjectModel'
+        required: true
       responses:
         "200":
           content:
@@ -3227,7 +3871,6 @@ paths:
       - description: |
           取得対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: query
         name: product_id
@@ -3285,27 +3928,6 @@ paths:
         "200":
           content:
             application/json:
-              example:
-              - attributes:
-                  contractEndingTime: "2022-11-08T23:59:59Z"
-                  firstClickTimestamp: "2018-11-08T09:01:11Z"
-                  remainingCount: 1499
-                createdTime: 1541668508839
-                id: button/1234567890ABCDE0
-                lastModifiedTime: 1665398234935
-                lastSeen:
-                  batteryLevel: 1
-                  clickEventPropagated: true
-                  clickTime: "2022-01-26T01:07:19.561Z"
-                  clickType: DOUBLE
-                operatorId: OP0040984956
-                productId: button
-                serialNumber: 1234567890ABCDE0
-                status: active
-                tags:
-                  name: LTE-M Button 01
-                terminatedTime: null
-                terminationEnabled: false
               schema:
                 items:
                   $ref: '#/components/schemas/Gadget'
@@ -3332,7 +3954,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3352,27 +3973,6 @@ paths:
         "200":
           content:
             application/json:
-              example:
-                attributes:
-                  contractEndingTime: "2022-11-08T23:59:59Z"
-                  firstClickTimestamp: "2018-11-08T09:01:11Z"
-                  remainingCount: 1499
-                createdTime: 1541668508839
-                id: button/1234567890ABCDE0
-                lastModifiedTime: 1665398234935
-                lastSeen:
-                  batteryLevel: 1
-                  clickEventPropagated: true
-                  clickTime: "2022-01-26T01:07:19.561Z"
-                  clickType: DOUBLE
-                operatorId: OP0040984956
-                productId: button
-                serialNumber: 1234567890ABCDE0
-                status: active
-                tags:
-                  name: LTE-M Button 01
-                terminatedTime: null
-                terminationEnabled: false
               schema:
                 $ref: '#/components/schemas/Gadget'
           description: 指定された Gadget API 対応デバイスの詳細情報。
@@ -3394,7 +3994,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3435,7 +4034,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3476,7 +4074,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3524,7 +4121,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3574,7 +4170,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -3619,7 +4214,6 @@ paths:
       - description: |
           対象の Gadget API 対応デバイスの種類。
 
-          - `button`: SORACOM LTE-M Button powered by AWS。
           - `wimax`: ソラカメ専用セルラーパック。
         in: path
         name: product_id
@@ -4264,7 +4858,11 @@ paths:
         **Warning**: ルートユーザーの認証情報を使用して実行してください。SAM ユーザーの認証情報では、Lagoon のプランを変更できません。
       operationId: updateLagoonPlan
       requestBody:
-        $ref: '#/components/requestBodies/LagoonPlanChangingRequest'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LagoonPlanChangingRequest'
+        required: true
       responses:
         "204":
           description: 更新されました。
@@ -6084,7 +6682,8 @@ paths:
       - operator add-coverage-type
   /operators/{operator_id}/emails:
     get:
-      description: メールアドレスの一覧を返す。
+      description: |
+        オペレーターに登録されているメールアドレスの一覧を取得します。
       operationId: listEmails
       parameters:
       - description: オペレーター ID。
@@ -6101,7 +6700,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/EmailsModel'
                 type: array
-          description: OK.
+          description: オペレーターに登録されているメールアドレスの一覧。
         "400":
           description: |
             SAM ユーザーの認証情報を使用して呼び出しました。ルートユーザーの認証情報を使用して呼び出してください。
@@ -6115,7 +6714,8 @@ paths:
       - emails list
   /operators/{operator_id}/emails/{email_id}:
     delete:
-      description: メールアドレスを削除する。
+      description: |
+        指定したメールアドレス ID に対応するメールアドレスをオペレーターから削除します。
       operationId: deleteEmail
       parameters:
       - description: オペレーター ID。
@@ -6132,7 +6732,7 @@ paths:
           type: string
       responses:
         "204":
-          description: OK.
+          description: メールアドレスが正常に削除されました。
       security:
       - api_key: []
         api_token: []
@@ -6142,7 +6742,8 @@ paths:
       x-soracom-cli:
       - emails delete
     get:
-      description: メールアドレスの情報を取得する。
+      description: |
+        指定したメールアドレス ID に対応するメールアドレスの情報を取得します。
       operationId: getEmail
       parameters:
       - description: オペレーター ID。
@@ -6163,7 +6764,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmailsModel'
-          description: OK.
+          description: 指定されたメールアドレスの情報。
       security:
       - api_key: []
         api_token: []
@@ -6418,6 +7019,20 @@ paths:
         required: true
         schema:
           type: string
+      - description: |
+          ロールの種類で絞り込めます。以下のいずれかを指定します。
+          - `operator`: オペレーター管理ロール (デフォルト)
+          - `soracom`: SORACOM 管理ロール
+          - `all`: すべてのロール
+        in: query
+        name: owner
+        required: false
+        schema:
+          enum:
+          - operator
+          - soracom
+          - all
+          type: string
       responses:
         "200":
           content:
@@ -6437,7 +7052,7 @@ paths:
       - roles list
   /operators/{operator_id}/roles/{role_id}:
     delete:
-      description: ロールを削除する。
+      description: オペレーター管理ロールを削除する。
       operationId: deleteRole
       parameters:
       - description: オペレーター ID。
@@ -6462,7 +7077,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: ロールを削除する
+      summary: オペレーター管理ロールを削除する
       tags:
       - Role
       x-soracom-cli:
@@ -6477,7 +7092,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: ロール ID。
+      - description: ロール ID。オペレーター管理ロールの場合はロール作成時に指定したロール ID、SORACOM 管理ロールの場合は SRN
+          (Soracom Resource Name) 形式で指定します。
         in: path
         name: role_id
         required: true
@@ -6501,7 +7117,7 @@ paths:
       x-soracom-cli:
       - roles get
     post:
-      description: ロールを新しく追加する。
+      description: オペレーター管理ロールを新しく追加する。
       operationId: createRole
       parameters:
       - description: オペレーター ID。
@@ -6531,17 +7147,17 @@ paths:
                 $ref: '#/components/schemas/CreateRoleResponse'
           description: OK.
         "400":
-          description: ロールの作成に失敗しました。
+          description: オペレーター管理ロールの作成に失敗しました。
       security:
       - api_key: []
         api_token: []
-      summary: ロールを作成する
+      summary: オペレーター管理ロールを作成する
       tags:
       - Role
       x-soracom-cli:
       - roles create
     put:
-      description: ロールを編集する。
+      description: オペレーター管理ロールを編集する。
       operationId: updateRole
       parameters:
       - description: オペレーター ID。
@@ -6567,11 +7183,11 @@ paths:
         "200":
           description: OK.
         "404":
-          description: ロールが見つかりません。
+          description: オペレーター管理ロールが見つかりません。
       security:
       - api_key: []
         api_token: []
-      summary: ロールを更新する
+      summary: オペレーター管理ロールを更新する
       tags:
       - Role
       x-soracom-cli:
@@ -6587,7 +7203,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: ロール ID。
+      - description: ロール ID。オペレーター管理ロールの場合はロール作成時に指定したロール ID、SORACOM 管理ロールの場合は SRN
+          (Soracom Resource Name) 形式で指定します。
         in: path
         name: role_id
         required: true
@@ -6612,6 +7229,45 @@ paths:
       - Role
       x-soracom-cli:
       - roles list-users
+  /operators/{operator_id}/roles/{role_id}/versions:
+    get:
+      description: SORACOM 管理ロールのバージョン一覧を取得する。
+      operationId: listRoleVersions
+      parameters:
+      - description: オペレーター ID。
+        in: path
+        name: operator_id
+        required: true
+        schema:
+          type: string
+      - description: SORACOM 管理ロールの SRN (Soracom Resource Name) を指定します。形式は `srn:soracom:::Role:[roleName]`
+          です。
+        in: path
+        name: role_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RoleVersionResponse'
+                type: array
+          description: OK.
+        "400":
+          description: オペレーター管理ロールは指定できません。
+        "404":
+          description: SORACOM 管理ロールが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SORACOM 管理ロールのバージョン一覧を取得する
+      tags:
+      - Role
+      x-soracom-cli:
+      - roles list-versions
   /operators/{operator_id}/shipping_addresses:
     get:
       description: 商品発送先の一覧を返します。
@@ -7760,7 +8416,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: ロール ID。
+      - description: ロール ID。オペレーター管理ロールの場合はロール作成時に指定したロール ID、SORACOM 管理ロールの場合は SRN
+          (Soracom Resource Name) 形式で指定します。
         in: path
         name: role_id
         required: true
@@ -8001,7 +8658,10 @@ paths:
       - users default-permissions update
   /operators/add_email_token/issue:
     post:
-      description: メールアドレス追加用のトークンをメールで送付する。
+      description: |
+        新しいメールアドレスを追加するための認証トークンを生成し、指定されたメールアドレス宛てに送信します。この認証トークンを [Email:verifyAddEmailToken API](#/Email/verifyAddEmailToken) で使用すると、メールアドレスを認証してオペレーターに追加できます。
+
+        **Warning**: この API はルートユーザーの認証情報でのみ実行できます。
       operationId: issueAddEmailToken
       requestBody:
         content:
@@ -8012,20 +8672,23 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
+          description: 認証トークンが正常に発行され、指定されたメールアドレスに送信されました。
         "400":
           description: メール登録数の最大を超過しました。
       security:
       - api_key: []
         api_token: []
-      summary: メールアドレス追加用のトークンを送付する
+      summary: メールアドレス追加用の認証トークンを送付する
       tags:
       - Email
       x-soracom-cli:
       - emails issue-add-email-token
   /operators/add_email_token/verify:
     post:
-      description: メールアドレス追加用のトークンを確認して、メールアドレスを追加する。
+      description: |
+        [Email:issueAddEmailToken API](#/Email/issueAddEmailToken) で発行された認証トークンを検証し、メールアドレスをオペレーターに追加します。
+
+        **Warning**: 認証トークンには有効期限があります。期限切れの認証トークンは使用できません。
       operationId: verifyAddEmailToken
       requestBody:
         content:
@@ -8036,8 +8699,8 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
-      summary: メールアドレス追加用のトークンを検証する
+          description: メールアドレスが正常に検証され、オペレーターに追加されました。
+      summary: メールアドレス追加用の認証トークンを検証する
       tags:
       - Email
       x-soracom-cli:
@@ -9052,7 +9715,7 @@ paths:
           items:
             type: string
           type: array
-      - description: IoT SIM の裏面に記載された製造番号。特定地域向け IoT SIM にのみ設定されています。
+      - description: IoT SIM の裏面に記載された製造番号。日本カバレッジの IoT SIM にのみ設定されています。
         explode: true
         in: query
         name: serial_number
@@ -9119,25 +9782,25 @@ paths:
           検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
 
           - 日本カバレッジの場合は、以下のいずれかを指定します。
-            - `plan-D` (plan-D (バンドルなし)、plan-D D-300MB)
-            - `plan-K2` (plan-K2 K2-300MB)
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
+            - `plan-K2`: plan-K2 (K2-300MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
-            - `planArc01`
+            - `planArc01`: バーチャル SIM/Subscriber。
           - グローバルカバレッジの場合は、以下のいずれかを指定します。
             - `plan01s`
-            - `plan01s-low_data_volume` (plan01s - Low Data Volume)
-            - `planX3` (planX3 X3-5MB)
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume。
+            - `planX3`: planX3 (X3-5MB)。
             - `planP1`
             - `plan-US`
-            - `plan-NA1-package` (plan-NA1)
+            - `plan-NA1-package`: plan-NA1。
             - `plan-US-max`
             - `planX1`
             - `planX2`
             - `planX3-EU`
             - `plan-US-NA`
-            - `planArc01`
+            - `planArc01`: バーチャル SIM/Subscriber。
         explode: true
         in: query
         name: subscription
@@ -9294,8 +9957,8 @@ paths:
           検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
 
           - 日本カバレッジの場合は、以下のいずれかを指定します。
-            - `plan-D`: plan-D (バンドルなし)、plan-D D-300MB。
-            - `plan-K2`: plan-K2 K2-300MB。
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
+            - `plan-K2`: plan-K2 (K2-300MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -9303,7 +9966,7 @@ paths:
           - グローバルカバレッジの場合は、以下のいずれかを指定します。
             - `plan01s`
             - `plan01s-low_data_volume`: plan01s - Low Data Volume。
-            - `planX3`: planX3 X3-5MB。
+            - `planX3`: planX3 (X3-5MB)。
             - `planP1`
             - `plan-US`
             - `plan-NA1-package`: plan-NA1。
@@ -10155,7 +10818,7 @@ paths:
   /sims:
     get:
       description: |
-        条件に合う IoT SIM を取得します。IoT SIM が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
+        IoT SIM のリストを取得します。IoT SIM が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: listSims
       parameters:
       - description: 取得する IoT SIM の上限。ただし、返却される IoT SIM の個数は指定された値を下回る可能性があります。
@@ -10583,11 +11246,11 @@ paths:
         "422":
           description: |
             - デバイスへの HTTP リクエストに失敗しました。
-              - デバイスへネットワーク接続できなかった。
-              - デバイスから HTTP 接続を拒否された。
+              - デバイスへネットワーク接続できませんでした。
+              - デバイスから HTTP 接続を拒否されました。
 
             - デバイスからの HTTP レスポンスを受信できません。
-              - 規定の時間 (10 秒) 以内にデバイスから HTTP レスポンスを受信できなかった。
+              - 規定の時間 (10 秒) 以内にデバイスから HTTP レスポンスを受信できませんでした。
               - デバイスからの HTTP レスポンスが 5MB を超えた。最大サイズは、URL、ヘッダー、本文を含めて 5MB です。
       security:
       - api_key: []
@@ -10653,9 +11316,34 @@ paths:
         content:
           application/json:
             examples:
-              (1) システムログを出力する。:
+              (1) 公開鍵認証で接続してファイル一覧を取得する。:
                 description: |
-                  デバイスに SSH 接続し、`journalctl` コマンドでシステムログを出力する。
+                  デバイスに公開鍵認証で接続し、ファイル一覧を取得します。
+
+                  秘密鍵は、`key` フィールドに文字列で指定します。改行文字は、`\n` で表現してください。
+                value:
+                  authentication:
+                    key: |-
+                      -----BEGIN OPENSSH PRIVATE KEY-----
+                      b3B ... 1Fw=
+                      -----END OPENSSH PRIVATE KEY-----
+                    type: publickey
+                  command: ls -l
+                  port: 22
+                  username: username
+              (2) パスワード認証で接続してファイル一覧を取得する。:
+                description: |
+                  デバイスにパスワード認証で接続し、ファイル一覧を取得します。
+                value:
+                  authentication:
+                    password: secret_value
+                    type: password
+                  command: ls -l
+                  port: 22
+                  username: username
+              (3) パスワード認証で接続してシステムログを取得する。:
+                description: |
+                  デバイスにパスワード認証で接続し、`journalctl` コマンドでシステムログを取得します。
 
                   ```json
                   {
@@ -10671,16 +11359,6 @@ paths:
                   command: journalctl -n
                   port: 22
                   username: pi
-              (2) ファイル一覧を取得する。:
-                description: |
-                  デバイスに SSH 接続し、ファイル一覧を取得する。
-                value:
-                  authentication:
-                    password: secret_value
-                    type: password
-                  command: ls -l
-                  port: 22
-                  username: admin
             schema:
               $ref: '#/components/schemas/SimDownlinkSshRequest'
         description: デバイスへの SSH 接続とコマンドの設定。
@@ -10695,11 +11373,11 @@ paths:
         "422":
           description: |
             - コマンドの実行に失敗しました。
-              - デバイスへネットワーク接続できなかった。
+              - デバイスへネットワーク接続できませんでした。
               - デバイスに SSH 接続が拒否された。
 
             - デバイスからのレスポンスを受信できません。
-              - 規定の時間 (10 秒) 以内にデバイスからレスポンスを受信できなかった。
+              - 規定の時間 (10 秒) 以内にデバイスからレスポンスを受信できませんでした。
               - コマンドの実行結果の出力が 5 MiB を超えた。最大サイズは、標準出力、標準エラー出力を含めて 5 MiB です。
       security:
       - api_key: []
@@ -11195,9 +11873,10 @@ paths:
       description: |
         SIM ローカル情報レポートを取得します。
 
-        **Alert**: SIM ローカル情報レポート取得のリクエスト 1 件につき、IoT デバイスへの SMS 送信 1 通が発生します。IoT デバイスへの SMS 送信は有料です。利用料金について詳しくは、以下のページを参照してください。
-        - [SMS 機能](https://soracom.jp/services/air/cellular/pricing/price_iot_sim/#sms) (グローバルカバレッジ)
-        - [SMS 機能](https://soracom.jp/services/air/cellular/pricing/price_specific_area_sim/#sms) (日本カバレッジ)
+        **Alert**: SIM ローカル情報レポート取得のリクエスト 1 件につき、IoT デバイスへの SMS 送信 1 通が発生します。IoT デバイスへの SMS 送信は有料です。利用料金について詳しくは、以下のページの「SMS 機能」を参照してください。
+
+        - [グローバルカバレッジ IoT SIM](https://soracom.jp/services/air/global_coverage/#:~:text=%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82-,SMS%20%E6%A9%9F%E8%83%BD,-IoT%20%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%B8)
+        - [日本カバレッジ IoT SIM](https://soracom.jp/services/air/japan_coverage/#:~:text=%E8%BF%BD%E5%8A%A0%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-,SMS%E6%A9%9F%E8%83%BD,-plan%2DD) (plan-K2 (K2-300MB) のみ)
       operationId: reportSimLocalInfo
       parameters:
       - description: 対象の IoT SIM の ID
@@ -11670,6 +12349,35 @@ paths:
       - Sim
       x-soracom-cli:
       - sims terminate
+  /sims/{sim_id}/testing/usage:
+    get:
+      description: 「テスト中 (testing)」の IoT SIM の使用状況を取得します。データを取得できるのは IoT SIM のステータスが「テスト中
+        (testing)」の間のみです。
+      operationId: getTestingUsage
+      parameters:
+      - description: 対象の IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestingUsage'
+          description: 「テスト中 (testing)」の IoT SIM の使用状況。
+        "404":
+          description: 対象の IoT SIM に「テスト中 (testing)」の使用状況が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 「テスト中 (testing)」の IoT SIM の使用状況を取得する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get-testing-usage
   /sims/{sim_id}/unset_expiry_time:
     post:
       description: 指定した IoT SIM の有効期限を解除します。
@@ -11819,7 +12527,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/SoraCamDevice'
                 type: array
-          description: OK.
+          description: ソラカメ対応カメラの一覧。
       security:
       - api_key: []
         api_token: []
@@ -12055,6 +12763,117 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam assign-license
+  /sora_cam/devices/{device_id}/atom_cam/live_image:
+    get:
+      description: |
+        ソラカメ対応カメラからライブ画像を取得します。API が呼び出された時点で画像が撮影され、ダウンロード用の URL を返却します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: この API を利用するには、[リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
+      operationId: getSoraCamDeviceLiveImage
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                url: https://192-0-2-1.sora-cam.soracom.io/devices/7CDDDEADBEEF/xxxxxxxx/image.jpg?token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamLiveImageResponse'
+          description: ライブ画像 URL が正常に取得されました。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+        "422":
+          description: ソラカメ対応カメラとサーバーが接続できません。デバイスがオフライン、またはリアルタイムアクセスが有効化されていない可能性があります。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラからライブ画像を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam live-image
+  /sora_cam/devices/{device_id}/atom_cam/options:
+    get:
+      description: |
+        ソラカメ対応カメラで以下のオプションが有効かどうかを一覧で取得します。
+
+        - [リアルタイムアクセス](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/)
+      operationId: getSoraCamDeviceAtomCamOptions
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                realTimeAccess:
+                  enabled: true
+              schema:
+                $ref: '#/components/schemas/SoraCamDeviceOptions'
+          description: ソラカメ対応カメラのオプション設定一覧。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラのオプション設定を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam get-options
+  /sora_cam/devices/{device_id}/atom_cam/options/real_time_access:
+    put:
+      description: |
+        ソラカメ対応カメラのリアルタイムアクセスを有効化または無効化します。リアルタイムアクセスが有効なソラカメ対応カメラでは、P2P 通信を利用してカメラに直接アクセスし、画像の取得や操作ができます。
+
+        **Warning**: リアルタイムアクセスについて詳しくは、[リアルタイムアクセス](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) を参照してください。
+      operationId: updateSoraCamDeviceAtomCamOptionsRealTimeAccess
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoraCamDeviceRealTimeAccessOption'
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                enabled: true
+              schema:
+                $ref: '#/components/schemas/SoraCamDeviceRealTimeAccessOption'
+          description: リアルタイムアクセスが有効化/無効化されました。
+        "400":
+          description: 不正なリクエストペイロードです。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ソラカメ対応カメラのリアルタイムアクセスを有効化または無効化する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam update-real-time-access-option
   /sora_cam/devices/{device_id}/atom_cam/settings:
     get:
       description: |
@@ -12062,7 +12881,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettings
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12088,7 +12907,7 @@ paths:
                 statusLight: "on"
                 timestamp: "on"
               schema:
-                $ref: '#/components/schemas/SoraCamAtomCamSettings'
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsAll'
           description: OK.
         "404":
           description: 指定したソラカメ対応カメラが見つかりません。
@@ -12107,7 +12926,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsLogo
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12141,7 +12960,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsLogo
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12181,7 +13000,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsMotion
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12217,7 +13036,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsMotion
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12255,7 +13074,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsMotionSensitivity
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12289,7 +13108,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsMotionSensitivity
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12327,7 +13146,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsMotionTagging
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12361,7 +13180,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsMotionTagging
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12399,7 +13218,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsNightVision
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12433,7 +13252,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsNightVision
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12468,9 +13287,10 @@ paths:
     get:
       description: |
         画質設定を取得します。
+
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsQuality
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12500,11 +13320,11 @@ paths:
       - sora-cam devices atom-cam settings get-quality
     post:
       description: |
-        画質設定を変更します。画質設定は、ソラカメ対応カメラで撮影するすべての動画および静止画に反映されます。なお、Wi-Fi の通信速度 (帯域) が不足した場合は、自動的に画質設定が変更される場合があります
+        画質設定を変更します。画質設定は、ソラカメ対応カメラで撮影するすべての動画および静止画に反映されます。なお、Wi-Fi の通信速度 (帯域) が不足した場合は、自動的に画質設定が変更される場合があります。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsQuality
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12542,7 +13362,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsRotation
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12576,7 +13396,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsRotation
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12616,7 +13436,7 @@ paths:
 
         **Warning**: サウンド検出で録画された映像は、SORACOM ユーザーコンソール / SORACOM CLI / SORACOM API ではダウンロードできません。ただし、クラウド常時録画ライセンスを割り当てている場合は、サウンド検出された時間を [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) で確認して、その時間の映像をダウンロードできます。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsSound
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12652,7 +13472,7 @@ paths:
 
         **Warning**: サウンド検出で録画された映像は、SORACOM ユーザーコンソール / SORACOM CLI / SORACOM API ではダウンロードできません。ただし、クラウド常時録画ライセンスを割り当てている場合は、サウンド検出された時間を [SoraCam:listSoraCamDeviceEventsForDevice API](#/SoraCam/listSoraCamDeviceEventsForDevice) で確認して、その時間の映像をダウンロードできます。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsSound
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12690,7 +13510,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsSoundSensitivity
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12724,7 +13544,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsSoundSensitivity
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12762,7 +13582,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsStatusLight
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12796,7 +13616,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsStatusLight
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12834,7 +13654,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: getSoraCamDeviceAtomCamSettingsTimestamp
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -12868,7 +13688,7 @@ paths:
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
-        **Info**: この API は、[Public beta](/ja-jp/resources/glossary/#public-beta) です。
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
       operationId: setSoraCamDeviceAtomCamSettingsTimestamp
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
@@ -13037,8 +13857,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceEventsForDevice リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -13070,8 +13889,8 @@ paths:
       - description: |
           イベント一覧のソート順。
 
-          - `desc`: 降順 (対象のソラカメ対応カメラで検出された最新のイベントが先頭)
-          - `asc`: 昇順 (対象のソラカメ対応カメラで検出された最も古いイベントが先頭)
+          - `desc`: 降順 (対象のソラカメ対応カメラで検出された最新のイベントが先頭)。
+          - `asc`: 昇順 (対象のソラカメ対応カメラで検出された最も古いイベントが先頭)。
         in: query
         name: sort
         required: false
@@ -13266,8 +14085,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceImageExportsForDevice リクエストのレスポンスに含まれていた
-          x-soracom-next-key ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -13280,8 +14098,11 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+      - description: |
+          エクスポートリストのソート順。
+
+          - `desc`: 降順 (最新のエクスポート処理が先頭)。
+          - `asc`: 昇順 (最も古いエクスポート処理が先頭)。
         in: query
         name: sort
         required: false
@@ -13681,8 +14502,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceRecordingsAndEvents リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -13695,7 +14515,7 @@ paths:
         schema:
           format: int64
           type: integer
-      - description: リストの所得終了時刻 (UNIX 時間 (ミリ秒))。省略した場合は、現在時刻が設定されます。
+      - description: リストの取得終了時刻 (UNIX 時間 (ミリ秒))。省略した場合は、現在時刻が設定されます。
         in: query
         name: to
         required: false
@@ -13734,7 +14554,7 @@ paths:
                 records:
                 - startTime: 1699318800000
                 - endTime: 1699318800000
-                  startTime: 169931520000011
+                  startTime: 1699315200000
               schema:
                 $ref: '#/components/schemas/SoraCamRecordingsAndEventsList'
           description: OK.
@@ -13767,7 +14587,7 @@ paths:
           - 最大 900 秒 (15 分) の録画映像をストリーミング再生できる URL を取得できます。
           - URL を取得した時点で、視聴状況にかかわらず動画の視聴可能時間 (デフォルトでは 1 か月 72 時間) が消費されます。
 
-        **Warning**: **最新映像**は、クラウドに保存された録画映像の最新の映像を指します。この API を利用しても、ATOM アプリで再生できる**「ライブ映像 (P2P)」**は再生できません。「ライブ映像 (P2P)」を再生するには、[ライブ視聴見放題 Limited Preview](/ja-jp/docs/soracom-cloud-camera-services/unlimited-live-streaming/) を利用してください。
+        **Warning**: **最新映像**は、クラウドに保存された録画映像の最新の映像を指します。この API を利用しても、ATOM アプリで再生できる**「ライブストリーミング映像」**は再生できません。「ライブストリーミング映像」を再生するには、リアルタイムアクセス (Early access) の [ライブストリーミング映像](/ja-jp/docs/soracom-cloud-camera-services/unlimited-live-streaming/) を利用してください。
 
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: getSoraCamDeviceStreamingVideo
@@ -13781,7 +14601,7 @@ paths:
       - description: |
           録画映像の開始時刻 (UNIX 時間 (ミリ秒))。
 
-          - 最新映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+          - 最新映像をストリーミング再生するための情報を取得するには、`from` と `to` をどちらも省略します。
         in: query
         name: from
         required: false
@@ -13791,7 +14611,7 @@ paths:
       - description: |
           録画映像の終了時刻 (UNIX 時間 (ミリ秒))。
 
-          - 最新映像をダウンロードするための情報を取得するには、`from` と `to` をどちらも省略します。
+          - 最新映像をストリーミング再生するための情報を取得するには、`from` と `to` をどちらも省略します。
           - 一回の API 呼び出しで視聴できる時間は最大 900 秒 (15 分) です。`from` と `to` の差が、900 秒を超えないようにしてください。
         in: query
         name: to
@@ -13841,8 +14661,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceVideoExportsForDevice リクエストのレスポンスに含まれていた
-          x-soracom-next-key ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -13855,8 +14674,11 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいアイテムほど先に来る順でソートされます。
+      - description: |
+          エクスポートリストのソート順。
+
+          - `desc`: 降順 (最新のエクスポート処理が先頭)。
+          - `asc`: 昇順 (最も古いエクスポート処理が先頭)。
         in: query
         name: sort
         required: false
@@ -14123,14 +14945,13 @@ paths:
       description: ソラカメ対応カメラで検出されたイベントの一覧を取得します。
       operationId: listSoraCamDeviceEvents
       parameters:
-      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合は、オペレーターが所有するすべてのソラカメ対応デバイスのイベントが対象となります。
+      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合は、オペレーターが所有するすべてのソラカメ対応カメラのイベントの一覧を取得します。
         in: query
         name: device_id
         required: false
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceEvents リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -14162,8 +14983,8 @@ paths:
       - description: |
           イベント一覧のソート順。
 
-          - `desc`: 降順 (ソラカメ対応カメラで検出された最新のイベントが先頭)
-          - `asc`: 昇順 (ソラカメ対応カメラで検出された最も古いイベントが先頭)
+          - `desc`: 降順 (ソラカメ対応カメラで検出された最新のイベントが先頭)。
+          - `asc`: 昇順 (ソラカメ対応カメラで検出された最も古いイベントが先頭)。
         in: query
         name: sort
         required: false
@@ -14224,8 +15045,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceImageExports リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -14238,8 +15058,11 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいデータほど先に来る順でソートされます。
+      - description: |
+          エクスポートリストのソート順。
+
+          - `desc`: 降順 (最新のエクスポート処理が先頭)。
+          - `asc`: 昇順 (最も古いエクスポート処理が先頭)。
         in: query
         name: sort
         required: false
@@ -14309,7 +15132,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/SoraCamImageExportInfo'
                 type: array
-          description: OK.
+          description: 画像エクスポート処理の一覧。
         "404":
           description: 指定したソラカメ対応カメラが見つかりません。
       security:
@@ -14335,14 +15158,13 @@ paths:
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
       operationId: listSoraCamDeviceVideoExports
       parameters:
-      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合はオペレーターが所有するすべてのデバイスが対象となります。
+      - description: 対象のソラカメ対応カメラのデバイス ID。省略した場合は、オペレーターが所有するすべてのソラカメ対応カメラを返します。
         in: query
         name: device_id
         required: false
         schema:
           type: string
-      - description: 前回の listSoraCamDeviceVideoExports リクエストのレスポンスに含まれていた x-soracom-next-key
-          ヘッダーの値。このパラメータを指定することで、前回のリクエストの続きからリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -14355,8 +15177,11 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: ソート順。レスポンスに含まれるリストは、`requestedTime` の昇順 (`asc`) もしくは降順 (`desc`)
-          にソートされます。デフォルトは降順 (`desc`) すなわち新しいデータほど先に来る順でソートされます。
+      - description: |
+          エクスポートリストのソート順。
+
+          - `desc`: 降順 (最新のエクスポート処理が先頭)。
+          - `asc`: 昇順 (最も古いエクスポート処理が先頭)。
         in: query
         name: sort
         required: false
@@ -14426,7 +15251,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/SoraCamVideoExportInfo'
                 type: array
-          description: OK.
+          description: ビデオエクスポート処理の一覧。
         "404":
           description: 指定したソラカメ対応カメラが見つかりません。
       security:
@@ -15946,12 +16771,38 @@ paths:
             - D-300MB
             schema:
               items:
-                description: 設定するバンドル。以下のいずれかを指定します。サブスクリプションがサポートするバンドルを指定してください。
+                description: |
+                  設定するバンドル。サブスクリプションがサポートするバンドルを指定してください。バンドル名のプレフィクス（末尾の `-xxMB` や `-xxGB` などサイズ表記を除いた部分）は、各サブスクリプションごとに以下のとおりです。
+
+                  - plan-D: `D`
+                  - plan-DU: `DU`
+                  - plan-NA1: `NA1`
+                  - plan-US: `US`
+
+                  例: サブスクリプションが plan-D の場合は、`D-300MB` を設定できます。
+
+                  **Warning**: plan-K2 (K2-300MB)、plan-D (D-300MB)、planX3、planX3-EU のバンドルは変更できません。
                 enum:
                 - D-300MB
                 - DU-10GB
                 - DU-50GB
                 - DU-100GB
+                - NA1-3MB
+                - NA1-20MB
+                - NA1-50MB
+                - NA1-100MB
+                - US-1MB
+                - US-3MB
+                - US-10MB
+                - US-20MB
+                - US-50MB
+                - US-100MB
+                - US-300MB
+                - US-500MB
+                - US-1GB
+                - US-3GB
+                - US-5GB
+                - US-10GB
                 type: string
               type: array
         description: Subscriber に設定するバンドルの配列
@@ -17554,11 +18405,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/IpAddressMapEntry'
                 type: array
-          description: IP アドレスマップのエントリのリスト
+          description: |
+            VPG に所属する IP アドレスマップのエントリのリスト。
+
+            **Warning**: [VirtualPrivateGateway:putVirtualPrivateGatewayIpAddressMapEntry API](#/VirtualPrivateGateway/putVirtualPrivateGatewayIpAddressMapEntry) で追加したエントリだけでなく、Gate Peer や VPG に自動的に設定された IP アドレスの情報も含まれます。
         "400":
-          description: リクエストに誤りがある
+          description: リクエストに誤りがあります。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
@@ -17573,10 +18427,13 @@ paths:
         response:
           header: x-soracom-next-key
     post:
-      description: VPG の IP アドレスマップのエントリーを追加します。
+      description: |
+        VPG の IP アドレスマップのエントリを追加または更新します。
+
+        **Warning**: VPG の IP アドレスマップのエントリを取得するための [VirtualPrivateGateway:listVirtualPrivateGatewayIpAddressMapEntries API](#/VirtualPrivateGateway/listVirtualPrivateGatewayIpAddressMapEntries) のレスポンスには、Gate Peer や VPG に自動的に設定された IP アドレスの情報も含まれますが、そのエントリは、VirtualPrivateGateway:putVirtualPrivateGatewayIpAddressMapEntry API では追加または更新できません。
       operationId: putVirtualPrivateGatewayIpAddressMapEntry
       parameters:
-      - description: 対象の VPG の ID
+      - description: 対象の VPG の ID。
         in: path
         name: vpg_id
         required: true
@@ -17594,31 +18451,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IpAddressMapEntry'
-          description: IP アドレスマップのエントリー追加に成功
+          description: IP アドレスマップのエントリの追加または更新に成功しました。
         "400":
-          description: リクエストに誤りがある
+          description: リクエストに誤りがあります。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
-      summary: VPG の IP アドレスマップのエントリーを追加する
+      summary: VPG の IP アドレスマップのエントリを追加または更新する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg put-ip-address-map-entry
   /virtual_private_gateways/{vpg_id}/ip_address_map/{key}:
     delete:
-      description: VPG の IP アドレスマップからエントリーを削除する
+      description: |
+        VPG の IP アドレスマップからエントリを削除します。
+
+        **Warning**: VPG の IP アドレスマップのエントリを取得するための [VirtualPrivateGateway:listVirtualPrivateGatewayIpAddressMapEntries API](#/VirtualPrivateGateway/listVirtualPrivateGatewayIpAddressMapEntries) のレスポンスには、Gate Peer や VPG に自動的に設定された IP アドレスの情報も含まれますが、そのエントリは、VirtualPrivateGateway:deleteVirtualPrivateGatewayIpAddressMapEntry API では削除できません。
       operationId: deleteVirtualPrivateGatewayIpAddressMapEntry
       parameters:
-      - description: 対象の VPG の ID
+      - description: 対象の VPG の ID。
         in: path
         name: vpg_id
         required: true
         schema:
           type: string
-      - description: 対象の Key
+      - description: 対象の IP アドレスマップのエントリを特定するための識別子 (IoT SIM の IMSI)。
         in: path
         name: key
         required: true
@@ -17626,7 +18486,7 @@ paths:
           type: string
       responses:
         "204":
-          description: IP アドレスマップのエントリー削除に成功
+          description: IP アドレスマップのエントリ削除に成功
         "400":
           description: リクエストに誤りがある
         "404":
@@ -17634,7 +18494,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: VPG の IP アドレスマップからエントリーを削除する
+      summary: VPG の IP アドレスマップからエントリを削除する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
@@ -18416,7 +19276,7 @@ paths:
       - volume-discounts list
     post:
       description: 新規で長期利用割引の見積もりの作成を行います。orderId を /volume_discounts/{order_id}/confirm
-        に PUT すると発注が完了します (現時点では、長期利用割引は plan-D バンドルなし、plan-K でのみ利用できます)。
+        に PUT すると発注が完了します (現時点では、長期利用割引は plan-D (バンドルなし)、plan-K でのみ利用できます)。
       operationId: createVolumeDiscountQuotation
       requestBody:
         content:
@@ -18669,16 +19529,6 @@ components:
             $ref: '#/components/schemas/CreateAndUpdateCredentialsModel'
       description: 認証情報。
       required: true
-    DeviceObjectModel:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/DeviceObjectModel'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/DeviceObjectModel'
-      description: XML か JSON により表現されたデバイスオブジェクトモデルの表記。
-      required: true
     ExpiryTime:
       content:
         application/json:
@@ -18691,13 +19541,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Group'
-      required: true
-    LagoonPlanChangingRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LagoonPlanChangingRequest'
-      description: リクエスト。
       required: true
     MFAAuthenticationRequest:
       content:
@@ -18889,7 +19732,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 X3-5MB、planP1、plan-D (バンドルなし)、plan-D D-300MB、plan-K2 K2-300MB、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -19043,6 +19886,8 @@ components:
     AttachRoleRequest:
       properties:
         roleId:
+          description: |
+            アタッチするロールの ID。オペレーター管理ロールの場合は [Role:listRoles API](#/Role/listRoles) で取得したロール ID (`roleId`) を、SORACOM 管理ロールの場合は SRN (Soracom Resource Name) を指定します。
           type: string
       type: object
     AttributeUpdate:
@@ -19152,6 +19997,186 @@ components:
           items:
             $ref: '#/components/schemas/AvailableLongTermDiscountModel'
           type: array
+      type: object
+    BatchGroupResponse:
+      properties:
+        batchGroupId:
+          description: バッチグループ ID。
+          example: aaaa1111
+          type: string
+        batchGroupName:
+          description: バッチグループ名。
+          example: Monthly SIM Tag Update
+          type: string
+        createdTime:
+          description: 作成日時。
+          example: 1704067200
+          format: int64
+          type: integer
+        description:
+          description: バッチグループの説明。
+          type: string
+        updatedTime:
+          description: 更新日時。
+          example: 1704153600
+          format: int64
+          type: integer
+      type: object
+    BatchJobResponse:
+      properties:
+        abortOnFailure:
+          description: エラーが起きた時に即座に終了するかどうか。
+          type: boolean
+        batchGroupId:
+          description: バッチグループ ID。
+          example: aaaa1111
+          type: string
+        createdTime:
+          description: 作成日時。
+          example: 1704067200
+          format: int64
+          type: integer
+        description:
+          description: バッチジョブの説明。
+          type: string
+        errorMessage:
+          description: 失敗したバッチジョブの詳細情報。
+          type: string
+        finishedTime:
+          description: 終了日時。
+          example: 1704240000
+          format: int64
+          type: integer
+        jobId:
+          description: バッチジョブ ID。
+          example: bbbb2222
+          type: string
+        jobName:
+          description: バッチジョブ名。
+          example: July 16th 2025 Set group
+          type: string
+        status:
+          description: |
+            バッチジョブのステータス。
+
+            - `pending`: ジョブ実行の準備中。まだタスクは処理されていません。
+            - `running`: ジョブがタスクを実行中。
+            - `completed`: ジョブが正常に終了。すべてのタスクがエラーなく実行されました。
+            - `failed`: ジョブがすべてのタスクの処理を終了したが、1 つ以上のタスクでエラーが発生しました。
+            - `aborted`: すべてのタスクを処理する前にジョブが停止しました。
+          enum:
+          - pending
+          - running
+          - completed
+          - aborted
+          - failed
+          type: string
+        summary:
+          $ref: '#/components/schemas/BatchJobSummary'
+        updatedTime:
+          description: 更新日時。
+          example: 1704153600
+          format: int64
+          type: integer
+      type: object
+    BatchJobSummary:
+      description: ステータスごとのタスク件数。この件数は、バッチジョブの実行中に定期的に更新されます。
+      properties:
+        error:
+          description: 実行に失敗したタスクの数。
+          example: 0
+          format: int32
+          type: integer
+        pending:
+          description: 実行待ち状態のタスクの数。
+          example: 5
+          format: int32
+          type: integer
+        success:
+          description: 実行に成功したタスクの数。
+          example: 95
+          format: int32
+          type: integer
+      type: object
+    BatchTaskApiRequest:
+      description: このタスクの API リクエスト。
+      properties:
+        body:
+          description: API リクエストのボディ。
+          example:
+            groupId: 11111111-2222-3333-4444-555555555555
+          type: object
+        method:
+          description: API リクエストの HTTP メソッド。
+          enum:
+          - POST
+          - GET
+          - PUT
+          - DELETE
+          example: POST
+          type: string
+        path:
+          description: API リクエストのパス。
+          example: /v1/sims/8981100001234567890/set_group
+          type: string
+      required:
+      - path
+      - method
+      type: object
+    BatchTaskApiResponse:
+      description: このタスクの API レスポンス。
+      properties:
+        body:
+          description: レスポンスのボディ。
+          type: object
+        statusCode:
+          description: レスポンスのステータスコード。
+          example: 200
+          type: integer
+      type: object
+    BatchTaskRequest:
+      properties:
+        request:
+          $ref: '#/components/schemas/BatchTaskApiRequest'
+          description: (base/batch.yaml の同じ階層で $ref を使っているため、ここに書かれた内容は出力されません)
+      required:
+      - request
+      type: object
+    BatchTaskResponse:
+      properties:
+        finishedTime:
+          description: タスクの終了日時。
+          example: 1704067202
+          format: int64
+          type: integer
+        request:
+          $ref: '#/components/schemas/BatchTaskApiRequest'
+          description: (base/batch.yaml の同じ階層で $ref を使っているため、ここに書かれた内容は出力されません)
+        response:
+          $ref: '#/components/schemas/BatchTaskApiResponse'
+          description: (base/batch.yaml の同じ階層で $ref を使っているため、ここに書かれた内容は出力されません)
+        startedTime:
+          description: タスクの開始日時。
+          example: 1704067201
+          format: int64
+          type: integer
+        status:
+          description: |
+            タスクのステータス。
+
+            - `pending`: 実行待ち。
+            - `success`: 成功した。
+            - `error`: 失敗した。
+          enum:
+          - pending
+          - success
+          - error
+          type: string
+        taskId:
+          description: タスク ID。
+          example: 1
+          format: int32
+          type: integer
       type: object
     BeamStatsResponse:
       properties:
@@ -19484,6 +20509,69 @@ components:
           - x509
           type: string
       type: object
+    CreateBatchGroupRequest:
+      properties:
+        batchGroupName:
+          description: バッチグループ名。
+          example: Monthly SIM Tag Update
+          maxLength: 100
+          type: string
+        description:
+          description: バッチグループの説明。
+          maxLength: 500
+          type: string
+      required:
+      - batchGroupName
+      type: object
+    CreateBatchJobRequest:
+      properties:
+        abortOnFailure:
+          description: バッチジョブ実行中にエラーが発生した際、即座に終了するかどうか。
+          example: false
+          type: boolean
+        description:
+          description: バッチジョブの説明。
+          maxLength: 500
+          type: string
+        jobName:
+          description: バッチジョブ名。
+          example: July 16th 2025 Set group
+          maxLength: 100
+          type: string
+        tasks:
+          description: |
+            バッチジョブで実行するタスクのリスト。
+
+            サポートしている SORACOM API は以下のとおりです。
+
+            - [Sim:activateSim API](#/Sim/activateSim)
+            - [Sim:deactivateSim API](#/Sim/deactivateSim)
+            - [Sim:setSimToStandby API](#/Sim/setSimToStandby)
+            - [Sim:suspendSim API](#/Sim/suspendSim)
+            - [Sim:setSimGroup API](#/Sim/setSimGroup)
+            - [Sim:unsetSimGroup API](#/Sim/unsetSimGroup)
+            - [Sim:putSimTags API](#/Sim/putSimTags)
+            - [VirtualPrivateGateway:putVirtualPrivateGatewayIpAddressMapEntry API](#/VirtualPrivateGateway/putVirtualPrivateGatewayIpAddressMapEntry)
+
+            SORACOM API の仕様に従って、`request` フィールドに API リクエストのパス、HTTP メソッド、ボディを指定します。たとえば、Sim:activateSim API を呼び出す場合は以下のように指定します。
+
+            ```json
+            {
+              "request": {
+                "path": "/v1/sims/8981100001234567890/activate",
+                "method": "POST",
+                "body": {
+                  "sim_id": "8981100001234567890"
+                }
+              }
+            }
+            ```
+          items:
+            $ref: '#/components/schemas/BatchTaskRequest'
+          type: array
+      required:
+      - tasks
+      type: object
     CreateCustomerRouteRequest:
       properties:
         destinationCidr:
@@ -19629,9 +20717,10 @@ components:
     CreateOrUpdateRoleRequest:
       properties:
         description:
+          description: オペレーター管理ロールの説明。
           type: string
         permission:
-          description: パーミッションの JSON。
+          description: オペレーター管理ロールのパーミッション JSON。
           type: string
       required:
       - permission
@@ -19663,6 +20752,7 @@ components:
     CreateRoleResponse:
       properties:
         roleId:
+          description: ロール ID。
           type: string
       type: object
     CreateRoutingTableEntryRequest:
@@ -19999,15 +21089,28 @@ components:
       type: object
     DataEntry:
       properties:
+        category:
+          type: string
         content:
           type: string
         contentType:
+          type: string
+        resourceId:
+          type: string
+        resourceType:
+          enum:
+          - Subscriber
+          - LoraDevice
+          - Sim
+          - SigfoxDevice
+          - Device
+          - SoraCam
           type: string
         time:
           format: int64
           type: integer
       type: object
-    DataSourceResourceMetadata:
+    DataResourceMetadata:
       properties:
         attributeNames:
           items:
@@ -20229,8 +21332,17 @@ components:
           format: int64
           type: integer
         verified:
-          description: メールアドレス宛てに送信されたトークンを用いて認証済みかどうか。
+          description: |-
+            メールアドレスがトークンによる認証を完了しているかどうか。
+            - `true`: 認証済み
+            - `false`: 未認証
           type: boolean
+      required:
+      - emailId
+      - email
+      - verified
+      - createDateTime
+      - updateDateTime
       type: object
     EnableMFAOTPResponse:
       properties:
@@ -20670,20 +21782,6 @@ components:
         tenantId:
           type: string
       type: object
-    FunnelAppressoDataSpiderDestination:
-      properties:
-        provider:
-          enum:
-          - appresso
-          type: string
-        resourceUrl:
-          example: https://ss.dataspidercloud.com/ws/trigger/funnel?cid=<cid>&sid=<sid>
-          type: string
-        service:
-          enum:
-          - dataspider
-          type: string
-      type: object
     FunnelAzureEventHubDestination:
       properties:
         payloadsOnly:
@@ -20732,7 +21830,6 @@ components:
           - $ref: '#/components/schemas/FunnelAzureEventHubDestination'
           - $ref: '#/components/schemas/FunnelGooglePubSubDestination'
           - $ref: '#/components/schemas/FunnelAcroquestTorrentioDestination'
-          - $ref: '#/components/schemas/FunnelAppressoDataSpiderDestination'
           - $ref: '#/components/schemas/FunnelBrainsTechImpulseDestination'
           - $ref: '#/components/schemas/FunnelEsrijArcgisOnlineDestination'
           - $ref: '#/components/schemas/FunnelInfoteriaPlatioDestination'
@@ -20946,17 +22043,6 @@ components:
       properties:
         attributes:
           properties:
-            contractEndingTime:
-              description: SORACOM LTE-M Button powered by AWS の有効期限。
-              format: date-time
-              type: string
-            firstClickTimestamp:
-              description: SORACOM LTE-M Button powered by AWS を初めてクリックした日時。
-              format: date-time
-              type: string
-            remainingCount:
-              description: SORACOM LTE-M Button powered by AWS の残りクリック回数。
-              type: integer
             wimaxBillingStartDate:
               description: ソラカメ専用セルラーパックの課金開始日。
               type: string
@@ -20980,23 +22066,6 @@ components:
           description: Gadget API 対応デバイスの情報が変更された UNIX 時間 (ミリ秒)。
           format: int64
           type: integer
-        lastSeen:
-          properties:
-            batteryLevel:
-              description: SORACOM LTE-M Button powered by AWS のバッテリーレベル。
-              type: integer
-            clickEventPropagated:
-              type: boolean
-            clickTime:
-              description: SORACOM LTE-M Button powered by AWS をクリックした日時。
-              format: date-time
-              type: string
-            clickType:
-              enum:
-              - SINGLE
-              - DOUBLE
-              type: string
-          type: object
         operatorId:
           description: Gadget API 対応デバイスを登録したオペレーター ID。
           type: string
@@ -21004,7 +22073,6 @@ components:
           description: |
             Gadget API 対応デバイスのタイプ。
 
-            - `button`: SORACOM LTE-M Button powered by AWS。
             - `wimax`: ソラカメ専用セルラーパック。
           enum:
           - button
@@ -21052,6 +22120,7 @@ components:
     GatePeer:
       properties:
         innerIpAddress:
+          description: デバイスサブネット IP アドレスレンジ内の IP アドレス (インナー IP アドレス)。
           type: string
         netmask:
           type: string
@@ -21092,6 +22161,111 @@ components:
         authKeyId:
           type: string
       type: object
+    GetAnalysisQueriesResponse:
+      properties:
+        columnInfo:
+          description: データベースクエリ結果のカラム情報。
+          items:
+            properties:
+              databaseType:
+                description: |-
+                  データベースのデータ型。
+                  - `TEXT`: 文字列型。
+                  - `FIXED`: 固定長文字列型。
+                  - `REAL`: 浮動小数点型。
+                  - `TIMESTAMP_TZ`: タイムスタンプ型。
+                  - `BOOLEAN`: 真偽値型。
+                  - `VARIANT`: 可変長文字列型。
+                type: string
+              name:
+                description: カラム名。
+                type: string
+              type:
+                description: |
+                  推測されるプログラム言語の参考型。
+                  - `string`: 文字列型。
+                  - `int64`: 数値型。
+                  - `float64`: 浮動小数点型。
+                  - `Time`: 日時型。
+                  - `bool`: 真偽値型。
+                type: string
+            type: object
+          type: array
+        fileSize:
+          description: '`url` からダウンロードできるファイルのファイルサイズ。'
+          type: integer
+        rowCount:
+          description: '`url` からダウンロードできるファイルに含まれるデータの行数。'
+          type: integer
+        sqlExecTime:
+          description: データベースクエリの実行にかかった時間 (秒)。
+          type: integer
+        sqlExportTime:
+          description: データベースクエリ結果のエクスポートにかかった時間 (秒)。
+          type: integer
+        status:
+          description: |
+            データベースクエリの実行ステータス。
+            - `STARTING`: データベースクエリの実行を開始。
+            - `RUNNING`: データベースクエリ実行中（データ抽出中）。
+            - `EXPORTING`: データベースクエリ結果をエクスポート中。
+            - `COMPLETED`: データベースクエリは完了。`url` からファイルをダウンロードできます。
+          enum:
+          - STARTING
+          - RUNNING
+          - EXPORTING
+          - COMPLETED
+          type: string
+        uncompressedFileSize:
+          description: '`url` からダウンロードできるファイルの解凍後のファイルサイズ。'
+          type: integer
+        url:
+          description: データベースクエリ結果ファイルをダウンロードするための URL。データベースクエリが完了している場合にのみ含まれます。
+          format: uri
+          type: string
+        usedExecCount:
+          description: 今月のデータベースクエリの実行回数です。
+          type: integer
+      type: object
+    GetAnalysisSchemasResponse:
+      items:
+        properties:
+          columnInfo:
+            description: テーブルのカラム情報。
+            items:
+              properties:
+                databaseType:
+                  description: |
+                    データベースのデータ型。
+                    - `TEXT`: 文字列型。
+                    - `FIXED`: 固定長文字列型。
+                    - `REAL`: 浮動小数点型。
+                    - `TIMESTAMP_TZ`: タイムスタンプ型。
+                    - `BOOLEAN`: 真偽値型。
+                    - `VARIANT`: 可変長文字列型。
+                  type: string
+                description:
+                  description: カラムの説明。
+                  type: string
+                name:
+                  description: カラム名。
+                  type: string
+                type:
+                  description: |
+                    データベースのデータ型から推測されるプログラム言語の参考型。
+                    - `string`: 文字列型。
+                    - `int64`: 数値型。
+                    - `float64`: 浮動小数点型。
+                    - `Time`: 日時型。
+                    - `bool`: 真偽値型。
+                  type: string
+              type: object
+            type: array
+          name:
+            description: テーブル名。
+            type: string
+        type: object
+      type: array
     GetBillingHistoryResponse:
       properties:
         billList:
@@ -21646,14 +22820,40 @@ components:
     IpAddressMapEntry:
       properties:
         hostId:
+          description: (非推奨) `key` の値を使用してください。
           type: string
         ipAddress:
+          description: |
+            `key` で識別される IoT SIM、Gate Peer、VPG に割り当てられた IP アドレス。
+
+            - IoT SIM の IP アドレスを指定するには、[VirtualPrivateGateway:putVirtualPrivateGatewayIpAddressMapEntry API](#/VirtualPrivateGateway/putVirtualPrivateGatewayIpAddressMapEntry) を使用してください。
+            - Gate Peer の IP アドレス (*1) を指定するには、[VirtualPrivateGateway:registerGatePeer API](#/VirtualPrivateGateway/registerGatePeer) を使用してください。
+            - VPG の IP アドレス (*1) は設定できません。
+
+             (*1) デバイスサブネット IP アドレスレンジ内の IP アドレス (インナー IP アドレス) です。
           type: string
         key:
+          description: |
+            IP アドレスマップにおける IoT SIM、Gate Peer、VPG の識別子。
+
+            - IoT SIM の場合: IP アドレスマップの対象となる IoT SIM の IMSI。
+            - Gate Peer の場合: IP アドレス (*1)。
+            - VPG の場合: IP アドレス (*1)。
+
+             (*1) デバイスサブネット IP アドレスレンジ内の IP アドレス (インナー IP アドレス) です。
           type: string
         lastUpdatedAt:
           type: integer
         type:
+          description: |
+            IP アドレスがどのように決定されたかを表す値。以下のいずれかです。
+
+            - `static`: IP アドレスマップで設定した固定 IP アドレス。
+            - `dynamic`: VPG によって自動的に設定された IP アドレス。
+            - `customerGatePeer`: お客様管理の Gate Peer の IP アドレス (*1)。
+            - `gatePeer`: VPG の IP アドレス (*1)。
+
+             (*1) デバイスサブネット IP アドレスレンジ内の IP アドレス (インナー IP アドレス) です。
           enum:
           - static
           - dynamic
@@ -21669,10 +22869,10 @@ components:
     IssueAddEmailTokenRequest:
       properties:
         email:
-          description: 追加するメールアドレス。
+          description: 追加するメールアドレス。有効なメールアドレス形式で入力してください（例：user@example.com）。
           type: string
         password:
-          description: ルートユーザーのパスワード。
+          description: ルートユーザーのパスワード。認証のために必要です。
           type: string
       required:
       - email
@@ -21934,8 +23134,22 @@ components:
           description: ロールの説明。
           example: This is my role
           type: string
+        owner:
+          description: |
+            ロールの種類。以下のいずれかです。
+            - soracom: SORACOM 管理ロール
+            - operator: オペレーター管理ロール
+          enum:
+          - operator
+          - soracom
+          type: string
         roleId:
-          description: ロール ID。
+          description: ロール ID。ロールが SORACOM 管理ロールの場合は SRN (Soracom Resource Name) 形式になります。
+          example: my-role
+          type: string
+        roleName:
+          description: ロール名。ロールがオペレーター管理ロールの場合は `roleId` と同じ値になります。ロールが SORACOM 管理ロールの場合は
+            SRN のリソース ID 部分になります。
           example: my-role
           type: string
         updateDateTime:
@@ -22929,8 +24143,10 @@ components:
     PutIpAddressMapEntryRequest:
       properties:
         ipAddress:
+          description: '`key` に対して設定する IP アドレス。'
           type: string
         key:
+          description: IP アドレスを固定する IoT SIM の IMSI。
           type: string
       required:
       - key
@@ -22954,6 +24170,7 @@ components:
     RegisterGatePeerRequest:
       properties:
         innerIpAddress:
+          description: デバイスサブネット IP アドレスレンジ内の IP アドレス (インナー IP アドレス)。
           type: string
         outerIpAddress:
           type: string
@@ -23017,16 +24234,16 @@ components:
             IoT SIM のサブスクリプションごとの初期設定です。キーにサブスクリプションを表す文字列を指定します。
 
             - `plan01s`
-            - `plan01s-low_data_volume` (plan01s - Low Data Volume)
-            - `planX3` (planX3 X3-5MB)
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume。
+            - `planX3`: planX3 (X3-5MB)。
             - `planP1`
-            - `plan-D` (plan-D (バンドルなし)、plan-D D-300MB)
-            - `plan-K2` (plan-K2 K2-300MB)
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
+            - `plan-K2`: plan-K2 (K2-300MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
             - `plan-US`
-            - `plan-NA1-package` (plan-NA1)
+            - `plan-NA1-package`: plan-NA1。
           example:
             plan01s:
               groupId: 00000000-1111-2222-3333-444444444444
@@ -23149,16 +24366,67 @@ components:
     RoleResponse:
       properties:
         createDateTime:
+          description: ロールの作成日時 (UNIX 時間 (秒))。
           format: int64
           type: integer
         description:
+          description: ロールの説明。
+          type: string
+        owner:
+          description: |
+            ロールの種類。以下のいずれかです。
+            - `operator`: オペレーター管理ロール
+            - `soracom`: SORACOM 管理ロール
+          enum:
+          - operator
+          - soracom
           type: string
         permission:
           description: パーミッションの JSON。
           type: string
         roleId:
+          description: ロール ID。オペレーター管理ロールの場合はロール作成時に指定したロール ID、SORACOM 管理ロールの場合は SRN
+            (Soracom Resource Name) 形式になります。
+          type: string
+        roleName:
+          description: ロール名。オペレーター管理ロールの場合は `roleId` と同じ値になります。SORACOM 管理ロールの場合は SRN
+            (Soracom Resource Name) のリソース名部分 (`srn:soracom:::Role:[roleName]`) になります。
+          example: my-role
           type: string
         updateDateTime:
+          description: ロールの更新日時 (UNIX 時間 (秒))。
+          format: int64
+          type: integer
+      type: object
+    RoleVersionResponse:
+      properties:
+        description:
+          description: SORACOM 管理ロールの説明。
+          type: string
+        owner:
+          description: |
+            ロールの種類。
+            - `soracom`: SORACOM 管理ロール
+          enum:
+          - operator
+          - soracom
+          type: string
+        permission:
+          description: SORACOM 管理ロールのパーミッション JSON。
+          type: string
+        publishDateTime:
+          description: SORACOM 管理ロールのバージョンの公開日時 (UNIX 時間 (秒))。
+          format: int64
+          type: integer
+        roleId:
+          description: SORACOM 管理ロールの SRN (Soracom Resource Name) 形式の ID。
+          type: string
+        roleName:
+          description: SORACOM 管理ロールの SRN (Soracom Resource Name) のリソース名部分 (`srn:soracom:::Role:[roleName]`)。
+          example: my-role
+          type: string
+        version:
+          description: SORACOM 管理ロールのバージョン番号。
           format: int64
           type: integer
       type: object
@@ -23357,7 +24625,7 @@ components:
           description: |
             変更後の速度クラス。変更後の速度クラスを限定して、アクションを実行するときに以下のいずれかを指定します。省略すると、任意の速度クラスに変更されたときに、アクションが実行されます。
 
-            - plan01s、plan01s - Low Data Volume、planX3 X3-5MB、planP1、plan-D (バンドルなし)、plan-D D-300MB、plan-K2 K2-300MB、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -23888,6 +25156,10 @@ components:
             - `true`: 解約できる (解約プロテクション OFF)。
             - `false`: 解約できない (解約プロテクション ON)。
           type: boolean
+        testmodeExhaustedTime:
+          description: 「テスト中 (testing)」の使用制限を超えた時刻 (UNIX 時間 (ミリ秒))。
+          format: int64
+          type: integer
         type:
           description: |
             IoT SIM のタイプ。
@@ -24024,7 +25296,7 @@ components:
       properties:
         key:
           description: |
-            公開鍵認証で利用する秘密鍵 (PEM)。`keyCredentialsId` が指定されている場合は無視されます。
+            公開鍵認証で利用する秘密鍵 (PEM)。改行文字は、`\n` で表現してください。`keyCredentialsId` が指定されている場合は無視されます。
           type: string
         keyCredentialsId:
           description: |
@@ -24078,7 +25350,8 @@ components:
           description: コマンドの終了コード。
           type: integer
         isStderrBase64Encoded:
-          description: '`stderr` の値が Base64 エンコードされているかどうか。'
+          description: |
+            `stderr` の値が Base64 エンコードされているかどうか。
           type: boolean
         isStdoutBase64Encoded:
           description: |
@@ -24111,7 +25384,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 X3-5MB、planP1、plan-D (バンドルなし)、plan-D D-300MB、plan-K2 K2-300MB、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -24327,7 +25600,14 @@ components:
         payload:
           type: string
       type: object
-    SoraCamAtomCamSettings:
+    SoraCamAtomCamLiveImageResponse:
+      properties:
+        url:
+          type: string
+      required:
+      - url
+      type: object
+    SoraCamAtomCamSettingsAll:
       properties:
         logo:
           description: |
@@ -24686,13 +25966,13 @@ components:
       description: ソラカメ対応カメラのコンフィグレーション
       properties:
         audioAlarmEnabled:
-          description: 音声アラームが有効化されているかどうか
+          description: 音声アラームが有効かどうか
           type: boolean
         motionDetectionEnabled:
-          description: モーション検知が有効化されているかどうか
+          description: モーション検知が有効かどうか
           type: boolean
         smokeAlarmEnabled:
-          description: 煙検知が有効化されているかどうか
+          description: 煙検知が有効かどうか
           type: boolean
       type: object
     SoraCamDeviceLicenseInfo:
@@ -24742,6 +26022,27 @@ components:
           type: string
       required:
       - name
+      type: object
+    SoraCamDeviceOptions:
+      properties:
+        realTimeAccess:
+          $ref: '#/components/schemas/SoraCamDeviceRealTimeAccessOption'
+          description: |
+            ソラカメ対応デバイスのリアルタイムアクセス有効 / 無効の情報。
+      required:
+      - realTimeAccess
+      type: object
+    SoraCamDeviceRealTimeAccessOption:
+      properties:
+        enabled:
+          description: |
+            ソラカメ対応デバイスのリアルタイムアクセス有効 / 無効の情報。
+
+            - `true`: 有効。
+            - `false`: 無効。
+          type: boolean
+      required:
+      - enabled
       type: object
     SoraCamDevicesFirmwareUpdate:
       properties:
@@ -24995,7 +26296,7 @@ components:
       properties:
         billedFrames:
           description: 課金対象の動画のエクスポート可能時間について、すべて静止画でエクスポートしたとみなした場合の静止画の枚数。つまり、0
-            のときは課金が発生していません。なお、課金額の計算には、`billedSeconds` のみが使用されます。
+            のときは課金が発生していません。なお、課金額の計算には、`billedSeconds` の値が使用されます。
           type: integer
         limitFrames:
           description: 動画のエクスポート可能時間の上限まで、すべて静止画でエクスポートしたとみなした場合の静止画の枚数。動画のエクスポート可能時間の上限が、静止画の枚数で出力されます。
@@ -25213,6 +26514,27 @@ components:
       type: object
     SoraCamVideoExportSpecification:
       properties:
+        archive:
+          default: true
+          description: |
+            ファイルを圧縮してエクスポートするかどうかを指定します。デフォルトは `true` です。
+
+            - `true`: 動画ファイルを zip 形式で圧縮します。
+            - `false`: 動画ファイルを圧縮せずに、MP4 ファイルのままエクスポートします。
+          type: boolean
+        audioCodec:
+          default: pcm_s16le
+          description: |
+            動画の音声コーデックを指定します。デフォルトは `pcm_s16le` です。
+
+            - `mp3`: MP3
+            - `pcm_s16le`: PCM 16 bit (WAV ファイル)
+
+            **Warning**: `mp3` を指定した場合には、動画のエクスポート可能時間を 2 倍消費します。
+          enum:
+          - pcm_s16le
+          - mp3
+          type: string
         from:
           description: エクスポート対象の開始時刻 (UNIX 時間 (ミリ秒))
           format: int64
@@ -25352,6 +26674,24 @@ components:
         version:
           format: int64
           type: integer
+      type: object
+    StartAnalysisQueriesRequest:
+      properties:
+        from:
+          description: データベースクエリを適用する期間の始まり (UNIX 時間 (秒))。
+          type: integer
+        sql:
+          description: データベースクエリ (SQL)。
+          type: string
+        to:
+          description: データベースクエリを適用する期間の終わり (UNIX 時間 (秒))。
+          type: integer
+      type: object
+    StartAnalysisQueriesResponse:
+      properties:
+        queryId:
+          description: データベースクエリ ID。
+          type: string
       type: object
     Subscriber:
       properties:
@@ -25627,6 +26967,69 @@ components:
       - tagName
       - tagValue
       type: object
+    TestingUsage:
+      properties:
+        endedTime:
+          description: |
+            「テスト中 (testing)」が終了した日時 (UNIX 時間 (ミリ秒))。事前に設定した条件を満たした場合、または SORACOM ユーザーコンソールや [Sim:activateSim API](#/Sim/activeSim) などで IoT SIM のステータスが変更された場合に設定されます。ステータスが「テスト中 (testing)」のときは省略されます。
+          format: int64
+          type: integer
+        startedTime:
+          description: IoT SIM のステータスが「テスト中 (testing)」に変更された日時 (UNIX 時間 (ミリ秒))。
+          format: int64
+          type: integer
+        usage:
+          description: 「テスト中 (testing)」のデータ通信量と SMS 送受信数の利用状況。
+          properties:
+            dataBytes:
+              description: データ通信量。
+              format: int64
+              type: integer
+            numberOfSms:
+              description: SMS 送受信数。
+              format: int64
+              type: integer
+          required:
+          - dataBytes
+          - numberOfSms
+          type: object
+        usageLimit:
+          description: 「テスト中 (testing)」に関する設定。`days`、`dataBytes`、`numberOfSims` のいずれかの上限を超えると、`statusTransitionDelayDays`
+            の日数経過後に、IoT SIM のステータスが `nextStatus` へ自動的に切り替わります。
+          properties:
+            dataBytes:
+              description: 「テスト中 (testing)」で利用料金が免除されるデータ通信量。
+              format: int64
+              type: integer
+            days:
+              description: 「テスト中 (testing)」で利用料金が免除される日数。
+              format: int32
+              type: integer
+            nextStatus:
+              description: '`days`、`dataBytes`、`numberOfSims` のいずれかの上限を満たした場合に、自動的に切り替わる先のステータス。'
+              enum:
+              - active
+              - standby
+              - suspended
+              type: string
+            numberOfSms:
+              description: 「テスト中 (testing)」で利用料金が免除される SMS 送受信数。
+              format: int64
+              type: integer
+            statusTransitionDelayDays:
+              description: '`days`、`dataBytes`、`numberOfSims` のいずれかの上限を満たした場合に、ステータスの自動切り替えを遅延させる日数。'
+              format: int32
+              type: integer
+          required:
+          - days
+          - dataBytes
+          - numberOfSms
+          - nextStatus
+          type: object
+      required:
+      - startedTime
+      - usageLimits
+      type: object
     TrafficVolumeRanking:
       properties:
         imsi:
@@ -25734,6 +27137,17 @@ components:
           - failed
           type: string
       type: object
+    UpdateBatchGroupRequest:
+      properties:
+        batchGroupName:
+          description: バッチグループ名。
+          maxLength: 100
+          type: string
+        description:
+          description: バッチグループの説明。
+          maxLength: 500
+          type: string
+      type: object
     UpdateCustomerRouteRequest:
       properties:
         target:
@@ -25772,7 +27186,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 X3-5MB、planP1、plan-D (バンドルなし)、plan-D D-300MB、plan-K2 K2-300MB、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -25868,7 +27282,8 @@ components:
     VerifyAddEmailTokenRequest:
       properties:
         token:
-          description: メールで送信されたトークン。
+          description: |
+            [Email:issueAddEmailToken API](#/Email/issueAddEmailToken) で発行された認証トークン。認証トークンは追加対象のメールアドレスに送信されます。
           type: string
       required:
       - token
@@ -26164,6 +27579,8 @@ components:
 tags:
 - description: '[監査ログ](/ja-jp/docs/api-audit-logs/)'
   name: AuditLog
+- description: '[SORACOM Query](/ja-jp/docs/query/)'
+  name: Analysis
 - description: |
     - [API キーおよび API トークンの発行](/ja-jp/tools/api/key-and-token/)
     - パスワードリセットトークンの発行および検証
@@ -26208,7 +27625,7 @@ tags:
     - [Stats](#/Stats)
     - [Subscriber:exportSubscribers](#/Subscriber/exportSubscribers)
   name: Files
-- description: Gadget API 対応デバイス<ul><li>[SORACOM LTE-M Button powered by AWS](/ja-jp/guides/soracom-lte-m-button-series/lte-m-button-aws/)</li><li>[ソラカメ専用セルラーパック](/ja-jp/guides/soracom-cloud-camera-services/setting-cellular-pack/)</li></ul>
+- description: Gadget API 対応デバイス<ul><li>[ソラカメ専用セルラーパック](/ja-jp/guides/soracom-cloud-camera-services/setting-cellular-pack/)</li></ul>
   name: Gadget
 - description: '[グループ設定](/ja-jp/docs/group-configuration/)'
   name: Group
@@ -26270,3 +27687,5 @@ tags:
     - [SORACOM Junction](/ja-jp/docs/junction/)
     - [SORACOM Peek](/ja-jp/docs/peek/)
   name: VirtualPrivateGateway
+- description: バッチ処理
+  name: Batch

@@ -26,7 +26,7 @@ var VpgRegisterGatePeerCmdVpgId string
 var VpgRegisterGatePeerCmdBody string
 
 func InitVpgRegisterGatePeerCmd() {
-	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdInnerIpAddress, "inner-ip-address", "", TRAPI(""))
+	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdInnerIpAddress, "inner-ip-address", "", TRAPI("An IP address within the device subnet range (inner IP address)."))
 
 	VpgRegisterGatePeerCmd.Flags().StringVar(&VpgRegisterGatePeerCmdOuterIpAddress, "outer-ip-address", "", TRAPI(""))
 
