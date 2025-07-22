@@ -30,9 +30,9 @@ var SoraCamDevicesRecordingsAndEventsListForDeviceCmdPaginate bool
 func InitSoraCamDevicesRecordingsAndEventsListForDeviceCmd() {
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the listSoraCamDeviceRecordingsAndEvents request response. By specifying this parameter, you can retrieve the next page of recordings and events."))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the 'x-soracom-next-key' header in the previous response. Use this to continue pagination."))
 
-	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the recordings and events.- 'desc': Descending order (newest recordings and events first)- 'asc': Ascending order (oldest recordings and events first)"))
+	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Recordings and events list sort order.- 'desc': Descending order (newest data first).- 'asc': Ascending order (oldest data first)."))
 
 	SoraCamDevicesRecordingsAndEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesRecordingsAndEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the recordings and events to retrieve (unix time in milliseconds). If not specified, 'from' is set to the oldest time within the retention period of the license that is assigned to the SoraCam compatible camera device."))
 

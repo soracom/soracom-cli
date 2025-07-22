@@ -36,9 +36,9 @@ var SoraCamDevicesEventsListForDeviceCmdOutputJSONL bool
 func InitSoraCamDevicesEventsListForDeviceCmd() {
 	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the x-soracom-next-key header in the listSoraCamDeviceEventsForDevice request response. By specifying this parameter, you can retrieve the next page of events."))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Value of the 'x-soracom-next-key' header in the previous response. Use this to continue pagination."))
 
-	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Sort order of the events.- 'desc': Descending order (newest event first)- 'asc': Ascending order (oldest event first)"))
+	SoraCamDevicesEventsListForDeviceCmd.Flags().StringVar(&SoraCamDevicesEventsListForDeviceCmdSort, "sort", "desc", TRAPI("Event list sort order.- 'desc': Descending order (newest events detected by target SoraCam compatible camera device first).- 'asc': Ascending order (oldest events detected by target SoraCam compatible camera device first)."))
 
 	SoraCamDevicesEventsListForDeviceCmd.Flags().Int64Var(&SoraCamDevicesEventsListForDeviceCmdFrom, "from", 0, TRAPI("Start time of the events to retrieve (unix time in milliseconds). If not specified, 'from' is set to the oldest event time."))
 

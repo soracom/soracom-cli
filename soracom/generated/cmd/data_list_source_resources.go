@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/soracom/soracom-cli/generators/lib"
+
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +27,7 @@ var DataListSourceResourcesCmdPaginate bool
 var DataListSourceResourcesCmdOutputJSONL bool
 
 func InitDataListSourceResourcesCmd() {
-	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of 'resourceId' in the last log entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
 	DataListSourceResourcesCmd.Flags().StringVar(&DataListSourceResourcesCmdResourceType, "resource-type", "", TRAPI("Type of data source resource.- 'Subscriber': IoT SIM.- 'LoraDevice': LoRaWAN device.- 'Sim': IoT SIM.- 'SigfoxDevice': Sigfox device.- 'Device': Inventory device.- 'SoraCam': Compatible camera device."))
 
@@ -48,6 +50,7 @@ var DataListSourceResourcesCmd = &cobra.Command{
 }
 
 func DataListSourceResourcesCmdRunE(cmd *cobra.Command, args []string) error {
+	lib.WarnfStderr(TRCLI("cli.deprecated-api") + "\n")
 
 	if len(args) > 0 {
 		return fmt.Errorf("unexpected arguments passed => %v", args)

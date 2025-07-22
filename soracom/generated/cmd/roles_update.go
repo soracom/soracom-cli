@@ -29,11 +29,11 @@ var RolesUpdateCmdRoleId string
 var RolesUpdateCmdBody string
 
 func InitRolesUpdateCmd() {
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", TRAPI(""))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdDescription, "description", "", TRAPI("The description of the operator managed role."))
 
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TRAPI("Permission as JSON."))
+	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdPermission, "permission", "", TRAPI("Permission as JSON for the operator managed role."))
 
 	RolesUpdateCmd.Flags().StringVar(&RolesUpdateCmdRoleId, "role-id", "", TRAPI("Role ID."))
 

@@ -23,7 +23,7 @@ var GadgetsPutTagsCmdSerialNumber string
 var GadgetsPutTagsCmdBody string
 
 func InitGadgetsPutTagsCmd() {
-	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
+	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
 	GadgetsPutTagsCmd.Flags().StringVar(&GadgetsPutTagsCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 

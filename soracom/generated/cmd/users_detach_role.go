@@ -21,7 +21,7 @@ var UsersDetachRoleCmdUserName string
 func InitUsersDetachRoleCmd() {
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("Role ID."))
+	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdRoleId, "role-id", "", TRAPI("Role ID. For operator managed roles, specify the role ID provided during role creation. For Soracom managed roles, specify in SRN (Soracom Resource Name) format."))
 
 	UsersDetachRoleCmd.Flags().StringVar(&UsersDetachRoleCmdUserName, "user-name", "", TRAPI("SAM user name."))
 

@@ -1,5 +1,11 @@
 cli:
   alternative-api-suggestion: "代替 API の呼び出しを検討してください (コマンド: `%s`)。"
+  analysis:
+    summary: データベースクエリに関する操作を行う
+    description: データベースクエリに関する操作を行う
+    queries:
+      summary: データベースクエリの実行や状態取得を行う
+      description: データベースクエリの実行や状態取得を行う
   audit-logs:
     summary: 監査ログを取得します。
     description: 監査ログを取得します。
@@ -12,6 +18,12 @@ cli:
   auth:
     summary: API アクセスの認証を行い、API キーと API トークンを発行します。
     description: "API アクセスの認証を行います。\nルートアカウントで認証する場合は --email と --password を指定してください。\n認証キーを用いて認証する場合は --auth-key-id と --auth-key を指定してください。\nSAM ユーザーで認証する場合は --operator-id, --user-name, --password をリクエストに含めてください。認証が成功すると、API キーや API トークンの情報が表示されます。"
+  batch-groups:
+    summary: バッチ処理に関する操作を行う
+    description: バッチ処理に関する操作行う
+    jobs:
+      summary: バッチジョブを管理する
+      description: バッチジョブを管理する
   bills:
     summary: 課金に関する情報を確認したりファイルへのエクスポートを行います。
     description: 課金に関する情報を確認したりファイルへのエクスポートを行います。

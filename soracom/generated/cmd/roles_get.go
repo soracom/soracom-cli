@@ -18,7 +18,7 @@ var RolesGetCmdRoleId string
 func InitRolesGetCmd() {
 	RolesGetCmd.Flags().StringVar(&RolesGetCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("Role ID."))
+	RolesGetCmd.Flags().StringVar(&RolesGetCmdRoleId, "role-id", "", TRAPI("Role ID. For operator managed roles, specify the role ID provided during role creation. For Soracom managed roles, specify in SRN (Soracom Resource Name) format."))
 
 	RolesGetCmd.RunE = RolesGetCmdRunE
 

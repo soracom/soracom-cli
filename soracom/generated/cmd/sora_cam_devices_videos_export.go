@@ -13,6 +13,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SoraCamDevicesVideosExportCmdAudioCodec holds value of 'audioCodec' option
+var SoraCamDevicesVideosExportCmdAudioCodec string
+
 // SoraCamDevicesVideosExportCmdDeviceId holds value of 'device_id' option
 var SoraCamDevicesVideosExportCmdDeviceId string
 
@@ -22,15 +25,22 @@ var SoraCamDevicesVideosExportCmdFrom int64
 // SoraCamDevicesVideosExportCmdTo holds value of 'to' option
 var SoraCamDevicesVideosExportCmdTo int64
 
+// SoraCamDevicesVideosExportCmdArchive holds value of 'archive' option
+var SoraCamDevicesVideosExportCmdArchive bool
+
 // SoraCamDevicesVideosExportCmdBody holds contents of request body to be sent
 var SoraCamDevicesVideosExportCmdBody string
 
 func InitSoraCamDevicesVideosExportCmd() {
+	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdAudioCodec, "audio-codec", "pcm_s16le", TRAPI("Specifies the audio codec for exported videos. Defaults to 'pcm_s16le'.- 'mp3': MP3- 'pcm_s16le': PCM 16-bit (WAV file)**Warning**: If 'mp3' is specified, it will consume twice the recorded video time available for export."))
+
 	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device."))
 
 	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdFrom, "from", 0, TRAPI("Start time for exporting (unix time in milliseconds)."))
 
-	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdTo, "to", 0, TRAPI("End time for exporting (unix time in milliseconds).- The maximum time for a single API call to export is 900 seconds (15 minutes). Make sure the difference between 'from' and 'to' does not exceed 900 seconds."))
+	SoraCamDevicesVideosExportCmd.Flags().Int64Var(&SoraCamDevicesVideosExportCmdTo, "to", 0, TRAPI("End time for exporting (unix time in milliseconds).- The maximum duration that can be exported in a single API call is 900 seconds (15 minutes). Make sure the difference between 'from' and 'to' does not exceed 900 seconds."))
+
+	SoraCamDevicesVideosExportCmd.Flags().BoolVar(&SoraCamDevicesVideosExportCmdArchive, "archive", true, TRAPI("Specifies whether exported files should be compressed. Defaults to 'true'.- 'true': Compresses video files in zip format.- 'false': Exports video files as uncompressed MP4 files."))
 
 	SoraCamDevicesVideosExportCmd.Flags().StringVar(&SoraCamDevicesVideosExportCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -180,12 +190,20 @@ func buildBodyForSoraCamDevicesVideosExportCmd() (string, error) {
 		result = make(map[string]interface{})
 	}
 
+	if SoraCamDevicesVideosExportCmdAudioCodec != "pcm_s16le" {
+		result["audioCodec"] = SoraCamDevicesVideosExportCmdAudioCodec
+	}
+
 	if SoraCamDevicesVideosExportCmd.Flags().Lookup("from").Changed {
 		result["from"] = SoraCamDevicesVideosExportCmdFrom
 	}
 
 	if SoraCamDevicesVideosExportCmd.Flags().Lookup("to").Changed {
 		result["to"] = SoraCamDevicesVideosExportCmdTo
+	}
+
+	if SoraCamDevicesVideosExportCmd.Flags().Lookup("archive").Changed {
+		result["archive"] = SoraCamDevicesVideosExportCmdArchive
 	}
 
 	resultBytes, err := json.Marshal(result)

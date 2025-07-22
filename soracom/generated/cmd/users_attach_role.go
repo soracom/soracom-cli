@@ -28,7 +28,7 @@ var UsersAttachRoleCmdBody string
 func InitUsersAttachRoleCmd() {
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
 
-	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI(""))
+	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdRoleId, "role-id", "", TRAPI("The ID of the role to attach. For an operator managed role, specify the role ID ('roleId') obtained from the [Role:listRoles API](#/Role/listRoles). For a Soracom managed role, specify the SRN (Soracom Resource Name)."))
 
 	UsersAttachRoleCmd.Flags().StringVar(&UsersAttachRoleCmdUserName, "user-name", "", TRAPI("SAM user name."))
 

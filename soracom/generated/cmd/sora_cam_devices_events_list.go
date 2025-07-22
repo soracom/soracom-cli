@@ -34,13 +34,13 @@ var SoraCamDevicesEventsListCmdPaginate bool
 var SoraCamDevicesEventsListCmdOutputJSONL bool
 
 func InitSoraCamDevicesEventsListCmd() {
-	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device. If this ID is not specified, the event history of all camera devices owned by the operator will be retrieved."))
+	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdDeviceId, "device-id", "", TRAPI("Device ID of the target SoraCam compatible camera device. If not specified, retrieves event history for all SoraCam compatible camera devices owned by the operator."))
 
-	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdSort, "sort", "desc", TRAPI("Sort order of the events.- 'desc': Descending order (newest events first)- 'asc': Ascending order (oldest events first)"))
+	SoraCamDevicesEventsListCmd.Flags().StringVar(&SoraCamDevicesEventsListCmdSort, "sort", "desc", TRAPI("Event list sort order.- 'desc': Descending order (newest events detected by SoraCam compatible camera device first).- 'asc': Ascending order (oldest events detected by SoraCam compatible camera device first)."))
 
 	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdFrom, "from", 0, TRAPI("Start time of the events to retrieve (unix time in milliseconds). If not specified, 'from' is set to the oldest event time."))
 
-	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLastEvaluatedKey, "last-evaluated-key", 0, TRAPI("Value of the x-soracom-next-key header in the listSoraCamDeviceEvents request response. By specifying this parameter, you can retrieve the next page of events."))
+	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLastEvaluatedKey, "last-evaluated-key", 0, TRAPI("Value of the 'x-soracom-next-key' header in the previous response. Use this to continue pagination."))
 
 	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLimit, "limit", 10, TRAPI("Maximum number of events to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer events than the specified limit."))
 

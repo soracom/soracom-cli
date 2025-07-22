@@ -19,7 +19,7 @@ var GadgetsDeleteTagCmdSerialNumber string
 var GadgetsDeleteTagCmdTagName string
 
 func InitGadgetsDeleteTagCmd() {
-	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
+	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
 	GadgetsDeleteTagCmd.Flags().StringVar(&GadgetsDeleteTagCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 

@@ -37,7 +37,7 @@ var DataGetEntriesCmdPaginate bool
 var DataGetEntriesCmdOutputJSONL bool
 
 func InitDataGetEntriesCmd() {
-	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("Key in the last data entry retrieved in the previous page. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
 	DataGetEntriesCmd.Flags().StringVar(&DataGetEntriesCmdResourceId, "resource-id", "", TRAPI("ID of data source resource. The ID to be specified depends on the value of 'resource_type'.| 'resource_type' | The ID you specify ||-|-|| 'Subscriber' | IMSI of the IoT SIM || 'LoraDevice' | ID of the LoRaWAN device || 'Sim' | SIM ID of the IoT SIM || 'SigfoxDevice' | ID of the Sigfox device || 'Device' | ID of the Inventory device || 'SoraCam' | Device ID of the compatible camera device |"))
 

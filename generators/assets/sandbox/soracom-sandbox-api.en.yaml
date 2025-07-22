@@ -221,7 +221,7 @@ paths:
         content:
           application/json:
             examples:
-              Creating "plan-D D-300MB":
+              Creating "plan-D (D-300MB)":
                 value:
                   bundle:
                   - D-300MB

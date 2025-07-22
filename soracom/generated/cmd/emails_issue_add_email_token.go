@@ -23,9 +23,9 @@ var EmailsIssueAddEmailTokenCmdPassword string
 var EmailsIssueAddEmailTokenCmdBody string
 
 func InitEmailsIssueAddEmailTokenCmd() {
-	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdEmail, "email", "", TRAPI("Email address to be added."))
+	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdEmail, "email", "", TRAPI("Email address to be added. Please enter a valid email address format (e.g., user@example.com)."))
 
-	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdPassword, "password", "", TRAPI("Password of the root user."))
+	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdPassword, "password", "", TRAPI("Password of the root user. Required for authentication."))
 
 	EmailsIssueAddEmailTokenCmd.Flags().StringVar(&EmailsIssueAddEmailTokenCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

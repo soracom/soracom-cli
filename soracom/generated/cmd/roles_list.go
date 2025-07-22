@@ -12,11 +12,16 @@ import (
 // RolesListCmdOperatorId holds value of 'operator_id' option
 var RolesListCmdOperatorId string
 
+// RolesListCmdOwner holds value of 'owner' option
+var RolesListCmdOwner string
+
 // RolesListCmdOutputJSONL indicates to output with jsonl format
 var RolesListCmdOutputJSONL bool
 
 func InitRolesListCmd() {
 	RolesListCmd.Flags().StringVar(&RolesListCmdOperatorId, "operator-id", "", TRAPI("Operator ID."))
+
+	RolesListCmd.Flags().StringVar(&RolesListCmdOwner, "owner", "", TRAPI("Filters by the type of the role. Specify one of the following:- 'operator': Operator managed role (default)- 'soracom': Soracom managed role- 'all': All roles"))
 
 	RolesListCmd.Flags().BoolVar(&RolesListCmdOutputJSONL, "jsonl", false, TRCLI("cli.common_params.jsonl.short_help"))
 
@@ -106,6 +111,10 @@ func buildPathForRolesListCmd(path string) string {
 
 func buildQueryForRolesListCmd() url.Values {
 	result := url.Values{}
+
+	if RolesListCmdOwner != "" {
+		result.Add("owner", RolesListCmdOwner)
+	}
 
 	return result
 }

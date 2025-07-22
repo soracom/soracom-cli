@@ -16,7 +16,7 @@ var GadgetsGetCmdProductId string
 var GadgetsGetCmdSerialNumber string
 
 func InitGadgetsGetCmd() {
-	GadgetsGetCmd.Flags().StringVar(&GadgetsGetCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'button': Soracom LTE-M Button powered by AWS.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
+	GadgetsGetCmd.Flags().StringVar(&GadgetsGetCmdProductId, "product-id", "", TRAPI("Product ID of the target Gadget API compatible device.- 'wimax': Soracom Cloud Camera Services Cellular Pack."))
 
 	GadgetsGetCmd.Flags().StringVar(&GadgetsGetCmdSerialNumber, "serial-number", "", TRAPI("Serial Number of the target Gadget API compatible device."))
 
