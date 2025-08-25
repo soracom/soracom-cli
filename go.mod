@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.0
 	github.com/tj/assert v0.0.3
-	golang.org/x/sys v0.34.0
+	golang.org/x/sys v0.35.0
 	golang.org/x/term v0.33.0
 	gopkg.in/yaml.v2 v2.4.0
 )
