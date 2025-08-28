@@ -13,7 +13,7 @@ import (
 var CouponsConfirmCmdOrderId string
 
 func InitCouponsConfirmCmd() {
-	CouponsConfirmCmd.Flags().StringVar(&CouponsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID."))
+	CouponsConfirmCmd.Flags().StringVar(&CouponsConfirmCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [Order:createCouponQuotation API](#/Order/createCouponQuotation)."))
 
 	CouponsConfirmCmd.RunE = CouponsConfirmCmdRunE
 

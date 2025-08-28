@@ -13,7 +13,7 @@ import (
 var AnalysisQueriesGetCmdQueryId string
 
 func InitAnalysisQueriesGetCmd() {
-	AnalysisQueriesGetCmd.Flags().StringVar(&AnalysisQueriesGetCmdQueryId, "query-id", "", TRAPI("Database query ID."))
+	AnalysisQueriesGetCmd.Flags().StringVar(&AnalysisQueriesGetCmdQueryId, "query-id", "", TRAPI("SQL query ID."))
 
 	AnalysisQueriesGetCmd.RunE = AnalysisQueriesGetCmdRunE
 

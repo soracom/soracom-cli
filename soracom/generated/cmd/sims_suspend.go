@@ -13,7 +13,7 @@ import (
 var SimsSuspendCmdSimId string
 
 func InitSimsSuspendCmd() {
-	SimsSuspendCmd.Flags().StringVar(&SimsSuspendCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsSuspendCmd.Flags().StringVar(&SimsSuspendCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsSuspendCmd.RunE = SimsSuspendCmdRunE
 

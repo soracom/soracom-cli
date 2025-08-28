@@ -16,7 +16,7 @@ var SimsDeleteTagCmdSimId string
 var SimsDeleteTagCmdTagName string
 
 func InitSimsDeleteTagCmd() {
-	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsDeleteTagCmd.Flags().StringVar(&SimsDeleteTagCmdTagName, "tag-name", "", TRAPI("Tag name to be deleted. This will be part of a URL path, so it needs to be percent-encoded. In JavaScript, specify the name after it has been encoded using encodeURIComponent().**Warning**: If you are using Soracom CLI, do not use URL encoding (percent-encoding)."))
 

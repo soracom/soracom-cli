@@ -2,17 +2,17 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20250714-070728
+  version: 20250826-105139
 servers:
-- description: Japan coverage production API
+- description: 日本カバレッジ API エンドポイント
   url: https://api.soracom.io/v1
-- description: Global coverage production API
+- description: グローバルカバレッジ API エンドポイント
   url: https://g.api.soracom.io/v1
 paths:
   /analysis/queries:
     post:
-      description: データベースクエリを非同期で実行します。データベースクエリの実行状態は、[Analysis:getAnalysisQueries
-        API](#/Analysis/getAnalysisQueries) で確認してください。
+      description: SQL クエリを非同期で実行します。SQL クエリの実行状態は、[Analysis:getAnalysisQueries API](#/Analysis/getAnalysisQueries)
+        で確認してください。
       operationId: startAnalysisQueries
       requestBody:
         content:
@@ -23,7 +23,7 @@ paths:
               to: 1743552000
             schema:
               $ref: '#/components/schemas/StartAnalysisQueriesRequest'
-        description: データベースクエリ実行リクエスト。
+        description: SQL クエリ実行リクエスト。
         required: true
       responses:
         "200":
@@ -33,21 +33,21 @@ paths:
                 queryId: ffa91d0c371d45c4bf53d55ab5c14955
               schema:
                 $ref: '#/components/schemas/StartAnalysisQueriesResponse'
-          description: 新しいデータベースクエリの実行が開始されました。
+          description: 新しい SQL クエリの実行が開始されました。
       security:
       - api_key: []
         api_token: []
-      summary: 新しいデータベースクエリを非同期で実行する
+      summary: 新しい SQL クエリを非同期で実行する
       tags:
       - Analysis
       x-soracom-cli:
       - analysis queries start
   /analysis/queries/{query_id}:
     get:
-      description: データベースクエリの実行状態を取得します。
+      description: SQL クエリの実行状態を取得します。
       operationId: getAnalysisQueries
       parameters:
-      - description: データベースクエリ ID。
+      - description: SQL クエリ ID。
         in: path
         name: query_id
         required: true
@@ -74,11 +74,11 @@ paths:
                 url: https://soracom-analysis-export.s3.amazonaws.com/ffa91d0c-371d-45c4-bf53-d55ab5c14955.csv.gz
               schema:
                 $ref: '#/components/schemas/GetAnalysisQueriesResponse'
-          description: データベースクエリの実行状態、結果、およびダウンロード URL。
+          description: SQL クエリの実行状態、結果、およびダウンロード URL。
       security:
       - api_key: []
         api_token: []
-      summary: データベースクエリの実行状態を取得する
+      summary: SQL クエリの実行状態を取得する
       tags:
       - Analysis
       x-soracom-cli:
@@ -387,7 +387,7 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
+          description: パスワードリセット用のトークンが指定されたメールアドレスに送信されました。
         "400":
           description: メールアドレスが正しくありません。
       summary: パスワードリセット用のトークンを発行する
@@ -411,7 +411,7 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
+          description: パスワードが正常に更新されました。
         "400":
           description: 不正なトークンが指定されました。
         "404":
@@ -830,7 +830,7 @@ paths:
                   yearMonth: "202207"
               schema:
                 $ref: '#/components/schemas/GetBillingHistoryResponse'
-          description: OK.
+          description: 過去の確定した利用料金の一覧。
       security:
       - api_key: []
         api_token: []
@@ -866,7 +866,7 @@ paths:
                 yearMonth: "202208"
               schema:
                 $ref: '#/components/schemas/MonthlyBill'
-          description: OK.
+          description: 指定した月の利用料金情報。
         "404":
           description: |
             - 指定した月の利用料金が確定していません。
@@ -907,7 +907,7 @@ paths:
                   date: "20220901"
               schema:
                 $ref: '#/components/schemas/DailyBillResponse'
-          description: OK.
+          description: 指定した月の日ごとの利用料金情報。
         "404":
           description: 利用料金が見つかりません。
       security:
@@ -959,7 +959,7 @@ paths:
                     url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
-          description: OK.
+          description: エクスポート処理が開始されました。ダウンロード URL またはエクスポート ID が含まれます。
         "404":
           description: 利用料金が見つかりません。
       security:
@@ -980,7 +980,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetLatestBill'
-          description: OK
+          description: 今月の利用料金の速報値。
       security:
       - api_key: []
         api_token: []
@@ -1023,7 +1023,7 @@ paths:
                     url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
-          description: OK.
+          description: エクスポート処理が開始されました。ダウンロード URL またはエクスポート ID が含まれます。
       security:
       - api_key: []
         api_token: []
@@ -1047,7 +1047,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/BillingSummaryResponseOfBillItems'
                 type: array
-          description: OK.
+          description: 過去 4 か月の課金項目ごとの課金サマリー。
       security:
       - api_key: []
         api_token: []
@@ -1071,7 +1071,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/BillingSummaryResponseOfSims'
                 type: array
-          description: OK.
+          description: 過去 4 か月の IoT SIM ごとの課金サマリー。
       security:
       - api_key: []
         api_token: []
@@ -1322,7 +1322,8 @@ paths:
       description: 与信を実施し、問題ない場合に発注を確定します。
       operationId: confirmCouponOrder
       parameters:
-      - description: 発注 ID
+      - description: 発注 ID。[Order:createCouponQuotation API](#/Order/createCouponQuotation)
+          で取得できます。
         in: path
         name: order_id
         required: true
@@ -1334,7 +1335,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
-          description: OK.
+          description: 確定されたクーポンの発注情報。
       security:
       - api_key: []
         api_token: []
@@ -2619,8 +2620,8 @@ paths:
         指定した Inventory デバイスから Harvest Data に送信されたデータの中で、条件に合うデータを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: getDataFromDevice
       parameters:
-      - description: データ取得対象の Inventory デバイスの ID。Inventory デバイスの ID は [Device:listDevices
-          API](#/Device/listDevices) で取得できます。
+      - description: データ取得対象の Inventory デバイスの ID。[Device:listDevices API](#/Device/listDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -4459,8 +4460,7 @@ paths:
       description: 指定されたグループの設定を更新します。
       operationId: putConfigurationParameters
       parameters:
-      - description: 対象のグループの ID。グループ ID は [Group:listGroups API](#/Group/listGroups)
-          で取得できます。
+      - description: 対象のグループの ID。[Group:listGroups API](#/Group/listGroups) で取得できます。
         in: path
         name: group_id
         required: true
@@ -5132,10 +5132,10 @@ paths:
 
           | `resource_type` | 指定する ID |
           |-|-|
-          | `Subscriber` | IoT SIM の IMSI。IMSI は [Sim:listSims API](#/Sim/listSims) で取得できます。 |
-          | `Device` | Inventory デバイスの ID。ID は [Device:listDevices API](#/Device/listDevices) で取得できます。 |
-          | `LoraDevice` | LoRaWAN デバイスの ID。ID は [LoraDevice:listLoraDevices API](#/LoraDevice/listLoraDevices) で取得できます。 |
-          | `SigfoxDevice` | Sigfox デバイスの ID。ID は [SigfoxDevice:listSigfoxDevices API](#/SigfoxDevice/listSigfoxDevices) で取得できます。 |
+          | `Subscriber` | IoT SIM の IMSI。[Sim:listSims API](#/Sim/listSims) で取得できます。 |
+          | `Device` | Inventory デバイスの ID。[Device:listDevices API](#/Device/listDevices) で取得できます。 |
+          | `LoraDevice` | LoRaWAN デバイスの ID。[LoraDevice:listLoraDevices API](#/LoraDevice/listLoraDevices) で取得できます。 |
+          | `SigfoxDevice` | Sigfox デバイスの ID。[SigfoxDevice:listSigfoxDevices API](#/SigfoxDevice/listSigfoxDevices) で取得できます。 |
         in: query
         name: resource_id
         required: false
@@ -5310,8 +5310,8 @@ paths:
         指定した LoRaWAN デバイス から Harvest Data に送信されたデータの中で、条件に合うデータを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: getDataFromLoraDevice
       parameters:
-      - description: データ取得対象の LoRaWAN デバイスの ID。LoRaWAN デバイスの ID は [LoraDevice:listLoraDevices
-          API](#/LoraDevice/listLoraDevices) で取得できます。
+      - description: データ取得対象の LoRaWAN デバイスの ID。[LoraDevice:listLoraDevices API](#/LoraDevice/listLoraDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -5504,8 +5504,8 @@ paths:
       description: LoRaWAN デバイスを LoRaWAN グループに所属させます。
       operationId: setLoraDeviceGroup
       parameters:
-      - description: 対象の LoRaWAN デバイスの ID。LoRaWAN デバイスの ID は [LoraDevice:listLoraDevices
-          API](#/LoraDevice/listLoraDevices) で取得できます。
+      - description: 対象の LoRaWAN デバイスの ID。[LoraDevice:listLoraDevices API](#/LoraDevice/listLoraDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -5636,8 +5636,8 @@ paths:
       description: LoRaWAN デバイスを LoRaWAN グループから外します。
       operationId: unsetLoraDeviceGroup
       parameters:
-      - description: 対象の LoRaWAN デバイスの ID。LoRaWAN デバイスの ID は [LoraDevice:listLoraDevices
-          API](#/LoraDevice/listLoraDevices) で取得できます。
+      - description: 対象の LoRaWAN デバイスの ID。[LoraDevice:listLoraDevices API](#/LoraDevice/listLoraDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -8765,7 +8765,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderResponse'
-          description: OK.
+          description: 発注確定済みの注文履歴の一覧。
       security:
       - api_key: []
         api_token: []
@@ -8807,7 +8807,7 @@ paths:
         **Warning**: 取得できる情報は、過去 18 か月までです。それ以前の情報が必要な場合は、[SORACOM サポート](/ja-jp/guides/support/) に問い合わせてください。
       operationId: getOrder
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -8819,7 +8819,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
-          description: OK.
+          description: 発注確定済みの発注情報。
       security:
       - api_key: []
         api_token: []
@@ -8833,7 +8833,7 @@ paths:
       description: 発注をキャンセルします。既に発送済みの場合はエラーが返されます。
       operationId: cancelOrder
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -8862,7 +8862,7 @@ paths:
         **Warning**: 確定できる発注は、過去 1 か月までに完了した発注のみです。1 か月を経過した場合は、発注操作をやり直してください。
       operationId: confirmOrder
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -8870,7 +8870,11 @@ paths:
           type: string
       responses:
         "200":
-          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+          description: 確定された発注情報。
       security:
       - api_key: []
         api_token: []
@@ -8887,7 +8891,7 @@ paths:
         **Warning**: 受け取り確認後の IoT SIM の初期設定は指定できません。
       operationId: updateOrderedResourceInitialSetting
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -8908,8 +8912,16 @@ paths:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: 初期設定の更新に成功しました。
         "400":
+          content:
+            application/json:
+              schema:
+                type: string
           description: 指定したリクエストに誤りがあります。
         "404":
+          content:
+            application/json:
+              schema:
+                type: string
           description: オーダー ID が見つかりません。
       security:
       - api_key: []
@@ -8927,7 +8939,7 @@ paths:
         **Warning**: 取得できる情報は、過去 18 か月までです。それ以前の情報が必要な場合は、[SORACOM サポート](/ja-jp/guides/support/) に問い合わせてください。
       operationId: listOrderedSubscribers
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -8953,7 +8965,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderedSubscriberResponse'
-          description: OK.
+          description: 発注した IoT SIM の一覧。
       security:
       - api_key: []
         api_token: []
@@ -8975,7 +8987,7 @@ paths:
         **Warning**: 登録できる IoT SIM は、過去 18 か月までです。それ以前に発注した IoT SIM を登録する場合は、[SORACOM サポート](/ja-jp/guides/support/) に問い合わせてください。
       operationId: registerOrderedSim
       parameters:
-      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) を呼び出すと取得できます。
+      - description: 発注 ID。[Order:listOrders API](#/Order/listOrders) で取得できます。
         in: path
         name: order_id
         required: true
@@ -9351,7 +9363,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListProductResponse'
-          description: OK.
+          description: 購入できる商品一覧。
       security:
       - api_key: []
         api_token: []
@@ -9643,10 +9655,13 @@ paths:
       parameters:
       - description: IoT SIM の名前。
         examples:
-          mysim:
-            summary: |
-              名前に mysim が含まれた IoT SIM を検索する
-            value: mysim
+          0_no_filter:
+            summary: フィルタなし
+            value: []
+          1_filter_example:
+            summary: 名前に特定の文字列が含まれた IoT SIM を検索する場合
+            value:
+            - example-sim
         explode: true
         in: query
         name: name
@@ -9657,10 +9672,13 @@ paths:
           type: array
       - description: IoT SIM が所属する [グループ](/ja-jp/docs/group-configuration/) の名前。
         examples:
-          mygroup:
-            summary: |
-              所属するグループの名前に mygroup が含まれた IoT SIM を検索する
-            value: mygroup
+          0_no_filter:
+            summary: フィルタなし
+            value: []
+          1_filter_example:
+            summary: 特定のグループ名に所属する IoT SIM を検索する場合
+            value:
+            - example-group
         explode: true
         in: query
         name: group
@@ -10229,8 +10247,8 @@ paths:
         指定した Sigfox デバイス から Harvest Data に送信されたデータの中で、条件に合うデータを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: getDataFromSigfoxDevice
       parameters:
-      - description: データ取得対象の Sigfox デバイスの ID。Sigfox デバイスの ID は [SigfoxDevice:listSigfoxDevices
-          API](#/SigfoxDevice/listSigfoxDevices) で取得できます。
+      - description: データ取得対象の Sigfox デバイスの ID。[SigfoxDevice:listSigfoxDevices API](#/SigfoxDevice/listSigfoxDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -10421,8 +10439,8 @@ paths:
       description: Sigfox デバイスを Sigfox グループに所属させます。
       operationId: setSigfoxDeviceGroup
       parameters:
-      - description: 対象の Sigfox デバイスの ID。Sigfox デバイスの ID は [SigfoxDevice:listSigfoxDevices
-          API](#/SigfoxDevice/listSigfoxDevices) で取得できます。
+      - description: 対象の Sigfox デバイスの ID。[SigfoxDevice:listSigfoxDevices API](#/SigfoxDevice/listSigfoxDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -10560,8 +10578,8 @@ paths:
       description: Sigfox デバイスを Sigfox グループから外します。
       operationId: unsetSigfoxDeviceGroup
       parameters:
-      - description: 対象の Sigfox デバイスの ID。Sigfox デバイスの ID は [SigfoxDevice:listSigfoxDevices
-          API](#/SigfoxDevice/listSigfoxDevices) で取得できます。
+      - description: 対象の Sigfox デバイスの ID。[SigfoxDevice:listSigfoxDevices API](#/SigfoxDevice/listSigfoxDevices)
+          で取得できます。
         in: path
         name: device_id
         required: true
@@ -10827,7 +10845,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の SIM ID。このパラメータを指定することで次の IoT SIM 以降のリストを取得できる。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -10841,9 +10859,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sim'
                 type: array
-          description: IoT SIM の一覧
+          description: IoT SIM の一覧。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -10888,8 +10906,7 @@ paths:
       description: IoT SIM の情報を取得します。
       operationId: getSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -10917,8 +10934,7 @@ paths:
       description: 指定した IoT SIM のステータスを「使用中 (active)」に変更します。
       operationId: activateSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11044,7 +11060,7 @@ paths:
         指定した IoT SIM から Harvest Data に送信されたデータの中で、条件に合うデータを取得します。データエントリが 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
       operationId: getDataFromSim
       parameters:
-      - description: データ取得対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
+      - description: データ取得対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims)
           で取得できます。
         in: path
         name: sim_id
@@ -11081,8 +11097,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: |
-          前のページで取得した最後のデータエントリのキー。この API でのデータエントリーのキーは、`${UNIX 時間 (ミリ秒)}_${IMSI}` です。このパラメータを指定することで次のデータエントリを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -11096,7 +11111,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DataEntry'
                 type: array
-          description: データエントリのリスト
+          description: データエントリのリスト。
       security:
       - api_key: []
         api_token: []
@@ -11115,8 +11130,7 @@ paths:
       description: 指定した IoT SIM のステータスを「休止中 (inactive)」に変更します。
       operationId: deactivateSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11152,8 +11166,7 @@ paths:
         ```
       operationId: deleteSimSession
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11165,9 +11178,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の IoT SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11181,8 +11194,7 @@ paths:
       description: 指定した IoT SIM の解約プロテクションを設定します (解約できないようにします)。
       operationId: disableSimTermination
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11212,8 +11224,7 @@ paths:
         IoT SIM を利用するデバイスに対して HTTP リクエストを送信し、デバイスからの HTTP レスポンスを API のレスポンスボディに含めて返します。
       operationId: sendDownlinkHttp
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11265,8 +11276,7 @@ paths:
       description: IoT SIM に対して ICMP ping リクエストを送信する。
       operationId: sendDownlinkPing
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11281,7 +11291,7 @@ paths:
               timeoutSeconds: 2
             schema:
               $ref: '#/components/schemas/DownlinkPingRequest'
-        description: ping リクエストのオプション
+        description: ping リクエストのオプション。
         required: true
       responses:
         "200":
@@ -11289,7 +11299,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DownlinkPingResponse'
-          description: ping の結果
+          description: ping の結果。
       security:
       - api_key: []
         api_token: []
@@ -11305,7 +11315,7 @@ paths:
       operationId: sendDownlinkSsh
       parameters:
       - description: |
-          対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims) で取得できます。
+          対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11387,13 +11397,142 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ssh
+  /sims/{sim_id}/downlink/tcp:
+    post:
+      description: |
+        IoT SIM を利用するデバイスに TCP 接続し、指定したデータを送信するとともに、デバイスから受信したデータを返します。
+      operationId: sendDownlinkTcp
+      parameters:
+      - description: |
+          対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              connectionOptions:
+                terminationPattern: T0sK
+                terminationPatternEncoding: base64
+                type: wait_for_pattern
+              payload: SGVsbG8gV29ybGQ=
+              payloadEncoding: base64
+              port: 5000
+              timeout: 5
+            schema:
+              $ref: '#/components/schemas/SimDownlinkTcpRequest'
+        description: TCP 接続とデータ送受信のオプション。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkTcpResponse'
+          description: データの送信とレスポンスの受信が成功しました。
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            不正なリクエストです。
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            認証に失敗しました。
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: 指定した IoT SIM が存在しません。
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: データの送受信に失敗しました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM を利用するデバイスに TCP 接続し、データを送受信する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-tcp
+  /sims/{sim_id}/downlink/udp:
+    post:
+      description: |
+        IoT SIM を利用するデバイスに UDP を用いて、指定したデータを送信します。
+
+        **Warning**: UDP による通信は、TCP と異なり再送制御や順序制御を備えていないため、パケットロスや順序入れ替えが生じる可能性があります。
+      operationId: sendDownlinkUdp
+      parameters:
+      - description: |
+          対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims) で取得できます。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              payload: SGVsbG8gV29ybGQ=
+              payloadEncoding: base64
+              port: 5000
+            schema:
+              $ref: '#/components/schemas/SimDownlinkUdpRequest'
+        description: データ送信のオプション
+        required: true
+      responses:
+        "204":
+          description: |
+            データがデバイスに送信されました。ただし、UDP の特性上、パケットの到達保証はありません。
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            不正なリクエストです。
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            認証に失敗しました。
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: 指定した IoT SIM が存在しません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM を利用するデバイスに UDP を用いて、データを送信する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-udp
   /sims/{sim_id}/enable_termination:
     post:
       description: 指定した IoT SIM の解約プロテクションを解除します (解約できるようにします)。
       operationId: enableSimTermination
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11425,8 +11564,7 @@ paths:
         現在のセッションは、[Sim:getSim API](#/Sim/getSim) で確認します。現在のセッションをこの API で確認するには、最新のセッション履歴の `event` の値を確認します。セッションの意味は、[状態 (オンライン / オフライン)](/ja-jp/resources/glossary/session/#状態-オンライン--オフライン) を参照してください。
       operationId: listSimSessionEvents
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -11450,7 +11588,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後のイベント履歴のタイムスタンプ。このパラメータを指定することで次のイベント履歴以降のリストを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -11489,13 +11627,13 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前ページで取得した最後のパケットキャプチャセッション。このパラメータを指定することで次のパケットキャプチャセッション以降のリストを取得できる。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
         schema:
           type: string
-      - description: 取得するパケットキャプチャセッションの上限
+      - description: 取得するパケットキャプチャセッションの上限。
         in: query
         name: limit
         required: false
@@ -11511,9 +11649,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/PacketCaptureSession'
                 type: array
-          description: IoT SIM に対するパケットキャプチャセッションのリスト
+          description: IoT SIM に対するパケットキャプチャセッションのリスト。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11542,7 +11680,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PacketCaptureSessionRequest'
-        description: パケットキャプチャセッションリクエスト
+        description: パケットキャプチャセッションリクエスト。
         required: true
       responses:
         "200":
@@ -11550,11 +11688,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: IoT SIM に対するパケットキャプチャセッション
+          description: IoT SIM に対するパケットキャプチャセッション。
         "400":
-          description: IoT SIM に対するパケットキャプチャセッションの作成が失敗した
+          description: IoT SIM に対するパケットキャプチャセッションの作成が失敗した。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11574,7 +11712,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 対象のパケットキャプチャセッション ID
+      - description: 対象のパケットキャプチャセッション ID。
         in: path
         name: session_id
         required: true
@@ -11586,11 +11724,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: 削除されたパケットキャプチャセッションの情報
+          description: 削除されたパケットキャプチャセッションの情報。
         "400":
-          description: IoT SIM に対するパケットキャプチャセッションの削除に失敗
+          description: IoT SIM に対するパケットキャプチャセッションの削除に失敗した。
         "404":
-          description: IoT SIM に対するパケットキャプチャセッションが存在しない
+          description: IoT SIM に対するパケットキャプチャセッションが存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11609,7 +11747,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 対象のパケットキャプチャセッション ID
+      - description: 対象のパケットキャプチャセッション ID。
         in: path
         name: session_id
         required: true
@@ -11621,9 +11759,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: IoT SIM に対するパケットキャプチャセッション
+          description: IoT SIM に対するパケットキャプチャセッション。
         "404":
-          description: IoT SIM に対するパケットキャプチャセッションが存在しない
+          description: IoT SIM に対するパケットキャプチャセッションが存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11643,7 +11781,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 対象のパケットキャプチャセッション ID
+      - description: 対象のパケットキャプチャセッション ID。
         in: path
         name: session_id
         required: true
@@ -11655,14 +11793,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PacketCaptureSession'
-          description: 停止されたパケットキャプチャセッションの情報
+          description: 停止されたパケットキャプチャセッションの情報。
         "400":
-          description: The packet capture session can be stopped only when its status
-            is CAPTURING
+          description: パケットキャプチャセッションは、ステータスが CAPTURING の場合のみ停止できます。
         "404":
-          description: IoT SIM に対するパケットキャプチャセッションが存在しない
+          description: IoT SIM に対するパケットキャプチャセッションが存在しない。
         "500":
-          description: IoT SIM に対するパケットキャプチャセッションが停止できなかった
+          description: IoT SIM に対するパケットキャプチャセッションが停止できなかった。
       security:
       - api_key: []
         api_token: []
@@ -11851,7 +11988,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterSimRequest'
-        description: IoT SIM 登録リクエスト
+        description: IoT SIM 登録リクエスト。
         required: true
       responses:
         "201":
@@ -11859,7 +11996,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: IoT SIM 登録完了
+          description: IoT SIM 登録完了。
       security:
       - api_key: []
         api_token: []
@@ -11912,7 +12049,7 @@ paths:
       description: 指定した IoT SIM 宛に SMS を送信する。
       operationId: sendSmsToSim
       parameters:
-      - description: SMS 送信対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
+      - description: SMS 送信対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims)
           で取得できます。
         in: path
         name: sim_id
@@ -11940,7 +12077,7 @@ paths:
         "400":
           description: 指定した IoT SIM は SMS API をサポートしていない
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -11990,8 +12127,7 @@ paths:
       description: 指定した IoT SIM の有効期限とアクションを設定します。
       operationId: setSimExpiryTime
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12014,9 +12150,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の IoT SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -12030,8 +12166,7 @@ paths:
       description: IoT SIM を SIM グループに所属させます。
       operationId: setSimGroup
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12084,13 +12219,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の IoT SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報。
         "400":
           description: |
             - IMEI 文字列が無効です。
             - オフラインの IoT SIM にも関わらず IMEI が指定されていません。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -12104,8 +12239,7 @@ paths:
       description: 指定した IoT SIM のステータスを「利用開始待ち (standby)」に変更します。
       operationId: setSimToStandby
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12156,8 +12290,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後のステータス操作履歴のプライマリ IMSI とタイムスタンプ (UNIX 時間 (ミリ秒)) を `@`
-          で連結した文字列。このパラメータを指定することで次のステータス操作履歴以降のデータを取得できます。
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
         in: query
         name: last_evaluated_key
         required: false
@@ -12213,8 +12346,7 @@ paths:
       description: 指定した IoT SIM のステータスを「利用中断中 (suspended)」に変更します。
       operationId: suspendSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12246,8 +12378,7 @@ paths:
         なお、IoT SIM の名前は、`name` がキーのタグに登録する仕組みです。
       operationId: putSimTags
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12288,8 +12419,7 @@ paths:
       description: 指定した IoT SIM のタグを削除する。
       operationId: deleteSimTag
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12324,8 +12454,7 @@ paths:
         指定した IoT SIM を解約します。あらかじめ [Sim:enableSimTermination API](#/Sim/enableSimTermination) を使用して解約できるように (解約プロテクションを解除) してください。
       operationId: terminateSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12383,8 +12512,7 @@ paths:
       description: 指定した IoT SIM の有効期限を解除します。
       operationId: unsetSimExpiryTime
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12408,8 +12536,7 @@ paths:
       description: IoT SIM を SIM グループから外します。
       operationId: unsetSimGroup
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -12449,9 +12576,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の IoT SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -12484,12 +12611,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sim'
-          description: 更新後の IoT SIM の詳細情報
+          description: 更新後の IoT SIM の詳細情報。
         "400":
           description: 指定された速度クラスは、このサブスクリプションに存在しません。たとえば、plan01s のときは arc.standard
             は指定できません。
         "404":
-          description: 指定した IoT SIM が存在しない
+          description: 指定した IoT SIM が存在しない。
       security:
       - api_key: []
         api_token: []
@@ -12771,7 +12898,7 @@ paths:
         **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
 
         **Info**: この API を利用するには、[リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
-      operationId: getSoraCamDeviceLiveImage
+      operationId: getSoraCamDeviceAtomCamLiveImage
       parameters:
       - description: 対象のソラカメ対応カメラのデバイス ID。
         in: path
@@ -15836,7 +15963,7 @@ paths:
         **Info**: 解約した IoT SIM のデータ通信量も確認できます。
       operationId: exportAirStats
       parameters:
-      - description: オペレーター ID。オペレーター ID は [Operator:getOperator API](#/Operator/getOperator)
+      - description: オペレーター ID。[Operator:getOperator API](#/Operator/getOperator)
           で取得できます。
         in: path
         name: operator_id
@@ -15908,8 +16035,7 @@ paths:
         **Warning**: 解約した IoT SIM のデータ通信量は確認できません。
       operationId: getAirStatsOfSim
       parameters:
-      - description: 対象の IoT SIM の SIM ID。SIM ID は [Sim:listSims API](#/Sim/listSims)
-          で取得できます。
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
         in: path
         name: sim_id
         required: true
@@ -17757,7 +17883,7 @@ paths:
                 - 44XX01234567894
               schema:
                 $ref: '#/components/schemas/VerifySubscriberTransferTokenResponse'
-          description: OK.
+          description: IoT SIM の譲渡が正常に受け入れられ、処理されました。
       security:
       - api_key: []
         api_token: []
@@ -19358,7 +19484,7 @@ paths:
       description: 与信を実施し、問題ない場合に発注を確定します。
       operationId: confirmVolumeDiscountOrder
       parameters:
-      - description: 発注 ID。発注 ID は [Order:createVolumeDiscountQuotation API](#/Order/createVolumeDiscountQuotation)
+      - description: 発注 ID。[Order:createVolumeDiscountQuotation API](#/Order/createVolumeDiscountQuotation)
           で取得できます。
         in: path
         name: order_id
@@ -19372,7 +19498,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
-          description: OK.
+          description: 確定された長期利用割引の発注情報。
       security:
       - api_key: []
         api_token: []
@@ -19391,7 +19517,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AvailableLongTermDiscountResponse'
-          description: OK.
+          description: 購入可能な長期利用割引の一覧。
       security:
       - api_key: []
         api_token: []
@@ -19583,10 +19709,10 @@ components:
     APICallErrorMessage:
       properties:
         code:
-          description: エラーコード
+          description: エラーコード。
           type: string
         message:
-          description: エラーメッセージ。リクエスト時に X-Soracom-Lang ヘッダーに言語 (en, ja) を設定すると、エラーメッセージの出力言語を選択できます。
+          description: エラーメッセージ。リクエスト時に `X-Soracom-Lang` ヘッダーに言語 (`en`, `ja`) を設定すると、その言語のメッセージが返されます。
           type: string
       required:
       - code
@@ -19810,7 +19936,7 @@ components:
     ArcCredentialAttachRequest:
       properties:
         arcClientPeerPublicKey:
-          description: if this parameter is missing, the sever generates keypair
+          description: このパラメータが指定されていない場合、サーバーがキーペアを生成します
           type: string
       type: object
     ArcCredentialAttachResponse:
@@ -22164,7 +22290,7 @@ components:
     GetAnalysisQueriesResponse:
       properties:
         columnInfo:
-          description: データベースクエリ結果のカラム情報。
+          description: SQL クエリ結果のカラム情報。
           items:
             properties:
               databaseType:
@@ -22198,18 +22324,18 @@ components:
           description: '`url` からダウンロードできるファイルに含まれるデータの行数。'
           type: integer
         sqlExecTime:
-          description: データベースクエリの実行にかかった時間 (秒)。
+          description: SQL クエリの実行にかかった時間 (秒)。
           type: integer
         sqlExportTime:
-          description: データベースクエリ結果のエクスポートにかかった時間 (秒)。
+          description: SQL クエリ結果のエクスポートにかかった時間 (秒)。
           type: integer
         status:
           description: |
-            データベースクエリの実行ステータス。
-            - `STARTING`: データベースクエリの実行を開始。
-            - `RUNNING`: データベースクエリ実行中（データ抽出中）。
-            - `EXPORTING`: データベースクエリ結果をエクスポート中。
-            - `COMPLETED`: データベースクエリは完了。`url` からファイルをダウンロードできます。
+            SQL クエリの実行ステータス。
+            - `STARTING`: SQL クエリの実行を開始。
+            - `RUNNING`: SQL クエリ実行中（データ抽出中）。
+            - `EXPORTING`: SQL クエリ結果をエクスポート中。
+            - `COMPLETED`: SQL クエリは完了。`url` からファイルをダウンロードできます。
           enum:
           - STARTING
           - RUNNING
@@ -22220,11 +22346,11 @@ components:
           description: '`url` からダウンロードできるファイルの解凍後のファイルサイズ。'
           type: integer
         url:
-          description: データベースクエリ結果ファイルをダウンロードするための URL。データベースクエリが完了している場合にのみ含まれます。
+          description: SQL クエリ結果ファイルをダウンロードするための URL。SQL クエリが完了している場合にのみ含まれます。
           format: uri
           type: string
         usedExecCount:
-          description: 今月のデータベースクエリの実行回数です。
+          description: 今月の SQL クエリの実行回数。
           type: integer
       type: object
     GetAnalysisSchemasResponse:
@@ -22381,12 +22507,26 @@ components:
             $ref: '#/components/schemas/EstimatedOrderItemModel'
           type: array
         orderStatus:
-          description: 発注ステータス。
+          description: |
+            発注ステータス。詳しくは、[注文履歴を確認する](https://users.soracom.io/ja-jp/guides/getting-started/check-order-history/) を参照してください。
+
+            - `orderProcessing`: 注文登録済み (未決済)。
+            - `ordering`: 注文登録済み (決済中)。
+            - `ordered`: 注文登録済み (決済済み)。
+            - `kitting`: 発送準備中。
+            - `shipped`: 発送済み。
+            - `receiving`: 受け取り中。
+            - `received`: 受け取り済み。
+            - `cancelling`: キャンセル処理中。
+            - `cancelled`: キャンセル済み。
+            - `failed`: 注文時エラー。
           enum:
+          - orderProcessing
           - ordering
           - ordered
           - kitting
           - shipped
+          - receiving
           - received
           - cancelling
           - cancelled
@@ -24796,8 +24936,7 @@ components:
     SetGroupRequest:
       properties:
         groupId:
-          description: グループ ID。グループ ID は [Group:listGroups API](#/Group/listGroups)
-            で取得できます。
+          description: グループ ID。[Group:listGroups API](#/Group/listGroups) で取得できます。
           type: string
       type: object
     SetImeiLockRequest:
@@ -25182,6 +25321,19 @@ components:
         simId:
           description: SIM ID
           type: string
+    SimDownlinkBinaryEncoding:
+      default: string
+      description: |
+        バイナリデータのエンコーディング形式。
+
+        - `string`: エンコーディングなし。UTF-8 文字列としてそのまま扱われます。
+        - `base64`: base64 エンコーディング。
+        - `hex`: 16 進数エンコーディング。大文字小文字は区別されません。
+      enum:
+      - string
+      - base64
+      - hex
+      type: string
     SimDownlinkHttpRequest:
       properties:
         body:
@@ -25373,6 +25525,153 @@ components:
           type: string
       required:
       - exitcode
+      type: object
+    SimDownlinkTcpConnectionFireAndForgetOptions:
+      description: |
+        デバイスと TCP 接続を確立し、指定されたデータ送信を試みて API レスポンスを返します。
+
+        - デバイスからのデータ受信を待ちません。
+        - デバイスにネットワーク接続できなかった場合や、デバイスへのデータ送信を確認した場合も、成功を表す API レスポンスを返します。
+      properties:
+        type:
+          enum:
+          - fire_and_forget
+          type: string
+      type: object
+    SimDownlinkTcpConnectionIdleTimeoutOptions:
+      description: "デバイスと TCP 接続を確立し、指定されたデータを送信して、デバイスからのデータ受信を待ちます。データ受信を開始後、`idleTimeout`
+        で指定した時間が経過するまでデータを受信しなかった場合、それまでに受信したデータを API レスポンスとして返します。\n\n- 以下の場合は、エラーを表す
+        API レスポンスを返します。\n    - デバイスからのデータ受信がない場合。\n    \n        `timeout` で指定した時間経過後、デバイスとの
+        TCP 接続を切断して、エラーを返します。\n    - デバイスからデータを受信する前に、デバイスから TCP 接続が切断された場合。\n"
+      properties:
+        idleTimeout:
+          description: デバイスから最後にデータを受信してから、待機する時間 (秒)。
+          type: integer
+        type:
+          enum:
+          - idle_timeout
+          type: string
+      required:
+      - idleTimeout
+      type: object
+    SimDownlinkTcpConnectionWaitAllOptions:
+      description: |
+        デバイスと TCP 接続を確立し、指定されたデータを送信して、デバイスからのデータ受信を待ちます。その後、`timeout` で指定した時間がすぎるか、デバイスから TCP 接続を切断されるまでの間に受信したデータを API レスポンスとして返します。
+
+        - デバイスからのデータ受信がない場合は、`timeout` で指定した時間経過後、デバイスとの TCP 接続を切断し、エラーを返します。
+      properties:
+        type:
+          enum:
+          - wait_all
+          type: string
+      type: object
+    SimDownlinkTcpConnectionWaitFirstOptions:
+      description: "デバイスと TCP 接続を確立し、指定されたデータを送信します。その後、デバイスからの最初のデータ受信を確認し次第、デバイスとの
+        TCP 接続を切断して API レスポンスを返します。\n\n- デバイスから受信したデータは API レスポンスに含まれません。\n- デバイスがデータを送信し続けている場合でも、最初のデータ受信を確認した直後に
+        TCP 接続を切断します。\n- 以下の場合は、エラーを表す API レスポンスを返します。\n    - デバイスからのデータ受信がない場合。\n
+        \   \n        `timeout` で指定した時間経過後、デバイスとの TCP 接続を切断して、エラーを返します。\n    - デバイスからデータを受信する前に、デバイスから
+        TCP 接続が切断された場合。\n"
+      properties:
+        type:
+          enum:
+          - wait_first
+          type: string
+      type: object
+    SimDownlinkTcpConnectionWaitForPatternOptions:
+      description: "デバイスと TCP 接続を確立し、指定されたデータを送信して、デバイスからのデータ受信を待ちます。その後、「`terminationPattern`
+        で指定したパターンのバイト列を受信するまでの間」に受信したデータを API レスポンスとして返します。\n\n- 以下の場合は、エラーを表す API
+        レスポンスを返します。\n    - デバイスからのデータ受信がない場合。\n    \n        `timeout` で指定した時間経過後、デバイスとの
+        TCP 接続を切断して、エラーを返します。\n    - `timeout` で指定した時間、パターンに一致するデータを受信できなかった場合。\n"
+      properties:
+        terminationPattern:
+          description: データ受信を終了するバイト列を、`terminationPatternEncoding` で指定した形式で UTF-8
+            文字列にエンコードしたもの。
+          type: string
+        terminationPatternEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: データ受信を終了するバイト列のエンコーディング方法。デフォルトは、`base64` です。
+        type:
+          enum:
+          - wait_for_pattern
+          type: string
+      required:
+      - terminationPattern
+      type: object
+    SimDownlinkTcpRequest:
+      properties:
+        connectionOptions:
+          default:
+            type: wait_all
+          description: TCP 接続のときのデータ受信の動作 (デバイスからのレスポンスを SORACOM API でどのように扱うか) を指定するオプション。以下のいずれかを選択します。
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionFireAndForgetOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitFirstOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitAllOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitForPatternOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionIdleTimeoutOptions'
+        payload:
+          description: デバイスに送信するデータを、`payloadEncoding` で指定した形式でエンコードした文字列。最大サイズは、エンコードされた文字列のサイズで
+            5 MiB です。
+          type: string
+        payloadEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: |
+            送信データのエンコーディング形式。以下のいずれかを指定します。デフォルトは `string`です。
+
+            - `string`: UTF-8 文字列としてそのまま扱います。
+            - `base64`: base64 エンコーディング。
+            - `hex`: 16 進数エンコーディング。大文字小文字は区別されません。
+        port:
+          description: デバイスが TCP 接続を待ち受けるポート番号。
+          maximum: 65535
+          minimum: 1
+          type: integer
+        timeout:
+          default: 30
+          description: データ送信と受信のタイムアウト時間 (秒)。デフォルト値は `30` で、最大値は `300` です。
+          maximum: 300
+          minimum: 1
+          type: integer
+      required:
+      - port
+      - payload
+      type: object
+    SimDownlinkTcpResponse:
+      description: TCP 接続のレスポンス
+      properties:
+        data:
+          description: 受信したデータを `dataEncoding` で指定した形式でエンコードした文字列。最大サイズは、エンコードされた文字列のサイズで
+            5 MiB です。
+          type: string
+        dataEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: 受信したデータのエンコーディング形式。
+      required:
+      - data
+      type: object
+    SimDownlinkUdpRequest:
+      properties:
+        payload:
+          description: |
+            送信するデータを `payloadEncoding` で指定した形式で文字列にエンコードしたものです。最大サイズはエンコードされた文字列のサイズで 1472 バイトです。
+
+            **Warning**: ネットワーク経路によって実際の最大サイズはこれより小さくなることがあります。ネットワーク経路での最大サイズを超えたデータは破棄されることがあります。
+          type: string
+        payloadEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: |
+            送信データのエンコーディング形式。以下のいずれかを指定します。デフォルトは `string`です。
+            - `string`: UTF-8 文字列としてそのまま扱います。
+            - `base64`: base64 エンコーディング。
+            - `hex`: 16 進数エンコーディング。大文字小文字は区別されません。
+        port:
+          description: UDP のポート番号。
+          maximum: 65535
+          minimum: 1
+          type: integer
+      required:
+      - port
+      - payload
       type: object
     SimInitialSetting:
       description: 指定のサブスクリプションに対する初期設定。
@@ -26678,19 +26977,19 @@ components:
     StartAnalysisQueriesRequest:
       properties:
         from:
-          description: データベースクエリを適用する期間の始まり (UNIX 時間 (秒))。
+          description: SQL クエリを適用する期間の始まり (UNIX 時間 (秒))。
           type: integer
         sql:
-          description: データベースクエリ (SQL)。
+          description: SQL クエリ。
           type: string
         to:
-          description: データベースクエリを適用する期間の終わり (UNIX 時間 (秒))。
+          description: SQL クエリを適用する期間の終わり (UNIX 時間 (秒))。
           type: integer
       type: object
     StartAnalysisQueriesResponse:
       properties:
         queryId:
-          description: データベースクエリ ID。
+          description: SQL クエリ ID。
           type: string
       type: object
     Subscriber:
@@ -27569,10 +27868,16 @@ components:
       type: object
   securitySchemes:
     api_key:
+      description: |
+        認証用 API キー。SORACOM ユーザーコンソールまたは Auth API から取得できます。
+        すべての認証が必要なリクエストで API トークンと組み合わせて使用する必要があります。
       in: header
       name: X-Soracom-API-Key
       type: apiKey
     api_token:
+      description: |-
+        認証用 API トークン。このトークンには有効期限があり、定期的に更新する必要があります。
+        すべての認証が必要なリクエストで API キーと組み合わせて使用する必要があります。
       in: header
       name: X-Soracom-Token
       type: apiKey

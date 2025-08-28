@@ -26,7 +26,7 @@ var SimsDownlinkPingCmdTimeoutSeconds int64
 var SimsDownlinkPingCmdBody string
 
 func InitSimsDownlinkPingCmd() {
-	SimsDownlinkPingCmd.Flags().StringVar(&SimsDownlinkPingCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsDownlinkPingCmd.Flags().StringVar(&SimsDownlinkPingCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsDownlinkPingCmd.Flags().Int64Var(&SimsDownlinkPingCmdNumberOfPingRequests, "number-of-ping-requests", 1, TRAPI("The number of attempt ping."))
 

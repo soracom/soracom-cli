@@ -20,7 +20,7 @@ var OrdersResourceInitialSettingUpdateCmdOrderId string
 var OrdersResourceInitialSettingUpdateCmdBody string
 
 func InitOrdersResourceInitialSettingUpdateCmd() {
-	OrdersResourceInitialSettingUpdateCmd.Flags().StringVar(&OrdersResourceInitialSettingUpdateCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders)."))
+	OrdersResourceInitialSettingUpdateCmd.Flags().StringVar(&OrdersResourceInitialSettingUpdateCmdOrderId, "order-id", "", TRAPI("Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders)."))
 
 	OrdersResourceInitialSettingUpdateCmd.Flags().StringVar(&OrdersResourceInitialSettingUpdateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

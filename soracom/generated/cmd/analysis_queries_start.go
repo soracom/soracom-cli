@@ -26,11 +26,11 @@ var AnalysisQueriesStartCmdTo int64
 var AnalysisQueriesStartCmdBody string
 
 func InitAnalysisQueriesStartCmd() {
-	AnalysisQueriesStartCmd.Flags().StringVar(&AnalysisQueriesStartCmdSql, "sql", "", TRAPI("Database query (SQL)."))
+	AnalysisQueriesStartCmd.Flags().StringVar(&AnalysisQueriesStartCmdSql, "sql", "", TRAPI("A SQL query."))
 
-	AnalysisQueriesStartCmd.Flags().Int64Var(&AnalysisQueriesStartCmdFrom, "from", 0, TRAPI("Start of the period to apply the database query (UNIX time (seconds))."))
+	AnalysisQueriesStartCmd.Flags().Int64Var(&AnalysisQueriesStartCmdFrom, "from", 0, TRAPI("Start of the period to apply the SQL query (UNIX time (seconds))."))
 
-	AnalysisQueriesStartCmd.Flags().Int64Var(&AnalysisQueriesStartCmdTo, "to", 0, TRAPI("End of the period to apply the database query (UNIX time (seconds))."))
+	AnalysisQueriesStartCmd.Flags().Int64Var(&AnalysisQueriesStartCmdTo, "to", 0, TRAPI("End of the period to apply the SQL query (UNIX time (seconds))."))
 
 	AnalysisQueriesStartCmd.Flags().StringVar(&AnalysisQueriesStartCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 

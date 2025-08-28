@@ -28,7 +28,7 @@ var SimsSendSmsCmdBody string
 func InitSimsSendSmsCmd() {
 	SimsSendSmsCmd.Flags().StringVar(&SimsSendSmsCmdPayload, "payload", "", TRAPI(""))
 
-	SimsSendSmsCmd.Flags().StringVar(&SimsSendSmsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM to which the SMS will be sent. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsSendSmsCmd.Flags().StringVar(&SimsSendSmsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM to which the SMS will be sent. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsSendSmsCmd.Flags().Int64Var(&SimsSendSmsCmdEncodingType, "encoding-type", 2, TRAPI("Encoding type of the message body. Default is '2' ('DCS_UCS2').- '1': Send in GSM 7-bit that only supports standard alphabet. Kanji, Cyrillic, and Arabic characters cannot be sent. Maximum 160 characters (maximum 140 bytes).    Example: '{\"encodingType\": 1, \"payload\": \"Test message.\"}'- '2': Send in UCS-2, which supports Kanji, Cyrillic, Arabic, etc. Maximum 70 characters.    Example: '{\"encodingType\": 2, \"payload\": \"テストメッセージ\"}'"))
 
