@@ -8,6 +8,13 @@ if [[ "$version" == "" ]] || [[ "$git_username" == "" ]] || [[ "$git_email" == "
     exit 1
 fi
 
+# Check if GitHub CLI(gh) is installed
+command -v gh > /dev/null 2>&1 || {
+    echo "'gh' is required."
+    echo "Install gh by following the instructions: https://github.com/cli/cli#installation"
+    exit 1
+}
+
 set -Eeuo pipefail
 
 tmpdir=$(mktemp -d)
