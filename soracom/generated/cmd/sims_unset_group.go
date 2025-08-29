@@ -13,7 +13,7 @@ import (
 var SimsUnsetGroupCmdSimId string
 
 func InitSimsUnsetGroupCmd() {
-	SimsUnsetGroupCmd.Flags().StringVar(&SimsUnsetGroupCmdSimId, "sim-id", "", TRAPI("ID of the target SIM. The SIM ID can be obtained using the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsUnsetGroupCmd.Flags().StringVar(&SimsUnsetGroupCmdSimId, "sim-id", "", TRAPI("ID of the target SIM. The SIM ID can be obtained using the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsUnsetGroupCmd.RunE = SimsUnsetGroupCmdRunE
 

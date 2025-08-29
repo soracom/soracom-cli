@@ -31,9 +31,9 @@ var SimsSessionEventsCmdPaginate bool
 var SimsSessionEventsCmdOutputJSONL bool
 
 func InitSimsSessionEventsCmd() {
-	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The timestamp of the last event history retrieved on the previous page. By specifying this parameter, the list can be retrieved starting from the next event history."))
+	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
-	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsSessionEventsCmd.Flags().StringVar(&SimsSessionEventsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsSessionEventsCmd.Flags().Int64Var(&SimsSessionEventsCmdFrom, "from", 0, TRAPI("Start time (UNIX time in milliseconds) of the period to retrieve the session event history."))
 

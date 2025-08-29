@@ -25,7 +25,7 @@ var SimsListPacketCaptureSessionsCmdPaginate bool
 var SimsListPacketCaptureSessionsCmdOutputJSONL bool
 
 func InitSimsListPacketCaptureSessionsCmd() {
-	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("ID of the last packet capture session in the previous page. By specifying this parameter, you can continue to retrieve the list from the next packet capture session onward."))
+	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
 	SimsListPacketCaptureSessionsCmd.Flags().StringVar(&SimsListPacketCaptureSessionsCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 

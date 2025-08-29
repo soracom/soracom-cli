@@ -24,7 +24,7 @@ func InitSoraCamDevicesAtomCamLiveImageCmd() {
 var SoraCamDevicesAtomCamLiveImageCmd = &cobra.Command{
 	Use:   "live-image",
 	Short: TRAPI("/sora_cam/devices/{device_id}/atom_cam/live_image:get:summary"),
-	Long:  TRAPI(`/sora_cam/devices/{device_id}/atom_cam/live_image:get:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "getSoraCamDeviceLiveImage"),
+	Long:  TRAPI(`/sora_cam/devices/{device_id}/atom_cam/live_image:get:description`) + "\n\n" + createLinkToAPIReference("SoraCam", "getSoraCamDeviceAtomCamLiveImage"),
 }
 
 func SoraCamDevicesAtomCamLiveImageCmdRunE(cmd *cobra.Command, args []string) error {

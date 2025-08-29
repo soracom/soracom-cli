@@ -22,7 +22,7 @@ var SimsListCmdPaginate bool
 var SimsListCmdOutputJSONL bool
 
 func InitSimsListCmd() {
-	SimsListCmd.Flags().StringVar(&SimsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The ID of the last SIM retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
+	SimsListCmd.Flags().StringVar(&SimsListCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
 	SimsListCmd.Flags().Int64Var(&SimsListCmdLimit, "limit", 0, TRAPI("Maximum number of SIMs to retrieve. However, the number of SIMs returned may be less than the specified value."))
 

@@ -1,18 +1,18 @@
 openapi: 3.0.0
 info:
-  description: SORACOM API v1
-  title: SORACOM API
-  version: 20250714-070728
+  description: Soracom API v1
+  title: Soracom API
+  version: 20250826-105139
 servers:
-- description: Japan coverage production API
+- description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
-- description: Global coverage production API
+- description: Global coverage production API endpoint
   url: https://g.api.soracom.io/v1
 paths:
   /analysis/queries:
     post:
-      description: Executes a database query asynchronously. Check the database query
-        execution status with the [Analysis:getAnalysisQueries API](#/Analysis/getAnalysisQueries).
+      description: Executes a SQL query asynchronously. You can check the status of
+        a SQL query execution with the [Analysis:getAnalysisQueries API](#/Analysis/getAnalysisQueries).
       operationId: startAnalysisQueries
       requestBody:
         content:
@@ -23,7 +23,7 @@ paths:
               to: 1743552000
             schema:
               $ref: '#/components/schemas/StartAnalysisQueriesRequest'
-        description: Database query execution request.
+        description: A SQL query execution request.
         required: true
       responses:
         "200":
@@ -33,21 +33,21 @@ paths:
                 queryId: ffa91d0c371d45c4bf53d55ab5c14955
               schema:
                 $ref: '#/components/schemas/StartAnalysisQueriesResponse'
-          description: A new database query execution has started.
+          description: A new SQL query execution has started.
       security:
       - api_key: []
         api_token: []
-      summary: Execute a new database query asynchronously
+      summary: Execute a new SQL query asynchronously
       tags:
       - Analysis
       x-soracom-cli:
       - analysis queries start
   /analysis/queries/{query_id}:
     get:
-      description: Retrieve the database query execution status.
+      description: Retrieve the execution status of a SQL query.
       operationId: getAnalysisQueries
       parameters:
-      - description: Database query ID.
+      - description: SQL query ID.
         in: path
         name: query_id
         required: true
@@ -74,11 +74,12 @@ paths:
                 url: https://soracom-analysis-export.s3.amazonaws.com/ffa91d0c-371d-45c4-bf53-d55ab5c14955.csv.gz
               schema:
                 $ref: '#/components/schemas/GetAnalysisQueriesResponse'
-          description: Query execution status, results, and download URL.
+          description: The execution status, results, and download URL of the SQL
+            query.
       security:
       - api_key: []
         api_token: []
-      summary: Retrieve the execution status of the database query
+      summary: Retrieve the execution status of a SQL query
       tags:
       - Analysis
       x-soracom-cli:
@@ -316,7 +317,7 @@ paths:
   /auth:
     post:
       description: |
-        Performs authentication to access to the SORACOM API. Please include the following information in your request.
+        Performs authentication to access to the Soracom API. Please include the following information in your request.
 
         - To perform authentication by a root account, specify `email` and `password`.
         - To perform authentication by an AuthKey, specify `authKeyId` and `authKey`.
@@ -354,7 +355,7 @@ paths:
           description: Authentication successful.
         "401":
           description: Authentication failed.
-      summary: Performs authentication to access to the SORACOM API.
+      summary: Performs authentication to access to the Soracom API.
       tags:
       - Auth
       x-soracom-cli:
@@ -372,7 +373,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: Revokes an API key and API token in order to remove access to the SORACOM
+      summary: Revokes an API key and API token in order to remove access to the Soracom
         API.
       tags:
       - Auth
@@ -395,7 +396,8 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
+          description: Password reset token successfully sent to the specified email
+            address.
         "400":
           description: Invalid email address.
       summary: Issues a password reset token for the operator.
@@ -420,7 +422,7 @@ paths:
         required: true
       responses:
         "200":
-          description: OK.
+          description: Password successfully updated.
         "400":
           description: Invalid token.
         "404":
@@ -851,7 +853,7 @@ paths:
                   yearMonth: "202207"
               schema:
                 $ref: '#/components/schemas/GetBillingHistoryResponse'
-          description: OK.
+          description: A list of finalized past billing history.
       security:
       - api_key: []
         api_token: []
@@ -887,7 +889,7 @@ paths:
                 yearMonth: "202208"
               schema:
                 $ref: '#/components/schemas/MonthlyBill'
-          description: OK.
+          description: The billing history for the specified month.
         "404":
           description: |
             - The billing history for the specified month has not been finalized.
@@ -928,7 +930,7 @@ paths:
                   date: "20220901"
               schema:
                 $ref: '#/components/schemas/DailyBillResponse'
-          description: OK.
+          description: Daily billing information for the specified month.
         "404":
           description: Bill not found.
       security:
@@ -956,8 +958,8 @@ paths:
       - description: |
           Specify how to get the URL to download the billing details CSV.
 
-          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the SORACOM platform. Specify this `exportedFieldId` in [Files:getExportedFile API](#!/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.
-          - `sync` (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
+          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the Soracom platform. Specify this `exportedFieldId` in [Files:getExportedFile API](#!/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.
+          - `sync` (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
         in: query
         name: export_mode
         required: false
@@ -980,7 +982,8 @@ paths:
                     url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
-          description: OK.
+          description: Export process successfully initiated. Contains the download
+            URL or export ID.
         "404":
           description: Bill not found.
       security:
@@ -1002,7 +1005,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetLatestBill'
-          description: OK
+          description: The latest billing information for the current month.
       security:
       - api_key: []
         api_token: []
@@ -1023,8 +1026,8 @@ paths:
       - description: |
           Specify how to get the URL to download the billing details CSV.
 
-          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the SORACOM platform. Specify this `exportedFieldId` in [Files:getExportedFile API](#!/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.
-          - `sync` (default): Wait for the URL to be issued on the SORACOM platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
+          - `async`: Get the `exportedFieldId` without waiting for the URL to be issued on the Soracom platform. Specify this `exportedFieldId` in [Files:getExportedFile API](#!/Files/getExportedFile) to get the URL. If the file size of the billing details CSV is huge, use `async`.
+          - `sync` (default): Wait for the URL to be issued on the Soracom platform. However, if the file size of the billing details CSV is huge, it may time out and the URL cannot be retrieved. If the timeout occurs, specify `async`.
         in: query
         name: export_mode
         required: false
@@ -1047,7 +1050,8 @@ paths:
                     url: https://soracom-xxxxxxxx-....
               schema:
                 $ref: '#/components/schemas/FileExportResponse'
-          description: OK.
+          description: Export process successfully initiated. Contains the download
+            URL or export ID.
       security:
       - api_key: []
         api_token: []
@@ -1071,7 +1075,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/BillingSummaryResponseOfBillItems'
                 type: array
-          description: OK.
+          description: A billing summary of bill items for the last 4 months.
       security:
       - api_key: []
         api_token: []
@@ -1095,7 +1099,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/BillingSummaryResponseOfSims'
                 type: array
-          description: OK.
+          description: A billing summary of SIMs for the last 4 months.
       security:
       - api_key: []
         api_token: []
@@ -1348,7 +1352,8 @@ paths:
         encountered.
       operationId: confirmCouponOrder
       parameters:
-      - description: Order ID.
+      - description: Order ID. You can get it by calling [Order:createCouponQuotation
+          API](#/Order/createCouponQuotation).
         in: path
         name: order_id
         required: true
@@ -1360,7 +1365,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CouponResponse'
-          description: OK.
+          description: The confirmed coupon order.
       security:
       - api_key: []
         api_token: []
@@ -8907,7 +8912,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderResponse'
-          description: OK.
+          description: A list of confirmed order history.
       security:
       - api_key: []
         api_token: []
@@ -8950,7 +8955,7 @@ paths:
         **Warning**: The maximum information you can get is for the last 18 months. If you need the information before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: getOrder
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -8962,7 +8967,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetOrderResponse'
-          description: OK.
+          description: The confirmed order information.
       security:
       - api_key: []
         api_token: []
@@ -8977,7 +8982,7 @@ paths:
         error is returned.
       operationId: cancelOrder
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -9006,7 +9011,7 @@ paths:
         **Warning**: Only orders completed within the past month can be confirmed. If one month has elapsed, please redo the order placement operation.
       operationId: confirmOrder
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -9014,7 +9019,11 @@ paths:
           type: string
       responses:
         "200":
-          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+          description: The confirmed order information.
       security:
       - api_key: []
         api_token: []
@@ -9031,7 +9040,7 @@ paths:
         **Warning**: Initial settings of IoT SIM cannot be specified after confirmation of receipt.
       operationId: updateOrderedResourceInitialSetting
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -9052,8 +9061,16 @@ paths:
                 $ref: '#/components/schemas/GetOrderResponse'
           description: The initial setting has been successfully updated.
         "400":
+          content:
+            application/json:
+              schema:
+                type: string
           description: The specified request has a problem.
         "404":
+          content:
+            application/json:
+              schema:
+                type: string
           description: Order ID not found.
       security:
       - api_key: []
@@ -9071,7 +9088,7 @@ paths:
         **Warning**: The maximum information you can get is for the last 18 months. If you need the information before that time, please contact [Soracom Support](https://support.soracom.io).
       operationId: listOrderedSubscribers
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -9085,7 +9102,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: Max number of subscribers in a response.
+      - description: Maximum number of subscribers in a response.
         in: query
         name: limit
         required: false
@@ -9098,7 +9115,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListOrderedSubscriberResponse'
-          description: OK.
+          description: A list of ordered subscribers.
       security:
       - api_key: []
         api_token: []
@@ -9120,7 +9137,7 @@ paths:
         **Warning**: IoT SIMs can only be registered for the past 18 months. If you need to register an IoT SIM that was ordered before the time period, please contact [Soracom Support](https://support.soracom.io).
       operationId: registerOrderedSim
       parameters:
-      - description: Order ID. You can get it by calling [Order:listOrders API](#!/Order/listOrders).
+      - description: Order ID. You can get it by calling [Order:listOrders API](#/Order/listOrders).
         in: path
         name: order_id
         required: true
@@ -9505,7 +9522,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListProductResponse'
-          description: OK.
+          description: A list of available products.
       security:
       - api_key: []
         api_token: []
@@ -9798,10 +9815,13 @@ paths:
       parameters:
       - description: Name to search.
         examples:
-          mysim:
-            summary: |
-              Search for IoT SIMs whose name contains mysim
-            value: mysim
+          0_no_filter:
+            summary: No filter
+            value: []
+          1_filter_example:
+            summary: Search for IoT SIMs with specific name
+            value:
+            - example-sim
         explode: true
         in: query
         name: name
@@ -9812,10 +9832,13 @@ paths:
           type: array
       - description: Name of the [group](/en/docs/groups/) to which the IoT SIM belongs.
         examples:
-          mygroup:
-            summary: |
-              Search for IoT SIMs whose group name contains mygroup
-            value: mygroup
+          0_no_filter:
+            summary: No filter
+            value: []
+          1_filter_example:
+            summary: Search for IoT SIMs in specific group
+            value:
+            - example-group
         explode: true
         in: query
         name: group
@@ -11001,9 +11024,8 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The ID of the last SIM retrieved on the previous page. By specifying
-          this parameter, you can continue to retrieve the list from the next SIM
-          onward.
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
         in: query
         name: last_evaluated_key
         required: false
@@ -11017,7 +11039,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sim'
                 type: array
-          description: List of IoT SIMs
+          description: List of IoT SIMs.
         "404":
           description: No such SIM found.
       security:
@@ -11065,7 +11087,7 @@ paths:
       operationId: getSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11094,7 +11116,7 @@ paths:
       operationId: activateSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11222,7 +11244,7 @@ paths:
       operationId: getDataFromSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11260,8 +11282,8 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: |
-          Key in the last data entry retrieved in the previous page. The key for data entries in this API is `${UNIX time in milliseconds}_${IMSI}`. By specifying this parameter, you can continue to retrieve the list from the next page onward.
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
         in: query
         name: last_evaluated_key
         required: false
@@ -11295,7 +11317,7 @@ paths:
       operationId: deactivateSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11332,7 +11354,7 @@ paths:
       operationId: deleteSimSession
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11362,7 +11384,7 @@ paths:
       operationId: disableSimTermination
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11446,7 +11468,7 @@ paths:
       operationId: sendDownlinkPing
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11570,6 +11592,141 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ssh
+  /sims/{sim_id}/downlink/tcp:
+    post:
+      description: |
+        Connects to a device using an IoT SIM via TCP, sends specified data, and returns data received from the device.
+
+        - The maximum size of sent and received data is 5 MiB each.
+        - If sending and receiving data is not completed within the time specified by `timeout`, an error will occur.
+      operationId: sendDownlinkTcp
+      parameters:
+      - description: |
+          SIM ID of the target IoT SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims).
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              connectionOptions:
+                terminationPattern: T0sK
+                terminationPatternEncoding: base64
+                type: wait_for_pattern
+              payload: SGVsbG8gV29ybGQ=
+              payloadEncoding: base64
+              port: 5000
+              timeout: 5
+            schema:
+              $ref: '#/components/schemas/SimDownlinkTcpRequest'
+        description: Options for TCP connection and data transmission/reception.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkTcpResponse'
+          description: Data transmission and response reception were successful. Check
+            the response body for the response from the device.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            Invalid request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            Authentication failed.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: The specified IoT SIM does not exist.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: Data transmission and reception failed.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connect to a device using an IoT SIM via TCP and send/receive data
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-tcp
+  /sims/{sim_id}/downlink/udp:
+    post:
+      description: |
+        Sends specified data to a device using an IoT SIM via UDP.
+
+        **Warning**: Unlike TCP, UDP communication lacks retransmission and sequencing mechanisms, which may lead to packet loss or out-of-order arrival.
+      operationId: sendDownlinkUdp
+      parameters:
+      - description: |
+          SIM ID of the target IoT SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims).
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              payload: SGVsbG8gV29ybGQ=
+              payloadEncoding: base64
+              port: 5000
+            schema:
+              $ref: '#/components/schemas/SimDownlinkUdpRequest'
+        description: Options for UDP data transmission.
+        required: true
+      responses:
+        "204":
+          description: |
+            The data has been sent to the device.
+            However, due to the nature of UDP, packet delivery is not guaranteed.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            Invalid request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: |
+            Authentication failed.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APICallErrorMessage'
+          description: The specified IoT SIM does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Send data using IoT SIM via UDP
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-udp
   /sims/{sim_id}/enable_termination:
     post:
       description: Disables termination protection for the specified IoT SIM (enables
@@ -11577,7 +11734,7 @@ paths:
       operationId: enableSimTermination
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11610,7 +11767,7 @@ paths:
       operationId: listSimSessionEvents
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -11637,9 +11794,8 @@ paths:
         required: false
         schema:
           type: integer
-      - description: The timestamp of the last event history retrieved on the previous
-          page. By specifying this parameter, the list can be retrieved starting from
-          the next event history.
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
         in: query
         name: last_evaluated_key
         required: false
@@ -11678,9 +11834,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: ID of the last packet capture session in the previous page. By
-          specifying this parameter, you can continue to retrieve the list from the
-          next packet capture session onward.
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
         in: query
         name: last_evaluated_key
         required: false
@@ -11733,7 +11888,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PacketCaptureSessionRequest'
-        description: A packet capture session request
+        description: A packet capture session request.
         required: true
       responses:
         "200":
@@ -12051,7 +12206,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterSimRequest'
-        description: A SIM registration request
+        description: A SIM registration request.
         required: true
       responses:
         "201":
@@ -12116,7 +12271,7 @@ paths:
       operationId: sendSmsToSim
       parameters:
       - description: SIM ID of the target SIM to which the SMS will be sent. The SIM
-          ID can be obtained from the [Sim:listSims API](#!/Sim/listSims).
+          ID can be obtained from the [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12195,7 +12350,7 @@ paths:
       operationId: setSimExpiryTime
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12236,7 +12391,7 @@ paths:
       operationId: setSimGroup
       parameters:
       - description: ID of the target SIM. The SIM ID can be obtained using the [Sim:listSims
-          API](#!/Sim/listSims).
+          API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12310,7 +12465,7 @@ paths:
       operationId: setSimToStandby
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12368,10 +12523,8 @@ paths:
         required: false
         schema:
           type: integer
-      - description: A string consisting of the primary IMSI and the timestamp (UNIX
-          time in milliseconds) of the last status operation history entry obtained
-          on the previous page, concatenated with `@`. By specifying this parameter,
-          you can continue to retrieve the list from the next page onward.
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
         in: query
         name: last_evaluated_key
         required: false
@@ -12430,7 +12583,7 @@ paths:
       operationId: suspendSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12463,7 +12616,7 @@ paths:
       operationId: putSimTags
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12505,7 +12658,7 @@ paths:
       operationId: deleteSimTag
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12541,7 +12694,7 @@ paths:
       operationId: terminateSim
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12600,7 +12753,7 @@ paths:
       operationId: unsetSimExpiryTime
       parameters:
       - description: SIM ID of the target SIM. The SIM ID can be obtained from the
-          [Sim:listSims API](#!/Sim/listSims).
+          [Sim:listSims API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12626,7 +12779,7 @@ paths:
       operationId: unsetSimGroup
       parameters:
       - description: ID of the target SIM. The SIM ID can be obtained using the [Sim:listSims
-          API](#!/Sim/listSims).
+          API](#/Sim/listSims).
         in: path
         name: sim_id
         required: true
@@ -12996,7 +13149,7 @@ paths:
         **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
 
         **Info**: To use this API, you must enable real-time access.
-      operationId: getSoraCamDeviceLiveImage
+      operationId: getSoraCamDeviceAtomCamLiveImage
       parameters:
       - description: Device ID of the target SoraCam compatible camera device.
         in: path
@@ -18152,7 +18305,7 @@ paths:
                 - 44XX01234567894
               schema:
                 $ref: '#/components/schemas/VerifySubscriberTransferTokenResponse'
-          description: OK.
+          description: SIM transfer successfully accepted and processed.
       security:
       - api_key: []
         api_token: []
@@ -19780,7 +19933,7 @@ paths:
       operationId: confirmVolumeDiscountOrder
       parameters:
       - description: Order ID. The order ID can be obtained from the [Order:createVolumeDiscountQuotation
-          API](#!/Order/createVolumeDiscountQuotation).
+          API](#/Order/createVolumeDiscountQuotation).
         in: path
         name: order_id
         required: true
@@ -19793,7 +19946,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetVolumeDiscountResponse'
-          description: OK.
+          description: The confirmed long-term discount order.
       security:
       - api_key: []
         api_token: []
@@ -19812,7 +19965,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AvailableLongTermDiscountResponse'
-          description: OK.
+          description: A list of available long term discounts.
       security:
       - api_key: []
         api_token: []
@@ -20244,7 +20397,7 @@ components:
     ArcCredentialAttachRequest:
       properties:
         arcClientPeerPublicKey:
-          description: if this parameter is missing, the sever generates keypair
+          description: If this parameter is missing, the server generates a keypair.
           type: string
       type: object
     ArcCredentialAttachResponse:
@@ -22631,7 +22784,7 @@ components:
     GetAnalysisQueriesResponse:
       properties:
         columnInfo:
-          description: Database query result column information.
+          description: Column information of the SQL query result.
           items:
             properties:
               databaseType:
@@ -22666,18 +22819,18 @@ components:
             `url`.
           type: integer
         sqlExecTime:
-          description: Time taken to execute the database query (seconds).
+          description: Time taken to execute the SQL query (seconds).
           type: integer
         sqlExportTime:
-          description: Time taken to export the database query results (seconds).
+          description: Time taken to export the SQL query result (seconds).
           type: integer
         status:
           description: |
-            Database query execution status.
-            - `STARTING`: Database query execution started.
-            - `RUNNING`: Database query running (extracting data).
-            - `EXPORTING`: Database query results being exported.
-            - `COMPLETED`: Database query completed. You can download files from `url`.
+            SQL query execution status.
+            - `STARTING`: SQL query execution started.
+            - `RUNNING`: SQL query is running (extracting data).
+            - `EXPORTING`: SQL query result is being exported.
+            - `COMPLETED`: SQL query completed. You can download files from `url`.
           enum:
           - STARTING
           - RUNNING
@@ -22688,12 +22841,12 @@ components:
           description: File size after decompressing the file downloadable from `url`.
           type: integer
         url:
-          description: URL for downloading the database query result file. Included
-            only when the database query is completed.
+          description: URL for downloading the SQL query result file. Included only
+            when the SQL query is completed.
           format: uri
           type: string
         usedExecCount:
-          description: Number of database queries executed.
+          description: Number of SQL queries executed this month.
           type: integer
       type: object
     GetAnalysisSchemasResponse:
@@ -22721,7 +22874,7 @@ components:
                   type: string
                 type:
                   description: |
-                    Reference type for programming languages (inferred from database data type).
+                    Reference type for programming languages (inferred from the database data type).
                     - `string`: String type.
                     - `int64`: Integer type.
                     - `float64`: Floating-point type.
@@ -22850,12 +23003,26 @@ components:
             $ref: '#/components/schemas/EstimatedOrderItemModel'
           type: array
         orderStatus:
-          description: Order status.
+          description: |
+            Order status. For details, please refer to [Where is my order?](https://support.soracom.io/hc/en-us/articles/19543496440345).
+
+            - `orderProcessing`: New order (pending payment).
+            - `ordering`: New order (payment in progress).
+            - `ordered`: New order (payment completed).
+            - `kitting`: Preparing shipment.
+            - `shipped`: Shipped.
+            - `receiving`: Receiving.
+            - `received`: Received.
+            - `cancelling`: Cancelling.
+            - `cancelled`: Cancelled.
+            - `failed`: Failed.
           enum:
+          - orderProcessing
           - ordering
           - ordered
           - kitting
           - shipped
+          - receiving
           - received
           - cancelling
           - cancelled
@@ -22940,7 +23107,7 @@ components:
           format: double
           type: number
         taxOnShippingCost:
-          description: Whether shipping cost is taxable,
+          description: Whether shipping cost is taxable.
           type: boolean
         totalAmount:
           description: Total amount.
@@ -24522,7 +24689,7 @@ components:
           format: int32
           type: integer
         price:
-          description: Price,
+          description: Price.
           format: double
           type: number
         taxIncludedPrice:
@@ -24561,7 +24728,7 @@ components:
           format: int32
           type: integer
         price:
-          description: Price,
+          description: Price.
           format: double
           type: number
         priceByQuantityList:
@@ -25734,6 +25901,16 @@ components:
         simId:
           description: SIM ID.
           type: string
+    SimDownlinkBinaryEncoding:
+      default: string
+      description: Encoding format for binary data. "string" is treated as a UTF-8
+        string. "base64" is Base64 encoding, and "hex" is hexadecimal encoding. Case
+        insensitive for hex.
+      enum:
+      - string
+      - base64
+      - hex
+      type: string
     SimDownlinkHttpRequest:
       properties:
         body:
@@ -25929,6 +26106,171 @@ components:
           type: string
       required:
       - exitcode
+      type: object
+    SimDownlinkTcpConnectionFireAndForgetOptions:
+      description: |
+        Establishes a TCP connection with the device and attempts to send specified data, then returns the API response.
+
+        - Does not wait for data reception from the device.
+        - Even if the device cannot be reached over the network or data transmission to the device is confirmed, this API will still return a successful response.
+      properties:
+        type:
+          enum:
+          - fire_and_forget
+          type: string
+      type: object
+    SimDownlinkTcpConnectionIdleTimeoutOptions:
+      description: "Establishes a TCP connection with the device and sends the specified
+        data, then waits for data reception from the device. After data reception
+        begins, if no data is received for the time specified by `idleTimeout`, returns
+        the data received up to that point as the API response.\n\n- In the following
+        cases, an API response indicating an error is returned:\n    - If no data
+        is received from the device.\n    \n        After the time specified by `timeout`
+        elapses, the TCP connection is terminated and an error is returned.\n    -
+        If the device disconnects the TCP connection before sending any data.\n"
+      properties:
+        idleTimeout:
+          description: Time to wait (seconds) after receiving the last data from the
+            device.
+          type: integer
+        type:
+          enum:
+          - idle_timeout
+          type: string
+      required:
+      - idleTimeout
+      type: object
+    SimDownlinkTcpConnectionWaitAllOptions:
+      description: |
+        Establishes a TCP connection with the device and sends the specified data, then waits for data reception from the device. Then, returns the data received during the time specified by `timeout` or until the device disconnects the TCP connection as the API response.
+
+        - If no data is received from the device, after the time specified by `timeout` elapses, the TCP connection is terminated and an error is returned.
+      properties:
+        type:
+          enum:
+          - wait_all
+          type: string
+      type: object
+    SimDownlinkTcpConnectionWaitFirstOptions:
+      description: "Establishes a TCP connection with the device and sends the specified
+        data. Then, as soon as the first data from the device is received, the TCP
+        connection is terminated and the API response is returned.\n\n- Data received
+        from the device is not included in the API response.\n- Even if the device
+        continues sending data, the TCP connection is disconnected immediately after
+        receiving the first data.\n- In the following cases, an API response indicating
+        an error is returned:\n    - If no data is received from the device.\n    \n
+        \       After the time specified by `timeout` elapses, the TCP connection
+        is terminated and an error is returned.\n    - If the device disconnects the
+        TCP connection before sending any data.\n"
+      properties:
+        type:
+          enum:
+          - wait_first
+          type: string
+      type: object
+    SimDownlinkTcpConnectionWaitForPatternOptions:
+      description: "Establishes a TCP connection with the device and sends the specified
+        data, then waits for data reception from the device. Then, returns the data
+        received until \"the byte pattern specified by `terminationPattern` is received\"
+        as the API response.\n\n- In the following cases, an API response indicating
+        an error is returned:\n    - If no data is received from the device.\n    \n
+        \       After the time specified by `timeout` elapses, the TCP connection
+        is terminated and an error is returned.\n    - If data matching the pattern
+        is not received within the time specified by `timeout`.\n"
+      properties:
+        terminationPattern:
+          description: The sequence of bytes that ends data reception, encoded as
+            a UTF-8 string in the format specified by `terminationPatternEncoding`.
+          type: string
+        terminationPatternEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: The encoding method for the byte sequence that ends data reception.
+            The default is `base64`.
+        type:
+          enum:
+          - wait_for_pattern
+          type: string
+      required:
+      - terminationPattern
+      type: object
+    SimDownlinkTcpRequest:
+      properties:
+        connectionOptions:
+          default:
+            type: wait_all
+          description: Options that specify the behavior of data reception during
+            TCP connection (how the SORACOM API handles responses from the device).
+            Choose one of the following.
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionFireAndForgetOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitFirstOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitAllOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionWaitForPatternOptions'
+          - $ref: '#/components/schemas/SimDownlinkTcpConnectionIdleTimeoutOptions'
+        payload:
+          description: Data to be sent, encoded as a string in the format specified
+            by payloadEncoding. The maximum size is 5 MiB for the encoded string.
+          type: string
+        payloadEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: |
+            Encoding format for the data to be sent. Specify one of the following. The default is `string`.
+
+            - `string`: Treated as a UTF-8 string.
+            - `base64`: Base64 encoding.
+            - `hex`: Hexadecimal encoding. Case insensitive.
+        port:
+          description: Port number for the TCP connection.
+          maximum: 65535
+          minimum: 1
+          type: integer
+        timeout:
+          default: 30
+          description: Timeout duration (seconds) for data transmission and reception.
+            The default value is `30` and the maximum value is `300`.
+          maximum: 300
+          minimum: 1
+          type: integer
+      required:
+      - port
+      - payload
+      type: object
+    SimDownlinkTcpResponse:
+      description: Response for the TCP connection
+      properties:
+        data:
+          description: Data received, encoded as a string in the format specified
+            by dataEncoding. The maximum size is 5 MiB for the encoded string.
+          type: string
+        dataEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: Encoding format for the received data.
+      required:
+      - data
+      type: object
+    SimDownlinkUdpRequest:
+      properties:
+        payload:
+          description: |
+            Data to be sent, encoded as a string in the format specified by `payloadEncoding`. The maximum size is 1,472 bytes for the encoded string.
+
+            **Warning**: Depending on the network path, the actual maximum size may be smaller. Data exceeding the maximum allowable size for the network path may be discarded.
+          type: string
+        payloadEncoding:
+          $ref: '#/components/schemas/SimDownlinkBinaryEncoding'
+          description: |
+            Encoding format for the data to be sent. Specify one of the following. The default is `string`.
+            - `string`: Treated as a UTF-8 string.
+            - `base64`: Base64 encoding.
+            - `hex`: Hexadecimal encoding. Case insensitive.
+        port:
+          description: Port number for UDP.
+          maximum: 65535
+          minimum: 1
+          type: integer
+      required:
+      - port
+      - payload
       type: object
     SimInitialSetting:
       description: Sim initial setting for the specific subscription.
@@ -27260,20 +27602,19 @@ components:
     StartAnalysisQueriesRequest:
       properties:
         from:
-          description: Start of the period to apply the database query (UNIX time
-            (seconds)).
+          description: Start of the period to apply the SQL query (UNIX time (seconds)).
           type: integer
         sql:
-          description: Database query (SQL).
+          description: A SQL query.
           type: string
         to:
-          description: End of the period to apply the database query (UNIX time (seconds)).
+          description: End of the period to apply the SQL query (UNIX time (seconds)).
           type: integer
       type: object
     StartAnalysisQueriesResponse:
       properties:
         queryId:
-          description: Database query ID.
+          description: SQL query ID.
           type: string
       type: object
     Subscriber:
@@ -28191,12 +28532,130 @@ components:
       type: object
   securitySchemes:
     api_key:
+      description: |
+        API key for authentication. Obtain this from the Soracom User Console or via the Auth API.
+        Required in combination with an API token for all authenticated requests.
       in: header
       name: X-Soracom-API-Key
       type: apiKey
     api_token:
+      description: |-
+        API token for authentication. This token has an expiration time and must be refreshed periodically.
+        Required in combination with an API key for all authenticated requests.
       in: header
       name: X-Soracom-Token
       type: apiKey
 tags:
-- name: AuditLog
+- description: '[Audit logs](/en/docs/api-audit-logs/)'
+  name: AuditLog
+- description: '[Soracom Query](/en/docs/query/)'
+  name: Analysis
+- description: |
+    - [Generate API key and token](/en/tools/api/key-and-token/)
+    - Password reset token generation and verification
+    - [Switch user](/en/docs/switch-user/) API key and token generation
+  name: Auth
+- description: '[Usage charges (billing details)](/en/guides/accounting/check-usage/)'
+  name: Billing
+- description: '[Cell tower location information](/en/docs/air/get-location-info/#get-cell-tower-location-information)'
+  name: CellLocation
+- description: |
+    - [Coupon codes](/en/guides/accounting/payment/register-coupon/)
+    - [Usage charges (billing details)](/en/guides/accounting/check-usage/)
+    - [Payment methods](/en/guides/accounting/payment/)
+    - [Long term discounts](/en/docs/air/volume-discount/)
+  name: Payment
+- description: |
+    - [Coupon codes](/en/guides/accounting/payment/register-coupon/)
+    - [Long term discounts](/en/docs/air/volume-discount/)
+    - Order management
+    - Product catalog
+  name: Order
+- description: |
+    [Credentials store](/en/docs/credentials-store/)
+    Create, update, and delete credentials
+  name: Credential
+- description: '[Soracom Harvest Data](/en/docs/harvest/)'
+  name: DataEntry
+- description: '[Soracom Inventory object model](/en/docs/inventory/define-custom-object/)'
+  name: DeviceObjectModel
+- description: '[Soracom Inventory devices](/en/docs/inventory/)'
+  name: Device
+- description: '[Diagnostic features](/en/guides/diagnostic/)'
+  name: Diagnostic
+- description: '[Event handlers](/en/docs/event-handler/)'
+  name: EventHandler
+- description: '[Soracom Harvest Files](/en/docs/harvest/)'
+  name: FileEntry
+- description: |
+    Download files exported by the following APIs:
+    - [Billing](#/Billing)
+    - [Payment: exportPaymentStatement](#/Payment/exportPaymentStatement)
+    - [Stats](#/Stats)
+    - [Subscriber:exportSubscribers](#/Subscriber/exportSubscribers)
+  name: Files
+- description: Gadget API compatible devices<ul><li>[SoraCam dedicated cellular pack](/en/guides/soracom-cloud-camera-services/setting-cellular-pack/)</li></ul>
+  name: Gadget
+- description: '[Group configuration](/en/docs/group-configuration/)'
+  name: Group
+- description: |
+    [Soracom Lagoon](/en/docs/lagoon-v3/)
+    User and plan management
+  name: Lagoon
+- description: Error logs
+  name: Log
+- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) devices'
+  name: LoraDevice
+- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) gateways'
+  name: LoraGateway
+- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) network sets'
+  name: LoraNetworkSet
+- description: |
+    - Operator management
+    - Update registration information
+    - Password changes
+    - [Multi-factor authentication](/en/docs/mfa/)
+  name: Operator
+- description: '[Email addresses](/en/docs/email/)'
+  name: Email
+- description: '[Access management (Soracom Access Management)](/en/docs/sam/)'
+  name: Role
+- description: Shipping address operations for direct sales
+  name: ShippingAddress
+- description: '[Soracom Cloud Camera Services](/en/guides/soracom-cloud-camera-services/)'
+  name: SoraCam
+- description: '[Email addresses](/en/docs/email/)'
+  name: SystemNotification
+- description: |
+    - [Access management (Soracom Access Management)](/en/docs/sam/)
+    - Password changes
+    - [Multi-factor authentication](/en/docs/mfa/)
+    - [Switch user](/en/docs/switch-user/) trust policy configuration
+  name: User
+- description: '[Soracom Napter](/en/docs/napter/)'
+  name: PortMapping
+- description: Search SIMs, Soracom Inventory devices, and Sigfox devices
+  name: Query
+- description: '[Soracom Air for Sigfox](/en/docs/air-for-sigfox/) devices'
+  name: SigfoxDevice
+- description: |
+    [Soracom Air for Cellular](/en/docs/air/) SIM information, operations, and cancellation
+
+    (New API equivalent to Subscriber but supports subscription containers)
+  name: Sim
+- description: '[eSIM profiles](/en/docs/air/provision-esim/)'
+  name: SimProfileOrder
+- description: '[Soracom Orbit](/en/docs/orbit/) Soralet'
+  name: Soralet
+- description: '[Data usage history](/en/docs/air/view-data-usage/) retrieval'
+  name: Stats
+- description: '[Soracom Air for Cellular](/en/docs/air/) SIM information, operations,
+    and cancellation'
+  name: Subscriber
+- description: |
+    - [Virtual Private Gateway (VPG)](/en/docs/vpg/) (Canal / Direct / Door / Gate)
+    - [Soracom Junction](/en/docs/junction/)
+    - [Soracom Peek](/en/docs/peek/)
+  name: VirtualPrivateGateway
+- description: Batch processing
+  name: Batch

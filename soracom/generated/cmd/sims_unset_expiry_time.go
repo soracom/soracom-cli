@@ -13,7 +13,7 @@ import (
 var SimsUnsetExpiryTimeCmdSimId string
 
 func InitSimsUnsetExpiryTimeCmd() {
-	SimsUnsetExpiryTimeCmd.Flags().StringVar(&SimsUnsetExpiryTimeCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsUnsetExpiryTimeCmd.Flags().StringVar(&SimsUnsetExpiryTimeCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsUnsetExpiryTimeCmd.RunE = SimsUnsetExpiryTimeCmdRunE
 

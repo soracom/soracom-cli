@@ -13,7 +13,7 @@ import (
 var SimsDisableTerminationCmdSimId string
 
 func InitSimsDisableTerminationCmd() {
-	SimsDisableTerminationCmd.Flags().StringVar(&SimsDisableTerminationCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsDisableTerminationCmd.Flags().StringVar(&SimsDisableTerminationCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsDisableTerminationCmd.RunE = SimsDisableTerminationCmdRunE
 

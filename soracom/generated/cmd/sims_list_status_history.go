@@ -34,7 +34,7 @@ var SimsListStatusHistoryCmdPaginate bool
 var SimsListStatusHistoryCmdOutputJSONL bool
 
 func InitSimsListStatusHistoryCmd() {
-	SimsListStatusHistoryCmd.Flags().StringVar(&SimsListStatusHistoryCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("A string consisting of the primary IMSI and the timestamp (UNIX time in milliseconds) of the last status operation history entry obtained on the previous page, concatenated with '@'. By specifying this parameter, you can continue to retrieve the list from the next page onward."))
+	SimsListStatusHistoryCmd.Flags().StringVar(&SimsListStatusHistoryCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The value of the 'x-soracom-next-key' header from the previous response. Specify this to retrieve the next page."))
 
 	SimsListStatusHistoryCmd.Flags().StringVar(&SimsListStatusHistoryCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM."))
 

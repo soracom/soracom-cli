@@ -13,7 +13,7 @@ import (
 var SimsDeactivateCmdSimId string
 
 func InitSimsDeactivateCmd() {
-	SimsDeactivateCmd.Flags().StringVar(&SimsDeactivateCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#!/Sim/listSims)."))
+	SimsDeactivateCmd.Flags().StringVar(&SimsDeactivateCmdSimId, "sim-id", "", TRAPI("SIM ID of the target SIM. The SIM ID can be obtained from the [Sim:listSims API](#/Sim/listSims)."))
 
 	SimsDeactivateCmd.RunE = SimsDeactivateCmdRunE
 

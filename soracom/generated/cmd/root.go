@@ -302,6 +302,8 @@ func InitAllSubCommands() {
 	InitSimsDownlinkHttpCmd()
 	InitSimsDownlinkPingCmd()
 	InitSimsDownlinkSshCmd()
+	InitSimsDownlinkTcpCmd()
+	InitSimsDownlinkUdpCmd()
 	InitSimsEnableTerminationCmd()
 	InitSimsGetCmd()
 	InitSimsGetDataCmd()
