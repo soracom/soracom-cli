@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Soracom API v1
   title: Soracom API
-  version: 20250826-105139
+  version: 20250903-043502
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -9471,6 +9471,39 @@ paths:
       - PortMapping
       x-soracom-cli:
       - port-mappings list-for-sim
+    post:
+      description: Create a new Napter On-Demand Remote Access entry with the specified
+        SIM ID.
+      operationId: createPortMappingForSim
+      parameters:
+      - description: SIM ID of the target IoT SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePortMappingRequestForSim'
+        description: Settings for the On-Demand Remote Access to be created.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortMapping'
+          description: The On-Demand Remote Access entry has been created.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Create Napter On-Demand Remote Access entry with specified SIM ID
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings create-for-sim
   /port_mappings/subscribers/{imsi}:
     get:
       description: |
@@ -9973,7 +10006,6 @@ paths:
             - `planX3`: planX3 (X3-5MB), planX3.
             - `planP1`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1.
             - `plan-US-max`
             - `planX1`
             - `planX2`
@@ -10152,7 +10184,6 @@ paths:
             - `planX3`: planX3 (X3-5MB), planX3.
             - `planP1`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1.
             - `plan-US-max`
             - `planX1`
             - `planX2`
@@ -11500,6 +11531,63 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ping
+  /sims/{sim_id}/downlink/rtsp:
+    post:
+      description: |
+        Sends a command to a device using an IoT SIM and returns a response based on specified command and options in request.
+
+        - An error occurs if the command does not complete within 10 seconds.
+      operationId: sendDownlinkRtsp
+      parameters:
+      - description: SIM ID of the target IoT SIM. The SIM ID can be obtained from
+          the [Sim:listSims API](#/Sim/listSims).
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              authentication:
+                password: pass
+                type: basic
+                username: user
+              command: snapshot
+              port: 544
+            schema:
+              $ref: '#/components/schemas/SimDownlinkRtspRequest'
+        description: Command for the RTSP request
+        required: true
+      responses:
+        "200":
+          content:
+            image/jpeg:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkRtspSnapshotImageResponse'
+          description: |
+            Command executed successfully. Response body will differ based on command and options in request.
+        "400":
+          description: |
+            Invalid request.
+        "403":
+          description: |
+            Failed to execute command due to authentication error. Please check the authentication information for Soracom API and RTSP server.
+        "404":
+          description: The specified IoT SIM does not exist.
+        "422":
+          description: |
+            Failed to execute command because the video stream received by Soracom API from the RTSP server is not H.264 encoded. Please verify that the video stream sent by your RTSP server is H.264 encoded.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Send a command to a RTSP stream to a device using an IoT SIM
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-rtsp
   /sims/{sim_id}/downlink/ssh:
     post:
       description: |
@@ -17304,7 +17392,6 @@ paths:
 
                   - plan-D: `D`
                   - plan-DU: `DU`
-                  - plan-NA1: `NA1`
                   - plan-US: `US`
 
                   Example: For subscription plan-US, you can set `US-300MB`.
@@ -17315,10 +17402,6 @@ paths:
                 - DU-10GB
                 - DU-50GB
                 - DU-100GB
-                - NA1-3MB
-                - NA1-20MB
-                - NA1-50MB
-                - NA1-100MB
                 - US-1MB
                 - US-3MB
                 - US-10MB
@@ -21356,6 +21439,26 @@ components:
       required:
       - destination
       type: object
+    CreatePortMappingRequestForSim:
+      properties:
+        destination:
+          $ref: '#/components/schemas/PortMappingDestinationForSim'
+        duration:
+          description: |
+            The duration (in seconds) to maintain the On-Demand Remote Access entry (the time to allow remote access). After the specified time has passed, the On-Demand Remote Access entry will be automatically deleted. The maximum duration is 8 hours.
+          type: number
+        source:
+          $ref: '#/components/schemas/PortMappingSource'
+        tlsRequired:
+          description: |
+            Whether to encrypt the connection from the source to Soracom using TLS.
+
+            - `true`: Encrypt using TLS. Specify this if the device is listening on HTTP.
+            - `false`: Do not use TLS. Specify this when connecting to the device via SSH or if the device is listening on HTTPS. Note that communication from the source to the device is encrypted in SSH and HTTPS.
+          type: boolean
+      required:
+      - destination
+      type: object
     CreateRoleResponse:
       properties:
         roleId:
@@ -24627,6 +24730,31 @@ components:
       required:
       - port
       type: object
+    PortMappingDestinationForSim:
+      description: |
+        Information about the destination when creating an On-Demand Remote Access entry.
+      properties:
+        port:
+          description: The port number on the device using IoT SIM or virtual SIM,
+            waiting for connection.
+          type: number
+        service:
+          description: |
+            The target for creating an On-Demand Remote Access entry.
+
+            - `air`: Target Soracom Air subscribers' sessions that are online.
+            - `arc`: Target Soracom Arc virtual SIM.
+
+            **Warning**: If `service` is omitted, online subscriber sessions will be the target for creating an On-Demand Remote Access entry. If multiple online subscriber sessions exist (e.g., both Soracom Air and Soracom Arc sessions are online), it is not guaranteed which session will be used. Please specify either `air` or `arc`.
+
+            **Warning**: This property is required when creating an On-Demand Remote Access entry. It will not be included in the response.
+          enum:
+          - air
+          - arc
+          type: string
+      required:
+      - port
+      type: object
     PortMappingSource:
       properties:
         ipRanges:
@@ -24884,7 +25012,6 @@ components:
             - `plan-KM1`
             - `plan-K`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1.
           example:
             plan01s:
               groupId: 00000000-1111-2222-3333-444444444444
@@ -25993,6 +26120,114 @@ components:
       required:
       - statusCode
       type: object
+    SimDownlinkRtspAuthenticationBasic:
+      description: Configuration for RTSP connection with basic authentication using
+        username and password.
+      properties:
+        password:
+          description: Password for RTSP connection. If `passwordCredentialsId` is
+            specified, this field is ignored.
+          type: string
+        passwordCredentialsId:
+          description: |
+            Soracom credential set ID where the authentication credentials are registered.
+
+            - **Type**: Select "Pre-Shared key".
+            - **Pre-Shared Key**: Enter the password for the RTSP connection.
+          type: string
+        type:
+          enum:
+          - basic
+          type: string
+        username:
+          description: Username for RTSP connection.
+          type: string
+      required:
+      - type
+      - username
+      type: object
+    SimDownlinkRtspAuthenticationNone:
+      description: Configuration for RTSP connection with no authentication
+      properties:
+        type:
+          enum:
+          - none
+          type: string
+      required:
+      - type
+      type: object
+    SimDownlinkRtspCommandSnapshot:
+      description: Request to take a snapshot of the RTSP stream.
+      enum:
+      - snapshot
+      type: string
+    SimDownlinkRtspCommandSnapshotHarvestFilesDestinationOptions:
+      properties:
+        filePath:
+          description: |
+            The filePath to Harvest Files.
+
+            The following strings can be entered, and they will be replaced according to the rules during export:
+
+            - `{sim_id}`: The sim ID (e.g., `0000000000000000000`).
+            - `{time}`: The timestamp when the snapshot was taken (UNIX time in milliseconds) (e.g., `1728393803000`).
+
+            **Info**: It is recommended to end the file name with `.jpg` or `.jpeg`.
+          example: /path/to/snapshot_{sim_id}_{time}.jpg
+          type: string
+      required:
+      - filePath
+      type: object
+    SimDownlinkRtspCommandSnapshotOptions:
+      properties:
+        destinations:
+          description: |
+            Storage destination for the snapshot image.
+          properties:
+            harvestFiles:
+              $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshotHarvestFilesDestinationOptions'
+              description: |
+                Storage destination for the snapshot image in SORACOM Harvest Files.
+          type: object
+      type: object
+    SimDownlinkRtspRequest:
+      properties:
+        authentication:
+          description: |
+            Authentication method for RTSP connection. Specify one of the following for `type`, and provide the required information according to the authentication method.
+
+            - `none`: No authentication.
+            - `basic`: Basic authentication.
+
+            If not specified, the default is `none`.
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspAuthenticationBasic'
+          - $ref: '#/components/schemas/SimDownlinkRtspAuthenticationNone'
+        command:
+          description: RTSP request configuration. Specify the RTSP command to be
+            executed and the options for the RTSP connection.
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshot'
+        options:
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshotOptions'
+        path:
+          description: Path of RTSP stream started with `/`
+          type: string
+        port:
+          default: 554
+          description: Port number for the RTSP connection.
+          maximum: 65535
+          minimum: 1
+          type: integer
+      required:
+      - command
+      type: object
+    SimDownlinkRtspSnapshotImageResponse:
+      description: "Response containing the snapshot image taken from the RTSP stream
+        when the `command` is `snapshot`. The image is Base64-encoded.\n  \n"
+      format: binary
+      type: string
     SimDownlinkSshNoAuthentication:
       description: |
         Configuration for SSH connection with no authentication (`"type": "none"`).

@@ -2,11 +2,11 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20250826-105139
+  version: 20250903-043502
 servers:
-- description: 日本カバレッジ API エンドポイント
+- description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
-- description: グローバルカバレッジ API エンドポイント
+- description: Global coverage production API endpoint
   url: https://g.api.soracom.io/v1
 paths:
   /analysis/queries:
@@ -9314,6 +9314,38 @@ paths:
       - PortMapping
       x-soracom-cli:
       - port-mappings list-for-sim
+    post:
+      description: SIM ID を指定して Napter のオンデマンドリモートアクセスを新規作成します。
+      operationId: createPortMappingForSim
+      parameters:
+      - description: 対象の IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePortMappingRequestForSim'
+        description: 作成するオンデマンドリモートアクセスの設定。
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortMapping'
+          description: オンデマンドリモートアクセスが作成された。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM ID を指定して Napter のオンデマンドリモートアクセスを作成する
+      tags:
+      - PortMapping
+      x-soracom-cli:
+      - port-mappings create-for-sim
   /port_mappings/subscribers/{imsi}:
     get:
       description: |
@@ -9812,7 +9844,6 @@ paths:
             - `planX3`: planX3 (X3-5MB)。
             - `planP1`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1。
             - `plan-US-max`
             - `planX1`
             - `planX2`
@@ -9987,7 +10018,6 @@ paths:
             - `planX3`: planX3 (X3-5MB)。
             - `planP1`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1。
             - `plan-US-max`
             - `planX1`
             - `planX2`
@@ -11308,6 +11338,62 @@ paths:
       - Sim
       x-soracom-cli:
       - sims downlink-ping
+  /sims/{sim_id}/downlink/rtsp:
+    post:
+      description: |
+        IoT SIM を利用するデバイスで動作する RTSP サーバーにアクセスし、リクエストで指定したコマンドやオプションに基づいたレスポンスを返します。
+
+        - コマンドが 10 秒以内に完了しない場合、エラーが発生します。
+      operationId: sendDownlinkRtsp
+      parameters:
+      - description: 対象の IoT SIM の SIM ID。[Sim:listSims API](#/Sim/listSims) で取得できます。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              authentication:
+                password: pass
+                type: basic
+                username: user
+              command: snapshot
+              port: 544
+            schema:
+              $ref: '#/components/schemas/SimDownlinkRtspRequest'
+        description: RTSP サーバーに対して行う操作の内容
+        required: true
+      responses:
+        "200":
+          content:
+            image/jpeg:
+              schema:
+                $ref: '#/components/schemas/SimDownlinkRtspSnapshotImageResponse'
+          description: |
+            コマンドの実行に成功しました。レスポンスボディはリクエストで指定したコマンドやオプションにより異なります。
+        "400":
+          description: |
+            コマンドの実行に失敗しました。指定されたコマンドまたはオプションが正しくありません。
+        "403":
+          description: |
+            認証エラーのためコマンドの実行に失敗しました。SORACOM API および RTSP サーバーの認証情報を確認してください。
+        "404":
+          description: 指定した IoT SIM が存在しません。
+        "422":
+          description: |
+            SORACOM API が RTSP サーバーから受信したビデオストリームが H.264 エンコーディングではないため、コマンドの実行に失敗しました。RTSP サーバーから送信されるビデオストリームが H.264 エンコーディングであることを確認してください。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM を利用するデバイスで動作する RTSP サーバーにアクセスする
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims downlink-rtsp
   /sims/{sim_id}/downlink/ssh:
     post:
       description: |
@@ -16902,7 +16988,6 @@ paths:
 
                   - plan-D: `D`
                   - plan-DU: `DU`
-                  - plan-NA1: `NA1`
                   - plan-US: `US`
 
                   例: サブスクリプションが plan-D の場合は、`D-300MB` を設定できます。
@@ -16913,10 +16998,6 @@ paths:
                 - DU-10GB
                 - DU-50GB
                 - DU-100GB
-                - NA1-3MB
-                - NA1-20MB
-                - NA1-50MB
-                - NA1-100MB
                 - US-1MB
                 - US-3MB
                 - US-10MB
@@ -20875,6 +20956,30 @@ components:
       required:
       - destination
       type: object
+    CreatePortMappingRequestForSim:
+      properties:
+        destination:
+          $ref: '#/components/schemas/PortMappingDestinationForSim'
+        duration:
+          description: |
+            オンデマンドリモートアクセスを維持する時間 (リモートアクセスを許可する時間) (秒)。指定した時間を経過すると、オンデマンドリモートアクセスが自動的に削除されます。最大で 8 時間です。
+          type: number
+        source:
+          $ref: '#/components/schemas/PortMappingSource'
+        tlsRequired:
+          description: |
+            アクセス元から SORACOM までを TLS で暗号化するかどうか。
+
+            - `true`: TLS を使用して暗号化する。
+
+              デバイスで HTTP で待ち受けている場合は、`true` を指定します。
+            - `false`: TLS を使用しない。
+
+              デバイスに SSH 接続する場合や、デバイスで HTTPS で待ち受けている場合は、`false` を指定します。なお、SSH や HTTPS では、アクセス元からデバイスまでの通信は暗号化されています。
+          type: boolean
+      required:
+      - destination
+      type: object
     CreateRoleResponse:
       properties:
         roleId:
@@ -24127,6 +24232,30 @@ components:
       required:
       - port
       type: object
+    PortMappingDestinationForSim:
+      description: |
+        オンデマンドリモートアクセスを作成するときのアクセス先の情報です。
+      properties:
+        port:
+          description: IoT SIM やバーチャル SIM を利用するデバイスで、接続を待ち受けているポート番号。
+          type: number
+        service:
+          description: |
+            オンデマンドリモートアクセスを作成する対象。
+
+            - `air`: セッションがオンラインの SORACOM Air のサブスクライバーを対象とする。
+            - `arc`: SORACOM Arc のバーチャル SIM を対象とする。
+
+            **Warning**: `service` を省略した場合は、セッションがオンラインのサブスクライバーが、オンデマンドリモートアクセスを作成する対象となります。セッションがオンラインのサブスクライバーが複数ある場合 (SORACOM Air のセッションと SORACOM Arc のセッションが両方オンラインの場合) は、どちらがオンデマンドリモートアクセス作成の対象となるかは保証されません。`air` または `arc` を指定してください。
+
+            **Warning**: オンデマンドリモートアクセスを作成するときに必要なプロパティです。レスポンスには含まれません。
+          enum:
+          - air
+          - arc
+          type: string
+      required:
+      - port
+      type: object
     PortMappingSource:
       properties:
         ipRanges:
@@ -24383,7 +24512,6 @@ components:
             - `plan-KM1`
             - `plan-K`
             - `plan-US`
-            - `plan-NA1-package`: plan-NA1。
           example:
             plan01s:
               groupId: 00000000-1111-2222-3333-444444444444
@@ -25414,6 +25542,112 @@ components:
       required:
       - statusCode
       type: object
+    SimDownlinkRtspAuthenticationBasic:
+      description: ユーザー名とパスワードによる Basic 認証を利用して RTSP 接続します。
+      properties:
+        password:
+          description: RTSP 接続のパスワード。`passwordCredentialsId` が指定されている場合、このフィールドは無視されます。
+          type: string
+        passwordCredentialsId:
+          description: |
+            SORACOM の認証情報ストアに登録した認証情報の ID。認証情報は以下のように設定してください。
+
+            - **[種別]**: 「事前共有鍵」を選択します。
+            - **[事前共有鍵]**: RTSP 接続のパスワードを入力します。
+          type: string
+        type:
+          enum:
+          - basic
+          type: string
+        username:
+          description: RTSP 接続のユーザー名。
+          type: string
+      required:
+      - type
+      - username
+      type: object
+    SimDownlinkRtspAuthenticationNone:
+      description: 認証なしで RTSP 接続します。
+      properties:
+        type:
+          enum:
+          - none
+          type: string
+      required:
+      - type
+      type: object
+    SimDownlinkRtspCommandSnapshot:
+      description: RTSP ストリームから静止画 (JPEG) を取得するリクエストです。
+      enum:
+      - snapshot
+      type: string
+    SimDownlinkRtspCommandSnapshotHarvestFilesDestinationOptions:
+      properties:
+        filePath:
+          description: |
+            Harvest Files に保存する際のファイルパス。
+
+            以下の文字を入力すると、実行時に置き換えられます。
+
+            - `{sim_id}`: SIM ID (例: `0000000000000000000`)。
+            - `{time}`: 静止画を取得したタイムスタンプ(UNIX 時間 (ミリ秒)) (例: `1728393803000`)。
+
+            **Info**: ファイル名の末尾は `.jpg` または `.jpeg` にすることを推奨します。
+          example: /path/to/snapshot_{sim_id}_{time}.jpg
+          type: string
+      required:
+      - filePath
+      type: object
+    SimDownlinkRtspCommandSnapshotOptions:
+      properties:
+        destinations:
+          description: |
+            静止画の保存先。
+          properties:
+            harvestFiles:
+              $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshotHarvestFilesDestinationOptions'
+              description: |
+                SORACOM Harvest Files における静止画の保存先。
+          type: object
+      type: object
+    SimDownlinkRtspRequest:
+      properties:
+        authentication:
+          description: |
+            RTSP 接続の認証情報。
+
+            `authentication` を指定する場合は、`type` に以下のいずれかを指定し、認証方式にあわせて必要な情報を指定します。
+
+            - `none`: 認証なし。
+            - `basic`: Basic 認証。
+
+            `authentication` を省略すると、認証なしで RTSP 接続します。
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspAuthenticationBasic'
+          - $ref: '#/components/schemas/SimDownlinkRtspAuthenticationNone'
+        command:
+          description: 実行するコマンドおよび RTSP 接続のオプションを指定します。
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshot'
+        options:
+          oneOf:
+          - $ref: '#/components/schemas/SimDownlinkRtspCommandSnapshotOptions'
+        path:
+          description: RTSP ストリームのパス。`/` で始まります。
+          type: string
+        port:
+          default: 554
+          description: デバイスが RTSP 接続を待ち受けるポート番号。
+          maximum: 65535
+          minimum: 1
+          type: integer
+      required:
+      - command
+      type: object
+    SimDownlinkRtspSnapshotImageResponse:
+      description: '`command` が `snapshot` の場合に、RTSP ストリームから取得した静止画。'
+      format: binary
+      type: string
     SimDownlinkSshNoAuthentication:
       description: |
         SSH 接続の認証なし (`"type": "none"`) で SSH 接続する場合の設定。
