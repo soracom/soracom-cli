@@ -54,6 +54,14 @@ brew install soracom-cli
 brew install bash-completion
 ```
 
+## Using mise
+
+If you are using [mise](https://mise.jdx.dev/) (v2025.7.7 or later), you can install `soracom` command by running the following command:
+
+```shell
+mise use -g github:soracom/soracom-cli
+```
+
 ## In other cases
 
 By running one of the following commands, the latest version of `soracom` command will be installed.
