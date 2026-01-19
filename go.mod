@@ -3,7 +3,7 @@ module github.com/soracom/soracom-cli
 require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/dvsekhvalnov/jose2go v1.8.0
-	github.com/elazarl/goproxy v1.7.2
+	github.com/elazarl/goproxy v1.8.0
 	github.com/getkin/kin-openapi v0.133.0
 	github.com/kennygrant/sanitize v1.2.4
 	github.com/mattn/go-shellwords v1.0.12
@@ -31,8 +31,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/woodsbury/decimal128 v1.3.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
