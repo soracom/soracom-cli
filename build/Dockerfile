@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.24.5
+FROM public.ecr.aws/docker/library/golang:1.26.1
 
 RUN apt update && apt upgrade -y && apt install -y fakeroot shellcheck zip
 
