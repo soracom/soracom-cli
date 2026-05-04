@@ -12,8 +12,8 @@ github.com/dvsekhvalnov/jose2go v1.8.0 h1:LqkkVKAlHFfH9LOEl5fe4p/zL02OhWE7pCufMB
 github.com/dvsekhvalnov/jose2go v1.8.0/go.mod h1:QsHjhyTlD/lAVqn/NSbVZmSCGeDehTB/mPZadG+mhXU=
 github.com/elazarl/goproxy v1.8.3 h1:XhiZpzW0NvsGOqSv/F3v4+1F29842yYaJNN+In5Fnuc=
 github.com/elazarl/goproxy v1.8.3/go.mod h1:b5xm6W48AUHNpRTCvlnd0YVh+JafCCtsLsJZvvNTz+E=
-github.com/getkin/kin-openapi v0.136.0 h1:mJC/W0ZFnwGYkUUwujw+LmWGFuKcqHklJjpl8JAH5eE=
-github.com/getkin/kin-openapi v0.136.0/go.mod h1:f97ss9nLJZRi9fm0vSwKZa4KrPMltWnZf9peal6MBrs=
+github.com/getkin/kin-openapi v0.137.0 h1:Q3HhawNQV0GfvO2mIYMUBUSEFrDsVlzcYz4VydL9YEo=
+github.com/getkin/kin-openapi v0.137.0/go.mod h1:vUYWaKyMqj7PfTybelXtLuLN9tReS12vxnzMRK+z2GY=
 github.com/go-openapi/jsonpointer v0.21.0 h1:YgdVicSA9vH5RiHs9TZW5oyafXZFc6+2Vc1rr/O9oNQ=
 github.com/go-openapi/jsonpointer v0.21.0/go.mod h1:IUyH9l/+uyhIYQ/PXVA41Rexl+kOkAPDdXEYns6fzUY=
 github.com/go-openapi/swag v0.23.0 h1:vsEVJDUo2hPJ2tu0/Xc+4noaxyEffXNIs3cOULZ+GrE=
