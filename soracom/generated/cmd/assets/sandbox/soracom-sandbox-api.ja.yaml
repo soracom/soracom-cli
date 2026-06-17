@@ -212,10 +212,10 @@ paths:
         content:
           application/json:
             examples:
-              Creating "plan-D (D-300MB)":
+              Creating "plan-D (D-500MB)":
                 value:
                   bundle:
-                  - D-300MB
+                  - D-500MB
                   subscription: plan-D
               Creating "plan01s":
                 value:
@@ -306,11 +306,11 @@ components:
           items:
             enum:
             - X3-5MB
-            - D-300MB
+            - D-500MB
             - DU-10GB
             - DU-50GB
             - DU-100GB
-            - K2-300MB
+            - K2-500MB
             type: string
           type: array
         subscription:
@@ -319,6 +319,7 @@ components:
           - plan01s
           - plan01s-low_data_volume
           - planP1
+          - planXM1
           - planX3
           - plan-D
           - plan-K

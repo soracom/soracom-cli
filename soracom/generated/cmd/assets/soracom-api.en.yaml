@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Soracom API v1
   title: Soracom API
-  version: 20250903-043502
+  version: 20260604-092803
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -3012,7 +3012,7 @@ paths:
                       limitTotalTrafficMegaByte: 1024
                     type: SubscriberMonthlyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (02) Notify on Slack when the speed class of an IoT SIM changes.:
                 value:
                   actionConfigList:
@@ -3031,7 +3031,7 @@ paths:
                       inactiveTimeoutDateConst: IMMEDIATELY
                     type: SimSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (03) If the daily data traffic volume exceeds 100 MiB, limit the speed for 24 hours and send an email notification.:
                 value:
                   actionConfigList:
@@ -3048,13 +3048,13 @@ paths:
                       message: Speed limitation will be implemented as the daily data
                         traffic volume has reached 100 MiB.
                       title: Notification from Soracom
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   - properties:
                       executionDateTimeConst: AFTER_ONE_DAY
-                      message: Speed limitation will be released
+                      message: Speed limitation will be released.
                       title: Notification from Soracom
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: Limit speed for 24 hours if daily data traffic volume
                     exceeds 100 MiB.
@@ -3065,7 +3065,7 @@ paths:
                       limitTotalTrafficMegaByte: "100"
                     type: SubscriberDailyTrafficRule
                   status: active
-                  targetImsi: xxxxxxxxxxxx
+                  targetImsi: xxxxxxxxxxxxxxx
               (04) Call AWS Lambda when the cumulative data traffic volume reaches 3000 MiB.:
                 description: |
                   For cumulative events, `inactiveTimeoutDateConst` is set to `NEVER` (not re-evaluated).
@@ -3089,7 +3089,7 @@ paths:
                       limitTotalTrafficMegaByte: "3000"
                     type: SimCumulativeTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (05) Save history in AWS Lambda when changing speed class.:
                 description: |
                   The idea is to send the before and after speed classes to AWS Lambda using variables available in the speed class change rule (`${newSpeedClass}` and `${oldSpeedClass}`), and save the history in a database or similar in AWS Lambda.
@@ -3111,7 +3111,7 @@ paths:
                       targetSpeedClass: null
                     type: SubscriberSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (06) Send a request to a specified URL when the data traffic volume of a subscriber is recorded for the first time.:
                 value:
                   actionConfigList:
@@ -3131,7 +3131,7 @@ paths:
                       inactiveTimeoutDateConst: NEVER
                     type: SubscriberFirstTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (07) Send an email when a subscriber's daily data traffic volume exceeds a certain limit.:
                 value:
                   actionConfigList:
@@ -3140,7 +3140,7 @@ paths:
                       message: 'IMSI: ${imsi} daily data traffic volume has reached
                         10 MiB.'
                       title: Notification from SORACOM
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: Sample description
                   name: Event handler
@@ -3151,7 +3151,7 @@ paths:
                       limitTotalTrafficMegaByte: "10"
                     type: SubscriberDailyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (08) Change the speed class of an IoT SIM when a subscriber's monthly data traffic volume exceeds a certain limit.:
                 value:
                   actionConfigList:
@@ -3167,7 +3167,7 @@ paths:
                       limitTotalTrafficMegaByte: "1024"
                     type: SubscriberMonthlyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (09) Change the status of an IoT SIM when the cumulative data traffic volume from the start of use exceeds a certain limit.:
                 value:
                   actionConfigList:
@@ -3182,7 +3182,7 @@ paths:
                       limitTotalTrafficMegaByte: "10240"
                     type: SubscriberCumulativeTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (10) Send a request to a specified URL when the status of an IoT SIM changes.:
                 value:
                   actionConfigList:
@@ -3204,7 +3204,7 @@ paths:
                       targetStatus: active
                     type: SimStatusAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (11) Call AWS Lambda when the speed class of an IoT SIM changes.:
                 value:
                   actionConfigList:
@@ -3225,7 +3225,7 @@ paths:
                       targetSpeedClass: s1.4xfast
                     type: SimSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (12) Send an email to the operator's primary email address when the validity period of an IoT SIM expires.:
                 value:
                   actionConfigList:
@@ -3241,7 +3241,7 @@ paths:
                       inactiveTimeoutDateConst: BEGINNING_OF_NEXT_MONTH
                     type: SubscriberExpiredRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (13) Call AWS Lambda when an IoT SIM fails to connect due to an IMEI lock.:
                 value:
                   actionConfigList:
@@ -3261,7 +3261,7 @@ paths:
                       inactiveTimeoutDateConst: AFTER_ONE_DAY
                     type: SubscriberImeiMismatchedRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (14) Send an email when the total daily data traffic volume of all subscribers linked to an IoT SIM exceeds a certain limit.:
                 value:
                   actionConfigList:
@@ -3270,7 +3270,7 @@ paths:
                       message: 'SIM ID: ${simId}''s total daily data traffic volume
                         has reached 10 MiB.'
                       title: Notification from Soracom
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: Sample description
                   name: Event handler
@@ -3282,14 +3282,14 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimDailyTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (15) Change the speed class of an IoT SIM when the total monthly data
                 traffic volume of all subscribers linked to it exceeds a certain limit.
               : value:
                   actionConfigList:
                   - properties:
                       executionDateTimeConst: IMMEDIATELY
-                      speedClass: s1.minumum
+                      speedClass: s1.minimum
                     type: ChangeSpeedClassAction
                   description: Sample description
                   name: Event handler
@@ -3300,7 +3300,7 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimMonthlyTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (16) Change the status of an IoT SIM when the total cumulative data
                 traffic volume from the start of use of all linked subscribers exceeds
                 a certain limit.
@@ -3318,7 +3318,7 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimCumulativeTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (17) Call AWS Lambda when a subscription is added to an IoT SIM.:
                 value:
                   actionConfigList:
@@ -3340,7 +3340,7 @@ paths:
                       targetOtaStatus: started
                     type: SimSubscriptionStatusRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (18) Send an email to the operator's primary email address when the
                 total daily data traffic volume of all IoT SIMs linked to the operator
                 exceeds a certain limit.
@@ -3369,7 +3369,7 @@ paths:
                   actionConfigList:
                   - properties:
                       executionDateTimeConst: IMMEDIATELY
-                      speedClass: s1.minumum
+                      speedClass: s1.minimum
                     type: ChangeSpeedClassAction
                   description: Sample description
                   name: Event handler
@@ -3396,6 +3396,24 @@ paths:
                     type: MonthlyChargeRule
                   status: active
                   targetOperatorId: OP0000000000
+              (21) Send an email to the operator's primary email address when an IoT SIM session status changes to Created.:
+                value:
+                  actionConfigList:
+                  - properties:
+                      executionDateTimeConst: IMMEDIATELY
+                      message: 'IMSI: ${imsi} session went online.'
+                      title: Notification from Soracom
+                    type: SendMailToOperatorAction
+                  description: Sample description
+                  name: Event handler
+                  ruleConfig:
+                    properties:
+                      hasImei: true
+                      inactiveTimeoutDateConst: IMMEDIATELY
+                      sessionStatus: Created
+                    type: SubscriberSessionStatusRule
+                  status: active
+                  targetImsi: xxxxxxxxxxxxxxx
             schema:
               $ref: '#/components/schemas/CreateEventHandlerRequest'
         description: Event handler settings.
@@ -4536,12 +4554,13 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
-          - SoracomOrbit
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
           - SoracomHarvestFiles
           - SoracomKrypton
+          - SoracomOrbit
           - UnifiedEndpoint
           type: string
       responses:
@@ -4573,9 +4592,10 @@ paths:
       - description: |
           A string indicating the configuration target. It varies depending on the configuration content.
 
-          - `SoracomAir`: Custom DNS, Metadata service, VPG (Virtual Private Gateway), CHAP authentication, Simple Location function, Binary Parser.
+          - `SoracomAir`: SORACOM Air for Cellular (Custom DNS, Metadata Service, VPG, CHAP Authentication, Simple Location Tracking, Binary Parser, IP Link MTU Configuration).
           - `SoracomBeam`: SORACOM Beam.
           - `SoracomEndorse`: SORACOM Endorse.
+          - `SoracomFlux`: SORACOM Flux.
           - `SoracomFunk`: SORACOM Funk.
           - `SoracomFunnel`: SORACOM Funnel.
           - `SoracomHarvest`: SORACOM Harvest Data.
@@ -4591,6 +4611,7 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
@@ -4643,7 +4664,25 @@ paths:
                   value: xxxxx
                 - key: password
                   value: yyyyy
-              (4) Enabling Endorse (SoracomEndorse):
+              (4) Configuring Simple Location (SoracomAir):
+                description: |
+                  When [sending Simple Location data (plan-KM1 only)](https://users.soracom.io/ja-jp/docs/air/get-location-info/) (Japanese), please note the following points.
+
+                  - Specify `SoracomAir` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, refer to the same article (Japanese).
+                value:
+                - key: locationEnabled
+                  value: true
+              (5) Configuring IP Link MTU (SoracomAir):
+                description: |
+                  When [configuring the MTU to notify devices (IP Link MTU)](/en/docs/air/ip-link-mtu/), please note the following points.
+
+                  - Specify `SoracomAir` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, refer to the same article.
+                value:
+                - key: ipLinkMtu
+                  value: 1400
+              (6) Enabling Endorse (SoracomEndorse):
                 description: |
                   When [enabling Endorse](/en/docs/endorse/configuration/), please note the following points.
 
@@ -4667,7 +4706,7 @@ paths:
                   value:
                   - https://soracom.io
                   - http://localhost:3000
-              (5) Overwriting timestamp with payload data (SoracomHarvest):
+              (7) Overwriting timestamp with payload data (SoracomHarvest):
                 description: |
                   When overwriting timestamp with payload data on Harvest Data, please note the following points.
 
@@ -4681,14 +4720,22 @@ paths:
                     format: iso-8601
                     type: jsonpointer
                     value: /time
+              (8) Enabling session status rule (SoracomAir):
+                description: |
+                  When enabling the session status rule in Event Handler, note the following:
+
+                  - Specify `SoracomAir` for the `namespace` path parameter.
+                value:
+                - key: sessionEventEnabled
+                  value: true
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
               type: array
         description: |
-          Group configuration.
+          Group configuration. This operation updates a value of the specified `key` in the `namespace`.
 
-          **Warning**: If you change the settings included in the same `namespace`, please include all existing settings in the request body, not just the changes. Any settings not included in the request body will be reset to their default values.
+          Select [Examples] below and then click the [Example Value] tab to view sample request bodies.
         required: true
       responses:
         "200":
@@ -4727,6 +4774,7 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
@@ -9994,8 +10042,8 @@ paths:
           Subscription to search. Use exact match for the search. If specifying multiple subscriptions, please set `search_type` to `OR`.
 
           - For Japan coverage, specify one of the following:
-            - `plan-D`: plan-D (without bundle), plan-D (D-300MB).
-            - `plan-K2`: plan-K2 (K2-300MB).
+            - `plan-D`: plan-D (without bundle), plan-D (D-500MB).
+            - `plan-K2`: plan-K2 (K2-500MB).
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -10008,6 +10056,7 @@ paths:
             - `plan-US`
             - `plan-US-max`
             - `planX1`
+            - `planXM1`
             - `planX2`
             - `planX3-EU`
             - `plan-US-NA`
@@ -10172,8 +10221,8 @@ paths:
           Subscription to search. Use exact match for the search. If specifying multiple subscriptions, please set `search_type` to `OR`.
 
           - For Japan coverage, specify one of the following:
-            - `plan-D`: plan-D (without bundle), plan-D (D-300MB).
-            - `plan-K2`: plan-K2 (K2-300MB).
+            - `plan-D`: plan-D (without bundle), plan-D (D-500MB).
+            - `plan-K2`: plan-K2 (K2-500MB).
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -10186,6 +10235,7 @@ paths:
             - `plan-US`
             - `plan-US-max`
             - `planX1`
+            - `planXM1`
             - `planX2`
             - `planX3-EU`
             - `plan-US-NA`
@@ -12139,6 +12189,12 @@ paths:
                   enable: true
                   subscription: planX3
                   type: cellular
+              Adding planX3 with tag:
+                value:
+                  enable: true
+                  subscription: planX3
+                  tag: my-custom-tag
+                  type: cellular
               Adding virtual SIM/Subscriber:
                 value:
                   subscription: planArc01
@@ -12155,9 +12211,10 @@ paths:
                   type: boolean
                 subscription:
                   description: |
-                    Name of the secondary subscription to be added.
-                    - `planP1`, `planX1`, `planX2`, `planX3`, `plan-US-max`: Additional Subscription
-                    - `planArc01`: Virtual SIM/Subscriber
+                    Name of the secondary subscription to be added. The available additional subscriptions depend on the primary subscription of the IoT SIM.
+                    - When the primary subscription is `plan01s`:
+                      - `planP1`, `planX1`, `planX2`, `planX3`, `plan-US-max`: Additional Subscription
+                    - `planArc01`: Virtual SIM/Subscriber (available regardless of the primary subscription)
                   enum:
                   - planP1
                   - planX1
@@ -12165,6 +12222,15 @@ paths:
                   - planX3
                   - plan-US-max
                   - planArc01
+                  type: string
+                tag:
+                  description: |
+                    An optional tag to identify the OTA scripts generated for this operation. If not specified, the default tag `{operatorId}:addSubscription` is used.
+
+                    - Only alphanumeric characters, hyphens (`-`), underscores (`_`), and colons (`:`) are allowed.
+                    - Maximum length is 64 characters.
+                  maxLength: 64
+                  pattern: ^[a-zA-Z0-9\-_:]+$
                   type: string
                 type:
                   description: |
@@ -12186,7 +12252,7 @@ paths:
           description: The updated SIM profile
         "400":
           description: You specified a subscription that cannot be added. For example,
-            `planP1` cannot be added to an IoT SIM in plan-D.
+            `planP1` cannot be added to an IoT SIM whose primary subscription is plan-D.
         "404":
           description: No such IoT SIM with the specified SIM ID and ICCID found.
       security:
@@ -12848,7 +12914,11 @@ paths:
         schema:
           type: string
       responses:
-        "204":
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
           description: Change of specified SIM's expiry time to indefinite complete.
         "404":
           description: The specified SIM does not exist or the SIM does not have an
@@ -13914,6 +13984,98 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-rotation
+  /sora_cam/devices/{device_id}/atom_cam/settings/self_reboot:
+    get:
+      description: |
+        Retrieve the settings for automatic self reboot.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Info**: To use this API, you must either assign a cloud license to the target Soracom-compatible camera or enable real-time access.
+      operationId: getSoraCamDeviceAtomCamSettingsSelfReboot
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                daysOfWeek:
+                - 0
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                enabled: true
+                time: "00:00"
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSelfReboot'
+          description: OK.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Retrieve the settings for automatic self reboot
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-self-reboot
+    post:
+      description: |
+        Change the settings for automatic self reboot.
+
+        **Warning**: When calling this API using a SAM User's API key and API token, the SAM User must also have permission to call the `OAuth2:authorize` API in addition to permission to call this API. For more information on setting permissions, see [Access Levels](/en/docs/security/users-and-roles/#access-levels).
+
+        **Info**: To use this API, you must either assign a cloud license to the target Soracom-compatible camera or enable real-time access.
+      operationId: setSoraCamDeviceAtomCamSettingsSelfReboot
+      parameters:
+      - description: Device ID of the target SoraCam compatible camera device.
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              daysOfWeek:
+              - 0
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+              - 6
+              enabled: true
+              time: "00:00"
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSelfReboot'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: The specified value is invalid.
+        "404":
+          description: The specified SoraCam compatible camera device could not be
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Change the settings for automatic self reboot
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-self-reboot
   /sora_cam/devices/{device_id}/atom_cam/settings/sound:
     get:
       description: |
@@ -14368,14 +14530,14 @@ paths:
         schema:
           type: string
       - description: Maximum number of events to retrieve in one request (value range
-          is 1 to 1000). Note that the response may contain fewer events than the
-          specified limit.
+          is 1 to 100). Note that the response may contain fewer events than the specified
+          limit.
         in: query
         name: limit
         required: false
         schema:
           default: 10
-          maximum: 1000
+          maximum: 100
           minimum: 1
           type: integer
       - description: Start time of the events to retrieve (unix time in milliseconds).
@@ -15508,14 +15670,14 @@ paths:
         schema:
           type: integer
       - description: Maximum number of events to retrieve in one request (value range
-          is 1 to 1000). Note that the response may contain fewer events than the
-          specified limit.
+          is 1 to 100). Note that the response may contain fewer events than the specified
+          limit.
         in: query
         name: limit
         required: false
         schema:
           default: 10
-          maximum: 1000
+          maximum: 100
           minimum: 1
           type: integer
       - description: Start time of the events to retrieve (unix time in milliseconds).
@@ -15858,6 +16020,16 @@ paths:
                 quantity: 2
                 quantityInUse: 2
                 salesChannel: SORACOM Inc.
+              - id: CR60-SC
+                name: Cloud Recording License (60 Days)
+                quantity: 2
+                quantityInUse: 2
+                salesChannel: SORACOM Inc.
+              - id: CR90-SC
+                name: Cloud Recording License (90 Days)
+                quantity: 2
+                quantityInUse: 2
+                salesChannel: SORACOM Inc.
               - id: MR7-SC
                 name: Cloud Motion Detection "Unlimited" Recording License (7 Days)
                 quantity: 0
@@ -15870,8 +16042,18 @@ paths:
                 salesChannel: SORACOM Inc.
               - id: MR30-SC
                 name: Cloud Motion Detection "Unlimited" Recording License (30 Days)
-                quantity: 2
-                quantityInUse: 2
+                quantity: 0
+                quantityInUse: 0
+                salesChannel: SORACOM Inc.
+              - id: MR60-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (60 Days)
+                quantity: 1
+                quantityInUse: 1
+                salesChannel: SORACOM Inc.
+              - id: MR90-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (90 Days)
+                quantity: 1
+                quantityInUse: 1
                 salesChannel: SORACOM Inc.
               schema:
                 items:
@@ -15895,11 +16077,66 @@ paths:
         of licenses. Currently, this API is only available for Japan coverage.
       operationId: updateSoraCamLicensePackQuantity
       parameters:
-      - description: ID of the license pack.
+      - description: |
+          Specify one of the following license IDs.
+
+          - `CR7-SC`: Cloud Recording License (7 Days).
+          - `CR14-SC`: Cloud Recording License (14 Days).
+          - `CR30-SC`: Cloud Recording License (30 Days).
+          - `CR60-SC`: Cloud Recording License (60 Days).
+          - `CR90-SC`: Cloud Recording License (90 Days).
+          - `MR7-SC`: Cloud Motion Detection "Unlimited" Recording License (7 Days).
+          - `MR14-SC`: Cloud Motion Detection "Unlimited" Recording License (14 Days).
+          - `MR30-SC`: Cloud Motion Detection "Unlimited" Recording License (30 Days).
+          - `MR60-SC`: Cloud Motion Detection "Unlimited" Recording License (60 Days).
+          - `MR90-SC`: Cloud Motion Detection "Unlimited" Recording License (90 Days).
+        examples:
+          example_cr7:
+            summary: Cloud Recording License (7 Days)
+            value: CR7-SC
+          example_cr14:
+            summary: Cloud Recording License (14 Days)
+            value: CR14-SC
+          example_cr30:
+            summary: Cloud Recording License (30 Days)
+            value: CR30-SC
+          example_cr60:
+            summary: Cloud Recording License (60 Days)
+            value: CR60-SC
+          example_cr90:
+            summary: Cloud Recording License (90 Days)
+            value: CR90-SC
+          example_mr7:
+            summary: Cloud Motion Detection "Unlimited" Recording License (7 Days)
+            value: MR7-SC
+          example_mr14:
+            summary: Cloud Motion Detection "Unlimited" Recording License (14 Days)
+            value: MR14-SC
+          example_mr30:
+            summary: Cloud Motion Detection "Unlimited" Recording License (30 Days)
+            value: MR30-SC
+          example_mr60:
+            summary: Cloud Motion Detection "Unlimited" Recording License (60 Days)
+            value: MR60-SC
+          example_mr90:
+            summary: Cloud Motion Detection "Unlimited" Recording License (90 Days)
+            value: MR90-SC
         in: path
         name: license_pack_id
         required: true
         schema:
+          enum:
+          - CR7-SC
+          - CR14-SC
+          - CR30-SC
+          - CR60-SC
+          - CR90-SC
+          - MR7-SC
+          - MR14-SC
+          - MR30-SC
+          - MR60-SC
+          - MR90-SC
+          example: CR30-SC
           type: string
       requestBody:
         content:
@@ -17384,7 +17621,7 @@ paths:
         content:
           application/json:
             example:
-            - D-300MB
+            - D-500MB
             schema:
               items:
                 description: |
@@ -17396,9 +17633,9 @@ paths:
 
                   Example: For subscription plan-US, you can set `US-300MB`.
 
-                  **Warning**: Bundles for plan-K2 (K2-300MB), plan-D (D-300MB), planX3, and planX3-EU cannot be changed.
+                  **Warning**: Bundles for plan-K2 (K2-500MB), plan-D (D-500MB), planX3, and planX3-EU cannot be changed.
                 enum:
-                - D-300MB
+                - D-500MB
                 - DU-10GB
                 - DU-50GB
                 - DU-100GB
@@ -18110,7 +18347,11 @@ paths:
         schema:
           type: string
       responses:
-        "204":
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscriber'
           description: Change of specified subscriber's expiry time to indefinite
             complete.
         "404":
@@ -19672,6 +19913,133 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg terminate
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/disable:
+    post:
+      description: Disables the Traffic Filtering feature on the specified VPG.
+      operationId: disableTrafficFiltering
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Traffic Filtering has been disabled.
+        "403":
+          description: Traffic Filtering is not available for this operator.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Disable Traffic Filtering
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg disable-traffic-filtering
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/enable:
+    post:
+      description: Enables the Traffic Filtering feature on the specified VPG. The
+        VPG type must support Traffic Filtering.
+      operationId: enableTrafficFiltering
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Traffic Filtering has been enabled.
+        "400":
+          description: The specified VPG type does not support Traffic Filtering.
+        "403":
+          description: Traffic Filtering is not available for this operator.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Enable Traffic Filtering
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg enable-traffic-filtering
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/fqdn_rules:
+    put:
+      description: Replaces the domain (FQDN) rules of the specified VPG with the
+        rules in the request. Existing IP rules are retained.
+      operationId: putFqdnFilterRules
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFqdnFilterRulesRequest'
+        description: The complete set of domain rules to apply.
+        required: true
+      responses:
+        "200":
+          description: The domain rules have been updated.
+        "400":
+          description: One or more rules are invalid.
+        "403":
+          description: Traffic Filtering is not available for this operator.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update domain rules
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg put-fqdn-filter-rules
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/uplink_rules:
+    put:
+      description: Replaces the IP rules (IP filtering) of the specified VPG with
+        the rules in the request. Existing domain rules are retained.
+      operationId: putUplinkFilterRules
+      parameters:
+      - description: Target VPG ID.
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUplinkFilterRulesRequest'
+        description: The complete set of IP rules to apply.
+        required: true
+      responses:
+        "200":
+          description: The IP rules have been updated.
+        "400":
+          description: One or more rules are invalid.
+        "403":
+          description: Traffic Filtering is not available for this operator.
+        "404":
+          description: The specified VPG does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update IP rules
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg put-uplink-filter-rules
   /virtual_private_gateways/{vpg_id}/transit_gateway_peering_connections:
     post:
       description: Creates a transit gateway peering connection for the specified
@@ -19865,7 +20233,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateVpcPeeringConnectionRequest'
+                $ref: '#/components/schemas/CreateVpcPeeringConnectionResponse'
           description: The created VPC peering connection.
         "404":
           description: The specified VPC peering connection does not exist.
@@ -20178,6 +20546,7 @@ components:
           cert: sample_cert
           key: sample_key
         type: x509
+  parameters: {}
   requestBodies:
     CreateAndUpdateCredentialsModel:
       content:
@@ -20282,7 +20651,12 @@ components:
             \ - `endpoint` (required)\n  - `functionName` (required)\n  - `credentialsId`
             (required)\n  - `parameter1`, `parameter2`, `parameter3`, `parameter4`,
             `parameter5`\n  \n  **Warning**: `accessKey` and `secretAccessKey` are
-            deprecated properties. Please use `credentialsId`.\n"
+            deprecated properties. Please use `credentialsId`.\n- `ImeiLockAction`:
+            Set an IMEI lock.\n\n  The properties that can be set in `properties`
+            are as follows:\n  - `executionDateTimeConst` (required)\n  - `executionOffsetMinutes`\n\n
+            \ **Warning**: This action can be set only when `SubscriberSessionStatusRule`
+            is used and `hasImei` is enabled. Using this action also requires a request
+            to enable the session status rule and IMEI lock action.\n"
           enum:
           - ChangeSpeedClassAction
           - InvokeAWSLambdaAction
@@ -20293,6 +20667,7 @@ components:
           - DeactivationAction
           - StandbyAction
           - SuspendAction
+          - ImeiLockAction
           type: string
       required:
       - properties
@@ -20318,7 +20693,8 @@ components:
             AWS Lambda's authentication information ID. Please register "AWS credentials" or "AWS IAM Role credentials" in advance in the [Credential Sets](/en/docs/security/credential-sets/).
           type: string
         endpoint:
-          description: AWS Lambda service endpoint.
+          description: |
+            AWS Lambda service endpoint. Example: `https://lambda.ap-northeast-1.amazonaws.com`
           type: string
         executionDateTimeConst:
           description: |
@@ -20343,7 +20719,8 @@ components:
             Action offset in minutes. The default is `0`. Specify an integer between `0` and `525600` as a String. You can delay the actual execution time of the action from the timing specified in `executionDateTimeConst`. For more details, refer to [Event Handler](/en/docs/air/event-handler/).
           type: string
         functionName:
-          description: AWS Lambda function name. Versions or aliases can also be specified.
+          description: |
+            AWS Lambda function name. Versions or aliases can also be specified. Examples: `sample-function:12`, `sample-function:production`.
           type: string
         headers:
           description: |
@@ -20398,7 +20775,7 @@ components:
           description: |
             Speed class. Specify one of the following. However, specify a speed class according to the subscription.
 
-            - For plan01s, plan01s - Low Data Volume, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-300MB), plan-K2 (K2-300MB), plan-K:
+            - For plan01s, plan01s - Low Data Volume, planXM1, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-500MB), plan-K2 (K2-500MB), plan-K:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -20625,6 +21002,8 @@ components:
           example: abcde12345fghij67890klmno12345pqrst67890uvwxy12345abcde67890fghi...
           type: string
         userName:
+          description: The SAM user name. This property is included only when authenticated
+            as a SAM user.
           example: SORACOMAPI
           type: string
       type: object
@@ -21691,6 +22070,25 @@ components:
         peerVpcId:
           type: string
       type: object
+    CreateVpcPeeringConnectionResponse:
+      properties:
+        destinationCidrBlock:
+          type: string
+        id:
+          type: string
+        peerOwnerId:
+          type: string
+        peerRegion:
+          type: string
+        peerVpcId:
+          type: string
+      required:
+      - id
+      - destinationCidrBlock
+      - peerOwnerId
+      - peerRegion
+      - peerVpcId
+      type: object
     CredentialsModel:
       properties:
         createDateTime:
@@ -22415,6 +22813,52 @@ components:
           description: URL to download the file. Included only if `export_mode` is
             `sync`.
           type: string
+      type: object
+    FqdnFilterRule:
+      description: A domain (FQDN) rule (domain filtering). Matches device-originated
+        traffic by destination FQDN, IP protocol, and port range.
+      properties:
+        action:
+          description: Action applied when the rule matches. FQDN filter rules only
+            support `allow`.
+          enum:
+          - allow
+          type: string
+        fqdnPattern:
+          description: Destination FQDN pattern (for example, `api.example.com`).
+            A single leading wildcard label is allowed (for example, `*.example.com`).
+            Internationalized domain names are converted to Punycode.
+          type: string
+        fromPort:
+          default: 0
+          description: Start of the destination port range (0-65535). `0` means any
+            port.
+          maximum: 65535
+          minimum: 0
+          type: integer
+        protocol:
+          description: IP protocol number (0-255). For example, `6` for TCP, `17`
+            for UDP, and `255` to match all protocols.
+          maximum: 255
+          minimum: 0
+          type: integer
+        toPort:
+          default: 0
+          description: End of the destination port range (0-65535). Must be greater
+            than or equal to `fromPort`. `0` means any port.
+          maximum: 65535
+          minimum: 0
+          type: integer
+        type:
+          description: Rule type discriminator. Always `fqdn` for an FQDN filter rule.
+          enum:
+          - fqdn
+          type: string
+      required:
+      - type
+      - protocol
+      - action
+      - fqdnPattern
       type: object
     FunkStatsResponse:
       properties:
@@ -25004,10 +25448,11 @@ components:
 
             - `plan01s`
             - `plan01s-low_data_volume`: plan01s - Low Data Volume.
+            - `planXM1`
             - `planX3`: planX3 (X3-5MB).
             - `planP1`
-            - `plan-D`: plan-D (without bundle), plan-D (D-300MB).
-            - `plan-K2`: plan-K2 (K2-300MB).
+            - `plan-D`: plan-D (without bundle), plan-D (D-500MB).
+            - `plan-K2`: plan-K2 (K2-500MB).
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -25258,6 +25703,15 @@ components:
               - `inactiveTimeoutDateConst` (required)
               - `inactiveTimeoutOffsetMinute`
               - `runOnceAmongTarget`
+            - `SubscriberSessionStatusRule`: Execute when a subscriber's session status changes.
+
+              The properties that can be set in `properties` are as follows:
+              - `sessionStatus` (required)
+              - `hasImei`
+              - `inactiveTimeoutDateConst` (required)
+              - `inactiveTimeoutOffsetMinutes`
+
+              **Warning**: Enabling this rule requires a request to use the session status rule.
             - `SimStatusAttributeRule`: Execute when the status of an IoT SIM changes.
 
               The properties that can be set in `properties` are as follows:
@@ -25372,6 +25826,7 @@ components:
           - DailyTotalTrafficRule
           - MonthlyTotalTrafficRule
           - MonthlyChargeRule
+          - SubscriberSessionStatusRule
           type: string
       required:
       - properties
@@ -25379,6 +25834,10 @@ components:
       type: object
     RuleConfigProperty:
       properties:
+        hasImei:
+          description: |
+            Specify `true` if you want to target only session events that include an IMEI.
+          type: boolean
         inactiveTimeoutDateConst:
           description: |
             The timing for re-evaluation. For more details, refer to [Rule Parameters](/en/docs/air/event-handler/#rule-parameters). Specify one of the following, depending on the `type` value:
@@ -25392,7 +25851,7 @@ components:
               (*1) Since cumulative data traffic volume does not reset, actions are repeatedly executed at re-evaluation timing after exceeding the threshold.
             - For type `SubscriberFirstTrafficRule`:
               - `NEVER`
-            - For types `SubscriberStatusAttributeRule`, `SubscriberSpeedClassAttributeRule`, `SubscriberExpiredRule`, `SubscriberImeiMismatchedRule`, `SimStatusAttributeRule`, `SimSpeedClassAttributeRule`, `SimExpiredRule`, `SimImeiMismatchedRule`, `MonthlyChargeRule`:
+            - For types `SubscriberStatusAttributeRule`, `SubscriberSessionStatusRule`, `SubscriberSpeedClassAttributeRule`, `SubscriberExpiredRule`, `SubscriberImeiMismatchedRule`, `SimStatusAttributeRule`, `SimSpeedClassAttributeRule`, `SimExpiredRule`, `SimImeiMismatchedRule`, `MonthlyChargeRule`:
               - `IMMEDIATELY`
               - `BEGINNING_OF_NEXT_MONTH`
               - `BEGINNING_OF_NEXT_DAY`
@@ -25425,6 +25884,13 @@ components:
           enum:
           - true
           - false
+          type: string
+        sessionStatus:
+          description: |
+            The session event type that triggers the action. Specify either `Created` (online) or `Deleted` (offline).
+          enum:
+          - Created
+          - Deleted
           type: string
         sourceStatus:
           description: |
@@ -25461,7 +25927,7 @@ components:
           description: |
             The speed class after the change. Specify one of the following when limiting the action execution to a specific post-change speed class. If omitted, the action is executed when the speed class changes to any class.
 
-            - For plans plan01s, plan01s - Low Data Volume, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-300MB), plan-K2 (K2-300MB), plan-K:
+            - For plans plan01s, plan01s - Low Data Volume, planXM1, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-500MB), plan-K2 (K2-500MB), plan-K:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -25859,6 +26325,8 @@ components:
       type: object
     SigfoxRegistrationRequest:
       properties:
+        productCertificationId:
+          type: string
         registrationSecret:
           type: string
         tags:
@@ -25906,6 +26374,14 @@ components:
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
+        lastLocationUpdateTime:
+          description: UNIX time (in milliseconds) of the most recent Location Update
+            activity across all subscribers of this SIM. This timestamp indicates
+            when the device last registered with the network. A recent timestamp suggests
+            that the device is likely attached to the network. If no Location Update
+            data is available, this field is omitted.
+          format: int64
+          type: integer
         lastModifiedTime:
           description: UNIX time (in milliseconds) that the information in the IoT
             SIM (primary subscription to the IoT SIM) was changed
@@ -26517,7 +26993,7 @@ components:
           description: |
             Speed class. Specify one of the following. Please specify the speed class that matches the subscription.
 
-            - For plan01s, plan01s - Low Data Volume, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-300MB), plan-K2 (K2-300MB), plan-K:
+            - For plan01s, plan01s - Low Data Volume, planXM1, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-500MB), plan-K2 (K2-500MB), plan-K:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -26983,6 +27459,52 @@ components:
       required:
       - state
       type: object
+    SoraCamAtomCamSettingsSelfReboot:
+      properties:
+        daysOfWeek:
+          default:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          description: |
+            Days of the week to execute automatic self reboot.
+
+            - `0`: Sunday
+            - `1`: Monday
+            - `2`: Tuesday
+            - `3`: Wednesday
+            - `4`: Thursday
+            - `5`: Friday
+            - `6`: Saturday
+
+            Defaults to `[0, 1, 2, 3, 4, 5, 6]`.
+          items:
+            maximum: 6
+            minimum: 0
+            type: integer
+          type: array
+        enabled:
+          description: |
+            Whether automatic self reboot is enabled.
+
+            - `true`: Enabled.
+            - `false`: Disabled.
+          type: boolean
+        time:
+          default: "00:00"
+          description: |
+            Reboot execution time in UTC (`HH:mm` format).
+
+            Defaults to `00:00`.
+          pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+          type: string
+      required:
+      - enabled
+      type: object
     SoraCamAtomCamSettingsSound:
       properties:
         state:
@@ -27138,17 +27660,27 @@ components:
           description: |
             Type of license to assign.
 
-            - `CR7-SC`: Cloud Continuous Recording License (7 Days).
-            - `CR14-SC`: Cloud Continuous Recording License (14 Days).
-            - `CR30-SC`: Cloud Continuous Recording License (30 Days).
+            - `CR7-SC`: Cloud Recording License (7 Days).
+            - `CR14-SC`: Cloud Recording License (14 Days).
+            - `CR30-SC`: Cloud Recording License (30 Days).
+            - `CR60-SC`: Cloud Recording License (60 Days).
+            - `CR90-SC`: Cloud Recording License (90 Days).
             - `MR7-SC`: Cloud Motion Detection "Unlimited" Recording License (7 Days).
             - `MR14-SC`: Cloud Motion Detection "Unlimited" Recording License (14 Days).
+            - `MR30-SC`: Cloud Motion Detection "Unlimited" Recording License (30 Days).
+            - `MR60-SC`: Cloud Motion Detection "Unlimited" Recording License (60 Days).
+            - `MR90-SC`: Cloud Motion Detection "Unlimited" Recording License (90 Days).
           enum:
           - CR7-SC
           - CR14-SC
           - CR30-SC
+          - CR60-SC
+          - CR90-SC
           - MR7-SC
           - MR14-SC
+          - MR30-SC
+          - MR60-SC
+          - MR90-SC
           type: string
       type: object
     SoraCamDeviceName:
@@ -28355,6 +28887,18 @@ components:
       type: object
     UpdateEventHandlerRequest:
       $ref: '#/components/schemas/CreateEventHandlerRequest'
+    UpdateFqdnFilterRulesRequest:
+      description: Request to replace the domain (FQDN) rules of a VPG.
+      properties:
+        rules:
+          description: The complete set of domain rules to apply. The existing rules
+            are entirely replaced by this list.
+          items:
+            $ref: '#/components/schemas/FqdnFilterRule'
+          type: array
+      required:
+      - rules
+      type: object
     UpdatePasswordRequest:
       properties:
         currentPassword:
@@ -28376,7 +28920,7 @@ components:
           description: |
             Speed class. Specify one of the following. Please specify the speed class that matches the subscription.
 
-            - For plan01s, plan01s - Low Data Volume, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-300MB), plan-K2 (K2-300MB), plan-K:
+            - For plan01s, plan01s - Low Data Volume, planXM1, planX3 (X3-5MB), planP1, plan-D (without bundle), plan-D (D-500MB), plan-K2 (K2-500MB), plan-K:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -28407,6 +28951,18 @@ components:
       required:
       - speedClass
       type: object
+    UpdateUplinkFilterRulesRequest:
+      description: Request to replace the IP rules (IP filtering) of a VPG.
+      properties:
+        rules:
+          description: The complete set of IP rules to apply. The existing rules are
+            entirely replaced by this list.
+          items:
+            $ref: '#/components/schemas/UplinkFilterRule'
+          type: array
+      required:
+      - rules
+      type: object
     UpdateUserRequest:
       properties:
         description:
@@ -28424,6 +28980,55 @@ components:
         - tagValue
         type: object
       type: array
+    UplinkFilterRule:
+      description: An IP rule (IP filtering). Matches device-originated traffic by
+        destination IPv4 CIDR, IP protocol, and port range.
+      properties:
+        action:
+          description: |
+            Action applied when the rule matches.
+
+            - `allow`: Allow the matching traffic.
+            - `deny`: Deny the matching traffic.
+          enum:
+          - allow
+          - deny
+          type: string
+        cidr:
+          description: Destination IPv4 CIDR block (for example, `192.0.2.0/24`).
+            IPv6 is not supported.
+          type: string
+        fromPort:
+          default: 0
+          description: Start of the destination port range (0-65535). `0` means any
+            port.
+          maximum: 65535
+          minimum: 0
+          type: integer
+        protocol:
+          description: IP protocol number (0-255). For example, `6` for TCP, `17`
+            for UDP, and `255` to match all protocols.
+          maximum: 255
+          minimum: 0
+          type: integer
+        toPort:
+          default: 0
+          description: End of the destination port range (0-65535). Must be greater
+            than or equal to `fromPort`. `0` means any port.
+          maximum: 65535
+          minimum: 0
+          type: integer
+        type:
+          description: Rule type discriminator. Always `ip` for an uplink filter rule.
+          enum:
+          - ip
+          type: string
+      required:
+      - type
+      - protocol
+      - action
+      - cidr
+      type: object
     UserDetailResponse:
       properties:
         authKeyList:
@@ -28781,42 +29386,40 @@ components:
       name: X-Soracom-Token
       type: apiKey
 tags:
-- description: '[Audit logs](/en/docs/api-audit-logs/)'
+- description: '[Audit logs](/en/docs/security/audit-logs/)'
   name: AuditLog
 - description: '[Soracom Query](/en/docs/query/)'
   name: Analysis
 - description: |
-    - [Generate API key and token](/en/tools/api/key-and-token/)
+    - [Generate API key and token](/en/docs/security/authkeys/)
     - Password reset token generation and verification
-    - [Switch user](/en/docs/switch-user/) API key and token generation
+    - [Switch user](/en/docs/security/switch-user/) API key and token generation
   name: Auth
-- description: '[Usage charges (billing details)](/en/guides/accounting/check-usage/)'
+- description: '[Usage charges (billing details)](/en/docs/account/billing/)'
   name: Billing
-- description: '[Cell tower location information](/en/docs/air/get-location-info/#get-cell-tower-location-information)'
+- description: Cell tower location information
   name: CellLocation
 - description: |
-    - [Coupon codes](/en/guides/accounting/payment/register-coupon/)
-    - [Usage charges (billing details)](/en/guides/accounting/check-usage/)
-    - [Payment methods](/en/guides/accounting/payment/)
-    - [Long term discounts](/en/docs/air/volume-discount/)
+    - [Coupon codes](/en/docs/account/coupons-and-discounts/)
+    - [Usage charges (billing details)](/en/docs/account/billing/)
+    - [Payment methods](/en/docs/account/payment/)
   name: Payment
 - description: |
-    - [Coupon codes](/en/guides/accounting/payment/register-coupon/)
-    - [Long term discounts](/en/docs/air/volume-discount/)
+    - [Coupon codes](/en/docs/account/coupons-and-discounts/)
     - Order management
     - Product catalog
   name: Order
 - description: |
-    [Credentials store](/en/docs/credentials-store/)
+    [Credential sets](/en/docs/security/credential-sets/)
     Create, update, and delete credentials
   name: Credential
 - description: '[Soracom Harvest Data](/en/docs/harvest/)'
   name: DataEntry
-- description: '[Soracom Inventory object model](/en/docs/inventory/define-custom-object/)'
+- description: '[Soracom Inventory object model](/en/docs/inventory/custom-object-models/)'
   name: DeviceObjectModel
 - description: '[Soracom Inventory devices](/en/docs/inventory/)'
   name: Device
-- description: '[Diagnostic features](/en/guides/diagnostic/)'
+- description: '[Diagnostic features](/en/docs/air/diagnostics/)'
   name: Diagnostic
 - description: '[Event handlers](/en/docs/event-handler/)'
   name: EventHandler
@@ -28829,60 +29432,60 @@ tags:
     - [Stats](#/Stats)
     - [Subscriber:exportSubscribers](#/Subscriber/exportSubscribers)
   name: Files
-- description: Gadget API compatible devices<ul><li>[SoraCam dedicated cellular pack](/en/guides/soracom-cloud-camera-services/setting-cellular-pack/)</li></ul>
+- description: Gadget API compatible devices<ul><li>SoraCam dedicated cellular pack</li></ul>
   name: Gadget
-- description: '[Group configuration](/en/docs/group-configuration/)'
+- description: '[Group configuration](/en/docs/groups/)'
   name: Group
 - description: |
-    [Soracom Lagoon](/en/docs/lagoon-v3/)
+    [Soracom Lagoon](/en/docs/lagoon/)
     User and plan management
   name: Lagoon
 - description: Error logs
   name: Log
-- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) devices'
+- description: Soracom Air for LoRaWAN devices
   name: LoraDevice
-- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) gateways'
+- description: Soracom Air for LoRaWAN gateways
   name: LoraGateway
-- description: '[Soracom Air for LoRaWAN](/en/docs/air-for-lorawan/) network sets'
+- description: Soracom Air for LoRaWAN network sets
   name: LoraNetworkSet
 - description: |
     - Operator management
     - Update registration information
     - Password changes
-    - [Multi-factor authentication](/en/docs/mfa/)
+    - [Multi-factor authentication](/en/docs/security/mfa/)
   name: Operator
-- description: '[Email addresses](/en/docs/email/)'
+- description: '[Email addresses](/en/docs/account/email-settings/)'
   name: Email
-- description: '[Access management (Soracom Access Management)](/en/docs/sam/)'
+- description: '[Access management (Soracom Access Management)](/en/docs/security/users-and-roles/)'
   name: Role
 - description: Shipping address operations for direct sales
   name: ShippingAddress
-- description: '[Soracom Cloud Camera Services](/en/guides/soracom-cloud-camera-services/)'
+- description: Soracom Cloud Camera Services
   name: SoraCam
-- description: '[Email addresses](/en/docs/email/)'
+- description: '[Email addresses](/en/docs/account/email-settings/)'
   name: SystemNotification
 - description: |
-    - [Access management (Soracom Access Management)](/en/docs/sam/)
+    - [Access management (Soracom Access Management)](/en/docs/security/users-and-roles/)
     - Password changes
-    - [Multi-factor authentication](/en/docs/mfa/)
-    - [Switch user](/en/docs/switch-user/) trust policy configuration
+    - [Multi-factor authentication](/en/docs/security/mfa/)
+    - [Switch user](/en/docs/security/switch-user/) trust policy configuration
   name: User
 - description: '[Soracom Napter](/en/docs/napter/)'
   name: PortMapping
 - description: Search SIMs, Soracom Inventory devices, and Sigfox devices
   name: Query
-- description: '[Soracom Air for Sigfox](/en/docs/air-for-sigfox/) devices'
+- description: '[Soracom Air for Sigfox](/en/docs/sigfox/) devices'
   name: SigfoxDevice
 - description: |
     [Soracom Air for Cellular](/en/docs/air/) SIM information, operations, and cancellation
 
     (New API equivalent to Subscriber but supports subscription containers)
   name: Sim
-- description: '[eSIM profiles](/en/docs/air/provision-esim/)'
+- description: '[eSIM profiles](/en/docs/air/esim-profiles/)'
   name: SimProfileOrder
 - description: '[Soracom Orbit](/en/docs/orbit/) Soralet'
   name: Soralet
-- description: '[Data usage history](/en/docs/air/view-data-usage/) retrieval'
+- description: '[Data usage history](/en/docs/air/data-usage/) retrieval'
   name: Stats
 - description: '[Soracom Air for Cellular](/en/docs/air/) SIM information, operations,
     and cancellation'

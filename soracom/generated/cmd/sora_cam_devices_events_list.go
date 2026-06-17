@@ -42,7 +42,7 @@ func InitSoraCamDevicesEventsListCmd() {
 
 	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLastEvaluatedKey, "last-evaluated-key", 0, TRAPI("Value of the 'x-soracom-next-key' header in the previous response. Use this to continue pagination."))
 
-	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLimit, "limit", 10, TRAPI("Maximum number of events to retrieve in one request (value range is 1 to 1000). Note that the response may contain fewer events than the specified limit."))
+	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdLimit, "limit", 10, TRAPI("Maximum number of events to retrieve in one request (value range is 1 to 100). Note that the response may contain fewer events than the specified limit."))
 
 	SoraCamDevicesEventsListCmd.Flags().Int64Var(&SoraCamDevicesEventsListCmdTo, "to", 0, TRAPI("End time of the events to retrieve (unix time in milliseconds). If not specified, 'to' is set to the current time."))
 

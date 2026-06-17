@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20250903-043502
+  version: 20260604-092803
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -183,7 +183,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後のログエントリのタイムスタンプ (`requestedTimeEpochMs`)。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のログエントリのタイムスタンプ (`requestedTimeEpochMs`)。このパラメーターを指定することで次のログエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -258,7 +258,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後のログエントリのタイムスタンプ。このパラメータを指定することで次のログエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のログエントリのタイムスタンプ。このパラメーターを指定することで次のログエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -1892,7 +1892,7 @@ paths:
       description: デバイスオブジェクトモデルのリストを返します。
       operationId: listDeviceObjectModels
       parameters:
-      - description: 前ページで取得した最後のデバイスオブジェクトモデルの ID。このパラメータを指定することで次のデバイスオブジェクトモデル以降のリストを取得できる。
+      - description: 前ページで取得した最後のデバイスオブジェクトモデルの ID。このパラメーターを指定することで次のデバイスオブジェクトモデル以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -2104,7 +2104,7 @@ paths:
         required: false
         schema:
           type: string
-      - description: 前ページで取得した最後のデバイスの ID。このパラメータを指定することで次のデバイスから始まるリストを取得できる。
+      - description: 前ページで取得した最後のデバイスの ID。このパラメーターを指定することで次のデバイスから始まるリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -2657,7 +2657,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメーターを指定することで次のデータエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -2914,8 +2914,8 @@ paths:
       x-soracom-cli:
       - event-handlers list
     post:
-      description: イベントハンドラーを新規作成する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI /
-        SORACOM API で作成する](/ja-jp/docs/event-handler/configure-with-api/) を参照してください。
+      description: イベントハンドラーを新規作成する。リクエストパラメーターの指定方法については、イベントハンドラーの [SORACOM CLI
+        / SORACOM API で作成する](/ja-jp/docs/event-handler/configure-with-api/) を参照してください。
       operationId: createEventHandler
       requestBody:
         content:
@@ -2952,7 +2952,7 @@ paths:
                       limitTotalTrafficMegaByte: 1024
                     type: SubscriberMonthlyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (02) IoT SIM の速度変更時に Slack に通知する。:
                 value:
                   actionConfigList:
@@ -2971,7 +2971,7 @@ paths:
                       inactiveTimeoutDateConst: IMMEDIATELY
                     type: SimSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (03) 1 日のデータ通信量が 100 MiB を超えた場合に 1 日後 (24 時間後) まで速度制限しメール通知する。
               : value:
                   actionConfigList:
@@ -2987,13 +2987,13 @@ paths:
                       executionDateTimeConst: IMMEDIATELY
                       message: 1 日のデータ通信量が 100 MiB に到達したので速度制限を行います。
                       title: SORACOM からのお知らせ
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   - properties:
                       executionDateTimeConst: AFTER_ONE_DAY
-                      message: 速度制限を解除します
+                      message: 速度制限を解除します。
                       title: SORACOM からのお知らせ
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: 1 日のデータ通信量が 100 MiB を超えた場合に 1 日後 (24 時間後) まで速度制限。
                   name: 100 MiB リミット
@@ -3003,7 +3003,7 @@ paths:
                       limitTotalTrafficMegaByte: "100"
                     type: SubscriberDailyTrafficRule
                   status: active
-                  targetImsi: xxxxxxxxxxxx
+                  targetImsi: xxxxxxxxxxxxxxx
               (04) 累積 3000 MiB 利用時に AWS Lambda を呼び出す。:
                 description: |
                   累積でのイベントのため、`inactiveTimeoutDateConst` に `NEVER` (再評価しない) を設定しています。
@@ -3026,7 +3026,7 @@ paths:
                       limitTotalTrafficMegaByte: "3000"
                     type: SimCumulativeTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (05) 速度クラス変更時に AWS Lambda で履歴を保存する。:
                 description: |
                   速度クラス変更のルールで利用できる変数 (`${newSpeedClass}` と `${oldSpeedClass}`) を使用して、AWS Lambda に変更前後の速度クラスを送信し、AWS Lambda でデータベースなどに履歴を保存するイメージです。
@@ -3048,7 +3048,7 @@ paths:
                       targetSpeedClass: null
                     type: SubscriberSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (06) サブスクライバーのデータ通信量が初めて記録されたら、指定の URL にリクエストを送る。:
                 value:
                   actionConfigList:
@@ -3068,7 +3068,7 @@ paths:
                       inactiveTimeoutDateConst: NEVER
                     type: SubscriberFirstTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (07) サブスクライバーの日次データ通信量が一定を超えたら、メールを送る。:
                 value:
                   actionConfigList:
@@ -3076,7 +3076,7 @@ paths:
                       executionDateTimeConst: IMMEDIATELY
                       message: 'IMSI: ${imsi} の 1 日のデータ通信量が 10 MiB に到達しました。'
                       title: SORACOM からのお知らせ
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: Sample description
                   name: Event handler
@@ -3087,7 +3087,7 @@ paths:
                       limitTotalTrafficMegaByte: "10"
                     type: SubscriberDailyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (08) サブスクライバーの月次データ通信量が一定を超えたら、IoT SIM の速度クラスを変更する。:
                 value:
                   actionConfigList:
@@ -3103,7 +3103,7 @@ paths:
                       limitTotalTrafficMegaByte: "1024"
                     type: SubscriberMonthlyTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               ? (09) サブスクライバーの利用開始からの累積データ通信量が一定を超えたら、IoT SIM のステータスを変更する。
               : value:
                   actionConfigList:
@@ -3118,7 +3118,7 @@ paths:
                       limitTotalTrafficMegaByte: "10240"
                     type: SubscriberCumulativeTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (10) IoT SIM のステータスが変更されたら、指定の URL にリクエストを送る。:
                 value:
                   actionConfigList:
@@ -3140,7 +3140,7 @@ paths:
                       targetStatus: active
                     type: SimStatusAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (11) IoT SIM の速度クラスが変更されたら、AWS Lambda を呼び出す。:
                 value:
                   actionConfigList:
@@ -3161,7 +3161,7 @@ paths:
                       targetSpeedClass: s1.4xfast
                     type: SimSpeedClassAttributeRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (12) IoT SIM の有効期限が切れたら、オペレーターのプライマリメールアドレスにメールを送る。:
                 value:
                   actionConfigList:
@@ -3177,7 +3177,7 @@ paths:
                       inactiveTimeoutDateConst: BEGINNING_OF_NEXT_MONTH
                     type: SubscriberExpiredRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               (13) IoT SIM が IMEI ロックにより接続失敗したら、AWS Lambda を呼び出す。:
                 value:
                   actionConfigList:
@@ -3197,7 +3197,7 @@ paths:
                       inactiveTimeoutDateConst: AFTER_ONE_DAY
                     type: SubscriberImeiMismatchedRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetImsi: xxxxxxxxxxxxxxx
               ? (14) IoT SIM に紐づく全サブスクライバーの日次データ通信量合計が一定を超えたら、メールを送る。
               : value:
                   actionConfigList:
@@ -3205,7 +3205,7 @@ paths:
                       executionDateTimeConst: IMMEDIATELY
                       message: 'SIM ID: ${simId} の 1 日のデータ通信量が 10 MiB に到達しました。'
                       title: SORACOM からのお知らせ
-                      to: notify@exmaple.com
+                      to: notify@example.com
                     type: SendMailAction
                   description: Sample description
                   name: Event handler
@@ -3217,13 +3217,13 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimDailyTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (15) IoT SIM に紐づく全サブスクライバーの月次データ通信量合計が一定を超えたら、IoT SIM の速度クラスを変更する。
               : value:
                   actionConfigList:
                   - properties:
                       executionDateTimeConst: IMMEDIATELY
-                      speedClass: s1.minumum
+                      speedClass: s1.minimum
                     type: ChangeSpeedClassAction
                   description: Sample description
                   name: Event handler
@@ -3234,7 +3234,7 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimMonthlyTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (16) IoT SIM に紐づく全サブスクライバーの利用開始からの累積データ通信量合計が一定を超えたら、IoT SIM のステータスを変更する。
               : value:
                   actionConfigList:
@@ -3250,7 +3250,7 @@ paths:
                       runOnceAmongTarget: "true"
                     type: SimCumulativeTotalTrafficRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               (17) IoT SIM にサブスクリプションが追加されたら、AWS Lambda を呼び出す。:
                 value:
                   actionConfigList:
@@ -3272,7 +3272,7 @@ paths:
                       targetOtaStatus: started
                     type: SimSubscriptionStatusRule
                   status: active
-                  targetOperatorId: OP0000000000
+                  targetSimId: xxxxxxxxxxxxxxxxxxx
               ? (18) オペレーターに紐づく全 IoT SIM の日次データ通信量合計が一定を超えたら、オペレーターのプライマリメールアドレスにメールを送る。
               : value:
                   actionConfigList:
@@ -3296,7 +3296,7 @@ paths:
                   actionConfigList:
                   - properties:
                       executionDateTimeConst: IMMEDIATELY
-                      speedClass: s1.minumum
+                      speedClass: s1.minimum
                     type: ChangeSpeedClassAction
                   description: Sample description
                   name: Event handler
@@ -3323,6 +3323,24 @@ paths:
                     type: MonthlyChargeRule
                   status: active
                   targetOperatorId: OP0000000000
+              ? (21) IoT SIM のセッションが Created になったら、オペレーターのプライマリメールアドレスにメールを送る。
+              : value:
+                  actionConfigList:
+                  - properties:
+                      executionDateTimeConst: IMMEDIATELY
+                      message: 'IMSI: ${imsi} のセッションの状態がオンラインになりました。'
+                      title: SORACOM からのお知らせ
+                    type: SendMailToOperatorAction
+                  description: Sample description
+                  name: Event handler
+                  ruleConfig:
+                    properties:
+                      hasImei: true
+                      inactiveTimeoutDateConst: IMMEDIATELY
+                      sessionStatus: Created
+                    type: SubscriberSessionStatusRule
+                  status: active
+                  targetImsi: xxxxxxxxxxxxxxx
             schema:
               $ref: '#/components/schemas/CreateEventHandlerRequest'
         description: イベントハンドラーの設定内容。
@@ -3394,7 +3412,7 @@ paths:
       x-soracom-cli:
       - event-handlers get
     put:
-      description: 指定されたイベントハンドラーを更新する。リクエストパラメータの指定方法については、イベントハンドラーの [SORACOM CLI
+      description: 指定されたイベントハンドラーを更新する。リクエストパラメーターの指定方法については、イベントハンドラーの [SORACOM CLI
         / SORACOM API で作成する](/ja-jp/docs/event-handler/configure-with-api/) を参照してください。
       operationId: updateEventHandler
       parameters:
@@ -3539,7 +3557,7 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: 前ページで取得した最後のファイルエントリの filePath。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のファイルエントリの filePath。このパラメーターを指定することで次のファイルエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -3792,7 +3810,7 @@ paths:
         schema:
           default: 10
           type: integer
-      - description: 前ページで取得した最後のファイルエントリの filename。このパラメータを指定することで次のファイルエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のファイルエントリの filename。このパラメーターを指定することで次のファイルエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -4281,7 +4299,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の Group の ID。このパラメータを指定することで次の Group から始まるリストを取得できる。
+      - description: 前ページで取得した最後の Group の ID。このパラメーターを指定することで次の Group から始まるリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -4433,12 +4451,13 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
-          - SoracomOrbit
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
           - SoracomHarvestFiles
           - SoracomKrypton
+          - SoracomOrbit
           - UnifiedEndpoint
           type: string
       responses:
@@ -4469,9 +4488,10 @@ paths:
       - description: |
           設定対象を示す文字列。設定内容によって異なります。
 
-          - `SoracomAir`: カスタム DNS、メタデータサービス、VPG (Virtual Private Gateway)、CHAP 認証、簡易位置測位機能、バイナリパーサー。
+          - `SoracomAir`: SORACOM Air for セルラー (カスタム DNS、メタデータサービス、VPG、CHAP 認証、簡易位置測位機能、バイナリパーサー、IP Link MTU 設定)。
           - `SoracomBeam`: SORACOM Beam。
           - `SoracomEndorse`: SORACOM Endorse。
+          - `SoracomFlux`: SORACOM Flux。
           - `SoracomFunk`: SORACOM Funk。
           - `SoracomFunnel`: SORACOM Funnel。
           - `SoracomHarvest`: SORACOM Harvest Data。
@@ -4487,6 +4507,7 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
@@ -4503,7 +4524,7 @@ paths:
                 description: |
                   [IoT SIM のカスタム DNS を設定する](/ja-jp/docs/air/configure-custom-dns/) 場合は、以下の点に注意してください。
 
-                  - パスパラメータの `namespace` に、`SoracomAir` を指定します。
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
                   - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/air/configure-custom-dns/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: useCustomDns
@@ -4516,7 +4537,7 @@ paths:
                 description: |
                   [メタデータサービスを設定する](/ja-jp/docs/air/use-metadata/#メタデータサービスを設定する) 場合は、以下の点に注意してください。
 
-                  - パスパラメータの `namespace` に、`SoracomAir` を指定します。
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
                   - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/air/use-metadata/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: metadata
@@ -4531,7 +4552,7 @@ paths:
                 description: |
                   [CHAP 認証で任意のユーザー名とパスワードを利用する](/ja-jp/docs/air/configure-chap/) 場合は、以下の点に注意してください。
 
-                  - パスパラメータの `namespace` に、`SoracomAir` を指定します。
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
                   - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/air/configure-chap/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: authenticationRequired
@@ -4544,12 +4565,21 @@ paths:
                 description: |
                   [デバイスの簡易的な位置情報 (簡易位置測位機能) を送信する (plan-KM1 のみ)](/ja-jp/docs/air/get-location-info/#デバイスの簡易的な位置情報-簡易位置測位機能-を送信する-plan-km1-のみ) 場合は、以下の点に注意してください。
 
-                  - パスパラメータの `namespace` に、`SoracomAir` を指定します。
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
                   - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/air/get-location-info/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
                 value:
                 - key: locationEnabled
                   value: true
-              (5) Endorse を有効化する (SoracomEndorse):
+              (5) IP Link MTU を設定する (SoracomAir):
+                description: |
+                  [デバイスに通知する MTU (IP Link MTU) を設定する](/ja-jp/docs/air/configure-ip-link-mtu/) 場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/air/configure-ip-link-mtu/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
+                value:
+                - key: ipLinkMtu
+                  value: 1400
+              (6) Endorse を有効化する (SoracomEndorse):
                 description: |
                   [Endorse を有効化する](/ja-jp/docs/endorse/validate-token/#endorse-を有効化する) 場合は、以下の点に注意してください。
 
@@ -4573,7 +4603,7 @@ paths:
                   value:
                   - https://soracom.io
                   - http://localhost:3000
-              (6) 送信データの時刻をタイムスタンプに利用する (SoracomHarvest):
+              (7) 送信データの時刻をタイムスタンプに利用する (SoracomHarvest):
                 description: |
                   [「送信データに含めた時刻」をタイムスタンプとして扱う](/ja-jp/docs/harvest/custom-timestamp/) 場合は、以下の点に注意してください。
 
@@ -4587,14 +4617,23 @@ paths:
                     format: iso-8601
                     type: jsonpointer
                     value: /time
+              (8) セッションステータスルールを有効化する (SoracomAir):
+                description: |
+                  [イベントハンドラー](/ja-jp/docs/event-handler/) の [サブスクライバーのセッションの状態が変更されたら実行](/ja-jp/docs/event-handler/rules/#サブスクライバーのセッションの状態が変更されたら実行) ルールを有効化する場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomAir` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[SIM グループに設定を投入する](/ja-jp/docs/event-handler/rules/#2-sim-グループに設定を投入する----omit-in-toc---) を参照してください。
+                value:
+                - key: sessionEventEnabled
+                  value: true
             schema:
               items:
                 $ref: '#/components/schemas/GroupConfigurationUpdateRequest'
               type: array
         description: |
-          グループ設定。
+          グループ設定。 `namespace` 内の当該 `key` の設定のみを更新します。
 
-          **Warning**: 同じ `namespace` に含まれる設定を変更する場合は、リクエストボディに変更点だけでなく、既存の設定をすべて含めてください。リクエストボディに含めなかった設定は、すべてデフォルト設定に戻ります。
+          以下の [Examples] を選択して、さらにその下の [Example Value] タブをクリックすると、リクエストボディのサンプルを確認できます。
         required: true
       responses:
         "200":
@@ -4615,7 +4654,7 @@ paths:
       - groups put-config
   /groups/{group_id}/configuration/{namespace}/{name}:
     delete:
-      description: 指定された Group のパラメータを削除。
+      description: 指定された Group のパラメーターを削除。
       operationId: deleteConfigurationParameter
       parameters:
       - description: 対象の Group。
@@ -4624,7 +4663,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 対象のパラメータのネームスペース。
+      - description: 対象のパラメーターのネームスペース。
         in: path
         name: namespace
         required: true
@@ -4633,6 +4672,7 @@ paths:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
@@ -4640,7 +4680,7 @@ paths:
           - SoracomKrypton
           - UnifiedEndpoint
           type: string
-      - description: 削除対象のパラメータ名 (URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript
+      - description: 削除対象のパラメーター名 (URL の Path の一部になるので、パーセントエンコーディングを施す。JavaScript
           なら encodeURIComponent() したものを指定する)。
         in: path
         name: name
@@ -4649,13 +4689,13 @@ paths:
           type: string
       responses:
         "204":
-          description: 指定されたパラメータの削除完了。
+          description: 指定されたパラメーターの削除完了。
         "404":
           description: 指定された Group が存在しない。
       security:
       - api_key: []
         api_token: []
-      summary: グループのパラメータを削除する
+      summary: グループのパラメーターを削除する
       tags:
       - Group
       x-soracom-cli:
@@ -4677,7 +4717,8 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメータを指定することで次の Subscriber 以降のリストを取得できる。
+      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメーターを指定することで次の Subscriber
+          以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -5247,7 +5288,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の LoRaWAN デバイスの Device ID。このパラメータを指定することで次の LoRaWAN
+      - description: 前ページで取得した最後の LoRaWAN デバイスの Device ID。このパラメーターを指定することで次の LoRaWAN
           デバイス以降のリストを取得できる
         in: query
         name: last_evaluated_key
@@ -5347,7 +5388,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメーターを指定することで次のデータエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -5695,7 +5736,7 @@ paths:
         schema:
           format: int32d
           type: integer
-      - description: 前ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメータを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
+      - description: 前ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメーターを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -6000,7 +6041,7 @@ paths:
         schema:
           format: int32d
           type: integer
-      - description: 前ページで取得した最後の LoRaWAN ネットワークの ID。このパラメータを指定することで次以降のリストを取得できる。
+      - description: 前ページで取得した最後の LoRaWAN ネットワークの ID。このパラメーターを指定することで次以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -6156,7 +6197,7 @@ paths:
         schema:
           format: int32d
           type: integer
-      - description: 前ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメータを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
+      - description: 前ページで取得した最後の LoRaWAN ゲートウェイの ID。このパラメーターを指定することで次の LoRaWAN ゲートウェイ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -9201,7 +9242,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後のオンデマンドリモートアクセスの ID。このパラメータを指定することで次のオンデマンドリモートアクセスから始まるリストを取得できる。
+      - description: 前ページで取得した最後のオンデマンドリモートアクセスの ID。このパラメーターを指定することで次のオンデマンドリモートアクセスから始まるリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -9485,7 +9526,7 @@ paths:
           format: int32
           maximum: 100
           type: integer
-      - description: 前ページで取得した最後の SORACOM Inventory デバイスの ID。このパラメータを指定することで次の SORACOM
+      - description: 前ページで取得した最後の SORACOM Inventory デバイスの ID。このパラメーターを指定することで次の SORACOM
           Inventory デバイス以降のリストを取得できる。
         in: query
         name: last_evaluated_key
@@ -9618,7 +9659,7 @@ paths:
           format: int32
           maximum: 100
           type: integer
-      - description: 前ページで取得した最後の Sigfox デバイスの ID。このパラメータを指定することで次の Sigfox デバイス以降のリストを取得できる。
+      - description: 前ページで取得した最後の Sigfox デバイスの ID。このパラメーターを指定することで次の Sigfox デバイス以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -9661,11 +9702,11 @@ paths:
   /query/sims:
     get:
       description: |
-        クエリパラメータに指定した条件で、IoT SIM を検索します。
+        クエリパラメーターに指定した条件で、IoT SIM を検索します。
 
         - 部分一致で検索できます。
         - 大文字と小文字は区別されません。
-        - 以下のパラメーターでは、カンマ (`,`。クエリパラメータに指定する際は `%2C`) 区切りで入力すると、複数の検索条件を指定できます。ただし、`,` 自体は検索条件として利用できません。
+        - 以下のパラメーターでは、カンマ (`,`。クエリパラメーターに指定する際は `%2C`) 区切りで入力すると、複数の検索条件を指定できます。ただし、`,` 自体は検索条件として利用できません。
             - `name`
             - `group`
             - `sim_id`
@@ -9832,8 +9873,8 @@ paths:
           検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
 
           - 日本カバレッジの場合は、以下のいずれかを指定します。
-            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
-            - `plan-K2`: plan-K2 (K2-300MB)。
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-500MB)。
+            - `plan-K2`: plan-K2 (K2-500MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -9846,6 +9887,7 @@ paths:
             - `plan-US`
             - `plan-US-max`
             - `planX1`
+            - `planXM1`
             - `planX2`
             - `planX3-EU`
             - `plan-US-NA`
@@ -9886,7 +9928,7 @@ paths:
           format: int32
           maximum: 100
           type: integer
-      - description: 前ページで取得した最後の SIM の SIM ID。このパラメータを指定することで次の SIM 以降のリストを取得できる。
+      - description: 前ページで取得した最後の SIM の SIM ID。このパラメーターを指定することで次の SIM 以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -9898,7 +9940,7 @@ paths:
           - AND: すべての検索条件に一致する IoT SIM が取得できます (デフォルト)。
           - OR: いずれかの検索条件に一致する IoT SIM が取得できます。
 
-          検索条件にカンマ (`,`。クエリパラメータに指定する際は `%2C`) が含まれる場合は、カンマで分割されたあとの文字列が、複数の検索条件として扱われ、AND または OR の設定に従って評価されます。
+          検索条件にカンマ (`,`。クエリパラメーターに指定する際は `%2C`) が含まれる場合は、カンマで分割されたあとの文字列が、複数の検索条件として扱われ、AND または OR の設定に従って評価されます。
         in: query
         name: search_type
         required: false
@@ -10006,8 +10048,8 @@ paths:
           検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
 
           - 日本カバレッジの場合は、以下のいずれかを指定します。
-            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
-            - `plan-K2`: plan-K2 (K2-300MB)。
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-500MB)。
+            - `plan-K2`: plan-K2 (K2-500MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -10020,6 +10062,7 @@ paths:
             - `plan-US`
             - `plan-US-max`
             - `planX1`
+            - `planXM1`
             - `planX2`
             - `planX3-EU`
             - `plan-US-NA`
@@ -10050,7 +10093,8 @@ paths:
           format: int32
           maximum: 100
           type: integer
-      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメータを指定することで次の Subscriber 以降のリストを取得できる。
+      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメーターを指定することで次の Subscriber
+          以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -10214,7 +10258,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の Sigfox device の Device ID。このパラメータを指定することで次の Sigfox
+      - description: 前ページで取得した最後の Sigfox device の Device ID。このパラメーターを指定することで次の Sigfox
           device 以降のリストを取得できる
         in: query
         name: last_evaluated_key
@@ -10314,7 +10358,7 @@ paths:
           maximum: 1000
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメータを指定することで次のデータエントリ以降のリストを取得できる。
+      - description: 前ページで取得した最後のデータエントリのタイムスタンプ。このパラメーターを指定することで次のデータエントリ以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -10647,7 +10691,7 @@ paths:
           maximum: 100
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後の eSIM プロファイルの注文履歴の注文 ID。このパラメータを指定することで、次の注文履歴以降のリストを取得できます。
+      - description: 前ページで取得した最後の eSIM プロファイルの注文履歴の注文 ID。このパラメーターを指定することで、次の注文履歴以降のリストを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -11921,6 +11965,12 @@ paths:
                   enable: true
                   subscription: planX3
                   type: cellular
+              Adding planX3 with tag:
+                value:
+                  enable: true
+                  subscription: planX3
+                  tag: my-custom-tag
+                  type: cellular
               Adding virtual SIM/Subscriber:
                 value:
                   subscription: planArc01
@@ -11937,9 +11987,10 @@ paths:
                   type: boolean
                 subscription:
                   description: |
-                    追加する [セカンダリサブスクリプション](/ja-jp/resources/glossary/subscription/)
-                    - `planP1`、`planX1`、`planX2`、`planX3`、`plan-US-max`: 追加サブスクリプション
-                    - `planArc01`: バーチャル SIM/Subscriber
+                    追加する [セカンダリサブスクリプション](/ja-jp/resources/glossary/subscription/)。追加できるサブスクリプションは、IoT SIM のプライマリサブスクリプションによって異なります。
+                    - プライマリサブスクリプションが `plan01s` の場合:
+                      - `planP1`、`planX1`、`planX2`、`planX3`、`plan-US-max`: 追加サブスクリプション
+                    - `planArc01`: バーチャル SIM/Subscriber (プライマリサブスクリプションに関わらず利用可能)
                   enum:
                   - planP1
                   - planX1
@@ -11947,6 +11998,15 @@ paths:
                   - planX3
                   - plan-US-max
                   - planArc01
+                  type: string
+                tag:
+                  description: |
+                    この操作で生成される OTA スクリプトを識別するための任意のタグ。省略した場合は、デフォルトのタグ (`{operatorId}:addSubscription`) が使用されます。
+
+                    - 使用できる文字は、英数字、ハイフン (`-`)、アンダースコア (`_`)、コロン (`:`) のみです。
+                    - 最大 64 文字です。
+                  maxLength: 64
+                  pattern: ^[a-zA-Z0-9\-_:]+$
                   type: string
                 type:
                   description: |
@@ -11967,7 +12027,8 @@ paths:
                 $ref: '#/components/schemas/SimProfile'
           description: 更新された SIM プロファイル
         "400":
-          description: 追加できないサブスクリプションを指定した。たとえば、plan-D の IoT SIM に `planP1` は追加できません。
+          description: 追加できないサブスクリプションを指定した。たとえば、プライマリサブスクリプションが plan-D の IoT SIM
+            に `planP1` は追加できません。
         "404":
           description: 指定した SIM ID および ICCID の IoT SIM が存在しない
       security:
@@ -12099,7 +12160,7 @@ paths:
         **Alert**: SIM ローカル情報レポート取得のリクエスト 1 件につき、IoT デバイスへの SMS 送信 1 通が発生します。IoT デバイスへの SMS 送信は有料です。利用料金について詳しくは、以下のページの「SMS 機能」を参照してください。
 
         - [グローバルカバレッジ IoT SIM](https://soracom.jp/services/air/global_coverage/#:~:text=%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82-,SMS%20%E6%A9%9F%E8%83%BD,-IoT%20%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%B8)
-        - [日本カバレッジ IoT SIM](https://soracom.jp/services/air/japan_coverage/#:~:text=%E8%BF%BD%E5%8A%A0%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-,SMS%E6%A9%9F%E8%83%BD,-plan%2DD) (plan-K2 (K2-300MB) のみ)
+        - [日本カバレッジ IoT SIM](https://soracom.jp/services/air/japan_coverage/#:~:text=%E8%BF%BD%E5%8A%A0%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-,SMS%E6%A9%9F%E8%83%BD,-plan%2DD) (plan-K2 (K2-500MB) のみ)
       operationId: reportSimLocalInfo
       parameters:
       - description: 対象の IoT SIM の ID
@@ -12605,7 +12666,11 @@ paths:
         schema:
           type: string
       responses:
-        "204":
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
           description: IoT SIM の有効期限の解除に成功しました。
         "404":
           description: 指定した IoT SIM が存在しないか、IoT SIM に有効期限が設定されていません。
@@ -13640,6 +13705,96 @@ paths:
       - SoraCam
       x-soracom-cli:
       - sora-cam devices atom-cam settings set-rotation
+  /sora_cam/devices/{device_id}/atom_cam/settings/self_reboot:
+    get:
+      description: |
+        定時再起動の設定を取得します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
+      operationId: getSoraCamDeviceAtomCamSettingsSelfReboot
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                daysOfWeek:
+                - 0
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                enabled: true
+                time: "00:00"
+              schema:
+                $ref: '#/components/schemas/SoraCamAtomCamSettingsSelfReboot'
+          description: OK.
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 定時再起動の設定を取得する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings get-self-reboot
+    post:
+      description: |
+        定時再起動の設定を変更します。
+
+        **Warning**: この API を SAM ユーザーの API キーと API トークンで実行する場合は、SAM ユーザーに、この API を呼び出すために必要な権限 (例: `SoraCam:*`) に加えて、`OAuth2:authorize` を実行する権限を追加してください。権限設定について詳しくは、[SAM ユーザーの権限を設定する](/ja-jp/docs/sam/set-permissions/) を参照してください。
+
+        **Info**: この API を利用するには、対象のソラカメ対応カメラにクラウドライセンスを割り当てる、または [リアルタイムアクセスを有効化](/ja-jp/docs/soracom-cloud-camera-services/real-time-access/) する必要があります。
+      operationId: setSoraCamDeviceAtomCamSettingsSelfReboot
+      parameters:
+      - description: 対象のソラカメ対応カメラのデバイス ID。
+        in: path
+        name: device_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              daysOfWeek:
+              - 0
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+              - 6
+              enabled: true
+              time: "00:00"
+            schema:
+              $ref: '#/components/schemas/SoraCamAtomCamSettingsSelfReboot'
+      responses:
+        "200":
+          description: OK.
+        "400":
+          description: 不正なリクエスト。
+        "404":
+          description: 指定したソラカメ対応カメラが見つかりません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 定時再起動の設定を変更する
+      tags:
+      - SoraCam
+      x-soracom-cli:
+      - sora-cam devices atom-cam settings set-self-reboot
   /sora_cam/devices/{device_id}/atom_cam/settings/sound:
     get:
       description: |
@@ -14076,13 +14231,13 @@ paths:
         required: false
         schema:
           type: string
-      - description: 1 回のリクエストで取得するデータ数の上限 (1 〜 1000)。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
+      - description: 1 回のリクエストで取得するデータ数の上限 (1 〜 100)。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
         schema:
           default: 10
-          maximum: 1000
+          maximum: 100
           minimum: 1
           type: integer
       - description: イベントを取得する期間の開始時刻 (UNIX 時間 (ミリ秒))。省略した場合は、対象のソラカメ対応カメラで検出された最も古いイベントの発生時刻が設定されます。
@@ -15170,13 +15325,13 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 1 回のリクエストで取得するデータ数の上限 (1 〜 1000)。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
+      - description: 1 回のリクエストで取得するデータ数の上限 (1 〜 100)。なお、レスポンスには、指定した最大値よりも少ないデータしか含まれないことがあります。
         in: query
         name: limit
         required: false
         schema:
           default: 10
-          maximum: 1000
+          maximum: 100
           minimum: 1
           type: integer
       - description: イベントを取得する期間の開始時刻 (UNIX 時間 (ミリ秒))。省略した場合は、ソラカメ対応カメラで検出された最も古いイベントの発生時刻が設定されます。
@@ -15504,6 +15659,16 @@ paths:
                 quantity: 2
                 quantityInUse: 2
                 salesChannel: SORACOM Inc.
+              - id: CR60-SC
+                name: Cloud Recording License (60 Days)
+                quantity: 2
+                quantityInUse: 2
+                salesChannel: SORACOM Inc.
+              - id: CR90-SC
+                name: Cloud Recording License (90 Days)
+                quantity: 2
+                quantityInUse: 2
+                salesChannel: SORACOM Inc.
               - id: MR7-SC
                 name: Cloud Motion Detection "Unlimited" Recording License (7 Days)
                 quantity: 0
@@ -15516,8 +15681,18 @@ paths:
                 salesChannel: SORACOM Inc.
               - id: MR30-SC
                 name: Cloud Motion Detection "Unlimited" Recording License (30 Days)
-                quantity: 2
-                quantityInUse: 2
+                quantity: 0
+                quantityInUse: 0
+                salesChannel: SORACOM Inc.
+              - id: MR60-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (60 Days)
+                quantity: 1
+                quantityInUse: 1
+                salesChannel: SORACOM Inc.
+              - id: MR90-SC
+                name: Cloud Motion Detection "Unlimited" Recording License (90 Days)
+                quantity: 1
+                quantityInUse: 1
                 salesChannel: SORACOM Inc.
               schema:
                 items:
@@ -15540,11 +15715,66 @@ paths:
         現在、この API は日本カバレッジでのみ利用可能です。
       operationId: updateSoraCamLicensePackQuantity
       parameters:
-      - description: ライセンスパックの ID。
+      - description: |
+          次のいずれかのライセンス ID を指定します。
+
+          - `CR7-SC`: クラウド常時録画ライセンス (7 日間)。
+          - `CR14-SC`: クラウド常時録画ライセンス (14 日間)。
+          - `CR30-SC`: クラウド常時録画ライセンス (30 日間)。
+          - `CR60-SC`: クラウド常時録画ライセンス (60 日間)。
+          - `CR90-SC`: クラウド常時録画ライセンス (90 日間)。
+          - `MR7-SC`: クラウドモーション検知 "無制限" 録画ライセンス (7 日間)。
+          - `MR14-SC`: クラウドモーション検知 "無制限" 録画ライセンス (14 日間)。
+          - `MR30-SC`: クラウドモーション検知 "無制限" 録画ライセンス (30 日間)。
+          - `MR60-SC`: クラウドモーション検知 "無制限" 録画ライセンス (60 日間)。
+          - `MR90-SC`: クラウドモーション検知 "無制限" 録画ライセンス (90 日間)。
+        examples:
+          example_cr7:
+            summary: クラウド常時録画ライセンス (7 日間)
+            value: CR7-SC
+          example_cr14:
+            summary: クラウド常時録画ライセンス (14 日間)
+            value: CR14-SC
+          example_cr30:
+            summary: クラウド常時録画ライセンス (30 日間)
+            value: CR30-SC
+          example_cr60:
+            summary: クラウド常時録画ライセンス (60 日間)
+            value: CR60-SC
+          example_cr90:
+            summary: クラウド常時録画ライセンス (90 日間)
+            value: CR90-SC
+          example_mr7:
+            summary: クラウドモーション検知 "無制限" 録画ライセンス (7 日間)
+            value: MR7-SC
+          example_mr14:
+            summary: クラウドモーション検知 "無制限" 録画ライセンス (14 日間)
+            value: MR14-SC
+          example_mr30:
+            summary: クラウドモーション検知 "無制限" 録画ライセンス (30 日間)
+            value: MR30-SC
+          example_mr60:
+            summary: クラウドモーション検知 "無制限" 録画ライセンス (60 日間)
+            value: MR60-SC
+          example_mr90:
+            summary: クラウドモーション検知 "無制限" 録画ライセンス (90 日間)
+            value: MR90-SC
         in: path
         name: license_pack_id
         required: true
         schema:
+          enum:
+          - CR7-SC
+          - CR14-SC
+          - CR30-SC
+          - CR60-SC
+          - CR90-SC
+          - MR7-SC
+          - MR14-SC
+          - MR30-SC
+          - MR60-SC
+          - MR90-SC
+          example: CR30-SC
           type: string
       requestBody:
         content:
@@ -15587,7 +15817,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 現在のページで最後に取得された Soralet の識別子を指定します。このパラメータを指定することで、Soralet のリストの続きを取得できます。
+      - description: 現在のページで最後に取得された Soralet の識別子を指定します。このパラメーターを指定することで、Soralet のリストの続きを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -15716,7 +15946,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 現在のページで最後に取得されたログの識別子を指定します。このパラメータを指定することで、ログのリストの続きを取得できます。
+      - description: 現在のページで最後に取得されたログの識別子を指定します。このパラメーターを指定することで、ログのリストの続きを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -15805,7 +16035,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 現在のページで最後に取得されたバージョンの識別子を指定します。このパラメータを指定することで、バージョンのリストの続きを取得できます。
+      - description: 現在のページで最後に取得されたバージョンの識別子を指定します。このパラメーターを指定することで、バージョンのリストの続きを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -16879,7 +17109,8 @@ paths:
           maximum: 100
           minimum: 1
           type: integer
-      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメータを指定することで次の Subscriber 以降のリストを取得できる。
+      - description: 前ページで取得した最後の Subscriber の IMSI。このパラメーターを指定することで次の Subscriber
+          以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -16980,7 +17211,7 @@ paths:
         content:
           application/json:
             example:
-            - D-300MB
+            - D-500MB
             schema:
               items:
                 description: |
@@ -16990,11 +17221,11 @@ paths:
                   - plan-DU: `DU`
                   - plan-US: `US`
 
-                  例: サブスクリプションが plan-D の場合は、`D-300MB` を設定できます。
+                  例: サブスクリプションが plan-D の場合は、`D-500MB` を設定できます。
 
-                  **Warning**: plan-K2 (K2-300MB)、plan-D (D-300MB)、planX3、planX3-EU のバンドルは変更できません。
+                  **Warning**: plan-K2 (K2-500MB)、plan-D (D-500MB)、planX3、planX3-EU のバンドルは変更できません。
                 enum:
-                - D-300MB
+                - D-500MB
                 - DU-10GB
                 - DU-50GB
                 - DU-100GB
@@ -17077,7 +17308,7 @@ paths:
           minimum: 1
           type: integer
       - description: |
-          前のページで取得した最後のデータエントリのキー。この API でのデータエントリーのキーは、`${UNIX 時間 (ミリ秒)}_${IMSI}` です。このパラメータを指定することで次のデータエントリを取得できます。
+          前のページで取得した最後のデータエントリのキー。この API でのデータエントリーのキーは、`${UNIX 時間 (ミリ秒)}_${IMSI}` です。このパラメーターを指定することで次のデータエントリを取得できます。
         in: query
         name: last_evaluated_key
         required: false
@@ -17285,7 +17516,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後のイベントのタイムスタンプ。このパラメータを指定することで次のイベント以降のリストを取得できる。
+      - description: 前ページで取得した最後のイベントのタイムスタンプ。このパラメーターを指定することで次のイベント以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -17694,7 +17925,11 @@ paths:
         schema:
           type: string
       responses:
-        "204":
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscriber'
           description: 指定した Subscriber の有効期限の解除に成功
         "404":
           description: 指定した Subscriber が存在しないか、Subscriber に有効期限がない
@@ -18007,7 +18242,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の VPG の ID。このパラメータを指定することで次の VPG から始まるリストを取得できる。
+      - description: 前ページで取得した最後の VPG の ID。このパラメーターを指定することで次の VPG から始まるリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -18352,7 +18587,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OpenGateRequest'
-        description: オプショナルな Gate の設定パラメータ。
+        description: オプショナルな Gate の設定パラメーター。
       responses:
         "200":
           description: SORACOM Gate の有効化が完了
@@ -18597,7 +18832,7 @@ paths:
         required: false
         schema:
           type: integer
-      - description: 前ページで取得した最後の IP アドレス。このパラメータを指定することで、次ページ (IP アドレスマップのエントリのリスト)
+      - description: 前ページで取得した最後の IP アドレス。このパラメーターを指定することで、次ページ (IP アドレスマップのエントリのリスト)
           を取得できます。
         in: query
         name: last_evaluated_key
@@ -18926,7 +19161,7 @@ paths:
         required: true
         schema:
           type: string
-      - description: 前ページで取得した最後のパケットキャプチャセッション。このパラメータを指定することで次のパケットキャプチャセッション以降のリストを取得できる。
+      - description: 前ページで取得した最後のパケットキャプチャセッション。このパラメーターを指定することで次のパケットキャプチャセッション以降のリストを取得できる。
         in: query
         name: last_evaluated_key
         required: false
@@ -19230,6 +19465,131 @@ paths:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg terminate
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/disable:
+    post:
+      description: 指定された VPG のトラフィックフィルタリング機能を無効にします。
+      operationId: disableTrafficFiltering
+      parameters:
+      - description: 対象の VPG の ID
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: トラフィックフィルタリングを無効にしました。
+        "403":
+          description: このオペレーターではトラフィックフィルタリングを利用できません。
+        "404":
+          description: 指定された VPG は存在しない
+      security:
+      - api_key: []
+        api_token: []
+      summary: トラフィックフィルタリングを無効にする
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg disable-traffic-filtering
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/enable:
+    post:
+      description: 指定された VPG のトラフィックフィルタリング機能を有効にします。VPG のタイプがトラフィックフィルタリングに対応している必要があります。
+      operationId: enableTrafficFiltering
+      parameters:
+      - description: 対象の VPG の ID
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: トラフィックフィルタリングを有効にしました。
+        "400":
+          description: 指定された VPG のタイプはトラフィックフィルタリングに対応していません。
+        "403":
+          description: このオペレーターではトラフィックフィルタリングを利用できません。
+        "404":
+          description: 指定された VPG は存在しない
+      security:
+      - api_key: []
+        api_token: []
+      summary: トラフィックフィルタリングを有効にする
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg enable-traffic-filtering
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/fqdn_rules:
+    put:
+      description: 指定された VPG のドメインルール（ドメインフィルタリング / FQDN フィルタリング）を、リクエストの内容で置き換えます。既存の
+        IP ルールは保持されます。
+      operationId: putFqdnFilterRules
+      parameters:
+      - description: 対象の VPG の ID
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFqdnFilterRulesRequest'
+        description: 適用するドメインルールの完全なセット。
+        required: true
+      responses:
+        "200":
+          description: ドメインルールを更新しました。
+        "400":
+          description: 1 つ以上のルールが不正です。
+        "403":
+          description: このオペレーターではトラフィックフィルタリングを利用できません。
+        "404":
+          description: 指定された VPG は存在しない
+      security:
+      - api_key: []
+        api_token: []
+      summary: ドメインルールを更新する
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg put-fqdn-filter-rules
+  /virtual_private_gateways/{vpg_id}/traffic_filtering/uplink_rules:
+    put:
+      description: 指定された VPG の IP ルール（IP フィルタリング）を、リクエストの内容で置き換えます。既存のドメインルールは保持されます。
+      operationId: putUplinkFilterRules
+      parameters:
+      - description: 対象の VPG の ID
+        in: path
+        name: vpg_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUplinkFilterRulesRequest'
+        description: 適用する IP ルールの完全なセット。
+        required: true
+      responses:
+        "200":
+          description: IP ルールを更新しました。
+        "400":
+          description: 1 つ以上のルールが不正です。
+        "403":
+          description: このオペレーターではトラフィックフィルタリングを利用できません。
+        "404":
+          description: 指定された VPG は存在しない
+      security:
+      - api_key: []
+        api_token: []
+      summary: IP ルールを更新する
+      tags:
+      - VirtualPrivateGateway
+      x-soracom-cli:
+      - vpg put-uplink-filter-rules
   /virtual_private_gateways/{vpg_id}/transit_gateway_peering_connections:
     post:
       description: 指定された VPG に Transit Gateway ピアリング接続を作成
@@ -19417,7 +19777,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateVpcPeeringConnectionRequest'
+                $ref: '#/components/schemas/CreateVpcPeeringConnectionResponse'
           description: 作成された VPC ピアリング接続
         "404":
           description: 指定された VPC ピアリング接続は存在しない
@@ -19728,6 +20088,7 @@ components:
           cert: sample_cert
           key: sample_key
         type: x509
+  parameters: {}
   requestBodies:
     CreateAndUpdateCredentialsModel:
       content:
@@ -19772,7 +20133,7 @@ components:
           description: リクエストされた API のパス。
           type: string
         requestedTimeEpochMs:
-          description: API が呼び出された時刻。この値はページネーションのために `last_evaluated_key` リクエストパラメータに利用することができます。
+          description: API が呼び出された時刻。この値はページネーションのために `last_evaluated_key` リクエストパラメーターに利用することができます。
           format: int64
           type: integer
         userName:
@@ -19823,7 +20184,10 @@ components:
             (必須)\n  - `executionOffsetMinutes`\n  - `endpoint` (必須)\n  - `functionName`
             (必須)\n  - `credentialsId` (必須)\n  - `parameter1`、`parameter2`、`parameter3`、`parameter4`、`parameter5`\n
             \ \n  **Warning**: `accessKey` および `secretAccessKey` は非推奨のプロパティです。`credentialsId`
-            を利用してください。\n"
+            を利用してください。\n- `ImeiLockAction`: IMEI ロックを設定する。\n\n  なお、`properties` に設定できるプロパティは、以下のとおりです。\n
+            \ - `executionDateTimeConst` (必須)\n  - `executionOffsetMinutes`\n\n  **Warning**:
+            このアクションは、`SubscriberSessionStatusRule` (セッションステータスルール) で `hasImei` を有効にした場合にのみ設定できます。また、セッションステータスルールと
+            IMEI ロックアクションの利用申請が必要です。\n"
           enum:
           - ChangeSpeedClassAction
           - InvokeAWSLambdaAction
@@ -19834,6 +20198,7 @@ components:
           - DeactivationAction
           - StandbyAction
           - SuspendAction
+          - ImeiLockAction
           type: string
       required:
       - properties
@@ -19859,7 +20224,8 @@ components:
             AWS Lambda の認証情報 ID。あらかじめ、[認証情報ストア](/ja-jp/docs/credentials-store/) で「AWS 認証情報」または「AWS IAM ロール認証情報」を登録してください。
           type: string
         endpoint:
-          description: AWS Lambda のサービスエンドポイント。
+          description: |
+            AWS Lambda のサービスエンドポイント。例: `https://lambda.ap-northeast-1.amazonaws.com`
           type: string
         executionDateTimeConst:
           description: |
@@ -19884,7 +20250,8 @@ components:
             アクションのオフセット (分)。デフォルトは `0` です。`0`～`525600` の整数を String 型で指定します。`executionDateTimeConst` で指定したタイミングから、実際にアクションを実行する時間をずらすことができます。詳しくは、[アクションのオフセット (分)](/ja-jp/docs/event-handler/how-it-works/#アクションのオフセット-分) を参照してください。
           type: string
         functionName:
-          description: AWS Lambda のファンクション名。バージョンやエイリアスも指定できます。
+          description: |
+            AWS Lambda のファンクション名。バージョンやエイリアスも指定できます。例: `sample-function:12`、`sample-function:production`。
           type: string
         headers:
           description: |
@@ -19939,7 +20306,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planXM1、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-500MB)、plan-K2 (K2-500MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -20017,7 +20384,7 @@ components:
     ArcCredentialAttachRequest:
       properties:
         arcClientPeerPublicKey:
-          description: このパラメータが指定されていない場合、サーバーがキーペアを生成します
+          description: このパラメーターが指定されていない場合、サーバーがキーペアを生成します
           type: string
       type: object
     ArcCredentialAttachResponse:
@@ -20158,6 +20525,7 @@ components:
           example: abcde12345fghij67890klmno12345pqrst67890uvwxy12345abcde67890fghi...
           type: string
         userName:
+          description: SAM ユーザー名。SAM ユーザーとして認証した場合にのみ含まれます。
           example: SORACOMAPI
           type: string
       type: object
@@ -21215,6 +21583,25 @@ components:
         peerVpcId:
           type: string
       type: object
+    CreateVpcPeeringConnectionResponse:
+      properties:
+        destinationCidrBlock:
+          type: string
+        id:
+          type: string
+        peerOwnerId:
+          type: string
+        peerRegion:
+          type: string
+        peerVpcId:
+          type: string
+      required:
+      - id
+      - destinationCidrBlock
+      - peerOwnerId
+      - peerRegion
+      - peerVpcId
+      type: object
     CredentialsModel:
       properties:
         createDateTime:
@@ -21929,6 +22316,47 @@ components:
         url:
           description: ファイルをダウンロードするための URL。`export_mode` に `sync` を指定した場合のみ含まれます。
           type: string
+      type: object
+    FqdnFilterRule:
+      description: ドメインルール（ドメインフィルタリング / FQDN フィルタリング）。宛先 FQDN（ドメイン名）、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
+      properties:
+        action:
+          description: ルールに一致した場合に適用されるアクション。FQDN フィルタールールは `allow` のみサポートします。
+          enum:
+          - allow
+          type: string
+        fqdnPattern:
+          description: '宛先の FQDN パターン（例: `api.example.com`）。先頭ラベルにワイルドカードを 1 つだけ指定できます（例:
+            `*.example.com`）。国際化ドメイン名は Punycode に変換されます。'
+          type: string
+        fromPort:
+          default: 0
+          description: 宛先ポート範囲の開始（0〜65535）。`0` は任意のポートを意味します。
+          maximum: 65535
+          minimum: 0
+          type: integer
+        protocol:
+          description: IP プロトコル番号（0〜255）。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
+            `255` です。
+          maximum: 255
+          minimum: 0
+          type: integer
+        toPort:
+          default: 0
+          description: 宛先ポート範囲の終了（0〜65535）。`fromPort` 以上である必要があります。`0` は任意のポートを意味します。
+          maximum: 65535
+          minimum: 0
+          type: integer
+        type:
+          description: ルール種別の識別子。FQDN フィルタールールでは常に `fqdn` です。
+          enum:
+          - fqdn
+          type: string
+      required:
+      - type
+      - protocol
+      - action
+      - fqdnPattern
       type: object
     FunkStatsResponse:
       properties:
@@ -22949,12 +23377,13 @@ components:
           - SoracomAir
           - SoracomBeam
           - SoracomEndorse
-          - SoracomOrbit
+          - SoracomFlux
           - SoracomFunk
           - SoracomFunnel
           - SoracomHarvest
           - SoracomHarvestFiles
           - SoracomKrypton
+          - SoracomOrbit
           - UnifiedEndpoint
 
           値は、ネームスペースごとに異なるオブジェクトです。詳しくは、[Group:putConfigurationParameters API](#/Group/putConfigurationParameters) の Request body の Examples を参照してください。
@@ -24504,10 +24933,11 @@ components:
 
             - `plan01s`
             - `plan01s-low_data_volume`: plan01s - Low Data Volume。
+            - `planXM1`
             - `planX3`: planX3 (X3-5MB)。
             - `planP1`
-            - `plan-D`: plan-D (バンドルなし)、plan-D (D-300MB)。
-            - `plan-K2`: plan-K2 (K2-300MB)。
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-500MB)。
+            - `plan-K2`: plan-K2 (K2-500MB)。
             - `plan-DU`
             - `plan-KM1`
             - `plan-K`
@@ -24743,9 +25173,12 @@ components:
             \ - `inactiveTimeoutOffsetMinutes`              \n- `SubscriberStatusAttributeRule`:
             サブスクライバーのステータスが変更されたら実行する。\n\n  なお、`properties` に設定できるプロパティは、以下のとおりです。\n
             \ - `sourceStatus`\n  - `targetStatus`\n  - `inactiveTimeoutDateConst`
-            (必須)\n  - `inactiveTimeoutOffsetMinute`\n  - `runOnceAmongTarget`\n- `SimStatusAttributeRule`:
-            IoT SIM のステータスが変更されたら実行する。\n\n  なお、`properties` に設定できるプロパティは、以下のとおりです。\n
-            \ - `sourceStatus`\n  - `targetStatus`\n  - `inactiveTimeoutDateConst`
+            (必須)\n  - `inactiveTimeoutOffsetMinute`\n  - `runOnceAmongTarget`\n- `SubscriberSessionStatusRule`:
+            サブスクライバーのセッションの状態が変更されたら実行する。\n\n  なお、`properties` に設定できるプロパティは、以下のとおりです。\n
+            \ - `sessionStatus` (必須)\n  - `hasImei`\n  - `inactiveTimeoutDateConst`
+            (必須)\n  - `inactiveTimeoutOffsetMinutes`\n\n  **Warning**: セッションステータスルールの利用申請が必要です。\n-
+            `SimStatusAttributeRule`: IoT SIM のステータスが変更されたら実行する。\n\n  なお、`properties`
+            に設定できるプロパティは、以下のとおりです。\n  - `sourceStatus`\n  - `targetStatus`\n  - `inactiveTimeoutDateConst`
             (必須)\n  - `inactiveTimeoutOffsetMinute`\n  - `runOnceAmongTarget`\n- `SubscriberSpeedClassAttributeRule`:
             サブスクライバーの速度クラスが変更されたら実行する。\n\n  なお、`properties` に設定できるプロパティは、以下のとおりです。\n
             \ - `targetSpeedClass`\n  - `inactiveTimeoutDateConst` (必須)\n  - `inactiveTimeoutOffsetMinutes`\n
@@ -24804,6 +25237,7 @@ components:
           - DailyTotalTrafficRule
           - MonthlyTotalTrafficRule
           - MonthlyChargeRule
+          - SubscriberSessionStatusRule
           type: string
       required:
       - properties
@@ -24811,6 +25245,10 @@ components:
       type: object
     RuleConfigProperty:
       properties:
+        hasImei:
+          description: |
+            セッションイベントに IMEI が含まれている場合のみを対象とする場合は `true` を指定します。
+          type: boolean
         inactiveTimeoutDateConst:
           description: |
             [再評価を行うタイミング](/ja-jp/docs/event-handler/how-it-works/#再評価を行うタイミング)。以下のいずれかを指定します。ただし、`type` の値によって指定できる値が異なります。
@@ -24824,7 +25262,7 @@ components:
               (*1) 累積データ通信量はリセットされないため、しきい値を超えたあとは、再評価を行うタイミングで繰り返しアクションが実行されます。
             - `type` が `SubscriberFirstTrafficRule` の場合:
               - `NEVER`
-            - `type` が `SubscriberStatusAttributeRule`、`SubscriberSpeedClassAttributeRule`、`SubscriberExpiredRule`、`SubscriberImeiMismatchedRule`、`SimStatusAttributeRule`、`SimSpeedClassAttributeRule`、`SimExpiredRule`、`SimImeiMismatchedRule`、`MonthlyChargeRule` の場合:
+            - `type` が `SubscriberStatusAttributeRule`、`SubscriberSessionStatusRule`、`SubscriberSpeedClassAttributeRule`、`SubscriberExpiredRule`、`SubscriberImeiMismatchedRule`、`SimStatusAttributeRule`、`SimSpeedClassAttributeRule`、`SimExpiredRule`、`SimImeiMismatchedRule`、`MonthlyChargeRule` の場合:
               - `IMMEDIATELY`
               - `BEGINNING_OF_NEXT_MONTH`
               - `BEGINNING_OF_NEXT_DAY`
@@ -24857,6 +25295,13 @@ components:
           enum:
           - true
           - false
+          type: string
+        sessionStatus:
+          description: |
+            アクションを実行するセッションイベントのタイプ。`Created` (オンライン) または `Deleted` (オフライン) のいずれかを指定します。
+          enum:
+          - Created
+          - Deleted
           type: string
         sourceStatus:
           description: |
@@ -24893,7 +25338,7 @@ components:
           description: |
             変更後の速度クラス。変更後の速度クラスを限定して、アクションを実行するときに以下のいずれかを指定します。省略すると、任意の速度クラスに変更されたときに、アクションが実行されます。
 
-            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planXM1、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-500MB)、plan-K2 (K2-500MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -25284,6 +25729,8 @@ components:
       type: object
     SigfoxRegistrationRequest:
       properties:
+        productCertificationId:
+          type: string
         registrationSecret:
           type: string
         tags:
@@ -25330,6 +25777,12 @@ components:
           type: string
         imeiLock:
           $ref: '#/components/schemas/ImeiLock'
+        lastLocationUpdateTime:
+          description: この SIM のすべてのサブスクライバーにわたる最新の Location Update アクティビティの UNIX 時間
+            (ミリ秒)。このタイムスタンプは、デバイスが最後にネットワークに登録した時刻を示します。最近のタイムスタンプであれば、デバイスがネットワークにアタッチしている可能性が高いことを示します。Location
+            Update データがない場合は、このフィールドは省略されます。
+          format: int64
+          type: integer
         lastModifiedTime:
           description: IoT SIM (IoT SIM のプライマリサブスクリプション) の情報が変更された UNIX 時間 (ミリ秒)。
           format: int64
@@ -25917,7 +26370,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planXM1、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-500MB)、plan-K2 (K2-500MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -26383,6 +26836,52 @@ components:
       required:
       - state
       type: object
+    SoraCamAtomCamSettingsSelfReboot:
+      properties:
+        daysOfWeek:
+          default:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          description: |
+            定時再起動を実行する曜日。
+
+            - `0`: 日曜日
+            - `1`: 月曜日
+            - `2`: 火曜日
+            - `3`: 水曜日
+            - `4`: 木曜日
+            - `5`: 金曜日
+            - `6`: 土曜日
+
+            デフォルトは `[0, 1, 2, 3, 4, 5, 6]` です。
+          items:
+            maximum: 6
+            minimum: 0
+            type: integer
+          type: array
+        enabled:
+          description: |
+            定時再起動の有効 / 無効。
+
+            - `true`: 有効。
+            - `false`: 無効。
+          type: boolean
+        time:
+          default: "00:00"
+          description: |
+            定時再起動を実行する時刻 (UTC、`HH:mm` 形式)。
+
+            デフォルトは `00:00` です。
+          pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+          type: string
+      required:
+      - enabled
+      type: object
     SoraCamAtomCamSettingsSound:
       properties:
         state:
@@ -26539,14 +27038,24 @@ components:
             - `CR7-SC`: クラウド常時録画ライセンス (7 日間)。
             - `CR14-SC`: クラウド常時録画ライセンス (14 日間)。
             - `CR30-SC`: クラウド常時録画ライセンス (30 日間)。
-            - `MR7-SC`: クラウドモーション検知無制限録画ライセンス (7 日間)。
-            - `MR14-SC`: クラウドモーション検知無制限録画ライセンス (14 日間)。
+            - `CR60-SC`: クラウド常時録画ライセンス (60 日間)。
+            - `CR90-SC`: クラウド常時録画ライセンス (90 日間)。
+            - `MR7-SC`: クラウドモーション検知 "無制限" 録画ライセンス (7 日間)。
+            - `MR14-SC`: クラウドモーション検知 "無制限" 録画ライセンス (14 日間)。
+            - `MR30-SC`: クラウドモーション検知 "無制限" 録画ライセンス (30 日間)。
+            - `MR60-SC`: クラウドモーション検知 "無制限" 録画ライセンス (60 日間)。
+            - `MR90-SC`: クラウドモーション検知 "無制限" 録画ライセンス (90 日間)。
           enum:
           - CR7-SC
           - CR14-SC
           - CR30-SC
+          - CR60-SC
+          - CR90-SC
           - MR7-SC
           - MR14-SC
+          - MR30-SC
+          - MR60-SC
+          - MR90-SC
           type: string
       type: object
     SoraCamDeviceName:
@@ -27698,6 +28207,17 @@ components:
       type: object
     UpdateEventHandlerRequest:
       $ref: '#/components/schemas/CreateEventHandlerRequest'
+    UpdateFqdnFilterRulesRequest:
+      description: VPG のドメインルール（ドメインフィルタリング）を置き換えるリクエスト。
+      properties:
+        rules:
+          description: 適用するドメインルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。
+          items:
+            $ref: '#/components/schemas/FqdnFilterRule'
+          type: array
+      required:
+      - rules
+      type: object
     UpdatePasswordRequest:
       properties:
         currentPassword:
@@ -27719,7 +28239,7 @@ components:
           description: |
             速度クラス。以下のいずれかを指定します。ただし、サブスクリプションにあわせた速度クラスを指定してください。
 
-            - plan01s、plan01s - Low Data Volume、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-300MB)、plan-K2 (K2-300MB)、plan-K の場合:
+            - plan01s、plan01s - Low Data Volume、planXM1、planX3 (X3-5MB)、planP1、plan-D (バンドルなし)、plan-D (D-500MB)、plan-K2 (K2-500MB)、plan-K の場合:
                 - `s1.minimum`
                 - `s1.slow`
                 - `s1.standard`
@@ -27750,6 +28270,17 @@ components:
       required:
       - speedClass
       type: object
+    UpdateUplinkFilterRulesRequest:
+      description: VPG の IP ルール（IP フィルタリング）を置き換えるリクエスト。
+      properties:
+        rules:
+          description: 適用する IP ルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。
+          items:
+            $ref: '#/components/schemas/UplinkFilterRule'
+          type: array
+      required:
+      - rules
+      type: object
     UpdateUserRequest:
       properties:
         description:
@@ -27767,6 +28298,51 @@ components:
         - tagValue
         type: object
       type: array
+    UplinkFilterRule:
+      description: IP ルール（IP フィルタリング）。宛先 IP アドレス（CIDR）、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
+      properties:
+        action:
+          description: |
+            ルールに一致した場合に適用されるアクション。
+
+            - `allow`: 一致したトラフィックを許可します。
+            - `deny`: 一致したトラフィックを拒否します。
+          enum:
+          - allow
+          - deny
+          type: string
+        cidr:
+          description: '宛先の IPv4 CIDR ブロック（例: `192.0.2.0/24`）。IPv6 はサポートされていません。'
+          type: string
+        fromPort:
+          default: 0
+          description: 宛先ポート範囲の開始（0〜65535）。`0` は任意のポートを意味します。
+          maximum: 65535
+          minimum: 0
+          type: integer
+        protocol:
+          description: IP プロトコル番号（0〜255）。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
+            `255` です。
+          maximum: 255
+          minimum: 0
+          type: integer
+        toPort:
+          default: 0
+          description: 宛先ポート範囲の終了（0〜65535）。`fromPort` 以上である必要があります。`0` は任意のポートを意味します。
+          maximum: 65535
+          minimum: 0
+          type: integer
+        type:
+          description: ルール種別の識別子。アップリンクフィルタールールでは常に `ip` です。
+          enum:
+          - ip
+          type: string
+      required:
+      - type
+      - protocol
+      - action
+      - cidr
+      type: object
     UserDetailResponse:
       properties:
         authKeyList:

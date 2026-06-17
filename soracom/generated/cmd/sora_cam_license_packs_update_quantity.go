@@ -26,7 +26,7 @@ var SoraCamLicensePacksUpdateQuantityCmdDesiredQuantity int64
 var SoraCamLicensePacksUpdateQuantityCmdBody string
 
 func InitSoraCamLicensePacksUpdateQuantityCmd() {
-	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdLicensePackId, "license-pack-id", "", TRAPI("ID of the license pack."))
+	SoraCamLicensePacksUpdateQuantityCmd.Flags().StringVar(&SoraCamLicensePacksUpdateQuantityCmdLicensePackId, "license-pack-id", "", TRAPI("Specify one of the following license IDs.- 'CR7-SC': Cloud Recording License (7 Days).- 'CR14-SC': Cloud Recording License (14 Days).- 'CR30-SC': Cloud Recording License (30 Days).- 'CR60-SC': Cloud Recording License (60 Days).- 'CR90-SC': Cloud Recording License (90 Days).- 'MR7-SC': Cloud Motion Detection \"Unlimited\" Recording License (7 Days).- 'MR14-SC': Cloud Motion Detection \"Unlimited\" Recording License (14 Days).- 'MR30-SC': Cloud Motion Detection \"Unlimited\" Recording License (30 Days).- 'MR60-SC': Cloud Motion Detection \"Unlimited\" Recording License (60 Days).- 'MR90-SC': Cloud Motion Detection \"Unlimited\" Recording License (90 Days)."))
 
 	SoraCamLicensePacksUpdateQuantityCmd.Flags().Int64Var(&SoraCamLicensePacksUpdateQuantityCmdCurrentQuantity, "current-quantity", 0, TRAPI("Current license quantity of the license pack."))
 

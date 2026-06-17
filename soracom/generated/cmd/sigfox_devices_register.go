@@ -16,6 +16,9 @@ import (
 // SigfoxDevicesRegisterCmdDeviceId holds value of 'device_id' option
 var SigfoxDevicesRegisterCmdDeviceId string
 
+// SigfoxDevicesRegisterCmdProductCertificationId holds value of 'productCertificationId' option
+var SigfoxDevicesRegisterCmdProductCertificationId string
+
 // SigfoxDevicesRegisterCmdRegistrationSecret holds value of 'registrationSecret' option
 var SigfoxDevicesRegisterCmdRegistrationSecret string
 
@@ -24,6 +27,8 @@ var SigfoxDevicesRegisterCmdBody string
 
 func InitSigfoxDevicesRegisterCmd() {
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdDeviceId, "device-id", "", TRAPI("Device ID of the target Sigfox device to register."))
+
+	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdProductCertificationId, "product-certification-id", "", TRAPI(""))
 
 	SigfoxDevicesRegisterCmd.Flags().StringVar(&SigfoxDevicesRegisterCmdRegistrationSecret, "registration-secret", "", TRAPI(""))
 
@@ -163,6 +168,10 @@ func buildBodyForSigfoxDevicesRegisterCmd() (string, error) {
 
 	if result == nil {
 		result = make(map[string]interface{})
+	}
+
+	if SigfoxDevicesRegisterCmdProductCertificationId != "" {
+		result["productCertificationId"] = SigfoxDevicesRegisterCmdProductCertificationId
 	}
 
 	if SigfoxDevicesRegisterCmdRegistrationSecret != "" {

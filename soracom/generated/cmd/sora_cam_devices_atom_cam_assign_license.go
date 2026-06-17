@@ -25,7 +25,7 @@ var SoraCamDevicesAtomCamAssignLicenseCmdBody string
 func InitSoraCamDevicesAtomCamAssignLicenseCmd() {
 	SoraCamDevicesAtomCamAssignLicenseCmd.Flags().StringVar(&SoraCamDevicesAtomCamAssignLicenseCmdDeviceId, "device-id", "", TRAPI(""))
 
-	SoraCamDevicesAtomCamAssignLicenseCmd.Flags().StringVar(&SoraCamDevicesAtomCamAssignLicenseCmdType, "type", "", TRAPI("Type of license to assign.- 'CR7-SC': Cloud Continuous Recording License (7 Days).- 'CR14-SC': Cloud Continuous Recording License (14 Days).- 'CR30-SC': Cloud Continuous Recording License (30 Days).- 'MR7-SC': Cloud Motion Detection \"Unlimited\" Recording License (7 Days).- 'MR14-SC': Cloud Motion Detection \"Unlimited\" Recording License (14 Days)."))
+	SoraCamDevicesAtomCamAssignLicenseCmd.Flags().StringVar(&SoraCamDevicesAtomCamAssignLicenseCmdType, "type", "", TRAPI("Type of license to assign.- 'CR7-SC': Cloud Recording License (7 Days).- 'CR14-SC': Cloud Recording License (14 Days).- 'CR30-SC': Cloud Recording License (30 Days).- 'CR60-SC': Cloud Recording License (60 Days).- 'CR90-SC': Cloud Recording License (90 Days).- 'MR7-SC': Cloud Motion Detection \"Unlimited\" Recording License (7 Days).- 'MR14-SC': Cloud Motion Detection \"Unlimited\" Recording License (14 Days).- 'MR30-SC': Cloud Motion Detection \"Unlimited\" Recording License (30 Days).- 'MR60-SC': Cloud Motion Detection \"Unlimited\" Recording License (60 Days).- 'MR90-SC': Cloud Motion Detection \"Unlimited\" Recording License (90 Days)."))
 
 	SoraCamDevicesAtomCamAssignLicenseCmd.Flags().StringVar(&SoraCamDevicesAtomCamAssignLicenseCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
