@@ -159,6 +159,8 @@ cli:
       Authentication information can be stored in a more secure location, such as a password manager, and used via external commands.
     raw-output: |
       Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
+    dry-run: |
+      Print the HTTP request (method, URL, headers and body) that would be sent as JSON, without calling the API or performing network-backed authentication. Useful for validating a request before causing any side effect. Secret and profile-supplied headers are redacted.
   groups:
     summary: List, create, update or delete groups.
     description: List, create, update or delete groups.
