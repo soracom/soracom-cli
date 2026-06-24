@@ -120,6 +120,11 @@ cli:
   gadgets:
     summary: ガジェットに関する操作を行います。
     description: ガジェットに関する操作を行います。
+  describe:
+    summary: コマンドとそのパラメーターを機械可読な JSON として出力します。
+    description: |
+      コマンドのスキーマ情報を機械可読な JSON で出力します。AI エージェントが --help テキストを解析することなく、実行時にコマンドが受け付ける引数を発見できるようにするためのものです。
+      引数なしで実行すると、全コマンドをメソッド・パスとともに一覧表示します。コマンド名 (例: 'soracom describe subscribers create') を指定すると、そのコマンドのパラメーター・リクエストボディとレスポンスのスキーマ・型・必須フラグ・enum を JSON で出力します。
   global-flags:
     api-key: |
       API キーを指定します。
