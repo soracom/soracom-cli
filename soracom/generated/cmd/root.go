@@ -25,6 +25,15 @@ var dryRun bool
 var outputFields []string
 
 func InitRootCmd() {
+	// When structured JSON errors are opted in (SORACOM_JSON_ERRORS), suppress
+	// cobra's default error printing AND its usage dump so failures are reported
+	// only as structured JSON via PrintError. Setting these on the root command
+	// also covers flag-parsing errors, which happen before any RunE runs and
+	// would otherwise print the usage block to stdout.
+	if jsonErrorsEnabled() {
+		RootCmd.SilenceErrors = true
+		RootCmd.SilenceUsage = true
+	}
 	RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", TRCLI("cli.global-flags.profile"))
 	RootCmd.PersistentFlags().StringVar(&specifiedCoverageType, "coverage-type", "", TRCLI("cli.global-flags.coverage-type"))
 	RootCmd.PersistentFlags().StringVar(&providedAPIKey, "api-key", "", TRCLI("cli.global-flags.api-key"))

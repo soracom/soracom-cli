@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,4 +16,14 @@ var StatsNapterAuditLogsCmd = &cobra.Command{
 	Use:   "audit-logs",
 	Short: TRCLI("cli.stats.napter.audit-logs.summary"),
 	Long:  TRCLI(`cli.stats.napter.audit-logs.description`),
+	// This command only groups subcommands. A RunE is defined (rather than
+	// leaving it non-runnable) so that a mistyped subcommand fails with an
+	// "unknown command" error instead of silently printing help and exiting 0,
+	// which an agent reads as success. With no subcommand it just prints help.
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 0 {
+			return fmt.Errorf("unknown command %q for %q", args[0], cmd.CommandPath())
+		}
+		return cmd.Help()
+	},
 }
