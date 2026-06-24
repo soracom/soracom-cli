@@ -14,6 +14,7 @@ func run() int {
 	cmd.InitRootCmd()
 	err := cmd.RootCmd.Execute()
 	if err != nil {
+		cmd.PrintError(err)
 		return -1
 	}
 	return 0

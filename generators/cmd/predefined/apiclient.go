@@ -193,6 +193,102 @@ func (ac *apiClient) callAPI(params *apiParams) (string, error) {
 	return resBody, nil
 }
 
+func isSecretHeaderName(name string) bool {
+	switch strings.ToLower(name) {
+	case "x-soracom-api-key", "x-soracom-token":
+		return true
+	}
+	return false
+}
+
+// printDryRun prints, as structured JSON, the HTTP request that would be sent
+// for the given params without actually performing it. Secret headers are
+// redacted. This lets AI agents validate a request before causing any side
+// effect.
+func (ac *apiClient) printDryRun(params *apiParams) error {
+	out, err := ac.dryRunOutput(params)
+	if err != nil {
+		return err
+	}
+	return prettyPrintObjectAsJSON(out, os.Stdout)
+}
+
+// resolveLocalAPICredentials populates apiCredentials from credential sources
+// that do not perform any network I/O — currently only the explicitly provided
+// --api-key / --api-token. It is used by --dry-run so the preview can include
+// the supplied credentials (and the operator id derived locally from the token)
+// without triggering a network-backed /auth exchange. If no such credentials
+// are supplied, apiCredentials is left nil and dry-run still shows the request
+// shape.
+func (ac *apiClient) resolveLocalAPICredentials() error {
+	creds, err := newCredentialsSourceWithAPIKeyAndToken().GetAPICredentials(ac)
+	if err != nil {
+		return err
+	}
+	if creds != nil {
+		ac.apiCredentials = creds
+	}
+	return nil
+}
+
+// dryRunOutput builds the structured representation of the request that would
+// be sent for the given params, with secret headers (the SORACOM auth headers
+// and any profile-supplied headers) redacted. It performs no network call.
+// Split out from printDryRun so the redaction logic is testable.
+func (ac *apiClient) dryRunOutput(params *apiParams) (map[string]interface{}, error) {
+	u, err := ac.constructURL(params)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := ac.constructRequest(u, params)
+	if err != nil {
+		return nil, err
+	}
+
+	// Profile-supplied headers are user-defined and may carry tokens
+	// (Authorization, X-Api-Key, ...), so treat them all as sensitive and
+	// redact them in addition to the known SORACOM auth headers.
+	profileHeader := make(map[string]bool)
+	if ac.profile != nil {
+		for k := range ac.profile.Headers {
+			profileHeader[strings.ToLower(k)] = true
+		}
+	}
+
+	headers := make(map[string]interface{})
+	for k := range req.Header {
+		v := req.Header.Get(k)
+		if isSecretHeaderName(k) || profileHeader[strings.ToLower(k)] {
+			v = "<hidden>"
+		}
+		headers[k] = v
+	}
+
+	out := map[string]interface{}{
+		"dryRun": true,
+		"method": params.method,
+		"url":    strings.TrimSuffix(u.String(), "?"),
+	}
+	if len(headers) > 0 {
+		out["headers"] = headers
+	}
+	if params.body != "" {
+		if params.contentType == "application/json" {
+			var parsed interface{}
+			if json.Unmarshal([]byte(params.body), &parsed) == nil {
+				out["body"] = parsed
+			} else {
+				out["body"] = params.body
+			}
+		} else {
+			out["body"] = params.body
+		}
+	}
+
+	return out, nil
+}
+
 func (ac *apiClient) getAPICredentials() error {
 	var (
 		creds *APICredentials
