@@ -77,6 +77,10 @@ cli:
     get:
       summary: Show specified profile configurations.
       description: Show specified profile configurations.
+    list:
+      summary: List the names of configured profiles.
+      description: |
+        List the names of the configured profiles as a JSON array, without revealing their contents. Use this to discover which profiles exist (and whether any exist at all) before running commands. The profile files themselves contain unencrypted credentials, so do not read them directly.
   configure_sandbox:
     summary: Create configurations (profiles) for API Sandbox.
     description: Create configurations (profiles) for API Sandbox.
