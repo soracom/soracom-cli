@@ -120,6 +120,11 @@ cli:
   gadgets:
     summary: Manage gadgets.
     description: Manage gadgets.
+  describe:
+    summary: Describe commands and their parameters as machine-readable JSON.
+    description: |
+      Output machine-readable schema information for commands so that AI agents can discover what a command accepts at runtime without parsing --help text.
+      With no arguments, lists all commands with their method and path. With a command name (e.g. 'soracom describe subscribers create'), outputs that command's parameters, request body and response schemas, types, required flags and enums as JSON.
   global-flags:
     api-key: |
       Specify an API key.
