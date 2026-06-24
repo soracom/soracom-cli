@@ -102,6 +102,12 @@ func SimsListPacketCaptureSessionsCmdRunE(cmd *cobra.Command, args []string) err
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		if SimsListPacketCaptureSessionsCmdOutputJSONL {
 			return printStringAsJSONL(body)
 		}

@@ -87,6 +87,12 @@ func SimProfileOrdersListProfilesCmdRunE(cmd *cobra.Command, args []string) erro
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		if SimProfileOrdersListProfilesCmdOutputJSONL {
 			return printStringAsJSONL(body)
 		}

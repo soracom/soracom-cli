@@ -102,6 +102,12 @@ func QuerySubscribersTrafficVolumeRankingCmdRunE(cmd *cobra.Command, args []stri
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		if QuerySubscribersTrafficVolumeRankingCmdOutputJSONL {
 			return printStringAsJSONL(body)
 		}

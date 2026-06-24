@@ -161,6 +161,8 @@ cli:
       Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
     dry-run: |
       Print the HTTP request (method, URL, headers and body) that would be sent as JSON, without calling the API or performing network-backed authentication. Useful for validating a request before causing any side effect. Secret and profile-supplied headers are redacted.
+    fields: |
+      Comma-separated list of fields to keep in the JSON output; dot notation selects nested fields (e.g. --fields simId,sessionStatus.online). Field names vary by command and are NOT the request parameters — discover the exact response field names with 'soracom describe <command>'. Helps keep responses small to protect an agent's context window.
   groups:
     summary: List, create, update or delete groups.
     description: List, create, update or delete groups.
