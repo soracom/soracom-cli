@@ -1,0 +1,13 @@
+{
+  "name": "soracom-cli",
+  "description": "Agent skill for driving the soracom CLI safely as an AI agent: schema discovery via `soracom describe`, `--dry-run` request previews, `--fields` projection, and credential-safe authentication.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Soracom, Inc."
+  },
+  "homepage": "https://github.com/soracom/soracom-cli",
+  "repository": "https://github.com/soracom/soracom-cli",
+  "license": "MIT",
+  "keywords": ["soracom", "iot", "cli", "sim", "agent-skill"],
+  "skills": ["./.agents/skills/soracom-cli"]
+}
