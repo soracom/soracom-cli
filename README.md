@@ -100,6 +100,34 @@ If you want to uninstall the `soracom` command, you can just remove `soracom` ex
 If the commands above did not work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in `PATH`.
 
 
+# Using soracom-cli with AI agents (Agent Skills)
+
+soracom-cli ships an **Agent Skill** that teaches AI coding agents how to drive the `soracom` command safely and efficiently — discovering command schemas with `soracom describe`, previewing requests with `--dry-run`, shrinking responses with `--fields`, and handling credentials without ever reading plaintext secrets.
+
+The skill is **embedded in the `soracom` binary**, so it always matches the version of the CLI you installed and works offline — no separate download, no version drift. Materialize it with:
+
+```shell
+# Print the skill to stdout (an agent can read it directly, no files written)
+soracom skill show
+
+# Install it into your agent's skills directory
+soracom skill install                 # -> ./.agents/skills/soracom-cli/SKILL.md (shared by many agents)
+soracom skill install --scope user    # -> ~/.claude/skills/soracom-cli/SKILL.md
+soracom skill install --dir <path>    # -> <path>/soracom-cli/SKILL.md
+```
+
+Re-run `soracom skill install` after upgrading the CLI to refresh the skill (each installed copy is stamped with the CLI version it came from).
+
+The same skill is also published from this repository, so you can install it with the standard cross-agent tooling without the binary:
+
+```shell
+npx skills add soracom/soracom-cli      # cross-agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, …)
+gh skill install soracom/soracom-cli    # GitHub CLI v2.90.0+
+```
+
+> When an agent is working **inside a clone of this repository**, it auto-discovers the skill at `.agents/skills/soracom-cli/` and the guidance in `AGENTS.md` without any install step.
+
+
 # How to use
 
 ## Basic usage
