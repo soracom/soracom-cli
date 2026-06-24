@@ -97,6 +97,12 @@ func SimsListCmdRunE(cmd *cobra.Command, args []string) error {
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		if SimsListCmdOutputJSONL {
 			return printStringAsJSONL(body)
 		}
