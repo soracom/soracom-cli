@@ -129,6 +129,22 @@ cli:
     description: |
       Output machine-readable schema information for commands so that AI agents can discover what a command accepts at runtime without parsing --help text.
       With no arguments, lists all commands with their method and path. With a command name (e.g. 'soracom describe subscribers create'), outputs that command's parameters, request body and response schemas, types, required flags and enums as JSON.
+  skill:
+    summary: Print or install the agent skill bundled in this binary.
+    description: |
+      The soracom-cli agent skill (SKILL.md) teaches AI agents how to drive this CLI safely: discovering schemas with 'soracom describe', previewing requests with --dry-run, projecting fields with --fields, and handling credentials without reading plaintext secrets.
+      The skill is embedded in the binary, so it always matches the installed CLI version. Use 'soracom skill show' to print it, or 'soracom skill install' to write it into your agent's skills directory.
+    show:
+      summary: Print the embedded agent skill (SKILL.md) to standard output.
+      description: |
+        Write the embedded SKILL.md to standard output so an AI agent can read it directly, with no files written. Pass --agents to print the AGENTS.md quick-start guidance instead.
+      agents: Print the embedded AGENTS.md instead of SKILL.md.
+    install:
+      summary: Install the embedded agent skill into a skills directory.
+      description: |
+        Write the embedded SKILL.md to a skill directory so your AI agent can load it. By default (--scope project) it is written to ./.agents/skills/soracom-cli/SKILL.md in the current directory, which many agents share. With --scope user it is written to ~/.claude/skills/soracom-cli/SKILL.md. Use --dir to choose the skills root explicitly. Existing files are overwritten, so re-run this after upgrading the CLI to refresh the skill.
+      scope: 'Where to install the skill: "project" (./.agents/skills, the default) or "user" (~/.claude/skills).'
+      dir: Install into this skills root directory instead of the location implied by --scope. The skill is written to <dir>/soracom-cli/SKILL.md.
   global-flags:
     api-key: |
       Specify an API key.

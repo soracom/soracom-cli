@@ -129,6 +129,22 @@ cli:
     description: |
       コマンドのスキーマ情報を機械可読な JSON で出力します。AI エージェントが --help テキストを解析することなく、実行時にコマンドが受け付ける引数を発見できるようにするためのものです。
       引数なしで実行すると、全コマンドをメソッド・パスとともに一覧表示します。コマンド名 (例: 'soracom describe subscribers create') を指定すると、そのコマンドのパラメーター・リクエストボディとレスポンスのスキーマ・型・必須フラグ・enum を JSON で出力します。
+  skill:
+    summary: このバイナリに同梱されたエージェントスキルを表示またはインストールします。
+    description: |
+      soracom-cli のエージェントスキル (SKILL.md) は、AI エージェントがこの CLI を安全に扱う方法を伝えます。'soracom describe' でスキーマを発見し、--dry-run でリクエストをプレビューし、--fields で出力を絞り込み、平文の秘密情報を読まずに認証情報を扱う、といった内容です。
+      スキルはバイナリに埋め込まれているため、常にインストール済みの CLI バージョンと一致します。'soracom skill show' で表示するか、'soracom skill install' でエージェントのスキルディレクトリへ書き出してください。
+    show:
+      summary: 埋め込まれたエージェントスキル (SKILL.md) を標準出力に表示します。
+      description: |
+        埋め込まれた SKILL.md を標準出力に書き出し、AI エージェントがファイルを作成せずに直接読めるようにします。--agents を指定すると、代わりに AGENTS.md のクイックスタートを表示します。
+      agents: SKILL.md の代わりに、埋め込まれた AGENTS.md を表示します。
+    install:
+      summary: 埋め込まれたエージェントスキルをスキルディレクトリにインストールします。
+      description: |
+        埋め込まれた SKILL.md をスキルディレクトリに書き出し、AI エージェントが読み込めるようにします。デフォルト (--scope project) ではカレントディレクトリの ./.agents/skills/soracom-cli/SKILL.md に書き込みます (多くのエージェントが共有する場所です)。--scope user では ~/.claude/skills/soracom-cli/SKILL.md に書き込みます。--dir でスキルのルートディレクトリを明示的に指定できます。既存のファイルは上書きされるため、CLI のアップグレード後に再実行するとスキルを更新できます。
+      scope: 'スキルのインストール先: "project" (./.agents/skills、デフォルト) または "user" (~/.claude/skills)。'
+      dir: --scope が示す場所の代わりに、このスキルルートディレクトリにインストールします。スキルは <dir>/soracom-cli/SKILL.md に書き込まれます。
   global-flags:
     api-key: |
       API キーを指定します。
