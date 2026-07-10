@@ -310,7 +310,15 @@ func buildPathFor{{$suffix}}(path string) string {
   {{else}}
   escaped{{.VarName}} := url.PathEscape({{$prefix}}{{.VarName}})
   {{end}}
+  {{- if eq .Name "operator_id"}}
+  {{- /* operator_id may stay unresolved when --dry-run runs without credentials;
+         keep the {operator_id} placeholder instead of building a malformed path. */}}
+  if escaped{{.VarName}} != "" {
+    path = strReplace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
+  }
+  {{- else}}
   path = strReplace(path, "{" + "{{.Name}}" + "}", escaped{{.VarName}}, -1)
+  {{- end}}
   {{end}}
   {{end}}
 

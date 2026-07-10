@@ -123,7 +123,9 @@ func buildPathForRolesGetCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(RolesGetCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedRoleId := url.PathEscape(RolesGetCmdRoleId)
 

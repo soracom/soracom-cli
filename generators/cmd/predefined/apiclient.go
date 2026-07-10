@@ -265,10 +265,21 @@ func (ac *apiClient) dryRunOutput(params *apiParams) (map[string]interface{}, er
 		headers[k] = v
 	}
 
+	// Compose the display URL from the raw path instead of u.String(): the
+	// path may still contain an unresolved {operator_id} placeholder (dry-run
+	// without credentials), which u.String() would garble into %7B...%7D.
+	// buildPathFor* already percent-escapes every substituted value.
+	displayURL := ac.endpoint + ac.basePath + params.path
+	if params.query != nil {
+		if q := params.query.Encode(); q != "" {
+			displayURL += "?" + q
+		}
+	}
+
 	out := map[string]interface{}{
 		"dryRun": true,
 		"method": params.method,
-		"url":    strings.TrimSuffix(u.String(), "?"),
+		"url":    displayURL,
 	}
 	if len(headers) > 0 {
 		out["headers"] = headers

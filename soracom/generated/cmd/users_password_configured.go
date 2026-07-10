@@ -123,7 +123,9 @@ func buildPathForUsersPasswordConfiguredCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersPasswordConfiguredCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedUserName := url.PathEscape(UsersPasswordConfiguredCmdUserName)
 

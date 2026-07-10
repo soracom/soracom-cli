@@ -111,7 +111,9 @@ func buildPathForOperatorEnableMfaCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(OperatorEnableMfaCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	return path
 }

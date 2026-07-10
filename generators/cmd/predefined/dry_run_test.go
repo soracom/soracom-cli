@@ -85,6 +85,41 @@ func TestDryRunOutputRedactsProfileHeaders(t *testing.T) {
 	}
 }
 
+// When dry-run runs without credentials, operator_id stays unresolved; the
+// previewed URL must keep the literal {operator_id} placeholder instead of
+// percent-encoding it (%7B...%7D) or collapsing it to an empty segment.
+func TestDryRunOutputKeepsUnresolvedOperatorIDPlaceholder(t *testing.T) {
+	ac := newTestAPIClient()
+	ac.apiCredentials = nil
+	params := &apiParams{method: "GET", path: "/operators/{operator_id}", query: url.Values{}}
+
+	out, err := ac.dryRunOutput(params)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := "https://g.api.soracom.io/v1/operators/{operator_id}"
+	if out["url"] != want {
+		t.Errorf("url = %v, want %v", out["url"], want)
+	}
+}
+
+// buildPathFor* must substitute operator_id when it is resolved and keep the
+// placeholder when it is not (dry-run without credentials).
+func TestBuildPathKeepsOperatorIDPlaceholderWhenEmpty(t *testing.T) {
+	prev := OperatorGetCmdOperatorId
+	defer func() { OperatorGetCmdOperatorId = prev }()
+
+	OperatorGetCmdOperatorId = ""
+	if got := buildPathForOperatorGetCmd("/operators/{operator_id}"); got != "/operators/{operator_id}" {
+		t.Errorf("empty operator_id: path = %q, want placeholder kept", got)
+	}
+
+	OperatorGetCmdOperatorId = "OP0012345678"
+	if got := buildPathForOperatorGetCmd("/operators/{operator_id}"); got != "/operators/OP0012345678" {
+		t.Errorf("resolved operator_id: path = %q, want substituted", got)
+	}
+}
+
 func TestIsSecretHeaderName(t *testing.T) {
 	secret := []string{"X-Soracom-Api-Key", "x-soracom-api-key", "X-Soracom-Token", "X-SORACOM-TOKEN"}
 	for _, h := range secret {

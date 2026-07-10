@@ -123,7 +123,9 @@ func buildPathForShippingAddressesDeleteCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(ShippingAddressesDeleteCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedShippingAddressId := url.PathEscape(ShippingAddressesDeleteCmdShippingAddressId)
 

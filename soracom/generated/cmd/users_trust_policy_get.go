@@ -123,7 +123,9 @@ func buildPathForUsersTrustPolicyGetCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersTrustPolicyGetCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedUserName := url.PathEscape(UsersTrustPolicyGetCmdUserName)
 

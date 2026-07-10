@@ -163,7 +163,9 @@ func buildPathForSystemNotificationsSetCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(SystemNotificationsSetCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedType := url.PathEscape(SystemNotificationsSetCmdType)
 

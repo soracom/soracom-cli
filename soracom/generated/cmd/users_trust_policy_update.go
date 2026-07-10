@@ -153,7 +153,9 @@ func buildPathForUsersTrustPolicyUpdateCmd(path string) string {
 
 	escapedOperatorId := url.PathEscape(UsersTrustPolicyUpdateCmdOperatorId)
 
-	path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	if escapedOperatorId != "" {
+		path = strReplace(path, "{"+"operator_id"+"}", escapedOperatorId, -1)
+	}
 
 	escapedUserName := url.PathEscape(UsersTrustPolicyUpdateCmdUserName)
 
