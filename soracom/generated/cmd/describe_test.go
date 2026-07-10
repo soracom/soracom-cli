@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -238,6 +239,70 @@ func TestBuildResponseFieldsCycleGuard(t *testing.T) {
 	}
 	if len(byName["child"].Fields) != 0 {
 		t.Errorf("cycle guard should stop expansion of a self-referential field, got %v", byName["child"].Fields)
+	}
+}
+
+func TestEntriesUnderPrefix(t *testing.T) {
+	entries := []describeEntry{
+		{command: "sims activate", method: "post", path: "/sims/{sim_id}/activate"},
+		{command: "sims deactivate", method: "post", path: "/sims/{sim_id}/deactivate"},
+		{command: "sims-x list", method: "get", path: "/sims-x"},
+		{command: "auth", method: "post", path: "/auth"},
+		{command: "analysis queries start", method: "post", path: "/analysis/queries"},
+		{command: "analysis queries get", method: "get", path: "/analysis/queries/{id}"},
+	}
+
+	got := entriesUnderPrefix(entries, "sims")
+	if len(got) != 2 {
+		t.Fatalf("expected 2 entries under 'sims', got %d: %+v", len(got), got)
+	}
+	for _, e := range got {
+		if !strings.HasPrefix(e.command, "sims ") {
+			t.Errorf("unexpected entry %q under 'sims'", e.command)
+		}
+	}
+
+	// A nested group prefix works too.
+	if got := entriesUnderPrefix(entries, "analysis queries"); len(got) != 2 {
+		t.Errorf("expected 2 entries under 'analysis queries', got %d", len(got))
+	}
+
+	// A leaf command has nothing under it.
+	if got := entriesUnderPrefix(entries, "auth"); len(got) != 0 {
+		t.Errorf("expected no entries under leaf 'auth', got %d", len(got))
+	}
+
+	// An unknown name matches nothing.
+	if got := entriesUnderPrefix(entries, "nope"); len(got) != 0 {
+		t.Errorf("expected no entries under 'nope', got %d", len(got))
+	}
+}
+
+func TestTopLevelGroups(t *testing.T) {
+	entries := []describeEntry{
+		{command: "sims activate"},
+		{command: "sims deactivate"},
+		{command: "auth"},
+		{command: "analysis queries start"},
+	}
+	summaries := map[string]string{
+		"sims": "Manage SIMs.",
+		"auth": "Authenticate.",
+	}
+
+	got := topLevelGroups(entries, func(name string) string { return summaries[name] })
+	want := []commandGroupSummary{
+		{Command: "analysis", Summary: "", Commands: 1},
+		{Command: "auth", Summary: "Authenticate.", Commands: 1},
+		{Command: "sims", Summary: "Manage SIMs.", Commands: 2},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("expected %d groups, got %d: %+v", len(want), len(got), got)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("group %d = %+v, want %+v", i, got[i], want[i])
+		}
 	}
 }
 

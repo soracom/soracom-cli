@@ -14,8 +14,13 @@ import (
 )
 
 func init() {
+	DescribeCmd.Flags().BoolVar(&describeAllCommands, "all", false, TRCLI("cli.describe.flags.all"))
 	RootCmd.AddCommand(DescribeCmd)
 }
+
+// describeAllCommands makes 'describe' (with no arguments) list every leaf
+// command instead of just the top-level command groups.
+var describeAllCommands bool
 
 // DescribeCmd defines the 'describe' subcommand, which exposes machine-readable
 // schema information so that AI agents can discover what a command accepts at
@@ -38,6 +43,9 @@ type commandDescription struct {
 	Parameters  []parameterDesc  `json:"parameters,omitempty"`
 	RequestBody *requestBodyDesc `json:"requestBody,omitempty"`
 	Response    *responseDesc    `json:"response,omitempty"`
+	// Subcommands lists the commands nested under this one, for the few
+	// commands (e.g. 'auth') that are both a runnable command and a group.
+	Subcommands []commandSummary `json:"subcommands,omitempty"`
 }
 
 // responseDesc describes the shape of a command's success response so that an
@@ -62,6 +70,15 @@ type commandSummary struct {
 	Method  string `json:"method"`
 	Path    string `json:"path"`
 	Summary string `json:"summary,omitempty"`
+}
+
+// commandGroupSummary is the top-level listing form: one entry per top-level
+// command (group) with the number of leaf commands it contains, so an agent can
+// get an overview without loading every command into its context.
+type commandGroupSummary struct {
+	Command  string `json:"command"`
+	Summary  string `json:"summary,omitempty"`
+	Commands int    `json:"commands"`
 }
 
 type parameterDesc struct {
@@ -101,20 +118,33 @@ func describeRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	if len(args) == 0 {
-		return describeAll(entries)
+		if describeAllCommands {
+			return prettyPrintObjectAsJSON(summarizeEntries(entries), os.Stdout)
+		}
+		return prettyPrintObjectAsJSON(topLevelGroups(entries, rootCommandSummary), os.Stdout)
 	}
 
 	target := strings.Join(args, " ")
 	for _, e := range entries {
 		if e.command == target {
-			return prettyPrintObjectAsJSON(buildCommandDescription(e), os.Stdout)
+			d := buildCommandDescription(e)
+			// A few commands (e.g. 'auth') are both runnable and a group;
+			// list their nested commands so they stay discoverable.
+			d.Subcommands = summarizeEntries(entriesUnderPrefix(entries, target))
+			return prettyPrintObjectAsJSON(d, os.Stdout)
 		}
 	}
 
-	return fmt.Errorf("unknown command: '%s'. Run 'soracom describe' to list all commands", target)
+	// Not a leaf command; when it matches a command group (e.g. 'describe
+	// sims'), list the leaf commands under it instead of erroring out.
+	if under := entriesUnderPrefix(entries, target); len(under) > 0 {
+		return prettyPrintObjectAsJSON(summarizeEntries(under), os.Stdout)
+	}
+
+	return fmt.Errorf("unknown command: '%s'. Run 'soracom describe' to list top-level commands, or 'soracom describe --all' to list all commands", target)
 }
 
-func describeAll(entries []describeEntry) error {
+func summarizeEntries(entries []describeEntry) []commandSummary {
 	summaries := make([]commandSummary, 0, len(entries))
 	for _, e := range entries {
 		summaries = append(summaries, commandSummary{
@@ -127,7 +157,56 @@ func describeAll(entries []describeEntry) error {
 	sort.Slice(summaries, func(i, j int) bool {
 		return summaries[i].Command < summaries[j].Command
 	})
-	return prettyPrintObjectAsJSON(summaries, os.Stdout)
+	return summaries
+}
+
+// entriesUnderPrefix returns the leaf commands under a command group, e.g.
+// "sims" matches "sims activate" but not "sims" itself nor "sims-x list".
+func entriesUnderPrefix(entries []describeEntry, target string) []describeEntry {
+	prefix := target + " "
+	var under []describeEntry
+	for _, e := range entries {
+		if strings.HasPrefix(e.command, prefix) {
+			under = append(under, e)
+		}
+	}
+	return under
+}
+
+// topLevelGroups aggregates leaf commands by their top-level command name.
+// summaryOf resolves a top-level name to its human-readable summary (taken from
+// the cobra command tree so it matches what 'soracom --help' shows).
+func topLevelGroups(entries []describeEntry, summaryOf func(name string) string) []commandGroupSummary {
+	counts := map[string]int{}
+	for _, e := range entries {
+		top := e.command
+		if i := strings.Index(top, " "); i >= 0 {
+			top = top[:i]
+		}
+		counts[top]++
+	}
+
+	groups := make([]commandGroupSummary, 0, len(counts))
+	for name, n := range counts {
+		groups = append(groups, commandGroupSummary{
+			Command:  name,
+			Summary:  summaryOf(name),
+			Commands: n,
+		})
+	}
+	sort.Slice(groups, func(i, j int) bool { return groups[i].Command < groups[j].Command })
+	return groups
+}
+
+// rootCommandSummary returns the one-line summary of a top-level command as
+// registered on the root cobra command (already localized via TRCLI/TRAPI).
+func rootCommandSummary(name string) string {
+	for _, c := range RootCmd.Commands() {
+		if c.Name() == name {
+			return firstLine(c.Short)
+		}
+	}
+	return ""
 }
 
 func loadDescribeEntries() ([]describeEntry, error) {
