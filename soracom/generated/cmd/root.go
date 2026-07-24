@@ -22,7 +22,6 @@ var providedProfileCommand string
 var rawOutput bool
 var noRetryOnError bool
 var dryRun bool
-var outputFields []string
 
 func InitRootCmd() {
 	// When structured JSON errors are opted in (SORACOM_JSON_ERRORS), suppress
@@ -44,7 +43,6 @@ func InitRootCmd() {
 	RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, TRCLI("cli.global-flags.raw-output"))
 	RootCmd.PersistentFlags().BoolVar(&noRetryOnError, "no-retry-on-error", false, TRCLI("cli.global-flags.no-retry-on-error"))
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, TRCLI("cli.global-flags.dry-run"))
-	RootCmd.PersistentFlags().StringSliceVar(&outputFields, "fields", []string{}, TRCLI("cli.global-flags.fields"))
 
 	InitAllSubCommands()
 }
