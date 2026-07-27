@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/spf13/cobra"
 )
 
 func TestFirstLine(t *testing.T) {
@@ -303,6 +305,75 @@ func TestTopLevelGroups(t *testing.T) {
 		if got[i] != want[i] {
 			t.Errorf("group %d = %+v, want %+v", i, got[i], want[i])
 		}
+	}
+}
+
+func TestAppendPredefinedDescribeEntries(t *testing.T) {
+	openAPIEntry := describeEntry{
+		command: "configure list",
+		op:      &openapi3.Operation{Summary: "OpenAPI summary wins"},
+	}
+
+	got := appendPredefinedDescribeEntries(
+		[]describeEntry{openAPIEntry},
+		[]*cobra.Command{ConfigureCmd, ConfigureListCmd, DescribeCmd, Test500Cmd},
+	)
+
+	byName := map[string]describeEntry{}
+	for _, e := range got {
+		byName[e.command] = e
+	}
+
+	if len(byName) != 3 {
+		t.Fatalf("got commands %v, want configure, configure list, and describe", byName)
+	}
+	if byName["configure"].cobraCommand != ConfigureCmd {
+		t.Error("configure should be added from the predefined command registry")
+	}
+	if byName["describe"].cobraCommand != DescribeCmd {
+		t.Error("describe should be added from the predefined command registry")
+	}
+	if byName["configure list"].op != openAPIEntry.op || byName["configure list"].cobraCommand != nil {
+		t.Error("an existing OpenAPI entry should not be replaced by a predefined entry")
+	}
+	if _, ok := byName["test 500"]; ok {
+		t.Error("a command below a hidden parent should not be described")
+	}
+}
+
+func TestBuildCommandDescriptionForPredefinedCommand(t *testing.T) {
+	command := &cobra.Command{
+		Use:   "sample",
+		Short: "Sample command.",
+		Long:  "Sample command.\nWith more detail.",
+	}
+	command.Flags().Bool("overwrite", false, "Overwrite an existing value.")
+
+	d := buildCommandDescription(describeEntry{
+		command:      "sample",
+		cobraCommand: command,
+	})
+
+	if d.Method != "" || d.Path != "" {
+		t.Errorf("predefined command should not have an HTTP method or path: %+v", d)
+	}
+	if d.Summary != "Sample command." || d.Description != "Sample command. With more detail." {
+		t.Errorf("unexpected command text: %+v", d)
+	}
+	if len(d.Parameters) != 1 {
+		t.Fatalf("got %d parameters, want 1: %+v", len(d.Parameters), d.Parameters)
+	}
+	p := d.Parameters[0]
+	if p.Name != "overwrite" || p.Option != "overwrite" || p.In != "flag" || p.Type != "boolean" {
+		t.Errorf("unexpected flag description: %+v", p)
+	}
+
+	b, err := json.Marshal(d)
+	if err != nil {
+		t.Fatalf("json.Marshal: %v", err)
+	}
+	if strings.Contains(string(b), `"method"`) || strings.Contains(string(b), `"path"`) {
+		t.Errorf("empty HTTP fields should be omitted for predefined commands: %s", b)
 	}
 }
 

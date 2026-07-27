@@ -5,6 +5,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
 
@@ -25,7 +26,7 @@ func ensureCommandsInitialized() {
 func TestDescribeOptionsMatchGeneratedFlags(t *testing.T) {
 	ensureCommandsInitialized()
 
-	entries, err := loadDescribeEntries()
+	entries, err := loadDescribeEntries(DescribeCmd)
 	if err != nil {
 		t.Fatalf("loadDescribeEntries: %v", err)
 	}
@@ -73,5 +74,52 @@ func TestDescribeOptionsMatchGeneratedFlags(t *testing.T) {
 				t.Errorf("%s: command flag --%s is not reported by describe", e.command, fl)
 			}
 		}
+	}
+}
+
+func TestLoadDescribeEntriesIncludesPredefinedCommands(t *testing.T) {
+	ensureCommandsInitialized()
+
+	entries, err := loadDescribeEntries(DescribeCmd)
+	if err != nil {
+		t.Fatalf("loadDescribeEntries: %v", err)
+	}
+
+	byName := make(map[string]describeEntry, len(entries))
+	for _, e := range entries {
+		byName[e.command] = e
+	}
+
+	want := map[string]*cobra.Command{
+		"completion":        CompletionCmd,
+		"completion bash":   completionBashCmd,
+		"completion zsh":    completionZshCmd,
+		"configure":         ConfigureCmd,
+		"configure get":     ConfigureGetCmd,
+		"configure list":    ConfigureListCmd,
+		"configure-sandbox": ConfigureSandboxCmd,
+		"describe":          DescribeCmd,
+		"self-update":       SelfUpdateCmd,
+		"unconfigure":       UnconfigureCmd,
+		"version":           VersionCmd,
+	}
+	for name, command := range want {
+		e, ok := byName[name]
+		if !ok {
+			t.Errorf("%s: predefined command is missing from describe entries", name)
+			continue
+		}
+		if e.cobraCommand != command {
+			t.Errorf("%s: entry does not point to its predefined cobra command", name)
+		}
+	}
+
+	underConfigure := entriesUnderPrefix(entries, "configure")
+	subcommands := map[string]bool{}
+	for _, e := range underConfigure {
+		subcommands[e.command] = true
+	}
+	if !subcommands["configure get"] || !subcommands["configure list"] {
+		t.Errorf("configure subcommands are not discoverable: %v", subcommands)
 	}
 }

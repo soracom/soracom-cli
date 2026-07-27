@@ -128,9 +128,9 @@ cli:
     summary: Describe commands and their parameters as machine-readable JSON.
     description: |
       Output machine-readable schema information for commands so that AI agents can discover what a command accepts at runtime without parsing --help text.
-      With no arguments, lists top-level commands with the number of commands each contains (use --all to list every command with its method and path). With a command group (e.g. 'soracom describe sims'), lists the commands under it. With a full command name (e.g. 'soracom describe subscribers create'), outputs that command's parameters, request body and response schemas, types, required flags and enums as JSON.
+      With no arguments, lists top-level commands with the number of commands each contains (use --all to list every command, with the HTTP method and path shown for API-backed commands). With a command group (e.g. 'soracom describe sims'), lists the commands under it. With a full command name (e.g. 'soracom describe subscribers create'), outputs that command's parameters, request body and response schemas, types, required flags and enums as JSON.
     flags:
-      all: List every command with its method and path, instead of only top-level commands.
+      all: List every command instead of only top-level commands. The HTTP method and path are included for API-backed commands.
   global-flags:
     api-key: |
       Specify an API key.

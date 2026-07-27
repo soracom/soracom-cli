@@ -11,6 +11,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 func init() {
@@ -18,8 +19,8 @@ func init() {
 	RootCmd.AddCommand(DescribeCmd)
 }
 
-// describeAllCommands makes 'describe' (with no arguments) list every leaf
-// command instead of just the top-level command groups.
+// describeAllCommands makes 'describe' (with no arguments) list every command
+// instead of just the top-level command groups.
 var describeAllCommands bool
 
 // DescribeCmd defines the 'describe' subcommand, which exposes machine-readable
@@ -32,11 +33,11 @@ var DescribeCmd = &cobra.Command{
 	RunE:  describeRunE,
 }
 
-// commandDescription is the machine-readable description of a single leaf command.
+// commandDescription is the machine-readable description of a runnable command.
 type commandDescription struct {
 	Command     string           `json:"command"`
-	Method      string           `json:"method"`
-	Path        string           `json:"path"`
+	Method      string           `json:"method,omitempty"`
+	Path        string           `json:"path,omitempty"`
 	Summary     string           `json:"summary,omitempty"`
 	Description string           `json:"description,omitempty"`
 	Deprecated  bool             `json:"deprecated,omitempty"`
@@ -67,8 +68,8 @@ type fieldDesc struct {
 // commandSummary is the compact form used when listing all commands.
 type commandSummary struct {
 	Command string `json:"command"`
-	Method  string `json:"method"`
-	Path    string `json:"path"`
+	Method  string `json:"method,omitempty"`
+	Path    string `json:"path,omitempty"`
 	Summary string `json:"summary,omitempty"`
 }
 
@@ -103,16 +104,17 @@ type requestBodyDesc struct {
 }
 
 type describeEntry struct {
-	command string
-	method  string
-	path    string
-	op      *openapi3.Operation
+	command      string
+	method       string
+	path         string
+	op           *openapi3.Operation
+	cobraCommand *cobra.Command
 }
 
 func describeRunE(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
-	entries, err := loadDescribeEntries()
+	entries, err := loadDescribeEntries(cmd)
 	if err != nil {
 		return err
 	}
@@ -151,7 +153,7 @@ func summarizeEntries(entries []describeEntry) []commandSummary {
 			Command: e.command,
 			Method:  strings.ToUpper(e.method),
 			Path:    e.path,
-			Summary: firstLine(operationSummary(e.op)),
+			Summary: firstLine(entrySummary(e)),
 		})
 	}
 	sort.Slice(summaries, func(i, j int) bool {
@@ -160,7 +162,7 @@ func summarizeEntries(entries []describeEntry) []commandSummary {
 	return summaries
 }
 
-// entriesUnderPrefix returns the leaf commands under a command group, e.g.
+// entriesUnderPrefix returns the commands under a command group, e.g.
 // "sims" matches "sims activate" but not "sims" itself nor "sims-x list".
 func entriesUnderPrefix(entries []describeEntry, target string) []describeEntry {
 	prefix := target + " "
@@ -173,7 +175,7 @@ func entriesUnderPrefix(entries []describeEntry, target string) []describeEntry 
 	return under
 }
 
-// topLevelGroups aggregates leaf commands by their top-level command name.
+// topLevelGroups aggregates commands by their top-level command name.
 // summaryOf resolves a top-level name to its human-readable summary (taken from
 // the cobra command tree so it matches what 'soracom --help' shows).
 func topLevelGroups(entries []describeEntry, summaryOf func(name string) string) []commandGroupSummary {
@@ -209,7 +211,7 @@ func rootCommandSummary(name string) string {
 	return ""
 }
 
-func loadDescribeEntries() ([]describeEntry, error) {
+func loadDescribeEntries(describeCommand *cobra.Command) ([]describeEntry, error) {
 	lang := getSelectedLanguage()
 	if !supportedLanguages[lang] {
 		lang = defaultLang
@@ -248,22 +250,146 @@ func loadDescribeEntries() ([]describeEntry, error) {
 		}
 	}
 
+	entries = appendPredefinedDescribeEntries(entries, predefinedDescribeCommands(describeCommand))
 	return entries, nil
+}
+
+// predefinedDescribeCommands explicitly lists the hand-written commands that
+// describe exposes in addition to OpenAPI-backed commands. Keeping this
+// separate from cobra's AddCommand calls avoids coupling command-tree
+// construction to describe's discovery mechanism. The describe command itself
+// is passed in to avoid an initialization cycle through DescribeCmd.RunE.
+func predefinedDescribeCommands(describeCommand *cobra.Command) []*cobra.Command {
+	return []*cobra.Command{
+		CompletionCmd,
+		completionBashCmd,
+		completionZshCmd,
+		ConfigureCmd,
+		ConfigureGetCmd,
+		ConfigureListCmd,
+		ConfigureSandboxCmd,
+		describeCommand,
+		SelfUpdateCmd,
+		UnconfigureCmd,
+		VersionCmd,
+	}
+}
+
+// appendPredefinedDescribeEntries supplements the OpenAPI-derived entries with
+// visible hand-written commands. OpenAPI remains authoritative when a command
+// exists in both sources because it carries richer request/response schemas.
+func appendPredefinedDescribeEntries(entries []describeEntry, commands []*cobra.Command) []describeEntry {
+	known := make(map[string]bool, len(entries))
+	for _, e := range entries {
+		known[e.command] = true
+	}
+
+	for _, command := range commands {
+		name := relativeCommandName(command)
+		if name == "" || known[name] || !commandAndParentsVisible(command) {
+			continue
+		}
+		entries = append(entries, describeEntry{
+			command:      name,
+			cobraCommand: command,
+		})
+		known[name] = true
+	}
+
+	return entries
+}
+
+// relativeCommandName returns a command's space-separated path below RootCmd.
+func relativeCommandName(command *cobra.Command) string {
+	var parts []string
+	for current := command; current != nil && current != RootCmd; current = current.Parent() {
+		parts = append(parts, current.Name())
+	}
+	if len(parts) == 0 {
+		return ""
+	}
+	for i, j := 0, len(parts)-1; i < j; i, j = i+1, j-1 {
+		parts[i], parts[j] = parts[j], parts[i]
+	}
+	return strings.Join(parts, " ")
+}
+
+func commandAndParentsVisible(command *cobra.Command) bool {
+	for current := command; current != nil && current != RootCmd; current = current.Parent() {
+		if current.Hidden {
+			return false
+		}
+	}
+	return true
 }
 
 func buildCommandDescription(e describeEntry) commandDescription {
 	d := commandDescription{
-		Command:     e.command,
-		Method:      strings.ToUpper(e.method),
-		Path:        e.path,
-		Summary:     operationSummary(e.op),
-		Description: singleLine(e.op.Description),
-		Deprecated:  e.op.Deprecated,
-		Parameters:  buildParameterDescs(e.op.Parameters),
+		Command: e.command,
+		Method:  strings.ToUpper(e.method),
+		Path:    e.path,
 	}
+	if e.op == nil {
+		if e.cobraCommand != nil {
+			d.Summary = firstLine(e.cobraCommand.Short)
+			d.Description = singleLine(e.cobraCommand.Long)
+			d.Deprecated = e.cobraCommand.Deprecated != ""
+			d.Parameters = buildCobraFlagDescs(e.cobraCommand)
+		}
+		return d
+	}
+
+	d.Summary = operationSummary(e.op)
+	d.Description = singleLine(e.op.Description)
+	d.Deprecated = e.op.Deprecated
+	d.Parameters = buildParameterDescs(e.op.Parameters)
 	d.RequestBody = buildRequestBodyDesc(e.op.RequestBody)
 	d.Response = buildResponseDesc(e.op.Responses)
 	return d
+}
+
+func entrySummary(e describeEntry) string {
+	if e.op != nil {
+		return operationSummary(e.op)
+	}
+	if e.cobraCommand != nil {
+		return e.cobraCommand.Short
+	}
+	return ""
+}
+
+func buildCobraFlagDescs(command *cobra.Command) []parameterDesc {
+	var result []parameterDesc
+	command.LocalFlags().VisitAll(func(flag *pflag.Flag) {
+		if flag.Name == "help" {
+			return
+		}
+		result = append(result, parameterDesc{
+			Name:        flag.Name,
+			Option:      flag.Name,
+			In:          "flag",
+			Type:        cobraFlagType(flag.Value.Type()),
+			Required:    false,
+			Description: singleLine(flag.Usage),
+		})
+	})
+	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
+	return result
+}
+
+func cobraFlagType(flagType string) string {
+	switch flagType {
+	case "bool":
+		return "boolean"
+	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
+		return "integer"
+	case "float32", "float64":
+		return "number"
+	case "stringArray", "stringSlice":
+		return "array of string"
+	default:
+		return flagType
+	}
 }
 
 // buildResponseDesc describes the success response body, fully expanding nested
