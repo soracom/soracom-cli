@@ -8,7 +8,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/soracom/soracom-cli/generators/lib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -107,7 +106,7 @@ type describeEntry struct {
 	command      string
 	method       string
 	path         string
-	op           *openapi3.Operation
+	op           *oapiOperation
 	cobraCommand *cobra.Command
 }
 
@@ -230,20 +229,19 @@ func loadDescribeEntries(describeCommand *cobra.Command) ([]describeEntry, error
 			continue
 		}
 
-		loader := openapi3.NewLoader()
-		apiDef, err := loader.LoadFromData(b)
+		apiDef, err := parseAPIDefinition(b)
 		if err != nil {
 			return nil, fmt.Errorf("unable to parse embedded API definition '%s': %w", f, err)
 		}
 
-		for path, pathItem := range apiDef.Paths.Map() {
-			for method, op := range pathItem.Operations() {
-				for _, command := range getCLICommandsFromOperation(op) {
+		for path, pathItem := range apiDef.Paths {
+			for _, e := range pathItem.operations() {
+				for _, command := range getCLICommandsFromOperation(e.op) {
 					entries = append(entries, describeEntry{
 						command: command,
-						method:  method,
+						method:  e.method,
 						path:    path,
-						op:      op,
+						op:      e.op,
 					})
 				}
 			}
@@ -395,25 +393,24 @@ func cobraFlagType(flagType string) string {
 // buildResponseDesc describes the success response body, fully expanding nested
 // object fields so an agent can construct any --fields path (e.g.
 // "sessionStatus.cell.mcc") without guessing or reading external docs.
-func buildResponseDesc(responses *openapi3.Responses) *responseDesc {
+func buildResponseDesc(responses map[string]*oapiResponse) *responseDesc {
 	if responses == nil {
 		return nil
 	}
 
-	m := responses.Map()
-	var resp *openapi3.ResponseRef
+	var resp *oapiResponse
 	for _, code := range []string{"200", "201", "202", "203", "2XX", "default"} {
-		if r, ok := m[code]; ok && r != nil {
+		if r, ok := responses[code]; ok && r != nil {
 			resp = r
 			break
 		}
 	}
-	if resp == nil || resp.Value == nil {
+	if resp == nil {
 		return nil
 	}
 
-	for _, contentType := range orderedContentTypes(resp.Value.Content) {
-		media := resp.Value.Content[contentType]
+	for _, contentType := range orderedContentTypes(resp.Content) {
+		media := resp.Content[contentType]
 		if media == nil || media.Schema == nil || media.Schema.Value == nil {
 			continue
 		}
@@ -424,7 +421,7 @@ func buildResponseDesc(responses *openapi3.Responses) *responseDesc {
 		}
 
 		fieldSchema := media.Schema
-		if media.Schema.Value.Type.Is("array") && media.Schema.Value.Items != nil {
+		if media.Schema.Value.Type == "array" && media.Schema.Value.Items != nil {
 			item := media.Schema.Value.Items
 			if name := schemaRefName(item); name != "" {
 				desc.Type = "array of " + name
@@ -433,7 +430,7 @@ func buildResponseDesc(responses *openapi3.Responses) *responseDesc {
 			fieldSchema = item
 		}
 
-		desc.Fields = buildResponseFields(fieldSchema, map[*openapi3.Schema]bool{})
+		desc.Fields = buildResponseFields(fieldSchema, map[*oapiSchema]bool{})
 		return desc
 	}
 
@@ -446,13 +443,13 @@ func buildResponseDesc(responses *openapi3.Responses) *responseDesc {
 // forever; the same schema may still appear in sibling branches. Expansion is
 // naturally bounded by the schema (the deepest SORACOM response is a handful of
 // levels and well under ~100 fields).
-func buildResponseFields(s *openapi3.SchemaRef, seen map[*openapi3.Schema]bool) []fieldDesc {
+func buildResponseFields(s *oapiSchemaRef, seen map[*oapiSchema]bool) []fieldDesc {
 	if s == nil || s.Value == nil {
 		return nil
 	}
 
 	val := s.Value
-	if val.Type.Is("array") && val.Items != nil {
+	if val.Type == "array" && val.Items != nil {
 		return buildResponseFields(val.Items, seen)
 	}
 
@@ -479,28 +476,28 @@ func buildResponseFields(s *openapi3.SchemaRef, seen map[*openapi3.Schema]bool) 
 	return fields
 }
 
-func buildParameterDescs(params openapi3.Parameters) []parameterDesc {
+func buildParameterDescs(params []*oapiParameter) []parameterDesc {
 	result := make([]parameterDesc, 0, len(params))
 	for _, p := range params {
-		if p.Value == nil {
+		if p == nil {
 			continue
 		}
 
 		option := ""
-		if parameterHasFlag(p.Value) {
-			option = lib.OptionCase(p.Value.Name)
+		if parameterHasFlag(p) {
+			option = lib.OptionCase(p.Name)
 		}
 
 		result = append(result, parameterDesc{
-			Name:        p.Value.Name,
+			Name:        p.Name,
 			Option:      option,
-			In:          p.Value.In,
-			Type:        schemaTypeString(p.Value.Schema),
-			Schema:      schemaRefName(p.Value.Schema),
-			Required:    parameterRequired(p.Value),
-			Description: singleLine(p.Value.Description),
-			Enum:        schemaEnum(p.Value.Schema),
-			Default:     schemaDefault(p.Value.Schema),
+			In:          p.In,
+			Type:        schemaTypeString(p.Schema),
+			Schema:      schemaRefName(p.Schema),
+			Required:    parameterRequired(p),
+			Description: singleLine(p.Description),
+			Enum:        schemaEnum(p.Schema),
+			Default:     schemaDefault(p.Schema),
 		})
 	}
 	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
@@ -513,7 +510,7 @@ func buildParameterDescs(params openapi3.Parameters) []parameterDesc {
 // carries named properties; the rest follow lexicographically. Without this the
 // Go map iteration order would make describe output for the few multi
 // content-type operations change between runs.
-func orderedContentTypes(content openapi3.Content) []string {
+func orderedContentTypes(content map[string]*oapiMediaType) []string {
 	keys := make([]string, 0, len(content))
 	for k := range content {
 		keys = append(keys, k)
@@ -529,16 +526,15 @@ func orderedContentTypes(content openapi3.Content) []string {
 
 // requestBodyHasRefSchema reports whether the generator would create per-field
 // body flags. It mirrors getRequestBodySchema in gen_leaf_cmd.go, which returns
-// a schema (and thus produces flags) only when the request body itself or any of
-// its content schemas is a $ref; an inline body schema yields no field flags.
-func requestBodyHasRefSchema(reqBody *openapi3.RequestBodyRef) bool {
-	if reqBody == nil || reqBody.Value == nil {
+// a schema (and thus produces flags) only when any of the request body's content
+// schemas is a $ref; an inline body schema yields no field flags. (The SORACOM
+// definition never uses a top-level requestBody $ref, so only the content
+// schemas are inspected here.)
+func requestBodyHasRefSchema(reqBody *oapiRequestBody) bool {
+	if reqBody == nil {
 		return false
 	}
-	if reqBody.Ref != "" {
-		return true
-	}
-	for _, media := range reqBody.Value.Content {
+	for _, media := range reqBody.Content {
 		if media != nil && media.Schema != nil && media.Schema.Ref != "" {
 			return true
 		}
@@ -546,13 +542,13 @@ func requestBodyHasRefSchema(reqBody *openapi3.RequestBodyRef) bool {
 	return false
 }
 
-func buildRequestBodyDesc(reqBody *openapi3.RequestBodyRef) *requestBodyDesc {
-	if reqBody == nil || reqBody.Value == nil {
+func buildRequestBodyDesc(reqBody *oapiRequestBody) *requestBodyDesc {
+	if reqBody == nil {
 		return nil
 	}
 
-	for _, contentType := range orderedContentTypes(reqBody.Value.Content) {
-		media := reqBody.Value.Content[contentType]
+	for _, contentType := range orderedContentTypes(reqBody.Content) {
+		media := reqBody.Content[contentType]
 		if media == nil || media.Schema == nil || media.Schema.Value == nil {
 			continue
 		}
@@ -574,7 +570,7 @@ func buildRequestBodyDesc(reqBody *openapi3.RequestBodyRef) *requestBodyDesc {
 		// schema); an array body is likewise sent raw. In those cases the fields
 		// have no flag and must go through --body, so do not advertise an option.
 		emitOptions := requestBodyHasRefSchema(reqBody)
-		if media.Schema.Value.Type.Is("array") && media.Schema.Value.Items != nil {
+		if media.Schema.Value.Type == "array" && media.Schema.Value.Items != nil {
 			item := media.Schema.Value.Items
 			if name := schemaRefName(item); name != "" {
 				desc.Type = "array of " + name
@@ -595,7 +591,7 @@ func buildRequestBodyDesc(reqBody *openapi3.RequestBodyRef) *requestBodyDesc {
 	return nil
 }
 
-func buildBodyProperties(schema *openapi3.Schema, emitOptions bool) []parameterDesc {
+func buildBodyProperties(schema *oapiSchema, emitOptions bool) []parameterDesc {
 	props := make([]parameterDesc, 0, len(schema.Properties))
 	for propName, prop := range schema.Properties {
 		if prop == nil || prop.Value == nil {
@@ -623,7 +619,7 @@ func buildBodyProperties(schema *openapi3.Schema, emitOptions bool) []parameterD
 
 // getCLICommandsFromOperation reads the x-soracom-cli extension that maps an
 // operation to one or more CLI command names (e.g. "subscribers create").
-func getCLICommandsFromOperation(op *openapi3.Operation) []string {
+func getCLICommandsFromOperation(op *oapiOperation) []string {
 	raw, found := op.Extensions["x-soracom-cli"]
 	if !found {
 		return nil
@@ -647,30 +643,27 @@ func getCLICommandsFromOperation(op *openapi3.Operation) []string {
 // strings; object/map and other complex fields get no flag and must be supplied
 // through --body. Returning "" for those avoids telling an agent to use a
 // --flag that does not exist.
-func bodyPropertyOption(propName string, prop *openapi3.SchemaRef) string {
+func bodyPropertyOption(propName string, prop *oapiSchemaRef) string {
 	if !bodyPropertyHasFlag(prop) {
 		return ""
 	}
 	return lib.OptionCase(cliParamNameOf(propName, prop))
 }
 
-func bodyPropertyHasFlag(prop *openapi3.SchemaRef) bool {
-	if prop == nil || prop.Value == nil || prop.Value.Type == nil {
-		return false
-	}
-	types := prop.Value.Type.Slice()
+func bodyPropertyHasFlag(prop *oapiSchemaRef) bool {
 	// The generator only flags fields whose schema has exactly one type (its
 	// Types.Is / getTypeOfParam helpers reject multi-type schemas such as
-	// ["string","null"]), so require a single type here too.
-	if len(types) != 1 {
+	// ["string","null"]); the OpenAPI 3.0 definition carries a single `type`
+	// string, so an empty type is the "no single type" case handled here.
+	if prop == nil || prop.Value == nil || prop.Value.Type == "" {
 		return false
 	}
-	switch types[0] {
+	switch prop.Value.Type {
 	case "string", "integer", "number", "boolean":
 		return true
 	case "array":
 		items := prop.Value.Items
-		return items != nil && items.Value != nil && items.Value.Type.Is("string")
+		return items != nil && items.Value != nil && items.Value.Type == "string"
 	}
 	return false
 }
@@ -680,16 +673,13 @@ func bodyPropertyHasFlag(prop *openapi3.SchemaRef) bool {
 // / getIntegerFlags / getFloatFlags / getBoolFlags in
 // generators/cmd/src/gen_leaf_cmd.go — the generator is the source of truth, and
 // TestDescribeOptionsMatchGeneratedFlags asserts describe stays aligned with it.
-func parameterHasFlag(p *openapi3.Parameter) bool {
-	if p == nil || p.Schema == nil || p.Schema.Value == nil || p.Schema.Value.Type == nil {
+func parameterHasFlag(p *oapiParameter) bool {
+	// Match the generator, which only flags single-type schemas; in OpenAPI 3.0
+	// `type` is a single string, so an empty type is the "no single type" case.
+	if p == nil || p.Schema == nil || p.Schema.Value == nil || p.Schema.Value.Type == "" {
 		return false
 	}
-	types := p.Schema.Value.Type.Slice()
-	// Match the generator, which only flags single-type schemas.
-	if len(types) != 1 {
-		return false
-	}
-	switch types[0] {
+	switch p.Schema.Value.Type {
 	case "string", "integer", "number", "boolean":
 		return true
 	case "array":
@@ -698,7 +688,7 @@ func parameterHasFlag(p *openapi3.Parameter) bool {
 			return false
 		}
 		items := p.Schema.Value.Items
-		return items != nil && items.Value != nil && items.Value.Type.Is("string")
+		return items != nil && items.Value != nil && items.Value.Type == "string"
 	}
 	return false
 }
@@ -706,15 +696,15 @@ func parameterHasFlag(p *openapi3.Parameter) bool {
 // parameterRequired mirrors the generator's special case: operator_id is never a
 // required flag because generated commands auto-fill it from the API token when
 // omitted (see getStringFlags in generators/cmd/src/gen_leaf_cmd.go).
-func parameterRequired(p *openapi3.Parameter) bool {
+func parameterRequired(p *oapiParameter) bool {
 	if p.Name == "operator_id" {
 		return false
 	}
 	return p.Required
 }
 
-func cliParamNameOf(propName string, prop *openapi3.SchemaRef) string {
-	if prop.Value.Extensions != nil {
+func cliParamNameOf(propName string, prop *oapiSchemaRef) string {
+	if prop.Value != nil && prop.Value.Extensions != nil {
 		if raw, found := prop.Value.Extensions["x-soracom-cli-param-name"]; found {
 			if s, ok := raw.(string); ok {
 				return s
@@ -724,82 +714,81 @@ func cliParamNameOf(propName string, prop *openapi3.SchemaRef) string {
 	return propName
 }
 
-func operationSummary(op *openapi3.Operation) string {
+func operationSummary(op *oapiOperation) string {
 	if op == nil {
 		return ""
 	}
 	return op.Summary
 }
 
-func schemaTypeString(s *openapi3.SchemaRef) string {
-	if s == nil || s.Value == nil || s.Value.Type == nil {
+func schemaTypeString(s *oapiSchemaRef) string {
+	if s == nil || s.Value == nil || s.Value.Type == "" {
 		return ""
 	}
-	types := s.Value.Type.Slice()
-	if len(types) == 0 {
-		return ""
-	}
-	if types[0] == "array" && s.Value.Items != nil {
+	t := s.Value.Type
+	if t == "array" && s.Value.Items != nil {
 		return "array of " + schemaTypeString(s.Value.Items)
 	}
 	// A free-form object whose keys are arbitrary (additionalProperties) is a
 	// map, not a fixed struct. Surface that so an agent knows it must supply
 	// caller-defined keys (e.g. tags is "map of string") rather than looking
-	// for fixed sub-properties that do not exist.
-	if types[0] == "object" && s.Value.AdditionalProperties.Schema != nil {
-		valueType := schemaTypeString(s.Value.AdditionalProperties.Schema)
+	// for fixed sub-properties that do not exist. Only a schema-valued
+	// additionalProperties counts: for `additionalProperties: false` the Value
+	// stays unset, so it is treated as a plain object.
+	if t == "object" && s.Value.AdditionalProperties != nil && s.Value.AdditionalProperties.Value != nil {
+		valueType := schemaTypeString(s.Value.AdditionalProperties)
 		if valueType == "" {
 			valueType = "object"
 		}
 		return "map of " + valueType
 	}
-	return types[0]
+	return t
 }
 
 // schemaRefName returns the component schema name a property points at, when it
 // is defined via $ref (e.g. "#/components/schemas/GroupConfiguration" ->
 // "GroupConfiguration"). This gives an agent a stable name to reason about for
 // object-typed fields whose structure is not inlined.
-func schemaRefName(s *openapi3.SchemaRef) string {
+func schemaRefName(s *oapiSchemaRef) string {
 	if s == nil || s.Ref == "" {
 		return ""
 	}
-	ref := s.Ref
-	if i := strings.LastIndex(ref, "/"); i >= 0 {
-		return ref[i+1:]
-	}
-	return ref
+	return schemaRefComponentName(s.Ref)
 }
 
 // requestBodyExample returns the example payload for a request body, preferring
 // the media-type example and falling back to the schema-level example. A
 // concrete example is often the most actionable thing an agent can use to build
 // a correct --body, especially for free-form/object fields.
-func requestBodyExample(media *openapi3.MediaType) interface{} {
+func requestBodyExample(media *oapiMediaType) interface{} {
 	if media == nil {
 		return nil
 	}
 	if media.Example != nil {
-		return media.Example
+		return toJSONValue(media.Example)
 	}
 	if media.Schema != nil && media.Schema.Value != nil {
-		return media.Schema.Value.Example
+		return toJSONValue(media.Schema.Value.Example)
 	}
 	return nil
 }
 
-func schemaEnum(s *openapi3.SchemaRef) []interface{} {
-	if s == nil || s.Value == nil {
+func schemaEnum(s *oapiSchemaRef) []interface{} {
+	if s == nil || s.Value == nil || len(s.Value.Enum) == 0 {
 		return nil
 	}
-	return s.Value.Enum
+	out := make([]interface{}, len(s.Value.Enum))
+	for i, e := range s.Value.Enum {
+		out[i] = toJSONValue(e)
+	}
+	return out
 }
 
-func schemaDefault(s *openapi3.SchemaRef) interface{} {
+func schemaDefault(s *oapiSchemaRef) interface{} {
 	if s == nil || s.Value == nil {
 		return nil
 	}
-	return s.Value.Default
+	return toJSONValue(s.Value.Default)
 }
 
 func firstLine(s string) string {

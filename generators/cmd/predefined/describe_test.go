@@ -5,9 +5,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
 )
+
+// strSchema and friends build the minimal schema-ref values that describe's
+// build* helpers operate on.
+func strSchema() *oapiSchemaRef  { return &oapiSchemaRef{Value: &oapiSchema{Type: "string"}} }
+func boolSchema() *oapiSchemaRef { return &oapiSchemaRef{Value: &oapiSchema{Type: "boolean"}} }
 
 func TestFirstLine(t *testing.T) {
 	if got := firstLine("  one\ntwo\n"); got != "one" {
@@ -19,12 +23,11 @@ func TestFirstLine(t *testing.T) {
 }
 
 func TestSchemaTypeString(t *testing.T) {
-	if got := schemaTypeString(openapi3.NewSchemaRef("", openapi3.NewStringSchema())); got != "string" {
+	if got := schemaTypeString(strSchema()); got != "string" {
 		t.Errorf("got %q, want string", got)
 	}
-	arr := openapi3.NewArraySchema()
-	arr.Items = openapi3.NewSchemaRef("", openapi3.NewStringSchema())
-	if got := schemaTypeString(openapi3.NewSchemaRef("", arr)); got != "array of string" {
+	arr := &oapiSchemaRef{Value: &oapiSchema{Type: "array", Items: strSchema()}}
+	if got := schemaTypeString(arr); got != "array of string" {
 		t.Errorf("got %q, want 'array of string'", got)
 	}
 	if got := schemaTypeString(nil); got != "" {
@@ -44,57 +47,62 @@ func TestSingleLine(t *testing.T) {
 }
 
 func TestSchemaTypeStringMap(t *testing.T) {
-	m := openapi3.NewObjectSchema()
-	m.AdditionalProperties = openapi3.AdditionalProperties{
-		Schema: openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
-	}
-	if got := schemaTypeString(openapi3.NewSchemaRef("", m)); got != "map of string" {
+	m := &oapiSchemaRef{Value: &oapiSchema{
+		Type:                 "object",
+		AdditionalProperties: strSchema(),
+	}}
+	if got := schemaTypeString(m); got != "map of string" {
 		t.Errorf("got %q, want 'map of string'", got)
 	}
 
-	mo := openapi3.NewObjectSchema()
-	mo.AdditionalProperties = openapi3.AdditionalProperties{
-		Schema: openapi3.NewSchemaRef("", openapi3.NewObjectSchema()),
-	}
-	if got := schemaTypeString(openapi3.NewSchemaRef("", mo)); got != "map of object" {
+	mo := &oapiSchemaRef{Value: &oapiSchema{
+		Type:                 "object",
+		AdditionalProperties: &oapiSchemaRef{Value: &oapiSchema{Type: "object"}},
+	}}
+	if got := schemaTypeString(mo); got != "map of object" {
 		t.Errorf("got %q, want 'map of object'", got)
+	}
+
+	// additionalProperties: false carries no schema (Value nil) and must not be
+	// reported as a map.
+	mf := &oapiSchemaRef{Value: &oapiSchema{
+		Type:                 "object",
+		AdditionalProperties: &oapiSchemaRef{},
+	}}
+	if got := schemaTypeString(mf); got != "object" {
+		t.Errorf("got %q, want 'object'", got)
 	}
 }
 
 func TestSchemaRefName(t *testing.T) {
-	ref := openapi3.NewSchemaRef("#/components/schemas/GroupConfiguration", openapi3.NewObjectSchema())
+	ref := &oapiSchemaRef{Ref: "#/components/schemas/GroupConfiguration", Value: &oapiSchema{Type: "object"}}
 	if got := schemaRefName(ref); got != "GroupConfiguration" {
 		t.Errorf("got %q, want GroupConfiguration", got)
 	}
-	if got := schemaRefName(openapi3.NewSchemaRef("", openapi3.NewStringSchema())); got != "" {
+	if got := schemaRefName(strSchema()); got != "" {
 		t.Errorf("inline schema should have no ref name, got %q", got)
 	}
 }
 
 func TestBodyPropertyHasFlag(t *testing.T) {
-	arrOfString := openapi3.NewArraySchema()
-	arrOfString.Items = openapi3.NewSchemaRef("", openapi3.NewStringSchema())
-
-	mapObj := openapi3.NewObjectSchema()
-	mapObj.AdditionalProperties = openapi3.AdditionalProperties{
-		Schema: openapi3.NewSchemaRef("", openapi3.NewObjectSchema()),
-	}
+	arrOfString := &oapiSchema{Type: "array", Items: strSchema()}
+	mapObj := &oapiSchema{Type: "object", AdditionalProperties: &oapiSchemaRef{Value: &oapiSchema{Type: "object"}}}
 
 	cases := []struct {
 		name   string
-		schema *openapi3.Schema
+		schema *oapiSchema
 		want   bool
 	}{
-		{"string", openapi3.NewStringSchema(), true},
-		{"integer", openapi3.NewIntegerSchema(), true},
-		{"boolean", openapi3.NewBoolSchema(), true},
+		{"string", &oapiSchema{Type: "string"}, true},
+		{"integer", &oapiSchema{Type: "integer"}, true},
+		{"boolean", &oapiSchema{Type: "boolean"}, true},
 		{"array of string", arrOfString, true},
 		{"object/map", mapObj, false},
-		{"plain object", openapi3.NewObjectSchema(), false},
+		{"plain object", &oapiSchema{Type: "object"}, false},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := bodyPropertyHasFlag(openapi3.NewSchemaRef("", c.schema)); got != c.want {
+			if got := bodyPropertyHasFlag(&oapiSchemaRef{Value: c.schema}); got != c.want {
 				t.Errorf("bodyPropertyHasFlag(%s) = %v, want %v", c.name, got, c.want)
 			}
 		})
@@ -102,10 +110,10 @@ func TestBodyPropertyHasFlag(t *testing.T) {
 }
 
 func TestOrderedContentTypesPrefersJSON(t *testing.T) {
-	content := openapi3.Content{
-		"application/xml":  openapi3.NewMediaType(),
-		"text/plain":       openapi3.NewMediaType(),
-		"application/json": openapi3.NewMediaType(),
+	content := map[string]*oapiMediaType{
+		"application/xml":  {},
+		"text/plain":       {},
+		"application/json": {},
 	}
 	got := orderedContentTypes(content)
 	want := []string{"application/json", "application/xml", "text/plain"}
@@ -120,18 +128,23 @@ func TestOrderedContentTypesPrefersJSON(t *testing.T) {
 }
 
 func TestBuildRequestBodyDescArray(t *testing.T) {
-	item := openapi3.NewObjectSchema()
-	item.Properties = openapi3.Schemas{
-		"tagName":  openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
-		"tagValue": openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
+	item := &oapiSchema{
+		Type: "object",
+		Properties: map[string]*oapiSchemaRef{
+			"tagName":  strSchema(),
+			"tagValue": strSchema(),
+		},
+		Required: []string{"tagName", "tagValue"},
 	}
-	item.Required = []string{"tagName", "tagValue"}
+	arr := &oapiSchemaRef{Value: &oapiSchema{
+		Type:  "array",
+		Items: &oapiSchemaRef{Ref: "#/components/schemas/TagUpdateRequest", Value: item},
+	}}
 
-	arr := openapi3.NewArraySchema()
-	arr.Items = openapi3.NewSchemaRef("#/components/schemas/TagUpdateRequest", item)
-
-	rb := &openapi3.RequestBodyRef{
-		Value: openapi3.NewRequestBody().WithJSONSchemaRef(openapi3.NewSchemaRef("", arr)),
+	rb := &oapiRequestBody{
+		Content: map[string]*oapiMediaType{
+			"application/json": {Schema: arr},
+		},
 	}
 
 	d := buildRequestBodyDesc(rb)
@@ -159,18 +172,22 @@ func TestBuildRequestBodyDescArray(t *testing.T) {
 }
 
 func TestBuildResponseFieldsNested(t *testing.T) {
-	session := openapi3.NewObjectSchema()
-	session.Properties = openapi3.Schemas{
-		"online": openapi3.NewSchemaRef("", openapi3.NewBoolSchema()),
-		"imsi":   openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
+	session := &oapiSchema{
+		Type: "object",
+		Properties: map[string]*oapiSchemaRef{
+			"online": boolSchema(),
+			"imsi":   strSchema(),
+		},
 	}
-	sim := openapi3.NewObjectSchema()
-	sim.Properties = openapi3.Schemas{
-		"simId":         openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
-		"sessionStatus": openapi3.NewSchemaRef("#/components/schemas/SessionStatus", session),
-	}
+	sim := &oapiSchemaRef{Value: &oapiSchema{
+		Type: "object",
+		Properties: map[string]*oapiSchemaRef{
+			"simId":         strSchema(),
+			"sessionStatus": {Ref: "#/components/schemas/SessionStatus", Value: session},
+		},
+	}}
 
-	fields := buildResponseFields(openapi3.NewSchemaRef("", sim), map[*openapi3.Schema]bool{})
+	fields := buildResponseFields(sim, map[*oapiSchema]bool{})
 	byName := map[string]fieldDesc{}
 	for _, f := range fields {
 		byName[f.Name] = f
@@ -200,16 +217,12 @@ func TestBuildResponseFieldsNested(t *testing.T) {
 }
 
 func TestBuildResponseFieldsFullyExpandsDeepNesting(t *testing.T) {
-	l3 := openapi3.NewObjectSchema()
-	l3.Properties = openapi3.Schemas{"leaf": openapi3.NewSchemaRef("", openapi3.NewStringSchema())}
-	l2 := openapi3.NewObjectSchema()
-	l2.Properties = openapi3.Schemas{"l3": openapi3.NewSchemaRef("", l3)}
-	l1 := openapi3.NewObjectSchema()
-	l1.Properties = openapi3.Schemas{"l2": openapi3.NewSchemaRef("", l2)}
-	arr := openapi3.NewArraySchema()
-	arr.Items = openapi3.NewSchemaRef("", l1)
+	l3 := &oapiSchema{Type: "object", Properties: map[string]*oapiSchemaRef{"leaf": strSchema()}}
+	l2 := &oapiSchema{Type: "object", Properties: map[string]*oapiSchemaRef{"l3": {Value: l3}}}
+	l1 := &oapiSchema{Type: "object", Properties: map[string]*oapiSchemaRef{"l2": {Value: l2}}}
+	arr := &oapiSchemaRef{Value: &oapiSchema{Type: "array", Items: &oapiSchemaRef{Value: l1}}}
 
-	fields := buildResponseFields(openapi3.NewSchemaRef("", arr), map[*openapi3.Schema]bool{})
+	fields := buildResponseFields(arr, map[*oapiSchema]bool{})
 	// Walk l2 -> l3 -> leaf; all three levels must be present (not just one).
 	if len(fields) != 1 || fields[0].Name != "l2" {
 		t.Fatalf("level 1 = %v, want [l2]", fields)
@@ -223,15 +236,15 @@ func TestBuildResponseFieldsFullyExpandsDeepNesting(t *testing.T) {
 }
 
 func TestBuildResponseFieldsCycleGuard(t *testing.T) {
-	node := openapi3.NewObjectSchema()
-	selfRef := openapi3.NewSchemaRef("#/components/schemas/Node", node) // selfRef.Value == node
-	node.Properties = openapi3.Schemas{
-		"name":  openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
+	node := &oapiSchema{Type: "object"}
+	selfRef := &oapiSchemaRef{Ref: "#/components/schemas/Node", Value: node} // selfRef.Value == node
+	node.Properties = map[string]*oapiSchemaRef{
+		"name":  strSchema(),
 		"child": selfRef,
 	}
 
 	// Must terminate (not recurse forever) on a self-referential schema.
-	fields := buildResponseFields(openapi3.NewSchemaRef("", node), map[*openapi3.Schema]bool{})
+	fields := buildResponseFields(&oapiSchemaRef{Value: node}, map[*oapiSchema]bool{})
 	byName := map[string]fieldDesc{}
 	for _, f := range fields {
 		byName[f.Name] = f
@@ -311,7 +324,7 @@ func TestTopLevelGroups(t *testing.T) {
 func TestAppendPredefinedDescribeEntries(t *testing.T) {
 	openAPIEntry := describeEntry{
 		command: "configure list",
-		op:      &openapi3.Operation{Summary: "OpenAPI summary wins"},
+		op:      &oapiOperation{Summary: "OpenAPI summary wins"},
 	}
 
 	got := appendPredefinedDescribeEntries(
@@ -378,7 +391,7 @@ func TestBuildCommandDescriptionForPredefinedCommand(t *testing.T) {
 }
 
 func TestGetCLICommandsFromOperation(t *testing.T) {
-	op := &openapi3.Operation{
+	op := &oapiOperation{
 		Extensions: map[string]interface{}{
 			"x-soracom-cli": []interface{}{"groups create"},
 		},
@@ -388,33 +401,37 @@ func TestGetCLICommandsFromOperation(t *testing.T) {
 		t.Errorf("got %#v, want [groups create]", got)
 	}
 
-	none := getCLICommandsFromOperation(&openapi3.Operation{})
+	none := getCLICommandsFromOperation(&oapiOperation{})
 	if none != nil {
 		t.Errorf("operation without extension should return nil, got %#v", none)
 	}
 }
 
 func TestBuildCommandDescription(t *testing.T) {
-	bodySchema := openapi3.NewObjectSchema()
-	bodySchema.Properties = openapi3.Schemas{
-		"tags": openapi3.NewSchemaRef("", openapi3.NewObjectSchema()),
+	bodySchema := &oapiSchema{
+		Type: "object",
+		Properties: map[string]*oapiSchemaRef{
+			"tags": {Value: &oapiSchema{Type: "object"}},
+		},
+		Required: []string{"tags"},
 	}
-	bodySchema.Required = []string{"tags"}
 
-	op := &openapi3.Operation{
+	op := &oapiOperation{
 		Summary:     "Create Group",
 		Description: "Create a new group.",
-		Parameters: openapi3.Parameters{
-			&openapi3.ParameterRef{Value: &openapi3.Parameter{
+		Parameters: []*oapiParameter{
+			{
 				Name:        "group_id",
 				In:          "path",
 				Required:    true,
 				Description: "Group ID.\nsecond line kept",
-				Schema:      openapi3.NewSchemaRef("", openapi3.NewStringSchema()),
-			}},
+				Schema:      strSchema(),
+			},
 		},
-		RequestBody: &openapi3.RequestBodyRef{
-			Value: openapi3.NewRequestBody().WithJSONSchema(bodySchema),
+		RequestBody: &oapiRequestBody{
+			Content: map[string]*oapiMediaType{
+				"application/json": {Schema: &oapiSchemaRef{Value: bodySchema}},
+			},
 		},
 	}
 
@@ -452,5 +469,99 @@ func TestBuildCommandDescription(t *testing.T) {
 	}
 	if !d.RequestBody.Properties[0].Required {
 		t.Errorf("'tags' should be required")
+	}
+}
+
+// TestParseAPIDefinitionResolvesRefs exercises the yaml.v2-based loader and the
+// $ref resolution pass end-to-end on a small inline document.
+func TestParseAPIDefinitionResolvesRefs(t *testing.T) {
+	doc, err := parseAPIDefinition([]byte(`
+openapi: 3.0.0
+paths:
+  /groups/{group_id}:
+    post:
+      summary: Create Group
+      x-soracom-cli:
+      - groups create
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              tags:
+                name: value
+            schema:
+              $ref: '#/components/schemas/GroupCreateRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+components:
+  schemas:
+    GroupCreateRequest:
+      type: object
+      properties:
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+      - tags
+    Group:
+      type: object
+      properties:
+        groupId:
+          type: string
+        configuration:
+          $ref: '#/components/schemas/Group'
+`))
+	if err != nil {
+		t.Fatalf("parseAPIDefinition: %v", err)
+	}
+
+	pi := doc.Paths["/groups/{group_id}"]
+	if pi == nil || pi.Post == nil {
+		t.Fatal("expected a POST operation on /groups/{group_id}")
+	}
+	op := pi.Post
+
+	if cmds := getCLICommandsFromOperation(op); len(cmds) != 1 || cmds[0] != "groups create" {
+		t.Errorf("x-soracom-cli = %v, want [groups create]", cmds)
+	}
+
+	// requestBody schema $ref resolved and its property (map type) expanded.
+	rb := buildRequestBodyDesc(op.RequestBody)
+	if rb == nil || rb.Schema != "GroupCreateRequest" {
+		t.Fatalf("request body schema = %+v, want GroupCreateRequest", rb)
+	}
+	if len(rb.Properties) != 1 || rb.Properties[0].Name != "tags" || rb.Properties[0].Type != "map of string" {
+		t.Errorf("body property = %+v, want tags: map of string", rb.Properties)
+	}
+	// The example (a nested map) must survive as JSON-marshalable output.
+	if _, err := json.Marshal(rb.Example); err != nil {
+		t.Errorf("request body example is not JSON-marshalable: %v", err)
+	}
+
+	// response schema $ref resolved, and the self-referential field terminates.
+	resp := buildResponseDesc(op.Responses)
+	if resp == nil || resp.Schema != "Group" {
+		t.Fatalf("response schema = %+v, want Group", resp)
+	}
+	byName := map[string]fieldDesc{}
+	for _, f := range resp.Fields {
+		byName[f.Name] = f
+	}
+	if _, ok := byName["groupId"]; !ok {
+		t.Error("expected groupId in response fields")
+	}
+	if _, ok := byName["configuration"]; !ok {
+		t.Error("expected self-referential configuration field to be listed")
 	}
 }
