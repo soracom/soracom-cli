@@ -73,6 +73,10 @@ func OperatorVerifyMfaRevokeTokenCmdRunE(cmd *cobra.Command, args []string) erro
 		return err
 	}
 
+	if dryRun {
+		return ac.printDryRun(param)
+	}
+
 	body, err := ac.callAPI(param)
 	if err != nil {
 		cmd.SilenceUsage = true
@@ -86,6 +90,12 @@ func OperatorVerifyMfaRevokeTokenCmdRunE(cmd *cobra.Command, args []string) erro
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		return prettyPrintStringAsJSON(body)
 	}
 	return err
