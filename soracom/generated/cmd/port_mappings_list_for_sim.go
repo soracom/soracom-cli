@@ -48,15 +48,30 @@ func PortMappingsListForSimCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := ac.getAPICredentials()
-	if err != nil {
-		cmd.SilenceUsage = true
-		return err
+	if dryRun {
+		// dry-run must not perform any network-backed authentication (a profile
+		// or AuthKey exchanges secrets for a token via a real /auth request).
+		// Still resolve locally provided --api-key/--api-token so the preview is
+		// faithful: the (redacted) auth headers and the operator id derived from
+		// the token are included.
+		if err := ac.resolveLocalAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+	} else {
+		if err := ac.getAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 	}
 
 	param, err := collectPortMappingsListForSimCmdParams(ac)
 	if err != nil {
 		return err
+	}
+
+	if dryRun {
+		return ac.printDryRun(param)
 	}
 
 	body, err := ac.callAPI(param)
@@ -72,6 +87,12 @@ func PortMappingsListForSimCmdRunE(cmd *cobra.Command, args []string) error {
 	if rawOutput {
 		_, err = os.Stdout.Write([]byte(body))
 	} else {
+		if len(outputFields) > 0 {
+			body, err = applyFieldFilter(body, outputFields)
+			if err != nil {
+				return err
+			}
+		}
 		if PortMappingsListForSimCmdOutputJSONL {
 			return printStringAsJSONL(body)
 		}
