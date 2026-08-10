@@ -4,7 +4,7 @@ require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/dvsekhvalnov/jose2go v1.8.0
 	github.com/elazarl/goproxy v1.8.5
-	github.com/getkin/kin-openapi v0.145.0
+	github.com/getkin/kin-openapi v0.146.0
 	github.com/kennygrant/sanitize v1.2.4
 	github.com/mattn/go-shellwords v1.0.14
 	github.com/mitchellh/go-homedir v1.1.0
