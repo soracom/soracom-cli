@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Soracom API v1
   title: Soracom API
-  version: 20260604-092803
+  version: 20260730-014026
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -2941,6 +2941,557 @@ paths:
       - Diagnostic
       x-soracom-cli:
       - diagnostics get
+  /euiccs:
+    get:
+      description: |
+        Returns a list of Connectivity Hypervisor-capable IoT SIMs. If the total number of Connectivity Hypervisor-capable IoT SIMs does not fit in one page, a URL for accessing the next page is returned in the `link` header of the response.
+      operationId: listEuiccs
+      parameters:
+      - description: Maximum number of Connectivity Hypervisor-capable IoT SIMs to
+          retrieve. However, the number of Connectivity Hypervisor-capable IoT SIMs
+          returned may be less than the specified value.
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: Whether to include status information for Connectivity Hypervisor-capable
+          IoT SIMs in the response. Defaults to `true`.
+        in: query
+        name: include_status
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Euicc'
+                type: array
+          description: List of Connectivity Hypervisor-capable IoT SIMs.
+        "404":
+          description: No Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List Connectivity Hypervisor-capable IoT SIMs
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /euiccs/{sim_id}:
+    get:
+      description: Gets information about the specified Connectivity Hypervisor-capable
+        IoT SIM.
+      operationId: getEuicc
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: Whether to include status information for the Connectivity Hypervisor-capable
+          IoT SIM in the response. Defaults to `true`.
+        in: query
+        name: include_status
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Euicc'
+          description: Detailed information for the Connectivity Hypervisor-capable
+            IoT SIM.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get Connectivity Hypervisor-capable IoT SIM information
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs get
+  /euiccs/{sim_id}/profile_operations:
+    get:
+      description: Lists profile-related operations for the specified Connectivity
+        Hypervisor-capable IoT SIM. Operations are sorted in descending order by creation
+        date (`createdAt`).
+      operationId: listEuiccProfileOperationHistory
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: If set to `true`, only profile-related operations that are in
+          progress (status `requested` or `pending`) are returned.
+        in: query
+        name: in_progress
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: Maximum number of profile-related operations for the Connectivity
+          Hypervisor-capable IoT SIM to retrieve. However, the number of operations
+          returned may be less than the specified value.
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EuiccProfileOperation'
+                type: array
+          description: List of profile-related operations for the Connectivity Hypervisor-capable
+            IoT SIM.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List profile-related operations for a Connectivity Hypervisor-capable
+        IoT SIM
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile list-operations
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /euiccs/{sim_id}/profile_operations/{profile_operation_id}:
+    delete:
+      description: |
+        Cancels a pending profile-related operation for the specified Connectivity Hypervisor-capable IoT SIM.
+
+        - Only operations with status `requested` or `pending` can be cancelled.
+        - Operations with status `succeeded`, `failed`, or `cancelled` cannot be cancelled.
+      operationId: cancelEuiccProfileOperation
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The profile-related operation ID to cancel.
+        in: path
+        name: profile_operation_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfileOperation'
+          description: The cancelled profile-related operation.
+        "400":
+          description: Bad request. The operation cannot be cancelled because it has
+            already succeeded, failed, or been cancelled.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM or operation
+            found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Cancel a profile-related operation for a Connectivity Hypervisor-capable
+        IoT SIM
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile cancel-operation
+  /euiccs/{sim_id}/profile_operations/download_via_activation_code:
+    post:
+      description: |
+        Requests a profile download to the Connectivity Hypervisor-capable IoT SIM using the specified activation code.
+
+        The activation code can be obtained as `activationCode` in the response from [SimProfileOrder:listOrderedProfiles API](#/SimProfileOrder/listOrderedProfiles).
+      operationId: downloadEuiccProfileViaActivationCode
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                activationCode:
+                  description: Activation code for profile download.
+                  type: string
+              required:
+              - activationCode
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: Profile information for the Connectivity Hypervisor-capable
+            IoT SIM after the profile download request.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Request profile download via activation code
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile download-profile-via-activation-code
+  /euiccs/{sim_id}/profiles:
+    post:
+      description: Orders a new profile for the specified Connectivity Hypervisor-capable
+        IoT SIM.
+      operationId: orderEuiccProfile
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EuiccProfileOrderRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: Profile information for the Connectivity Hypervisor-capable
+            IoT SIM after the profile order request.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Order a profile for a Connectivity Hypervisor-capable IoT SIM
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile order
+  /euiccs/{sim_id}/profiles/{iccid}:
+    delete:
+      description: Requests deletion of the specified profile.
+      operationId: requestEuiccProfileDeletion
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The ICCID of the profile.
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: Profile information for the Connectivity Hypervisor-capable
+            IoT SIM after the profile deletion request.
+        "404":
+          description: No such profile found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Request profile deletion
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-delete
+    get:
+      description: Gets information about the specified profile.
+      operationId: getEuiccProfile
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The ICCID of the profile.
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: The profile's detailed information.
+        "404":
+          description: No such profile found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get profile information
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile get
+  /euiccs/{sim_id}/profiles/{iccid}/activate:
+    post:
+      description: Requests activation of the specified profile on the Connectivity
+        Hypervisor-capable IoT SIM.
+      operationId: requestEuiccProfileActivation
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The ICCID of the profile.
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: Profile information for the Connectivity Hypervisor-capable
+            IoT SIM after the profile activation request.
+        "404":
+          description: No such profile found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Request activation of a profile on a Connectivity Hypervisor-capable
+        IoT SIM
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-activate
+  /euiccs/{sim_id}/profiles/{iccid}/download:
+    post:
+      description: Requests download of the specified profile to the Connectivity
+        Hypervisor-capable IoT SIM.
+      operationId: requestEuiccProfileDownload
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The ICCID of the profile.
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: Profile information for the Connectivity Hypervisor-capable
+            IoT SIM after the profile download request.
+        "404":
+          description: No such profile found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Request profile download to a Connectivity Hypervisor-capable IoT SIM
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-download
+  /euiccs/{sim_id}/status:
+    get:
+      description: Gets the status of the specified Connectivity Hypervisor-capable
+        IoT SIM, including session status, session events, and eIM status.
+      operationId: getEuiccStatus
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccStatus'
+          description: Status information for the Connectivity Hypervisor-capable
+            IoT SIM.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get Connectivity Hypervisor-capable IoT SIM status
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs status get
+  /euiccs/{sim_id}/tags:
+    put:
+      description: Updates tags for the specified Connectivity Hypervisor-capable
+        IoT SIM.
+      operationId: putEuiccTags
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/TagUpdateRequest'
+              type: array
+        description: Array of tags to update.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Euicc'
+          description: The updated Connectivity Hypervisor-capable IoT SIM.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update Connectivity Hypervisor-capable IoT SIM tags
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs put-tags
+  /euiccs/{sim_id}/tags/{tag_name}:
+    delete:
+      description: Deletes a tag from the specified Connectivity Hypervisor-capable
+        IoT SIM.
+      operationId: deleteEuiccTag
+      parameters:
+      - description: The SIM ID of the target Connectivity Hypervisor-capable IoT
+          SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: The name of the tag to delete.
+        in: path
+        name: tag_name
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: The tag was deleted successfully.
+        "404":
+          description: No such Connectivity Hypervisor-capable IoT SIM or tag found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Delete Connectivity Hypervisor-capable IoT SIM tag
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs delete-tag
+  /euiccs/profile_types:
+    get:
+      description: |
+        Returns the profile types and configuration information for Connectivity Hypervisor-capable IoT SIMs that are available to the current operator. The response includes profile type identifiers, localized display names and descriptions, SMS and voice call support, and whether bundle selection is required when ordering. If selectable bundles are available, the response also includes the list of bundles.
+      operationId: listEuiccProfileTypes
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EuiccProfileTypeConfig'
+                type: array
+          description: A list of profile types and configuration available to the
+            current operator for Connectivity Hypervisor-capable IoT SIMs.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List available profile types for Connectivity Hypervisor-capable IoT
+        SIMs
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile-types list
   /event_handlers:
     get:
       description: Returns a list of event handlers.
@@ -4720,7 +5271,32 @@ paths:
                     format: iso-8601
                     type: jsonpointer
                     value: /time
-              (8) Enabling session status rule (SoracomAir):
+              (8) Enabling Harvest Data (SoracomHarvest):
+                description: |
+                  When [enabling Harvest Data](/en/docs/harvest/configuration/#harvest-data), note the following:
+
+                  - Specify `SoracomHarvest` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, refer to [Advanced Configuration](/en/docs/harvest/configuration/#advanced-configuration).
+                value:
+                - key: enabled
+                  value: true
+                - key: category
+                  value:
+                    enabled: true
+                    type: static
+                    value: myCategory
+                - key: useSoracomBinaryFormat
+                  value: false
+              (9) Disabling Harvest Data (SoracomHarvest):
+                description: |
+                  When [disabling Harvest Data](/en/docs/harvest/configuration/#harvest-data), note the following:
+
+                  - Specify `SoracomHarvest` for the `namespace` path parameter.
+                  - For more information about the `key` and `value` pairs, refer to [Advanced Configuration](/en/docs/harvest/configuration/#advanced-configuration).
+                value:
+                - key: enabled
+                  value: false
+              (10) Enabling session status rule (SoracomAir):
                 description: |
                   When enabling the session status rule in Event Handler, note the following:
 
@@ -9886,6 +10462,8 @@ paths:
             - `status`
             - `subscription`
             - `module_type`
+            - `active_profile_id`
+            - `imei`
         - Each search value must be at least 2 characters long. When using a comma `,` to specify multiple search values, each value must also be at least 2 characters long (e.g., `ab,c` is invalid because `c` is only 1 character long).
         - When multiple query parameters are specified, the search type (AND search or OR search) can be specified using `search_type`.
 
@@ -10088,6 +10666,38 @@ paths:
           items:
             type: string
           type: array
+      - description: Active profile ID of the IoT SIM to search. Supports partial
+          matching (e.g., specifying `0001234` matches `8981100001234567890`). Useful
+          for finding IoT SIMs whose active profile matches a specific identifier
+          (e.g., a SORACOM profile ID prefix).
+        explode: true
+        in: query
+        name: active_profile_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IMEI of the device on the IoT SIM's current session. Supports
+          partial matching (e.g., specifying `45678` matches `123456789012345`).
+        explode: true
+        in: query
+        name: imei
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters IoT SIMs by whether they have a secondary subscriber that is still being added via the [Sim:addSubscription API](#/Sim/addSubscription) (i.e., the addition has not yet completed).
+
+          - `true`: returns only IoT SIMs that have a secondary subscriber being added.
+          - `false`: returns only IoT SIMs that do not have any secondary subscriber being added.
+        in: query
+        name: subscribers_in_transit
+        required: false
+        schema:
+          type: boolean
       - description: The maximum number of items to retrieve.
         in: query
         name: limit
@@ -11092,6 +11702,394 @@ paths:
       - SimProfileOrder
       x-soracom-cli:
       - sim-profile-orders list-profiles
+  /sim_transfer_requests:
+    get:
+      description: |
+        Retrieve all transfer requests for the authenticated operator. Returns both outgoing requests (operator is source, including drafts) and incoming requests (operator is destination, non-draft only). Results are sorted by transfer request ID (chronological order due to UUIDv7).
+      operationId: listTransferRequests
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransferRequestsResponse'
+          description: Successfully retrieved transfer requests.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List transfer requests
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests list
+    post:
+      description: |
+        Create a new transfer request in `DRAFT` status. The request can be created with an empty SIM list and populated later. Draft requests have a TTL of 90 days from creation. When `destinationOperatorId` is provided, `destinationOperatorEmail` is required for verification.
+      operationId: createTransferRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransferRequestRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: Transfer request created. Returns the created transfer request.
+        "400":
+          description: Invalid input parameters.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Create a draft transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests create
+  /sim_transfer_requests/{transfer_request_id}:
+    delete:
+      description: |
+        Delete an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Implemented as a soft delete (sets TTL to the current time, allowing DynamoDB TTL to clean up).
+      operationId: deleteTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Transfer request deleted successfully.
+        "400":
+          description: Request is not in `DRAFT` or `DRAFT_VALIDATION_FAILED` status.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Delete a draft transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests delete
+    get:
+      description: |
+        Retrieve a specific transfer request by its ID. Available to both source and destination operators. Destination operators can only see non-draft requests.
+      operationId: getTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: Transfer request details returned successfully.
+        "404":
+          description: Transfer request not found or not authorized.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Get a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests get
+    patch:
+      description: |
+        Update an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Can modify destination operator, destination email, and name. All fields are optional; only provided fields will be updated. When `destinationOperatorId` is provided, `destinationOperatorEmail` is required. Updates refresh the TTL to 90 days.
+      operationId: updateTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTransferRequestRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: Transfer request updated successfully.
+        "400":
+          description: Invalid input, or request is not in `DRAFT`/`DRAFT_VALIDATION_FAILED`
+            status.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Update a draft transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests update
+  /sim_transfer_requests/{transfer_request_id}/cancel:
+    put:
+      description: |
+        Cancel a transfer request in `REQUESTING` status. Only available to the source operator. Notifies the destination operator of the cancellation.
+      operationId: cancelTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Transfer request cancelled. Status changed to `CANCELLED`.
+        "400":
+          description: Request is not in `REQUESTING` status.
+        "404":
+          description: Transfer request not found.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Cancel a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests cancel
+  /sim_transfer_requests/{transfer_request_id}/reject:
+    put:
+      description: |
+        Reject a transfer request in `REQUESTING` status. Only available to the destination operator. Notifies the source operator of the rejection.
+      operationId: rejectTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Transfer request rejected. Status changed to `REJECTED`.
+        "400":
+          description: Request is not in `REQUESTING` status.
+        "404":
+          description: Transfer request not found.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Reject a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests reject
+  /sim_transfer_requests/{transfer_request_id}/request:
+    put:
+      description: |
+        Submit a `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request for processing. Runs synchronous precondition checks, then transitions the status to `DRAFT_VALIDATING` and performs asynchronous SIM validation. If all SIMs pass validation, the status transitions to `REQUESTING` and notification emails are sent. The destination operator must be set before submitting.
+      operationId: submitTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "202":
+          description: Transfer request submitted for asynchronous validation.
+        "400":
+          description: Invalid status, missing destination, empty SIM list, or operator
+            validation failed.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Submit a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests submit
+  /sim_transfer_requests/{transfer_request_id}/sims:
+    delete:
+      description: |
+        Remove SIMs from an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. The operation is idempotent: SIM IDs that are not part of the request are ignored. This operation returns no response body.
+      operationId: removeSimsFromTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveSimsFromTransferRequestRequest'
+        required: true
+      responses:
+        "204":
+          description: SIMs removed successfully. No response body is returned.
+        "400":
+          description: Request is not in `DRAFT` or `DRAFT_VALIDATION_FAILED` status.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Remove SIMs from a draft transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests remove-sims
+    get:
+      description: |
+        List SIMs in a transfer request with pagination. When accessed by the source operator, the response includes enriched SIM data (`name`, `groupId`). When accessed by the destination operator, only `simId` and `errorCode` are returned. Invalid SIMs (those with error codes) are sorted first.
+      operationId: listTransferRequestSims
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      - description: Maximum number of SIMs to retrieve per page.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          type: integer
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequestSimsResponse'
+          description: Returned a paginated list of SIMs.
+        "404":
+          description: Transfer request not found or not authorized.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List SIMs in a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests list-sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        Add SIMs to an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Validates that the total SIM count does not exceed the limit (default 1,000). SIMs are stored without per-SIM validation; validation runs when the request is submitted, and any per-SIM errors are then surfaced by `GET /sim_transfer_requests/{transfer_request_id}/sims`. This operation returns no response body.
+      operationId: addSimsToTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSimsToTransferRequestRequest'
+        required: true
+      responses:
+        "204":
+          description: SIMs added successfully. No response body is returned.
+        "400":
+          description: Request is not in `DRAFT`/`DRAFT_VALIDATION_FAILED` status,
+            or the SIM limit was exceeded.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Add SIMs to a draft transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests add-sims
+  /sim_transfer_requests/{transfer_request_id}/transfer:
+    put:
+      description: |
+        Approve and execute a transfer request in `REQUESTING` status. Only available to the destination operator. Validates payment method, group, and operator compatibility before initiating the asynchronous transfer. On approval the status transitions to `TRANSFERRING`. If the approval occurs during the monthly transfer-restriction period (15:00 UTC two days before the last day of each month through 15:00 UTC on the 2nd of the following month — for July 2026, `2026-07-29T15:00:00Z` through `2026-08-02T15:00:00Z`), the status transition is persisted but the SIM transfer is deferred: a downstream scheduler submits the transfer after the restriction period ends. The request remains in `TRANSFERRING` status throughout.
+      operationId: executeTransferRequest
+      parameters:
+      - description: The ID of the transfer request.
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteTransferRequestRequest'
+        required: true
+      responses:
+        "202":
+          description: Accepted. The transfer has started, or has been deferred if
+            approved during the month-boundary restriction period (the request stays
+            in `TRANSFERRING` status until a downstream scheduler submits the transfer).
+        "400":
+          description: Request is not in `REQUESTING` status, invalid payment method,
+            invalid group, or operator validation failed.
+        "404":
+          description: Transfer request not found or not authorized.
+        "409":
+          description: Concurrent modification conflict (version mismatch).
+      security:
+      - api_key: []
+        api_token: []
+      summary: Execute a transfer request
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests execute
   /sims:
     get:
       description: |
@@ -11221,6 +12219,67 @@ paths:
       - Sim
       x-soracom-cli:
       - sims activate
+  /sims/{sim_id}/bundles:
+    put:
+      description: Sets the bundles for the IoT SIM. The specified bundles replace
+        the existing bundles of the IoT SIM.
+      operationId: putSimBundles
+      parameters:
+      - description: SIM ID of the target IoT SIM.
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+            - D-500MB
+            schema:
+              items:
+                enum:
+                - D-500MB
+                - DU-10GB
+                - DU-50GB
+                - DU-100GB
+                - US-1MB
+                - US-3MB
+                - US-10MB
+                - US-20MB
+                - US-50MB
+                - US-100MB
+                - US-300MB
+                - US-500MB
+                - US-1GB
+                - US-3GB
+                - US-5GB
+                - US-10GB
+                type: string
+              type: array
+        description: A list of bundle names to set for the IoT SIM.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
+          description: The bundles for the IoT SIM have been set successfully.
+        "400":
+          description: The specified bundle and subscription combination is not supported.
+        "404":
+          description: No such IoT SIM found.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Set bundles for an IoT SIM
+      tags:
+      - Sim
+      x-sam-operationId: putBundles
+      x-soracom-cli:
+      - sims put-bundles
   /sims/{sim_id}/credentials/arc:
     delete:
       deprecated: true
@@ -12214,6 +13273,8 @@ paths:
                     Name of the secondary subscription to be added. The available additional subscriptions depend on the primary subscription of the IoT SIM.
                     - When the primary subscription is `plan01s`:
                       - `planP1`, `planX1`, `planX2`, `planX3`, `plan-US-max`: Additional Subscription
+                    - When the primary subscription is `planP1`:
+                      - `planX1`, `planX3`: Additional Subscription
                     - `planArc01`: Virtual SIM/Subscriber (available regardless of the primary subscription)
                   enum:
                   - planP1
@@ -12252,7 +13313,8 @@ paths:
           description: The updated SIM profile
         "400":
           description: You specified a subscription that cannot be added. For example,
-            `planP1` cannot be added to an IoT SIM whose primary subscription is plan-D.
+            `planP1` cannot be added to an IoT SIM whose primary subscription is plan-D
+            or planP1.
         "404":
           description: No such IoT SIM with the specified SIM ID and ICCID found.
       security:
@@ -13051,6 +14113,7 @@ paths:
                 name: My ATOM Cam 2
                 powerState: "on"
                 productDisplayName: ATOM Cam 2
+                ssid: Office Wi-Fi
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamDevice'
@@ -13126,6 +14189,7 @@ paths:
                 name: My ATOM Cam 2
                 powerState: "on"
                 productDisplayName: ATOM Cam 2
+                ssid: Office Wi-Fi
               schema:
                 $ref: '#/components/schemas/SoraCamDevice'
           description: OK.
@@ -19915,7 +20979,10 @@ paths:
       - vpg terminate
   /virtual_private_gateways/{vpg_id}/traffic_filtering/disable:
     post:
-      description: Disables the Traffic Filtering feature on the specified VPG.
+      description: |
+        Disables the Traffic Filtering feature on the specified VPG.
+
+        **Warning**: Running this API temporarily interrupts all traffic that passes through the target VPG while the settings are applied.
       operationId: disableTrafficFiltering
       parameters:
       - description: Target VPG ID.
@@ -19941,8 +21008,10 @@ paths:
       - vpg disable-traffic-filtering
   /virtual_private_gateways/{vpg_id}/traffic_filtering/enable:
     post:
-      description: Enables the Traffic Filtering feature on the specified VPG. The
-        VPG type must support Traffic Filtering.
+      description: |
+        Enables the Traffic Filtering feature on the specified VPG. The VPG type must support Traffic Filtering.
+
+        **Warning**: Running this API temporarily interrupts all traffic that passes through the target VPG while the settings are applied.
       operationId: enableTrafficFiltering
       parameters:
       - description: Target VPG ID.
@@ -19970,8 +21039,12 @@ paths:
       - vpg enable-traffic-filtering
   /virtual_private_gateways/{vpg_id}/traffic_filtering/fqdn_rules:
     put:
-      description: Replaces the domain (FQDN) rules of the specified VPG with the
-        rules in the request. Existing IP rules are retained.
+      description: |
+        Replaces the domain (FQDN) rules of the specified VPG with the rules in the request. Existing IP rules are retained. If the domain rules are set to an empty list, no domain-based filtering is applied.
+
+        **Warning**: The settings changed by this API are applied the next time an IoT SIM or Virtual SIM/Subscriber establishes a session. To apply the settings, re-establish the session for the IoT SIM or Virtual SIM/Subscriber.
+
+        **Warning**: If the saved IP rules are empty, only traffic destined for `100.64.0.0/10` is allowed, and all other device-originated (uplink) traffic is denied.
       operationId: putFqdnFilterRules
       parameters:
       - description: Target VPG ID.
@@ -19989,7 +21062,12 @@ paths:
         required: true
       responses:
         "200":
-          description: The domain rules have been updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFqdnFilterRulesResponse'
+          description: The domain rules have been updated. The response contains the
+            set of domain rules saved after the update.
         "400":
           description: One or more rules are invalid.
         "403":
@@ -20006,8 +21084,12 @@ paths:
       - vpg put-fqdn-filter-rules
   /virtual_private_gateways/{vpg_id}/traffic_filtering/uplink_rules:
     put:
-      description: Replaces the IP rules (IP filtering) of the specified VPG with
-        the rules in the request. Existing domain rules are retained.
+      description: |
+        Replaces the IP rules (IP filtering) of the specified VPG with the rules in the request. Existing domain rules are retained.
+
+        **Warning**: The settings changed by this API are applied the next time an IoT SIM or Virtual SIM/Subscriber establishes a session. To apply the settings, re-establish the session for the IoT SIM or Virtual SIM/Subscriber.
+
+        **Warning**: If the saved IP rules are empty, only traffic destined for `100.64.0.0/10` is allowed, and all other device-originated (uplink) traffic is denied.
       operationId: putUplinkFilterRules
       parameters:
       - description: Target VPG ID.
@@ -20025,7 +21107,12 @@ paths:
         required: true
       responses:
         "200":
-          description: The IP rules have been updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUplinkFilterRulesResponse'
+          description: The IP rules have been updated. The response contains the set
+            of IP rules saved after the update.
         "400":
           description: One or more rules are invalid.
         "403":
@@ -20822,6 +21909,20 @@ components:
       required:
       - executionDateTimeConst
       type: object
+    AddSimsToTransferRequestRequest:
+      description: Represents a request to add SIMs to a draft transfer request.
+      properties:
+        simIds:
+          description: The IDs of the SIMs to add to the transfer request.
+          example:
+          - "89000010997093035700"
+          - "89000010998833363600"
+          items:
+            type: string
+          type: array
+      required:
+      - simIds
+      type: object
     AirAggregatedStatsResponse:
       properties:
         downloadByteSizeTotal:
@@ -20852,8 +21953,6 @@ components:
           format: int64
           type: integer
       type: object
-    AnalysisPlanQueryType:
-      description: The type of the Analysis query plan.
     ArcCredentialAttachRequest:
       properties:
         arcClientPeerPublicKey:
@@ -21672,10 +22771,17 @@ components:
           description: Order item list.
           items:
             $ref: '#/components/schemas/OrderItemModel'
+          minItems: 1
           type: array
         preferredDeliveryDate:
           description: Preferred delivery date.
           format: yyyyMMdd
+          type: string
+        purchaseOrderNumber:
+          description: An optional PO/reference number printed on the invoice and
+            delivery statement. Avoid using `#` in the value, as some values containing
+            it will be rejected.
+          maxLength: 20
           type: string
         shippingAddressId:
           description: Shipping address ID.
@@ -21687,6 +22793,9 @@ components:
             - $ref: '#/components/schemas/ShippingOptionOfNekopos'
             - $ref: '#/components/schemas/ShippingOptionOfExpeditedShipping'
           type: array
+      required:
+      - orderItemList
+      - shippingAddressId
       type: object
     CreateEstimatedVolumeDiscountRequest:
       properties:
@@ -21967,6 +23076,25 @@ components:
           type: string
       required:
       - soraletId
+      type: object
+    CreateTransferRequestRequest:
+      description: Represents a request to create a draft SIM transfer request.
+      properties:
+        destinationOperatorEmail:
+          description: The email address of the destination operator. Required when
+            `destinationOperatorId` is provided.
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: The ID of the destination operator. Optional at creation time;
+            it can be set later via update.
+          example: OP0987654321
+          type: string
+        name:
+          description: The name of the transfer request.
+          example: EU regional division
+          type: string
       type: object
     CreateTransitGatewayPeeringConnectionRequest:
       properties:
@@ -22408,6 +23536,48 @@ components:
           description: Whether the ping was succeeded or not
           type: boolean
       type: object
+    EIMStatus:
+      description: eIM status information.
+      properties:
+        eid:
+          description: The EID of the eUICC.
+          type: string
+        enabledIccid:
+          description: The ICCID of the enabled profile.
+          type: string
+        fallbackIccid:
+          description: The ICCID of the fallback profile.
+          type: string
+        operatorId:
+          description: The operator ID.
+          type: string
+        pollingHistory:
+          description: List of polling timestamps in RFC3339 format (e.g., ["2023-01-01T00:00:00Z",
+            "2023-01-01T01:00:00Z"]).
+          items:
+            format: date-time
+            type: string
+          type: array
+        pollingInterval:
+          description: The polling interval.
+          type: integer
+        pollingTimeUnit:
+          description: The time unit for the polling interval.
+          enum:
+          - minutes
+          - hours
+          - days
+          type: string
+        simId:
+          description: The SIM ID.
+          type: string
+        smdpAddress:
+          description: The SM-DP+ address.
+          type: string
+        smdsAddress:
+          description: The SM-DS address.
+          type: string
+      type: object
     EmailConfigurationOfBilling:
       properties:
         attachInvoicePdfEnabled:
@@ -22556,7 +23726,8 @@ components:
           format: yyyyMMdd
           type: string
         purchaseOrderNumber:
-          description: Purchase order number.
+          description: An optional PO/reference number printed on the invoice and
+            delivery statement.
           type: string
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
@@ -22609,6 +23780,330 @@ components:
           type: number
         volumeDiscount:
           $ref: '#/components/schemas/VolumeDiscountModel'
+      type: object
+    Euicc:
+      description: Connectivity Hypervisor-capable IoT SIM object containing IoT SIM
+        information and profiles.
+      properties:
+        activeProfileId:
+          description: The ID of the currently active profile.
+          type: string
+        createdAt:
+          description: The creation date and time of the Connectivity Hypervisor-capable
+            IoT SIM. RFC3339 format (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+        moduleType:
+          description: The module type of the Connectivity Hypervisor-capable IoT
+            SIM.
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - integrated
+          type: string
+        operatorId:
+          description: The operator ID that owns the Connectivity Hypervisor-capable
+            IoT SIM.
+          type: string
+        profiles:
+          additionalProperties:
+            $ref: '#/components/schemas/EuiccProfile'
+          description: A map of profiles associated with the Connectivity Hypervisor-capable
+            IoT SIM.
+          type: object
+        simId:
+          description: The unique identifier of the Connectivity Hypervisor-capable
+            IoT SIM.
+          type: string
+        simStatus:
+          $ref: '#/components/schemas/EuiccStatus'
+        tags:
+          $ref: '#/components/schemas/TagSet'
+        updatedAt:
+          description: The update date and time of the Connectivity Hypervisor-capable
+            IoT SIM. RFC3339 format (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+      required:
+      - simId
+      - operatorId
+      - moduleType
+      - profiles
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfile:
+      description: Profile information for a Connectivity Hypervisor-capable IoT SIM.
+      properties:
+        createdAt:
+          description: The creation date and time of the profile. RFC3339 format (e.g.,
+            2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+        deletable:
+          default: true
+          description: Whether the profile is deletable.
+          type: boolean
+        downloaded:
+          description: Whether the profile has been downloaded.
+          type: boolean
+        iccid:
+          description: The ICCID of the profile.
+          type: string
+        isDefaultProfile:
+          description: Whether this profile is the default profile for the Connectivity
+            Hypervisor-capable IoT SIM. Default profiles are preinstalled profiles.
+          type: boolean
+        profileOperationInFlight:
+          $ref: '#/components/schemas/EuiccProfileOperation'
+        profileSource:
+          $ref: '#/components/schemas/EuiccProfileSource'
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+        simId:
+          description: The SIM ID associated with this profile.
+          type: string
+        soracomPlatformIntegrationLevel:
+          description: The SORACOM integration level. Possible values are `full`,
+            `partial`, `minimal`.
+          enum:
+          - full
+          - partial
+          - minimal
+          type: string
+        subscribers:
+          additionalProperties:
+            $ref: '#/components/schemas/EuiccSubscriber'
+          description: Subscriber information for this profile.
+          type: object
+        updatedAt:
+          description: The update date and time of the profile. RFC3339 format (e.g.,
+            2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+      required:
+      - iccid
+      - simId
+      - profileType
+      - soracomPlatformIntegrationLevel
+      - isDefaultProfile
+      - profileSource
+      - downloaded
+      - deletable
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfileBundle:
+      description: A bundle that can be selected when ordering a profile for a Connectivity
+        Hypervisor-capable IoT SIM.
+      properties:
+        bundleName:
+          description: |
+            The name of the bundle (for example, `X3-5MB`).
+          type: string
+        displayName:
+          $ref: '#/components/schemas/LocalizedText'
+      required:
+      - bundleName
+      - displayName
+      type: object
+    EuiccProfileOperation:
+      description: Profile-related operation for a Connectivity Hypervisor-capable
+        IoT SIM.
+      properties:
+        createdAt:
+          description: The timestamp when the operation was created. RFC3339 format
+            (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+        operatorId:
+          description: The operator ID associated with the operation.
+          type: string
+        profileOperationId:
+          description: Profile-related operation ID.
+          type: string
+        simId:
+          description: The SIM ID associated with the operation.
+          type: string
+        status:
+          $ref: '#/components/schemas/EuiccProfileOperationStatus'
+        targetIccid:
+          description: The ICCID of the target profile for the operation.
+          type: string
+        type:
+          $ref: '#/components/schemas/EuiccProfileOperationType'
+        updatedAt:
+          description: The timestamp when the operation was last updated. RFC3339
+            format (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+      required:
+      - profileOperationId
+      - simId
+      - operatorId
+      - type
+      - status
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfileOperationStatus:
+      description: The status of profile-related operation for a Connectivity Hypervisor-capable
+        IoT SIM.
+      enum:
+      - requested
+      - pending
+      - succeeded
+      - failed
+      - cancelled
+      type: string
+    EuiccProfileOperationType:
+      description: The type of profile-related operation for a Connectivity Hypervisor-capable
+        IoT SIM.
+      enum:
+      - order_profile
+      - download_profile
+      - activate_profile
+      - delete_profile
+      type: string
+    EuiccProfileOrderRequest:
+      description: Request body for ordering a profile.
+      properties:
+        bundles:
+          description: List of bundles to associate with the profile.
+          items:
+            type: string
+          type: array
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+      required:
+      - profileType
+      type: object
+    EuiccProfileSource:
+      description: |
+        Indicates how the profile was obtained. Possible values are as follows:
+
+        - `preinstalled`: A profile preinstalled on a Connectivity Hypervisor-capable IoT SIM.
+        - `esim_profile_order`: A profile ordered with the [Euicc:orderEuiccProfile API](#/Euicc/orderEuiccProfile).
+        - `activation_code`: A profile downloaded by specifying an activation code with the [Euicc:downloadEuiccProfileViaActivationCode API](#/Euicc/downloadEuiccProfileViaActivationCode).
+      enum:
+      - preinstalled
+      - esim_profile_order
+      - activation_code
+      type: string
+    EuiccProfileType:
+      description: |
+        The profile type identifier for a Connectivity Hypervisor-capable IoT SIM (for example, `SGEPR31` or `Unmanaged`). For profiles provided by SORACOM, this is the profile product code. You can check the values available to the operator, display names, descriptions, and selectable bundles with the [Euicc:listEuiccProfileTypes API](#/Euicc/listEuiccProfileTypes).
+
+        Main values are as follows:
+
+        - `SGEPR31`: Product code for a SORACOM profile that includes `planX1`.
+        - `SGEPR33`: Product code for a SORACOM profile that includes `plan01s`.
+        - `SGEPR37`: Product code for a SORACOM profile that includes `planX2`.
+        - `SGEPR38`: Product code for a SORACOM profile that includes `planX3`.
+        - `SGEPR39`: Product code for a SORACOM profile that includes `plan-US`.
+        - `Unmanaged`: A value that represents a profile not managed by SORACOM.
+      type: string
+    EuiccProfileTypeConfig:
+      description: Configuration for a profile type available to the current operator
+        for Connectivity Hypervisor-capable IoT SIMs, including localized display
+        information and selectable bundles.
+      properties:
+        availableBundles:
+          description: The list of bundles that can be selected when ordering this
+            profile. The array order represents the display order.
+          items:
+            $ref: '#/components/schemas/EuiccProfileBundle'
+          type: array
+        bundleRequired:
+          description: Whether selecting a bundle is required when ordering this profile.
+          type: boolean
+        description:
+          $ref: '#/components/schemas/LocalizedText'
+        displayName:
+          $ref: '#/components/schemas/LocalizedText'
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+        smsSupport:
+          description: Indicates SMS capability for this profile type.
+          type: boolean
+        voiceCallSupport:
+          description: Indicates voice call capability for this profile type.
+          type: boolean
+      required:
+      - profileType
+      - displayName
+      - description
+      - smsSupport
+      - voiceCallSupport
+      - bundleRequired
+      type: object
+    EuiccStatus:
+      description: Status information for a Connectivity Hypervisor-capable IoT SIM,
+        including session and eIM status.
+      properties:
+        eimStatus:
+          $ref: '#/components/schemas/EIMStatus'
+        sessionEvents:
+          description: List of session events.
+          items:
+            $ref: '#/components/schemas/SessionEvent'
+          type: array
+        sessionStatus:
+          $ref: '#/components/schemas/SessionStatus'
+      required:
+      - sessionStatus
+      - sessionEvents
+      - eimStatus
+      type: object
+    EuiccSubscriber:
+      description: Subscriber information.
+      properties:
+        bundles:
+          description: List of bundles associated with the subscriber.
+          items:
+            type: string
+          type: array
+        capabilities:
+          $ref: '#/components/schemas/Capabilities'
+        createdAt:
+          description: The creation date and time of the subscriber. RFC3339 format
+            (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+        imsi:
+          description: The IMSI of the subscriber.
+          type: string
+        msisdn:
+          description: The MSISDN (phone number) of the subscriber.
+          type: string
+        status:
+          description: The status of the subscriber.
+          enum:
+          - shipped
+          - delivered
+          - ready
+          - active
+          - terminated
+          type: string
+        subscription:
+          description: The subscription type.
+          type: string
+        updatedAt:
+          description: The update date and time of the subscriber. RFC3339 format
+            (e.g., 2023-01-01T00:00:00Z).
+          format: date-time
+          type: string
+      required:
+      - imsi
+      - status
+      - capabilities
+      - msisdn
+      - subscription
+      - createdAt
+      - updatedAt
       type: object
     EventHandlerModel:
       properties:
@@ -22686,6 +24181,15 @@ components:
         resultCode:
           format: int32
           type: integer
+      type: object
+    ExecuteTransferRequestRequest:
+      description: Represents a request to approve and execute a transfer request.
+      properties:
+        destinationGroupId:
+          description: The ID of the group to assign the transferred SIMs to at the
+            destination operator. Optional.
+          example: 12345678-abcd-9012-efab-345678901234
+          type: string
       type: object
     ExpiryTime:
       properties:
@@ -22827,12 +24331,17 @@ components:
         fqdnPattern:
           description: Destination FQDN pattern (for example, `api.example.com`).
             A single leading wildcard label is allowed (for example, `*.example.com`).
-            Internationalized domain names are converted to Punycode.
+            Internationalized domain names are converted to Punycode. Up to 255 characters
+            after Punycode conversion.
+          maxLength: 255
           type: string
         fromPort:
-          default: 0
-          description: Start of the destination port range (0-65535). `0` means any
-            port.
+          description: |
+            Lower bound of the match condition. Its meaning depends on `protocol`:
+
+            - TCP (`6`) / UDP (`17`): start of the destination port range (0-65535). To match any port, omit both `fromPort` and `toPort`.
+            - ICMP (`1`): ICMP type. Note that `0` does not mean "any"; for example, type `0` is Echo Reply.
+            - Protocols that do not use ports (for example, ALL (`255`)): omit both `fromPort` and `toPort`, or set `fromPort` to `0` and `toPort` to `65535`.
           maximum: 65535
           minimum: 0
           type: integer
@@ -22843,9 +24352,12 @@ components:
           minimum: 0
           type: integer
         toPort:
-          default: 0
-          description: End of the destination port range (0-65535). Must be greater
-            than or equal to `fromPort`. `0` means any port.
+          description: |
+            Upper bound of the match condition. Its meaning depends on `protocol`:
+
+            - TCP (`6`) / UDP (`17`): end of the destination port range (0-65535). Must be greater than or equal to `fromPort`. To match any port, omit both `fromPort` and `toPort`.
+            - ICMP (`1`): ICMP code. Note that `0` does not mean "any"; it is code `0`.
+            - Protocols that do not use ports (for example, ALL (`255`)): omit both `fromPort` and `toPort`, or set `fromPort` to `0` and `toPort` to `65535`.
           maximum: 65535
           minimum: 0
           type: integer
@@ -23611,7 +25123,8 @@ components:
           description: Preferred delivery date.
           type: string
         purchaseOrderNumber:
-          description: Purchase order number.
+          description: An optional PO/reference number printed on the invoice and
+            delivery statement.
           type: string
         resourceInitialSetting:
           $ref: '#/components/schemas/ResourceInitialSetting'
@@ -23635,7 +25148,9 @@ components:
             $ref: '#/components/schemas/ShippingLabelDetail'
           type: array
         shippingLabelNumber:
-          description: Shipping label number (representative).
+          deprecated: true
+          description: Shipping label number (representative). This field is deprecated.
+            Use `shippingLabelNumbers` instead.
           example: 0000-1111-2222
           type: string
         shippingLabelNumbers:
@@ -24341,6 +25856,17 @@ components:
             $ref: '#/components/schemas/GetShippingAddressResponse'
           type: array
       type: object
+    ListTransferRequestsResponse:
+      description: Represents a list of transfer requests.
+      properties:
+        transferRequests:
+          description: The list of transfer requests.
+          items:
+            $ref: '#/components/schemas/TransferRequestSummary'
+          type: array
+      required:
+      - transferRequests
+      type: object
     ListVolumeDiscountResponse:
       properties:
         volumeDiscountList:
@@ -24348,6 +25874,19 @@ components:
           items:
             $ref: '#/components/schemas/GetVolumeDiscountResponse'
           type: array
+      type: object
+    LocalizedText:
+      description: A text value with English and Japanese translations.
+      properties:
+        en:
+          description: The English text.
+          type: string
+        ja:
+          description: The Japanese text.
+          type: string
+      required:
+      - en
+      - ja
       type: object
     LocationRegistrationStatus:
       properties:
@@ -24780,7 +26319,11 @@ components:
         quantity:
           description: Quantity.
           format: int32
+          minimum: 1
           type: integer
+      required:
+      - productCode
+      - quantity
       type: object
     OrderedSimProfileResponse:
       description: Represents an eSIM profile ordered.
@@ -25275,6 +26818,10 @@ components:
         campaignCode:
           description: Campaign code.
           type: string
+        companyOnly:
+          description: If `true`, the product is limited to business accounts. If
+            `false` or omitted, this restriction does not apply.
+          type: boolean
         consignorId:
           description: Consignor ID.
           type: string
@@ -25335,6 +26882,10 @@ components:
           description: Regular price.
           format: double
           type: number
+        suspended:
+          description: If `true`, the product is suspended from sale and cannot be
+            purchased regardless of stock. If `false` or omitted, sales are not suspended.
+          type: boolean
         taxIncludedPrice:
           description: Tax Included price.
           format: double
@@ -25436,6 +26987,20 @@ components:
           $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
+      type: object
+    RemoveSimsFromTransferRequestRequest:
+      description: Represents a request to remove SIMs from a draft transfer request.
+      properties:
+        simIds:
+          description: The IDs of the SIMs to remove from the transfer request.
+          example:
+          - "89000010997093035700"
+          - "89000010998833363600"
+          items:
+            type: string
+          type: array
+      required:
+      - simIds
       type: object
     ResourceInitialSetting:
       description: Initial setting for the resource.
@@ -27612,6 +29177,10 @@ components:
         productDisplayName:
           description: Product name of the SoraCam compatible camera device.
           type: string
+        ssid:
+          description: SSID of the Wi-Fi network that the SoraCam compatible camera
+            device is connected to.
+          type: string
       required:
       - deviceId
       - name
@@ -28754,6 +30323,233 @@ components:
           format: int64
           type: integer
       type: object
+    TransferRequest:
+      description: Represents a SIM transfer request.
+      properties:
+        approvalDatetime:
+          description: The time the request was approved (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        cancelledDatetime:
+          description: The time the request was cancelled (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        createdDatetime:
+          description: The time the transfer request was created (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        destinationOperatorEmail:
+          description: The email address of the destination operator.
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: The ID of the destination operator (the operator receiving
+            the SIMs).
+          example: OP0987654321
+          type: string
+        name:
+          description: The name of the transfer request.
+          example: EU regional division
+          type: string
+        rejectedDatetime:
+          description: The time the request was rejected (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        requestValidationAttemptedDatetime:
+          description: The time validation was last attempted for the submitted request
+            (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        requestedForTransferDatetime:
+          description: The time the request was submitted for transfer (UNIX time
+            in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        simCount:
+          description: The number of SIMs in the transfer request.
+          example: 0
+          minimum: 0
+          type: integer
+        sourceOperatorId:
+          description: The ID of the source operator (the operator transferring SIMs
+            out).
+          example: OP0059150966
+          type: string
+        status:
+          description: |
+            The current status of the transfer request.
+
+            - `DRAFT`: The request is being prepared and has not been submitted.
+            - `DRAFT_VALIDATING`: Asynchronous SIM validation is in progress.
+            - `DRAFT_VALIDATION_FAILED`: Validation of the draft request failed and the draft can be modified and resubmitted.
+            - `REQUESTING`: The request has been submitted and is awaiting the destination operator's response.
+            - `REJECTED`: The request was rejected by the destination operator.
+            - `TRANSFERRING`: The transfer is in progress.
+            - `CANCELLED`: The request was cancelled by the source operator.
+            - `COMPLETED`: All SIMs have been transferred successfully.
+            - `PARTIALLY_COMPLETED`: Some SIMs were transferred successfully and others failed.
+            - `FAILED`: The transfer failed.
+          enum:
+          - DRAFT
+          - DRAFT_VALIDATING
+          - DRAFT_VALIDATION_FAILED
+          - REQUESTING
+          - REJECTED
+          - TRANSFERRING
+          - CANCELLED
+          - COMPLETED
+          - PARTIALLY_COMPLETED
+          - FAILED
+          example: DRAFT
+          type: string
+        transferRequestId:
+          description: The unique identifier of the transfer request.
+          example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
+          type: string
+        updatedDatetime:
+          description: The time the transfer request was last updated (UNIX time in
+            milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+      required:
+      - transferRequestId
+      - sourceOperatorId
+      - status
+      - simCount
+      - createdDatetime
+      - updatedDatetime
+      type: object
+    TransferRequestSim:
+      description: Represents a SIM included in a transfer request.
+      properties:
+        errorCode:
+          description: The error code, if the SIM is not valid for transfer.
+          example: SIM_ALREADY_IN_TRANSFER
+          type: string
+        groupId:
+          description: The ID of the group that the SIM belongs to. Only available
+            to the source operator.
+          example: 12345678-abcd-9012-efab-345678901234
+          type: string
+        name:
+          description: The name of the SIM. Only available to the source operator.
+          example: Fleet Vehicle A1
+          type: string
+        simId:
+          description: The ID of the SIM.
+          example: "89000010997093035700"
+          type: string
+      required:
+      - simId
+      type: object
+    TransferRequestSimsResponse:
+      description: Represents a paginated list of SIMs in a transfer request.
+      properties:
+        sims:
+          description: The list of SIMs in the transfer request.
+          items:
+            $ref: '#/components/schemas/TransferRequestSim'
+          type: array
+      required:
+      - sims
+      type: object
+    TransferRequestSummary:
+      description: Represents a summary of a SIM transfer request in a list.
+      properties:
+        createdDatetime:
+          description: The time the transfer request was created (UNIX time in milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+        destinationOperatorEmail:
+          description: The email address of the destination operator.
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: The ID of the destination operator (the operator receiving
+            the SIMs).
+          example: OP0987654321
+          type: string
+        name:
+          description: The name of the transfer request.
+          example: EU regional division
+          type: string
+        simCount:
+          description: The number of SIMs in the transfer request.
+          example: 0
+          minimum: 0
+          type: integer
+        sourceOperatorId:
+          description: The ID of the source operator (the operator transferring SIMs
+            out).
+          example: OP0059150966
+          type: string
+        status:
+          description: |
+            The current status of the transfer request.
+
+            - `DRAFT`: The request is being prepared and has not been submitted.
+            - `DRAFT_VALIDATING`: Asynchronous SIM validation is in progress.
+            - `DRAFT_VALIDATION_FAILED`: Validation of the draft request failed and the draft can be modified and resubmitted.
+            - `REQUESTING`: The request has been submitted and is awaiting the destination operator's response.
+            - `REJECTED`: The request was rejected by the destination operator.
+            - `TRANSFERRING`: The transfer is in progress.
+            - `CANCELLED`: The request was cancelled by the source operator.
+            - `COMPLETED`: All SIMs have been transferred successfully.
+            - `PARTIALLY_COMPLETED`: Some SIMs were transferred successfully and others failed.
+            - `FAILED`: The transfer failed.
+          enum:
+          - DRAFT
+          - DRAFT_VALIDATING
+          - DRAFT_VALIDATION_FAILED
+          - REQUESTING
+          - REJECTED
+          - TRANSFERRING
+          - CANCELLED
+          - COMPLETED
+          - PARTIALLY_COMPLETED
+          - FAILED
+          example: DRAFT
+          type: string
+        transferRequestId:
+          description: The unique identifier of the transfer request.
+          example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
+          type: string
+        type:
+          description: |
+            The type of the transfer request relative to the authenticated operator.
+
+            - `OUTGOING`: The authenticated operator is the source of the transfer.
+            - `INCOMING`: The authenticated operator is the destination of the transfer.
+          enum:
+          - INCOMING
+          - OUTGOING
+          example: OUTGOING
+          type: string
+        updatedDatetime:
+          description: The time the transfer request was last updated (UNIX time in
+            milliseconds).
+          example: 1735112937412
+          format: int64
+          type: integer
+      required:
+      - transferRequestId
+      - sourceOperatorId
+      - status
+      - simCount
+      - type
+      - createdDatetime
+      - updatedDatetime
+      type: object
     TransitGatewayAttachment:
       properties:
         destinationCidrBlocks:
@@ -28855,10 +30651,6 @@ components:
           - failed
           type: string
       type: object
-    UpdateAnalysisPlanQueryRequest:
-      properties:
-        plan:
-          description: The type of the Analysis query plan.
     UpdateBatchGroupRequest:
       properties:
         batchGroupName:
@@ -28892,7 +30684,27 @@ components:
       properties:
         rules:
           description: The complete set of domain rules to apply. The existing rules
-            are entirely replaced by this list.
+            are entirely replaced by this list. Up to 500 rules can be specified.
+          items:
+            $ref: '#/components/schemas/FqdnFilterRule'
+          maxItems: 500
+          type: array
+      required:
+      - rules
+      type: object
+    UpdateFqdnFilterRulesResponse:
+      description: The set of domain (FQDN) rules saved on a VPG after the update.
+      example:
+        rules:
+        - action: allow
+          fqdnPattern: '*.example.com'
+          fromPort: 443
+          protocol: 6
+          toPort: 443
+          type: fqdn
+      properties:
+        rules:
+          description: The set of domain rules saved after the update.
           items:
             $ref: '#/components/schemas/FqdnFilterRule'
           type: array
@@ -28951,12 +30763,63 @@ components:
       required:
       - speedClass
       type: object
+    UpdateTransferRequestRequest:
+      description: Represents a request to update a draft SIM transfer request. All
+        fields are optional; only provided fields are updated.
+      properties:
+        destinationOperatorEmail:
+          description: The email address of the destination operator. Required when
+            `destinationOperatorId` is provided.
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: The ID of the destination operator.
+          example: OP0987654321
+          type: string
+        name:
+          description: The name of the transfer request.
+          example: EU regional division
+          type: string
+      type: object
     UpdateUplinkFilterRulesRequest:
       description: Request to replace the IP rules (IP filtering) of a VPG.
       properties:
         rules:
           description: The complete set of IP rules to apply. The existing rules are
-            entirely replaced by this list.
+            entirely replaced by this list. Up to 500 rules can be specified.
+          items:
+            $ref: '#/components/schemas/UplinkFilterRule'
+          maxItems: 500
+          type: array
+      required:
+      - rules
+      type: object
+    UpdateUplinkFilterRulesResponse:
+      description: The set of IP rules (IP filtering) saved on a VPG after the update.
+      example:
+        rules:
+        - action: deny
+          cidr: 0.0.0.0/0
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+        - action: allow
+          cidr: 8.8.8.8/32
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+        - action: allow
+          cidr: 1.1.1.1/32
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+      properties:
+        rules:
+          description: The set of IP rules saved after the update.
           items:
             $ref: '#/components/schemas/UplinkFilterRule'
           type: array
@@ -28999,9 +30862,12 @@ components:
             IPv6 is not supported.
           type: string
         fromPort:
-          default: 0
-          description: Start of the destination port range (0-65535). `0` means any
-            port.
+          description: |
+            Lower bound of the match condition. Its meaning depends on `protocol`:
+
+            - TCP (`6`) / UDP (`17`): start of the destination port range (0-65535). To match any port, omit both `fromPort` and `toPort`.
+            - ICMP (`1`): ICMP type. Note that `0` does not mean "any"; for example, type `0` is Echo Reply.
+            - Protocols that do not use ports (for example, ALL (`255`)): omit both `fromPort` and `toPort`, or set `fromPort` to `0` and `toPort` to `65535`.
           maximum: 65535
           minimum: 0
           type: integer
@@ -29012,9 +30878,12 @@ components:
           minimum: 0
           type: integer
         toPort:
-          default: 0
-          description: End of the destination port range (0-65535). Must be greater
-            than or equal to `fromPort`. `0` means any port.
+          description: |
+            Upper bound of the match condition. Its meaning depends on `protocol`:
+
+            - TCP (`6`) / UDP (`17`): end of the destination port range (0-65535). Must be greater than or equal to `fromPort`. To match any port, omit both `fromPort` and `toPort`.
+            - ICMP (`1`): ICMP code. Note that `0` does not mean "any"; it is code `0`.
+            - Protocols that do not use ports (for example, ALL (`255`)): omit both `fromPort` and `toPort`, or set `fromPort` to `0` and `toPort` to `65535`.
           maximum: 65535
           minimum: 0
           type: integer
@@ -29483,6 +31352,10 @@ tags:
   name: Sim
 - description: '[eSIM profiles](/en/docs/air/esim-profiles/)'
   name: SimProfileOrder
+- description: '[Connectivity Hypervisor-capable IoT SIMs](/en/docs/air/connectivity-hypervisor/)'
+  name: Euicc
+- description: Create, manage, and execute [SIM transfer requests](/en/docs/air/transfer/)
+  name: SimTransferRequest
 - description: '[Soracom Orbit](/en/docs/orbit/) Soralet'
   name: Soralet
 - description: '[Data usage history](/en/docs/air/data-usage/) retrieval'

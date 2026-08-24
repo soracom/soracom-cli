@@ -16,6 +16,9 @@ import (
 // OrdersCreateCmdPreferredDeliveryDate holds value of 'preferredDeliveryDate' option
 var OrdersCreateCmdPreferredDeliveryDate string
 
+// OrdersCreateCmdPurchaseOrderNumber holds value of 'purchaseOrderNumber' option
+var OrdersCreateCmdPurchaseOrderNumber string
+
 // OrdersCreateCmdShippingAddressId holds value of 'shippingAddressId' option
 var OrdersCreateCmdShippingAddressId string
 
@@ -24,6 +27,8 @@ var OrdersCreateCmdBody string
 
 func InitOrdersCreateCmd() {
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdPreferredDeliveryDate, "preferred-delivery-date", "", TRAPI("Preferred delivery date."))
+
+	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdPurchaseOrderNumber, "purchase-order-number", "", TRAPI("An optional PO/reference number printed on the invoice and delivery statement. Avoid using '#' in the value, as some values containing it will be rejected."))
 
 	OrdersCreateCmd.Flags().StringVar(&OrdersCreateCmdShippingAddressId, "shipping-address-id", "", TRAPI("Shipping address ID."))
 
@@ -103,6 +108,11 @@ func collectOrdersCreateCmdParams(ac *apiClient) (*apiParams, error) {
 		}
 	}
 
+	err = checkIfRequiredStringParameterIsSupplied("shippingAddressId", "shipping-address-id", "body", parsedBody, OrdersCreateCmdShippingAddressId)
+	if err != nil {
+		return nil, err
+	}
+
 	return &apiParams{
 		method:      "POST",
 		path:        buildPathForOrdersCreateCmd("/orders"),
@@ -158,6 +168,10 @@ func buildBodyForOrdersCreateCmd() (string, error) {
 
 	if OrdersCreateCmdPreferredDeliveryDate != "" {
 		result["preferredDeliveryDate"] = OrdersCreateCmdPreferredDeliveryDate
+	}
+
+	if OrdersCreateCmdPurchaseOrderNumber != "" {
+		result["purchaseOrderNumber"] = OrdersCreateCmdPurchaseOrderNumber
 	}
 
 	if OrdersCreateCmdShippingAddressId != "" {

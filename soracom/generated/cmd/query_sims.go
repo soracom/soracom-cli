@@ -18,6 +18,9 @@ var QuerySimsCmdSearchType string
 // QuerySimsCmdSessionStatus holds value of 'session_status' option
 var QuerySimsCmdSessionStatus string
 
+// QuerySimsCmdActiveProfileId holds multiple values of 'active_profile_id' option
+var QuerySimsCmdActiveProfileId []string
+
 // QuerySimsCmdBundles holds multiple values of 'bundles' option
 var QuerySimsCmdBundles []string
 
@@ -29,6 +32,9 @@ var QuerySimsCmdGroupId []string
 
 // QuerySimsCmdIccid holds multiple values of 'iccid' option
 var QuerySimsCmdIccid []string
+
+// QuerySimsCmdImei holds multiple values of 'imei' option
+var QuerySimsCmdImei []string
 
 // QuerySimsCmdImsi holds multiple values of 'imsi' option
 var QuerySimsCmdImsi []string
@@ -60,6 +66,9 @@ var QuerySimsCmdTag []string
 // QuerySimsCmdLimit holds value of 'limit' option
 var QuerySimsCmdLimit int64
 
+// QuerySimsCmdSubscribersInTransit holds value of 'subscribers_in_transit' option
+var QuerySimsCmdSubscribersInTransit bool
+
 // QuerySimsCmdPaginate indicates to do pagination or not
 var QuerySimsCmdPaginate bool
 
@@ -73,6 +82,8 @@ func InitQuerySimsCmd() {
 
 	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search. Specify one of the following:- 'NA': Any.- 'ONLINE': Online.- 'OFFLINE': Offline."))
 
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdActiveProfileId, "active-profile-id", []string{}, TRAPI("Active profile ID of the IoT SIM to search. Supports partial matching (e.g., specifying '0001234' matches '8981100001234567890'). Useful for finding IoT SIMs whose active profile matches a specific identifier (e.g., a SORACOM profile ID prefix)."))
+
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdBundles, "bundles", []string{}, TRAPI("Bundles type to search."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroup, "group", []string{}, TRAPI("Name of the [group](/en/docs/groups/) to which the IoT SIM belongs."))
@@ -80,6 +91,8 @@ func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdGroupId, "group-id", []string{}, TRAPI("Search for IoT SIMs whose group ID matches the specified value."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdIccid, "iccid", []string{}, TRAPI("ICCID to search. An identifier used to identify a SIM card or virtual IoT SIM (Virtual SIM/Subscriber)."))
+
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImei, "imei", []string{}, TRAPI("IMEI of the device on the IoT SIM's current session. Supports partial matching (e.g., specifying '45678' matches '123456789012345')."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImsi, "imsi", []string{}, TRAPI("IMSI to search."))
 
@@ -100,6 +113,8 @@ func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdTag, "tag", []string{}, TRAPI("String of tag values to search. For more information, please refer to [Using Tags with Soracom Air](/docs/air/tags)."))
 
 	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of items to retrieve."))
+
+	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdSubscribersInTransit, "subscribers-in-transit", false, TRAPI("Filters IoT SIMs by whether they have a secondary subscriber that is still being added via the [Sim:addSubscription API](#/Sim/addSubscription) (i.e., the addition has not yet completed).- 'true': returns only IoT SIMs that have a secondary subscriber being added.- 'false': returns only IoT SIMs that do not have any secondary subscriber being added."))
 
 	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 
@@ -201,6 +216,12 @@ func buildQueryForQuerySimsCmd() url.Values {
 		result.Add("session_status", QuerySimsCmdSessionStatus)
 	}
 
+	for _, s := range QuerySimsCmdActiveProfileId {
+		if s != "" {
+			result.Add("active_profile_id", s)
+		}
+	}
+
 	for _, s := range QuerySimsCmdBundles {
 		if s != "" {
 			result.Add("bundles", s)
@@ -222,6 +243,12 @@ func buildQueryForQuerySimsCmd() url.Values {
 	for _, s := range QuerySimsCmdIccid {
 		if s != "" {
 			result.Add("iccid", s)
+		}
+	}
+
+	for _, s := range QuerySimsCmdImei {
+		if s != "" {
+			result.Add("imei", s)
 		}
 	}
 
@@ -281,6 +308,10 @@ func buildQueryForQuerySimsCmd() url.Values {
 
 	if QuerySimsCmdLimit != 10 {
 		result.Add("limit", sprintf("%d", QuerySimsCmdLimit))
+	}
+
+	if QuerySimsCmdSubscribersInTransit != false {
+		result.Add("subscribers_in_transit", sprintf("%t", QuerySimsCmdSubscribersInTransit))
 	}
 
 	return result
