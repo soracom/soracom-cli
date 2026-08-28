@@ -111,6 +111,18 @@ cli:
   emails:
     summary: Manage email addresses.
     description: Manage email addresses.
+  euiccs:
+    summary: Manage Connectivity Hypervisor-capable IoT SIMs.
+    description: Manage Connectivity Hypervisor-capable IoT SIMs.
+    profile:
+      summary: Manage profiles on Connectivity Hypervisor-capable IoT SIMs.
+      description: Manage profiles on Connectivity Hypervisor-capable IoT SIMs.
+    profile-types:
+      summary: List available profile types for Connectivity Hypervisor-capable IoT SIMs.
+      description: List available profile types for Connectivity Hypervisor-capable IoT SIMs.
+    status:
+      summary: Get status of Connectivity Hypervisor-capable IoT SIMs.
+      description: Get status of Connectivity Hypervisor-capable IoT SIMs.
   event-handlers:
     summary: List, create, update or delete event handlers.
     description: List, create, update or delete event handlers.
@@ -270,6 +282,9 @@ cli:
   sim-profile-orders:
     summary: Manage eSIM profile orders.
     description: Manage eSIM profile orders.
+  sim-transfer-requests:
+    summary: Manage SIM transfer requests.
+    description: Manage SIM transfer requests.
   sims:
     summary: Manage SIMs.
     description: Manage SIMs.

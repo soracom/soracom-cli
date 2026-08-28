@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20260604-092803
+  version: 20260730-014026
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -2880,6 +2880,521 @@ paths:
       - Diagnostic
       x-soracom-cli:
       - diagnostics get
+  /euiccs:
+    get:
+      description: |
+        Connectivity Hypervisor 対応 IoT SIM のリストを取得します。Connectivity Hypervisor 対応 IoT SIM が 1 ページに収まらない場合は、同じ条件で次のページを取得するための URL が、レスポンスの `link` ヘッダーに含まれます。
+      operationId: listEuiccs
+      parameters:
+      - description: 取得する Connectivity Hypervisor 対応 IoT SIM の上限。ただし、返却される Connectivity
+          Hypervisor 対応 IoT SIM の個数は指定された値を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: レスポンスに Connectivity Hypervisor 対応 IoT SIM のステータス情報を含めるかどうかを切り替えるフラグ。デフォルトでは
+          `true` です。ステータス情報が不要な場合は `false` に設定します。
+        in: query
+        name: include_status
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Euicc'
+                type: array
+          description: Connectivity Hypervisor 対応 IoT SIM の一覧。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のリストを取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs list
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /euiccs/{sim_id}:
+    get:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM の情報を取得します。
+      operationId: getEuicc
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: レスポンスに Connectivity Hypervisor 対応 IoT SIM のステータス情報を含めるかどうかを切り替えるフラグ。デフォルトでは
+          `true` です。ステータス情報が不要な場合は `false` に設定します。
+        in: query
+        name: include_status
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Euicc'
+          description: Connectivity Hypervisor 対応 IoT SIM の詳細情報。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM の情報を取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs get
+  /euiccs/{sim_id}/profile_operations:
+    get:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーション履歴のリストを取得します。リストは作成日時
+        (`createdAt`) の降順でソートされます。
+      operationId: listEuiccProfileOperationHistory
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: |
+          `true` に設定すると、進行中 (ステータスが `requested` または `pending`) のプロファイル関連オペレーションのみが返されます。
+        in: query
+        name: in_progress
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 取得する Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションの上限。ただし、返却されるオペレーションの個数は指定された値を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EuiccProfileOperation'
+                type: array
+          description: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションの一覧。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションを取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile list-operations
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /euiccs/{sim_id}/profile_operations/{profile_operation_id}:
+    delete:
+      description: |
+        指定した Connectivity Hypervisor 対応 IoT SIM の保留中のプロファイル関連オペレーションをキャンセルします。
+
+        - ステータスが `requested` または `pending` のオペレーションのみキャンセルできます。
+        - ステータスが `succeeded`、`failed`、または `cancelled` のオペレーションはキャンセルできません。
+      operationId: cancelEuiccProfileOperation
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: キャンセルする Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーション ID。
+        in: path
+        name: profile_operation_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfileOperation'
+          description: キャンセルされた Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーション。
+        "400":
+          description: 不正なリクエスト。オペレーションをキャンセルできません (すでに完了、失敗、またはキャンセル済み)。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM またはオペレーションが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションをキャンセルする
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile cancel-operation
+  /euiccs/{sim_id}/profile_operations/download_via_activation_code:
+    post:
+      description: |
+        指定したアクティベーションコードを使用して、Connectivity Hypervisor 対応 IoT SIM へのプロファイルダウンロードをリクエストします。
+
+        アクティベーションコードは、[SimProfileOrder:listOrderedProfiles API](#/SimProfileOrder/listOrderedProfiles) のレスポンスに含まれる `activationCode` として取得できます。
+      operationId: downloadEuiccProfileViaActivationCode
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                activationCode:
+                  description: プロファイルダウンロード用のアクティベーションコード。
+                  type: string
+              required:
+              - activationCode
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイルの配信 (ダウンロード) がリクエストされた後の Connectivity Hypervisor 対応 IoT
+            SIM のプロファイル情報。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: アクティベーションコードでプロファイルダウンロードをリクエストする
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile download-profile-via-activation-code
+  /euiccs/{sim_id}/profiles:
+    post:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM の新しいプロファイルを注文します。
+      operationId: orderEuiccProfile
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EuiccProfileOrderRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイル注文がリクエストされた後の Connectivity Hypervisor 対応 IoT SIM のプロファイル情報。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のプロファイルを注文する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile order
+  /euiccs/{sim_id}/profiles/{iccid}:
+    delete:
+      description: 指定したプロファイルの解約をリクエストします。
+      operationId: requestEuiccProfileDeletion
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: プロファイルの ICCID。
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイル解約がリクエストされた後の Connectivity Hypervisor 対応 IoT SIM のプロファイル情報。
+        "404":
+          description: 指定したプロファイルが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: プロファイルの解約をリクエストする
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-delete
+    get:
+      description: 指定したプロファイルの情報を取得します。
+      operationId: getEuiccProfile
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: プロファイルの ICCID。
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイルの詳細情報。
+        "404":
+          description: 指定したプロファイルが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: プロファイル情報を取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile get
+  /euiccs/{sim_id}/profiles/{iccid}/activate:
+    post:
+      description: Connectivity Hypervisor 対応 IoT SIM 上の指定したプロファイルの有効化をリクエストします。
+      operationId: requestEuiccProfileActivation
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: プロファイルの ICCID。
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイル有効化がリクエストされた後の Connectivity Hypervisor 対応 IoT SIM のプロファイル情報。
+        "404":
+          description: 指定したプロファイルが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のプロファイル有効化をリクエストする
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-activate
+  /euiccs/{sim_id}/profiles/{iccid}/download:
+    post:
+      description: |
+        指定したプロファイルを Connectivity Hypervisor 対応 IoT SIM に配信 (ダウンロード) するようリクエストします。
+      operationId: requestEuiccProfileDownload
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: プロファイルの ICCID。
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccProfile'
+          description: プロファイルの配信 (ダウンロード) がリクエストされた後の Connectivity Hypervisor 対応 IoT
+            SIM のプロファイル情報。
+        "404":
+          description: 指定したプロファイルが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM へのプロファイルダウンロードをリクエストする
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile request-download
+  /euiccs/{sim_id}/status:
+    get:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM のステータスを取得します。セッションステータス、セッションイベント、eIM
+        ステータスが含まれます。
+      operationId: getEuiccStatus
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EuiccStatus'
+          description: Connectivity Hypervisor 対応 IoT SIM のステータス情報。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のステータスを取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs status get
+  /euiccs/{sim_id}/tags:
+    put:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM のタグを更新します。
+      operationId: putEuiccTags
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/TagUpdateRequest'
+              type: array
+        description: 更新するタグの配列。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Euicc'
+          description: 更新後の Connectivity Hypervisor 対応 IoT SIM。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のタグを更新する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs put-tags
+  /euiccs/{sim_id}/tags/{tag_name}:
+    delete:
+      description: 指定した Connectivity Hypervisor 対応 IoT SIM からタグを削除します。
+      operationId: deleteEuiccTag
+      parameters:
+      - description: 対象の Connectivity Hypervisor 対応 IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          type: string
+      - description: 削除するタグの名前。
+        in: path
+        name: tag_name
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: タグが正常に削除された。
+        "404":
+          description: 指定した Connectivity Hypervisor 対応 IoT SIM またはタグが存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM のタグを削除する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs delete-tag
+  /euiccs/profile_types:
+    get:
+      description: |
+        現在のオペレーターが利用可能な Connectivity Hypervisor 対応 IoT SIM のプロファイルタイプと、その設定情報を返します。レスポンスには、プロファイルタイプの識別子、ローカライズされた表示名と説明、SMS / 音声通話の対応状況、注文時のバンドル選択要否が含まれます。選択可能なバンドルがある場合は、その一覧も含まれます。
+      operationId: listEuiccProfileTypes
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EuiccProfileTypeConfig'
+                type: array
+          description: 現在のオペレーターが利用可能な Connectivity Hypervisor 対応 IoT SIM のプロファイルタイプとその設定の一覧。
+      security:
+      - api_key: []
+        api_token: []
+      summary: 利用可能な Connectivity Hypervisor 対応 IoT SIM のプロファイルタイプを取得する
+      tags:
+      - Euicc
+      x-soracom-cli:
+      - euiccs profile-types list
   /event_handlers:
     get:
       description: イベントハンドラーの一覧を返す。
@@ -4617,7 +5132,32 @@ paths:
                     format: iso-8601
                     type: jsonpointer
                     value: /time
-              (8) セッションステータスルールを有効化する (SoracomAir):
+              (8) Harvest Data を有効化する (SoracomHarvest):
+                description: |
+                  [SORACOM Harvest Data を有効化する](/ja-jp/docs/harvest/enable-data/) 場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomHarvest` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/harvest/enable-data/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
+                value:
+                - key: enabled
+                  value: true
+                - key: category
+                  value:
+                    enabled: true
+                    type: static
+                    value: myCategory
+                - key: useSoracomBinaryFormat
+                  value: false
+              (9) Harvest Data を無効化する (SoracomHarvest):
+                description: |
+                  [Harvest Data を無効化する](/ja-jp/docs/harvest/enable-data/#harvest-data-を無効化する) 場合は、以下の点に注意してください。
+
+                  - パスパラメーターの `namespace` に、`SoracomHarvest` を指定します。
+                  - `key` と `value` のペアについて詳しくは、[SORACOM CLI / SORACOM API のリクエストボディで指定するプロパティについて](/ja-jp/docs/harvest/enable-data/#soracom-cli--soracom-api-のリクエストボディで指定するプロパティについて) を参照してください。
+                value:
+                - key: enabled
+                  value: false
+              (10) セッションステータスルールを有効化する (SoracomAir):
                 description: |
                   [イベントハンドラー](/ja-jp/docs/event-handler/) の [サブスクライバーのセッションの状態が変更されたら実行](/ja-jp/docs/event-handler/rules/#サブスクライバーのセッションの状態が変更されたら実行) ルールを有効化する場合は、以下の点に注意してください。
 
@@ -9718,6 +10258,8 @@ paths:
             - `status`
             - `subscription`
             - `module_type`
+            - `active_profile_id`
+            - `imei`
         - 検索条件は、2 文字以上にしてください。`,` を入力する場合は、`,` で分割された各文字列も 2 文字以上にしてください。たとえば、`ab,c` は `c` が 1 文字のため検索できません。
         - クエリパラメーターを複数指定した場合は、`search_type` で検索の種別 (AND 検索または OR 検索) を指定できます。
 
@@ -9919,6 +10461,37 @@ paths:
           items:
             type: string
           type: array
+      - description: IoT SIM のアクティブなプロファイルの ID。部分一致 (たとえば `0001234` を指定すると `8981100001234567890`
+          に一致) で検索できます。アクティブプロファイルが特定の識別子に一致する IoT SIM (たとえば SORACOM プロファイル ID のプレフィックス)
+          を検索する場合に利用します。
+        explode: true
+        in: query
+        name: active_profile_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: 現在のセッションで利用されているデバイスの IMEI。部分一致 (たとえば `45678` を指定すると `123456789012345`
+          に一致) で検索できます。
+        explode: true
+        in: query
+        name: imei
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          [Sim:addSubscription API](#/Sim/addSubscription) で追加されたセカンダリ Subscriber が、追加処理中 (まだ完了していない状態) かどうかで IoT SIM を絞り込みます。
+
+          - `true`: 追加処理中のセカンダリ Subscriber を持つ IoT SIM のみを検索します。
+          - `false`: 追加処理中のセカンダリ Subscriber を持たない IoT SIM のみを検索します。
+        in: query
+        name: subscribers_in_transit
+        required: false
+        schema:
+          type: boolean
       - description: 取得する結果の上限数。
         in: query
         name: limit
@@ -10907,6 +11480,388 @@ paths:
       - SimProfileOrder
       x-soracom-cli:
       - sim-profile-orders list-profiles
+  /sim_transfer_requests:
+    get:
+      description: |
+        認証されたオペレーターの SIM 譲渡リクエストの一覧を取得します。譲渡元となるリクエスト (ドラフトを含む) と、譲渡先となるリクエスト (ドラフト以外) の両方が返却されます。リクエストは譲渡リクエスト ID の順 (UUIDv7 による作成日時順) でソートされます。
+      operationId: listTransferRequests
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransferRequestsResponse'
+          description: SIM 譲渡リクエストの一覧を取得しました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストの一覧を取得する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests list
+    post:
+      description: |
+        新しい SIM 譲渡リクエストを `DRAFT` ステータスで作成します。SIM を含まない空のリクエストとして作成し、後から SIM を追加することもできます。ドラフトは作成から 90 日間保持されます。`destinationOperatorId` を指定する場合は、確認のために `destinationOperatorEmail` も必須です。
+      operationId: createTransferRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransferRequestRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: SIM 譲渡リクエストを作成しました。作成された SIM 譲渡リクエストが返却されます。
+        "400":
+          description: 指定したリクエストに誤りがあります。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストをドラフトとして作成する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests create
+  /sim_transfer_requests/{transfer_request_id}:
+    delete:
+      description: |
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを削除します。削除はソフトデリート (TTL を現在時刻に設定し、DynamoDB の TTL 機能によって削除) として実装されています。
+      operationId: deleteTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: SIM 譲渡リクエストを削除しました。
+        "400":
+          description: リクエストが `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスではありません。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ドラフトの SIM 譲渡リクエストを削除する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests delete
+    get:
+      description: |
+        指定した SIM 譲渡リクエストを取得します。譲渡元のオペレーターと譲渡先のオペレーターの両方がアクセスできます。譲渡先のオペレーターはドラフト以外のリクエストのみ取得できます。
+      operationId: getTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: SIM 譲渡リクエストを取得しました。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストを取得する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests get
+    patch:
+      description: |
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを更新します。譲渡先オペレーター、譲渡先オペレーターのメールアドレス、および名前を変更できます。指定したフィールドのみが更新されます。`destinationOperatorId` を指定する場合は、`destinationOperatorEmail` も必須です。更新を行うと、ドラフトの有効期限が 90 日後にリセットされます。
+      operationId: updateTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTransferRequestRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequest'
+          description: SIM 譲渡リクエストを更新しました。
+        "400":
+          description: 指定したリクエストに誤りがあるか、`DRAFT`/`DRAFT_VALIDATION_FAILED` ステータスではありません。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ドラフトの SIM 譲渡リクエストを更新する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests update
+  /sim_transfer_requests/{transfer_request_id}/cancel:
+    put:
+      description: |
+        `REQUESTING` ステータスの SIM 譲渡リクエストをキャンセルします。譲渡元のオペレーターのみが実行できます。キャンセルされたことが譲渡先のオペレーターに通知されます。
+      operationId: cancelTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: SIM 譲渡リクエストをキャンセルしました。ステータスが `CANCELLED` に変更されます。
+        "400":
+          description: リクエストが `REQUESTING` ステータスではありません。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つかりません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストをキャンセルする
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests cancel
+  /sim_transfer_requests/{transfer_request_id}/reject:
+    put:
+      description: |
+        `REQUESTING` ステータスの SIM 譲渡リクエストを拒否します。譲渡先のオペレーターのみが実行できます。拒否されたことが譲渡元のオペレーターに通知されます。
+      operationId: rejectTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: SIM 譲渡リクエストを拒否しました。ステータスが `REJECTED` に変更されます。
+        "400":
+          description: リクエストが `REQUESTING` ステータスではありません。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つかりません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストを拒否する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests reject
+  /sim_transfer_requests/{transfer_request_id}/request:
+    put:
+      description: |
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを送信します。同期的な事前チェックを行った後、ステータスを `DRAFT_VALIDATING` に遷移させ、SIM の非同期バリデーションを実行します。すべての SIM がバリデーションを通過すると、ステータスは `REQUESTING` に遷移し、通知メールが送信されます。送信前に譲渡先オペレーターが設定されている必要があります。
+      operationId: submitTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "202":
+          description: SIM 譲渡リクエストを送信し、非同期バリデーションを開始しました。
+        "400":
+          description: ステータスが不正、譲渡先が未設定、SIM が空、またはオペレーターのバリデーションに失敗しました。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストを送信する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests submit
+  /sim_transfer_requests/{transfer_request_id}/sims:
+    delete:
+      description: |
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストから SIM を削除します。この操作は冪等であり、リクエストに含まれていない SIM ID は無視されます。この操作はレスポンスボディを返しません。
+      operationId: removeSimsFromTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveSimsFromTransferRequestRequest'
+        required: true
+      responses:
+        "204":
+          description: SIM を削除しました。レスポンスボディは返しません。
+        "400":
+          description: リクエストが `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスではありません。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ドラフトの SIM 譲渡リクエストから SIM を削除する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests remove-sims
+    get:
+      description: |
+        SIM 譲渡リクエストに含まれる SIM の一覧をページネーションで取得します。譲渡元のオペレーターがアクセスした場合は、`name` や `groupId` などの追加情報を含む SIM 情報が返却されます。譲渡先のオペレーターがアクセスした場合は、`simId` と `errorCode` のみが返却されます。無効な SIM (エラーコード付き) が先頭に表示されます。
+      operationId: listTransferRequestSims
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      - description: 1 ページあたりに取得する SIM の最大件数。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferRequestSimsResponse'
+          description: SIM の一覧を取得しました。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストに含まれる SIM の一覧を取得する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests list-sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+    post:
+      description: |
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストに SIM を追加します。リクエストに含められる SIM の上限 (デフォルト 1,000 件) を超えないか検証します。SIM は個別の検証を行わずに保存されます。個別の検証はリクエストの送信時に実行され、SIM ごとのエラーは `GET /sim_transfer_requests/{transfer_request_id}/sims` で確認できます。この操作はレスポンスボディを返しません。
+      operationId: addSimsToTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSimsToTransferRequestRequest'
+        required: true
+      responses:
+        "204":
+          description: SIM を追加しました。レスポンスボディは返しません。
+        "400":
+          description: リクエストが `DRAFT`/`DRAFT_VALIDATION_FAILED` ステータスでないか、SIM の上限を超えています。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ドラフトの SIM 譲渡リクエストに SIM を追加する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests add-sims
+  /sim_transfer_requests/{transfer_request_id}/transfer:
+    put:
+      description: |
+        `REQUESTING` ステータスの SIM 譲渡リクエストを承認して実行します。譲渡先のオペレーターのみが実行できます。支払い方法、グループ、およびオペレーターの互換性を検証した後、非同期で譲渡を開始します。承認すると、ステータスは `TRANSFERRING` に遷移します。毎月の譲渡制限期間 (毎月末日の 2 日前 15:00 UTC から翌月 2 日 15:00 UTC まで。2026 年 7 月の場合は `2026-07-29T15:00:00Z` から `2026-08-02T15:00:00Z` まで) 中に承認した場合は、ステータスの遷移は保存されますが、SIM の譲渡は延期されます。制限期間の終了後にダウンストリームのスケジューラーが譲渡を実行します。その間も、リクエストは `TRANSFERRING` ステータスのままです。
+      operationId: executeTransferRequest
+      parameters:
+      - description: SIM 譲渡リクエストの ID。
+        in: path
+        name: transfer_request_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteTransferRequestRequest'
+        required: true
+      responses:
+        "202":
+          description: リクエストを受け付けました。譲渡が開始されたか、月末月初の制限期間中に承認した場合は譲渡が延期されます (ダウンストリームのスケジューラーが譲渡を実行するまで、リクエストは
+            `TRANSFERRING` ステータスのままです)。
+        "400":
+          description: リクエストが `REQUESTING` ステータスでないか、支払い方法・グループ・オペレーターの検証に失敗しました。
+        "404":
+          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+        "409":
+          description: 同時更新により競合が発生しました (バージョン不一致)。
+      security:
+      - api_key: []
+        api_token: []
+      summary: SIM 譲渡リクエストを承認して実行する
+      tags:
+      - SimTransferRequest
+      x-soracom-cli:
+      - sim-transfer-requests execute
   /sims:
     get:
       description: |
@@ -11032,6 +11987,66 @@ paths:
       - Sim
       x-soracom-cli:
       - sims activate
+  /sims/{sim_id}/bundles:
+    put:
+      description: IoT SIM のバンドルを設定します。指定したバンドルで IoT SIM の既存のバンドルを置き換えます。
+      operationId: putSimBundles
+      parameters:
+      - description: 対象の IoT SIM の SIM ID。
+        in: path
+        name: sim_id
+        required: true
+        schema:
+          format: SimId
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+            - D-500MB
+            schema:
+              items:
+                enum:
+                - D-500MB
+                - DU-10GB
+                - DU-50GB
+                - DU-100GB
+                - US-1MB
+                - US-3MB
+                - US-10MB
+                - US-20MB
+                - US-50MB
+                - US-100MB
+                - US-300MB
+                - US-500MB
+                - US-1GB
+                - US-3GB
+                - US-5GB
+                - US-10GB
+                type: string
+              type: array
+        description: IoT SIM に設定するバンドル名のリスト。
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
+          description: IoT SIM のバンドルが設定されました。
+        "400":
+          description: 指定したバンドルとサブスクリプションの組み合わせはサポートされていません。
+        "404":
+          description: 指定した IoT SIM が存在しない。
+      security:
+      - api_key: []
+        api_token: []
+      summary: IoT SIM のバンドルを設定する
+      tags:
+      - Sim
+      x-sam-operationId: putBundles
+      x-soracom-cli:
+      - sims put-bundles
   /sims/{sim_id}/credentials/arc:
     delete:
       deprecated: true
@@ -11990,6 +13005,8 @@ paths:
                     追加する [セカンダリサブスクリプション](/ja-jp/resources/glossary/subscription/)。追加できるサブスクリプションは、IoT SIM のプライマリサブスクリプションによって異なります。
                     - プライマリサブスクリプションが `plan01s` の場合:
                       - `planP1`、`planX1`、`planX2`、`planX3`、`plan-US-max`: 追加サブスクリプション
+                    - プライマリサブスクリプションが `planP1` の場合:
+                      - `planX1`、`planX3`: 追加サブスクリプション
                     - `planArc01`: バーチャル SIM/Subscriber (プライマリサブスクリプションに関わらず利用可能)
                   enum:
                   - planP1
@@ -12027,8 +13044,8 @@ paths:
                 $ref: '#/components/schemas/SimProfile'
           description: 更新された SIM プロファイル
         "400":
-          description: 追加できないサブスクリプションを指定した。たとえば、プライマリサブスクリプションが plan-D の IoT SIM
-            に `planP1` は追加できません。
+          description: 追加できないサブスクリプションを指定した。たとえば、プライマリサブスクリプションが plan-D または planP1
+            の IoT SIM に `planP1` は追加できません。
         "404":
           description: 指定した SIM ID および ICCID の IoT SIM が存在しない
       security:
@@ -12801,6 +13818,7 @@ paths:
                 name: My ATOM Cam 2
                 powerState: "on"
                 productDisplayName: ATOM Cam 2
+                ssid: Office Wi-Fi
               schema:
                 items:
                   $ref: '#/components/schemas/SoraCamDevice'
@@ -12875,6 +13893,7 @@ paths:
                 name: My ATOM Cam 2
                 powerState: "on"
                 productDisplayName: ATOM Cam 2
+                ssid: Office Wi-Fi
               schema:
                 $ref: '#/components/schemas/SoraCamDevice'
           description: OK.
@@ -19467,7 +20486,10 @@ paths:
       - vpg terminate
   /virtual_private_gateways/{vpg_id}/traffic_filtering/disable:
     post:
-      description: 指定された VPG のトラフィックフィルタリング機能を無効にします。
+      description: |
+        指定された VPG のトラフィックフィルタリング機能を無効化します。
+
+        **Warning**: この API を実行すると、設定を反映するために、この API の対象 VPG を経由するすべての通信が一時的に不通になります。
       operationId: disableTrafficFiltering
       parameters:
       - description: 対象の VPG の ID
@@ -19478,22 +20500,25 @@ paths:
           type: string
       responses:
         "204":
-          description: トラフィックフィルタリングを無効にしました。
+          description: トラフィックフィルタリングを無効化しました。
         "403":
           description: このオペレーターではトラフィックフィルタリングを利用できません。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
-      summary: トラフィックフィルタリングを無効にする
+      summary: トラフィックフィルタリングを無効化する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg disable-traffic-filtering
   /virtual_private_gateways/{vpg_id}/traffic_filtering/enable:
     post:
-      description: 指定された VPG のトラフィックフィルタリング機能を有効にします。VPG のタイプがトラフィックフィルタリングに対応している必要があります。
+      description: |
+        指定された VPG のトラフィックフィルタリング機能を有効化します。VPG のタイプがトラフィックフィルタリングに対応している必要があります。
+
+        **Warning**: この API を実行すると、設定を反映するために、この API の対象 VPG を経由するすべての通信が一時的に不通になります。
       operationId: enableTrafficFiltering
       parameters:
       - description: 対象の VPG の ID
@@ -19504,25 +20529,29 @@ paths:
           type: string
       responses:
         "201":
-          description: トラフィックフィルタリングを有効にしました。
+          description: トラフィックフィルタリングを有効化しました。
         "400":
           description: 指定された VPG のタイプはトラフィックフィルタリングに対応していません。
         "403":
           description: このオペレーターではトラフィックフィルタリングを利用できません。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
-      summary: トラフィックフィルタリングを有効にする
+      summary: トラフィックフィルタリングを有効化する
       tags:
       - VirtualPrivateGateway
       x-soracom-cli:
       - vpg enable-traffic-filtering
   /virtual_private_gateways/{vpg_id}/traffic_filtering/fqdn_rules:
     put:
-      description: 指定された VPG のドメインルール（ドメインフィルタリング / FQDN フィルタリング）を、リクエストの内容で置き換えます。既存の
-        IP ルールは保持されます。
+      description: |
+        指定された VPG のドメインルール (ドメインフィルタリング / FQDN フィルタリング) を、リクエストの内容で置き換えます。既存の IP ルールは保持されます。ドメインルールを空のリストにした場合、ドメインルールによる制御は行われません。
+
+        **Warning**: この API で変更した設定は、IoT SIM やバーチャル SIM/Subscriber が次にセッションを確立したときに適用されます。設定を反映するには、IoT SIM やバーチャル SIM/Subscriber のセッションを再確立してください。
+
+        **Warning**: 保存済みの IP ルールが空の場合、宛先が `100.64.0.0/10` の通信のみが許可され、それ以外のデバイス発 (アップリンク) 通信は拒否されます。
       operationId: putFqdnFilterRules
       parameters:
       - description: 対象の VPG の ID
@@ -19540,13 +20569,17 @@ paths:
         required: true
       responses:
         "200":
-          description: ドメインルールを更新しました。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFqdnFilterRulesResponse'
+          description: ドメインルールを更新しました。レスポンスには、更新後に保存されたドメインルールのセットが含まれます。
         "400":
           description: 1 つ以上のルールが不正です。
         "403":
           description: このオペレーターではトラフィックフィルタリングを利用できません。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
@@ -19557,7 +20590,12 @@ paths:
       - vpg put-fqdn-filter-rules
   /virtual_private_gateways/{vpg_id}/traffic_filtering/uplink_rules:
     put:
-      description: 指定された VPG の IP ルール（IP フィルタリング）を、リクエストの内容で置き換えます。既存のドメインルールは保持されます。
+      description: |
+        指定された VPG の IP ルール (IP フィルタリング) を、リクエストの内容で置き換えます。既存のドメインルールは保持されます。
+
+        **Warning**: この API で変更した設定は、IoT SIM やバーチャル SIM/Subscriber が次にセッションを確立したときに適用されます。設定を反映するには、IoT SIM やバーチャル SIM/Subscriber のセッションを再確立してください。
+
+        **Warning**: 保存済みの IP ルールが空の場合、宛先が `100.64.0.0/10` の通信のみが許可され、それ以外のデバイス発 (アップリンク) 通信は拒否されます。
       operationId: putUplinkFilterRules
       parameters:
       - description: 対象の VPG の ID
@@ -19575,13 +20613,17 @@ paths:
         required: true
       responses:
         "200":
-          description: IP ルールを更新しました。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUplinkFilterRulesResponse'
+          description: IP ルールを更新しました。レスポンスには、更新後に保存された IP ルールのセットが含まれます。
         "400":
           description: 1 つ以上のルールが不正です。
         "403":
           description: このオペレーターではトラフィックフィルタリングを利用できません。
         "404":
-          description: 指定された VPG は存在しない
+          description: 指定された VPG は存在しません。
       security:
       - api_key: []
         api_token: []
@@ -20352,6 +21394,20 @@ components:
           type: string
       required:
       - executionDateTimeConst
+      type: object
+    AddSimsToTransferRequestRequest:
+      description: ドラフトの SIM 譲渡リクエストに SIM を追加するためのリクエストを表します。
+      properties:
+        simIds:
+          description: SIM 譲渡リクエストに追加する SIM の ID の一覧。
+          example:
+          - "89000010997093035700"
+          - "89000010998833363600"
+          items:
+            type: string
+          type: array
+      required:
+      - simIds
       type: object
     AirAggregatedStatsResponse:
       properties:
@@ -21174,10 +22230,15 @@ components:
           description: 発注商品リスト
           items:
             $ref: '#/components/schemas/OrderItemModel'
+          minItems: 1
           type: array
         preferredDeliveryDate:
           description: お受け取り希望日
           format: yyyyMMdd
+          type: string
+        purchaseOrderNumber:
+          description: 請求書や納品書に印字される、任意の PO/参照番号。`#` を含む値の一部はエラーになるため、使用を避けてください。
+          maxLength: 20
           type: string
         shippingAddressId:
           description: 商品発送先 ID
@@ -21189,6 +22250,9 @@ components:
             - $ref: '#/components/schemas/ShippingOptionOfNekopos'
             - $ref: '#/components/schemas/ShippingOptionOfExpeditedShipping'
           type: array
+      required:
+      - orderItemList
+      - shippingAddressId
       type: object
     CreateEstimatedVolumeDiscountRequest:
       properties:
@@ -21481,6 +22545,23 @@ components:
           type: string
       required:
       - soraletId
+      type: object
+    CreateTransferRequestRequest:
+      description: ドラフトの SIM 譲渡リクエストを作成するためのリクエストを表します。
+      properties:
+        destinationOperatorEmail:
+          description: 譲渡先オペレーターのメールアドレス。`destinationOperatorId` を指定する場合は必須です。
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: 譲渡先オペレーターの ID。作成時には省略可能で、後から更新 API で設定できます。
+          example: OP0987654321
+          type: string
+        name:
+          description: SIM 譲渡リクエストの名前。
+          example: EU regional division
+          type: string
       type: object
     CreateTransitGatewayPeeringConnectionRequest:
       properties:
@@ -21917,6 +22998,48 @@ components:
           description: ping の成功可否
           type: boolean
       type: object
+    EIMStatus:
+      description: eIM ステータス情報。
+      properties:
+        eid:
+          description: eUICC の EID。
+          type: string
+        enabledIccid:
+          description: 有効化されているプロファイルの ICCID。
+          type: string
+        fallbackIccid:
+          description: フォールバックプロファイルの ICCID。
+          type: string
+        operatorId:
+          description: オペレーター ID。
+          type: string
+        pollingHistory:
+          description: |
+            ポーリングのタイムスタンプのリスト。RFC3339 形式 (例: `["2023-01-01T00:00:00Z", "2023-01-01T01:00:00Z"]`)。
+          items:
+            format: date-time
+            type: string
+          type: array
+        pollingInterval:
+          description: ポーリング間隔。
+          type: integer
+        pollingTimeUnit:
+          description: ポーリング間隔の時間単位。
+          enum:
+          - minutes
+          - hours
+          - days
+          type: string
+        simId:
+          description: SIM ID。
+          type: string
+        smdpAddress:
+          description: SM-DP+ アドレス。
+          type: string
+        smdsAddress:
+          description: SM-DS アドレス。
+          type: string
+      type: object
     EmailConfigurationOfBilling:
       properties:
         attachInvoicePdfEnabled:
@@ -22065,7 +23188,7 @@ components:
           format: yyyyMMdd
           type: string
         purchaseOrderNumber:
-          description: 注文番号
+          description: 請求書や納品書に印字される、任意の PO/参照番号。
           type: string
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddressModel'
@@ -22118,6 +23241,309 @@ components:
           type: number
         volumeDiscount:
           $ref: '#/components/schemas/VolumeDiscountModel'
+      type: object
+    Euicc:
+      description: IoT SIM 情報とプロファイルを含む Connectivity Hypervisor 対応 IoT SIM オブジェクト。
+      properties:
+        activeProfileId:
+          description: 現在アクティブなプロファイルの ID。
+          type: string
+        createdAt:
+          description: Connectivity Hypervisor 対応 IoT SIM の作成日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+        moduleType:
+          description: Connectivity Hypervisor 対応 IoT SIM のモジュールタイプ。
+          enum:
+          - mini
+          - micro
+          - nano
+          - trio
+          - embedded
+          - integrated
+          type: string
+        operatorId:
+          description: Connectivity Hypervisor 対応 IoT SIM を所有するオペレーター ID。
+          type: string
+        profiles:
+          additionalProperties:
+            $ref: '#/components/schemas/EuiccProfile'
+          description: Connectivity Hypervisor 対応 IoT SIM に関連付けられたプロファイルのマップ。
+          type: object
+        simId:
+          description: Connectivity Hypervisor 対応 IoT SIM の一意識別子。
+          type: string
+        simStatus:
+          $ref: '#/components/schemas/EuiccStatus'
+        tags:
+          $ref: '#/components/schemas/TagSet'
+        updatedAt:
+          description: Connectivity Hypervisor 対応 IoT SIM の更新日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+      required:
+      - simId
+      - operatorId
+      - moduleType
+      - profiles
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfile:
+      description: Connectivity Hypervisor 対応 IoT SIM のプロファイル情報。
+      properties:
+        createdAt:
+          description: プロファイルの作成日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+        deletable:
+          default: true
+          description: プロファイルが削除可能かどうか。
+          type: boolean
+        downloaded:
+          description: プロファイルがダウンロード済みかどうか。
+          type: boolean
+        iccid:
+          description: プロファイルの ICCID。
+          type: string
+        isDefaultProfile:
+          description: このプロファイルが Connectivity Hypervisor 対応 IoT SIM のデフォルトプロファイルかどうか。デフォルトプロファイルは、プリインストールされたプロファイルです。
+          type: boolean
+        profileOperationInFlight:
+          $ref: '#/components/schemas/EuiccProfileOperation'
+        profileSource:
+          $ref: '#/components/schemas/EuiccProfileSource'
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+        simId:
+          description: このプロファイルに関連付けられた SIM ID。
+          type: string
+        soracomPlatformIntegrationLevel:
+          description: SORACOM との統合レベル。取りうる値は `full`、`partial`、`minimal` です。
+          enum:
+          - full
+          - partial
+          - minimal
+          type: string
+        subscribers:
+          additionalProperties:
+            $ref: '#/components/schemas/EuiccSubscriber'
+          description: このプロファイルのサブスクライバー情報。
+          type: object
+        updatedAt:
+          description: プロファイルの更新日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+      required:
+      - iccid
+      - simId
+      - profileType
+      - soracomPlatformIntegrationLevel
+      - isDefaultProfile
+      - profileSource
+      - downloaded
+      - deletable
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfileBundle:
+      description: Connectivity Hypervisor 対応 IoT SIM のプロファイルを注文する際に選択可能なバンドル。
+      properties:
+        bundleName:
+          description: |
+            バンドル名 (例: `X3-5MB`)。
+          type: string
+        displayName:
+          $ref: '#/components/schemas/LocalizedText'
+      required:
+      - bundleName
+      - displayName
+      type: object
+    EuiccProfileOperation:
+      description: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーション。
+      properties:
+        createdAt:
+          description: オペレーションの作成日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+        operatorId:
+          description: オペレーションに関連付けられたオペレーター ID。
+          type: string
+        profileOperationId:
+          description: プロファイル関連オペレーション ID。
+          type: string
+        simId:
+          description: オペレーションに関連付けられた SIM ID。
+          type: string
+        status:
+          $ref: '#/components/schemas/EuiccProfileOperationStatus'
+        targetIccid:
+          description: オペレーション対象のプロファイルの ICCID。
+          type: string
+        type:
+          $ref: '#/components/schemas/EuiccProfileOperationType'
+        updatedAt:
+          description: オペレーションの更新日時。RFC3339 形式 (例 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+      required:
+      - profileOperationId
+      - simId
+      - operatorId
+      - type
+      - status
+      - createdAt
+      - updatedAt
+      type: object
+    EuiccProfileOperationStatus:
+      description: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションのステータス。
+      enum:
+      - requested
+      - pending
+      - succeeded
+      - failed
+      - cancelled
+      type: string
+    EuiccProfileOperationType:
+      description: Connectivity Hypervisor 対応 IoT SIM のプロファイル関連オペレーションのタイプ。
+      enum:
+      - order_profile
+      - download_profile
+      - activate_profile
+      - delete_profile
+      type: string
+    EuiccProfileOrderRequest:
+      description: プロファイル注文のリクエストボディ。
+      properties:
+        bundles:
+          description: プロファイルに関連付けるバンドルのリスト。
+          items:
+            type: string
+          type: array
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+      required:
+      - profileType
+      type: object
+    EuiccProfileSource:
+      description: |
+        プロファイルがどのように取得されたかを示します。取りうる値は以下のとおりです。
+
+        - `preinstalled`: Connectivity Hypervisor 対応 IoT SIM にあらかじめインストールされているプロファイル。
+        - `esim_profile_order`: [Euicc:orderEuiccProfile API](#/Euicc/orderEuiccProfile) で注文したプロファイル。
+        - `activation_code`: [Euicc:downloadEuiccProfileViaActivationCode API](#/Euicc/downloadEuiccProfileViaActivationCode) でアクティベーションコードを指定して配信 (ダウンロード) したプロファイル。
+      enum:
+      - preinstalled
+      - esim_profile_order
+      - activation_code
+      type: string
+    EuiccProfileType:
+      description: |
+        Connectivity Hypervisor 対応 IoT SIM のプロファイルタイプの識別子 (例: `SGEPR31`、`Unmanaged`)。SORACOM が提供するプロファイルでは、プロファイル商品コードです。オペレーターが利用可能な値、表示名、説明、選択可能なバンドルは、[Euicc:listEuiccProfileTypes API](#/Euicc/listEuiccProfileTypes) で確認できます。
+
+        主な値は以下のとおりです。
+
+        - `SGEPR31`: `planX1` を含む SORACOM プロファイルの商品コード。
+        - `SGEPR33`: `plan01s` を含む SORACOM プロファイルの商品コード。
+        - `SGEPR37`: `planX2` を含む SORACOM プロファイルの商品コード。
+        - `SGEPR38`: `planX3` を含む SORACOM プロファイルの商品コード。
+        - `SGEPR39`: `plan-US` を含む SORACOM プロファイルの商品コード。
+        - `Unmanaged`: SORACOM が管理しないプロファイルを表す値。
+      type: string
+    EuiccProfileTypeConfig:
+      description: 現在のオペレーターが利用可能な Connectivity Hypervisor 対応 IoT SIM のプロファイルタイプの設定情報。ローカライズされた表示情報と、選択可能なバンドルを含みます。
+      properties:
+        availableBundles:
+          description: このプロファイルを注文する際に選択可能なバンドルの一覧。配列の順序が表示順序を表します。
+          items:
+            $ref: '#/components/schemas/EuiccProfileBundle'
+          type: array
+        bundleRequired:
+          description: このプロファイルを注文する際にバンドルの選択が必須かどうか。
+          type: boolean
+        description:
+          $ref: '#/components/schemas/LocalizedText'
+        displayName:
+          $ref: '#/components/schemas/LocalizedText'
+        profileType:
+          $ref: '#/components/schemas/EuiccProfileType'
+        smsSupport:
+          description: このプロファイルタイプの SMS 対応状況を示すブール値。
+          type: boolean
+        voiceCallSupport:
+          description: このプロファイルタイプの音声通話対応状況を示すブール値。
+          type: boolean
+      required:
+      - profileType
+      - displayName
+      - description
+      - smsSupport
+      - voiceCallSupport
+      - bundleRequired
+      type: object
+    EuiccStatus:
+      description: セッションや eIM のステータスを含む Connectivity Hypervisor 対応 IoT SIM のステータス情報。
+      properties:
+        eimStatus:
+          $ref: '#/components/schemas/EIMStatus'
+        sessionEvents:
+          description: セッションイベントのリスト。
+          items:
+            $ref: '#/components/schemas/SessionEvent'
+          type: array
+        sessionStatus:
+          $ref: '#/components/schemas/SessionStatus'
+      required:
+      - sessionStatus
+      - sessionEvents
+      - eimStatus
+      type: object
+    EuiccSubscriber:
+      description: サブスクライバー情報。
+      properties:
+        bundles:
+          description: サブスクライバーに関連付けられたバンドルのリスト。
+          items:
+            type: string
+          type: array
+        capabilities:
+          $ref: '#/components/schemas/Capabilities'
+        createdAt:
+          description: |
+            サブスクライバーの作成日時。RFC3339 形式 (例: 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+        imsi:
+          description: サブスクライバーの IMSI。
+          type: string
+        msisdn:
+          description: サブスクライバーの MSISDN (電話番号)。
+          type: string
+        status:
+          description: サブスクライバーのステータス。
+          enum:
+          - shipped
+          - delivered
+          - ready
+          - active
+          - terminated
+          type: string
+        subscription:
+          description: サブスクリプションタイプ。
+          type: string
+        updatedAt:
+          description: |
+            サブスクライバーの更新日時。RFC3339 形式 (例: 2023-01-01T00:00:00Z)。
+          format: date-time
+          type: string
+      required:
+      - imsi
+      - status
+      - capabilities
+      - msisdn
+      - subscription
+      - createdAt
+      - updatedAt
       type: object
     EventHandlerModel:
       properties:
@@ -22195,6 +23621,14 @@ components:
         resultCode:
           format: int32
           type: integer
+      type: object
+    ExecuteTransferRequestRequest:
+      description: SIM 譲渡リクエストを承認して実行するためのリクエストを表します。
+      properties:
+        destinationGroupId:
+          description: 譲渡先オペレーターで転送された SIM を割り当てるグループの ID。省略可能です。
+          example: 12345678-abcd-9012-efab-345678901234
+          type: string
       type: object
     ExpiryTime:
       properties:
@@ -22318,7 +23752,7 @@ components:
           type: string
       type: object
     FqdnFilterRule:
-      description: ドメインルール（ドメインフィルタリング / FQDN フィルタリング）。宛先 FQDN（ドメイン名）、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
+      description: ドメインルール (ドメインフィルタリング / FQDN フィルタリング)。宛先 FQDN (ドメイン名)、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
       properties:
         action:
           description: ルールに一致した場合に適用されるアクション。FQDN フィルタールールは `allow` のみサポートします。
@@ -22326,24 +23760,33 @@ components:
           - allow
           type: string
         fqdnPattern:
-          description: '宛先の FQDN パターン（例: `api.example.com`）。先頭ラベルにワイルドカードを 1 つだけ指定できます（例:
-            `*.example.com`）。国際化ドメイン名は Punycode に変換されます。'
+          description: '宛先の FQDN パターン (例: `api.example.com`)。先頭ラベルにワイルドカードを 1 つだけ指定できます
+            (例: `*.example.com`)。国際化ドメイン名は Punycode に変換されます。Punycode 変換後で最大 255 文字です。'
+          maxLength: 255
           type: string
         fromPort:
-          default: 0
-          description: 宛先ポート範囲の開始（0〜65535）。`0` は任意のポートを意味します。
+          description: |
+            マッチ条件の下限値。意味は `protocol` によって異なります。
+
+            - TCP (`6`) / UDP (`17`): 宛先ポート範囲の開始 (0〜65535)。任意のポートに一致させるには、`fromPort` と `toPort` の両方を省略します。
+            - ICMP (`1`): ICMP タイプ。`0` は「任意」ではないことに注意してください (例: タイプ `0` は Echo Reply)。
+            - ポートを使用しないプロトコル (例: ALL (`255`)): `fromPort` と `toPort` の両方を省略するか、`fromPort` を `0`、`toPort` を `65535` に設定します。
           maximum: 65535
           minimum: 0
           type: integer
         protocol:
-          description: IP プロトコル番号（0〜255）。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
+          description: IP プロトコル番号 (0〜255)。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
             `255` です。
           maximum: 255
           minimum: 0
           type: integer
         toPort:
-          default: 0
-          description: 宛先ポート範囲の終了（0〜65535）。`fromPort` 以上である必要があります。`0` は任意のポートを意味します。
+          description: |
+            マッチ条件の上限値。意味は `protocol` によって異なります。
+
+            - TCP (`6`) / UDP (`17`): 宛先ポート範囲の終了 (0〜65535)。`fromPort` 以上である必要があります。任意のポートに一致させるには、`fromPort` と `toPort` の両方を省略します。
+            - ICMP (`1`): ICMP コード。`0` は「任意」ではないことに注意してください (コード `0` を意味します)。
+            - ポートを使用しないプロトコル (例: ALL (`255`)): `fromPort` と `toPort` の両方を省略するか、`fromPort` を `0`、`toPort` を `65535` に設定します。
           maximum: 65535
           minimum: 0
           type: integer
@@ -23101,7 +24544,7 @@ components:
           description: 希望納品日。
           type: string
         purchaseOrderNumber:
-          description: 注文番号。
+          description: 請求書や納品書に印字される、任意の PO/参照番号。
           type: string
         resourceInitialSetting:
           $ref: '#/components/schemas/ResourceInitialSetting'
@@ -23125,7 +24568,8 @@ components:
             $ref: '#/components/schemas/ShippingLabelDetail'
           type: array
         shippingLabelNumber:
-          description: 配送業者の伝票番号 (代表)。
+          deprecated: true
+          description: 配送業者の伝票番号 (代表)。このフィールドは非推奨です。代わりに `shippingLabelNumbers` を使用してください。
           example: 0000-1111-2222
           type: string
         shippingLabelNumbers:
@@ -23843,6 +25287,17 @@ components:
             $ref: '#/components/schemas/GetShippingAddressResponse'
           type: array
       type: object
+    ListTransferRequestsResponse:
+      description: SIM 譲渡リクエストの一覧を表します。
+      properties:
+        transferRequests:
+          description: SIM 譲渡リクエストの一覧。
+          items:
+            $ref: '#/components/schemas/TransferRequestSummary'
+          type: array
+      required:
+      - transferRequests
+      type: object
     ListVolumeDiscountResponse:
       properties:
         volumeDiscountList:
@@ -23850,6 +25305,19 @@ components:
           items:
             $ref: '#/components/schemas/GetVolumeDiscountResponse'
           type: array
+      type: object
+    LocalizedText:
+      description: 英語と日本語の翻訳を持つテキスト値。
+      properties:
+        en:
+          description: 英語テキスト。
+          type: string
+        ja:
+          description: 日本語テキスト。
+          type: string
+      required:
+      - en
+      - ja
       type: object
     LocationRegistrationStatus:
       properties:
@@ -24275,7 +25743,11 @@ components:
         quantity:
           description: 購入数
           format: int32
+          minimum: 1
           type: integer
+      required:
+      - productCode
+      - quantity
       type: object
     OrderedSimProfileResponse:
       description: 作成された eSIM プロファイル。
@@ -24760,6 +26232,9 @@ components:
         campaignCode:
           description: キャンペーンコード
           type: string
+        companyOnly:
+          description: '`true` の場合は法人アカウント限定商品です。`false` または省略された場合は、この制限はありません。'
+          type: boolean
         consignorId:
           description: 委託者 ID
           type: string
@@ -24820,6 +26295,9 @@ components:
           description: 通常価格
           format: double
           type: number
+        suspended:
+          description: '`true` の場合は販売停止中であり、在庫に関わらず購入できません。`false` または省略された場合は、販売停止中ではありません。'
+          type: boolean
         taxIncludedPrice:
           description: 税込販売価格
           format: double
@@ -24921,6 +26399,20 @@ components:
           $ref: '#/components/schemas/TagSet'
       required:
       - registrationSecret
+      type: object
+    RemoveSimsFromTransferRequestRequest:
+      description: ドラフトの SIM 譲渡リクエストから SIM を削除するためのリクエストを表します。
+      properties:
+        simIds:
+          description: SIM 譲渡リクエストから削除する SIM の ID の一覧。
+          example:
+          - "89000010997093035700"
+          - "89000010998833363600"
+          items:
+            type: string
+          type: array
+      required:
+      - simIds
       type: object
     ResourceInitialSetting:
       description: リソースに対する初期設定。
@@ -26987,6 +28479,9 @@ components:
         productDisplayName:
           description: ソラカメ対応カメラの製品名
           type: string
+        ssid:
+          description: ソラカメ対応カメラが接続されている Wi-Fi ネットワークの SSID
+          type: string
       required:
       - deviceId
       - name
@@ -28080,6 +29575,224 @@ components:
           format: int64
           type: integer
       type: object
+    TransferRequest:
+      description: SIM 譲渡リクエストを表します。
+      properties:
+        approvalDatetime:
+          description: リクエストを承認した日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        cancelledDatetime:
+          description: リクエストをキャンセルした日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        createdDatetime:
+          description: SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        destinationOperatorEmail:
+          description: 譲渡先オペレーターのメールアドレス。
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: 譲渡先オペレーター (SIM を受け取る側) の ID。
+          example: OP0987654321
+          type: string
+        name:
+          description: SIM 譲渡リクエストの名前。
+          example: EU regional division
+          type: string
+        rejectedDatetime:
+          description: リクエストを拒否した日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        requestValidationAttemptedDatetime:
+          description: 送信されたリクエストのバリデーションを最後に試行した日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        requestedForTransferDatetime:
+          description: 譲渡のためにリクエストを送信した日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        simCount:
+          description: SIM 譲渡リクエストに含まれる SIM の件数。
+          example: 0
+          minimum: 0
+          type: integer
+        sourceOperatorId:
+          description: 譲渡元オペレーター (SIM を譲渡する側) の ID。
+          example: OP0059150966
+          type: string
+        status:
+          description: |
+            SIM 譲渡リクエストの現在のステータス。
+
+            - `DRAFT`: ドラフト (未送信) 状態です。
+            - `DRAFT_VALIDATING`: SIM の非同期バリデーション中です。
+            - `DRAFT_VALIDATION_FAILED`: ドラフトのバリデーションに失敗しました。修正して再送信できます。
+            - `REQUESTING`: 送信済みで、譲渡先オペレーターの応答待ちです。
+            - `REJECTED`: 譲渡先オペレーターに拒否されました。
+            - `TRANSFERRING`: 譲渡処理中です。
+            - `CANCELLED`: 譲渡元オペレーターによってキャンセルされました。
+            - `COMPLETED`: すべての SIM の譲渡が完了しました。
+            - `PARTIALLY_COMPLETED`: 一部の SIM の譲渡が成功し、一部が失敗しました。
+            - `FAILED`: 譲渡に失敗しました。
+          enum:
+          - DRAFT
+          - DRAFT_VALIDATING
+          - DRAFT_VALIDATION_FAILED
+          - REQUESTING
+          - REJECTED
+          - TRANSFERRING
+          - CANCELLED
+          - COMPLETED
+          - PARTIALLY_COMPLETED
+          - FAILED
+          example: DRAFT
+          type: string
+        transferRequestId:
+          description: SIM 譲渡リクエストの一意の ID。
+          example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
+          type: string
+        updatedDatetime:
+          description: SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+      required:
+      - transferRequestId
+      - sourceOperatorId
+      - status
+      - simCount
+      - createdDatetime
+      - updatedDatetime
+      type: object
+    TransferRequestSim:
+      description: SIM 譲渡リクエストに含まれる SIM を表します。
+      properties:
+        errorCode:
+          description: SIM が譲渡できない場合のエラーコード。
+          example: SIM_ALREADY_IN_TRANSFER
+          type: string
+        groupId:
+          description: SIM が所属するグループの ID。譲渡元オペレーターのみが取得できます。
+          example: 12345678-abcd-9012-efab-345678901234
+          type: string
+        name:
+          description: SIM の名前。譲渡元オペレーターのみが取得できます。
+          example: Fleet Vehicle A1
+          type: string
+        simId:
+          description: SIM の ID。
+          example: "89000010997093035700"
+          type: string
+      required:
+      - simId
+      type: object
+    TransferRequestSimsResponse:
+      description: SIM 譲渡リクエストに含まれる SIM のページネーションされた一覧を表します。
+      properties:
+        sims:
+          description: SIM 譲渡リクエストに含まれる SIM の一覧。
+          items:
+            $ref: '#/components/schemas/TransferRequestSim'
+          type: array
+      required:
+      - sims
+      type: object
+    TransferRequestSummary:
+      description: 一覧に含まれる SIM 譲渡リクエストの概要を表します。
+      properties:
+        createdDatetime:
+          description: SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+        destinationOperatorEmail:
+          description: 譲渡先オペレーターのメールアドレス。
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: 譲渡先オペレーター (SIM を受け取る側) の ID。
+          example: OP0987654321
+          type: string
+        name:
+          description: SIM 譲渡リクエストの名前。
+          example: EU regional division
+          type: string
+        simCount:
+          description: SIM 譲渡リクエストに含まれる SIM の件数。
+          example: 0
+          minimum: 0
+          type: integer
+        sourceOperatorId:
+          description: 譲渡元オペレーター (SIM を譲渡する側) の ID。
+          example: OP0059150966
+          type: string
+        status:
+          description: |
+            SIM 譲渡リクエストの現在のステータス。
+
+            - `DRAFT`: ドラフト (未送信) 状態です。
+            - `DRAFT_VALIDATING`: SIM の非同期バリデーション中です。
+            - `DRAFT_VALIDATION_FAILED`: ドラフトのバリデーションに失敗しました。修正して再送信できます。
+            - `REQUESTING`: 送信済みで、譲渡先オペレーターの応答待ちです。
+            - `REJECTED`: 譲渡先オペレーターに拒否されました。
+            - `TRANSFERRING`: 譲渡処理中です。
+            - `CANCELLED`: 譲渡元オペレーターによってキャンセルされました。
+            - `COMPLETED`: すべての SIM の譲渡が完了しました。
+            - `PARTIALLY_COMPLETED`: 一部の SIM の譲渡が成功し、一部が失敗しました。
+            - `FAILED`: 譲渡に失敗しました。
+          enum:
+          - DRAFT
+          - DRAFT_VALIDATING
+          - DRAFT_VALIDATION_FAILED
+          - REQUESTING
+          - REJECTED
+          - TRANSFERRING
+          - CANCELLED
+          - COMPLETED
+          - PARTIALLY_COMPLETED
+          - FAILED
+          example: DRAFT
+          type: string
+        transferRequestId:
+          description: SIM 譲渡リクエストの一意の ID。
+          example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
+          type: string
+        type:
+          description: |
+            認証されたオペレーターから見た SIM 譲渡リクエストの種類。
+
+            - `OUTGOING`: 認証されたオペレーターが譲渡元です。
+            - `INCOMING`: 認証されたオペレーターが譲渡先です。
+          enum:
+          - INCOMING
+          - OUTGOING
+          example: OUTGOING
+          type: string
+        updatedDatetime:
+          description: SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
+          example: 1735112937412
+          format: int64
+          type: integer
+      required:
+      - transferRequestId
+      - sourceOperatorId
+      - status
+      - simCount
+      - type
+      - createdDatetime
+      - updatedDatetime
+      type: object
     TransitGatewayAttachment:
       properties:
         destinationCidrBlocks:
@@ -28208,10 +29921,30 @@ components:
     UpdateEventHandlerRequest:
       $ref: '#/components/schemas/CreateEventHandlerRequest'
     UpdateFqdnFilterRulesRequest:
-      description: VPG のドメインルール（ドメインフィルタリング）を置き換えるリクエスト。
+      description: VPG のドメインルール (ドメインフィルタリング) を置き換えるリクエスト。
       properties:
         rules:
-          description: 適用するドメインルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。
+          description: 適用するドメインルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。最大 500 件まで指定できます。
+          items:
+            $ref: '#/components/schemas/FqdnFilterRule'
+          maxItems: 500
+          type: array
+      required:
+      - rules
+      type: object
+    UpdateFqdnFilterRulesResponse:
+      description: 更新後に保存された VPG のドメインルール (ドメインフィルタリング) のセット。
+      example:
+        rules:
+        - action: allow
+          fqdnPattern: '*.example.com'
+          fromPort: 443
+          protocol: 6
+          toPort: 443
+          type: fqdn
+      properties:
+        rules:
+          description: 更新後に保存されたドメインルールのセット。
           items:
             $ref: '#/components/schemas/FqdnFilterRule'
           type: array
@@ -28270,11 +30003,60 @@ components:
       required:
       - speedClass
       type: object
+    UpdateTransferRequestRequest:
+      description: ドラフトの SIM 譲渡リクエストを更新するためのリクエストを表します。指定したフィールドのみが更新されます。
+      properties:
+        destinationOperatorEmail:
+          description: 譲渡先オペレーターのメールアドレス。`destinationOperatorId` を指定する場合は必須です。
+          example: operator@example.com
+          format: email
+          type: string
+        destinationOperatorId:
+          description: 譲渡先オペレーターの ID。
+          example: OP0987654321
+          type: string
+        name:
+          description: SIM 譲渡リクエストの名前。
+          example: EU regional division
+          type: string
+      type: object
     UpdateUplinkFilterRulesRequest:
-      description: VPG の IP ルール（IP フィルタリング）を置き換えるリクエスト。
+      description: VPG の IP ルール (IP フィルタリング) を置き換えるリクエスト。
       properties:
         rules:
-          description: 適用する IP ルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。
+          description: 適用する IP ルールの完全なセット。既存のルールはこのリストで完全に置き換えられます。最大 500 件まで指定できます。
+          items:
+            $ref: '#/components/schemas/UplinkFilterRule'
+          maxItems: 500
+          type: array
+      required:
+      - rules
+      type: object
+    UpdateUplinkFilterRulesResponse:
+      description: 更新後に保存された VPG の IP ルール (IP フィルタリング) のセット。
+      example:
+        rules:
+        - action: deny
+          cidr: 0.0.0.0/0
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+        - action: allow
+          cidr: 8.8.8.8/32
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+        - action: allow
+          cidr: 1.1.1.1/32
+          fromPort: 0
+          protocol: 255
+          toPort: 65535
+          type: ip
+      properties:
+        rules:
+          description: 更新後に保存された IP ルールのセット。
           items:
             $ref: '#/components/schemas/UplinkFilterRule'
           type: array
@@ -28299,7 +30081,7 @@ components:
         type: object
       type: array
     UplinkFilterRule:
-      description: IP ルール（IP フィルタリング）。宛先 IP アドレス（CIDR）、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
+      description: IP ルール (IP フィルタリング)。宛先 IP アドレス (CIDR)、プロトコル、ポート範囲でアップリンクトラフィックを判定します。
       properties:
         action:
           description: |
@@ -28312,23 +30094,31 @@ components:
           - deny
           type: string
         cidr:
-          description: '宛先の IPv4 CIDR ブロック（例: `192.0.2.0/24`）。IPv6 はサポートされていません。'
+          description: '宛先の IPv4 CIDR ブロック (例: `192.0.2.0/24`)。IPv6 はサポートされていません。'
           type: string
         fromPort:
-          default: 0
-          description: 宛先ポート範囲の開始（0〜65535）。`0` は任意のポートを意味します。
+          description: |
+            マッチ条件の下限値。意味は `protocol` によって異なります。
+
+            - TCP (`6`) / UDP (`17`): 宛先ポート範囲の開始 (0〜65535)。任意のポートに一致させるには、`fromPort` と `toPort` の両方を省略します。
+            - ICMP (`1`): ICMP タイプ。`0` は「任意」ではないことに注意してください (例: タイプ `0` は Echo Reply)。
+            - ポートを使用しないプロトコル (例: ALL (`255`)): `fromPort` と `toPort` の両方を省略するか、`fromPort` を `0`、`toPort` を `65535` に設定します。
           maximum: 65535
           minimum: 0
           type: integer
         protocol:
-          description: IP プロトコル番号（0〜255）。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
+          description: IP プロトコル番号 (0〜255)。たとえば TCP は `6`、UDP は `17`、すべてのプロトコルに一致させる場合は
             `255` です。
           maximum: 255
           minimum: 0
           type: integer
         toPort:
-          default: 0
-          description: 宛先ポート範囲の終了（0〜65535）。`fromPort` 以上である必要があります。`0` は任意のポートを意味します。
+          description: |
+            マッチ条件の上限値。意味は `protocol` によって異なります。
+
+            - TCP (`6`) / UDP (`17`): 宛先ポート範囲の終了 (0〜65535)。`fromPort` 以上である必要があります。任意のポートに一致させるには、`fromPort` と `toPort` の両方を省略します。
+            - ICMP (`1`): ICMP コード。`0` は「任意」ではないことに注意してください (コード `0` を意味します)。
+            - ポートを使用しないプロトコル (例: ALL (`255`)): `fromPort` と `toPort` の両方を省略するか、`fromPort` を `0`、`toPort` を `65535` に設定します。
           maximum: 65535
           minimum: 0
           type: integer
@@ -28791,6 +30581,10 @@ tags:
   name: Sim
 - description: '[eSIM プロファイル](/ja-jp/docs/air/provision-esim/)'
   name: SimProfileOrder
+- description: '[Connectivity Hypervisor 対応 IoT SIM](/ja-jp/docs/air/connectivity-hypervisor/)'
+  name: Euicc
+- description: '[SIM 譲渡リクエスト](/ja-jp/docs/air/transfer/) の作成、管理、実行'
+  name: SimTransferRequest
 - description: '[SORACOM Orbit](/ja-jp/docs/orbit/) Soralet'
   name: Soralet
 - description: '[通信量履歴](/ja-jp/docs/air/view-data-usage/) の取得'
