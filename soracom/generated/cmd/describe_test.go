@@ -84,7 +84,7 @@ func TestSchemaRefName(t *testing.T) {
 	}
 }
 
-func TestBodyPropertyHasFlag(t *testing.T) {
+func TestIsSupportedFlagType(t *testing.T) {
 	arrOfString := &oapiSchema{Type: "array", Items: strSchema()}
 	mapObj := &oapiSchema{Type: "object", AdditionalProperties: &oapiSchemaRef{Value: &oapiSchema{Type: "object"}}}
 
@@ -102,8 +102,8 @@ func TestBodyPropertyHasFlag(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := bodyPropertyHasFlag(&oapiSchemaRef{Value: c.schema}); got != c.want {
-				t.Errorf("bodyPropertyHasFlag(%s) = %v, want %v", c.name, got, c.want)
+			if got := isSupportedFlagType(&oapiSchemaRef{Value: c.schema}); got != c.want {
+				t.Errorf("isSupportedFlagType(%s) = %v, want %v", c.name, got, c.want)
 			}
 		})
 	}

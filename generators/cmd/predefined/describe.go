@@ -644,25 +644,27 @@ func getCLICommandsFromOperation(op *oapiOperation) []string {
 // through --body. Returning "" for those avoids telling an agent to use a
 // --flag that does not exist.
 func bodyPropertyOption(propName string, prop *oapiSchemaRef) string {
-	if !bodyPropertyHasFlag(prop) {
+	if !isSupportedFlagType(prop) {
 		return ""
 	}
 	return lib.OptionCase(cliParamNameOf(propName, prop))
 }
 
-func bodyPropertyHasFlag(prop *oapiSchemaRef) bool {
-	// The generator only flags fields whose schema has exactly one type (its
-	// Types.Is / getTypeOfParam helpers reject multi-type schemas such as
-	// ["string","null"]); the OpenAPI 3.0 definition carries a single `type`
-	// string, so an empty type is the "no single type" case handled here.
-	if prop == nil || prop.Value == nil || prop.Value.Type == "" {
+// isSupportedFlagType reports whether a schema has a type the generator can
+// express as a flag: a scalar (string/integer/number/boolean) or an array of
+// strings. The generator only flags schemas with exactly one type (its Types.Is
+// / getTypeOfParam helpers reject multi-type schemas such as ["string","null"]);
+// the OpenAPI 3.0 definition carries a single `type` string, so an empty type is
+// the "no single type" case handled here.
+func isSupportedFlagType(s *oapiSchemaRef) bool {
+	if s == nil || s.Value == nil {
 		return false
 	}
-	switch prop.Value.Type {
+	switch s.Value.Type {
 	case "string", "integer", "number", "boolean":
 		return true
 	case "array":
-		items := prop.Value.Items
+		items := s.Value.Items
 		return items != nil && items.Value != nil && items.Value.Type == "string"
 	}
 	return false
@@ -674,23 +676,15 @@ func bodyPropertyHasFlag(prop *oapiSchemaRef) bool {
 // generators/cmd/src/gen_leaf_cmd.go — the generator is the source of truth, and
 // TestDescribeOptionsMatchGeneratedFlags asserts describe stays aligned with it.
 func parameterHasFlag(p *oapiParameter) bool {
-	// Match the generator, which only flags single-type schemas; in OpenAPI 3.0
-	// `type` is a single string, so an empty type is the "no single type" case.
-	if p == nil || p.Schema == nil || p.Schema.Value == nil || p.Schema.Value.Type == "" {
+	if p == nil || p.Schema == nil || p.Schema.Value == nil {
 		return false
 	}
-	switch p.Schema.Value.Type {
-	case "string", "integer", "number", "boolean":
-		return true
-	case "array":
-		// Only arrays of strings in the query become a (string slice) flag.
-		if p.In != "query" {
-			return false
-		}
-		items := p.Schema.Value.Items
-		return items != nil && items.Value != nil && items.Value.Type == "string"
+	// getStringSliceFlags turns arrays of strings into a flag only for query
+	// parameters; path/header parameters never become slice flags.
+	if p.Schema.Value.Type == "array" && p.In != "query" {
+		return false
 	}
-	return false
+	return isSupportedFlagType(p.Schema)
 }
 
 // parameterRequired mirrors the generator's special case: operator_id is never a
