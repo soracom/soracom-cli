@@ -68,6 +68,10 @@ func SandboxOperatorsGetSignupTokenCmdRunE(cmd *cobra.Command, args []string) er
 		return err
 	}
 
+	if dryRun {
+		return ac.printDryRun(param)
+	}
+
 	body, err := ac.callAPI(param)
 	if err != nil {
 		cmd.SilenceUsage = true

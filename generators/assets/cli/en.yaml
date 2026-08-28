@@ -77,6 +77,10 @@ cli:
     get:
       summary: Show specified profile configurations.
       description: Show specified profile configurations.
+    list:
+      summary: List the names of configured profiles.
+      description: |
+        List the names of the configured profiles as a JSON array, without revealing their contents. Use this to discover which profiles exist (and whether any exist at all) before running commands. The profile files themselves contain unencrypted credentials, so do not read them directly.
   configure_sandbox:
     summary: Create configurations (profiles) for API Sandbox.
     description: Create configurations (profiles) for API Sandbox.
@@ -132,6 +136,13 @@ cli:
   gadgets:
     summary: Manage gadgets.
     description: Manage gadgets.
+  describe:
+    summary: Describe commands and their parameters as machine-readable JSON.
+    description: |
+      Output machine-readable schema information for commands so that AI agents can discover what a command accepts at runtime without parsing --help text.
+      With no arguments, lists top-level commands with the number of commands each contains (use --all to list every command, with the HTTP method and path shown for API-backed commands). With a command group (e.g. 'soracom describe sims'), lists the commands under it. With a full command name (e.g. 'soracom describe subscribers create'), outputs that command's parameters, request body and response schemas, types, required flags and enums as JSON.
+    flags:
+      all: List every command instead of only top-level commands. The HTTP method and path are included for API-backed commands.
   global-flags:
     api-key: |
       Specify an API key.
@@ -166,6 +177,8 @@ cli:
       Authentication information can be stored in a more secure location, such as a password manager, and used via external commands.
     raw-output: |
       Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
+    dry-run: |
+      Print the HTTP request (method, URL, headers and body) that would be sent as JSON, without calling the API or performing network-backed authentication. Useful for validating a request before causing any side effect. Secret and profile-supplied headers are redacted, but the request body is printed as-is: it may contain credentials you supplied (e.g. passwords or AuthKey secrets), so handle the output with care.
   groups:
     summary: List, create, update or delete groups.
     description: List, create, update or delete groups.
