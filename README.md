@@ -100,6 +100,30 @@ If you want to uninstall the `soracom` command, you can just remove `soracom` ex
 If the commands above did not work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in `PATH`.
 
 
+# Using soracom-cli with AI agents (Agent Skills)
+
+This repository ships an **Agent Skill** ([`.agents/skills/soracom-cli/SKILL.md`](.agents/skills/soracom-cli/SKILL.md)) and a top-level [`AGENTS.md`](AGENTS.md) that teach AI coding agents how to drive the `soracom` command safely and efficiently — discovering command schemas with `soracom describe`, previewing requests with `--dry-run`, shrinking responses with `--fields`, and handling credentials without ever reading plaintext secrets.
+
+The `soracom` binary is distributed on its own (Homebrew, mise, install script, release archives), so the skill does **not** travel with it. Install the skill into your agent with one of the following, then use `soracom` as usual:
+
+```shell
+# Cross-agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more) — Vercel's skills CLI
+npx skills add soracom/soracom-cli
+
+# GitHub CLI (v2.90.0+)
+gh skill install soracom/soracom-cli
+
+# Claude Code plugin marketplace
+#   run inside Claude Code:
+#   /plugin marketplace add soracom/soracom-cli
+#   /plugin install soracom-cli@soracom
+```
+
+`npx skills` and `gh skill` follow the [open Agent Skills specification](https://github.com/vercel-labs/skills) and place the skill in your agent's skills directory (e.g. the shared `.agents/skills/` for many agents, or `~/.claude/skills/` for Claude Code at user scope). The Claude Code plugin (defined in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)) bundles the same skill and keeps it up to date via `/plugin marketplace update`.
+
+> When an agent is working **inside a clone of this repository**, it auto-discovers the skill at `.agents/skills/soracom-cli/` and the guidance in `AGENTS.md` without any install step.
+
+
 # How to use
 
 ## Basic usage

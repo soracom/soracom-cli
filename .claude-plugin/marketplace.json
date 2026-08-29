@@ -1,0 +1,22 @@
+{
+  "name": "soracom",
+  "owner": {
+    "name": "Soracom, Inc."
+  },
+  "description": "SORACOM's Claude Code plugin marketplace. Provides the soracom-cli agent skill for driving the soracom CLI safely from AI agents.",
+  "plugins": [
+    {
+      "name": "soracom-cli",
+      "source": "./",
+      "description": "Agent skill for the soracom CLI: schema discovery (`soracom describe`), `--dry-run` validation, `--fields` projection, and credential-safe authentication.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Soracom, Inc."
+      },
+      "homepage": "https://github.com/soracom/soracom-cli",
+      "license": "MIT",
+      "keywords": ["soracom", "iot", "cli", "sim", "agent-skill"],
+      "category": "iot"
+    }
+  ]
+}
