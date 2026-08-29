@@ -36,6 +36,10 @@ generate: ## Generate source code for soracom-cli
 	./generators/cmd/src/generate-cmd -a generators/assets/soracom-api.en.yaml -s generators/assets/sandbox/soracom-sandbox-api.en.yaml -t generators/cmd/templates -p generators/cmd/predefined -o soracom/generated/cmd/
 	@echo 'Copying assets to embed ...'
 	cp -r generators/assets/ soracom/generated/cmd/assets/
+	@echo 'Copying agent skill to embed ...'
+	mkdir -p soracom/generated/cmd/assets/skill
+	cp AGENTS.md soracom/generated/cmd/assets/skill/AGENTS.md
+	cp .agents/skills/soracom-cli/SKILL.md soracom/generated/cmd/assets/skill/SKILL.md
 	rm -rf soracom/winres/
 	cp -r generators/winres/ soracom/winres/
 	make format

@@ -21,8 +21,19 @@ var providedAuthKey string
 var providedProfileCommand string
 var rawOutput bool
 var noRetryOnError bool
+var dryRun bool
+var outputFields []string
 
 func InitRootCmd() {
+	// When structured JSON errors are opted in (SORACOM_JSON_ERRORS), suppress
+	// cobra's default error printing AND its usage dump so failures are reported
+	// only as structured JSON via PrintError. Setting these on the root command
+	// also covers flag-parsing errors, which happen before any RunE runs and
+	// would otherwise print the usage block to stdout.
+	if jsonErrorsEnabled() {
+		RootCmd.SilenceErrors = true
+		RootCmd.SilenceUsage = true
+	}
 	RootCmd.PersistentFlags().StringVar(&specifiedProfileName, "profile", "", TRCLI("cli.global-flags.profile"))
 	RootCmd.PersistentFlags().StringVar(&specifiedCoverageType, "coverage-type", "", TRCLI("cli.global-flags.coverage-type"))
 	RootCmd.PersistentFlags().StringVar(&providedAPIKey, "api-key", "", TRCLI("cli.global-flags.api-key"))
@@ -32,6 +43,8 @@ func InitRootCmd() {
 	RootCmd.PersistentFlags().StringVar(&providedProfileCommand, "profile-command", "", TRCLI("cli.global-flags.profile-command"))
 	RootCmd.PersistentFlags().BoolVar(&rawOutput, "raw-output", false, TRCLI("cli.global-flags.raw-output"))
 	RootCmd.PersistentFlags().BoolVar(&noRetryOnError, "no-retry-on-error", false, TRCLI("cli.global-flags.no-retry-on-error"))
+	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, TRCLI("cli.global-flags.dry-run"))
+	RootCmd.PersistentFlags().StringSliceVar(&outputFields, "fields", []string{}, TRCLI("cli.global-flags.fields"))
 
 	InitAllSubCommands()
 }

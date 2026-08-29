@@ -1,0 +1,29 @@
+{
+  "skill_name": "soracom-cli",
+  "evals": [
+    {
+      "id": "create-group-harvest",
+      "prompt": "Using the soracom CLI, give me the exact command to create a SORACOM group named 'factory-floor-1' with SORACOM Harvest enabled (and nothing else enabled).",
+      "expected_output": "Uses --body with JSON {configuration:{SoracomHarvest:{enabled:true}}, tags:{name:'factory-floor-1'}}; does NOT use nonexistent --configuration/--tags flags.",
+      "files": []
+    },
+    {
+      "id": "put-tags-array",
+      "prompt": "Using the soracom CLI, give me the exact command to set tags name=line2 and zone=north on the group whose id is g-abc123.",
+      "expected_output": "Uses --body with a JSON ARRAY of {tagName,tagValue} objects; --group-id g-abc123; does NOT use nonexistent --tag-name flags or a JSON object.",
+      "files": []
+    },
+    {
+      "id": "dry-run-preview",
+      "prompt": "Using the soracom CLI, I want to PREVIEW (without actually sending anything to the API) what assigning SIM 8981000000000000001 to group g-xyz would send. Give the command.",
+      "expected_output": "Uses sims set-group --sim-id ... --group-id g-xyz with --dry-run.",
+      "files": []
+    },
+    {
+      "id": "fields-slim",
+      "prompt": "Using the soracom CLI, list SIMs but only keep each SIM's imsi and online session status to save space/tokens. Give the command.",
+      "expected_output": "soracom sims list --fields imsi,sessionStatus.online (dot-notation field projection).",
+      "files": []
+    }
+  ]
+}
