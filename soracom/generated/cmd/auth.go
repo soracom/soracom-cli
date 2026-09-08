@@ -93,6 +93,10 @@ func AuthCmdRunE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	if dryRun {
+		return ac.printDryRun(param)
+	}
+
 	body, err := ac.callAPI(param)
 	if err != nil {
 		cmd.SilenceUsage = true

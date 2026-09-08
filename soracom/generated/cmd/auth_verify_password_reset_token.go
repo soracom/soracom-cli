@@ -63,6 +63,10 @@ func AuthVerifyPasswordResetTokenCmdRunE(cmd *cobra.Command, args []string) erro
 		return err
 	}
 
+	if dryRun {
+		return ac.printDryRun(param)
+	}
+
 	body, err := ac.callAPI(param)
 	if err != nil {
 		cmd.SilenceUsage = true
