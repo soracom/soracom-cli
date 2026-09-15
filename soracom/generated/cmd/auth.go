@@ -156,6 +156,13 @@ func buildQueryForAuthCmd() url.Values {
 
 func buildBodyForAuthCmd() (string, error) {
 	var result map[string]interface{}
+	if AuthCmdBody == "" && specifiedProfileName != "" {
+		var err error
+		result, err = getAuthBodyFromProfile(specifiedProfileName)
+		if err != nil {
+			return "", err
+		}
+	}
 
 	if AuthCmdBody != "" {
 		var b []byte

@@ -149,13 +149,13 @@ func getSpecifiedCoverageType() string {
 	return specifiedCoverageType
 }
 
-func loadProfile(profileName string) (*profile, error) {
+func readProfileFile(profileName string) ([]byte, error) {
 	dir, err := getProfileDir()
 	if err != nil {
 		return nil, err
 	}
 
-	path := filepath.Join(dir, profileName+".json")
+	path := filepath.Join(dir, sanitize.BaseName(profileName)+".json")
 
 	// check if permission is less than 0600
 	tooOpen, err := lib.IsFilePermissionTooOpen(path)
@@ -172,7 +172,11 @@ func loadProfile(profileName string) (*profile, error) {
 	}
 
 	// #nosec
-	b, err := os.ReadFile(path)
+	return os.ReadFile(path)
+}
+
+func loadProfile(profileName string) (*profile, error) {
+	b, err := readProfileFile(profileName)
 	if err != nil {
 		return nil, err
 	}
@@ -189,6 +193,45 @@ func loadProfile(profileName string) (*profile, error) {
 	}
 
 	return &p, nil
+}
+
+func getAuthBodyFromProfile(profileName string) (map[string]interface{}, error) {
+	b, err := readProfileFile(profileName)
+	if err != nil {
+		return nil, err
+	}
+
+	var result map[string]interface{}
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	if cmdStr, ok := result["profileCommand"].(string); ok && cmdStr != "" {
+		args, err := shellwords.Parse(cmdStr)
+		if err != nil {
+			return nil, err
+		}
+		if len(args) > 0 {
+			cmdBytes, err := exec.Command(args[0], args[1:]...).Output()
+			if err != nil {
+				return nil, err
+			}
+			var cmdResult map[string]interface{}
+			err = json.Unmarshal(cmdBytes, &cmdResult)
+			if err != nil {
+				return nil, err
+			}
+			result = cmdResult
+		}
+	}
+
+	if un, ok := result["username"]; ok && result["userName"] == nil {
+		result["userName"] = un
+		delete(result, "username")
+	}
+
+	return result, nil
 }
 
 func saveProfile(profileName string, prof *profile, overwrite bool) error {

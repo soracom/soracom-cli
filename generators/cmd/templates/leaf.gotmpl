@@ -375,6 +375,16 @@ func buildQueryFor{{$suffix}}() url.Values {
 func buildBodyFor{{$suffix}}() (string, error) {
   var result map[string]interface{}
 
+  {{- if eq .OperationID "auth"}}
+  if {{$prefix}}Body == "" && specifiedProfileName != "" {
+    var err error
+    result, err = getAuthBodyFromProfile(specifiedProfileName)
+    if err != nil {
+      return "", err
+    }
+  }
+  {{- end}}
+
   if {{$prefix}}Body != "" {
     var b []byte
     var err error
