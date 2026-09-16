@@ -90,6 +90,7 @@ func AuthCmdRunE(cmd *cobra.Command, args []string) error {
 
 	param, err := collectAuthCmdParams(ac)
 	if err != nil {
+		cmd.SilenceUsage = true
 		return err
 	}
 

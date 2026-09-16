@@ -226,6 +226,10 @@ func getAuthBodyFromProfile(profileName string) (map[string]interface{}, error) 
 		}
 	}
 
+	if sp, ok := result["sourceProfile"].(string); ok && strings.TrimSpace(sp) != "" {
+		return nil, fmt.Errorf(TRCLI("cli.auth.error.source_profile"), profileName)
+	}
+
 	if un, ok := result["username"]; ok && result["userName"] == nil {
 		result["userName"] = un
 		delete(result, "username")

@@ -150,6 +150,9 @@ func {{$cmdvar}}RunE(cmd *cobra.Command, args []string) error {
 
     param, err := collect{{$cmdvar}}Params(ac)
     if err != nil {
+      {{- if eq .OperationID "auth"}}
+      cmd.SilenceUsage = true
+      {{- end}}
       return err
     }
 

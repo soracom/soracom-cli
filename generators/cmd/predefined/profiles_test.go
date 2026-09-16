@@ -84,3 +84,29 @@ func TestGetAuthBodyFromProfile_NonExistent(t *testing.T) {
 	_, err := getAuthBodyFromProfile("non-existent")
 	assert.Error(t, err)
 }
+
+func TestGetAuthBodyFromProfile_SourceProfile(t *testing.T) {
+	tmpDir := t.TempDir()
+	t.Setenv("SORACOM_PROFILE_DIR", tmpDir)
+
+	profileJSON := `{"operatorId":"OP123","userName":"sam-user","sourceProfile":"parent-profile"}`
+	err := os.WriteFile(filepath.Join(tmpDir, "test-switch.json"), []byte(profileJSON), 0600)
+	assert.NoError(t, err)
+
+	_, err = getAuthBodyFromProfile("test-switch")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "sourceProfile")
+}
+
+func TestGetAuthBodyFromProfile_ProfileCommand_SourceProfile(t *testing.T) {
+	tmpDir := t.TempDir()
+	t.Setenv("SORACOM_PROFILE_DIR", tmpDir)
+
+	profileJSON := `{"profileCommand":"echo '{\"operatorId\":\"OP123\",\"sourceProfile\":\"parent-profile\"}'"}`
+	err := os.WriteFile(filepath.Join(tmpDir, "test-cmd-switch.json"), []byte(profileJSON), 0600)
+	assert.NoError(t, err)
+
+	_, err = getAuthBodyFromProfile("test-cmd-switch")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "sourceProfile")
+}
