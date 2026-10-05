@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Soracom API v1
   title: Soracom API
-  version: 20260730-014026
+  version: 20261005-025232
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -3211,6 +3211,15 @@ paths:
                 $ref: '#/components/schemas/EuiccProfile'
           description: Profile information for the Connectivity Hypervisor-capable
             IoT SIM after the profile order request.
+        "400":
+          description: |
+            Invalid request. Examples of invalid bundle specifications include:
+
+            - No bundle is specified for a profile type that requires one.
+            - More than one bundle is specified.
+            - The specified bundle name is not orderable with the profile type.
+
+            `rollbackOnConnectivityFailure` set to `true` is also rejected when `activateImmediately` is omitted or `false`.
         "404":
           description: No such Connectivity Hypervisor-capable IoT SIM found.
       security:
@@ -3310,6 +3319,19 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rollbackOnConnectivityFailure:
+                  default: false
+                  type: boolean
+              type: object
+        description: |
+          Profile activation options.
+
+          Set `rollbackOnConnectivityFailure` to `true` to authorize the eUICC to roll back to the previously enabled profile when it cannot establish connectivity with the newly enabled profile. The activation itself completes first, and the rollback is triggered afterwards, when the IPA on the device cannot report the activation result back to the eIM.
       responses:
         "200":
           content:
@@ -5379,6 +5401,83 @@ paths:
       - Group
       x-soracom-cli:
       - groups delete-config
+  /groups/{group_id}/sims:
+    get:
+      description: Returns a list of SIMs that belong to the specified group by group
+        ID.
+      operationId: listSimsInGroup
+      parameters:
+      - description: ID of the target Group.
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: 'Status for filtering the search. Can specify multiple values
+          delimited by `|`. Valid values include: `active`, `inactive`, `ready`, `standby`,
+          `testing`, `instock`, `shipped`, `suspended`, and `terminated`.'
+        in: query
+        name: status_filter
+        required: false
+        schema:
+          type: string
+      - description: |
+          Speed class for filtering the search. Can specify multiple values delimited by `|`. Valid values include:
+
+          - `s1.minimum`
+          - `s1.slow`
+          - `s1.standard`
+          - `s1.fast`
+          - `s1.4xfast`
+          - `s1.8xfast`
+          - `u1.standard`
+          - `u1.slow`
+          - `t1.standard`
+          - `arc.standard`
+        in: query
+        name: speed_class_filter
+        required: false
+        schema:
+          type: string
+      - description: Maximum number of SIMs to retrieve (1 to 100). If omitted, or
+          if a value outside this range is specified, 100 is used. However, the number
+          of SIMs returned may be less than the specified value.
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: The value of the `x-soracom-next-key` header from the previous
+          response. Specify this to retrieve the next page.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Sim'
+                type: array
+          description: A list of SIMs.
+        "404":
+          description: The specified group does not exist.
+      security:
+      - api_key: []
+        api_token: []
+      summary: List SIMs in a group
+      tags:
+      - Group
+      x-soracom-cli:
+      - groups list-sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /groups/{group_id}/subscribers:
     get:
       description: Returns a list of subscribers that belong to the specified group
@@ -10310,6 +10409,191 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+  /query/euiccs:
+    get:
+      description: |
+        Searches for Connectivity Hypervisor-capable IoT SIMs using specified query parameters.
+
+        - Supports partial matching.
+        - Case-insensitive.
+        - Multiple search values can be specified for the following parameters by repeating the parameter name (e.g., `name=foo&name=bar`). You can also specify multiple search values by using comma-separated values in a single occurrence of the parameter (e.g., `name=foo,bar`). Both examples specify two search values for `name`: `foo` and `bar`.
+            - `any`
+            - `sim_id`
+            - `name`
+            - `imsi`
+            - `iccid`
+            - `tag`
+            - `module_type`
+            - `profile_type`
+            - `active_profile_type`
+        - Each search value must be at least 2 characters long, regardless of how multiple values are specified. For example, `name=ab&name=c` and `name=ab,c` are invalid because `c` is only 1 character long.
+        - Multiple search values specified for the same parameter are combined with OR. When multiple query parameters are specified, they are combined with AND. Unlike the [Query:searchSims API](#/Query/searchSims), the `search_type` parameter is not available.
+
+        **Warning**: Use this API when the SIM ID of the target Connectivity Hypervisor-capable IoT SIM is unknown, or when you want to retrieve a list of Connectivity Hypervisor-capable IoT SIMs that match certain conditions. If you know the SIM ID, please use the [Euicc:getEuicc API](#/Euicc/getEuicc) instead.
+      operationId: searchEuiccs
+      parameters:
+      - description: |
+          Value to search for across every attribute that has its own search parameter. Returns Connectivity Hypervisor-capable IoT SIMs whose `sim_id`, `name`, `imsi`, `iccid`, or `tag` matches the specified value.
+
+          Use this parameter when you do not know which attribute holds the value you have. To search a specific attribute, use that attribute's parameter instead. The filter parameters (`module_type`, `profile_type`, `active_profile_type`, and `session_status`) are not covered by this parameter.
+        explode: true
+        in: query
+        name: any
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Identifier of the Connectivity Hypervisor-capable IoT SIM to
+          search.
+        explode: true
+        in: query
+        name: sim_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Name of the Connectivity Hypervisor-capable IoT SIM to search.
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IMSI to search.
+        explode: true
+        in: query
+        name: imsi
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: ICCID to search. An identifier used to identify a profile on
+          the Connectivity Hypervisor-capable IoT SIM.
+        explode: true
+        in: query
+        name: iccid
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: String of tag values of the Connectivity Hypervisor-capable IoT
+          SIM to search. For more information, please refer to [Using Tags with Soracom
+          Air](/docs/air/tags).
+        explode: true
+        in: query
+        name: tag
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          The form factor of the Connectivity Hypervisor-capable IoT SIM to search. Use exact match for the search.
+
+          - `mini`: standard (2FF) size.
+          - `micro`: micro (3FF) size.
+          - `nano`: nano (4FF) size.
+          - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it).
+          - `embedded`: Embedded (MFF2).
+          - `integrated`: Embedded (iSIM).
+        explode: true
+        in: query
+        name: module_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          The profile type to search. Use exact match for the search. Every profile held by the Connectivity Hypervisor-capable IoT SIM is evaluated, whether or not it is currently active. To match only the active profile, use `active_profile_type` instead.
+
+          This is a free-form profile type string, not a fixed set of values (e.g. `SGEPR31`, `MJEPR21`, `Unmanaged`); new profile types may be added over time.
+        explode: true
+        in: query
+        name: profile_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          The type of the currently active profile to search. Use exact match for the search. Only the Connectivity Hypervisor-capable IoT SIM's active profile is evaluated; other profiles held by the Connectivity Hypervisor-capable IoT SIM are not matched. To match any profile held by the Connectivity Hypervisor-capable IoT SIM, use `profile_type` instead.
+
+          This is a free-form profile type string, not a fixed set of values (e.g. `SGEPR31`, `MJEPR21`, `Unmanaged`); new profile types may be added over time.
+        explode: true
+        in: query
+        name: active_profile_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Status of the session to search. Specify one of the following:
+
+          - `NA`: Any.
+          - `ONLINE`: Online.
+          - `OFFLINE`: Offline.
+        in: query
+        name: session_status
+        required: false
+        schema:
+          default: NA
+          enum:
+          - NA
+          - ONLINE
+          - OFFLINE
+          type: string
+      - description: The maximum number of items to retrieve. Specify a value from
+          1 to 100.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+      - description: The SIM ID of the last Connectivity Hypervisor-capable IoT SIM
+          retrieved on the previous page. By specifying this parameter, you can continue
+          to retrieve the list from the next Connectivity Hypervisor-capable IoT SIM
+          onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Euicc'
+                type: array
+          description: Returns result of searching.
+        "400":
+          description: Invalid search queries.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Search Connectivity Hypervisor-capable IoT SIMs by query terms
+      tags:
+      - Query
+      x-soracom-cli:
+      - query euiccs
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/sigfox_devices:
     get:
       description: |
@@ -10450,7 +10734,7 @@ paths:
 
         - Supports partial matching.
         - Case-insensitive.
-        - Multiple search values can be specified for the following parameters by separating each value with a comma `,` (or `%2C` when URL-encoded). Note that the literal character `,` itself cannot be used as part of a search value.
+        - Multiple search values can be specified for the following parameters by repeating the parameter name (e.g., `name=foo&name=bar`). You can also specify multiple search values by using comma-separated values in a single occurrence of the parameter (e.g., `name=foo,bar`). Both examples specify two search values for `name`: `foo` and `bar`.
             - `name`
             - `group`
             - `sim_id`
@@ -10464,8 +10748,14 @@ paths:
             - `module_type`
             - `active_profile_id`
             - `imei`
-        - Each search value must be at least 2 characters long. When using a comma `,` to specify multiple search values, each value must also be at least 2 characters long (e.g., `ab,c` is invalid because `c` is only 1 character long).
-        - When multiple query parameters are specified, the search type (AND search or OR search) can be specified using `search_type`.
+        - Each search value must be at least 2 characters long, regardless of how multiple values are specified. For example, `name=ab&name=c` and `name=ab,c` are invalid because `c` is only 1 character long.
+        - When multiple query parameters are specified, use `search_type` to select an AND or OR search.
+
+          However, the following condition is not controlled by `search_type` and is always applied as an AND condition:
+
+          - `session_status` when set to `ONLINE` or `OFFLINE`
+
+          All other search conditions are combined according to `search_type`.
 
         **Warning**: When this API permission is allowed, it grants the authority to search and retrieve all SIMs that include their group information.
 
@@ -10605,6 +10895,8 @@ paths:
           - `NA`: Any.
           - `ONLINE`: Online.
           - `OFFLINE`: Offline.
+
+          When set to `ONLINE` or `OFFLINE`, this condition is always applied as an AND condition and is not affected by `search_type`.
         in: query
         name: session_status
         required: false
@@ -10666,10 +10958,8 @@ paths:
           items:
             type: string
           type: array
-      - description: Active profile ID of the IoT SIM to search. Supports partial
-          matching (e.g., specifying `0001234` matches `8981100001234567890`). Useful
-          for finding IoT SIMs whose active profile matches a specific identifier
-          (e.g., a SORACOM profile ID prefix).
+      - description: ID of the profile currently active on the IoT SIM. Supports partial
+          matching. For example, specifying `0001234` matches `8981100001234567890`.
         explode: true
         in: query
         name: active_profile_id
@@ -10679,7 +10969,7 @@ paths:
             type: string
           type: array
       - description: IMEI of the device on the IoT SIM's current session. Supports
-          partial matching (e.g., specifying `45678` matches `123456789012345`).
+          partial matching. For example, specifying `45678` matches `123456789012345`.
         explode: true
         in: query
         name: imei
@@ -10689,10 +10979,10 @@ paths:
             type: string
           type: array
       - description: |
-          Filters IoT SIMs by whether they have a secondary subscriber that is still being added via the [Sim:addSubscription API](#/Sim/addSubscription) (i.e., the addition has not yet completed).
+          Filters IoT SIMs based on whether an additional subscription is being added via the [Sim:addSubscription API](#/Sim/addSubscription).
 
-          - `true`: returns only IoT SIMs that have a secondary subscriber being added.
-          - `false`: returns only IoT SIMs that do not have any secondary subscriber being added.
+          - `true`: returns only IoT SIMs where an additional subscription is still being added.
+          - `false`: returns only IoT SIMs where no additional subscriptions are currently being added.
         in: query
         name: subscribers_in_transit
         required: false
@@ -10716,12 +11006,16 @@ paths:
         schema:
           type: string
       - description: |
-          The type of search condition.
+          How to combine search conditions.
 
           - AND: SIMs which match all of the search parameters will be returned (default).
           - OR: SIMs which match any of the search parameters will be returned.
 
-          If the value of a search parameter contains a comma `,` (or `%2C` when URL-encoded), the value will be split at each comma and treated as multiple search values, each of which will be evaluated based on the specified AND or OR condition.
+          When multiple search values are specified by repeating a parameter or by using comma-separated values in a single occurrence of the parameter, each search value is evaluated based on the specified AND or OR condition.
+
+          However, some parameters are not affected by `search_type`.
+
+          - The `session_status` query parameter is always applied as an AND condition when set to `ONLINE` or `OFFLINE`.
         in: query
         name: search_type
         required: false
@@ -10750,6 +11044,316 @@ paths:
       - Query
       x-soracom-cli:
       - query sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /query/sims_by_group/{group_id}:
+    get:
+      description: |
+        Searches for SIMs within the group specified by `group_id` in the path.
+
+        Because the path `group_id` always restricts the result, a SIM that does not belong to the specified group is never returned, even when `search_type` is `OR`. This makes the endpoint suitable for use cases such as granting a SAM user access only to the SIMs in a specific group.
+
+        - Supports partial matching.
+        - Case-insensitive.
+        - Multiple search values can be specified for the following parameters by repeating the parameter name (e.g., `name=foo&name=bar`). You can also specify multiple search values by using comma-separated values in a single occurrence of the parameter (e.g., `name=foo,bar`). Both examples specify two search values for `name`: `foo` and `bar`.
+            - `name`
+            - `sim_id`
+            - `imsi`
+            - `msisdn`
+            - `iccid`
+            - `serial_number`
+            - `tag`
+            - `status`
+            - `subscription`
+            - `module_type`
+            - `active_profile_id`
+            - `imei`
+        - Each search value must be at least 2 characters long, regardless of how multiple values are specified. For example, `name=ab&name=c` and `name=ab,c` are invalid because `c` is only 1 character long.
+        - Each search value for `name`, `sim_id`, `imsi`, `msisdn`, `iccid`, `serial_number`, `module_type`, `subscription`, `active_profile_id`, and `imei` must be at most 100 characters long. Each search value for `tag` must be at most 512 characters long. When specifying comma-separated values, these limits apply to each value, not to the combined length.
+        - When multiple query parameters are specified, use `search_type` to select an AND or OR search.
+
+          However, the following conditions are not controlled by `search_type` and are always applied as AND conditions:
+
+          - The `group_id` specified in the path
+          - `session_status` when set to `ONLINE` or `OFFLINE`
+
+          All other search conditions are combined according to `search_type`.
+
+        **Warning**: Unlike the [Query:searchSims API](#/Query/searchSims), this API does not support the `group` (group name) parameter. Specify the group using `group_id` in the path.
+
+        **Warning**: When this API permission is allowed, it grants the authority to specify any `group_id` and search and retrieve IoT SIMs in all groups. To limit access to IoT SIMs in specific groups, set the `condition` field to compare `pathVariable('group_id')` with the group IDs that the SAM user is allowed to access. For details, see [Users & Roles](/en/docs/security/users-and-roles/).
+
+        **Warning**: Use this API when the SIM ID of the target IoT SIM is unknown, or when you want to retrieve a list of SIMs in the group that match certain conditions. If you know the SIM ID, please use the [Sim:getSim API](#/Sim/getSim) instead.
+      operationId: searchSimsByGroup
+      parameters:
+      - description: ID of the [group](/en/docs/groups/) to which the IoT SIM belongs.
+          This is always applied as a mandatory AND condition.
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: Name to search.
+        examples:
+          0_no_filter:
+            summary: No filter
+            value: []
+          1_filter_example:
+            summary: Search for IoT SIMs with specific name
+            value:
+            - example-sim
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Identifier of the SIM to search.
+        explode: true
+        in: query
+        name: sim_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IMSI to search.
+        explode: true
+        in: query
+        name: imsi
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: MSISDN to search.
+        explode: true
+        in: query
+        name: msisdn
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: ICCID to search. An identifier used to identify a SIM card or
+          virtual IoT SIM (Virtual SIM/Subscriber).
+        explode: true
+        in: query
+        name: iccid
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Serial number to search. This is set only for IoT SIMs for specific
+          regions.
+        explode: true
+        in: query
+        name: serial_number
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: String of tag values to search. For more information, please
+          refer to [Using Tags with Soracom Air](/docs/air/tags).
+        explode: true
+        in: query
+        name: tag
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Bundles type to search.
+        explode: true
+        in: query
+        name: bundles
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Status of the IoT SIM to search.
+
+          - `ready`
+          - `active`
+          - `inactive`
+          - `standby`
+          - `suspended`
+          - `terminated`
+          - `shipped`
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Status of the session to search. Specify one of the following:
+
+          - `NA`: Any.
+          - `ONLINE`: Online.
+          - `OFFLINE`: Offline.
+
+          When set to `ONLINE` or `OFFLINE`, this condition is always applied as an AND condition and is not affected by `search_type`.
+        in: query
+        name: session_status
+        required: false
+        schema:
+          default: NA
+          enum:
+          - NA
+          - ONLINE
+          - OFFLINE
+          format: string
+          type: string
+      - description: |
+          Subscription to search. Use exact match for the search. If specifying multiple subscriptions, please set `search_type` to `OR`.
+
+          - For Japan coverage, specify one of the following:
+            - `plan-D`: plan-D (without bundle), plan-D (D-500MB).
+            - `plan-K2`: plan-K2 (K2-500MB).
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`: Virtual SIM/Subscriber.
+          - For global coverage, specify one of the following:
+            - `plan01s`
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume.
+            - `planX3`: planX3 (X3-5MB), planX3.
+            - `planP1`
+            - `plan-US`
+            - `plan-US-max`
+            - `planX1`
+            - `planXM1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`: Virtual SIM/Subscriber.
+        explode: true
+        in: query
+        name: subscription
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          The form factor of the physical SIM to search.
+
+          - `mini`: standard (2FF) size.
+          - `micro`: micro (3FF) size.
+          - `nano`: nano (4FF) size.
+          - `trio`: 3 in 1 (can be cut into 2FF/3FF/4FF depending on how you cut it).
+          - `embedded`: Embedded (MFF2).
+          - `virtual`: Virtual SIM/Subscriber.
+          - `integrated`: Embedded (iSIM).
+          - `profilePackage`: Profile Package (eSIM profile).
+        explode: true
+        in: query
+        name: module_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: ID of the profile currently active on the IoT SIM. Supports partial
+          matching. For example, specifying `0001234` matches `8981100001234567890`.
+        explode: true
+        in: query
+        name: active_profile_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IMEI of the device on the IoT SIM's current session. Supports
+          partial matching. For example, specifying `45678` matches `123456789012345`.
+        explode: true
+        in: query
+        name: imei
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters IoT SIMs based on whether an additional subscription is being added via the [Sim:addSubscription API](#/Sim/addSubscription).
+
+          - `true`: returns only IoT SIMs where an additional subscription is still being added.
+          - `false`: returns only IoT SIMs where no additional subscriptions are currently being added.
+        in: query
+        name: subscribers_in_transit
+        required: false
+        schema:
+          type: boolean
+      - description: The maximum number of items to retrieve.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          format: int32
+          maximum: 100
+          type: integer
+      - description: The SIM ID of the last SIM retrieved on the previous page. By
+          specifying this parameter, you can continue to retrieve the list from the
+          next SIM onward.
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: |
+          How to combine search conditions.
+
+          - AND: SIMs which match all of the search parameters will be returned (default).
+          - OR: SIMs which match any of the search parameters will be returned.
+
+          When multiple search values are specified by repeating a parameter or by using comma-separated values in a single occurrence of the parameter, each search value is evaluated based on the specified AND or OR condition.
+
+          However, some parameters are not affected by `search_type`.
+
+          - The path `group_id` is always applied as an AND condition.
+          - The `session_status` query parameter is always applied as an AND condition when set to `ONLINE` or `OFFLINE`.
+        in: query
+        name: search_type
+        required: false
+        schema:
+          default: and
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Sim'
+                type: array
+          description: Returns result of searching.
+        "400":
+          description: Invalid search queries. Also returned when the unsupported
+            `group` (group name) parameter is specified.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Search SIMs scoped to a group
+      tags:
+      - Query
+      x-soracom-cli:
+      - query sims-by-group
       x-soracom-cli-pagination:
         request:
           param: last_evaluated_key
@@ -11724,7 +12328,7 @@ paths:
       - sim-transfer-requests list
     post:
       description: |
-        Create a new transfer request in `DRAFT` status. The request can be created with an empty SIM list and populated later. Draft requests have a TTL of 90 days from creation. When `destinationOperatorId` is provided, `destinationOperatorEmail` is required for verification.
+        Create a new transfer request in `DRAFT` status. The request can be created with an empty SIM list and populated later. Draft requests have a TTL of 90 days from creation. When `destinationOperatorId` is provided, the destination operator's primary email address must be provided as `destinationOperatorEmail` for verification.
       operationId: createTransferRequest
       requestBody:
         content:
@@ -11754,7 +12358,7 @@ paths:
   /sim_transfer_requests/{transfer_request_id}:
     delete:
       description: |
-        Delete an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Implemented as a soft delete (sets TTL to the current time, allowing DynamoDB TTL to clean up).
+        Delete an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request.
       operationId: deleteTransferRequest
       parameters:
       - description: The ID of the transfer request.
@@ -11810,7 +12414,7 @@ paths:
       - sim-transfer-requests get
     patch:
       description: |
-        Update an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Can modify destination operator, destination email, and name. All fields are optional; only provided fields will be updated. When `destinationOperatorId` is provided, `destinationOperatorEmail` is required. Updates refresh the TTL to 90 days.
+        Update an existing `DRAFT` or `DRAFT_VALIDATION_FAILED` transfer request. Can modify the destination operator, the destination operator's primary email address, and the name. All fields are optional; any field omitted from the request is set to `null`. When `destinationOperatorId` is provided, the destination operator's primary email address must be provided as `destinationOperatorEmail` for verification. Updates refresh the TTL to 90 days.
       operationId: updateTransferRequest
       parameters:
       - description: The ID of the transfer request.
@@ -12055,7 +12659,7 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/transfer:
     put:
       description: |
-        Approve and execute a transfer request in `REQUESTING` status. Only available to the destination operator. Validates payment method, group, and operator compatibility before initiating the asynchronous transfer. On approval the status transitions to `TRANSFERRING`. If the approval occurs during the monthly transfer-restriction period (15:00 UTC two days before the last day of each month through 15:00 UTC on the 2nd of the following month — for July 2026, `2026-07-29T15:00:00Z` through `2026-08-02T15:00:00Z`), the status transition is persisted but the SIM transfer is deferred: a downstream scheduler submits the transfer after the restriction period ends. The request remains in `TRANSFERRING` status throughout.
+        Approve and execute a transfer request in `REQUESTING` status. Only available to the destination operator. Validates payment method, group, and operator compatibility before initiating the asynchronous transfer. On approval the status transitions to `TRANSFERRING`. If the approval occurs during the monthly transfer-restriction period (15:00 UTC two days before the last day of each month through 15:00 UTC on the 2nd of the following month — for July 2026, `2026-07-29T15:00:00Z` through `2026-08-02T15:00:00Z`), the SIM transfer is deferred. The request remains in `TRANSFERRING` status, and transfer processing begins after the monthly transfer-restriction period ends.
       operationId: executeTransferRequest
       parameters:
       - description: The ID of the transfer request.
@@ -12072,9 +12676,10 @@ paths:
         required: true
       responses:
         "202":
-          description: Accepted. The transfer has started, or has been deferred if
-            approved during the month-boundary restriction period (the request stays
-            in `TRANSFERRING` status until a downstream scheduler submits the transfer).
+          description: Accepted. If approved during the monthly transfer-restriction
+            period, transfer processing begins after the monthly transfer-restriction
+            period ends. The request remains in `TRANSFERRING` status until transfer
+            processing begins.
         "400":
           description: Request is not in `REQUESTING` status, invalid payment method,
             invalid group, or operator validation failed.
@@ -14088,6 +14693,38 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sims/iccid/{iccid}:
+    get:
+      description: Gets information about the IoT SIM that owns the profile with the
+        specified ICCID. Use it to find the SIM ID of an IoT SIM that supports eUICC
+        (such as a Connectivity Hypervisor-capable IoT SIM) when only the ICCID of
+        one of its profiles is known. The response is the same as the [Sim:getSim
+        API](#/Sim/getSim).
+      operationId: getSimByIccid
+      parameters:
+      - description: The ICCID of a profile on the target IoT SIM.
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
+          description: The IoT SIM's detailed information.
+        "404":
+          description: No IoT SIM found that owns a profile with the specified ICCID.
+      security:
+      - api_key: []
+        api_token: []
+      summary: Gets information about the IoT SIM identified by an ICCID
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get-by-iccid
   /sora_cam/devices:
     get:
       description: |
@@ -23011,7 +23648,7 @@ components:
           minimum: 1
           type: integer
         speedClass:
-          description: |-
+          description: |
             The speed class of the eSIM profile to be ordered. Specify one of the following. Please specify the speed class that matches the subscription.
 
             - For plan01s, planP1, planX1, planX2, planX3:
@@ -23045,7 +23682,7 @@ components:
             - `planX1`
             - `planX2`
             - `planX3`: Only available for customers located in the European Union and United Kingdom.
-            - `plan-US`: Only available for customers located in in the United States and Canada.
+            - `plan-US`: Only available for customers located in the United States and Canada.
           example: plan01s
           type: string
       required:
@@ -23078,11 +23715,19 @@ components:
       - soraletId
       type: object
     CreateTransferRequestRequest:
+      anyOf:
+      - required:
+        - destinationOperatorEmail
+        - destinationOperatorId
+      - not:
+          required:
+          - destinationOperatorId
       description: Represents a request to create a draft SIM transfer request.
       properties:
         destinationOperatorEmail:
-          description: The email address of the destination operator. Required when
-            `destinationOperatorId` is provided.
+          description: The primary email address of the destination operator. Required
+            when `destinationOperatorId` is provided. Used to verify the destination
+            operator.
           example: operator@example.com
           format: email
           type: string
@@ -23971,13 +24616,57 @@ components:
     EuiccProfileOrderRequest:
       description: Request body for ordering a profile.
       properties:
+        activateImmediately:
+          default: false
+          description: |
+            Set to `true` to enable (activate) the ordered profile on the eUICC as soon as its download finishes, without calling the [Euicc:requestEuiccProfileActivation API](#/Euicc/requestEuiccProfileActivation) yourself.
+
+            The response is returned as soon as the order is placed, so the download and the activation that follows it are both carried out asynchronously. Track their progress with the [Euicc:listEuiccProfileOperationHistory API](#/Euicc/listEuiccProfileOperationHistory). If the download does not succeed, no activation is requested.
+
+            If omitted, the downloaded profile is left disabled.
+          type: boolean
         bundles:
-          description: List of bundles to associate with the profile.
+          description: |
+            An array of bundle names to associate with the profile to be ordered. In the [Euicc:listEuiccProfileTypes API](#/Euicc/listEuiccProfileTypes) response, find the entry for the `profileType` to order and check its `bundleRequired` value.
+
+            **When `bundleRequired` is `true`:**
+
+            Specify exactly one `bundleName` from `availableBundles` in the same response. The following are examples of common profile types and their bundle names.
+
+            - For `SGEPR38` (planX3):
+                - `X3-5MB`
+            - For `SGEPR39` (plan-US):
+                - `US-1MB`
+                - `US-3MB`
+                - `US-10MB`
+                - `US-20MB`
+                - `US-50MB`
+                - `US-100MB`
+                - `US-300MB`
+                - `US-500MB`
+                - `US-1GB`
+                - `US-3GB`
+                - `US-5GB`
+                - `US-10GB`
+
+            Bundle names are matched exactly.
+
+            **When `bundleRequired` is `false`:**
+
+            Omit `bundles`.
           items:
             type: string
+          maxItems: 1
           type: array
         profileType:
           $ref: '#/components/schemas/EuiccProfileType'
+        rollbackOnConnectivityFailure:
+          default: false
+          description: |
+            Set to `true` to authorize the eUICC to roll back to the previously enabled profile when it cannot establish connectivity with the newly enabled profile. The activation itself completes first, and the rollback is triggered afterwards, when the IPA on the device cannot report the activation result back to the eIM.
+
+            Valid only in combination with `activateImmediately`. Setting it to `true` while `activateImmediately` is omitted or `false` results in a `400` error.
+          type: boolean
       required:
       - profileType
       type: object
@@ -25063,7 +25752,7 @@ components:
           type: array
         orderStatus:
           description: |
-            Order status. For details, please refer to [Where is my order?](https://support.soracom.io/hc/en-us/articles/19543496440345).
+            Order status. For details, please refer to [Order Status, Tracking, Cancellation, and Returns](https://support.soracom.io/hc/en-us/articles/19543496440345).
 
             - `orderProcessing`: New order (pending payment).
             - `ordering`: New order (payment in progress).
@@ -25089,7 +25778,7 @@ components:
           type: string
         paymentStatus:
           description: |
-            Latest payment status. For details, please refer to [Payment status of usage charges](https://support.soracom.io/hc/en-us/articles/360029337031).
+            Latest payment status. For details, please refer to [Understanding Payment Statuses in the Billing Dashboard](https://support.soracom.io/hc/en-us/articles/58765601098009-Understanding-Payment-Statuses-in-the-Billing-Dashboard).
 
             - `lessThanMinimumCharge`: Will be billed in the next month or later. (due to less than minimum charge.)
             - `paying`: Payment in progress.
@@ -26125,7 +26814,7 @@ components:
           type: string
         paymentStatus:
           description: |
-            Latest payment status. For details, please refer to [Payment status of usage charges](https://support.soracom.io/hc/en-us/articles/360029337031).
+            Latest payment status. For details, please refer to [Understanding Payment Statuses in the Billing Dashboard](https://support.soracom.io/hc/en-us/articles/58765601098009-Understanding-Payment-Statuses-in-the-Billing-Dashboard).
 
             - `lessThanMinimumCharge`: Will be billed in the next month or later. (due to less than minimum charge)
             - `paying`: Payment in progress
@@ -30342,7 +31031,7 @@ components:
           format: int64
           type: integer
         destinationOperatorEmail:
-          description: The email address of the destination operator.
+          description: The primary email address of the destination operator.
           example: operator@example.com
           format: email
           type: string
@@ -30431,8 +31120,17 @@ components:
       description: Represents a SIM included in a transfer request.
       properties:
         errorCode:
-          description: The error code, if the SIM is not valid for transfer.
-          example: SIM_ALREADY_IN_TRANSFER
+          description: |
+            The error code if the SIM could not be transferred. The following values and recovery actions are currently used.
+
+            - `NOT_FOUND`: The SIM is not registered to the source operator, or the SIM ID is invalid. Verify the SIM ID and its current owner.
+            - `NOT_COMPATIBLE`: The SIM plan is not supported in the destination operator's country. Change the destination operator or remove the SIM from the request.
+            - `CUSTOM_BUNDLE_UNSUPPORTED`: SIMs using a custom bundle cannot be transferred. Remove the SIM from the request.
+            - `IN_PENDING_TRANSFER`: A SIM included in another transfer request that has not reached a terminal state cannot be transferred. Remove this SIM from the request.
+            - `ALREADY_TRANSFERRED_THIS_MONTH`: A SIM transferred between different operators earlier in the current calendar month cannot be transferred again in the same month. Create a new transfer request in a later month.
+            - `VALIDATION_FAILED`: A temporary processing failure prevented determining whether this SIM can be transferred. Wait and resubmit the same request. If this error continues to occur, contact [Soracom Support](https://support.soracom.io).
+            - `TRANSFER_FAILED`: An unexpected problem occurred during transfer processing. Check the SIM's current state. If it has not been transferred, create a new transfer request and try again. If this error continues to occur, contact [Soracom Support](https://support.soracom.io).
+          example: IN_PENDING_TRANSFER
           type: string
         groupId:
           description: The ID of the group that the SIM belongs to. Only available
@@ -30470,7 +31168,7 @@ components:
           format: int64
           type: integer
         destinationOperatorEmail:
-          description: The email address of the destination operator.
+          description: The primary email address of the destination operator.
           example: operator@example.com
           format: email
           type: string
@@ -30764,12 +31462,20 @@ components:
       - speedClass
       type: object
     UpdateTransferRequestRequest:
+      anyOf:
+      - required:
+        - destinationOperatorEmail
+        - destinationOperatorId
+      - not:
+          required:
+          - destinationOperatorId
       description: Represents a request to update a draft SIM transfer request. All
-        fields are optional; only provided fields are updated.
+        fields are optional; any field omitted from the request is set to `null`.
       properties:
         destinationOperatorEmail:
-          description: The email address of the destination operator. Required when
-            `destinationOperatorId` is provided.
+          description: The primary email address of the destination operator. Required
+            when `destinationOperatorId` is provided. Used to verify the destination
+            operator.
           example: operator@example.com
           format: email
           type: string

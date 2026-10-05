@@ -2,9 +2,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
+
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -15,10 +19,15 @@ var EuiccsProfileRequestActivateCmdIccid string
 // EuiccsProfileRequestActivateCmdSimId holds value of 'sim_id' option
 var EuiccsProfileRequestActivateCmdSimId string
 
+// EuiccsProfileRequestActivateCmdBody holds contents of request body to be sent
+var EuiccsProfileRequestActivateCmdBody string
+
 func InitEuiccsProfileRequestActivateCmd() {
 	EuiccsProfileRequestActivateCmd.Flags().StringVar(&EuiccsProfileRequestActivateCmdIccid, "iccid", "", TRAPI("The ICCID of the profile."))
 
 	EuiccsProfileRequestActivateCmd.Flags().StringVar(&EuiccsProfileRequestActivateCmdSimId, "sim-id", "", TRAPI("The SIM ID of the target Connectivity Hypervisor-capable IoT SIM."))
+
+	EuiccsProfileRequestActivateCmd.Flags().StringVar(&EuiccsProfileRequestActivateCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
 	EuiccsProfileRequestActivateCmd.RunE = EuiccsProfileRequestActivateCmdRunE
 
@@ -48,15 +57,30 @@ func EuiccsProfileRequestActivateCmdRunE(cmd *cobra.Command, args []string) erro
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := ac.getAPICredentials()
-	if err != nil {
-		cmd.SilenceUsage = true
-		return err
+	if dryRun {
+		// dry-run must not perform any network-backed authentication (a profile
+		// or AuthKey exchanges secrets for a token via a real /auth request).
+		// Still resolve locally provided --api-key/--api-token so the preview is
+		// faithful: the (redacted) auth headers and the operator id derived from
+		// the token are included.
+		if err := ac.resolveLocalAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+	} else {
+		if err := ac.getAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 	}
 
 	param, err := collectEuiccsProfileRequestActivateCmdParams(ac)
 	if err != nil {
 		return err
+	}
+
+	if dryRun {
+		return ac.printDryRun(param)
 	}
 
 	body, err := ac.callAPI(param)
@@ -78,8 +102,22 @@ func EuiccsProfileRequestActivateCmdRunE(cmd *cobra.Command, args []string) erro
 }
 
 func collectEuiccsProfileRequestActivateCmdParams(ac *apiClient) (*apiParams, error) {
+	var body string
 	var parsedBody interface{}
 	var err error
+	body, err = buildBodyForEuiccsProfileRequestActivateCmd()
+	if err != nil {
+		return nil, err
+	}
+	contentType := "application/json"
+
+	if contentType == "application/json" {
+		err = json.Unmarshal([]byte(body), &parsedBody)
+		if err != nil {
+			return nil, fmt.Errorf("invalid json format specified for `--body` parameter: %s", err)
+		}
+	}
+
 	err = checkIfRequiredStringParameterIsSupplied("iccid", "iccid", "path", parsedBody, EuiccsProfileRequestActivateCmdIccid)
 	if err != nil {
 		return nil, err
@@ -91,9 +129,11 @@ func collectEuiccsProfileRequestActivateCmdParams(ac *apiClient) (*apiParams, er
 	}
 
 	return &apiParams{
-		method: "POST",
-		path:   buildPathForEuiccsProfileRequestActivateCmd("/euiccs/{sim_id}/profiles/{iccid}/activate"),
-		query:  buildQueryForEuiccsProfileRequestActivateCmd(),
+		method:      "POST",
+		path:        buildPathForEuiccsProfileRequestActivateCmd("/euiccs/{sim_id}/profiles/{iccid}/activate"),
+		query:       buildQueryForEuiccsProfileRequestActivateCmd(),
+		contentType: contentType,
+		body:        body,
 
 		noRetryOnError: noRetryOnError,
 	}, nil
@@ -116,4 +156,42 @@ func buildQueryForEuiccsProfileRequestActivateCmd() url.Values {
 	result := url.Values{}
 
 	return result
+}
+
+func buildBodyForEuiccsProfileRequestActivateCmd() (string, error) {
+	var result map[string]interface{}
+
+	if EuiccsProfileRequestActivateCmdBody != "" {
+		var b []byte
+		var err error
+
+		if strings.HasPrefix(EuiccsProfileRequestActivateCmdBody, "@") {
+			fname := strings.TrimPrefix(EuiccsProfileRequestActivateCmdBody, "@")
+			// #nosec
+			b, err = os.ReadFile(fname)
+		} else if EuiccsProfileRequestActivateCmdBody == "-" {
+			b, err = io.ReadAll(os.Stdin)
+		} else {
+			b = []byte(EuiccsProfileRequestActivateCmdBody)
+		}
+
+		if err != nil {
+			return "", err
+		}
+
+		err = json.Unmarshal(b, &result)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if result == nil {
+		result = make(map[string]interface{})
+	}
+
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), nil
 }

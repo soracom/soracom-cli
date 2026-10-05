@@ -22,6 +22,12 @@ var EuiccsProfileOrderCmdSimId string
 // EuiccsProfileOrderCmdBundles holds multiple values of 'bundles' option
 var EuiccsProfileOrderCmdBundles []string
 
+// EuiccsProfileOrderCmdActivateImmediately holds value of 'activateImmediately' option
+var EuiccsProfileOrderCmdActivateImmediately bool
+
+// EuiccsProfileOrderCmdRollbackOnConnectivityFailure holds value of 'rollbackOnConnectivityFailure' option
+var EuiccsProfileOrderCmdRollbackOnConnectivityFailure bool
+
 // EuiccsProfileOrderCmdBody holds contents of request body to be sent
 var EuiccsProfileOrderCmdBody string
 
@@ -30,7 +36,11 @@ func InitEuiccsProfileOrderCmd() {
 
 	EuiccsProfileOrderCmd.Flags().StringVar(&EuiccsProfileOrderCmdSimId, "sim-id", "", TRAPI("The SIM ID of the target Connectivity Hypervisor-capable IoT SIM."))
 
-	EuiccsProfileOrderCmd.Flags().StringSliceVar(&EuiccsProfileOrderCmdBundles, "bundles", []string{}, TRAPI("List of bundles to associate with the profile."))
+	EuiccsProfileOrderCmd.Flags().StringSliceVar(&EuiccsProfileOrderCmdBundles, "bundles", []string{}, TRAPI("An array of bundle names to associate with the profile to be ordered. In the [Euicc:listEuiccProfileTypes API](#/Euicc/listEuiccProfileTypes) response, find the entry for the 'profileType' to order and check its 'bundleRequired' value.**When 'bundleRequired' is 'true':**Specify exactly one 'bundleName' from 'availableBundles' in the same response. The following are examples of common profile types and their bundle names.- For 'SGEPR38' (planX3):    - 'X3-5MB'- For 'SGEPR39' (plan-US):    - 'US-1MB'    - 'US-3MB'    - 'US-10MB'    - 'US-20MB'    - 'US-50MB'    - 'US-100MB'    - 'US-300MB'    - 'US-500MB'    - 'US-1GB'    - 'US-3GB'    - 'US-5GB'    - 'US-10GB'Bundle names are matched exactly.**When 'bundleRequired' is 'false':**Omit 'bundles'."))
+
+	EuiccsProfileOrderCmd.Flags().BoolVar(&EuiccsProfileOrderCmdActivateImmediately, "activate-immediately", false, TRAPI("Set to 'true' to enable (activate) the ordered profile on the eUICC as soon as its download finishes, without calling the [Euicc:requestEuiccProfileActivation API](#/Euicc/requestEuiccProfileActivation) yourself.The response is returned as soon as the order is placed, so the download and the activation that follows it are both carried out asynchronously. Track their progress with the [Euicc:listEuiccProfileOperationHistory API](#/Euicc/listEuiccProfileOperationHistory). If the download does not succeed, no activation is requested.If omitted, the downloaded profile is left disabled."))
+
+	EuiccsProfileOrderCmd.Flags().BoolVar(&EuiccsProfileOrderCmdRollbackOnConnectivityFailure, "rollback-on-connectivity-failure", false, TRAPI("Set to 'true' to authorize the eUICC to roll back to the previously enabled profile when it cannot establish connectivity with the newly enabled profile. The activation itself completes first, and the rollback is triggered afterwards, when the IPA on the device cannot report the activation result back to the eIM.Valid only in combination with 'activateImmediately'. Setting it to 'true' while 'activateImmediately' is omitted or 'false' results in a '400' error."))
 
 	EuiccsProfileOrderCmd.Flags().StringVar(&EuiccsProfileOrderCmdBody, "body", "", TRCLI("cli.common_params.body.short_help"))
 
@@ -62,15 +72,30 @@ func EuiccsProfileOrderCmdRunE(cmd *cobra.Command, args []string) error {
 	if v := os.Getenv("SORACOM_VERBOSE"); v != "" {
 		ac.SetVerbose(true)
 	}
-	err := ac.getAPICredentials()
-	if err != nil {
-		cmd.SilenceUsage = true
-		return err
+	if dryRun {
+		// dry-run must not perform any network-backed authentication (a profile
+		// or AuthKey exchanges secrets for a token via a real /auth request).
+		// Still resolve locally provided --api-key/--api-token so the preview is
+		// faithful: the (redacted) auth headers and the operator id derived from
+		// the token are included.
+		if err := ac.resolveLocalAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
+	} else {
+		if err := ac.getAPICredentials(); err != nil {
+			cmd.SilenceUsage = true
+			return err
+		}
 	}
 
 	param, err := collectEuiccsProfileOrderCmdParams(ac)
 	if err != nil {
 		return err
+	}
+
+	if dryRun {
+		return ac.printDryRun(param)
 	}
 
 	body, err := ac.callAPI(param)
@@ -181,6 +206,14 @@ func buildBodyForEuiccsProfileOrderCmd() (string, error) {
 
 	if len(EuiccsProfileOrderCmdBundles) != 0 {
 		result["bundles"] = EuiccsProfileOrderCmdBundles
+	}
+
+	if EuiccsProfileOrderCmd.Flags().Lookup("activate-immediately").Changed {
+		result["activateImmediately"] = EuiccsProfileOrderCmdActivateImmediately
+	}
+
+	if EuiccsProfileOrderCmd.Flags().Lookup("rollback-on-connectivity-failure").Changed {
+		result["rollbackOnConnectivityFailure"] = EuiccsProfileOrderCmdRollbackOnConnectivityFailure
 	}
 
 	resultBytes, err := json.Marshal(result)
