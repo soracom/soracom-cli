@@ -3,7 +3,7 @@ module github.com/soracom/soracom-cli
 require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/dvsekhvalnov/jose2go v1.11.0
-	github.com/elazarl/goproxy v1.9.1
+	github.com/elazarl/goproxy v1.9.2
 	github.com/getkin/kin-openapi v0.149.0
 	github.com/kennygrant/sanitize v1.2.4
 	github.com/mattn/go-shellwords v1.0.16
