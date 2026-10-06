@@ -78,11 +78,11 @@ var QuerySimsCmdOutputJSONL bool
 func InitQuerySimsCmd() {
 	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdLastEvaluatedKey, "last-evaluated-key", "", TRAPI("The SIM ID of the last SIM retrieved on the previous page. By specifying this parameter, you can continue to retrieve the list from the next SIM onward."))
 
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("The type of search condition.- AND: SIMs which match all of the search parameters will be returned (default).- OR: SIMs which match any of the search parameters will be returned.If the value of a search parameter contains a comma ',' (or '%2C' when URL-encoded), the value will be split at each comma and treated as multiple search values, each of which will be evaluated based on the specified AND or OR condition."))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSearchType, "search-type", "and", TRAPI("How to combine search conditions.- AND: SIMs which match all of the search parameters will be returned (default).- OR: SIMs which match any of the search parameters will be returned.When multiple search values are specified by repeating a parameter or by using comma-separated values in a single occurrence of the parameter, each search value is evaluated based on the specified AND or OR condition.However, some parameters are not affected by 'search_type'.- The 'session_status' query parameter is always applied as an AND condition when set to 'ONLINE' or 'OFFLINE'."))
 
-	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search. Specify one of the following:- 'NA': Any.- 'ONLINE': Online.- 'OFFLINE': Offline."))
+	QuerySimsCmd.Flags().StringVar(&QuerySimsCmdSessionStatus, "session-status", "NA", TRAPI("Status of the session to search. Specify one of the following:- 'NA': Any.- 'ONLINE': Online.- 'OFFLINE': Offline.When set to 'ONLINE' or 'OFFLINE', this condition is always applied as an AND condition and is not affected by 'search_type'."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdActiveProfileId, "active-profile-id", []string{}, TRAPI("Active profile ID of the IoT SIM to search. Supports partial matching (e.g., specifying '0001234' matches '8981100001234567890'). Useful for finding IoT SIMs whose active profile matches a specific identifier (e.g., a SORACOM profile ID prefix)."))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdActiveProfileId, "active-profile-id", []string{}, TRAPI("ID of the profile currently active on the IoT SIM. Supports partial matching. For example, specifying '0001234' matches '8981100001234567890'."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdBundles, "bundles", []string{}, TRAPI("Bundles type to search."))
 
@@ -92,7 +92,7 @@ func InitQuerySimsCmd() {
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdIccid, "iccid", []string{}, TRAPI("ICCID to search. An identifier used to identify a SIM card or virtual IoT SIM (Virtual SIM/Subscriber)."))
 
-	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImei, "imei", []string{}, TRAPI("IMEI of the device on the IoT SIM's current session. Supports partial matching (e.g., specifying '45678' matches '123456789012345')."))
+	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImei, "imei", []string{}, TRAPI("IMEI of the device on the IoT SIM's current session. Supports partial matching. For example, specifying '45678' matches '123456789012345'."))
 
 	QuerySimsCmd.Flags().StringSliceVar(&QuerySimsCmdImsi, "imsi", []string{}, TRAPI("IMSI to search."))
 
@@ -114,7 +114,7 @@ func InitQuerySimsCmd() {
 
 	QuerySimsCmd.Flags().Int64Var(&QuerySimsCmdLimit, "limit", 10, TRAPI("The maximum number of items to retrieve."))
 
-	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdSubscribersInTransit, "subscribers-in-transit", false, TRAPI("Filters IoT SIMs by whether they have a secondary subscriber that is still being added via the [Sim:addSubscription API](#/Sim/addSubscription) (i.e., the addition has not yet completed).- 'true': returns only IoT SIMs that have a secondary subscriber being added.- 'false': returns only IoT SIMs that do not have any secondary subscriber being added."))
+	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdSubscribersInTransit, "subscribers-in-transit", false, TRAPI("Filters IoT SIMs based on whether an additional subscription is being added via the [Sim:addSubscription API](#/Sim/addSubscription).- 'true': returns only IoT SIMs where an additional subscription is still being added.- 'false': returns only IoT SIMs where no additional subscriptions are currently being added."))
 
 	QuerySimsCmd.Flags().BoolVar(&QuerySimsCmdPaginate, "fetch-all", false, TRCLI("cli.common_params.paginate.short_help"))
 

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: SORACOM API v1
   title: SORACOM API
-  version: 20260730-014026
+  version: 20261005-025232
 servers:
 - description: Japan coverage production API endpoint
   url: https://api.soracom.io/v1
@@ -3130,6 +3130,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/EuiccProfile'
           description: プロファイル注文がリクエストされた後の Connectivity Hypervisor 対応 IoT SIM のプロファイル情報。
+        "400":
+          description: |
+            不正なリクエストです。バンドルの指定に関する例は以下のとおりです。
+
+            - バンドルが必須のプロファイルタイプで、バンドルを指定しなかった場合。
+            - バンドルを複数指定した場合。
+            - そのプロファイルタイプで注文できないバンドル名を指定した場合。
+
+            また、`activateImmediately` を省略した場合または `false` を指定した場合に `rollbackOnConnectivityFailure` に `true` を指定すると、不正なリクエストになります。
         "404":
           description: 指定した Connectivity Hypervisor 対応 IoT SIM が存在しない。
       security:
@@ -3224,6 +3233,19 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rollbackOnConnectivityFailure:
+                  default: false
+                  type: boolean
+              type: object
+        description: |
+          プロファイル有効化のオプション。
+
+          `rollbackOnConnectivityFailure` に `true` を指定すると、新しく有効化したプロファイルで eUICC が通信を確立できない場合に、直前に有効だったプロファイルへロールバックすることを許可します。有効化自体は先に完了し、その後デバイス上の IPA が有効化結果を eIM に報告できない場合にロールバックが発生します。
       responses:
         "200":
           content:
@@ -5240,6 +5262,79 @@ paths:
       - Group
       x-soracom-cli:
       - groups delete-config
+  /groups/{group_id}/sims:
+    get:
+      description: 指定したグループに属する IoT SIM の一覧を取得します。
+      operationId: listSimsInGroup
+      parameters:
+      - description: 対象の Group の ID。
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: 検索対象にするステータス。`|` で区切って複数指定できます。指定できる値は、`active`、`inactive`、`ready`、`standby`、`testing`、`instock`、`shipped`、`suspended`、`terminated`
+          です。
+        in: query
+        name: status_filter
+        required: false
+        schema:
+          type: string
+      - description: |
+          検索対象にする速度クラス。`|` で区切って複数指定できます。指定できる値は次のとおりです。
+
+          - `s1.minimum`
+          - `s1.slow`
+          - `s1.standard`
+          - `s1.fast`
+          - `s1.4xfast`
+          - `s1.8xfast`
+          - `u1.standard`
+          - `u1.slow`
+          - `t1.standard`
+          - `arc.standard`
+        in: query
+        name: speed_class_filter
+        required: false
+        schema:
+          type: string
+      - description: 取得する IoT SIM の上限 (1 〜 100)。省略した場合、または範囲外の値を指定した場合は 100 として扱います。ただし、返却される
+          IoT SIM の個数は指定された値を下回る可能性があります。
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+      - description: 前ページを取得したときに返された `x-soracom-next-key` ヘッダーに含まれる値。次ページを取得する場合に指定します。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Sim'
+                type: array
+          description: IoT SIM の一覧。
+        "404":
+          description: 指定されたグループは存在しません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: グループに属する IoT SIM の一覧を取得する
+      tags:
+      - Group
+      x-soracom-cli:
+      - groups list-sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /groups/{group_id}/subscribers:
     get:
       description: Group ID で指定された Group に属する Subscriber の一覧を返す。
@@ -10107,6 +10202,186 @@ paths:
           param: last_evaluated_key
         response:
           header: x-soracom-next-key
+  /query/euiccs:
+    get:
+      description: |
+        クエリパラメーターに指定した条件で、Connectivity Hypervisor 対応 IoT SIM を検索します。
+
+        - 部分一致で検索できます。
+        - 大文字と小文字は区別されません。
+        - 以下のパラメーターでは、`name=foo&name=bar` のように同じパラメーター名を繰り返して、複数の検索条件を指定できます。また、`name=foo,bar` のようにパラメーターを 1 回だけ指定し、値をカンマで区切って複数の検索条件を指定することもできます。どちらの例も、`name` に対して `foo` と `bar` の 2 つの検索条件を指定しています。
+            - `any`
+            - `sim_id`
+            - `name`
+            - `imsi`
+            - `iccid`
+            - `tag`
+            - `module_type`
+            - `profile_type`
+            - `active_profile_type`
+        - 各検索条件は、指定方法にかかわらず 2 文字以上にしてください。たとえば、`name=ab&name=c` と `name=ab,c` は、`c` が 1 文字のため検索できません。
+        - 同じパラメーターに複数の検索条件を指定した場合は OR 検索、クエリパラメーターを複数指定した場合は AND 検索になります。[Query:searchSims API](#/Query/searchSims) とは異なり、`search_type` パラメーターは利用できません。
+
+        **Warning**: この API は、目的の Connectivity Hypervisor 対応 IoT SIM の SIM ID がわからない場合や、条件に一致する Connectivity Hypervisor 対応 IoT SIM の一覧を取得する用途で使用してください。SIM ID がわかっている場合は、[Euicc:getEuicc API](#/Euicc/getEuicc) を使用してください。
+      operationId: searchEuiccs
+      parameters:
+      - description: |
+          個別の検索パラメーターを持つすべての属性を対象に検索する値。`sim_id`、`name`、`imsi`、`iccid`、`tag` のいずれかに一致した Connectivity Hypervisor 対応 IoT SIM を取得できます。
+
+          手元の値がどの属性のものかわからない場合に使用します。特定の属性を検索する場合は、その属性のパラメーターを使用してください。なお、絞り込み用のパラメーター (`module_type`、`profile_type`、`active_profile_type`、`session_status`) はこのパラメーターの対象外です。
+        explode: true
+        in: query
+        name: any
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: '[SIM ID](/ja-jp/resources/glossary/#sim-id)。'
+        explode: true
+        in: query
+        name: sim_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Connectivity Hypervisor 対応 IoT SIM の名前。
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: '[IMSI (International Mobile Subscriber Identity)](/ja-jp/resources/glossary/#imsi-international-mobile-subscriber-identity)。'
+        explode: true
+        in: query
+        name: imsi
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: ICCID (Integrated Circuit Card ID)。Connectivity Hypervisor 対応
+          IoT SIM 上のプロファイルを識別するための識別子。
+        explode: true
+        in: query
+        name: iccid
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: Connectivity Hypervisor 対応 IoT SIM のタグの値の文字列。詳しくは、[IoT SIM に付加情報
+          (タグ) を設定する](/ja-jp/docs/air/set-tag/) を参照してください。
+        explode: true
+        in: query
+        name: tag
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Connectivity Hypervisor 対応 IoT SIM の形状 (フォームファクタ)。完全一致で検索します。
+
+          - `mini`: 標準 (2FF) サイズ。
+          - `micro`: マイクロ (3FF) サイズ。
+          - `nano`: ナノ (4FF) サイズ。
+          - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)。
+          - `embedded`: Embedded (MFF2)。
+          - `integrated`: Embedded (iSIM)。
+        explode: true
+        in: query
+        name: module_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          プロファイルのタイプ。完全一致で検索します。Connectivity Hypervisor 対応 IoT SIM が保有するすべてのプロファイルが評価対象で、現在アクティブかどうかは問いません。アクティブなプロファイルのみを対象にする場合は `active_profile_type` を使用してください。
+
+          値は固定ではなく自由形式のプロファイルタイプ文字列です (例: `SGEPR31`、`MJEPR21`、`Unmanaged`)。プロファイルタイプは今後追加される可能性があります。
+        explode: true
+        in: query
+        name: profile_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          アクティブなプロファイルのタイプ。完全一致で検索します。Connectivity Hypervisor 対応 IoT SIM の現在アクティブなプロファイルのみが評価対象で、Connectivity Hypervisor 対応 IoT SIM が保有する他のプロファイルは一致しません。Connectivity Hypervisor 対応 IoT SIM が保有するすべてのプロファイルを対象にする場合は `profile_type` を使用してください。
+
+          値は固定ではなく自由形式のプロファイルタイプ文字列です (例: `SGEPR31`、`MJEPR21`、`Unmanaged`)。プロファイルタイプは今後追加される可能性があります。
+        explode: true
+        in: query
+        name: active_profile_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          セッションの状態。以下のいずれかを指定します。
+
+          - `NA`: 任意。
+          - `ONLINE`: オンライン。
+          - `OFFLINE`: オフライン。
+        in: query
+        name: session_status
+        required: false
+        schema:
+          default: NA
+          enum:
+          - NA
+          - ONLINE
+          - OFFLINE
+          type: string
+      - description: 取得する結果の上限数。1 から 100 までの値を指定します。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+      - description: 前のページで最後に取得した Connectivity Hypervisor 対応 IoT SIM の SIM ID。このパラメーターを指定することで、次の
+          Connectivity Hypervisor 対応 IoT SIM 以降から一覧の取得を続けられます。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Euicc'
+                type: array
+          description: 正常に検索結果を返却。
+        "400":
+          description: 不正な検索クエリ。
+      security:
+      - api_key: []
+        api_token: []
+      summary: Connectivity Hypervisor 対応 IoT SIM をクエリに応じて検索する
+      tags:
+      - Query
+      x-soracom-cli:
+      - query euiccs
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
   /query/sigfox_devices:
     get:
       description: |
@@ -10246,7 +10521,7 @@ paths:
 
         - 部分一致で検索できます。
         - 大文字と小文字は区別されません。
-        - 以下のパラメーターでは、カンマ (`,`。クエリパラメーターに指定する際は `%2C`) 区切りで入力すると、複数の検索条件を指定できます。ただし、`,` 自体は検索条件として利用できません。
+        - 以下のパラメーターでは、`name=foo&name=bar` のように同じパラメーター名を繰り返して、複数の検索条件を指定できます。また、`name=foo,bar` のようにパラメーターを 1 回だけ指定し、値をカンマで区切って複数の検索条件を指定することもできます。どちらの例も、`name` に対して `foo` と `bar` の 2 つの検索条件を指定しています。
             - `name`
             - `group`
             - `sim_id`
@@ -10260,8 +10535,14 @@ paths:
             - `module_type`
             - `active_profile_id`
             - `imei`
-        - 検索条件は、2 文字以上にしてください。`,` を入力する場合は、`,` で分割された各文字列も 2 文字以上にしてください。たとえば、`ab,c` は `c` が 1 文字のため検索できません。
+        - 各検索条件は、指定方法にかかわらず 2 文字以上にしてください。たとえば、`name=ab&name=c` と `name=ab,c` は、`c` が 1 文字のため検索できません。
         - クエリパラメーターを複数指定した場合は、`search_type` で検索の種別 (AND 検索または OR 検索) を指定できます。
+
+          ただし、次の条件は `search_type` の対象外で、常に AND 条件として適用されます。
+
+          - `ONLINE` または `OFFLINE` を指定した `session_status`
+
+          上記以外の検索条件は、`search_type` の設定に従って組み合わされます。
 
         **Warning**: SAM ユーザーに、この API を呼び出す権限が付与された場合は、その SAM ユーザーにはすべての IoT SIM に対してグループも含めた検索 / 一覧取得を行う権限が与えられます。
 
@@ -10400,6 +10681,8 @@ paths:
           - `NA`: 任意。
           - `ONLINE`: オンライン。
           - `OFFLINE`: オフライン。
+
+          `ONLINE` または `OFFLINE` を指定した場合は、常に AND 条件として適用され、`search_type` の影響を受けません。
         in: query
         name: session_status
         required: false
@@ -10461,9 +10744,8 @@ paths:
           items:
             type: string
           type: array
-      - description: IoT SIM のアクティブなプロファイルの ID。部分一致 (たとえば `0001234` を指定すると `8981100001234567890`
-          に一致) で検索できます。アクティブプロファイルが特定の識別子に一致する IoT SIM (たとえば SORACOM プロファイル ID のプレフィックス)
-          を検索する場合に利用します。
+      - description: IoT SIM で現在アクティブなプロファイルの ID。部分一致で検索できます。たとえば、`0001234` を指定すると
+          `8981100001234567890` に一致します。
         explode: true
         in: query
         name: active_profile_id
@@ -10472,8 +10754,8 @@ paths:
           items:
             type: string
           type: array
-      - description: 現在のセッションで利用されているデバイスの IMEI。部分一致 (たとえば `45678` を指定すると `123456789012345`
-          に一致) で検索できます。
+      - description: 現在のセッションで利用されているデバイスの IMEI。部分一致で検索できます。たとえば `45678` を指定すると `123456789012345`
+          に一致します。
         explode: true
         in: query
         name: imei
@@ -10483,10 +10765,10 @@ paths:
             type: string
           type: array
       - description: |
-          [Sim:addSubscription API](#/Sim/addSubscription) で追加されたセカンダリ Subscriber が、追加処理中 (まだ完了していない状態) かどうかで IoT SIM を絞り込みます。
+          [Sim:addSubscription API](#/Sim/addSubscription) による追加サブスクリプションの追加処理の進行状況で、IoT SIM を絞り込みます。
 
-          - `true`: 追加処理中のセカンダリ Subscriber を持つ IoT SIM のみを検索します。
-          - `false`: 追加処理中のセカンダリ Subscriber を持たない IoT SIM のみを検索します。
+          - `true`: 追加処理中の追加サブスクリプションがある IoT SIM のみを検索します。
+          - `false`: 追加処理中の追加サブスクリプションがない IoT SIM のみを検索します。
         in: query
         name: subscribers_in_transit
         required: false
@@ -10508,12 +10790,16 @@ paths:
         schema:
           type: string
       - description: |
-          検索の種別。
+          検索条件の組み合わせ方。
 
           - AND: すべての検索条件に一致する IoT SIM が取得できます (デフォルト)。
           - OR: いずれかの検索条件に一致する IoT SIM が取得できます。
 
-          検索条件にカンマ (`,`。クエリパラメーターに指定する際は `%2C`) が含まれる場合は、カンマで分割されたあとの文字列が、複数の検索条件として扱われ、AND または OR の設定に従って評価されます。
+          同じパラメーター名を繰り返すか、パラメーターを 1 回だけ指定して値をカンマで区切ると、複数の検索条件を指定できます。各検索条件は、AND または OR の設定に従って評価されます。
+
+          ただし、`search_type` の影響を受けないパラメーターがあります。
+
+          - クエリパラメーターの `session_status` に `ONLINE` または `OFFLINE` を指定した場合は、常に AND 条件として適用されます。
         in: query
         name: search_type
         required: false
@@ -10542,6 +10828,312 @@ paths:
       - Query
       x-soracom-cli:
       - query sims
+      x-soracom-cli-pagination:
+        request:
+          param: last_evaluated_key
+        response:
+          header: x-soracom-next-key
+  /query/sims_by_group/{group_id}:
+    get:
+      description: |
+        パスで指定した `group_id` のグループに所属する IoT SIM を検索します。
+
+        パスの `group_id` が常に結果を絞り込むため、`search_type` に `OR` を指定した場合でも、指定したグループに所属しない IoT SIM が返却されることはありません。このため、たとえば SAM ユーザーに特定のグループの IoT SIM のみへのアクセス権限を付与する、といった用途に利用できます。
+
+        - 部分一致で検索できます。
+        - 大文字と小文字は区別されません。
+        - 以下のパラメーターでは、`name=foo&name=bar` のように同じパラメーター名を繰り返して、複数の検索条件を指定できます。また、`name=foo,bar` のようにパラメーターを 1 回だけ指定し、値をカンマで区切って複数の検索条件を指定することもできます。どちらの例も、`name` に対して `foo` と `bar` の 2 つの検索条件を指定しています。
+            - `name`
+            - `sim_id`
+            - `imsi`
+            - `msisdn`
+            - `iccid`
+            - `serial_number`
+            - `tag`
+            - `status`
+            - `subscription`
+            - `module_type`
+            - `active_profile_id`
+            - `imei`
+        - 各検索条件は、指定方法にかかわらず 2 文字以上にしてください。たとえば、`name=ab&name=c` と `name=ab,c` は、`c` が 1 文字のため検索できません。
+        - `name`、`sim_id`、`imsi`、`msisdn`、`iccid`、`serial_number`、`module_type`、`subscription`、`active_profile_id`、`imei` の各検索条件は、100 文字以下にしてください。`tag` の各検索条件は、512 文字以下にしてください。カンマ区切りで複数指定する場合、この上限は全体ではなく、分割された各文字列に適用されます。
+        - クエリパラメーターを複数指定した場合は、`search_type` で検索の種別 (AND 検索または OR 検索) を指定できます。
+
+          ただし、次の条件は `search_type` の対象外で、常に AND 条件として適用されます。
+
+          - パスで指定した `group_id`
+          - `ONLINE` または `OFFLINE` を指定した `session_status`
+
+          上記以外の検索条件は、`search_type` の設定に従って組み合わされます。
+
+        **Warning**: この API では、[Query:searchSims API](#/Query/searchSims) とは異なり、`group` (グループ名) パラメーターは利用できません。グループはパスの `group_id` で指定してください。
+
+        **Warning**: SAM ユーザーに、この API を呼び出す権限が付与された場合は、その SAM ユーザーには任意の `group_id` を指定して、すべてのグループに所属する IoT SIM に対して検索 / 一覧取得を行う権限が与えられます。特定のグループに所属する IoT SIM のみにアクセスを制限する場合は、[パーミッション構文](/ja-jp/docs/sam/permission/) の `condition` に、`pathVariable('group_id')` とアクセスを許可するグループ ID を比較する条件を指定してください。
+
+        **Warning**: この API は、目的の IoT SIM の SIM ID がわからない場合や、グループ内で条件に一致する IoT SIM の一覧を取得する用途で使用してください。SIM ID がわかっている場合は、[Sim:getSim API](#/Sim/getSim) を使用してください。
+      operationId: searchSimsByGroup
+      parameters:
+      - description: IoT SIM が所属する [グループ](/ja-jp/docs/group-configuration/) の ID。常に
+          AND 条件として適用されます。
+        in: path
+        name: group_id
+        required: true
+        schema:
+          type: string
+      - description: IoT SIM の名前。
+        examples:
+          0_no_filter:
+            summary: フィルタなし
+            value: []
+          1_filter_example:
+            summary: 名前に特定の文字列が含まれた IoT SIM を検索する場合
+            value:
+            - example-sim
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: '[SIM ID](/ja-jp/resources/glossary/#sim-id)。'
+        explode: true
+        in: query
+        name: sim_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: '[IMSI (International Mobile Subscriber Identity)](/ja-jp/resources/glossary/#imsi-international-mobile-subscriber-identity)。'
+        explode: true
+        in: query
+        name: imsi
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: '[MSISDN (Mobile Station International Subscriber Directory Number)](/ja-jp/resources/glossary/#msisdn-mobile-station-international-subscriber-directory-number)。'
+        explode: true
+        in: query
+        name: msisdn
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: ICCID (Integrated Circuit Card ID)。SIM カードや仮想的な IoT SIM (バーチャル
+          SIM/Subscriber) を識別するための識別子。
+        explode: true
+        in: query
+        name: iccid
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IoT SIM の裏面に記載された製造番号。日本カバレッジの IoT SIM にのみ設定されています。
+        explode: true
+        in: query
+        name: serial_number
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IoT SIM のタグの値の文字列。詳しくは、[IoT SIM に付加情報 (タグ) を設定する](/ja-jp/docs/air/set-tag/)
+          を参照してください。
+        explode: true
+        in: query
+        name: tag
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: バンドル
+        explode: true
+        in: query
+        name: bundles
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          IoT SIM のステータス。
+
+          - `ready`: 準備完了 (ready)。
+          - `active`: 使用中 (active)。
+          - `inactive`: 休止中 (inactive)。
+          - `standby`: 利用開始待ち (standby)。
+          - `suspended`: 利用中断中 (suspended)。
+          - `terminated`: 解約済み (terminated)。
+          - `shipped`: 出荷済み。
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          セッションの状態。以下のいずれかを指定します。
+
+          - `NA`: 任意。
+          - `ONLINE`: オンライン。
+          - `OFFLINE`: オフライン。
+
+          `ONLINE` または `OFFLINE` を指定した場合は、常に AND 条件として適用され、`search_type` の影響を受けません。
+        in: query
+        name: session_status
+        required: false
+        schema:
+          default: NA
+          enum:
+          - NA
+          - ONLINE
+          - OFFLINE
+          format: string
+          type: string
+      - description: |
+          検索するサブスクリプション。完全一致で検索します。複数のサブスクリプションを指定する場合は、`search_type` に `OR` を指定してください。
+
+          - 日本カバレッジの場合は、以下のいずれかを指定します。
+            - `plan-D`: plan-D (バンドルなし)、plan-D (D-500MB)。
+            - `plan-K2`: plan-K2 (K2-500MB)。
+            - `plan-DU`
+            - `plan-KM1`
+            - `plan-K`
+            - `planArc01`: バーチャル SIM/Subscriber。
+          - グローバルカバレッジの場合は、以下のいずれかを指定します。
+            - `plan01s`
+            - `plan01s-low_data_volume`: plan01s - Low Data Volume。
+            - `planX3`: planX3 (X3-5MB)。
+            - `planP1`
+            - `plan-US`
+            - `plan-US-max`
+            - `planX1`
+            - `planXM1`
+            - `planX2`
+            - `planX3-EU`
+            - `plan-US-NA`
+            - `planArc01`: バーチャル SIM/Subscriber。
+        explode: true
+        in: query
+        name: subscription
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          IoT SIM の形状 (フォームファクタ)。
+
+          - `mini`: 標準 (2FF) サイズ。
+          - `micro`: マイクロ (3FF) サイズ。
+          - `nano`: ナノ (4FF) サイズ。
+          - `trio`: 3 in 1 (切り取りかた次第で 2FF/3FF/4FF いずれのサイズにもできる)。
+          - `embedded`: Embedded (MFF2)。
+          - `virtual`: バーチャル SIM/Subscriber。
+          - `integrated`: Embedded (iSIM)。
+          - `profilePackage`: Profile Package (eSIM プロファイル)。
+        explode: true
+        in: query
+        name: module_type
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: IoT SIM で現在アクティブなプロファイルの ID。部分一致で検索できます。たとえば、`0001234` を指定すると
+          `8981100001234567890` に一致します。
+        explode: true
+        in: query
+        name: active_profile_id
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: 現在のセッションで利用されているデバイスの IMEI。部分一致で検索できます。たとえば `45678` を指定すると `123456789012345`
+          に一致します。
+        explode: true
+        in: query
+        name: imei
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          [Sim:addSubscription API](#/Sim/addSubscription) による追加サブスクリプションの追加処理の進行状況で、IoT SIM を絞り込みます。
+
+          - `true`: 追加処理中の追加サブスクリプションがある IoT SIM のみを検索します。
+          - `false`: 追加処理中の追加サブスクリプションがない IoT SIM のみを検索します。
+        in: query
+        name: subscribers_in_transit
+        required: false
+        schema:
+          type: boolean
+      - description: 取得する結果の上限数。
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          format: int32
+          maximum: 100
+          type: integer
+      - description: 前ページで取得した最後の SIM の SIM ID。このパラメーターを指定することで次の SIM 以降のリストを取得できる。
+        in: query
+        name: last_evaluated_key
+        required: false
+        schema:
+          type: string
+      - description: |
+          検索条件の組み合わせ方。
+
+          - AND: すべての検索条件に一致する IoT SIM が取得できます (デフォルト)。
+          - OR: いずれかの検索条件に一致する IoT SIM が取得できます。
+
+          同じパラメーター名を繰り返すか、パラメーターを 1 回だけ指定して値をカンマで区切ると、複数の検索条件を指定できます。各検索条件は、AND または OR の設定に従って評価されます。
+
+          ただし、`search_type` の影響を受けないパラメーターがあります。
+
+          - パスの `group_id` は常に AND 条件として適用されます。
+          - クエリパラメーターの `session_status` に `ONLINE` または `OFFLINE` を指定した場合は、常に AND 条件として適用されます。
+        in: query
+        name: search_type
+        required: false
+        schema:
+          default: and
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Sim'
+                type: array
+          description: 正常に検索結果を返却。
+        "400":
+          description: 不正な検索クエリ。利用できない `group` (グループ名) パラメーターを指定した場合にも返却されます。
+      security:
+      - api_key: []
+        api_token: []
+      summary: グループを指定して SIM を検索する
+      tags:
+      - Query
+      x-soracom-cli:
+      - query sims-by-group
       x-soracom-cli-pagination:
         request:
           param: last_evaluated_key
@@ -11483,7 +12075,7 @@ paths:
   /sim_transfer_requests:
     get:
       description: |
-        認証されたオペレーターの SIM 譲渡リクエストの一覧を取得します。譲渡元となるリクエスト (ドラフトを含む) と、譲渡先となるリクエスト (ドラフト以外) の両方が返却されます。リクエストは譲渡リクエスト ID の順 (UUIDv7 による作成日時順) でソートされます。
+        認証されたオペレーターの IoT SIM 譲渡リクエストの一覧を取得します。譲渡元となるリクエスト (ドラフトを含む) と、譲渡先となるリクエスト (ドラフト以外) の両方が返却されます。リクエストは IoT SIM 譲渡リクエスト ID の順 (UUIDv7 による作成日時順) でソートされます。
       operationId: listTransferRequests
       responses:
         "200":
@@ -11491,18 +12083,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListTransferRequestsResponse'
-          description: SIM 譲渡リクエストの一覧を取得しました。
+          description: IoT SIM 譲渡リクエストの一覧を取得しました。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストの一覧を取得する
+      summary: IoT SIM 譲渡リクエストの一覧を取得する
       tags:
       - SimTransferRequest
       x-soracom-cli:
       - sim-transfer-requests list
     post:
       description: |
-        新しい SIM 譲渡リクエストを `DRAFT` ステータスで作成します。SIM を含まない空のリクエストとして作成し、後から SIM を追加することもできます。ドラフトは作成から 90 日間保持されます。`destinationOperatorId` を指定する場合は、確認のために `destinationOperatorEmail` も必須です。
+        新しい IoT SIM 譲渡リクエストを `DRAFT` ステータスで作成します。IoT SIM を含まない空のリクエストとして作成し、後から IoT SIM を追加することもできます。ドラフトは作成から 90 日間保持されます。`destinationOperatorId` を指定する場合は、譲渡先の検証のために、譲渡先オペレーターのプライマリメールアドレスを `destinationOperatorEmail` に指定する必要があります。
       operationId: createTransferRequest
       requestBody:
         content:
@@ -11516,7 +12108,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransferRequest'
-          description: SIM 譲渡リクエストを作成しました。作成された SIM 譲渡リクエストが返却されます。
+          description: IoT SIM 譲渡リクエストを作成しました。作成された IoT SIM 譲渡リクエストが返却されます。
         "400":
           description: 指定したリクエストに誤りがあります。
         "409":
@@ -11524,7 +12116,7 @@ paths:
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストをドラフトとして作成する
+      summary: IoT SIM 譲渡リクエストをドラフトとして作成する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11532,10 +12124,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}:
     delete:
       description: |
-        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを削除します。削除はソフトデリート (TTL を現在時刻に設定し、DynamoDB の TTL 機能によって削除) として実装されています。
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの IoT SIM 譲渡リクエストを削除します。
       operationId: deleteTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11543,27 +12135,27 @@ paths:
           type: string
       responses:
         "204":
-          description: SIM 譲渡リクエストを削除しました。
+          description: IoT SIM 譲渡リクエストを削除しました。
         "400":
           description: リクエストが `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスではありません。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: ドラフトの SIM 譲渡リクエストを削除する
+      summary: ドラフトの IoT SIM 譲渡リクエストを削除する
       tags:
       - SimTransferRequest
       x-soracom-cli:
       - sim-transfer-requests delete
     get:
       description: |
-        指定した SIM 譲渡リクエストを取得します。譲渡元のオペレーターと譲渡先のオペレーターの両方がアクセスできます。譲渡先のオペレーターはドラフト以外のリクエストのみ取得できます。
+        指定した IoT SIM 譲渡リクエストを取得します。譲渡元のオペレーターと譲渡先のオペレーターの両方がアクセスできます。譲渡先のオペレーターはドラフト以外のリクエストのみ取得できます。
       operationId: getTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11575,23 +12167,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransferRequest'
-          description: SIM 譲渡リクエストを取得しました。
+          description: IoT SIM 譲渡リクエストを取得しました。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストを取得する
+      summary: IoT SIM 譲渡リクエストを取得する
       tags:
       - SimTransferRequest
       x-soracom-cli:
       - sim-transfer-requests get
     patch:
       description: |
-        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを更新します。譲渡先オペレーター、譲渡先オペレーターのメールアドレス、および名前を変更できます。指定したフィールドのみが更新されます。`destinationOperatorId` を指定する場合は、`destinationOperatorEmail` も必須です。更新を行うと、ドラフトの有効期限が 90 日後にリセットされます。
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの IoT SIM 譲渡リクエストを更新します。譲渡先オペレーター、譲渡先オペレーターのプライマリメールアドレス、および名前を変更できます。リクエストで省略したフィールドには `null` が設定されます。`destinationOperatorId` を指定する場合は、譲渡先の検証のために、譲渡先オペレーターのプライマリメールアドレスを `destinationOperatorEmail` に指定する必要があります。更新を行うと、ドラフトの有効期限が 90 日後にリセットされます。
       operationId: updateTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11609,17 +12201,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransferRequest'
-          description: SIM 譲渡リクエストを更新しました。
+          description: IoT SIM 譲渡リクエストを更新しました。
         "400":
           description: 指定したリクエストに誤りがあるか、`DRAFT`/`DRAFT_VALIDATION_FAILED` ステータスではありません。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: ドラフトの SIM 譲渡リクエストを更新する
+      summary: ドラフトの IoT SIM 譲渡リクエストを更新する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11627,10 +12219,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/cancel:
     put:
       description: |
-        `REQUESTING` ステータスの SIM 譲渡リクエストをキャンセルします。譲渡元のオペレーターのみが実行できます。キャンセルされたことが譲渡先のオペレーターに通知されます。
+        `REQUESTING` ステータスの IoT SIM 譲渡リクエストをキャンセルします。譲渡元のオペレーターのみが実行できます。キャンセルされたことが譲渡先のオペレーターに通知されます。
       operationId: cancelTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11638,17 +12230,17 @@ paths:
           type: string
       responses:
         "204":
-          description: SIM 譲渡リクエストをキャンセルしました。ステータスが `CANCELLED` に変更されます。
+          description: IoT SIM 譲渡リクエストをキャンセルしました。ステータスが `CANCELLED` に変更されます。
         "400":
           description: リクエストが `REQUESTING` ステータスではありません。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つかりません。
+          description: 指定した IoT SIM 譲渡リクエストが見つかりません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストをキャンセルする
+      summary: IoT SIM 譲渡リクエストをキャンセルする
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11656,10 +12248,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/reject:
     put:
       description: |
-        `REQUESTING` ステータスの SIM 譲渡リクエストを拒否します。譲渡先のオペレーターのみが実行できます。拒否されたことが譲渡元のオペレーターに通知されます。
+        `REQUESTING` ステータスの IoT SIM 譲渡リクエストを拒否します。譲渡先のオペレーターのみが実行できます。拒否されたことが譲渡元のオペレーターに通知されます。
       operationId: rejectTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11667,17 +12259,17 @@ paths:
           type: string
       responses:
         "204":
-          description: SIM 譲渡リクエストを拒否しました。ステータスが `REJECTED` に変更されます。
+          description: IoT SIM 譲渡リクエストを拒否しました。ステータスが `REJECTED` に変更されます。
         "400":
           description: リクエストが `REQUESTING` ステータスではありません。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つかりません。
+          description: 指定した IoT SIM 譲渡リクエストが見つかりません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストを拒否する
+      summary: IoT SIM 譲渡リクエストを拒否する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11685,10 +12277,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/request:
     put:
       description: |
-        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストを送信します。同期的な事前チェックを行った後、ステータスを `DRAFT_VALIDATING` に遷移させ、SIM の非同期バリデーションを実行します。すべての SIM がバリデーションを通過すると、ステータスは `REQUESTING` に遷移し、通知メールが送信されます。送信前に譲渡先オペレーターが設定されている必要があります。
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの IoT SIM 譲渡リクエストを送信します。同期的な事前チェックを行った後、ステータスを `DRAFT_VALIDATING` に遷移させ、IoT SIM の非同期バリデーションを実行します。すべての IoT SIM がバリデーションを通過すると、ステータスは `REQUESTING` に遷移し、通知メールが送信されます。送信前に譲渡先オペレーターが設定されている必要があります。
       operationId: submitTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11696,17 +12288,17 @@ paths:
           type: string
       responses:
         "202":
-          description: SIM 譲渡リクエストを送信し、非同期バリデーションを開始しました。
+          description: IoT SIM 譲渡リクエストを送信し、非同期バリデーションを開始しました。
         "400":
-          description: ステータスが不正、譲渡先が未設定、SIM が空、またはオペレーターのバリデーションに失敗しました。
+          description: ステータスが不正、譲渡先が未設定、IoT SIM が空、またはオペレーターのバリデーションに失敗しました。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストを送信する
+      summary: IoT SIM 譲渡リクエストを送信する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11714,10 +12306,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/sims:
     delete:
       description: |
-        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストから SIM を削除します。この操作は冪等であり、リクエストに含まれていない SIM ID は無視されます。この操作はレスポンスボディを返しません。
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの IoT SIM 譲渡リクエストから IoT SIM を削除します。この操作は冪等であり、リクエストに含まれていない SIM ID は無視されます。この操作はレスポンスボディを返しません。
       operationId: removeSimsFromTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11731,33 +12323,33 @@ paths:
         required: true
       responses:
         "204":
-          description: SIM を削除しました。レスポンスボディは返しません。
+          description: IoT SIM を削除しました。レスポンスボディは返しません。
         "400":
           description: リクエストが `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスではありません。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: ドラフトの SIM 譲渡リクエストから SIM を削除する
+      summary: ドラフトの IoT SIM 譲渡リクエストから IoT SIM を削除する
       tags:
       - SimTransferRequest
       x-soracom-cli:
       - sim-transfer-requests remove-sims
     get:
       description: |
-        SIM 譲渡リクエストに含まれる SIM の一覧をページネーションで取得します。譲渡元のオペレーターがアクセスした場合は、`name` や `groupId` などの追加情報を含む SIM 情報が返却されます。譲渡先のオペレーターがアクセスした場合は、`simId` と `errorCode` のみが返却されます。無効な SIM (エラーコード付き) が先頭に表示されます。
+        IoT SIM 譲渡リクエストに含まれる IoT SIM の一覧をページネーションで取得します。譲渡元のオペレーターがアクセスした場合は、`name` や `groupId` などの追加情報を含む IoT SIM 情報が返却されます。譲渡先のオペレーターがアクセスした場合は、`simId` と `errorCode` のみが返却されます。無効な IoT SIM (エラーコード付き) が先頭に表示されます。
       operationId: listTransferRequestSims
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
         schema:
           type: string
-      - description: 1 ページあたりに取得する SIM の最大件数。
+      - description: 1 ページあたりに取得する IoT SIM の最大件数。
         in: query
         name: limit
         required: false
@@ -11776,13 +12368,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransferRequestSimsResponse'
-          description: SIM の一覧を取得しました。
+          description: IoT SIM の一覧を取得しました。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストに含まれる SIM の一覧を取得する
+      summary: IoT SIM 譲渡リクエストに含まれる IoT SIM の一覧を取得する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11794,10 +12386,10 @@ paths:
           header: x-soracom-next-key
     post:
       description: |
-        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの SIM 譲渡リクエストに SIM を追加します。リクエストに含められる SIM の上限 (デフォルト 1,000 件) を超えないか検証します。SIM は個別の検証を行わずに保存されます。個別の検証はリクエストの送信時に実行され、SIM ごとのエラーは `GET /sim_transfer_requests/{transfer_request_id}/sims` で確認できます。この操作はレスポンスボディを返しません。
+        `DRAFT` または `DRAFT_VALIDATION_FAILED` ステータスの IoT SIM 譲渡リクエストに IoT SIM を追加します。リクエストに含められる IoT SIM の上限 (デフォルト 1,000 件) を超えないか検証します。IoT SIM は個別の検証を行わずに保存されます。個別の検証はリクエストの送信時に実行され、IoT SIM ごとのエラーは `GET /sim_transfer_requests/{transfer_request_id}/sims` で確認できます。この操作はレスポンスボディを返しません。
       operationId: addSimsToTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11811,17 +12403,18 @@ paths:
         required: true
       responses:
         "204":
-          description: SIM を追加しました。レスポンスボディは返しません。
+          description: IoT SIM を追加しました。レスポンスボディは返しません。
         "400":
-          description: リクエストが `DRAFT`/`DRAFT_VALIDATION_FAILED` ステータスでないか、SIM の上限を超えています。
+          description: リクエストが `DRAFT`/`DRAFT_VALIDATION_FAILED` ステータスでないか、IoT SIM
+            の上限を超えています。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: ドラフトの SIM 譲渡リクエストに SIM を追加する
+      summary: ドラフトの IoT SIM 譲渡リクエストに IoT SIM を追加する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -11829,10 +12422,10 @@ paths:
   /sim_transfer_requests/{transfer_request_id}/transfer:
     put:
       description: |
-        `REQUESTING` ステータスの SIM 譲渡リクエストを承認して実行します。譲渡先のオペレーターのみが実行できます。支払い方法、グループ、およびオペレーターの互換性を検証した後、非同期で譲渡を開始します。承認すると、ステータスは `TRANSFERRING` に遷移します。毎月の譲渡制限期間 (毎月末日の 2 日前 15:00 UTC から翌月 2 日 15:00 UTC まで。2026 年 7 月の場合は `2026-07-29T15:00:00Z` から `2026-08-02T15:00:00Z` まで) 中に承認した場合は、ステータスの遷移は保存されますが、SIM の譲渡は延期されます。制限期間の終了後にダウンストリームのスケジューラーが譲渡を実行します。その間も、リクエストは `TRANSFERRING` ステータスのままです。
+        `REQUESTING` ステータスの IoT SIM 譲渡リクエストを承認して実行します。譲渡先のオペレーターのみが実行できます。支払い方法、グループ、およびオペレーターの互換性を検証した後、非同期で譲渡を開始します。承認すると、ステータスは `TRANSFERRING` に遷移します。毎月の譲渡制限期間 (毎月末日の 2 日前 15:00 UTC から翌月 2 日 15:00 UTC まで。2026 年 7 月の場合は `2026-07-29T15:00:00Z` から `2026-08-02T15:00:00Z` まで) 中に承認した場合は、IoT SIM の譲渡を延期します。リクエストは `TRANSFERRING` ステータスのままとなり、譲渡制限期間の終了後に譲渡処理を開始します。
       operationId: executeTransferRequest
       parameters:
-      - description: SIM 譲渡リクエストの ID。
+      - description: IoT SIM 譲渡リクエストの ID。
         in: path
         name: transfer_request_id
         required: true
@@ -11846,18 +12439,18 @@ paths:
         required: true
       responses:
         "202":
-          description: リクエストを受け付けました。譲渡が開始されたか、月末月初の制限期間中に承認した場合は譲渡が延期されます (ダウンストリームのスケジューラーが譲渡を実行するまで、リクエストは
-            `TRANSFERRING` ステータスのままです)。
+          description: リクエストを受け付けました。毎月の譲渡制限期間中に承認した場合は、譲渡制限期間の終了後に譲渡処理を開始します。譲渡処理を開始するまで、リクエストは
+            `TRANSFERRING` ステータスのままです。
         "400":
           description: リクエストが `REQUESTING` ステータスでないか、支払い方法・グループ・オペレーターの検証に失敗しました。
         "404":
-          description: 指定した SIM 譲渡リクエストが見つからないか、アクセス権がありません。
+          description: 指定した IoT SIM 譲渡リクエストが見つからないか、アクセス権がありません。
         "409":
           description: 同時更新により競合が発生しました (バージョン不一致)。
       security:
       - api_key: []
         api_token: []
-      summary: SIM 譲渡リクエストを承認して実行する
+      summary: IoT SIM 譲渡リクエストを承認して実行する
       tags:
       - SimTransferRequest
       x-soracom-cli:
@@ -13793,6 +14386,36 @@ paths:
       - Sim
       x-soracom-cli:
       - sims update-speed-class
+  /sims/iccid/{iccid}:
+    get:
+      description: 指定した ICCID のプロファイルを持つ IoT SIM の情報を取得します。eUICC 対応 IoT SIM (Connectivity
+        Hypervisor 対応 IoT SIM など) のプロファイルの ICCID しかわからない場合に、その IoT SIM の SIM ID を調べる用途で使用します。レスポンスは
+        [Sim:getSim API](#/Sim/getSim) と同じです。
+      operationId: getSimByIccid
+      parameters:
+      - description: 対象の IoT SIM のプロファイルの ICCID。
+        in: path
+        name: iccid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sim'
+          description: IoT SIM の詳細情報。
+        "404":
+          description: 指定した ICCID のプロファイルを持つ IoT SIM が存在しません。
+      security:
+      - api_key: []
+        api_token: []
+      summary: ICCID から IoT SIM の情報を取得する
+      tags:
+      - Sim
+      x-soracom-cli:
+      - sims get-by-iccid
   /sora_cam/devices:
     get:
       description: |
@@ -21396,10 +22019,10 @@ components:
       - executionDateTimeConst
       type: object
     AddSimsToTransferRequestRequest:
-      description: ドラフトの SIM 譲渡リクエストに SIM を追加するためのリクエストを表します。
+      description: ドラフトの IoT SIM 譲渡リクエストに IoT SIM を追加するためのリクエストを表します。
       properties:
         simIds:
-          description: SIM 譲渡リクエストに追加する SIM の ID の一覧。
+          description: IoT SIM 譲渡リクエストに追加する IoT SIM の ID の一覧。
           example:
           - "89000010997093035700"
           - "89000010998833363600"
@@ -22547,10 +23170,17 @@ components:
       - soraletId
       type: object
     CreateTransferRequestRequest:
-      description: ドラフトの SIM 譲渡リクエストを作成するためのリクエストを表します。
+      anyOf:
+      - required:
+        - destinationOperatorEmail
+        - destinationOperatorId
+      - not:
+          required:
+          - destinationOperatorId
+      description: ドラフトの IoT SIM 譲渡リクエストを作成するためのリクエストを表します。
       properties:
         destinationOperatorEmail:
-          description: 譲渡先オペレーターのメールアドレス。`destinationOperatorId` を指定する場合は必須です。
+          description: 譲渡先オペレーターのプライマリメールアドレス。`destinationOperatorId` を指定する場合は必須です。譲渡先の検証に使用されます。
           example: operator@example.com
           format: email
           type: string
@@ -22559,7 +23189,7 @@ components:
           example: OP0987654321
           type: string
         name:
-          description: SIM 譲渡リクエストの名前。
+          description: IoT SIM 譲渡リクエストの名前。
           example: EU regional division
           type: string
       type: object
@@ -23415,13 +24045,57 @@ components:
     EuiccProfileOrderRequest:
       description: プロファイル注文のリクエストボディ。
       properties:
+        activateImmediately:
+          default: false
+          description: |
+            `true` を指定すると、注文したプロファイルのダウンロードが完了した時点で、[Euicc:requestEuiccProfileActivation API](#/Euicc/requestEuiccProfileActivation) を呼び出すことなく、そのプロファイルを eUICC 上で有効化 (アクティベート) します。
+
+            レスポンスは注文を受け付けた時点で返されるため、ダウンロードと、それに続く有効化はいずれも非同期に実行されます。進捗は [Euicc:listEuiccProfileOperationHistory API](#/Euicc/listEuiccProfileOperationHistory) で確認してください。ダウンロードが成功しなかった場合、有効化はリクエストされません。
+
+            省略した場合、ダウンロードしたプロファイルは無効のままになります。
+          type: boolean
         bundles:
-          description: プロファイルに関連付けるバンドルのリスト。
+          description: |
+            注文するプロファイルに関連付けるバンドル名の配列。[Euicc:listEuiccProfileTypes API](#/Euicc/listEuiccProfileTypes) のレスポンスで、注文する `profileType` に対応する要素の `bundleRequired` を確認してください。
+
+            **`bundleRequired` が `true` の場合:**
+
+            同じレスポンスの `availableBundles` に含まれる `bundleName` を 1 つ指定してください。主なプロファイルタイプとバンドル名の例は以下のとおりです。
+
+            - `SGEPR38` (planX3) の場合:
+                - `X3-5MB`
+            - `SGEPR39` (plan-US) の場合:
+                - `US-1MB`
+                - `US-3MB`
+                - `US-10MB`
+                - `US-20MB`
+                - `US-50MB`
+                - `US-100MB`
+                - `US-300MB`
+                - `US-500MB`
+                - `US-1GB`
+                - `US-3GB`
+                - `US-5GB`
+                - `US-10GB`
+
+            バンドル名は完全一致で判定されます。
+
+            **`bundleRequired` が `false` の場合:**
+
+            `bundles` を省略してください。
           items:
             type: string
+          maxItems: 1
           type: array
         profileType:
           $ref: '#/components/schemas/EuiccProfileType'
+        rollbackOnConnectivityFailure:
+          default: false
+          description: |
+            `true` を指定すると、新しく有効化したプロファイルで eUICC が通信を確立できない場合に、直前に有効だったプロファイルへロールバックすることを許可します。有効化自体は先に完了し、その後デバイス上の IPA が有効化結果を eIM に報告できない場合にロールバックが発生します。
+
+            `activateImmediately` と組み合わせた場合にのみ有効です。`activateImmediately` を省略した場合または `false` を指定した場合に、このパラメーターに `true` を指定すると `400` エラーになります。
+          type: boolean
       required:
       - profileType
       type: object
@@ -23623,10 +24297,10 @@ components:
           type: integer
       type: object
     ExecuteTransferRequestRequest:
-      description: SIM 譲渡リクエストを承認して実行するためのリクエストを表します。
+      description: IoT SIM 譲渡リクエストを承認して実行するためのリクエストを表します。
       properties:
         destinationGroupId:
-          description: 譲渡先オペレーターで転送された SIM を割り当てるグループの ID。省略可能です。
+          description: 譲渡先オペレーターで譲渡された IoT SIM を割り当てるグループの ID。省略可能です。
           example: 12345678-abcd-9012-efab-345678901234
           type: string
       type: object
@@ -25288,10 +25962,10 @@ components:
           type: array
       type: object
     ListTransferRequestsResponse:
-      description: SIM 譲渡リクエストの一覧を表します。
+      description: IoT SIM 譲渡リクエストの一覧を表します。
       properties:
         transferRequests:
-          description: SIM 譲渡リクエストの一覧。
+          description: IoT SIM 譲渡リクエストの一覧。
           items:
             $ref: '#/components/schemas/TransferRequestSummary'
           type: array
@@ -26401,10 +27075,10 @@ components:
       - registrationSecret
       type: object
     RemoveSimsFromTransferRequestRequest:
-      description: ドラフトの SIM 譲渡リクエストから SIM を削除するためのリクエストを表します。
+      description: ドラフトの IoT SIM 譲渡リクエストから IoT SIM を削除するためのリクエストを表します。
       properties:
         simIds:
-          description: SIM 譲渡リクエストから削除する SIM の ID の一覧。
+          description: IoT SIM 譲渡リクエストから削除する IoT SIM の ID の一覧。
           example:
           - "89000010997093035700"
           - "89000010998833363600"
@@ -29576,7 +30250,7 @@ components:
           type: integer
       type: object
     TransferRequest:
-      description: SIM 譲渡リクエストを表します。
+      description: IoT SIM 譲渡リクエストを表します。
       properties:
         approvalDatetime:
           description: リクエストを承認した日時 (UNIX 時間 (ミリ秒))。
@@ -29589,21 +30263,21 @@ components:
           format: int64
           type: integer
         createdDatetime:
-          description: SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
+          description: IoT SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
           example: 1735112937412
           format: int64
           type: integer
         destinationOperatorEmail:
-          description: 譲渡先オペレーターのメールアドレス。
+          description: 譲渡先オペレーターのプライマリメールアドレス。
           example: operator@example.com
           format: email
           type: string
         destinationOperatorId:
-          description: 譲渡先オペレーター (SIM を受け取る側) の ID。
+          description: 譲渡先オペレーター (IoT SIM を受け取る側) の ID。
           example: OP0987654321
           type: string
         name:
-          description: SIM 譲渡リクエストの名前。
+          description: IoT SIM 譲渡リクエストの名前。
           example: EU regional division
           type: string
         rejectedDatetime:
@@ -29622,27 +30296,27 @@ components:
           format: int64
           type: integer
         simCount:
-          description: SIM 譲渡リクエストに含まれる SIM の件数。
+          description: IoT SIM 譲渡リクエストに含まれる IoT SIM の件数。
           example: 0
           minimum: 0
           type: integer
         sourceOperatorId:
-          description: 譲渡元オペレーター (SIM を譲渡する側) の ID。
+          description: 譲渡元オペレーター (IoT SIM を譲渡する側) の ID。
           example: OP0059150966
           type: string
         status:
           description: |
-            SIM 譲渡リクエストの現在のステータス。
+            IoT SIM 譲渡リクエストの現在のステータス。
 
             - `DRAFT`: ドラフト (未送信) 状態です。
-            - `DRAFT_VALIDATING`: SIM の非同期バリデーション中です。
+            - `DRAFT_VALIDATING`: IoT SIM の非同期バリデーション中です。
             - `DRAFT_VALIDATION_FAILED`: ドラフトのバリデーションに失敗しました。修正して再送信できます。
             - `REQUESTING`: 送信済みで、譲渡先オペレーターの応答待ちです。
             - `REJECTED`: 譲渡先オペレーターに拒否されました。
             - `TRANSFERRING`: 譲渡処理中です。
             - `CANCELLED`: 譲渡元オペレーターによってキャンセルされました。
-            - `COMPLETED`: すべての SIM の譲渡が完了しました。
-            - `PARTIALLY_COMPLETED`: 一部の SIM の譲渡が成功し、一部が失敗しました。
+            - `COMPLETED`: すべての IoT SIM の譲渡が完了しました。
+            - `PARTIALLY_COMPLETED`: 一部の IoT SIM の譲渡が成功し、一部が失敗しました。
             - `FAILED`: 譲渡に失敗しました。
           enum:
           - DRAFT
@@ -29658,11 +30332,11 @@ components:
           example: DRAFT
           type: string
         transferRequestId:
-          description: SIM 譲渡リクエストの一意の ID。
+          description: IoT SIM 譲渡リクエストの一意の ID。
           example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
           type: string
         updatedDatetime:
-          description: SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
+          description: IoT SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
           example: 1735112937412
           format: int64
           type: integer
@@ -29675,32 +30349,41 @@ components:
       - updatedDatetime
       type: object
     TransferRequestSim:
-      description: SIM 譲渡リクエストに含まれる SIM を表します。
+      description: IoT SIM 譲渡リクエストに含まれる IoT SIM を表します。
       properties:
         errorCode:
-          description: SIM が譲渡できない場合のエラーコード。
-          example: SIM_ALREADY_IN_TRANSFER
+          description: |
+            IoT SIM が譲渡できない場合のエラーコード。現在使用する値と対応方法は以下のとおりです。
+
+            - `NOT_FOUND`: IoT SIM が譲渡元オペレーターに登録されていないか、SIM ID が正しくありません。SIM ID と現在の所有者を確認してください。
+            - `NOT_COMPATIBLE`: IoT SIM のプランを譲渡先オペレーターの国で利用できません。譲渡先オペレーターを変更するか、IoT SIM をリクエストから削除してください。
+            - `CUSTOM_BUNDLE_UNSUPPORTED`: カスタムバンドルを利用している IoT SIM は譲渡できません。IoT SIM をリクエストから削除してください。
+            - `IN_PENDING_TRANSFER`: ほかの未完了の IoT SIM 譲渡リクエストに含まれている IoT SIM は譲渡できません。この IoT SIM をリクエストから削除してください。
+            - `ALREADY_TRANSFERRED_THIS_MONTH`: 当月中に異なるオペレーター間で譲渡されている IoT SIM は譲渡できません。翌月以降に新しい IoT SIM 譲渡リクエストを作成してください。
+            - `VALIDATION_FAILED`: 一時的な問題により、この IoT SIM を譲渡できるか確認できませんでした。時間をおいて同じリクエストを再送信してください。このエラーが繰り返し発生する場合は、[SORACOM サポート](/ja-jp/guides/support/) に問い合わせてください。
+            - `TRANSFER_FAILED`: 譲渡処理中に予期しない問題が発生しました。IoT SIM の状態を確認し、譲渡されていない場合は、新しい IoT SIM 譲渡リクエストで再度譲渡してください。このエラーが繰り返し発生する場合は、[SORACOM サポート](/ja-jp/guides/support/) に問い合わせてください。
+          example: IN_PENDING_TRANSFER
           type: string
         groupId:
-          description: SIM が所属するグループの ID。譲渡元オペレーターのみが取得できます。
+          description: IoT SIM が所属するグループの ID。譲渡元オペレーターのみが取得できます。
           example: 12345678-abcd-9012-efab-345678901234
           type: string
         name:
-          description: SIM の名前。譲渡元オペレーターのみが取得できます。
+          description: IoT SIM の名前。譲渡元オペレーターのみが取得できます。
           example: Fleet Vehicle A1
           type: string
         simId:
-          description: SIM の ID。
+          description: IoT SIM の ID。
           example: "89000010997093035700"
           type: string
       required:
       - simId
       type: object
     TransferRequestSimsResponse:
-      description: SIM 譲渡リクエストに含まれる SIM のページネーションされた一覧を表します。
+      description: IoT SIM 譲渡リクエストに含まれる IoT SIM のページネーションされた一覧を表します。
       properties:
         sims:
-          description: SIM 譲渡リクエストに含まれる SIM の一覧。
+          description: IoT SIM 譲渡リクエストに含まれる IoT SIM の一覧。
           items:
             $ref: '#/components/schemas/TransferRequestSim'
           type: array
@@ -29708,48 +30391,48 @@ components:
       - sims
       type: object
     TransferRequestSummary:
-      description: 一覧に含まれる SIM 譲渡リクエストの概要を表します。
+      description: 一覧に含まれる IoT SIM 譲渡リクエストの概要を表します。
       properties:
         createdDatetime:
-          description: SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
+          description: IoT SIM 譲渡リクエストの作成日時 (UNIX 時間 (ミリ秒))。
           example: 1735112937412
           format: int64
           type: integer
         destinationOperatorEmail:
-          description: 譲渡先オペレーターのメールアドレス。
+          description: 譲渡先オペレーターのプライマリメールアドレス。
           example: operator@example.com
           format: email
           type: string
         destinationOperatorId:
-          description: 譲渡先オペレーター (SIM を受け取る側) の ID。
+          description: 譲渡先オペレーター (IoT SIM を受け取る側) の ID。
           example: OP0987654321
           type: string
         name:
-          description: SIM 譲渡リクエストの名前。
+          description: IoT SIM 譲渡リクエストの名前。
           example: EU regional division
           type: string
         simCount:
-          description: SIM 譲渡リクエストに含まれる SIM の件数。
+          description: IoT SIM 譲渡リクエストに含まれる IoT SIM の件数。
           example: 0
           minimum: 0
           type: integer
         sourceOperatorId:
-          description: 譲渡元オペレーター (SIM を譲渡する側) の ID。
+          description: 譲渡元オペレーター (IoT SIM を譲渡する側) の ID。
           example: OP0059150966
           type: string
         status:
           description: |
-            SIM 譲渡リクエストの現在のステータス。
+            IoT SIM 譲渡リクエストの現在のステータス。
 
             - `DRAFT`: ドラフト (未送信) 状態です。
-            - `DRAFT_VALIDATING`: SIM の非同期バリデーション中です。
+            - `DRAFT_VALIDATING`: IoT SIM の非同期バリデーション中です。
             - `DRAFT_VALIDATION_FAILED`: ドラフトのバリデーションに失敗しました。修正して再送信できます。
             - `REQUESTING`: 送信済みで、譲渡先オペレーターの応答待ちです。
             - `REJECTED`: 譲渡先オペレーターに拒否されました。
             - `TRANSFERRING`: 譲渡処理中です。
             - `CANCELLED`: 譲渡元オペレーターによってキャンセルされました。
-            - `COMPLETED`: すべての SIM の譲渡が完了しました。
-            - `PARTIALLY_COMPLETED`: 一部の SIM の譲渡が成功し、一部が失敗しました。
+            - `COMPLETED`: すべての IoT SIM の譲渡が完了しました。
+            - `PARTIALLY_COMPLETED`: 一部の IoT SIM の譲渡が成功し、一部が失敗しました。
             - `FAILED`: 譲渡に失敗しました。
           enum:
           - DRAFT
@@ -29765,12 +30448,12 @@ components:
           example: DRAFT
           type: string
         transferRequestId:
-          description: SIM 譲渡リクエストの一意の ID。
+          description: IoT SIM 譲渡リクエストの一意の ID。
           example: 019b547b-7bc4-742e-85e5-1fd83fdf5ed4
           type: string
         type:
           description: |
-            認証されたオペレーターから見た SIM 譲渡リクエストの種類。
+            認証されたオペレーターから見た IoT SIM 譲渡リクエストの種類。
 
             - `OUTGOING`: 認証されたオペレーターが譲渡元です。
             - `INCOMING`: 認証されたオペレーターが譲渡先です。
@@ -29780,7 +30463,7 @@ components:
           example: OUTGOING
           type: string
         updatedDatetime:
-          description: SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
+          description: IoT SIM 譲渡リクエストの最終更新日時 (UNIX 時間 (ミリ秒))。
           example: 1735112937412
           format: int64
           type: integer
@@ -30004,10 +30687,18 @@ components:
       - speedClass
       type: object
     UpdateTransferRequestRequest:
-      description: ドラフトの SIM 譲渡リクエストを更新するためのリクエストを表します。指定したフィールドのみが更新されます。
+      anyOf:
+      - required:
+        - destinationOperatorEmail
+        - destinationOperatorId
+      - not:
+          required:
+          - destinationOperatorId
+      description: ドラフトの IoT SIM 譲渡リクエストを更新するためのリクエストを表します。リクエストで省略したフィールドには `null`
+        が設定されます。
       properties:
         destinationOperatorEmail:
-          description: 譲渡先オペレーターのメールアドレス。`destinationOperatorId` を指定する場合は必須です。
+          description: 譲渡先オペレーターのプライマリメールアドレス。`destinationOperatorId` を指定する場合は必須です。譲渡先の検証に使用されます。
           example: operator@example.com
           format: email
           type: string
@@ -30016,7 +30707,7 @@ components:
           example: OP0987654321
           type: string
         name:
-          description: SIM 譲渡リクエストの名前。
+          description: IoT SIM 譲渡リクエストの名前。
           example: EU regional division
           type: string
       type: object
@@ -30583,7 +31274,7 @@ tags:
   name: SimProfileOrder
 - description: '[Connectivity Hypervisor 対応 IoT SIM](/ja-jp/docs/air/connectivity-hypervisor/)'
   name: Euicc
-- description: '[SIM 譲渡リクエスト](/ja-jp/docs/air/transfer/) の作成、管理、実行'
+- description: '[IoT SIM 譲渡リクエスト](/ja-jp/docs/air/transfer-sim/) の作成、管理、実行'
   name: SimTransferRequest
 - description: '[SORACOM Orbit](/ja-jp/docs/orbit/) Soralet'
   name: Soralet

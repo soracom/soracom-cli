@@ -9,25 +9,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// EuiccsStatusGetCmdSimId holds value of 'sim_id' option
-var EuiccsStatusGetCmdSimId string
+// SimsGetByIccidCmdIccid holds value of 'iccid' option
+var SimsGetByIccidCmdIccid string
 
-func InitEuiccsStatusGetCmd() {
-	EuiccsStatusGetCmd.Flags().StringVar(&EuiccsStatusGetCmdSimId, "sim-id", "", TRAPI("The SIM ID of the target Connectivity Hypervisor-capable IoT SIM."))
+func InitSimsGetByIccidCmd() {
+	SimsGetByIccidCmd.Flags().StringVar(&SimsGetByIccidCmdIccid, "iccid", "", TRAPI("The ICCID of a profile on the target IoT SIM."))
 
-	EuiccsStatusGetCmd.RunE = EuiccsStatusGetCmdRunE
+	SimsGetByIccidCmd.RunE = SimsGetByIccidCmdRunE
 
-	EuiccsStatusCmd.AddCommand(EuiccsStatusGetCmd)
+	SimsCmd.AddCommand(SimsGetByIccidCmd)
 }
 
-// EuiccsStatusGetCmd defines 'get' subcommand
-var EuiccsStatusGetCmd = &cobra.Command{
-	Use:   "get",
-	Short: TRAPI("/euiccs/{sim_id}/status:get:summary"),
-	Long:  TRAPI(`/euiccs/{sim_id}/status:get:description`) + "\n\n" + createLinkToAPIReference("Euicc", "getEuiccStatus"),
+// SimsGetByIccidCmd defines 'get-by-iccid' subcommand
+var SimsGetByIccidCmd = &cobra.Command{
+	Use:   "get-by-iccid",
+	Short: TRAPI("/sims/iccid/{iccid}:get:summary"),
+	Long:  TRAPI(`/sims/iccid/{iccid}:get:description`) + "\n\n" + createLinkToAPIReference("Sim", "getSimByIccid"),
 }
 
-func EuiccsStatusGetCmdRunE(cmd *cobra.Command, args []string) error {
+func SimsGetByIccidCmdRunE(cmd *cobra.Command, args []string) error {
 
 	if len(args) > 0 {
 		return fmt.Errorf("unexpected arguments passed => %v", args)
@@ -60,7 +60,7 @@ func EuiccsStatusGetCmdRunE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	param, err := collectEuiccsStatusGetCmdParams(ac)
+	param, err := collectSimsGetByIccidCmdParams(ac)
 	if err != nil {
 		return err
 	}
@@ -87,33 +87,33 @@ func EuiccsStatusGetCmdRunE(cmd *cobra.Command, args []string) error {
 	return err
 }
 
-func collectEuiccsStatusGetCmdParams(ac *apiClient) (*apiParams, error) {
+func collectSimsGetByIccidCmdParams(ac *apiClient) (*apiParams, error) {
 	var parsedBody interface{}
 	var err error
-	err = checkIfRequiredStringParameterIsSupplied("sim_id", "sim-id", "path", parsedBody, EuiccsStatusGetCmdSimId)
+	err = checkIfRequiredStringParameterIsSupplied("iccid", "iccid", "path", parsedBody, SimsGetByIccidCmdIccid)
 	if err != nil {
 		return nil, err
 	}
 
 	return &apiParams{
 		method: "GET",
-		path:   buildPathForEuiccsStatusGetCmd("/euiccs/{sim_id}/status"),
-		query:  buildQueryForEuiccsStatusGetCmd(),
+		path:   buildPathForSimsGetByIccidCmd("/sims/iccid/{iccid}"),
+		query:  buildQueryForSimsGetByIccidCmd(),
 
 		noRetryOnError: noRetryOnError,
 	}, nil
 }
 
-func buildPathForEuiccsStatusGetCmd(path string) string {
+func buildPathForSimsGetByIccidCmd(path string) string {
 
-	escapedSimId := url.PathEscape(EuiccsStatusGetCmdSimId)
+	escapedIccid := url.PathEscape(SimsGetByIccidCmdIccid)
 
-	path = strReplace(path, "{"+"sim_id"+"}", escapedSimId, -1)
+	path = strReplace(path, "{"+"iccid"+"}", escapedIccid, -1)
 
 	return path
 }
 
-func buildQueryForEuiccsStatusGetCmd() url.Values {
+func buildQueryForSimsGetByIccidCmd() url.Values {
 	result := url.Values{}
 
 	return result
