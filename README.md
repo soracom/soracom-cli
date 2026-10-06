@@ -137,7 +137,7 @@ select (1-4) >
 ```
 
 Please select 1 if AuthKey (authentication key) has been issued to SAM user or root account.
-(For details on how to issue an authentication key to SAM users, please see [Users & Roles | SORACOM Developers](https://developers.soracom.io/en/docs/security/users-and-roles/).
+(For details on how to issue an authentication key to SAM users, please see [Users & Roles | SORACOM Developers](https://docs.soracom.io/en/services/account/users-and-roles).
 
 If you select 4. Switch user, you can specify the Operator ID and SAM user name of the switch destination user. Please create a profile for the switch source user before configuring a switch user profile. If you specify a switch user profile, soracom-cli will automatically authenticate with the switch source profile and then switch to the SAM user before making API calls.
 
