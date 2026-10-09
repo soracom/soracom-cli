@@ -90,6 +90,7 @@ func AuthCmdRunE(cmd *cobra.Command, args []string) error {
 
 	param, err := collectAuthCmdParams(ac)
 	if err != nil {
+		cmd.SilenceUsage = true
 		return err
 	}
 
@@ -156,6 +157,13 @@ func buildQueryForAuthCmd() url.Values {
 
 func buildBodyForAuthCmd() (string, error) {
 	var result map[string]interface{}
+	if AuthCmdBody == "" && specifiedProfileName != "" {
+		var err error
+		result, err = getAuthBodyFromProfile(specifiedProfileName)
+		if err != nil {
+			return "", err
+		}
+	}
 
 	if AuthCmdBody != "" {
 		var b []byte

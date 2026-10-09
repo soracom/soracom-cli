@@ -18,6 +18,8 @@ cli:
   auth:
     summary: API アクセスの認証を行い、API キーと API トークンを発行します。
     description: "API アクセスの認証を行います。\nルートアカウントで認証する場合は --email と --password を指定してください。\n認証キーを用いて認証する場合は --auth-key-id と --auth-key を指定してください。\nSAM ユーザーで認証する場合は --operator-id, --user-name, --password をリクエストに含めてください。認証が成功すると、API キーや API トークンの情報が表示されます。"
+    error:
+      source_profile: "プロファイル '%s' は 'sourceProfile' (スイッチユーザー) を使用しているため 'soracom auth' ではサポートされていません。'soracom auth' で使用するプロファイルには直接の認証情報を含める必要があります"
   batch-groups:
     summary: バッチ処理に関する操作を行う
     description: バッチ処理に関する操作行う
