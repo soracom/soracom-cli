@@ -22,6 +22,9 @@ func getSpecifiedEndpoint() string {
 	ct := getSpecifiedCoverageType()
 	profile, err := getEffectiveProfile()
 	if err != nil {
+		// A missing profile file or a failing profile command is not fatal
+		// here: commands that need authentication report the same (memoized)
+		// error from their credentials source.
 		return getDefaultEndpointForCoverageType(ct)
 	}
 
