@@ -226,7 +226,7 @@ There are several options available to authenticate or to specify the API key an
 4. Authenticate using a pre-configured profile specified with the `--profile` option, then obtain the API key and token, and use them to make the API calls.
 
 These methods are ranked in priority from 1 to 4, with 1 being the highest priority and 4 the lowest.
-For example, if a soracom-cli user specifies both the `--profile-command` and `--profile` options at the same time, the contents of the `--profile-command` option will take precedence.
+For example, if a soracom-cli user specifies both the `--profile-command` and `--profile` options at the same time, the authentication information from the `--profile-command` option will take precedence. Note that the API endpoint is not determined by this order; see [API endpoint when using an external command](#api-endpoint-when-using-an-external-command).
 
 Additionally, if options that need to be specified together, like `--api-key` and `--api-token` or `--auth-key-id` and `--auth-key`, are provided singly, it will result in an error.
 
@@ -249,6 +249,38 @@ These methods are ranked in priority from 1 to 5, with 1 being the highest prior
 For example, if the `profileCommand` field and both `authKeyId` and `authKey` fields are specified in a profile at the same time, the contents of the `profileCommand` will take precedence.
 
 You cannot specify a `sourceProfile` within a profile that is being referenced by `sourceProfile`.
+
+
+### API endpoint when using an external command
+
+When soracom-cli authenticates with the `--profile-command` option or the `profileCommand` field, it executes the specified command directly, not through a shell, and reads a profile from its standard output.
+The command line is split into arguments with shell-like quoting, but environment variables are not expanded, and everything from a pipe or redirect character (`|`, `>`, `;`, and so on) onward is ignored. If you need them, put them in a script and specify the script.
+
+Only the fields used for authentication are taken from the output: `authKeyId` / `authKey`, `email` / `password`, `operatorId` / `username` / `password`, `mfaOTPCode`, and `sourceProfile` with `tokenTimeoutSeconds`.
+Other fields such as `coverageType`, `sandbox`, `endpoint` and `headers` are ignored. The API endpoint and the request headers come from the profile file instead.
+
+The API endpoint is determined in the same way as when no external command is used. "The profile file" below means the file of the profile specified by `--profile`, or `default` if omitted.
+
+1. The `SORACOM_ENDPOINT` environment variable
+2. The `--coverage-type` option (if the profile file has `"sandbox": true`, the API Sandbox endpoint for that coverage type is used)
+3. The `endpoint` field of the profile file
+4. The `coverageType` field of the profile file (`jp` if omitted; the API Sandbox endpoint if `"sandbox": true`)
+5. The Japan coverage endpoint, if `--coverage-type` is not specified and the profile file does not exist or cannot be read
+
+Therefore:
+
+- When you use the `profileCommand` field, specify `coverageType` in the same profile file. For example, the following profile (written by hand, since `soracom configure` does not create one) keeps no credentials in the file:
+
+  ```json
+  {
+    "coverageType": "g",
+    "profileCommand": "/path/to/print-credentials.sh"
+  }
+  ```
+
+- When you use the `--profile-command` option, also specify the `--coverage-type` option. Note that the profile file is still read even when `--profile` is omitted: its `"sandbox": true` and `headers` still apply.
+
+The `soracom auth` command is an exception: it ignores the `--profile-command` option, and with `--profile` it sends the output of the `profileCommand` as the request body as-is.
 
 
 ### Call API via proxy

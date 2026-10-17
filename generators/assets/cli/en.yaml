@@ -177,6 +177,8 @@ cli:
       With this option, soracom-cli will work without pre-configured profiles.
       This means that the 'soracom configure' command does not need to be run beforehand.
       Authentication information can be stored in a more secure location, such as a password manager, and used via external commands.
+      Only the authentication information in the command's output is used. The API endpoint is still determined by --coverage-type or the profile file (--profile, or 'default' if omitted), so specify --coverage-type together with this option. The 'sandbox' and 'headers' settings of that profile file still apply.
+      The command is executed directly, not through a shell.
     raw-output: |
       Outputs the response returned from the API endpoint as-is without processing. (By default, JSON is displayed indented.)
     dry-run: |
