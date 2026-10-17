@@ -227,7 +227,7 @@ soracom-cli は SORACOM API を呼び出すために、通常は内部的に認�
 4. 事前に構成されたプロファイルを`--profile` オプションで指定し、そのプロファイルを用いて認証を行って API キーとトークンを取得し、それらを用いて API を呼び出す
 
 これらは 1 から 4 の順に優先されます。すなわち、1 が最も優先され、4 の優先度が最も低くなります。
-たとえば、もし soracom-cli のユーザーが `--profile-command` オプションと `--profile` オプションを同時に指定してしまった場合、`--profile-command` オプションの内容が優先されます。
+たとえば、もし soracom-cli のユーザーが `--profile-command` オプションと `--profile` オプションを同時に指定してしまった場合、認証情報は `--profile-command` オプションの内容が優先されます。なお、API の接続先はこの優先順位では決まりません。[外部コマンドを利用する場合の API の接続先](#外部コマンドを利用する場合の-api-の接続先) を参照してください。
 
 また、`--api-key` と `--api-token` や `--auth-key-id` と `--auth-key` のように、2 つ同時に指定する必要があるオプションを片方だけ指定した場合はエラーとなります。
 
@@ -250,6 +250,38 @@ soracom-cli は SORACOM API を呼び出すために、通常は内部的に認�
 たとえば、もし `profileCommand` フィールドと `authKeyId` および `authKey` フィールドを同時にプロファイル内に指定してしまった場合、`profileCommand` の内容が優先されます。
 
 `sourceProfile` で参照されるプロファイルの中には `sourceProfile` を指定することはできません。
+
+
+### 外部コマンドを利用する場合の API の接続先
+
+`--profile-command` オプションまたは `profileCommand` フィールドを利用して認証する場合、soracom-cli は指定されたコマンドをシェルを経由せずに直接実行し、その標準出力からプロファイルを読み込みます。
+コマンドの引数はシェルと同様の引用符の規則で分割されますが、環境変数は展開されず、`|`・`>`・`;` などの記号以降は無視されます。これらが必要な場合は、スクリプトにまとめて指定してください。
+
+出力のうち利用されるのは、認証に使うフィールド（`authKeyId` / `authKey`、`email` / `password`、`operatorId` / `username` / `password`、`mfaOTPCode`、`sourceProfile` と `tokenTimeoutSeconds`）だけです。
+`coverageType`、`sandbox`、`endpoint`、`headers` などのフィールドは無視され、API の接続先とリクエストヘッダーはプロファイルファイルから決まります。
+
+API の接続先は、外部コマンドを利用しない場合と同じ方法で決まります。以下の「プロファイルファイル」は、`--profile` で指定した（省略時は `default` の）プロファイルのファイルを指します。
+
+1. `SORACOM_ENDPOINT` 環境変数
+2. `--coverage-type` オプション（プロファイルファイルに `"sandbox": true` が指定されている場合は、そのカバレッジタイプの API Sandbox の接続先）
+3. プロファイルファイルの `endpoint` フィールド
+4. プロファイルファイルの `coverageType` フィールド（省略時は `jp`。`"sandbox": true` の場合は API Sandbox の接続先）
+5. `--coverage-type` が指定されておらず、プロファイルファイルが存在しないか読み込めない場合は、日本カバレッジの接続先
+
+そのため、以下のように利用してください。
+
+- `profileCommand` フィールドを利用する場合は、同じプロファイルファイルに `coverageType` を指定します。たとえば以下のプロファイル（`soracom configure` では作成できないため手で作成します）であれば、ファイルに認証情報を保存せずに利用できます。
+
+  ```json
+  {
+    "coverageType": "g",
+    "profileCommand": "/path/to/print-credentials.sh"
+  }
+  ```
+
+- `--profile-command` オプションを利用する場合は、`--coverage-type` オプションも指定してください。なお、`--profile` を省略してもプロファイルファイルは読み込まれ、その `"sandbox": true` と `headers` は適用されます。
+
+`soracom auth` コマンドは例外で、`--profile-command` オプションは無視されます。また、`--profile` を指定した場合は `profileCommand` の出力がそのままリクエストボディとして送信されます。
 
 
 ### Proxy 経由で API を呼び出したい場合
