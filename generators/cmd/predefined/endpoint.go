@@ -9,6 +9,9 @@ import (
 // 2. --coverage-type argument (use coverage type default)
 // 3. endpoint in profile
 // 4. coverageType in profile (use coverage type default)
+//
+// "profile" is the effective profile (see getEffectiveProfile), so a profile
+// supplied by --profile-command or profileCommand takes part as well.
 
 func getSpecifiedEndpoint() string {
 	e := os.Getenv("SORACOM_ENDPOINT")
@@ -17,7 +20,7 @@ func getSpecifiedEndpoint() string {
 	}
 
 	ct := getSpecifiedCoverageType()
-	profile, err := getProfile()
+	profile, err := getEffectiveProfile()
 	if err != nil {
 		return getDefaultEndpointForCoverageType(ct)
 	}

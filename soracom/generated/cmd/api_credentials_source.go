@@ -80,7 +80,7 @@ func (s *credentialsSourceWithProfileCommand) GetAPICredentials(ac *apiClient) (
 		return nil, nil
 	}
 
-	p, err := getProfileFromExternalCommand(providedProfileCommand)
+	p, err := loadProfileFromExternalCommand(providedProfileCommand)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (s *credentialsSourceWithProfile) GetAPICredentials(ac *apiClient) (*APICre
 	}
 
 	if p.ProfileCommand != nil && *p.ProfileCommand != "" {
-		p, err = getProfileFromExternalCommand(*p.ProfileCommand)
+		p, err = loadProfileFromExternalCommand(*p.ProfileCommand)
 		if err != nil {
 			return nil, err
 		}

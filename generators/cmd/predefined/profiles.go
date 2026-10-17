@@ -49,7 +49,18 @@ type authInfo struct {
 
 var (
 	loadedProfile *profile
+
+	// externalCommandProfiles memoizes the result of each profile command so
+	// that the command (which may prompt, e.g. a password manager) runs at most
+	// once per process even though both endpoint resolution and authentication
+	// need the profile it supplies.
+	externalCommandProfiles = map[string]externalCommandProfileResult{}
 )
+
+type externalCommandProfileResult struct {
+	profile *profile
+	err     error
+}
 
 func getProfile() (*profile, error) {
 	if loadedProfile != nil {
@@ -82,6 +93,42 @@ func getProfileIfExists() *profile {
 		return nil
 	}
 	return profile
+}
+
+// getEffectiveProfile returns the profile whose contents are actually used for
+// authentication and endpoint resolution: the output of --profile-command if
+// specified, otherwise the output of the profileCommand in the profile file if
+// set, otherwise the profile file itself.
+func getEffectiveProfile() (*profile, error) {
+	if providedProfileCommand != "" {
+		return loadProfileFromExternalCommand(providedProfileCommand)
+	}
+
+	p, err := getProfile()
+	if err != nil {
+		return nil, err
+	}
+
+	if p.ProfileCommand != nil && *p.ProfileCommand != "" {
+		return loadProfileFromExternalCommand(*p.ProfileCommand)
+	}
+
+	return p, nil
+}
+
+// loadProfileFromExternalCommand is getProfileFromExternalCommand memoized per
+// command string. A command that yields no profile is reported as an error.
+func loadProfileFromExternalCommand(command string) (*profile, error) {
+	if r, ok := externalCommandProfiles[command]; ok {
+		return r.profile, r.err
+	}
+
+	p, err := getProfileFromExternalCommand(command)
+	if err == nil && p == nil {
+		err = errors.New("profile command is empty")
+	}
+	externalCommandProfiles[command] = externalCommandProfileResult{profile: p, err: err}
+	return p, err
 }
 
 func getProfileFromExternalCommand(command string) (*profile, error) {
