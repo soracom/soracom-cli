@@ -22,4 +22,5 @@ jobs:
         with:
           persist-credentials: false
       - run: gh extension install github/gh-actions-lock --pin v0.4.1
+      - run: gh attestation verify "${XDG_DATA_HOME:-$HOME/.local/share}/gh/extensions/gh-actions-lock/gh-actions-lock" --repo github/gh-actions-lock
       - run: gh actions-lock --verify
