@@ -17,11 +17,19 @@ gopath=${gopath%%:*}
 
 mkdir -p "$d/.cache"
 
+# go.mod is the single source of truth for the Go version to build with.
+go_version="$( sed -n 's/^go \([0-9][0-9.]*\)$/\1/p' "$d/go.mod" )"
+if [ -z "$go_version" ]; then
+  echo -e "${RED}Unable to find the Go version in go.mod${RESET}"
+  exit 1
+fi
+
 docker build -t soracom-cli-build "$d/build"
 docker run --rm -t \
     --network host \
     --user "$(id -u):$(id -g)" \
     -e "VERSION=$VERSION" \
+    -e "GOTOOLCHAIN=go$go_version" \
     -v "$d":/go/src/github.com/soracom/soracom-cli \
     -v "$gopath":/go \
     -v "$d/.cache":/.cache \

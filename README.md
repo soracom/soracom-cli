@@ -99,6 +99,16 @@ If you want to uninstall the `soracom` command, you can just remove `soracom` ex
 
 If the commands above did not work well, or if you want to install older version of `soracom` command, you can download a package file that match the environment of the target from [Releases page](https://github.com/soracom/soracom-cli/releases), unpack it, and place the executable file in the directory where included in `PATH`.
 
+## Verifying the downloaded files
+
+Release files are built by GitHub Actions and come with a [build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations). You can verify that a downloaded file was built from this repository by using [GitHub CLI](https://cli.github.com/):
+
+```
+gh attestation verify soracom_1.2.3_linux_amd64.tar.gz --repo soracom/soracom-cli
+```
+
+Note that attestations are available only for the versions released after the attestation was introduced.
+
 
 # How to use
 

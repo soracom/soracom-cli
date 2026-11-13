@@ -97,6 +97,16 @@ curl -fsSL https://raw.githubusercontent.com/soracom/soracom-cli/master/install.
 
 上記のコマンドがいずれもうまく行かない場合、もしくは古いバージョンの `soracom` コマンドをインストールしたい場合は、[Releases のページ](https://github.com/soracom/soracom-cli/releases) からターゲットの環境に合ったパッケージファイルをダウンロードして展開し、実行形式ファイルを PATH の通ったディレクトリに配置してください。
 
+## ダウンロードしたファイルの検証
+
+リリースされているファイルは GitHub Actions でビルドされており、[build provenance attestation](https://docs.github.com/ja/actions/security-for-github-actions/using-artifact-attestations) が付与されています。[GitHub CLI](https://cli.github.com/) を使って、ダウンロードしたファイルがこのリポジトリからビルドされたものであることを検証できます。
+
+```
+gh attestation verify soracom_1.2.3_linux_amd64.tar.gz --repo soracom/soracom-cli
+```
+
+なお、attestation が付与されているのは attestation の導入以降にリリースされたバージョンのみです。
+
 
 # 使用方法
 
