@@ -1,0 +1,124 @@
+# Builds the release artifacts when a version tag (vX.Y.Z) is pushed, generates
+# a build provenance attestation for them and creates a GitHub release.
+#
+# The attestation can be verified with:
+#   gh attestation verify <downloaded file> --repo soracom/soracom-cli
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    # The build runs third-party code (base image, apt packages, Go modules and
+    # tools), so this job must not have any permission other than reading the code.
+    permissions:
+      contents: read
+    steps:
+      - name: Extract version number from the tag
+        id: version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "::error::tag '$TAG' is not in the form of vX.Y.Z"
+            exit 1
+          fi
+          echo "version=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+
+      - name: Check out code
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build release artifacts
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: ./scripts/build.sh "$VERSION"
+
+      # The build regenerates the source code and the Windows resource files. Make
+      # sure they match the tagged commit so that the release binaries are built
+      # from exactly what the tag points to.
+      - name: Check that the build did not modify the source tree
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --short
+            echo "::error::The build modified the source tree. Commit the regenerated files (e.g. by running 'make generate') and tag again."
+            exit 1
+          fi
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: release-artifacts
+          path: soracom/dist/${{ steps.version.outputs.version }}/soracom_*
+          if-no-files-found: error
+          retention-days: 7
+
+  attest:
+    name: Attest
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # to mint the OIDC token for the Sigstore signing certificate
+      attestations: write # to persist the attestation
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: release-artifacts
+          path: dist
+
+      - name: Generate build provenance attestation
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: dist/soracom_*
+
+  release:
+    name: Create release
+    needs: attest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to create the release
+      attestations: read # to verify the attestation
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: release-artifacts
+          path: dist
+
+      - name: Verify build provenance attestation
+        run: |
+          for f in dist/soracom_*; do
+            gh attestation verify "$f" \
+              --repo "$GITHUB_REPOSITORY" \
+              --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml" \
+              --source-ref "$GITHUB_REF"
+          done
+
+      # The release is created as a pre-release so that `releases/latest` (used by
+      # install.sh etc.) keeps pointing to the previous version until a maintainer
+      # reviews the release notes and promotes it.
+      - name: Create release
+        run: |
+          gh release create "$TAG" dist/soracom_* \
+            --title "$TAG" \
+            --generate-notes \
+            --prerelease \
+            --verify-tag

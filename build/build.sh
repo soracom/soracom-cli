@@ -162,7 +162,6 @@ build() {
     (
       cd "$d/soracom" && \
       go generate
-      go get -u github.com/bearmini/go-acl # required to specify some dependencies explicitly as they are imported only in windows builds
       gofmt -s -w .
     )
 
