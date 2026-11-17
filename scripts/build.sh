@@ -16,6 +16,9 @@ gopath=${GOPATH:-$HOME/go}
 gopath=${gopath%%:*}
 
 mkdir -p "$d/.cache"
+# Create the GOPATH beforehand; otherwise docker creates it as root when mounting
+# it and the build fails with "permission denied".
+mkdir -p "$gopath"
 
 # go.mod is the single source of truth for the Go version to build with.
 go_version="$( sed -n 's/^go \([0-9][0-9.]*\)$/\1/p' "$d/go.mod" )"

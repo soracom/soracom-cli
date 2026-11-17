@@ -45,11 +45,18 @@ jobs:
       - name: Build release artifacts
         env:
           VERSION: ${{ steps.version.outputs.version }}
+        run: ./scripts/build.sh "$VERSION"
+
+      # The build regenerates the source code and the Windows resource files. Make
+      # sure they match the tagged commit so that the release binaries are built
+      # from exactly what the tag points to.
+      - name: Check that the build did not modify the source tree
         run: |
-          # scripts/build.sh mounts the GOPATH into the build container. Create it
-          # beforehand so that docker does not create it as root.
-          mkdir -p "$HOME/go"
-          ./scripts/build.sh "$VERSION"
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --short
+            echo "::error::The build modified the source tree. Commit the regenerated files (e.g. by running 'make generate') and tag again."
+            exit 1
+          fi
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@v7.0.2
