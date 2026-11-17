@@ -902,7 +902,6 @@ groupName="test_group_name_$( random_string )"
 
 : "Run soracom payment_methods" && {
     env "${SORACOM_ENVS[@]}" "$SORACOM" payment-methods
-    env "${SORACOM_ENVS[@]}" "$SORACOM" payment-methods webpay
 }
 
 : "Run soracom products" && {
