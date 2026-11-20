@@ -3,8 +3,8 @@ module github.com/soracom/soracom-cli
 require (
 	github.com/bearmini/go-acl v0.0.0-20170614023114-a423b25ba3ef
 	github.com/dvsekhvalnov/jose2go v1.11.0
-	github.com/elazarl/goproxy v1.9.2
-	github.com/getkin/kin-openapi v0.152.0
+	github.com/elazarl/goproxy v1.9.4
+	github.com/getkin/kin-openapi v0.153.0
 	github.com/kennygrant/sanitize v1.2.4
 	github.com/mattn/go-shellwords v1.0.16
 	github.com/mitchellh/go-homedir v1.1.0
@@ -13,8 +13,8 @@ require (
 	github.com/spf13/pflag v1.1.0
 	github.com/stretchr/testify v1.12.1
 	github.com/tj/assert v0.0.3
-	golang.org/x/sys v0.49.0
-	golang.org/x/term v0.47.0
+	golang.org/x/sys v0.50.0
+	golang.org/x/term v0.48.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -23,10 +23,9 @@ require (
 	github.com/go-openapi/swag/jsonname v0.25.5 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/oasdiff/yaml v0.1.1 // indirect
-	github.com/oasdiff/yaml3 v0.0.14 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
+	go.yaml.in/yaml/v4 v4.0.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 )
