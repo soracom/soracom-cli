@@ -394,3 +394,7 @@ export SORACOM_AUTHKEY_FOR_TEST=...
   ```
   docker logout public.ecr.aws
   ```
+
+## リリース方法
+
+メンテナー向けのリリース手順は [docs/RELEASING_ja.md](docs/RELEASING_ja.md) を参照してください。
