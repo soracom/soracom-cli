@@ -107,6 +107,12 @@ gh attestation verify soracom_1.2.3_linux_amd64.tar.gz --repo soracom/soracom-cl
 
 なお、attestation が付与されているのは attestation の導入以降にリリースされたバージョンのみです。
 
+## Snap（非推奨）
+
+Snap パッケージ（Snap Store の `soracom`）は非推奨で、2022 年 3 月にリリースした 0.11.0 を最後に更新されていません。上記のいずれかの方法で `soracom` コマンドをインストールしてください。
+
+Snap パッケージをインストール済みの場合は、`sudo snap remove soracom` で削除してから、別の方法でインストールしてください。
+
 
 # 使用方法
 

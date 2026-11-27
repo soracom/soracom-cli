@@ -109,6 +109,12 @@ gh attestation verify soracom_1.2.3_linux_amd64.tar.gz --repo soracom/soracom-cl
 
 Note that attestations are available only for the versions released after the attestation was introduced.
 
+## Snap (deprecated)
+
+The Snap package (`soracom` on the Snap Store) is deprecated and has not been updated since 0.11.0, released in March 2022. Please install `soracom` command by one of the methods above instead.
+
+If you have installed the Snap package, remove it with `sudo snap remove soracom` before installing by another method.
+
 
 # How to use
 

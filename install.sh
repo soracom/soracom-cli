@@ -14,8 +14,15 @@ if [ ! -w "$BINDIR" ]; then
 fi
 
 if \soracom > /dev/null 2>&1; then
-  if [[ "$( \command -v soracom )" != "$BINDIR/soracom" ]] || [ -L "$BINDIR/soracom" ]; then
-    echo 'soracom-cli is already installed by using another method (brew, snap, dpkg etc.).' 2>&1
+  installed_path="$( \command -v soracom )"
+  # /snap/bin on most distributions, /var/lib/snapd/snap/bin on Fedora, Arch Linux etc.
+  if [[ "$installed_path" == */snap/bin/soracom ]]; then
+    echo "soracom-cli is installed by Snap ($installed_path), but the Snap package is deprecated and no longer updated." 2>&1
+    echo 'Please remove it with "sudo snap remove soracom" and run this script again.' 2>&1
+    exit 1
+  fi
+  if [[ "$installed_path" != "$BINDIR/soracom" ]] || [ -L "$BINDIR/soracom" ]; then
+    echo 'soracom-cli is already installed by using another method (brew, dpkg etc.).' 2>&1
     echo 'Please use the same method if you want to update soracom-cli.' 2>&1
     exit 1
   fi
