@@ -13,7 +13,7 @@ generate_layer_zip() {
   arch=$2
   staging="$wd/$arch"
   mkdir -p "$staging/bin"
-  curl -s -L "https://github.com/soracom/soracom-cli/releases/download/v${VERSION}/soracom_${VERSION}_linux_${arch}" -o "$staging/bin/soracom"
+  curl -fsSL "https://github.com/soracom/soracom-cli/releases/download/v${VERSION}/soracom_${VERSION}_linux_${arch}" -o "$staging/bin/soracom"
   chmod +x "$staging/bin/soracom"
   cd "$staging" && zip -r "$wd/layer_${VERSION}_${arch}.zip" . && cd -
 }
